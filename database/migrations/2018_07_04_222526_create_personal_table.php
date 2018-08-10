@@ -1,0 +1,47 @@
+<?php
+
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+class CreatePersonalTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('personal', function (Blueprint $table) {
+            $table->increments('id');
+            $table->unsignedInteger('departamento_id');
+            $table->string('ap_paterno',35);
+            $table->string('ap_materno',35);
+            $table->string('nombre',35);
+            $table->date('f_nacimiento');
+            $table->string('rfc',13)->unique();
+            $table->string('direccion',80);
+            $table->string('colonia',80)->nullable();
+            $table->integer('cp')->nullable();
+            $table->integer('telefono');
+            $table->integer('ext')->nullable();
+            $table->integer('celular');
+            $table->string('email',40);
+            $table->boolean('activo')->default(1);            
+            $table->timestamps();
+
+            $table->foreign('departamento_id')->references('id_departamento')->on('departamento');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('personal');
+    }
+}
