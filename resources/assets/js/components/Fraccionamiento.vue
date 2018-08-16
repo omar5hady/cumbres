@@ -26,7 +26,13 @@
                                       <option value="nombre">Fraccionamiento</option>
                                       <option value="tipo_proyecto">Tipo de Proyecto</option>
                                     </select>
-                                    <input type="text" v-model="buscar" @keyup.enter="listarFraccionamiento(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
+                                    
+                                    <input type="text" v-if="criterio=='nombre'" v-model="buscar" @keyup.enter="listarFraccionamiento(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
+                                        <select class="form-control col-md-5" v-if="criterio=='tipo_proyecto'" v-model="buscar" @keyup.enter="listarFraccionamiento(1,buscar,criterio)" >
+                                        <option value="1">Lotificación</option>
+                                        <option value="2">Departamento</option>
+                                        <option value="3">Terreno</option>
+                                        </select>
                                     <button type="submit" @click="listarFraccionamiento(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
@@ -53,7 +59,9 @@
                                         </button>
                                     </td>
                                     <td v-text="fraccionamiento.nombre"></td>
-                                    <td v-text="fraccionamiento.tipo_proyecto"></td>
+                                    <td v-if="fraccionamiento.tipo_proyecto==1" v-text="'Lotificación'"></td>
+                                    <td v-if="fraccionamiento.tipo_proyecto==2" v-text="'Departamento'"></td>
+                                    <td v-if="fraccionamiento.tipo_proyecto==3" v-text="'Terreno'"></td>
                                     <td v-text="fraccionamiento.calle"></td>
                                     <td v-text="fraccionamiento.colonia"></td>
                                     <td>
@@ -107,13 +115,6 @@
                                         <input type="text" v-model="nombre" class="form-control" placeholder="Nombre del fraccionamiento">
                                     </div>
                                 </div>
-                                <!--
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
-                                    <div class="col-md-9">
-                                        <input type="text" v-model="tipo_proyecto" class="form-control" placeholder="Tipo de proyecto">
-                                    </div>
-                                </div>-->
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Calle</label>
                                     <div class="col-md-9">

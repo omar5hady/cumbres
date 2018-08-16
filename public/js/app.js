@@ -34556,6 +34556,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -34878,36 +34879,108 @@ var render = function() {
                   ]
                 ),
                 _vm._v(" "),
-                _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.buscar,
-                      expression: "buscar"
-                    }
-                  ],
-                  staticClass: "form-control",
-                  attrs: { type: "text", placeholder: "Texto a buscar" },
-                  domProps: { value: _vm.buscar },
-                  on: {
-                    keyup: function($event) {
-                      if (
-                        !("button" in $event) &&
-                        _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
-                      ) {
-                        return null
+                _vm.criterio == "nombre"
+                  ? _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.buscar,
+                          expression: "buscar"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { type: "text", placeholder: "Texto a buscar" },
+                      domProps: { value: _vm.buscar },
+                      on: {
+                        keyup: function($event) {
+                          if (
+                            !("button" in $event) &&
+                            _vm._k(
+                              $event.keyCode,
+                              "enter",
+                              13,
+                              $event.key,
+                              "Enter"
+                            )
+                          ) {
+                            return null
+                          }
+                          _vm.listarFraccionamiento(1, _vm.buscar, _vm.criterio)
+                        },
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.buscar = $event.target.value
+                        }
                       }
-                      _vm.listarFraccionamiento(1, _vm.buscar, _vm.criterio)
-                    },
-                    input: function($event) {
-                      if ($event.target.composing) {
-                        return
-                      }
-                      _vm.buscar = $event.target.value
-                    }
-                  }
-                }),
+                    })
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.criterio == "tipo_proyecto"
+                  ? _c(
+                      "select",
+                      {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.buscar,
+                            expression: "buscar"
+                          }
+                        ],
+                        staticClass: "form-control col-md-5",
+                        on: {
+                          keyup: function($event) {
+                            if (
+                              !("button" in $event) &&
+                              _vm._k(
+                                $event.keyCode,
+                                "enter",
+                                13,
+                                $event.key,
+                                "Enter"
+                              )
+                            ) {
+                              return null
+                            }
+                            _vm.listarFraccionamiento(
+                              1,
+                              _vm.buscar,
+                              _vm.criterio
+                            )
+                          },
+                          change: function($event) {
+                            var $$selectedVal = Array.prototype.filter
+                              .call($event.target.options, function(o) {
+                                return o.selected
+                              })
+                              .map(function(o) {
+                                var val = "_value" in o ? o._value : o.value
+                                return val
+                              })
+                            _vm.buscar = $event.target.multiple
+                              ? $$selectedVal
+                              : $$selectedVal[0]
+                          }
+                        }
+                      },
+                      [
+                        _c("option", { attrs: { value: "1" } }, [
+                          _vm._v("Lotificación")
+                        ]),
+                        _vm._v(" "),
+                        _c("option", { attrs: { value: "2" } }, [
+                          _vm._v("Departamento")
+                        ]),
+                        _vm._v(" "),
+                        _c("option", { attrs: { value: "3" } }, [
+                          _vm._v("Terreno")
+                        ])
+                      ]
+                    )
+                  : _vm._e(),
                 _vm._v(" "),
                 _c(
                   "button",
@@ -34974,11 +35047,23 @@ var render = function() {
                       domProps: { textContent: _vm._s(fraccionamiento.nombre) }
                     }),
                     _vm._v(" "),
-                    _c("td", {
-                      domProps: {
-                        textContent: _vm._s(fraccionamiento.tipo_proyecto)
-                      }
-                    }),
+                    fraccionamiento.tipo_proyecto == 1
+                      ? _c("td", {
+                          domProps: { textContent: _vm._s("Lotificación") }
+                        })
+                      : _vm._e(),
+                    _vm._v(" "),
+                    fraccionamiento.tipo_proyecto == 2
+                      ? _c("td", {
+                          domProps: { textContent: _vm._s("Departamento") }
+                        })
+                      : _vm._e(),
+                    _vm._v(" "),
+                    fraccionamiento.tipo_proyecto == 3
+                      ? _c("td", {
+                          domProps: { textContent: _vm._s("Terreno") }
+                        })
+                      : _vm._e(),
                     _vm._v(" "),
                     _c("td", {
                       domProps: { textContent: _vm._s(fraccionamiento.calle) }
