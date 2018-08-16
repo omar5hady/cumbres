@@ -10,9 +10,9 @@
                 <!-- Ejemplo de tabla Listado -->
                 <div class="card">
                     <div class="card-header">
-                        <i class="fa fa-align-justify"></i> Categorías
+                        <i class="fa fa-align-justify"></i> Fraccionamientos
                         <!--   Boton Nuevo    -->
-                        <button type="button" @click="abrirModal('departamento','registrar')" class="btn btn-secondary">
+                        <button type="button" @click="abrirModal('fraccionamiento','registrar')" class="btn btn-secondary">
                             <i class="icon-plus"></i>&nbsp;Nuevo
                         </button>
                         <!---->
@@ -23,11 +23,11 @@
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
                                     <select class="form-control col-md-3" v-model="criterio">
-                                      <option value="departamento">Departamento</option>
-                                      <option value="user_alta">Usuario</option>
+                                      <option value="nombre">Fraccionamiento</option>
+                                      <option value="tipo_proyecto">Tipo de Proyecto</option>
                                     </select>
-                                    <input type="text" v-model="buscar" @keyup.enter="listarDepartamento(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
-                                    <button type="submit" @click="listarDepartamento(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <input type="text" v-model="buscar" @keyup.enter="listarFraccionamiento(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
+                                    <button type="submit" @click="listarFraccionamiento(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
                         </div>
@@ -35,23 +35,27 @@
                             <thead>
                                 <tr>
                                     <th>Opciones</th>
-                                    <th>Departamento</th>
-                                    <th>User alta</th>
+                                    <th>Fraccionamiento</th>
+                                    <th>Tipo de proyecto</th>
+                                    <th>Direccion</th>
+                                    <th>Colonia</th>
                                     <th>Estado</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="departamento in arrayDepartamento" :key="departamento.id_departamento">
+                                <tr v-for="fraccionamiento in arrayFraccionamiento" :key="fraccionamiento.id">
                                     <td>
-                                        <button type="button" @click="abrirModal('departamento','actualizar',departamento)" class="btn btn-warning btn-sm">
+                                        <button type="button" @click="abrirModal('fraccionamiento','actualizar',fraccionamiento)" class="btn btn-warning btn-sm">
                                           <i class="icon-pencil"></i>
                                         </button> &nbsp;
-                                        <button type="button" class="btn btn-danger btn-sm" @click="eliminarDepartamento(departamento)">
+                                        <button type="button" class="btn btn-danger btn-sm" @click="eliminarFraccionamiento(fraccionamiento)">
                                           <i class="icon-trash"></i>
                                         </button>
                                     </td>
-                                    <td v-text="departamento.departamento"></td>
-                                    <td v-text="departamento.user_alta"></td>
+                                    <td v-text="fraccionamiento.nombre"></td>
+                                    <td v-text="fraccionamiento.tipo_proyecto"></td>
+                                    <td v-text="fraccionamiento.calle"></td>
+                                    <td v-text="fraccionamiento.colonia"></td>
                                     <td>
                                         <span class="badge badge-success">Activo</span>
                                     </td>
@@ -89,21 +93,45 @@
                         <div class="modal-body">
                             <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Departamento</label>
+                                    <label class="col-md-3 form-control-label" for="text-input">Fraccionamiento</label>
                                     <div class="col-md-9">
-                                        <input type="text" v-model="departamento" class="form-control" placeholder="Nombre de departamento">
+                                        <input type="text" v-model="nombre" class="form-control" placeholder="Nombre del fraccionamiento">
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="email-input">Usuario</label>
+                                    <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
                                     <div class="col-md-9">
-                                        <input type="email" v-model="user_alta" class="form-control" placeholder="User alta">
+                                        <input type="text" v-model="tipo_proyecto" class="form-control" placeholder="Tipo de proyecto">
                                     </div>
                                 </div>
-                                <!-- Div para mostrar los errores que mande validerDepartamento -->
-                                <div v-show="errorDepartamento" class="form-group row div-error">
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Calle</label>
+                                    <div class="col-md-9">
+                                        <input type="text" v-model="calle" class="form-control" placeholder="Calle">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Colonia</label>
+                                    <div class="col-md-9">
+                                        <input type="text" v-model="colonia" class="form-control" placeholder="Colonia">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Estado</label>
+                                    <div class="col-md-9">
+                                        <input type="text" v-model="estado" class="form-control" placeholder="Estado">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Ciudad</label>
+                                    <div class="col-md-9">
+                                        <input type="text" v-model="ciudad" class="form-control" placeholder="Ciudad">
+                                    </div>
+                                </div>
+                                <!-- Div para mostrar los errores que mande validerFraccionamiento -->
+                                <div v-show="errorFraccionamiento" class="form-group row div-error">
                                     <div class="text-center text-error">
-                                        <div v-for="error in errorMostrarMsjDepartamento" :key="error" v-text="error">
+                                        <div v-for="error in errorMostrarMsjFraccionamiento" :key="error" v-text="error">
 
                                         </div>
                                     </div>
@@ -114,8 +142,8 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
                             <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarDepartamento()">Guardar</button>
-                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarDepartamento()">Actualizar</button>
+                            <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarFraccionamiento()">Guardar</button>
+                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarFraccionamiento()">Actualizar</button>
                         </div>
                     </div>
                     <!-- /.modal-content -->
@@ -136,15 +164,19 @@
     export default {
         data(){
             return{
-                departamento_id:0,
-                departamento : '',
-                user_alta : '',
-                arrayDepartamento : [],
+                id:0,
+                nombre : '',
+                tipo_proyecto : '',
+                calle : '',
+                colonia : '',
+                estado : '',
+                ciudad : '',
+                arrayFraccionamiento : [],
                 modal : 0,
                 tituloModal : '',
                 tipoAccion: 0,
-                errorDepartamento : 0,
-                errorMostrarMsjDepartamento : [],
+                errorFraccionamiento : 0,
+                errorMostrarMsjFraccionamiento : [],
                 pagination : {
                     'total' : 0,         
                     'current_page' : 0,
@@ -154,7 +186,7 @@
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'departamento', 
+                criterio : 'nombre', 
                 buscar : ''
             }
         },
@@ -188,12 +220,12 @@
         },
         methods : {
             /**Metodo para mostrar los registros */
-            listarDepartamento(page, buscar, criterio){
+            listarFraccionamiento(page, buscar, criterio){
                 let me = this;
-                var url = '/departamento?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
+                var url = '/fraccionamiento?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
-                    me.arrayDepartamento = respuesta.departamentos.data;
+                    me.arrayFraccionamiento = respuesta.fraccionamientos.data;
                     me.pagination = respuesta.pagination;
                 })
                 .catch(function (error) {
@@ -205,28 +237,32 @@
                 //Actualiza la pagina actual
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
-                me.listarDepartamento(page,buscar,criterio);
+                me.listarFraccionamiento(page,buscar,criterio);
             },
             /**Metodo para registrar  */
-            registrarDepartamento(){
-                if(this.validarDepartamento()) //Se verifica si hay un error (campo vacio)
+            registrarFraccionamiento(){
+                if(this.validarFraccionamiento()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
 
                 let me = this;
-                //Con axios se llama el metodo store de DepartamentoController
-                axios.post('/departamento/registrar',{
-                    'departamento': this.departamento,
-                    'user_alta': this.user_alta
+                //Con axios se llama el metodo store de FraccionaminetoController
+                axios.post('/fraccionamiento/registrar',{
+                    'nombre': this.nombre,
+                    'tipo_proyecto': this.tipo_proyecto,
+                    'calle': this.calle,
+                    'colonia': this.colonia,
+                    'estado': this.estado,
+                    'ciudad': this.ciudad
                 }).then(function (response){
                     me.cerrarModal(); //al guardar el registro se cierra el modal
-                    me.listarDepartamento(1,'','departamento'); //se enlistan nuevamente los registros
+                    me.listarFraccionamiento(1,'','fraccionamiento'); //se enlistan nuevamente los registros
                     //Se muestra mensaje Success
                     swal({
                         position: 'top-end',
                         type: 'success',
-                        title: 'Departamento agregado correctamente',
+                        title: 'Fraccionamiento agregado correctamente',
                         showConfirmButton: false,
                         timer: 1500
                         })
@@ -234,21 +270,25 @@
                     console.log(error);
                 });
             },
-            actualizarDepartamento(){
-                if(this.validarDepartamento()) //Se verifica si hay un error (campo vacio)
+            actualizarFraccionamiento(){
+                if(this.validarFraccionamiento()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
 
                 let me = this;
-                //Con axios se llama el metodo update de DepartamentoController
-                axios.put('/departamento/actualizar',{
-                    'departamento': this.departamento,
-                    'user_alta': this.user_alta,
-                    'id_departamento' : this.departamento_id
+                //Con axios se llama el metodo update de FraccionaminetoController
+                axios.put('/fraccionamiento/actualizar',{
+                    'nombre': this.nombre,
+                    'tipo_proyecto': this.tipo_proyecto,
+                    'calle': this.calle,
+                    'colonia': this.colonia,
+                    'estado': this.estado,
+                    'ciudad': this.ciudad,
+                    'id' : this.id
                 }).then(function (response){
                     me.cerrarModal();
-                    me.listarDepartamento(1,'','departamento');
+                    me.listarFraccionamiento(1,'','fraccionamiento');
                     //window.alert("Cambios guardados correctamente");
                     swal({
                         position: 'top-end',
@@ -261,11 +301,15 @@
                     console.log(error);
                 });
             },
-            eliminarDepartamento(data =[]){
-                this.departamento_id=data['id_departamento'];
-                this.departamento=data['departamento'];
-                this.user_alta=data['user_alta'];
-                //console.log(this.departamento_id);
+            eliminarFraccionamiento(data =[]){
+                this.id=data['id'];
+                this.nombre=data['nombre'];
+                this.tipo_proyecto=data['tipo_proyecto'];
+                this.calle=data['calle'];
+                this.colonia=data['colonia'];
+                this.estado=data['estado'];
+                this.ciudad=data['ciudad'];
+                //console.log(this.fraccionamiento_id);
                 swal({
                 title: '¿Desea eliminar?',
                 text: "Esta acción no se puede revertir!",
@@ -279,53 +323,57 @@
                 if (result.value) {
                     let me = this;
 
-                axios.delete('/departamento/eliminar', 
-                        {params: {'id_departamento': this.departamento_id}}).then(function (response){
+                axios.delete('/fraccionamiento/eliminar', 
+                        {params: {'id': this.id}}).then(function (response){
                         swal(
                         'Borrado!',
-                        'Departamento borrado correctamente.',
+                        'Fraccionamiento borrado correctamente.',
                         'success'
                         )
-                        me.listarDepartamento(1,'','departamento');
+                        me.listarFraccionamiento(1,'','fraccionamiento');
                     }).catch(function (error){
                         console.log(error);
                     });
                 }
                 })
             },
-            validarDepartamento(){
-                this.errorDepartamento=0;
-                this.errorMostrarMsjDepartamento=[];
+            validarFraccionamiento(){
+                this.errorFraccionamiento=0;
+                this.errorMostrarMsjFraccionamiento=[];
 
-                if(!this.departamento) //Si la variable departamento esta vacia
-                    this.errorMostrarMsjDepartamento.push("El nombre del departamento no puede ir vacio.");
+                if(!this.nombre) //Si la variable Fraccionamiento esta vacia
+                    this.errorMostrarMsjFraccionamiento.push("El nombre del Fraccionamiento no puede ir vacio.");
 
-                if(this.errorMostrarMsjDepartamento.length)//Si el mensaje tiene almacenado algo en el array
-                    this.errorDepartamento = 1;
+                if(this.errorMostrarMsjFraccionamiento.length)//Si el mensaje tiene almacenado algo en el array
+                    this.errorFraccionamiento = 1;
 
-                return this.errorDepartamento;
+                return this.errorFraccionamiento;
             },
             cerrarModal(){
                 this.modal = 0;
                 this.tituloModal = '';
-                this.departamento = '';
+                this.fraccionamiento = '';
                 this.user_alta = '';
-                this.errorDepartamento = 0;
-                this.errorMostrarMsjDepartamento = [];
+                this.errorFraccionamiento = 0;
+                this.errorMostrarMsjFraccionamiento = [];
 
             },
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
             abrirModal(modelo, accion,data =[]){
                 switch(modelo){
-                    case "departamento":
+                    case "fraccionamiento":
                     {
                         switch(accion){
                             case 'registrar':
                             {
                                 this.modal = 1;
-                                this.tituloModal = 'Registrar Departamento';
-                                this.departamento ='';
-                                this.user_alta ='';
+                                this.tituloModal = 'Registrar Fraccionamiento';
+                                this.nombre ='';
+                                this.tipo_proyecto ='';
+                                this.calle ='';
+                                this.colonia ='';
+                                this.estado ='';
+                                this.ciudad ='';
                                 this.tipoAccion = 1;
                                 break;
                             }
@@ -333,11 +381,15 @@
                             {
                                 //console.log(data);
                                 this.modal =1;
-                                this.tituloModal='Actualizar Departamento';
+                                this.tituloModal='Actualizar Fraccionamiento';
                                 this.tipoAccion=2;
-                                this.departamento_id=data['id_departamento'];
-                                this.departamento=data['departamento'];
-                                this.user_alta=data['user_alta'];
+                                this.id=data['id'];
+                                this.nombre=data['nombre'];
+                                this.tipo_proyecto=data['tipo_proyecto'];
+                                this.calle=data['calle'];
+                                this.colonia=data['colonia'];
+                                this.estado=data['estado'];
+                                this.ciudad=data['ciudad'];
                                 break;
                             }
                         }
@@ -346,7 +398,7 @@
             }
         },
         mounted() {
-            this.listarDepartamento(1,this.buscar,this.criterio);
+            this.listarFraccionamiento(1,this.buscar,this.criterio);
         }
     }
 </script>

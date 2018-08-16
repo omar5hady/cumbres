@@ -16,6 +16,7 @@ window.Vue = require('vue');
  */
 
 Vue.component('departamento', require('./components/Departamento.vue'));
+Vue.component('fraccionamiento', require('./components/Fraccionamiento.vue'));
 
 const app = new Vue({
     el: '#app',

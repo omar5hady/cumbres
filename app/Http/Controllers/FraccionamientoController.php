@@ -3,19 +3,15 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-//use Illuminate\Support\Facades\DB;
-use App\Departamento; //Importar el modelo
+use App\Fraccionamiento; //Importar el modelo
 
-class DepartamentoController extends Controller
+class FraccionamientoController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    /*
-    Funcion para listar los registros de la tabla departamentos
-    */
     public function index(Request $request)
     {
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
@@ -25,22 +21,22 @@ class DepartamentoController extends Controller
         $criterio = $request->criterio;
         
         if($buscar==''){
-            $departamentos = Departamento::orderBy('id_departamento','desc')->paginate(5);
+            $fraccionamientos = Fraccionamiento::orderBy('id','desc')->paginate(5);
         }
         else{
-            $departamentos = Departamento::where($criterio, 'like', '%'. $buscar . '%')->orderBy('id_departamento','desc')->paginate(5);
+            $fraccionamientos = Fraccionamiento::where($criterio, 'like', '%'. $buscar . '%')->orderBy('id','desc')->paginate(5);
         }
 
         return [
             'pagination' => [
-                'total'         => $departamentos->total(),
-                'current_page'  => $departamentos->currentPage(),
-                'per_page'      => $departamentos->perPage(),
-                'last_page'     => $departamentos->lastPage(),
-                'from'          => $departamentos->firstItem(),
-                'to'            => $departamentos->lastItem(),
+                'total'         => $fraccionamientos->total(),
+                'current_page'  => $fraccionamientos->currentPage(),
+                'per_page'      => $fraccionamientos->perPage(),
+                'last_page'     => $fraccionamientos->lastPage(),
+                'from'          => $fraccionamientos->firstItem(),
+                'to'            => $fraccionamientos->lastItem(),
             ],
-            'departamentos' => $departamentos
+            'fraccionamientos' => $fraccionamientos
         ];
     }
 
@@ -60,15 +56,18 @@ class DepartamentoController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-
-     //funcion para insertar en la tabla
+    //funcion para insertar en la tabla
     public function store(Request $request)
     {
         if(!$request->ajax())return redirect('/');
-        $departamento = new Departamento();
-        $departamento->departamento = $request->departamento;
-        $departamento->user_alta = $request->user_alta;
-        $departamento->save();
+        $fraccionamiento = new Fraccionamiento();
+        $fraccionamiento->nombre = $request->nombre;
+        $fraccionamiento->tipo_proyecto = $request->tipo_proyecto;
+        $fraccionamiento->calle = $request->calle;
+        $fraccionamiento->colonia = $request->colonia;
+        $fraccionamiento->estado = $request->estado;
+        $fraccionamiento->ciudad = $request->ciudad;
+        $fraccionamiento->save();
     }
 
     /**
@@ -105,10 +104,14 @@ class DepartamentoController extends Controller
     {
         if(!$request->ajax())return redirect('/');
         //FindOrFail se utiliza para buscar lo que recibe de argumento
-        $departamento = Departamento::findOrFail($request->id_departamento);
-        $departamento->departamento = $request->departamento;
-        $departamento->user_alta = $request->user_alta;
-        $departamento->save();
+        $fraccionamiento = Fraccionamiento::findOrFail($request->id);
+        $fraccionamiento->nombre = $request->nombre;
+        $fraccionamiento->tipo_proyecto = $request->tipo_proyecto;
+        $fraccionamiento->calle = $request->calle;
+        $fraccionamiento->colonia = $request->colonia;
+        $fraccionamiento->estado = $request->estado;
+        $fraccionamiento->ciudad = $request->ciudad;
+        $fraccionamiento->save();
     }
 
     /**
@@ -120,7 +123,7 @@ class DepartamentoController extends Controller
     public function destroy(Request $request)
     {
         if(!$request->ajax())return redirect('/');
-        $departamento = Departamento::findOrFail($request->id_departamento);
-        $departamento->delete();
+        $fraccionamiento = Fraccionamiento::findOrFail($request->id);
+        $fraccionamiento->delete();
     }
 }
