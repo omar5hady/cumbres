@@ -34546,6 +34546,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -34840,7 +34850,7 @@ var render = function() {
                         expression: "criterio"
                       }
                     ],
-                    staticClass: "form-control col-md-3",
+                    staticClass: "form-control col-md-5",
                     on: {
                       change: function($event) {
                         var $$selectedVal = Array.prototype.filter
@@ -35126,6 +35136,60 @@ var render = function() {
                     }
                   },
                   [
+                    _c("div", { staticClass: "form-group row input-group" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "text-input" }
+                        },
+                        [_vm._v("Proyecto")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "select",
+                        {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.tipo_proyecto,
+                              expression: "tipo_proyecto"
+                            }
+                          ],
+                          staticClass: "form-control col-md-3",
+                          on: {
+                            change: function($event) {
+                              var $$selectedVal = Array.prototype.filter
+                                .call($event.target.options, function(o) {
+                                  return o.selected
+                                })
+                                .map(function(o) {
+                                  var val = "_value" in o ? o._value : o.value
+                                  return val
+                                })
+                              _vm.tipo_proyecto = $event.target.multiple
+                                ? $$selectedVal
+                                : $$selectedVal[0]
+                            }
+                          }
+                        },
+                        [
+                          _c("option", { attrs: { value: "1" } }, [
+                            _vm._v("Lotificación")
+                          ]),
+                          _vm._v(" "),
+                          _c("option", { attrs: { value: "2" } }, [
+                            _vm._v("Departamento")
+                          ]),
+                          _vm._v(" "),
+                          _c("option", { attrs: { value: "3" } }, [
+                            _vm._v("Terreno")
+                          ])
+                        ]
+                      )
+                    ]),
+                    _vm._v(" "),
                     _c("div", { staticClass: "form-group row" }, [
                       _c(
                         "label",
@@ -35158,44 +35222,6 @@ var render = function() {
                                 return
                               }
                               _vm.nombre = $event.target.value
-                            }
-                          }
-                        })
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "text-input" }
-                        },
-                        [_vm._v("Proyecto")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-9" }, [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.tipo_proyecto,
-                              expression: "tipo_proyecto"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: {
-                            type: "text",
-                            placeholder: "Tipo de proyecto"
-                          },
-                          domProps: { value: _vm.tipo_proyecto },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.tipo_proyecto = $event.target.value
                             }
                           }
                         })

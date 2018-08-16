@@ -22,7 +22,7 @@
                             <div class="col-md-6">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-3" v-model="criterio">
+                                    <select class="form-control col-md-5" v-model="criterio">
                                       <option value="nombre">Fraccionamiento</option>
                                       <option value="tipo_proyecto">Tipo de Proyecto</option>
                                     </select>
@@ -92,18 +92,28 @@
                         </div>
                         <div class="modal-body">
                             <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+                                <div class="form-group row input-group">
+                                    <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
+                                    <!--Criterios para el listado de busqueda -->
+                                    <select class="form-control col-md-3" v-model="tipo_proyecto">
+                                      <option value="1">Lotificación</option>
+                                      <option value="2">Departamento</option>
+                                      <option value="3">Terreno</option>
+                                    </select>
+                                </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Fraccionamiento</label>
                                     <div class="col-md-9">
                                         <input type="text" v-model="nombre" class="form-control" placeholder="Nombre del fraccionamiento">
                                     </div>
                                 </div>
+                                <!--
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
                                     <div class="col-md-9">
                                         <input type="text" v-model="tipo_proyecto" class="form-control" placeholder="Tipo de proyecto">
                                     </div>
-                                </div>
+                                </div>-->
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Calle</label>
                                     <div class="col-md-9">
