@@ -100,14 +100,16 @@
                         </div>
                         <div class="modal-body">
                             <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-                                <div class="form-group row input-group">
+                                <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
                                     <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-3" v-model="tipo_proyecto">
+                                    <div class="col-md-3">
+                                    <select class="form-control" v-model="tipo_proyecto">
                                       <option value="1">Lotificación</option>
                                       <option value="2">Departamento</option>
                                       <option value="3">Terreno</option>
                                     </select>
+                                    </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Fraccionamiento</label>
