@@ -104,11 +104,12 @@
                                     <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
                                     <!--Criterios para el listado de busqueda -->
                                     <div class="col-md-3">
-                                    <select class="form-control" v-model="tipo_proyecto">
-                                      <option value="1">Lotificación</option>
-                                      <option value="2">Departamento</option>
-                                      <option value="3">Terreno</option>
-                                    </select>
+                                        <select class="form-control" v-model="tipo_proyecto">
+                                            <option value="0">Seleccione</option>
+                                            <option value="1">Lotificación</option>
+                                            <option value="2">Departamento</option>
+                                            <option value="3">Terreno</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -132,13 +133,48 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Estado</label>
                                     <div class="col-md-9">
-                                        <input type="text" v-model="estado" class="form-control" placeholder="Estado">
+                                        <select class="form-control" v-model="estado" @click="selectCiudades(estado)">
+                                            <option value="San Luis Potosí">San Luis Potosí</option>
+                                            <option value="Baja California">Baja California</option>
+                                            <option value="Baja California Sur">Baja California Sur</option>
+                                            <option value="Coahuila de Zaragoza">Coahuila de Zaragoza</option>
+                                            <option value="Colima">Colima</option>
+                                            <option value="Chiapas">Chiapas</option>
+                                            <option value="Chihuahua">Chihuahua</option>
+                                            <option value="Ciudad de México">Ciudad de México</option>
+                                            <option value="Durango">Durango</option>
+                                            <option value="Guanajuato">Guanajuato</option>
+                                            <option value="Guerrero">Guerrero</option>
+                                            <option value="Hidalgo">Hidalgo</option>
+                                            <option value="Jalisco">Jalisco</option>
+                                            <option value="México">México</option>
+                                            <option value="Michoacán de Ocampo">Michoacán de Ocampo</option>
+                                            <option value="Morelos">Morelos</option>
+                                            <option value="Nayarit">Nayarit</option>
+                                            <option value="Nuevo León">Nuevo León</option>
+                                            <option value="Oaxaca">Oaxaca</option>
+                                            <option value="Puebla">Puebla</option>
+                                            <option value="Querétaro">Querétaro</option>
+                                            <option value="Quintana Roo">Quintana Roo</option>
+                                            <option value="Sinaloa">Sinaloa</option>
+                                            <option value="Sonora">Sonora</option>
+                                            <option value="Tabasco">Tabasco</option>
+                                            <option value="Tamaulipas">Tamaulipas</option>
+                                            <option value="Tlaxcala">Tlaxcala</option>
+                                            <option value="Veracruz de Ignacio de la Llave">Veracruz de Ignacio de la Llave</option>
+                                            <option value="Yucatán">Yucatán</option>
+                                            <option value="Zacatecas">Zacatecas</option>
+                                        </select>
+                                        <!--<input type="text" v-model="estado" class="form-control" placeholder="Estado">-->
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Ciudad</label>
                                     <div class="col-md-9">
-                                        <input type="text" v-model="ciudad" class="form-control" placeholder="Ciudad">
+                                        <select class="form-control" v-model="ciudad">
+                                            <option v-for="ciudades in arrayCiudades" :key="ciudades.municipio" :value="ciudades.municipio" v-text="ciudades.municipio"></option>
+                                        </select>
+                                        <!--<input type="text" v-model="ciudad" class="form-control" placeholder="Ciudad">-->
                                     </div>
                                 </div>
                                 <!-- Div para mostrar los errores que mande validerFraccionamiento -->
@@ -179,10 +215,10 @@
             return{
                 id:0,
                 nombre : '',
-                tipo_proyecto : '',
+                tipo_proyecto : 0,
                 calle : '',
                 colonia : '',
-                estado : '',
+                estado : 'San Luis Potosí',
                 ciudad : '',
                 arrayFraccionamiento : [],
                 modal : 0,
@@ -200,7 +236,8 @@
                 },
                 offset : 3,
                 criterio : 'nombre', 
-                buscar : ''
+                buscar : '',
+                arrayCiudades : []
             }
         },
         computed:{
@@ -240,6 +277,18 @@
                     var respuesta = response.data;
                     me.arrayFraccionamiento = respuesta.fraccionamientos.data;
                     me.pagination = respuesta.pagination;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            selectCiudades(buscar){
+                let me = this;
+                me.arrayCiudades=[];
+                var url = '/select_ciudades?buscar=' + buscar;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayCiudades = respuesta.ciudades;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -365,7 +414,12 @@
             cerrarModal(){
                 this.modal = 0;
                 this.tituloModal = '';
-                this.fraccionamiento = '';
+                this.nombre = '';
+                this.tipo_proyecto = 0;
+                this.calle = '';
+                this.colonia = '';
+                this.estado = '';
+                this.ciudad = '';
                 this.user_alta = '';
                 this.errorFraccionamiento = 0;
                 this.errorMostrarMsjFraccionamiento = [];
@@ -382,10 +436,10 @@
                                 this.modal = 1;
                                 this.tituloModal = 'Registrar Fraccionamiento';
                                 this.nombre ='';
-                                this.tipo_proyecto ='';
+                                this.tipo_proyecto =0;
                                 this.calle ='';
                                 this.colonia ='';
-                                this.estado ='';
+                                this.estado ='San Luis Potosí';
                                 this.ciudad ='';
                                 this.tipoAccion = 1;
                                 break;
@@ -408,6 +462,7 @@
                         }
                     }
                 }
+                //this.selectCiudades(this.estado);
             }
         },
         mounted() {

@@ -470,6 +470,10 @@ var defaults = {
     return data;
   }],
 
+  /**
+   * A timeout in milliseconds to abort a request. If set to 0 (default) a
+   * timeout is not created.
+   */
   timeout: 0,
 
   xsrfCookieName: 'XSRF-TOKEN',
@@ -21277,7 +21281,7 @@ Axios.prototype.request = function request(config) {
     }, arguments[1]);
   }
 
-  config = utils.merge(defaults, this.defaults, { method: 'get' }, config);
+  config = utils.merge(defaults, {method: 'get'}, this.defaults, config);
   config.method = config.method.toLowerCase();
 
   // Hook up interceptors middleware
@@ -21452,9 +21456,7 @@ module.exports = function buildURL(url, params, paramsSerializer) {
 
       if (utils.isArray(val)) {
         key = key + '[]';
-      }
-
-      if (!utils.isArray(val)) {
+      } else {
         val = [val];
       }
 
@@ -34557,16 +34559,52 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
             id: 0,
             nombre: '',
-            tipo_proyecto: '',
+            tipo_proyecto: 0,
             calle: '',
             colonia: '',
-            estado: '',
+            estado: 'San Luis Potosí',
             ciudad: '',
             arrayFraccionamiento: [],
             modal: 0,
@@ -34584,7 +34622,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             },
             offset: 3,
             criterio: 'nombre',
-            buscar: ''
+            buscar: '',
+            arrayCiudades: []
         };
     },
 
@@ -34625,6 +34664,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 var respuesta = response.data;
                 me.arrayFraccionamiento = respuesta.fraccionamientos.data;
                 me.pagination = respuesta.pagination;
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        selectCiudades: function selectCiudades(buscar) {
+            var me = this;
+            me.arrayCiudades = [];
+            var url = '/select_ciudades?buscar=' + buscar;
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayCiudades = respuesta.ciudades;
             }).catch(function (error) {
                 console.log(error);
             });
@@ -34749,7 +34799,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         cerrarModal: function cerrarModal() {
             this.modal = 0;
             this.tituloModal = '';
-            this.fraccionamiento = '';
+            this.nombre = '';
+            this.tipo_proyecto = 0;
+            this.calle = '';
+            this.colonia = '';
+            this.estado = '';
+            this.ciudad = '';
             this.user_alta = '';
             this.errorFraccionamiento = 0;
             this.errorMostrarMsjFraccionamiento = [];
@@ -34768,10 +34823,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     this.modal = 1;
                                     this.tituloModal = 'Registrar Fraccionamiento';
                                     this.nombre = '';
-                                    this.tipo_proyecto = '';
+                                    this.tipo_proyecto = 0;
                                     this.calle = '';
                                     this.colonia = '';
-                                    this.estado = '';
+                                    this.estado = 'San Luis Potosí';
                                     this.ciudad = '';
                                     this.tipoAccion = 1;
                                     break;
@@ -34794,6 +34849,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                         }
                     }
             }
+            //this.selectCiudades(this.estado);
         }
     },
     mounted: function mounted() {
@@ -35261,6 +35317,10 @@ var render = function() {
                             }
                           },
                           [
+                            _c("option", { attrs: { value: "0" } }, [
+                              _vm._v("Seleccione")
+                            ]),
+                            _vm._v(" "),
                             _c("option", { attrs: { value: "1" } }, [
                               _vm._v("Lotificación")
                             ]),
@@ -35396,27 +35456,177 @@ var render = function() {
                       ),
                       _vm._v(" "),
                       _c("div", { staticClass: "col-md-9" }, [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.estado,
-                              expression: "estado"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: { type: "text", placeholder: "Estado" },
-                          domProps: { value: _vm.estado },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.estado,
+                                expression: "estado"
                               }
-                              _vm.estado = $event.target.value
+                            ],
+                            staticClass: "form-control",
+                            on: {
+                              click: function($event) {
+                                _vm.selectCiudades(_vm.estado)
+                              },
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.estado = $event.target.multiple
+                                  ? $$selectedVal
+                                  : $$selectedVal[0]
+                              }
                             }
-                          }
-                        })
+                          },
+                          [
+                            _c(
+                              "option",
+                              { attrs: { value: "San Luis Potosí" } },
+                              [_vm._v("San Luis Potosí")]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "option",
+                              { attrs: { value: "Baja California" } },
+                              [_vm._v("Baja California")]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "option",
+                              { attrs: { value: "Baja California Sur" } },
+                              [_vm._v("Baja California Sur")]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "option",
+                              { attrs: { value: "Coahuila de Zaragoza" } },
+                              [_vm._v("Coahuila de Zaragoza")]
+                            ),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "Colima" } }, [
+                              _vm._v("Colima")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "Chiapas" } }, [
+                              _vm._v("Chiapas")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "Chihuahua" } }, [
+                              _vm._v("Chihuahua")
+                            ]),
+                            _vm._v(" "),
+                            _c(
+                              "option",
+                              { attrs: { value: "Ciudad de México" } },
+                              [_vm._v("Ciudad de México")]
+                            ),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "Durango" } }, [
+                              _vm._v("Durango")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "Guanajuato" } }, [
+                              _vm._v("Guanajuato")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "Guerrero" } }, [
+                              _vm._v("Guerrero")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "Hidalgo" } }, [
+                              _vm._v("Hidalgo")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "Jalisco" } }, [
+                              _vm._v("Jalisco")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "México" } }, [
+                              _vm._v("México")
+                            ]),
+                            _vm._v(" "),
+                            _c(
+                              "option",
+                              { attrs: { value: "Michoacán de Ocampo" } },
+                              [_vm._v("Michoacán de Ocampo")]
+                            ),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "Morelos" } }, [
+                              _vm._v("Morelos")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "Nayarit" } }, [
+                              _vm._v("Nayarit")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "Nuevo León" } }, [
+                              _vm._v("Nuevo León")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "Oaxaca" } }, [
+                              _vm._v("Oaxaca")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "Puebla" } }, [
+                              _vm._v("Puebla")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "Querétaro" } }, [
+                              _vm._v("Querétaro")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "Quintana Roo" } }, [
+                              _vm._v("Quintana Roo")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "Sinaloa" } }, [
+                              _vm._v("Sinaloa")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "Sonora" } }, [
+                              _vm._v("Sonora")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "Tabasco" } }, [
+                              _vm._v("Tabasco")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "Tamaulipas" } }, [
+                              _vm._v("Tamaulipas")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "Tlaxcala" } }, [
+                              _vm._v("Tlaxcala")
+                            ]),
+                            _vm._v(" "),
+                            _c(
+                              "option",
+                              {
+                                attrs: {
+                                  value: "Veracruz de Ignacio de la Llave"
+                                }
+                              },
+                              [_vm._v("Veracruz de Ignacio de la Llave")]
+                            ),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "Yucatán" } }, [
+                              _vm._v("Yucatán")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "Zacatecas" } }, [
+                              _vm._v("Zacatecas")
+                            ])
+                          ]
+                        )
                       ])
                     ]),
                     _vm._v(" "),
@@ -35431,27 +35641,44 @@ var render = function() {
                       ),
                       _vm._v(" "),
                       _c("div", { staticClass: "col-md-9" }, [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.ciudad,
-                              expression: "ciudad"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: { type: "text", placeholder: "Ciudad" },
-                          domProps: { value: _vm.ciudad },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.ciudad,
+                                expression: "ciudad"
                               }
-                              _vm.ciudad = $event.target.value
+                            ],
+                            staticClass: "form-control",
+                            on: {
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.ciudad = $event.target.multiple
+                                  ? $$selectedVal
+                                  : $$selectedVal[0]
+                              }
                             }
-                          }
-                        })
+                          },
+                          _vm._l(_vm.arrayCiudades, function(ciudades) {
+                            return _c("option", {
+                              key: ciudades.municipio,
+                              domProps: {
+                                value: ciudades.municipio,
+                                textContent: _vm._s(ciudades.municipio)
+                              }
+                            })
+                          })
+                        )
                       ])
                     ]),
                     _vm._v(" "),

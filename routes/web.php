@@ -19,8 +19,12 @@ Route::get('/departamento','DepartamentoController@index');
 Route::post('/departamento/registrar','DepartamentoController@store');
 Route::put('/departamento/actualizar','DepartamentoController@update');
 Route::delete('/departamento/eliminar','DepartamentoController@destroy');
+
 //Rutas Fraccionamiento
 Route::get('/fraccionamiento','FraccionamientoController@index');
 Route::post('/fraccionamiento/registrar','FraccionamientoController@store');
 Route::put('/fraccionamiento/actualizar','FraccionamientoController@update');
 Route::delete('/fraccionamiento/eliminar','FraccionamientoController@destroy');
+
+Route::get('/select_ciudades','CiudadController@selectCiudades');
+
