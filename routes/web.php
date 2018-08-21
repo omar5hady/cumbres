@@ -28,3 +28,10 @@ Route::delete('/fraccionamiento/eliminar','FraccionamientoController@destroy');
 
 Route::get('/select_ciudades','CiudadController@selectCiudades');
 
+//Rutas Personal
+Route::get('/personal','PersonalController@index');
+Route::post('/personal/registrar','PersonalController@store');
+Route::put('/personal/actualizar','PersonalController@update');
+Route::delete('/personal/eliminar','PersonalController@destroy');
+
+Route::get('/select_colonias','CiudadController@selectColonias');
