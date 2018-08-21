@@ -24,9 +24,9 @@ class CreatePersonalTable extends Migration
             $table->string('direccion',80);
             $table->string('colonia',80)->nullable();
             $table->integer('cp')->nullable();
-            $table->integer('telefono');
-            $table->integer('ext')->nullable();
-            $table->integer('celular');
+            $table->string('telefono',8);
+            $table->string('ext',3)->nullable();
+            $table->string('celular',10);
             $table->string('email',40);
             $table->boolean('activo')->default(1);            
             $table->timestamps();

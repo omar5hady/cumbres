@@ -34,4 +34,5 @@ Route::post('/personal/registrar','PersonalController@store');
 Route::put('/personal/actualizar','PersonalController@update');
 Route::delete('/personal/eliminar','PersonalController@destroy');
 
+Route::get('/select_departamentos','DepartamentoController@selectDepartamento');
 Route::get('/select_colonias','CiudadController@selectColonias');

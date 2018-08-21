@@ -123,4 +123,12 @@ class DepartamentoController extends Controller
         $departamento = Departamento::findOrFail($request->id_departamento);
         $departamento->delete();
     }
+
+    public function selectDepartamento(Request $request){
+             //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
+             if(!$request->ajax())return redirect('/');
+             $departamentos = Departamento::select('departamento','id_departamento')->get();
+             return['departamentos' => $departamentos];
+
+    }
 }

@@ -15,13 +15,18 @@ class PersonalController extends Controller
     public function index(Request $request)
     {
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
-        if(!$request->ajax())return redirect('/');
+       if(!$request->ajax())return redirect('/');
 
         $buscar = $request->buscar;
         $criterio = $request->criterio;
         
         if($buscar==''){
-            $Personales = Personal::orderBy('id','desc')->paginate(5);
+            $Personales = Personal::join('departamento','personal.departamento_id','=','departamento.id_departamento')
+            ->select('personal.nombre','personal.ap_paterno','personal.ap_materno',
+                'personal.f_nacimiento','personal.rfc','personal.direccion','personal.colonia','personal.cp','personal.celular','personal.email','personal.activo',
+                'personal.id','personal.departamento_id','departamento.departamento as departamento',
+                'departamento.id_departamento')
+                ->orderBy('id','desc')->paginate(5);
         }
         else{
             $Personales = Personal::where($criterio, 'like', '%'. $buscar . '%')->orderBy('id','desc')->paginate(5);

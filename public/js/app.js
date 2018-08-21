@@ -35900,7 +35900,7 @@ exports = module.exports = __webpack_require__(3)(false);
 
 
 // module
-exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: absolute !important;\n    background-color: #3c29297a !important;\n    overflow-y: auto;\n}\n.div-error{\n    display:flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n", ""]);
+exports.push([module.i, "\n.modal-content{\n        width: 100% !important;\n        position: absolute !important;\n}\n.mostrar{\n        display: list-item !important;\n        opacity: 1 !important;\n        position: absolute !important;\n        background-color: #3c29297a !important;\n        overflow-y: auto;\n}\n.div-error{\n        display:flex;\n        justify-content: center;\n}\n.text-error{\n        color: red !important;\n        font-weight: bold;\n}\ninput[type=number]::-webkit-inner-spin-button, \ninput[type=number]::-webkit-outer-spin-button { \n  -webkit-appearance: none; \n   margin: 0;\n} \n\n\n", ""]);
 
 // exports
 
@@ -36177,8 +36177,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             ext: 0,
             celular: 0,
             email: '',
-            activo: 0,
+            activo: 1,
             arrayPersonal: [],
+            arrayDepartamentos: [],
             modal: 0,
             tituloModal: '',
             tipoAccion: 0,
@@ -36247,6 +36248,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             axios.get(url).then(function (response) {
                 var respuesta = response.data;
                 me.arrayColonias = respuesta.colonias;
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        selectDepartamento: function selectDepartamento() {
+            var me = this;
+            me.arrayDepartamentos = [];
+            var url = '/select_departamentos';
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayDepartamentos = respuesta.departamentos;
             }).catch(function (error) {
                 console.log(error);
             });
@@ -36385,13 +36397,31 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.errorPersonal = 0;
             this.errorMostrarMsjPersonal = [];
 
-            if (!this.nombre) //Si la variable Personal esta vacia
+            if (!this.nombre || !this.ap_paterno || !this.ap_materno) //Si la variable Personal esta vacia
                 this.errorMostrarMsjPersonal.push("El nombre del Personal no puede ir vacio.");
+
+            if (!this.email) this.errorMostrarMsjPersonal.push("El correo no debe ir vacio");
+
+            if (!this.rfc || this.rfc.length < 10) this.errorMostrarMsjPersonal.push("El RFC no debe ir vacio (10 caracteres)");
+
+            if (!this.telefono || this.telefono.length < 8) this.errorMostrarMsjPersonal.push("El número de telefono debe ser de 8 digitos");
+
+            if (!this.telefono || this.celular.length < 10) this.errorMostrarMsjPersonal.push("El número de celular debe ser de 10 digitos");
 
             if (this.errorMostrarMsjPersonal.length) //Si el mensaje tiene almacenado algo en el array
                 this.errorPersonal = 1;
 
             return this.errorPersonal;
+        },
+
+        isNumber: function isNumber(evt) {
+            evt = evt ? evt : window.event;
+            var charCode = evt.which ? evt.which : evt.keyCode;
+            if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode !== 46) {
+                evt.preventDefault();;
+            } else {
+                return true;
+            }
         },
         cerrarModal: function cerrarModal() {
             this.modal = 0;
@@ -36437,7 +36467,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     this.ext = '';
                                     this.celular = '';
                                     this.email = '';
-                                    this.activo = '';
+                                    this.activo = '1';
                                     this.tipoAccion = 1;
                                     break;
                                 }
@@ -36467,7 +36497,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                         }
                     }
             }
-            //this.selectCiudades(this.estado);
+            this.selectDepartamento();
         }
     },
     mounted: function mounted() {
@@ -36691,37 +36721,19 @@ var render = function() {
                     }),
                     _vm._v(" "),
                     _c("td", {
-                      domProps: {
-                        textContent: _vm._s(Personal.departamento_id)
-                      }
+                      domProps: { textContent: _vm._s(Personal.ap_paterno) }
                     }),
                     _vm._v(" "),
                     _c("td", {
-                      domProps: { textContent: _vm._s(Personal.f_nacimiento) }
+                      domProps: { textContent: _vm._s(Personal.ap_materno) }
+                    }),
+                    _vm._v(" "),
+                    _c("td", {
+                      domProps: { textContent: _vm._s(Personal.departamento) }
                     }),
                     _vm._v(" "),
                     _c("td", {
                       domProps: { textContent: _vm._s(Personal.rfc) }
-                    }),
-                    _vm._v(" "),
-                    _c("td", {
-                      domProps: { textContent: _vm._s(Personal.direccion) }
-                    }),
-                    _vm._v(" "),
-                    _c("td", {
-                      domProps: { textContent: _vm._s(Personal.colonia) }
-                    }),
-                    _vm._v(" "),
-                    _c("td", {
-                      domProps: { textContent: _vm._s(Personal.cp) }
-                    }),
-                    _vm._v(" "),
-                    _c("td", {
-                      domProps: { textContent: _vm._s(Personal.telefono) }
-                    }),
-                    _vm._v(" "),
-                    _c("td", {
-                      domProps: { textContent: _vm._s(Personal.ext) }
                     }),
                     _vm._v(" "),
                     _c("td", {
@@ -36732,11 +36744,19 @@ var render = function() {
                       domProps: { textContent: _vm._s(Personal.email) }
                     }),
                     _vm._v(" "),
-                    _c("td", {
-                      domProps: { textContent: _vm._s(Personal.activo) }
-                    }),
-                    _vm._v(" "),
-                    _vm._m(2, true)
+                    _c("td", [
+                      Personal.activo == 1
+                        ? _c("span", { staticClass: "badge badge-success" }, [
+                            _vm._v("Activo")
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      Personal.activo == 0
+                        ? _c("span", { staticClass: "badge badge-danger" }, [
+                            _vm._v("Inactivo")
+                          ])
+                        : _vm._e()
+                    ])
                   ])
                 })
               )
@@ -36907,7 +36927,7 @@ var render = function() {
                           staticClass: "form-control",
                           attrs: {
                             type: "text",
-                            placeholder: "apellido paterno"
+                            placeholder: "Apellido paterno"
                           },
                           domProps: { value: _vm.ap_paterno },
                           on: {
@@ -36945,7 +36965,7 @@ var render = function() {
                           staticClass: "form-control",
                           attrs: {
                             type: "text",
-                            placeholder: "apellido paterno"
+                            placeholder: "Apellido paterno"
                           },
                           domProps: { value: _vm.ap_materno },
                           on: {
@@ -37005,7 +37025,7 @@ var render = function() {
                         [_vm._v("Fecha de nacimiento")]
                       ),
                       _vm._v(" "),
-                      _c("div", { staticClass: "col-md-9" }, [
+                      _c("div", { staticClass: "col-md-6" }, [
                         _c("input", {
                           directives: [
                             {
@@ -37043,7 +37063,7 @@ var render = function() {
                         [_vm._v("RFC")]
                       ),
                       _vm._v(" "),
-                      _c("div", { staticClass: "col-md-9" }, [
+                      _c("div", { staticClass: "col-md-6" }, [
                         _c("input", {
                           directives: [
                             {
@@ -37054,7 +37074,11 @@ var render = function() {
                             }
                           ],
                           staticClass: "form-control",
-                          attrs: { type: "text", placeholder: "RFC" },
+                          attrs: {
+                            type: "text",
+                            maxlength: "13",
+                            placeholder: "RFC"
+                          },
                           domProps: { value: _vm.rfc },
                           on: {
                             input: function($event) {
@@ -37078,7 +37102,7 @@ var render = function() {
                         [_vm._v("Codigo Postal")]
                       ),
                       _vm._v(" "),
-                      _c("div", { staticClass: "col-md-9" }, [
+                      _c("div", { staticClass: "col-md-6" }, [
                         _c("input", {
                           directives: [
                             {
@@ -37093,18 +37117,6 @@ var render = function() {
                           domProps: { value: _vm.cp },
                           on: {
                             keyup: function($event) {
-                              if (
-                                !("button" in $event) &&
-                                _vm._k(
-                                  $event.keyCode,
-                                  "enter",
-                                  13,
-                                  $event.key,
-                                  "Enter"
-                                )
-                              ) {
-                                return null
-                              }
                               _vm.selectColonias(_vm.cp)
                             },
                             input: function($event) {
@@ -37128,7 +37140,7 @@ var render = function() {
                         [_vm._v("colonia")]
                       ),
                       _vm._v(" "),
-                      _c("div", { staticClass: "col-md-9" }, [
+                      _c("div", { staticClass: "col-md-7" }, [
                         _c(
                           "select",
                           {
@@ -37216,27 +37228,46 @@ var render = function() {
                       ),
                       _vm._v(" "),
                       _c("div", { staticClass: "col-md-9" }, [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.departamento_id,
-                              expression: "departamento_id"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: { type: "text", placeholder: "Departamento" },
-                          domProps: { value: _vm.departamento_id },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.departamento_id,
+                                expression: "departamento_id"
                               }
-                              _vm.departamento_id = $event.target.value
+                            ],
+                            staticClass: "form-control",
+                            on: {
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.departamento_id = $event.target.multiple
+                                  ? $$selectedVal
+                                  : $$selectedVal[0]
+                              }
                             }
-                          }
-                        })
+                          },
+                          _vm._l(_vm.arrayDepartamentos, function(
+                            departamentos
+                          ) {
+                            return _c("option", {
+                              key: departamentos.id_departamento,
+                              domProps: {
+                                value: departamentos.id_departamento,
+                                textContent: _vm._s(departamentos.departamento)
+                              }
+                            })
+                          })
+                        )
                       ])
                     ]),
                     _vm._v(" "),
@@ -37250,7 +37281,7 @@ var render = function() {
                         [_vm._v("Telefono")]
                       ),
                       _vm._v(" "),
-                      _c("div", { staticClass: "col-md-9" }, [
+                      _c("div", { staticClass: "col-md-6" }, [
                         _c("input", {
                           directives: [
                             {
@@ -37261,9 +37292,16 @@ var render = function() {
                             }
                           ],
                           staticClass: "form-control",
-                          attrs: { type: "text", placeholder: "Telefono" },
+                          attrs: {
+                            type: "text",
+                            maxlength: "8",
+                            placeholder: "Telefono"
+                          },
                           domProps: { value: _vm.telefono },
                           on: {
+                            keypress: function($event) {
+                              _vm.isNumber(_vm.event)
+                            },
                             input: function($event) {
                               if ($event.target.composing) {
                                 return
@@ -37285,7 +37323,7 @@ var render = function() {
                         [_vm._v("Extension")]
                       ),
                       _vm._v(" "),
-                      _c("div", { staticClass: "col-md-9" }, [
+                      _c("div", { staticClass: "col-md-4" }, [
                         _c("input", {
                           directives: [
                             {
@@ -37296,9 +37334,16 @@ var render = function() {
                             }
                           ],
                           staticClass: "form-control",
-                          attrs: { type: "text", placeholder: "Extension" },
+                          attrs: {
+                            type: "text",
+                            maxlength: "3",
+                            placeholder: "Extension"
+                          },
                           domProps: { value: _vm.ext },
                           on: {
+                            keypress: function($event) {
+                              _vm.isNumber(_vm.event)
+                            },
                             input: function($event) {
                               if ($event.target.composing) {
                                 return
@@ -37320,7 +37365,7 @@ var render = function() {
                         [_vm._v("Celular")]
                       ),
                       _vm._v(" "),
-                      _c("div", { staticClass: "col-md-9" }, [
+                      _c("div", { staticClass: "col-md-6" }, [
                         _c("input", {
                           directives: [
                             {
@@ -37331,9 +37376,16 @@ var render = function() {
                             }
                           ],
                           staticClass: "form-control",
-                          attrs: { type: "text", placeholder: "Celular" },
+                          attrs: {
+                            type: "text",
+                            maxlength: "10",
+                            placeholder: "Celular"
+                          },
                           domProps: { value: _vm.celular },
                           on: {
+                            keypress: function($event) {
+                              _vm.isNumber(_vm.event)
+                            },
                             input: function($event) {
                               if ($event.target.composing) {
                                 return
@@ -37390,10 +37442,10 @@ var render = function() {
                           staticClass: "col-md-3 form-control-label",
                           attrs: { for: "text-input" }
                         },
-                        [_vm._v("Estado")]
+                        [_vm._v("Estatus")]
                       ),
                       _vm._v(" "),
-                      _c("div", { staticClass: "col-md-9" }, [
+                      _c("div", { staticClass: "col-md-5" }, [
                         _c(
                           "select",
                           {
@@ -37540,21 +37592,13 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Personal")]),
         _vm._v(" "),
+        _c("th", [_vm._v("Apellido paterno")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Apellido materno")]),
+        _vm._v(" "),
         _c("th", [_vm._v("Departamento")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Fecha de nacimiento")]),
-        _vm._v(" "),
         _c("th", [_vm._v("RFC")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Direccion")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Colonia")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Codigo Postal")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Telefono")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Extension")]),
         _vm._v(" "),
         _c("th", [_vm._v("Celular")]),
         _vm._v(" "),
@@ -37562,14 +37606,6 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Activo/Inactivo")])
       ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("td", [
-      _c("span", { staticClass: "badge badge-success" }, [_vm._v("Activo")])
     ])
   }
 ]

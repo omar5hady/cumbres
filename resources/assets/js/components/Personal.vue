@@ -36,15 +36,13 @@
                             <thead>
                                 <tr>
                                     <th>Opciones</th>
+
                                     <th>Personal</th>
+                                    <th>Apellido paterno</th>
+                                    <th>Apellido materno</th>
                                     <th>Departamento</th>
-                                    <th>Fecha de nacimiento</th>
+
                                     <th>RFC</th>
-                                    <th>Direccion</th>
-                                    <th>Colonia</th>
-                                    <th>Codigo Postal</th>
-                                    <th>Telefono</th>
-                                    <th>Extension</th>
                                     <th>Celular</th>
                                     <th>Email</th>
                                     <th>Activo/Inactivo</th>
@@ -61,25 +59,23 @@
                                         </button>
                                     </td>
                                     <td v-text="Personal.nombre"></td>
-                                    <td v-text="Personal.departamento_id"></td>
-                                    <td v-text="Personal.f_nacimiento"></td>
+                                    
+                                    <td v-text="Personal.ap_paterno"></td>
+                                    <td v-text="Personal.ap_materno"></td>
+                                    <td v-text="Personal.departamento"></td>
                                     <td v-text="Personal.rfc"></td>
-                                    <td v-text="Personal.direccion"></td>
-                                    <td v-text="Personal.colonia"></td>
-                                    <td v-text="Personal.cp"></td>
-                                    <td v-text="Personal.telefono"></td>
-                                    <td v-text="Personal.ext"></td>
                                     <td v-text="Personal.celular"></td>
                                     <td v-text="Personal.email"></td>
-                                    <td v-text="Personal.activo"></td>
+                                   <td>
+                                        <span v-if = "Personal.activo==1" class="badge badge-success">Activo</span>
+                                        <span v-if = "Personal.activo==0" class="badge badge-danger">Inactivo</span>
+                                    </td>
 
                                     <!-- <td v-if="Personal.tipo_proyecto==1" v-text="'Lotificación'"></td>
                                     <td v-if="Personal.tipo_proyecto==2" v-text="'Departamento'"></td>
                                     <td v-if="Personal.tipo_proyecto==3" v-text="'Terreno'"></td> -->
                             
-                                    <td>
-                                        <span class="badge badge-success">Activo</span>
-                                    </td>
+                                   
                                 </tr>                               
                             </tbody>
                         </table>
@@ -120,13 +116,13 @@
                                   <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Apellido paterno</label>
                                     <div class="col-md-9">
-                                        <input type="text" v-model="ap_paterno" class="form-control" placeholder="apellido paterno">
+                                        <input type="text" v-model="ap_paterno" class="form-control" placeholder="Apellido paterno">
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Apellido materno</label>
                                     <div class="col-md-9">
-                                        <input type="text" v-model="ap_materno" class="form-control" placeholder="apellido paterno">
+                                        <input type="text" v-model="ap_materno" class="form-control" placeholder="Apellido paterno">
                                     </div>
                                 </div>
                                    <div class="form-group row">
@@ -137,27 +133,27 @@
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Fecha de nacimiento</label>
-                                    <div class="col-md-9">
+                                    <div class="col-md-6">
                                         <input type="date" v-model="f_nacimiento" class="form-control" placeholder="Fecha de nacimiento">
                                     </div>
                                 </div>
                                      <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">RFC</label>
-                                    <div class="col-md-9">
-                                        <input type="text" v-model="rfc" class="form-control" placeholder="RFC">
+                                    <div class="col-md-6">
+                                        <input type="text" maxlength="13" v-model="rfc" class="form-control" placeholder="RFC">
                                     </div>
                                 </div>
 
                                          <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Codigo Postal</label>
-                                    <div class="col-md-9">
-                                        <input type="text" v-model="cp" @keyup.enter="selectColonias(cp)" class="form-control" placeholder="Codigo postal">
+                                    <div class="col-md-6">
+                                        <input type="text" v-model="cp" @keyup="selectColonias(cp)" class="form-control" placeholder="Codigo postal">
                                     </div>
                                 </div>
 
                                  <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">colonia</label>
-                                    <div class="col-md-9">
+                                    <div class="col-md-7">
                                         <select class="form-control" v-model="colonia">
                                             <option v-for="colonias in arrayColonias" :key="colonias.colonia" :value="colonias.colonia" v-text="colonias.colonia"></option>
                                         </select>
@@ -174,27 +170,31 @@
                                   <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Departamento</label>
                                     <div class="col-md-9">
-                                        <input type="text" v-model="departamento_id" class="form-control" placeholder="Departamento">
+                                          <select class="form-control" v-model="departamento_id">
+                                            <option v-for="departamentos in arrayDepartamentos" :key="departamentos.id_departamento" :value="departamentos.id_departamento" v-text="departamentos.departamento"></option>
+                                        </select>
+                                        <!-- <input type="text" v-model="departamento_id" class="form-control" placeholder="Departamento"> -->
                                     </div>
                                 </div>
+
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Telefono</label>
-                                    <div class="col-md-9">
-                                        <input type="text" v-model="telefono" class="form-control" placeholder="Telefono">
+                                    <div class="col-md-6">
+                                        <input type="text" maxlength="8" v-on:keypress="isNumber(event)" class="form-control" v-model="telefono"  placeholder="Telefono">
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Extension</label>
-                                    <div class="col-md-9">
-                                        <input type="text" v-model="ext" class="form-control" placeholder="Extension">
+                                    <div class="col-md-4">
+                                        <input type="text" maxlength="3" v-on:keypress="isNumber(event)" v-model="ext" class="form-control" placeholder="Extension">
                                     </div>
                                 </div>
                             
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Celular</label>
-                                    <div class="col-md-9">
-                                        <input type="text" v-model="celular" class="form-control" placeholder="Celular">
+                                    <div class="col-md-6">
+                                        <input type="text" maxlength="10" v-on:keypress="isNumber(event)" v-model="celular" class="form-control" placeholder="Celular">
                                     </div>
                                 </div>
 
@@ -205,8 +205,8 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Estado</label>
-                                    <div class="col-md-9">
+                                    <label class="col-md-3 form-control-label" for="text-input">Estatus</label>
+                                    <div class="col-md-5">
                                         <select class="form-control" v-model="activo">
                                             <option value="1">Activo</option>
                                             <option value="0"> Inactivo</option>
@@ -264,8 +264,9 @@
                 ext: 0,
                 celular: 0,
                 email: '',
-                activo: 0, 
+                activo: 1, 
                 arrayPersonal : [],
+                arrayDepartamentos: [],
                 modal : 0,
                 tituloModal : '',
                 tipoAccion: 0,
@@ -338,6 +339,19 @@
                 .catch(function (error) {
                     console.log(error);
                 });
+            },
+                selectDepartamento(){
+                let me = this;
+                me.arrayDepartamentos=[];
+                var url = '/select_departamentos';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayDepartamentos = respuesta.departamentos;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+              
             },
             cambiarPagina(page, buscar, criterio){
                 let me = this;
@@ -473,13 +487,35 @@
                 this.errorPersonal=0;
                 this.errorMostrarMsjPersonal=[];
 
-                if(!this.nombre) //Si la variable Personal esta vacia
+                if(!this.nombre || !this.ap_paterno ||!this.ap_materno) //Si la variable Personal esta vacia
                     this.errorMostrarMsjPersonal.push("El nombre del Personal no puede ir vacio.");
+
+                if(!this.email)
+                    this.errorMostrarMsjPersonal.push("El correo no debe ir vacio");
+                
+                if(!this.rfc || this.rfc.length<10)
+                    this.errorMostrarMsjPersonal.push("El RFC no debe ir vacio (10 caracteres)");
+
+                if(!this.telefono || this.telefono.length<8)
+                    this.errorMostrarMsjPersonal.push("El número de telefono debe ser de 8 digitos");
+
+                
+                if(!this.telefono || this.celular.length<10)
+                    this.errorMostrarMsjPersonal.push("El número de celular debe ser de 10 digitos");
 
                 if(this.errorMostrarMsjPersonal.length)//Si el mensaje tiene almacenado algo en el array
                     this.errorPersonal = 1;
 
                 return this.errorPersonal;
+            },
+            isNumber: function(evt) {
+                evt = (evt) ? evt : window.event;
+                var charCode = (evt.which) ? evt.which : evt.keyCode;
+                if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
+                    evt.preventDefault();;
+                } else {
+                    return true;
+                }
             },
             cerrarModal(){
                 this.modal = 0;
@@ -524,7 +560,7 @@
                                 this.ext='';
                                 this.celular='';
                                 this.email='';
-                                this.activo='';
+                                this.activo='1';
                                 this.tipoAccion = 1;
                                 break;
                             }
@@ -554,7 +590,7 @@
                         }
                     }
                 }
-                //this.selectCiudades(this.estado);
+                this.selectDepartamento();
             }
         },
         mounted() {
@@ -583,4 +619,12 @@
         color: red !important;
         font-weight: bold;
     }
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+   margin: 0;  
+} 
+
+
 </style>
