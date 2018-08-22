@@ -155,9 +155,10 @@
                                 </div>
 
                                  <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">colonia</label>
+                                    <label class="col-md-3 form-control-label" for="text-input">Colonia</label>
                                     <div class="col-md-7">
                                         <select class="form-control" v-model="colonia">
+                                            <option value="0">Seleccione</option>
                                             <option v-for="colonias in arrayColonias" :key="colonias.colonia" :value="colonias.colonia" v-text="colonias.colonia"></option>
                                         </select>
                                         <!--<input type="text" v-model="ciudad" class="form-control" placeholder="Ciudad">-->
@@ -174,6 +175,7 @@
                                     <label class="col-md-3 form-control-label" for="text-input">Departamento</label>
                                     <div class="col-md-9">
                                           <select class="form-control" v-model="departamento_id">
+                                            <option value="0">Seleccione</option>
                                             <option v-for="departamentos in arrayDepartamentos" :key="departamentos.id_departamento" :value="departamentos.id_departamento" v-text="departamentos.departamento"></option>
                                         </select>
                                         <!-- <input type="text" v-model="departamento_id" class="form-control" placeholder="Departamento"> -->
@@ -400,6 +402,11 @@
                         timer: 1500
                         })
                 }).catch(function (error){
+                    swal({
+                        type: 'error',
+                        title: 'Oops...',
+                        text: 'El RFC que ha ingresado ya se encuentra registrado!',
+                        })
                     console.log(error);
                 });
             },
@@ -550,13 +557,13 @@
                             {
                                 this.modal = 1;
                                 this.tituloModal = 'Registrar Personal';
-                                this.departamento_id = '',
+                                this.departamento_id = '0',
                                 this.nombre='';
                                 this.ap_paterno='';
                                 this.ap_materno='';
                                 this.f_nacimiento='';
                                 this.rfc='';
-                                this.colonia='';
+                                this.colonia='0';
                                 this.direccion='';
                                 this.cp='';
                                 this.telefono='';

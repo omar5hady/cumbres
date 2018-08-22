@@ -36164,6 +36164,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -36313,6 +36315,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     timer: 1500
                 });
             }).catch(function (error) {
+                swal({
+                    type: 'error',
+                    title: 'Oops...',
+                    text: 'El RFC que ha ingresado ya se encuentra registrado!'
+                });
                 console.log(error);
             });
         },
@@ -36460,12 +36467,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                 {
                                     this.modal = 1;
                                     this.tituloModal = 'Registrar Personal';
-                                    this.departamento_id = '', this.nombre = '';
+                                    this.departamento_id = '0', this.nombre = '';
                                     this.ap_paterno = '';
                                     this.ap_materno = '';
                                     this.f_nacimiento = '';
                                     this.rfc = '';
-                                    this.colonia = '';
+                                    this.colonia = '0';
                                     this.direccion = '';
                                     this.cp = '';
                                     this.telefono = '';
@@ -37170,7 +37177,7 @@ var render = function() {
                           staticClass: "col-md-3 form-control-label",
                           attrs: { for: "text-input" }
                         },
-                        [_vm._v("colonia")]
+                        [_vm._v("Colonia")]
                       ),
                       _vm._v(" "),
                       _c("div", { staticClass: "col-md-7" }, [
@@ -37202,15 +37209,22 @@ var render = function() {
                               }
                             }
                           },
-                          _vm._l(_vm.arrayColonias, function(colonias) {
-                            return _c("option", {
-                              key: colonias.colonia,
-                              domProps: {
-                                value: colonias.colonia,
-                                textContent: _vm._s(colonias.colonia)
-                              }
+                          [
+                            _c("option", { attrs: { value: "0" } }, [
+                              _vm._v("Seleccione")
+                            ]),
+                            _vm._v(" "),
+                            _vm._l(_vm.arrayColonias, function(colonias) {
+                              return _c("option", {
+                                key: colonias.colonia,
+                                domProps: {
+                                  value: colonias.colonia,
+                                  textContent: _vm._s(colonias.colonia)
+                                }
+                              })
                             })
-                          })
+                          ],
+                          2
                         )
                       ])
                     ]),
@@ -37289,17 +37303,26 @@ var render = function() {
                               }
                             }
                           },
-                          _vm._l(_vm.arrayDepartamentos, function(
-                            departamentos
-                          ) {
-                            return _c("option", {
-                              key: departamentos.id_departamento,
-                              domProps: {
-                                value: departamentos.id_departamento,
-                                textContent: _vm._s(departamentos.departamento)
-                              }
+                          [
+                            _c("option", { attrs: { value: "0" } }, [
+                              _vm._v("Seleccione")
+                            ]),
+                            _vm._v(" "),
+                            _vm._l(_vm.arrayDepartamentos, function(
+                              departamentos
+                            ) {
+                              return _c("option", {
+                                key: departamentos.id_departamento,
+                                domProps: {
+                                  value: departamentos.id_departamento,
+                                  textContent: _vm._s(
+                                    departamentos.departamento
+                                  )
+                                }
+                              })
                             })
-                          })
+                          ],
+                          2
                         )
                       ])
                     ]),
