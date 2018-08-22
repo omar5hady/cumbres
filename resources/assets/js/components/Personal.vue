@@ -20,14 +20,17 @@
                             <div class="col-md-6">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-5" v-model="criterio">
-                                      <option value="nombre">Personal</option>
+                                    <select class="form-control col-md-5" @click="selectDepartamento()" v-model="criterio">
+                                      <option value="nombre">Nombre</option>
+                                      <option value="ap_paterno">Apellido Paterno</option>
                                       <option value="rfc">RFC</option>
+                                      <option value="id_departamento">Departamento</option>
                                     </select>
                                     
-                                    <input type="text" v-if="criterio=='nombre'" v-model="buscar" @keyup.enter="listarPersonal(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
-                                    <input type="text" v-if="criterio=='rfc'" v-model="buscar" @keyup.enter="listarPersonal(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
-                                       
+                                    <select class="form-control col-md-5" v-if="criterio=='id_departamento'" v-model="buscar" @keyup.enter="listarFraccionamiento(1,buscar,criterio)" >
+                                        <option v-for="departamentos in arrayDepartamentos" :key="departamentos.id_departamento" :value="departamentos.id_departamento" v-text="departamentos.departamento"></option>
+                                    </select>
+                                    <input type="text" v-else v-model="buscar" @keyup.enter="listarPersonal(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">                                     
                                     <button type="submit" @click="listarPersonal(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
@@ -180,7 +183,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Telefono</label>
                                     <div class="col-md-6">
-                                        <input type="text" maxlength="8" v-on:keypress="isNumber(event)" class="form-control" v-model="telefono"  placeholder="Telefono">
+                                        <input type="text" maxlength="7" v-on:keypress="isNumber(event)" class="form-control" v-model="telefono"  placeholder="Telefono">
                                     </div>
                                 </div>
 
@@ -496,7 +499,7 @@
                 if(!this.rfc || this.rfc.length<10)
                     this.errorMostrarMsjPersonal.push("El RFC no debe ir vacio (10 caracteres)");
 
-                if(!this.telefono || this.telefono.length<8)
+                if(!this.telefono || this.telefono.length<7)
                     this.errorMostrarMsjPersonal.push("El número de telefono debe ser de 8 digitos");
 
                 

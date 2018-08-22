@@ -470,6 +470,10 @@ var defaults = {
     return data;
   }],
 
+  /**
+   * A timeout in milliseconds to abort a request. If set to 0 (default) a
+   * timeout is not created.
+   */
   timeout: 0,
 
   xsrfCookieName: 'XSRF-TOKEN',
@@ -21278,7 +21282,7 @@ Axios.prototype.request = function request(config) {
     }, arguments[1]);
   }
 
-  config = utils.merge(defaults, this.defaults, { method: 'get' }, config);
+  config = utils.merge(defaults, {method: 'get'}, this.defaults, config);
   config.method = config.method.toLowerCase();
 
   // Hook up interceptors middleware
@@ -21453,9 +21457,7 @@ module.exports = function buildURL(url, params, paramsSerializer) {
 
       if (utils.isArray(val)) {
         key = key + '[]';
-      }
-
-      if (!utils.isArray(val)) {
+      } else {
         val = [val];
       }
 
@@ -36159,6 +36161,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -36404,7 +36409,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             if (!this.rfc || this.rfc.length < 10) this.errorMostrarMsjPersonal.push("El RFC no debe ir vacio (10 caracteres)");
 
-            if (!this.telefono || this.telefono.length < 8) this.errorMostrarMsjPersonal.push("El número de telefono debe ser de 8 digitos");
+            if (!this.telefono || this.telefono.length < 7) this.errorMostrarMsjPersonal.push("El número de telefono debe ser de 8 digitos");
 
             if (!this.telefono || this.celular.length < 10) this.errorMostrarMsjPersonal.push("El número de celular debe ser de 10 digitos");
 
@@ -36557,6 +36562,9 @@ var render = function() {
                     ],
                     staticClass: "form-control col-md-5",
                     on: {
+                      click: function($event) {
+                        _vm.selectDepartamento()
+                      },
                       change: function($event) {
                         var $$selectedVal = Array.prototype.filter
                           .call($event.target.options, function(o) {
@@ -36574,15 +36582,80 @@ var render = function() {
                   },
                   [
                     _c("option", { attrs: { value: "nombre" } }, [
-                      _vm._v("Personal")
+                      _vm._v("Nombre")
                     ]),
                     _vm._v(" "),
-                    _c("option", { attrs: { value: "rfc" } }, [_vm._v("RFC")])
+                    _c("option", { attrs: { value: "ap_paterno" } }, [
+                      _vm._v("Apellido Paterno")
+                    ]),
+                    _vm._v(" "),
+                    _c("option", { attrs: { value: "rfc" } }, [_vm._v("RFC")]),
+                    _vm._v(" "),
+                    _c("option", { attrs: { value: "id_departamento" } }, [
+                      _vm._v("Departamento")
+                    ])
                   ]
                 ),
                 _vm._v(" "),
-                _vm.criterio == "nombre"
-                  ? _c("input", {
+                _vm.criterio == "id_departamento"
+                  ? _c(
+                      "select",
+                      {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.buscar,
+                            expression: "buscar"
+                          }
+                        ],
+                        staticClass: "form-control col-md-5",
+                        on: {
+                          keyup: function($event) {
+                            if (
+                              !("button" in $event) &&
+                              _vm._k(
+                                $event.keyCode,
+                                "enter",
+                                13,
+                                $event.key,
+                                "Enter"
+                              )
+                            ) {
+                              return null
+                            }
+                            _vm.listarFraccionamiento(
+                              1,
+                              _vm.buscar,
+                              _vm.criterio
+                            )
+                          },
+                          change: function($event) {
+                            var $$selectedVal = Array.prototype.filter
+                              .call($event.target.options, function(o) {
+                                return o.selected
+                              })
+                              .map(function(o) {
+                                var val = "_value" in o ? o._value : o.value
+                                return val
+                              })
+                            _vm.buscar = $event.target.multiple
+                              ? $$selectedVal
+                              : $$selectedVal[0]
+                          }
+                        }
+                      },
+                      _vm._l(_vm.arrayDepartamentos, function(departamentos) {
+                        return _c("option", {
+                          key: departamentos.id_departamento,
+                          domProps: {
+                            value: departamentos.id_departamento,
+                            textContent: _vm._s(departamentos.departamento)
+                          }
+                        })
+                      })
+                    )
+                  : _c("input", {
                       directives: [
                         {
                           name: "model",
@@ -36617,47 +36690,7 @@ var render = function() {
                           _vm.buscar = $event.target.value
                         }
                       }
-                    })
-                  : _vm._e(),
-                _vm._v(" "),
-                _vm.criterio == "rfc"
-                  ? _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.buscar,
-                          expression: "buscar"
-                        }
-                      ],
-                      staticClass: "form-control",
-                      attrs: { type: "text", placeholder: "Texto a buscar" },
-                      domProps: { value: _vm.buscar },
-                      on: {
-                        keyup: function($event) {
-                          if (
-                            !("button" in $event) &&
-                            _vm._k(
-                              $event.keyCode,
-                              "enter",
-                              13,
-                              $event.key,
-                              "Enter"
-                            )
-                          ) {
-                            return null
-                          }
-                          _vm.listarPersonal(1, _vm.buscar, _vm.criterio)
-                        },
-                        input: function($event) {
-                          if ($event.target.composing) {
-                            return
-                          }
-                          _vm.buscar = $event.target.value
-                        }
-                      }
-                    })
-                  : _vm._e(),
+                    }),
                 _vm._v(" "),
                 _c(
                   "button",
@@ -37294,7 +37327,7 @@ var render = function() {
                           staticClass: "form-control",
                           attrs: {
                             type: "text",
-                            maxlength: "8",
+                            maxlength: "7",
                             placeholder: "Telefono"
                           },
                           domProps: { value: _vm.telefono },

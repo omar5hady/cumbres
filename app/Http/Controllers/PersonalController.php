@@ -29,7 +29,22 @@ class PersonalController extends Controller
                 ->orderBy('id','desc')->paginate(5);
         }
         else{
-            $Personales = Personal::where($criterio, 'like', '%'. $buscar . '%')->orderBy('id','desc')->paginate(5);
+            if($criterio == 'id_departamento'){
+                $Personales = Personal::join('departamento','personal.departamento_id','=','departamento.id_departamento')
+                ->select('personal.nombre','personal.ap_paterno','personal.ap_materno',
+                    'personal.f_nacimiento','personal.rfc','personal.direccion','personal.colonia','personal.cp','personal.celular','personal.email','personal.activo',
+                    'personal.id','personal.departamento_id','departamento.departamento as departamento',
+                    'departamento.id_departamento')
+                    ->where($criterio, '=', $buscar )->orderBy('id','desc')->paginate(5);
+            }
+            else{
+                $Personales = Personal::join('departamento','personal.departamento_id','=','departamento.id_departamento')
+                ->select('personal.nombre','personal.ap_paterno','personal.ap_materno',
+                    'personal.f_nacimiento','personal.rfc','personal.direccion','personal.colonia','personal.cp','personal.celular','personal.email','personal.activo',
+                    'personal.id','personal.departamento_id','departamento.departamento as departamento',
+                    'departamento.id_departamento')
+                    ->where($criterio, 'like', '%'. $buscar . '%')->orderBy('id','desc')->paginate(5);
+            }
         }
 
         return [

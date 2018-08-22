@@ -24,7 +24,7 @@ class CiudadController extends Controller
         if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
         //$colonias = Ciudad::where('estado', 'like', 'San Luis Potosí')
-        $colonias = Ciudad::where('cp', 'like', '%'. $buscar . '%')
+        $colonias = Ciudad::where('cp', '=', $buscar)
         ->select('colonia')->orderBy('colonia','asc')->get();
         return['colonias' => $colonias];
     }
