@@ -39,11 +39,9 @@
                             <thead>
                                 <tr>
                                     <th>Opciones</th>
-
-                                    <th>Personal</th>
+                                    <th>Nombre</th>
                                     <th>Apellidos</th>
                                     <th>Departamento</th>
-
                                     <th>RFC</th>
                                     <th>Celular</th>
                                     <th>Email</th>
@@ -58,6 +56,9 @@
                                         </button> &nbsp;
                                         <button type="button" class="btn btn-danger btn-sm" @click="eliminarPersonal(Personal)">
                                           <i class="icon-trash"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-info btn-sm">
+                                          <i class="icon-magnifier"></i>
                                         </button>
                                     </td>
                                     <td v-text="Personal.nombre"></td>
@@ -580,6 +581,7 @@
                     }
                 }
                 this.selectDepartamento();
+                this.selectColonias(this.cp);
             }
         },
         mounted() {

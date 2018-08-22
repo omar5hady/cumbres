@@ -36152,6 +36152,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -36489,6 +36490,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     }
             }
             this.selectDepartamento();
+            this.selectColonias(this.cp);
         }
     },
     mounted: function mounted() {
@@ -36732,7 +36734,9 @@ var render = function() {
                           }
                         },
                         [_c("i", { staticClass: "icon-trash" })]
-                      )
+                      ),
+                      _vm._v(" "),
+                      _vm._m(2, true)
                     ]),
                     _vm._v(" "),
                     _c("td", {
@@ -37584,7 +37588,7 @@ var staticRenderFns = [
       _c("tr", [
         _c("th", [_vm._v("Opciones")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Personal")]),
+        _c("th", [_vm._v("Nombre")]),
         _vm._v(" "),
         _c("th", [_vm._v("Apellidos")]),
         _vm._v(" "),
@@ -37599,6 +37603,16 @@ var staticRenderFns = [
         _c("th", [_vm._v("Activo/Inactivo")])
       ])
     ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "button",
+      { staticClass: "btn btn-info btn-sm", attrs: { type: "button" } },
+      [_c("i", { staticClass: "icon-magnifier" })]
+    )
   }
 ]
 render._withStripped = true
