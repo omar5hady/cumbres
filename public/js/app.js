@@ -33523,15 +33523,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -33727,7 +33718,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     this.modal = 1;
                                     this.tituloModal = 'Registrar Departamento';
                                     this.departamento = '';
-                                    this.user_alta = '';
+                                    this.user_alta = '1';
                                     this.tipoAccion = 1;
                                     break;
                                 }
@@ -33802,7 +33793,7 @@ var render = function() {
                         expression: "criterio"
                       }
                     ],
-                    staticClass: "form-control col-md-3",
+                    staticClass: "form-control col-md-4",
                     on: {
                       change: function($event) {
                         var $$selectedVal = Array.prototype.filter
@@ -33822,10 +33813,6 @@ var render = function() {
                   [
                     _c("option", { attrs: { value: "departamento" } }, [
                       _vm._v("Departamento")
-                    ]),
-                    _vm._v(" "),
-                    _c("option", { attrs: { value: "user_alta" } }, [
-                      _vm._v("Usuario")
                     ])
                   ]
                 ),
@@ -33888,7 +33875,7 @@ var render = function() {
                 "tbody",
                 _vm._l(_vm.arrayDepartamento, function(departamento) {
                   return _c("tr", { key: departamento.id_departamento }, [
-                    _c("td", [
+                    _c("td", { staticStyle: { width: "20%" } }, [
                       _c(
                         "button",
                         {
@@ -33923,13 +33910,10 @@ var render = function() {
                     ]),
                     _vm._v(" "),
                     _c("td", {
+                      staticStyle: { width: "60%" },
                       domProps: {
                         textContent: _vm._s(departamento.departamento)
                       }
-                    }),
-                    _vm._v(" "),
-                    _c("td", {
-                      domProps: { textContent: _vm._s(departamento.user_alta) }
                     }),
                     _vm._v(" "),
                     _vm._m(2, true)
@@ -34118,41 +34102,6 @@ var render = function() {
                       ])
                     ]),
                     _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "email-input" }
-                        },
-                        [_vm._v("Usuario")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-9" }, [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.user_alta,
-                              expression: "user_alta"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: { type: "email", placeholder: "User alta" },
-                          domProps: { value: _vm.user_alta },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.user_alta = $event.target.value
-                            }
-                          }
-                        })
-                      ])
-                    ]),
-                    _vm._v(" "),
                     _c(
                       "div",
                       {
@@ -34263,8 +34212,6 @@ var staticRenderFns = [
         _c("th", [_vm._v("Opciones")]),
         _vm._v(" "),
         _c("th", [_vm._v("Departamento")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("User alta")]),
         _vm._v(" "),
         _c("th", [_vm._v("Estado")])
       ])
@@ -36491,7 +36438,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                 {
                                     //console.log(data);
                                     this.modal = 1;
-                                    this.tituloModal = 'Informacion de ' + data['nombre'];
+                                    this.tituloModal = 'Información de ' + data['nombre'];
                                     this.tipoAccion = 2;
                                     this.id = data['id'];
                                     this.departamento_id = data['departamento_id'];

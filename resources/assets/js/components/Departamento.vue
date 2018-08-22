@@ -22,9 +22,8 @@
                             <div class="col-md-6">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-3" v-model="criterio">
+                                    <select class="form-control col-md-4" v-model="criterio">
                                       <option value="departamento">Departamento</option>
-                                      <option value="user_alta">Usuario</option>
                                     </select>
                                     <input type="text" v-model="buscar" @keyup.enter="listarDepartamento(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
                                     <button type="submit" @click="listarDepartamento(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
@@ -36,13 +35,12 @@
                                 <tr>
                                     <th>Opciones</th>
                                     <th>Departamento</th>
-                                    <th>User alta</th>
                                     <th>Estado</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr v-for="departamento in arrayDepartamento" :key="departamento.id_departamento">
-                                    <td>
+                                    <td style="width:20%">
                                         <button type="button" @click="abrirModal('departamento','actualizar',departamento)" class="btn btn-warning btn-sm">
                                           <i class="icon-pencil"></i>
                                         </button> &nbsp;
@@ -50,8 +48,7 @@
                                           <i class="icon-trash"></i>
                                         </button>
                                     </td>
-                                    <td v-text="departamento.departamento"></td>
-                                    <td v-text="departamento.user_alta"></td>
+                                    <td v-text="departamento.departamento" style="width:60%"></td>
                                     <td>
                                         <span class="badge badge-success">Activo</span>
                                     </td>
@@ -92,12 +89,6 @@
                                     <label class="col-md-3 form-control-label" for="text-input">Departamento</label>
                                     <div class="col-md-9">
                                         <input type="text" v-model="departamento" class="form-control" placeholder="Nombre de departamento">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="email-input">Usuario</label>
-                                    <div class="col-md-9">
-                                        <input type="email" v-model="user_alta" class="form-control" placeholder="User alta">
                                     </div>
                                 </div>
                                 <!-- Div para mostrar los errores que mande validerDepartamento -->
@@ -325,7 +316,7 @@
                                 this.modal = 1;
                                 this.tituloModal = 'Registrar Departamento';
                                 this.departamento ='';
-                                this.user_alta ='';
+                                this.user_alta ='1';
                                 this.tipoAccion = 1;
                                 break;
                             }
