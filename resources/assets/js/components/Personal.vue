@@ -131,14 +131,14 @@
                                      <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">RFC</label>
                                     <div class="col-md-6">
-                                        <input type="text" maxlength="13" v-model="rfc" class="form-control" placeholder="RFC" :disabled="tipoAccion == 3">
+                                        <input type="text" maxlength="13" style="text-transform:uppercase" v-model="rfc" class="form-control" placeholder="RFC" :disabled="tipoAccion == 3">
                                     </div>
                                 </div>
 
                                          <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Codigo Postal</label>
                                     <div class="col-md-6">
-                                        <input type="text" v-model="cp" @keyup="selectColonias(cp)" class="form-control" placeholder="Codigo postal" :disabled="tipoAccion == 3">
+                                        <input type="text" maxlength="5" v-model="cp" @keyup="selectColonias(cp)" class="form-control" placeholder="Codigo postal" :disabled="tipoAccion == 3">
                                     </div>
                                 </div>
 
@@ -408,7 +408,7 @@
                     'nombre': this.nombre,
                     'apellidos': this.apellidos,
                     'f_nacimiento': this.f_nacimiento,
-                    'rfc': this.rfc,
+                    'rfc': this.rfc.toUpperCase(),
                     'colonia': this.colonia,
                     'direccion': this.direccion,
                     'cp': this.cp,
@@ -575,7 +575,7 @@
                                 this.celular=data['celular'];
                                 this.email=data['email'];
                                 this.activo=data['activo'];
-                                this.tipoAccion = 1;
+                                this.tipoAccion = 2;
                                 break;
                             }
                             case 'ver':
