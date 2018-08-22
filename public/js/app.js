@@ -36268,7 +36268,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'nombre': this.nombre,
                 'apellidos': this.apellidos,
                 'f_nacimiento': this.f_nacimiento,
-                'rfc': this.rfc,
+                'rfc': this.rfc.toUpperCase(),
                 'colonia': this.colonia,
                 'direccion': this.direccion,
                 'cp': this.cp,
@@ -36431,7 +36431,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     this.celular = data['celular'];
                                     this.email = data['email'];
                                     this.activo = data['activo'];
-                                    this.tipoAccion = 1;
+                                    this.tipoAccion = 2;
                                     break;
                                 }
                             case 'ver':
@@ -37045,6 +37045,7 @@ var render = function() {
                             }
                           ],
                           staticClass: "form-control",
+                          staticStyle: { "text-transform": "uppercase" },
                           attrs: {
                             type: "text",
                             maxlength: "13",
@@ -37087,6 +37088,7 @@ var render = function() {
                           staticClass: "form-control",
                           attrs: {
                             type: "text",
+                            maxlength: "5",
                             placeholder: "Codigo postal",
                             disabled: _vm.tipoAccion == 3
                           },
