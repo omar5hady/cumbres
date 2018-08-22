@@ -54,9 +54,16 @@
                                         <button type="button" @click="abrirModal('Personal','actualizar',Personal)" class="btn btn-warning btn-sm">
                                           <i class="icon-pencil"></i>
                                         </button> &nbsp;
-                                        <button type="button" class="btn btn-danger btn-sm" @click="eliminarPersonal(Personal)">
-                                          <i class="icon-trash"></i>
-                                        </button>
+                                        <template v-if="Personal.activo">
+                                            <button type="button" @click="desactivarPersonal(Personal.id)" class="btn btn-danger btn-sm">
+                                            <i class="icon-trash"></i>
+                                            </button>
+                                        </template>
+                                        <template v-else>
+                                            <button type="button" @click="activarPersonal(Personal.id)" class="btn btn-success btn-sm">
+                                                <i class="icon-check"></i>
+                                            </button>
+                                        </template>
                                         <button type="button" @click="abrirModal('Personal','ver',Personal)" class="btn btn-info btn-sm">
                                           <i class="icon-magnifier"></i>
                                         </button>
@@ -432,6 +439,84 @@
                 }).catch(function (error){
                     console.log(error);
                 });
+            },
+            desactivarPersonal(id){
+               swal({
+                title: 'Esta seguro de desactivar a esta Persona?',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Aceptar!',
+                cancelButtonText: 'Cancelar',
+                confirmButtonClass: 'btn btn-success',
+                cancelButtonClass: 'btn btn-danger',
+                buttonsStyling: false,
+                reverseButtons: true
+                }).then((result) => {
+                if (result.value) {
+                    let me = this;
+
+                    axios.put('/personal/desactivar',{
+                        'id': id
+                    }).then(function (response) {
+                        me.listarPersonal(1,'','Personal');
+                        swal(
+                        'Desactivado!',
+                        'El registro ha sido desactivado con éxito.',
+                        'success'
+                        )
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                    
+                    
+                } else if (
+                    // Read more about handling dismissals
+                    result.dismiss === swal.DismissReason.cancel
+                ) {
+                    
+                }
+                }) 
+            },
+            activarPersonal(id){
+               swal({
+                title: 'Esta seguro de activar a esta Persona?',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Aceptar!',
+                cancelButtonText: 'Cancelar',
+                confirmButtonClass: 'btn btn-success',
+                cancelButtonClass: 'btn btn-danger',
+                buttonsStyling: false,
+                reverseButtons: true
+                }).then((result) => {
+                if (result.value) {
+                    let me = this;
+
+                    axios.put('/personal/activar',{
+                        'id': id
+                    }).then(function (response) {
+                        me.listarPersonal(1,'','Personal');
+                        swal(
+                        'Desactivado!',
+                        'El registro ha sido activado con éxito.',
+                        'success'
+                        )
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                    
+                    
+                } else if (
+                    // Read more about handling dismissals
+                    result.dismiss === swal.DismissReason.cancel
+                ) {
+                    
+                }
+                }) 
             },
             eliminarPersonal(data =[]){
                 this.id=data['id'];

@@ -151,6 +151,24 @@ class PersonalController extends Controller
         $Personal->save();
     }
 
+    public function desactivar(Request $request)
+    {
+        if(!$request->ajax())return redirect('/');
+        //FindOrFail se utiliza para buscar lo que recibe de argumento
+        $Personal = Personal::findOrFail($request->id);
+        $Personal->activo = '0';
+        $Personal->save();
+    }
+
+    public function activar(Request $request)
+    {
+        if(!$request->ajax())return redirect('/');
+        //FindOrFail se utiliza para buscar lo que recibe de argumento
+        $Personal = Personal::findOrFail($request->id);
+        $Personal->activo = '1';
+        $Personal->save();
+    }
+
     /**
      * Remove the specified resource from storage.
      *

@@ -32,6 +32,8 @@ Route::get('/select_ciudades','CiudadController@selectCiudades');
 Route::get('/personal','PersonalController@index');
 Route::post('/personal/registrar','PersonalController@store');
 Route::put('/personal/actualizar','PersonalController@update');
+Route::put('/personal/desactivar','PersonalController@desactivar');
+Route::put('/personal/activar','PersonalController@activar');
 Route::delete('/personal/eliminar','PersonalController@destroy');
 
 Route::get('/select_departamentos','DepartamentoController@selectDepartamento');

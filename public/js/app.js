@@ -36100,6 +36100,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -36293,8 +36300,72 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 console.log(error);
             });
         },
-        eliminarPersonal: function eliminarPersonal() {
+        desactivarPersonal: function desactivarPersonal(id) {
             var _this = this;
+
+            swal({
+                title: 'Esta seguro de desactivar a esta Persona?',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Aceptar!',
+                cancelButtonText: 'Cancelar',
+                confirmButtonClass: 'btn btn-success',
+                cancelButtonClass: 'btn btn-danger',
+                buttonsStyling: false,
+                reverseButtons: true
+            }).then(function (result) {
+                if (result.value) {
+                    var me = _this;
+
+                    axios.put('/personal/desactivar', {
+                        'id': id
+                    }).then(function (response) {
+                        me.listarPersonal(1, '', 'Personal');
+                        swal('Desactivado!', 'El registro ha sido desactivado con éxito.', 'success');
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                } else if (
+                // Read more about handling dismissals
+                result.dismiss === swal.DismissReason.cancel) {}
+            });
+        },
+        activarPersonal: function activarPersonal(id) {
+            var _this2 = this;
+
+            swal({
+                title: 'Esta seguro de activar a esta Persona?',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Aceptar!',
+                cancelButtonText: 'Cancelar',
+                confirmButtonClass: 'btn btn-success',
+                cancelButtonClass: 'btn btn-danger',
+                buttonsStyling: false,
+                reverseButtons: true
+            }).then(function (result) {
+                if (result.value) {
+                    var me = _this2;
+
+                    axios.put('/personal/activar', {
+                        'id': id
+                    }).then(function (response) {
+                        me.listarPersonal(1, '', 'Personal');
+                        swal('Desactivado!', 'El registro ha sido activado con éxito.', 'success');
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                } else if (
+                // Read more about handling dismissals
+                result.dismiss === swal.DismissReason.cancel) {}
+            });
+        },
+        eliminarPersonal: function eliminarPersonal() {
+            var _this3 = this;
 
             var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
 
@@ -36324,9 +36395,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 confirmButtonText: 'Si, eliminar!'
             }).then(function (result) {
                 if (result.value) {
-                    var me = _this;
+                    var me = _this3;
 
-                    axios.delete('/personal/eliminar', { params: { 'id': _this.id } }).then(function (response) {
+                    axios.delete('/personal/eliminar', { params: { 'id': _this3.id } }).then(function (response) {
                         swal('Borrado!', 'Personal borrado correctamente.', 'success');
                         me.listarPersonal(1, '', 'Personal');
                     }).catch(function (error) {
@@ -36678,49 +36749,75 @@ var render = function() {
                 "tbody",
                 _vm._l(_vm.arrayPersonal, function(Personal) {
                   return _c("tr", { key: Personal.id }, [
-                    _c("td", [
-                      _c(
-                        "button",
-                        {
-                          staticClass: "btn btn-warning btn-sm",
-                          attrs: { type: "button" },
-                          on: {
-                            click: function($event) {
-                              _vm.abrirModal("Personal", "actualizar", Personal)
+                    _c(
+                      "td",
+                      [
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-warning btn-sm",
+                            attrs: { type: "button" },
+                            on: {
+                              click: function($event) {
+                                _vm.abrirModal(
+                                  "Personal",
+                                  "actualizar",
+                                  Personal
+                                )
+                              }
                             }
-                          }
-                        },
-                        [_c("i", { staticClass: "icon-pencil" })]
-                      ),
-                      _vm._v("  \n                                    "),
-                      _c(
-                        "button",
-                        {
-                          staticClass: "btn btn-danger btn-sm",
-                          attrs: { type: "button" },
-                          on: {
-                            click: function($event) {
-                              _vm.eliminarPersonal(Personal)
+                          },
+                          [_c("i", { staticClass: "icon-pencil" })]
+                        ),
+                        _vm._v("  \n                                    "),
+                        Personal.activo
+                          ? [
+                              _c(
+                                "button",
+                                {
+                                  staticClass: "btn btn-danger btn-sm",
+                                  attrs: { type: "button" },
+                                  on: {
+                                    click: function($event) {
+                                      _vm.desactivarPersonal(Personal.id)
+                                    }
+                                  }
+                                },
+                                [_c("i", { staticClass: "icon-trash" })]
+                              )
+                            ]
+                          : [
+                              _c(
+                                "button",
+                                {
+                                  staticClass: "btn btn-success btn-sm",
+                                  attrs: { type: "button" },
+                                  on: {
+                                    click: function($event) {
+                                      _vm.activarPersonal(Personal.id)
+                                    }
+                                  }
+                                },
+                                [_c("i", { staticClass: "icon-check" })]
+                              )
+                            ],
+                        _vm._v(" "),
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-info btn-sm",
+                            attrs: { type: "button" },
+                            on: {
+                              click: function($event) {
+                                _vm.abrirModal("Personal", "ver", Personal)
+                              }
                             }
-                          }
-                        },
-                        [_c("i", { staticClass: "icon-trash" })]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "button",
-                        {
-                          staticClass: "btn btn-info btn-sm",
-                          attrs: { type: "button" },
-                          on: {
-                            click: function($event) {
-                              _vm.abrirModal("Personal", "ver", Personal)
-                            }
-                          }
-                        },
-                        [_c("i", { staticClass: "icon-magnifier" })]
-                      )
-                    ]),
+                          },
+                          [_c("i", { staticClass: "icon-magnifier" })]
+                        )
+                      ],
+                      2
+                    ),
                     _vm._v(" "),
                     _c("td", {
                       domProps: { textContent: _vm._s(Personal.nombre) }
