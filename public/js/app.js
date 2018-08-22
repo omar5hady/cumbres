@@ -36484,6 +36484,30 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     this.celular = data['celular'];
                                     this.email = data['email'];
                                     this.activo = data['activo'];
+                                    this.tipoAccion = 1;
+                                    break;
+                                }
+                            case 'ver':
+                                {
+                                    //console.log(data);
+                                    this.modal = 1;
+                                    this.tituloModal = 'Actualizar Personal';
+                                    this.tipoAccion = 2;
+                                    this.id = data['id'];
+                                    this.departamento_id = data['departamento_id'];
+                                    this.nombre = data['nombre'];
+                                    this.apellidos = data['apellidos'];
+                                    this.f_nacimiento = data['f_nacimiento'];
+                                    this.rfc = data['rfc'];
+                                    this.colonia = data['colonia'];
+                                    this.direccion = data['direccion'];
+                                    this.cp = data['cp'];
+                                    this.telefono = data['telefono'];
+                                    this.ext = data['ext'];
+                                    this.celular = data['celular'];
+                                    this.email = data['email'];
+                                    this.activo = data['activo'];
+                                    this.tipoAccion = 3;
                                     break;
                                 }
                         }
@@ -36736,7 +36760,19 @@ var render = function() {
                         [_c("i", { staticClass: "icon-trash" })]
                       ),
                       _vm._v(" "),
-                      _vm._m(2, true)
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-info btn-sm",
+                          attrs: { type: "button" },
+                          on: {
+                            click: function($event) {
+                              _vm.abrirModal("Personal", "ver", Personal)
+                            }
+                          }
+                        },
+                        [_c("i", { staticClass: "icon-magnifier" })]
+                      )
                     ]),
                     _vm._v(" "),
                     _c("td", {
@@ -36944,7 +36980,11 @@ var render = function() {
                             }
                           ],
                           staticClass: "form-control",
-                          attrs: { type: "text", placeholder: "Apellidos" },
+                          attrs: {
+                            type: "text",
+                            placeholder: "Apellidos",
+                            disabled: _vm.tipoAccion == 3
+                          },
                           domProps: { value: _vm.apellidos },
                           on: {
                             input: function($event) {
@@ -36982,7 +37022,8 @@ var render = function() {
                           attrs: {
                             type: "text",
                             maxlength: "25",
-                            placeholder: "Nombre"
+                            placeholder: "Nombre",
+                            disabled: _vm.tipoAccion == 3
                           },
                           domProps: { value: _vm.nombre },
                           on: {
@@ -37020,7 +37061,8 @@ var render = function() {
                           staticClass: "form-control",
                           attrs: {
                             type: "date",
-                            placeholder: "Fecha de nacimiento"
+                            placeholder: "Fecha de nacimiento",
+                            disabled: _vm.tipoAccion == 3
                           },
                           domProps: { value: _vm.f_nacimiento },
                           on: {
@@ -37059,7 +37101,8 @@ var render = function() {
                           attrs: {
                             type: "text",
                             maxlength: "13",
-                            placeholder: "RFC"
+                            placeholder: "RFC",
+                            disabled: _vm.tipoAccion == 3
                           },
                           domProps: { value: _vm.rfc },
                           on: {
@@ -37095,7 +37138,11 @@ var render = function() {
                             }
                           ],
                           staticClass: "form-control",
-                          attrs: { type: "text", placeholder: "Codigo postal" },
+                          attrs: {
+                            type: "text",
+                            placeholder: "Codigo postal",
+                            disabled: _vm.tipoAccion == 3
+                          },
                           domProps: { value: _vm.cp },
                           on: {
                             keyup: function($event) {
@@ -37135,6 +37182,7 @@ var render = function() {
                               }
                             ],
                             staticClass: "form-control",
+                            attrs: { disabled: _vm.tipoAccion == 3 },
                             on: {
                               change: function($event) {
                                 var $$selectedVal = Array.prototype.filter
@@ -37192,7 +37240,11 @@ var render = function() {
                             }
                           ],
                           staticClass: "form-control",
-                          attrs: { type: "text", placeholder: "Direccion" },
+                          attrs: {
+                            type: "text",
+                            placeholder: "Direccion",
+                            disabled: _vm.tipoAccion == 3
+                          },
                           domProps: { value: _vm.direccion },
                           on: {
                             input: function($event) {
@@ -37229,6 +37281,7 @@ var render = function() {
                               }
                             ],
                             staticClass: "form-control",
+                            attrs: { disabled: _vm.tipoAccion == 3 },
                             on: {
                               change: function($event) {
                                 var $$selectedVal = Array.prototype.filter
@@ -37293,7 +37346,8 @@ var render = function() {
                           attrs: {
                             type: "text",
                             maxlength: "7",
-                            placeholder: "Telefono"
+                            placeholder: "Telefono",
+                            disabled: _vm.tipoAccion == 3
                           },
                           domProps: { value: _vm.telefono },
                           on: {
@@ -37335,7 +37389,8 @@ var render = function() {
                           attrs: {
                             type: "text",
                             maxlength: "3",
-                            placeholder: "Extension"
+                            placeholder: "Extension",
+                            disabled: _vm.tipoAccion == 3
                           },
                           domProps: { value: _vm.ext },
                           on: {
@@ -37377,7 +37432,8 @@ var render = function() {
                           attrs: {
                             type: "text",
                             maxlength: "10",
-                            placeholder: "Celular"
+                            placeholder: "Celular",
+                            disabled: _vm.tipoAccion == 3
                           },
                           domProps: { value: _vm.celular },
                           on: {
@@ -37418,7 +37474,8 @@ var render = function() {
                           staticClass: "form-control",
                           attrs: {
                             type: "text",
-                            placeholder: "Correo electronico"
+                            placeholder: "Correo electronico",
+                            disabled: _vm.tipoAccion == 3
                           },
                           domProps: { value: _vm.email },
                           on: {
@@ -37456,6 +37513,7 @@ var render = function() {
                               }
                             ],
                             staticClass: "form-control",
+                            attrs: { disabled: _vm.tipoAccion == 3 },
                             on: {
                               change: function($event) {
                                 var $$selectedVal = Array.prototype.filter
@@ -37603,16 +37661,6 @@ var staticRenderFns = [
         _c("th", [_vm._v("Activo/Inactivo")])
       ])
     ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "button",
-      { staticClass: "btn btn-info btn-sm", attrs: { type: "button" } },
-      [_c("i", { staticClass: "icon-magnifier" })]
-    )
   }
 ]
 render._withStripped = true

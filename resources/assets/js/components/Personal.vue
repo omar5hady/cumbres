@@ -57,7 +57,7 @@
                                         <button type="button" class="btn btn-danger btn-sm" @click="eliminarPersonal(Personal)">
                                           <i class="icon-trash"></i>
                                         </button>
-                                        <button type="button" class="btn btn-info btn-sm">
+                                        <button type="button" @click="abrirModal('Personal','ver',Personal)" class="btn btn-info btn-sm">
                                           <i class="icon-magnifier"></i>
                                         </button>
                                     </td>
@@ -113,56 +113,56 @@
                                   <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Apellidos</label>
                                     <div class="col-md-9">
-                                        <input type="text" v-model="apellidos" class="form-control" placeholder="Apellidos">
+                                        <input type="text" v-model="apellidos" class="form-control" placeholder="Apellidos" :disabled="tipoAccion == 3">
                                     </div>
                                 </div>
                                    <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Nombre</label>
                                     <div class="col-md-9">
-                                        <input type="text" maxlength="25" v-model="nombre" class="form-control" placeholder="Nombre">
+                                        <input type="text" maxlength="25" v-model="nombre" class="form-control" placeholder="Nombre" :disabled="tipoAccion == 3">
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Fecha de nacimiento</label>
                                     <div class="col-md-6">
-                                        <input type="date" v-model="f_nacimiento" class="form-control" placeholder="Fecha de nacimiento">
+                                        <input type="date" v-model="f_nacimiento" class="form-control" placeholder="Fecha de nacimiento" :disabled="tipoAccion == 3">
                                     </div>
                                 </div>
                                      <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">RFC</label>
                                     <div class="col-md-6">
-                                        <input type="text" maxlength="13" v-model="rfc" class="form-control" placeholder="RFC">
+                                        <input type="text" maxlength="13" v-model="rfc" class="form-control" placeholder="RFC" :disabled="tipoAccion == 3">
                                     </div>
                                 </div>
 
                                          <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Codigo Postal</label>
                                     <div class="col-md-6">
-                                        <input type="text" v-model="cp" @keyup="selectColonias(cp)" class="form-control" placeholder="Codigo postal">
+                                        <input type="text" v-model="cp" @keyup="selectColonias(cp)" class="form-control" placeholder="Codigo postal" :disabled="tipoAccion == 3">
                                     </div>
                                 </div>
 
                                  <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Colonia</label>
                                     <div class="col-md-6">
-                                        <select class="form-control" v-model="colonia">
+                                        <select class="form-control" v-model="colonia" :disabled="tipoAccion == 3">
                                             <option value="0">Seleccione</option>
                                             <option v-for="colonias in arrayColonias" :key="colonias.colonia" :value="colonias.colonia" v-text="colonias.colonia"></option>
                                         </select>
                                         <!--<input type="text" v-model="ciudad" class="form-control" placeholder="Ciudad">-->
                                     </div>
                                 </div>
-                                         <div class="form-group row">
+                                <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Direccion</label>
                                     <div class="col-md-9">
-                                        <input type="text" v-model="direccion" class="form-control" placeholder="Direccion">
+                                        <input type="text" v-model="direccion" class="form-control" placeholder="Direccion" :disabled="tipoAccion == 3">
                                     </div>
                                 </div>
 
                                   <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Departamento</label>
                                     <div class="col-md-6">
-                                          <select class="form-control" v-model="departamento_id">
+                                          <select class="form-control" v-model="departamento_id" :disabled="tipoAccion == 3">
                                             <option value="0">Seleccione</option>
                                             <option v-for="departamentos in arrayDepartamentos" :key="departamentos.id_departamento" :value="departamentos.id_departamento" v-text="departamentos.departamento"></option>
                                         </select>
@@ -172,34 +172,34 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Telefono</label>
                                     <div class="col-md-6">
-                                        <input type="text" maxlength="7" v-on:keypress="isNumber(event)" class="form-control" v-model="telefono"  placeholder="Telefono">
+                                        <input type="text" maxlength="7" v-on:keypress="isNumber(event)" class="form-control" v-model="telefono"  placeholder="Telefono" :disabled="tipoAccion == 3">
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Extension</label>
                                     <div class="col-md-4">
-                                        <input type="text" maxlength="3" v-on:keypress="isNumber(event)" v-model="ext" class="form-control" placeholder="Extension">
+                                        <input type="text" maxlength="3" v-on:keypress="isNumber(event)" v-model="ext" class="form-control" placeholder="Extension" :disabled="tipoAccion == 3">
                                     </div>
                                 </div>
                             
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Celular</label>
                                     <div class="col-md-6">
-                                        <input type="text" maxlength="10" v-on:keypress="isNumber(event)" v-model="celular" class="form-control" placeholder="Celular">
+                                        <input type="text" maxlength="10" v-on:keypress="isNumber(event)" v-model="celular" class="form-control" placeholder="Celular" :disabled="tipoAccion == 3">
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Correo electronico</label>
                                     <div class="col-md-9">
-                                        <input type="text" v-model="email" class="form-control" placeholder="Correo electronico">
+                                        <input type="text" v-model="email" class="form-control" placeholder="Correo electronico" :disabled="tipoAccion == 3">
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Estatus</label>
                                     <div class="col-md-5">
-                                        <select class="form-control" v-model="activo">
+                                        <select class="form-control" v-model="activo" :disabled="tipoAccion == 3">
                                             <option value="1">Activo</option>
                                             <option value="0"> Inactivo</option>
                                         </select>
@@ -575,6 +575,30 @@
                                 this.celular=data['celular'];
                                 this.email=data['email'];
                                 this.activo=data['activo'];
+                                this.tipoAccion = 1;
+                                break;
+                            }
+                            case 'ver':
+                            {
+                                //console.log(data);
+                                this.modal =1;
+                                this.tituloModal='Actualizar Personal';
+                                this.tipoAccion=2;
+                                this.id=data['id'];
+                                this.departamento_id=data['departamento_id'];
+                                this.nombre=data['nombre'];
+                                this.apellidos=data['apellidos'];
+                                this.f_nacimiento=data['f_nacimiento'];
+                                this.rfc=data['rfc'];
+                                this.colonia=data['colonia'];
+                                this.direccion=data['direccion'];
+                                this.cp=data['cp'];
+                                this.telefono=data['telefono'];
+                                this.ext=data['ext'];
+                                this.celular=data['celular'];
+                                this.email=data['email'];
+                                this.activo=data['activo'];
+                                this.tipoAccion = 3;
                                 break;
                             }
                         }
