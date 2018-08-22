@@ -16,8 +16,7 @@ class CreatePersonalTable extends Migration
         Schema::create('personal', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('departamento_id');
-            $table->string('ap_paterno',35);
-            $table->string('ap_materno',35);
+            $table->string('apellidos',70);
             $table->string('nombre',35);
             $table->date('f_nacimiento');
             $table->string('rfc',13)->unique();

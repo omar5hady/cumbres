@@ -22,7 +22,7 @@
                                     <!--Criterios para el listado de busqueda -->
                                     <select class="form-control col-md-5" @click="selectDepartamento()" v-model="criterio">
                                       <option value="nombre">Nombre</option>
-                                      <option value="ap_paterno">Apellido Paterno</option>
+                                      <option value="apellidos">Apellidos</option>
                                       <option value="rfc">RFC</option>
                                       <option value="id_departamento">Departamento</option>
                                     </select>
@@ -41,8 +41,7 @@
                                     <th>Opciones</th>
 
                                     <th>Personal</th>
-                                    <th>Apellido paterno</th>
-                                    <th>Apellido materno</th>
+                                    <th>Apellidos</th>
                                     <th>Departamento</th>
 
                                     <th>RFC</th>
@@ -63,8 +62,7 @@
                                     </td>
                                     <td v-text="Personal.nombre"></td>
                                     
-                                    <td v-text="Personal.ap_paterno"></td>
-                                    <td v-text="Personal.ap_materno"></td>
+                                    <td v-text="Personal.apellidos"></td>
                                     <td v-text="Personal.departamento"></td>
                                     <td v-text="Personal.rfc"></td>
                                     <td v-text="Personal.celular"></td>
@@ -72,12 +70,7 @@
                                    <td>
                                         <span v-if = "Personal.activo==1" class="badge badge-success">Activo</span>
                                         <span v-if = "Personal.activo==0" class="badge badge-danger">Inactivo</span>
-                                    </td>
-
-                                    <!-- <td v-if="Personal.tipo_proyecto==1" v-text="'Lotificación'"></td>
-                                    <td v-if="Personal.tipo_proyecto==2" v-text="'Departamento'"></td>
-                                    <td v-if="Personal.tipo_proyecto==3" v-text="'Terreno'"></td> -->
-                            
+                                    </td>                          
                                    
                                 </tr>                               
                             </tbody>
@@ -117,21 +110,15 @@
 
 
                                   <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Apellido paterno</label>
+                                    <label class="col-md-3 form-control-label" for="text-input">Apellidos</label>
                                     <div class="col-md-9">
-                                        <input type="text" v-model="ap_paterno" class="form-control" placeholder="Apellido paterno">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Apellido materno</label>
-                                    <div class="col-md-9">
-                                        <input type="text" v-model="ap_materno" class="form-control" placeholder="Apellido paterno">
+                                        <input type="text" v-model="apellidos" class="form-control" placeholder="Apellidos">
                                     </div>
                                 </div>
                                    <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Nombre</label>
                                     <div class="col-md-9">
-                                        <input type="text" v-model="nombre" class="form-control" placeholder="Nombre">
+                                        <input type="text" maxlength="25" v-model="nombre" class="form-control" placeholder="Nombre">
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -156,7 +143,7 @@
 
                                  <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Colonia</label>
-                                    <div class="col-md-7">
+                                    <div class="col-md-6">
                                         <select class="form-control" v-model="colonia">
                                             <option value="0">Seleccione</option>
                                             <option v-for="colonias in arrayColonias" :key="colonias.colonia" :value="colonias.colonia" v-text="colonias.colonia"></option>
@@ -173,12 +160,11 @@
 
                                   <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Departamento</label>
-                                    <div class="col-md-9">
+                                    <div class="col-md-6">
                                           <select class="form-control" v-model="departamento_id">
                                             <option value="0">Seleccione</option>
                                             <option v-for="departamentos in arrayDepartamentos" :key="departamentos.id_departamento" :value="departamentos.id_departamento" v-text="departamentos.departamento"></option>
                                         </select>
-                                        <!-- <input type="text" v-model="departamento_id" class="form-control" placeholder="Departamento"> -->
                                     </div>
                                 </div>
 
@@ -258,8 +244,7 @@
                 id:0,
                 departamento_id : 0,
                 nombre : '',
-                ap_materno : '',
-                ap_paterno : '',
+                apellidos : '',
                 f_nacimiento: '',
                 rfc : '',
                 colonia : '',
@@ -377,8 +362,7 @@
                 axios.post('/personal/registrar',{
                     'departamento_id': this.departamento_id,
                     'nombre': this.nombre,
-                    'ap_paterno': this.ap_paterno,
-                    'ap_materno': this.ap_materno,
+                    'apellidos': this.apellidos,
                     'f_nacimiento': this.f_nacimiento,
                     'rfc': this.rfc,
                     'colonia': this.colonia,
@@ -421,8 +405,7 @@
                 axios.put('/personal/actualizar',{
                     'departamento_id': this.departamento_id,
                     'nombre': this.nombre,
-                    'ap_paterno': this.ap_paterno,
-                    'ap_materno': this.ap_materno,
+                    'apellidos': this.apellidos,
                     'f_nacimiento': this.f_nacimiento,
                     'rfc': this.rfc,
                     'colonia': this.colonia,
@@ -453,8 +436,7 @@
                 this.id=data['id'];
                 this.departamento_id=data['departamento_id'];
                 this.nombre=data['nombre'];
-                this.ap_paterno=data['ap_paterno'];
-                this.ap_materno=data['ap_materno'];
+                this.apellidos=data['apellidos'];
                 this.f_nacimiento=data['f_nacimiento'];
                 this.rfc=data['rfc'];
                 this.colonia=data['colonia'];
@@ -497,8 +479,8 @@
                 this.errorPersonal=0;
                 this.errorMostrarMsjPersonal=[];
 
-                if(!this.nombre || !this.ap_paterno ||!this.ap_materno) //Si la variable Personal esta vacia
-                    this.errorMostrarMsjPersonal.push("El nombre del Personal no puede ir vacio.");
+                if(!this.nombre || !this.apellidos) //Si la variable Personal esta vacia
+                    this.errorMostrarMsjPersonal.push("El nombre de la Persona no puede ir vacio.");
 
                 if(!this.email)
                     this.errorMostrarMsjPersonal.push("El correo no debe ir vacio");
@@ -531,8 +513,7 @@
                 this.modal = 0;
                 this.departamento_id = '';
                 this.nombre='';
-                this.ap_paterno='';
-                this.ap_materno='';
+                this.apellidos='';
                 this.f_nacimiento='';
                 this.rfc='';
                 this.colonia='';
@@ -559,8 +540,7 @@
                                 this.tituloModal = 'Registrar Personal';
                                 this.departamento_id = '0',
                                 this.nombre='';
-                                this.ap_paterno='';
-                                this.ap_materno='';
+                                this.apellidos='';
                                 this.f_nacimiento='';
                                 this.rfc='';
                                 this.colonia='0';
@@ -583,8 +563,7 @@
                                 this.id=data['id'];
                                 this.departamento_id=data['departamento_id'];
                                 this.nombre=data['nombre'];
-                                this.ap_paterno=data['ap_paterno'];
-                                this.ap_materno=data['ap_materno'];
+                                this.apellidos=data['apellidos'];
                                 this.f_nacimiento=data['f_nacimiento'];
                                 this.rfc=data['rfc'];
                                 this.colonia=data['colonia'];

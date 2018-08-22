@@ -36152,20 +36152,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -36173,8 +36159,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             id: 0,
             departamento_id: 0,
             nombre: '',
-            ap_materno: '',
-            ap_paterno: '',
+            apellidos: '',
             f_nacimiento: '',
             rfc: '',
             colonia: '',
@@ -36290,8 +36275,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             axios.post('/personal/registrar', {
                 'departamento_id': this.departamento_id,
                 'nombre': this.nombre,
-                'ap_paterno': this.ap_paterno,
-                'ap_materno': this.ap_materno,
+                'apellidos': this.apellidos,
                 'f_nacimiento': this.f_nacimiento,
                 'rfc': this.rfc,
                 'colonia': this.colonia,
@@ -36334,8 +36318,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             axios.put('/personal/actualizar', {
                 'departamento_id': this.departamento_id,
                 'nombre': this.nombre,
-                'ap_paterno': this.ap_paterno,
-                'ap_materno': this.ap_materno,
+                'apellidos': this.apellidos,
                 'f_nacimiento': this.f_nacimiento,
                 'rfc': this.rfc,
                 'colonia': this.colonia,
@@ -36370,8 +36353,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.id = data['id'];
             this.departamento_id = data['departamento_id'];
             this.nombre = data['nombre'];
-            this.ap_paterno = data['ap_paterno'];
-            this.ap_materno = data['ap_materno'];
+            this.apellidos = data['apellidos'];
             this.f_nacimiento = data['f_nacimiento'];
             this.rfc = data['rfc'];
             this.colonia = data['colonia'];
@@ -36409,8 +36391,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.errorPersonal = 0;
             this.errorMostrarMsjPersonal = [];
 
-            if (!this.nombre || !this.ap_paterno || !this.ap_materno) //Si la variable Personal esta vacia
-                this.errorMostrarMsjPersonal.push("El nombre del Personal no puede ir vacio.");
+            if (!this.nombre || !this.apellidos) //Si la variable Personal esta vacia
+                this.errorMostrarMsjPersonal.push("El nombre de la Persona no puede ir vacio.");
 
             if (!this.email) this.errorMostrarMsjPersonal.push("El correo no debe ir vacio");
 
@@ -36439,8 +36421,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.modal = 0;
             this.departamento_id = '';
             this.nombre = '';
-            this.ap_paterno = '';
-            this.ap_materno = '';
+            this.apellidos = '';
             this.f_nacimiento = '';
             this.rfc = '';
             this.colonia = '';
@@ -36468,8 +36449,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     this.modal = 1;
                                     this.tituloModal = 'Registrar Personal';
                                     this.departamento_id = '0', this.nombre = '';
-                                    this.ap_paterno = '';
-                                    this.ap_materno = '';
+                                    this.apellidos = '';
                                     this.f_nacimiento = '';
                                     this.rfc = '';
                                     this.colonia = '0';
@@ -36492,8 +36472,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     this.id = data['id'];
                                     this.departamento_id = data['departamento_id'];
                                     this.nombre = data['nombre'];
-                                    this.ap_paterno = data['ap_paterno'];
-                                    this.ap_materno = data['ap_materno'];
+                                    this.apellidos = data['apellidos'];
                                     this.f_nacimiento = data['f_nacimiento'];
                                     this.rfc = data['rfc'];
                                     this.colonia = data['colonia'];
@@ -36592,8 +36571,8 @@ var render = function() {
                       _vm._v("Nombre")
                     ]),
                     _vm._v(" "),
-                    _c("option", { attrs: { value: "ap_paterno" } }, [
-                      _vm._v("Apellido Paterno")
+                    _c("option", { attrs: { value: "apellidos" } }, [
+                      _vm._v("Apellidos")
                     ]),
                     _vm._v(" "),
                     _c("option", { attrs: { value: "rfc" } }, [_vm._v("RFC")]),
@@ -36761,11 +36740,7 @@ var render = function() {
                     }),
                     _vm._v(" "),
                     _c("td", {
-                      domProps: { textContent: _vm._s(Personal.ap_paterno) }
-                    }),
-                    _vm._v(" "),
-                    _c("td", {
-                      domProps: { textContent: _vm._s(Personal.ap_materno) }
+                      domProps: { textContent: _vm._s(Personal.apellidos) }
                     }),
                     _vm._v(" "),
                     _c("td", {
@@ -36951,7 +36926,7 @@ var render = function() {
                           staticClass: "col-md-3 form-control-label",
                           attrs: { for: "text-input" }
                         },
-                        [_vm._v("Apellido paterno")]
+                        [_vm._v("Apellidos")]
                       ),
                       _vm._v(" "),
                       _c("div", { staticClass: "col-md-9" }, [
@@ -36960,60 +36935,19 @@ var render = function() {
                             {
                               name: "model",
                               rawName: "v-model",
-                              value: _vm.ap_paterno,
-                              expression: "ap_paterno"
+                              value: _vm.apellidos,
+                              expression: "apellidos"
                             }
                           ],
                           staticClass: "form-control",
-                          attrs: {
-                            type: "text",
-                            placeholder: "Apellido paterno"
-                          },
-                          domProps: { value: _vm.ap_paterno },
+                          attrs: { type: "text", placeholder: "Apellidos" },
+                          domProps: { value: _vm.apellidos },
                           on: {
                             input: function($event) {
                               if ($event.target.composing) {
                                 return
                               }
-                              _vm.ap_paterno = $event.target.value
-                            }
-                          }
-                        })
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "text-input" }
-                        },
-                        [_vm._v("Apellido materno")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-9" }, [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.ap_materno,
-                              expression: "ap_materno"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: {
-                            type: "text",
-                            placeholder: "Apellido paterno"
-                          },
-                          domProps: { value: _vm.ap_materno },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.ap_materno = $event.target.value
+                              _vm.apellidos = $event.target.value
                             }
                           }
                         })
@@ -37041,7 +36975,11 @@ var render = function() {
                             }
                           ],
                           staticClass: "form-control",
-                          attrs: { type: "text", placeholder: "Nombre" },
+                          attrs: {
+                            type: "text",
+                            maxlength: "25",
+                            placeholder: "Nombre"
+                          },
                           domProps: { value: _vm.nombre },
                           on: {
                             input: function($event) {
@@ -37180,7 +37118,7 @@ var render = function() {
                         [_vm._v("Colonia")]
                       ),
                       _vm._v(" "),
-                      _c("div", { staticClass: "col-md-7" }, [
+                      _c("div", { staticClass: "col-md-6" }, [
                         _c(
                           "select",
                           {
@@ -37274,7 +37212,7 @@ var render = function() {
                         [_vm._v("Departamento")]
                       ),
                       _vm._v(" "),
-                      _c("div", { staticClass: "col-md-9" }, [
+                      _c("div", { staticClass: "col-md-6" }, [
                         _c(
                           "select",
                           {
@@ -37648,9 +37586,7 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Personal")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Apellido paterno")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Apellido materno")]),
+        _c("th", [_vm._v("Apellidos")]),
         _vm._v(" "),
         _c("th", [_vm._v("Departamento")]),
         _vm._v(" "),

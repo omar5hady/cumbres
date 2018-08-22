@@ -22,7 +22,7 @@ class PersonalController extends Controller
         
         if($buscar==''){
             $Personales = Personal::join('departamento','personal.departamento_id','=','departamento.id_departamento')
-            ->select('personal.nombre','personal.ap_paterno','personal.ap_materno',
+            ->select('personal.nombre','personal.apellidos',
                 'personal.f_nacimiento','personal.rfc','personal.direccion','personal.colonia','personal.cp','personal.celular','personal.email','personal.activo',
                 'personal.id','personal.departamento_id','departamento.departamento as departamento',
                 'departamento.id_departamento')
@@ -31,7 +31,7 @@ class PersonalController extends Controller
         else{
             if($criterio == 'id_departamento'){
                 $Personales = Personal::join('departamento','personal.departamento_id','=','departamento.id_departamento')
-                ->select('personal.nombre','personal.ap_paterno','personal.ap_materno',
+                ->select('personal.nombre','personal.apellidos',
                     'personal.f_nacimiento','personal.rfc','personal.direccion','personal.colonia','personal.cp','personal.celular','personal.email','personal.activo',
                     'personal.id','personal.departamento_id','departamento.departamento as departamento',
                     'departamento.id_departamento')
@@ -39,7 +39,7 @@ class PersonalController extends Controller
             }
             else{
                 $Personales = Personal::join('departamento','personal.departamento_id','=','departamento.id_departamento')
-                ->select('personal.nombre','personal.ap_paterno','personal.ap_materno',
+                ->select('personal.nombre','personal.apellidos',
                     'personal.f_nacimiento','personal.rfc','personal.direccion','personal.colonia','personal.cp','personal.celular','personal.email','personal.activo',
                     'personal.id','personal.departamento_id','departamento.departamento as departamento',
                     'departamento.id_departamento')
@@ -83,8 +83,7 @@ class PersonalController extends Controller
         $Personal = new Personal();
         $Personal->departamento_id = $request->departamento_id;
         $Personal->nombre = $request->nombre;
-        $Personal->ap_paterno = $request->ap_paterno;
-        $Personal->ap_materno = $request->ap_materno;
+        $Personal->apellidos = $request->apellidos;
         $Personal->f_nacimiento = $request->f_nacimiento;
         $Personal->rfc = $request->rfc;
         $Personal->direccion = $request->direccion;
@@ -135,8 +134,7 @@ class PersonalController extends Controller
         $Personal = Personal::findOrFail($request->id);
         $Personal->departamento_id = $request->departamento_id;
         $Personal->nombre = $request->nombre;
-        $Personal->ap_paterno = $request->ap_paterno;
-        $Personal->ap_materno = $request->ap_materno;
+        $Personal->apellidos = $request->apellidos;
         $Personal->f_nacimiento = $request->f_nacimiento;
         $Personal->rfc = $request->rfc;
         $Personal->direccion = $request->direccion;
