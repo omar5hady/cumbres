@@ -36491,7 +36491,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                 {
                                     //console.log(data);
                                     this.modal = 1;
-                                    this.tituloModal = 'Actualizar Personal';
+                                    this.tituloModal = 'Informacion de ' + data['nombre'];
                                     this.tipoAccion = 2;
                                     this.id = data['id'];
                                     this.departamento_id = data['departamento_id'];

@@ -582,7 +582,7 @@
                             {
                                 //console.log(data);
                                 this.modal =1;
-                                this.tituloModal='Actualizar Personal';
+                                this.tituloModal='Información de '+data['nombre'];
                                 this.tipoAccion=2;
                                 this.id=data['id'];
                                 this.departamento_id=data['departamento_id'];
