@@ -60,7 +60,7 @@ class EmpresaController extends Controller
         $empresa->direccion = $request->direccion;
         $empresa->cp = $request->cp;
         $empresa->colonia = $request->colonia;
-        $empresa->estado = $request->estadp;
+        $empresa->estado = $request->estado;
         $empresa->ciudad = $request->ciudad;
         $empresa->telefono = $request->telefono;
         $empresa->ext = $request->ext;
