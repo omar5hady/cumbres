@@ -142,21 +142,20 @@
                                     </div>
                                 </div>
 
-                                         <div class="form-group row">
+                                <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Codigo Postal</label>
                                     <div class="col-md-6">
                                         <input type="text" maxlength="5" v-model="cp" @keyup="selectColonias(cp)" class="form-control" placeholder="Codigo postal" :disabled="tipoAccion == 3">
                                     </div>
                                 </div>
 
-                                 <div class="form-group row">
+                                <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Colonia</label>
                                     <div class="col-md-6">
                                         <select class="form-control" v-model="colonia" :disabled="tipoAccion == 3">
                                             <option value="0">Seleccione</option>
                                             <option v-for="colonias in arrayColonias" :key="colonias.colonia" :value="colonias.colonia" v-text="colonias.colonia"></option>
                                         </select>
-                                        <!--<input type="text" v-model="ciudad" class="form-control" placeholder="Ciudad">-->
                                     </div>
                                 </div>
                                 <div class="form-group row">

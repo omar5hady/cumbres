@@ -36,5 +36,13 @@ Route::put('/personal/desactivar','PersonalController@desactivar');
 Route::put('/personal/activar','PersonalController@activar');
 Route::delete('/personal/eliminar','PersonalController@destroy');
 
+//Rutas Empresa
+Route::get('/empresa','EmpresaController@index');
+Route::post('/empresa/registrar','EmpresaController@store');
+Route::put('/empresa/actualizar','EmpresaController@update');
+Route::delete('/empresa/eliminar','EmpresaController@destroy');
+
 Route::get('/select_departamentos','DepartamentoController@selectDepartamento');
 Route::get('/select_colonias','CiudadController@selectColonias');
+
+
