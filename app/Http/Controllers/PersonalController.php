@@ -22,29 +22,35 @@ class PersonalController extends Controller
         
         if($buscar==''){
             $Personales = Personal::join('departamento','personal.departamento_id','=','departamento.id_departamento')
+            ->join('empresas','personal.empresa_id','=','empresas.id')
             ->select('personal.nombre','personal.apellidos',
                 'personal.f_nacimiento','personal.rfc','personal.direccion','personal.colonia','personal.cp',
                 'personal.telefono','personal.ext','personal.celular','personal.email','personal.activo',
                 'personal.id','personal.departamento_id','departamento.departamento as departamento',
+                'personal.empresa_id','empresas.nombre as empresa',
                 'departamento.id_departamento')
                 ->orderBy('id','desc')->paginate(5);
         }
         else{
             if($criterio == 'id_departamento'){
                 $Personales = Personal::join('departamento','personal.departamento_id','=','departamento.id_departamento')
+                ->join('empresas','personal.empresa_id','=','empresas.id')
                 ->select('personal.nombre','personal.apellidos',
                     'personal.f_nacimiento','personal.rfc','personal.direccion','personal.colonia','personal.cp',
                     'personal.telefono','personal.ext','personal.celular','personal.email','personal.activo',
                     'personal.id','personal.departamento_id','departamento.departamento as departamento',
+                    'personal.empresa_id','empresas.nombre as empresa',
                     'departamento.id_departamento')
                     ->where($criterio, '=', $buscar )->orderBy('id','desc')->paginate(5);
             }
             else{
                 $Personales = Personal::join('departamento','personal.departamento_id','=','departamento.id_departamento')
+                ->join('empresas','personal.empresa_id','=','empresas.id')
                 ->select('personal.nombre','personal.apellidos',
                     'personal.f_nacimiento','personal.rfc','personal.direccion','personal.colonia','personal.cp',
                     'personal.telefono','personal.ext','personal.celular','personal.email','personal.activo',
                     'personal.id','personal.departamento_id','departamento.departamento as departamento',
+                    'personal.empresa_id','empresas.nombre as empresa',
                     'departamento.id_departamento')
                     ->where($criterio, 'like', '%'. $buscar . '%')->orderBy('id','desc')->paginate(5);
             }
@@ -97,6 +103,7 @@ class PersonalController extends Controller
         $Personal->celular = $request->celular;
         $Personal->email = $request->email;
         $Personal->activo = $request->activo;
+        $Personal->empresa_id = $request->empresa_id;
         $Personal->save();
     }
 
@@ -148,6 +155,7 @@ class PersonalController extends Controller
         $Personal->celular = $request->celular;
         $Personal->email = $request->email;
         $Personal->activo = $request->activo;
+        $Personal->empresa_id = $request->empresa_id;
         $Personal->save();
     }
 

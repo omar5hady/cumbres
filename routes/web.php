@@ -44,5 +44,6 @@ Route::delete('/empresa/eliminar','EmpresaController@destroy');
 
 Route::get('/select_departamentos','DepartamentoController@selectDepartamento');
 Route::get('/select_colonias','CiudadController@selectColonias');
+Route::get('/select_empresas','EmpresaController@selectEmpresa');
 
 

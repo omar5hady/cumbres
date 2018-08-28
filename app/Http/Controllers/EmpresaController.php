@@ -125,4 +125,12 @@ class EmpresaController extends Controller
         $empresa = Empresa::findOrFail($request->id);
         $empresa->delete();
     }
+
+    public function selectEmpresa(Request $request){
+        //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
+        if(!$request->ajax())return redirect('/');
+        $empresas = Empresa::select('nombre','id')->get();
+        return['empresas' => $empresas];
+
+}
 }

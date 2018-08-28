@@ -16,4 +16,8 @@ class Personal extends Model
     public function departamento(){
         return $this->belongsTo('App\Departamento');
     }
+
+    public function empresa(){
+        return $this->belongsTo('App\Empresa');
+    }
 }

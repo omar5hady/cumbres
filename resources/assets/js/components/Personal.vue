@@ -165,12 +165,22 @@
                                     </div>
                                 </div>
 
-                                  <div class="form-group row">
+                                <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Departamento</label>
                                     <div class="col-md-6">
                                           <select class="form-control" v-model="departamento_id" :disabled="tipoAccion == 3">
                                             <option value="0">Seleccione</option>
                                             <option v-for="departamentos in arrayDepartamentos" :key="departamentos.id_departamento" :value="departamentos.id_departamento" v-text="departamentos.departamento"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Empresa</label>
+                                    <div class="col-md-6">
+                                          <select class="form-control" v-model="empresa_id" :disabled="tipoAccion == 3">
+                                            <option value="0">Seleccione</option>
+                                            <option v-for="empresas in arrayEmpresas" :key="empresas.id" :value="empresas.id" v-text="empresas.nombre"></option>
                                         </select>
                                     </div>
                                 </div>
@@ -250,6 +260,7 @@
             return{
                 id:0,
                 departamento_id : 0,
+                empresa_id : 0,
                 nombre : '',
                 apellidos : '',
                 f_nacimiento: '',
@@ -264,6 +275,7 @@
                 activo: 1, 
                 arrayPersonal : [],
                 arrayDepartamentos: [],
+                arrayEmpresas: [],
                 modal : 0,
                 tituloModal : '',
                 tipoAccion: 0,
@@ -337,13 +349,26 @@
                     console.log(error);
                 });
             },
-                selectDepartamento(){
+            selectDepartamento(){
                 let me = this;
                 me.arrayDepartamentos=[];
                 var url = '/select_departamentos';
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayDepartamentos = respuesta.departamentos;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+              
+            },
+            selectEmpresa(){
+                let me = this;
+                me.arrayEmpresas=[];
+                var url = '/select_empresas';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayEmpresas = respuesta.empresas;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -379,7 +404,8 @@
                     'ext': this.ext,
                     'celular': this.celular,
                     'email': this.email,
-                    'activo': this.activo
+                    'activo': this.activo,
+                    'empresa_id': this.empresa_id
                     
                 }).then(function (response){
                     me.cerrarModal(); //al guardar el registro se cierra el modal
@@ -423,7 +449,8 @@
                     'celular': this.celular,
                     'email': this.email,
                     'activo': this.activo,
-                    'id' : this.id
+                    'id' : this.id,
+                    'empresa_id' : this.empresa_id
                 }).then(function (response){
                     me.cerrarModal();
                     me.listarPersonal(1,'','Personal');
@@ -597,6 +624,7 @@
             cerrarModal(){
                 this.modal = 0;
                 this.departamento_id = '';
+                this.empresa_id = '';
                 this.nombre='';
                 this.apellidos='';
                 this.f_nacimiento='';
@@ -624,6 +652,7 @@
                                 this.modal = 1;
                                 this.tituloModal = 'Registrar Personal';
                                 this.departamento_id = '0',
+                                this.empresa_id = '0',
                                 this.nombre='';
                                 this.apellidos='';
                                 this.f_nacimiento='';
@@ -647,6 +676,7 @@
                                 this.tipoAccion=2;
                                 this.id=data['id'];
                                 this.departamento_id=data['departamento_id'];
+                                this.empresa_id=data['empresa_id'];
                                 this.nombre=data['nombre'];
                                 this.apellidos=data['apellidos'];
                                 this.f_nacimiento=data['f_nacimiento'];
@@ -670,6 +700,7 @@
                                 this.tipoAccion=2;
                                 this.id=data['id'];
                                 this.departamento_id=data['departamento_id'];
+                                this.empresa_id=data['empresa_id'];
                                 this.nombre=data['nombre'];
                                 this.apellidos=data['apellidos'];
                                 this.f_nacimiento=data['f_nacimiento'];
@@ -689,6 +720,7 @@
                     }
                 }
                 this.selectDepartamento();
+                this.selectEmpresa();
                 this.selectColonias(this.cp);
             }
         },

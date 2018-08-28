@@ -36107,12 +36107,23 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
             id: 0,
             departamento_id: 0,
+            empresa_id: 0,
             nombre: '',
             apellidos: '',
             f_nacimiento: '',
@@ -36127,6 +36138,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             activo: 1,
             arrayPersonal: [],
             arrayDepartamentos: [],
+            arrayEmpresas: [],
             modal: 0,
             tituloModal: '',
             tipoAccion: 0,
@@ -36210,6 +36222,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 console.log(error);
             });
         },
+        selectEmpresa: function selectEmpresa() {
+            var me = this;
+            me.arrayEmpresas = [];
+            var url = '/select_empresas';
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayEmpresas = respuesta.empresas;
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
         cambiarPagina: function cambiarPagina(page, buscar, criterio) {
             var me = this;
             //Actualiza la pagina actual
@@ -36240,7 +36263,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'ext': this.ext,
                 'celular': this.celular,
                 'email': this.email,
-                'activo': this.activo
+                'activo': this.activo,
+                'empresa_id': this.empresa_id
 
             }).then(function (response) {
                 me.cerrarModal(); //al guardar el registro se cierra el modal
@@ -36284,7 +36308,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'celular': this.celular,
                 'email': this.email,
                 'activo': this.activo,
-                'id': this.id
+                'id': this.id,
+                'empresa_id': this.empresa_id
             }).then(function (response) {
                 me.cerrarModal();
                 me.listarPersonal(1, '', 'Personal');
@@ -36439,6 +36464,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         cerrarModal: function cerrarModal() {
             this.modal = 0;
             this.departamento_id = '';
+            this.empresa_id = '';
             this.nombre = '';
             this.apellidos = '';
             this.f_nacimiento = '';
@@ -36467,7 +36493,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                 {
                                     this.modal = 1;
                                     this.tituloModal = 'Registrar Personal';
-                                    this.departamento_id = '0', this.nombre = '';
+                                    this.departamento_id = '0', this.empresa_id = '0', this.nombre = '';
                                     this.apellidos = '';
                                     this.f_nacimiento = '';
                                     this.rfc = '';
@@ -36490,6 +36516,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     this.tipoAccion = 2;
                                     this.id = data['id'];
                                     this.departamento_id = data['departamento_id'];
+                                    this.empresa_id = data['empresa_id'];
                                     this.nombre = data['nombre'];
                                     this.apellidos = data['apellidos'];
                                     this.f_nacimiento = data['f_nacimiento'];
@@ -36513,6 +36540,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     this.tipoAccion = 2;
                                     this.id = data['id'];
                                     this.departamento_id = data['departamento_id'];
+                                    this.empresa_id = data['empresa_id'];
                                     this.nombre = data['nombre'];
                                     this.apellidos = data['apellidos'];
                                     this.f_nacimiento = data['f_nacimiento'];
@@ -36532,6 +36560,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     }
             }
             this.selectDepartamento();
+            this.selectEmpresa();
             this.selectColonias(this.cp);
         }
     },
@@ -37359,6 +37388,66 @@ var render = function() {
                                   textContent: _vm._s(
                                     departamentos.departamento
                                   )
+                                }
+                              })
+                            })
+                          ],
+                          2
+                        )
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "text-input" }
+                        },
+                        [_vm._v("Empresa")]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-6" }, [
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.empresa_id,
+                                expression: "empresa_id"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: { disabled: _vm.tipoAccion == 3 },
+                            on: {
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.empresa_id = $event.target.multiple
+                                  ? $$selectedVal
+                                  : $$selectedVal[0]
+                              }
+                            }
+                          },
+                          [
+                            _c("option", { attrs: { value: "0" } }, [
+                              _vm._v("Seleccione")
+                            ]),
+                            _vm._v(" "),
+                            _vm._l(_vm.arrayEmpresas, function(empresas) {
+                              return _c("option", {
+                                key: empresas.id,
+                                domProps: {
+                                  value: empresas.id,
+                                  textContent: _vm._s(empresas.nombre)
                                 }
                               })
                             })
