@@ -39067,7 +39067,11 @@ var render = function() {
                             }
                           ],
                           staticClass: "form-control",
-                          attrs: { type: "text", placeholder: "Telefono" },
+                          attrs: {
+                            type: "text",
+                            maxlength: "8",
+                            placeholder: "Telefono"
+                          },
                           domProps: { value: _vm.telefono },
                           on: {
                             input: function($event) {
@@ -39102,7 +39106,11 @@ var render = function() {
                             }
                           ],
                           staticClass: "form-control",
-                          attrs: { type: "text", placeholder: "Ext" },
+                          attrs: {
+                            type: "text",
+                            maxlength: "3",
+                            placeholder: "Ext"
+                          },
                           domProps: { value: _vm.ext },
                           on: {
                             input: function($event) {
