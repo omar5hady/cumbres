@@ -26,8 +26,6 @@ Route::post('/fraccionamiento/registrar','FraccionamientoController@store');
 Route::put('/fraccionamiento/actualizar','FraccionamientoController@update');
 Route::delete('/fraccionamiento/eliminar','FraccionamientoController@destroy');
 
-Route::get('/select_ciudades','CiudadController@selectCiudades');
-
 //Rutas Personal
 Route::get('/personal','PersonalController@index');
 Route::post('/personal/registrar','PersonalController@store');
@@ -42,8 +40,10 @@ Route::post('/empresa/registrar','EmpresaController@store');
 Route::put('/empresa/actualizar','EmpresaController@update');
 Route::delete('/empresa/eliminar','EmpresaController@destroy');
 
+//Select
 Route::get('/select_departamentos','DepartamentoController@selectDepartamento');
 Route::get('/select_colonias','CiudadController@selectColonias');
 Route::get('/select_empresas','EmpresaController@selectEmpresa');
-
+Route::get('/select_ciudades','CiudadController@selectCiudades');
+Route::get('/select_personal','PersonalController@selectNombre');
 

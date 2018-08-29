@@ -131,6 +131,5 @@ class EmpresaController extends Controller
         if(!$request->ajax())return redirect('/');
         $empresas = Empresa::select('nombre','id')->get();
         return['empresas' => $empresas];
-
-}
+    }
 }

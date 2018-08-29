@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Personal;
+use DB;
 
 class PersonalController extends Controller
 {
@@ -188,6 +189,15 @@ class PersonalController extends Controller
         if(!$request->ajax())return redirect('/');
         $Personal = Personal::findOrFail($request->id);
         $Personal->delete();
+    }
+
+    public function selectNombre(Request $request){
+        //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
+        //if(!$request->ajax())return redirect('/');
+        $Personal = Personal::select(DB::raw("CONCAT(nombre,' ',apellidos) AS name"))
+                     ->where('departamento_id', '=', '1' )->orderBy('name')
+                     ->get();
+                     return['personal' => $Personal];
     }
 
 
