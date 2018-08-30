@@ -15,24 +15,25 @@ Route::get('/', function () {
     return view('contenido/contenido');
 });
 
+///////////////////        RUTAS DEPARTAMENTO    //////////////////////////////////
 Route::get('/departamento','DepartamentoController@index');
 Route::post('/departamento/registrar','DepartamentoController@store');
 Route::put('/departamento/actualizar','DepartamentoController@update');
 Route::delete('/departamento/eliminar','DepartamentoController@destroy');
 
-//Rutas Fraccionamiento
+///////////////////     RUTAS FRACCIONAMIENTO     ////////////////////////////////
 Route::get('/fraccionamiento','FraccionamientoController@index');
 Route::post('/fraccionamiento/registrar','FraccionamientoController@store');
 Route::put('/fraccionamiento/actualizar','FraccionamientoController@update');
 Route::delete('/fraccionamiento/eliminar','FraccionamientoController@destroy');
 
-//Rutas Etapas
+/////////////////////   RUTAS ETAPAS        //////////////////////////////////////
 Route::get('/etapa','EtapaController@index');
 Route::post('/etapa/registrar','EtapaController@store');
 Route::put('/etapa/actualizar','EtapaController@update');
 Route::delete('/etapa/eliminar','EtapaController@destroy');
 
-//Rutas Personal
+///////////////////     RUTAS PERSONAL      ////////////////////////////////////
 Route::get('/personal','PersonalController@index');
 Route::post('/personal/registrar','PersonalController@store');
 Route::put('/personal/actualizar','PersonalController@update');
@@ -40,17 +41,18 @@ Route::put('/personal/desactivar','PersonalController@desactivar');
 Route::put('/personal/activar','PersonalController@activar');
 Route::delete('/personal/eliminar','PersonalController@destroy');
 
-//Rutas Empresa
+////////////////////        RUTAS EMPRESA     /////////////////////////////////
 Route::get('/empresa','EmpresaController@index');
 Route::post('/empresa/registrar','EmpresaController@store');
 Route::put('/empresa/actualizar','EmpresaController@update');
 Route::delete('/empresa/eliminar','EmpresaController@destroy');
 
-//Select
+/***************************************************************************** */
+///////////////////       RUTAS SELECT    ////////////////////////////////////
 Route::get('/select_departamentos','DepartamentoController@selectDepartamento');
 Route::get('/select_colonias','CiudadController@selectColonias');
 Route::get('/select_empresas','EmpresaController@selectEmpresa');
 Route::get('/select_ciudades','CiudadController@selectCiudades');
-Route::get('/select_personal','PersonalController@selectNombre');
-Route::get('/select_fraccionamiento','FraccionamientoController@selectFraccionamiento');
+Route::get('/select_personal','PersonalController@selectNombre'); //Nombre completo de persona (Directivos activos)
+Route::get('/select_fraccionamiento','FraccionamientoController@selectFraccionamiento'); 
 

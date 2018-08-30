@@ -8,23 +8,26 @@
                 Mantenimiento
             </li>
             <li class="nav-item nav-dropdown">
-                <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-speedometer"></i> Desarrollo</a>
+                <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-home"></i> Desarrollo</a>
                 <ul class="nav-dropdown-items">
-                    <li @click="menu=0" class="nav-item">
+                    <li @click="menu=1" class="nav-item">
                         <a class="nav-link" href="#"><i class="icon-bag"></i> Fraccionamiento</a>
+                    </li>
+                    <li @click="menu=2" class="nav-item">
+                        <a class="nav-link" href="#"><i class="icon-bag"></i> Etapas</a>
                     </li>
                 </ul>
             </li>
             <li class="nav-item nav-dropdown">
-                <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-bag"></i> Administración</a>
+                <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-energy"></i> Administración </a>
                 <ul class="nav-dropdown-items">
-                    <li @click="menu=1" class="nav-item">
+                    <li @click="menu=11" class="nav-item">
                         <a class="nav-link" href="#"><i class="icon-bag"></i> Departamentos</a>
                     </li>
-                    <li @click="menu=2" class="nav-item">
+                    <li @click="menu=12" class="nav-item">
                         <a class="nav-link" href="#"><i class="icon-bag"></i> Personas</a>
                     </li>
-                    <li @click="menu=3" class="nav-item">
+                    <li @click="menu=13" class="nav-item">
                         <a class="nav-link" href="#"><i class="icon-bag"></i> Empresas</a>
                     </li>
                 </ul>
@@ -73,10 +76,10 @@
                     </li>
                 </ul>
             </li>
-            <li @click="menu=11" class="nav-item">
+            <li @click="menu=31" class="nav-item">
                 <a class="nav-link" href="#"><i class="icon-book-open"></i> Ayuda <span class="badge badge-danger">PDF</span></a>
             </li>
-            <li @click="menu=12" class="nav-item">
+            <li @click="menu=32" class="nav-item">
                 <a class="nav-link" href="#"><i class="icon-info"></i> Acerca de...<span class="badge badge-info">IT</span></a>
             </li>
         </ul>

@@ -1,19 +1,19 @@
 @extends('principal')
 @section('contenido')
     <template v-if="menu==0">
-        <fraccionamiento></fraccionamiento>
+        <h1>Contenido del menu 0</h1>
     </template>
 
     <template v-if="menu==1">
-        <departamento></departamento>
+        <fraccionamiento></fraccionamiento>
     </template>
     
     <template v-if="menu==2">
-        <personal></personal>
+        <etapa></etapa>
     </template>
 
     <template v-if="menu==3">
-        <empresa></empresa>
+        <h1>Contenido del menu 3</h1>
     </template>
 
     <template v-if="menu==4">
@@ -45,11 +45,15 @@
     </template>
 
     <template v-if="menu==11">
-        <h1>Contenido del menu 11</h1>
+        <departamento></departamento>
     </template>
 
     <template v-if="menu==12">
-        <h1>Contenido del menu 12</h1>
+        <personal></personal>
+    </template>
+
+    <template v-if="menu==13">
+        <empresa></empresa>
     </template>
 
     <template v-if="menu==20">
