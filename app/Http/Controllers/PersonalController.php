@@ -194,8 +194,10 @@ class PersonalController extends Controller
     public function selectNombre(Request $request){
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
         //if(!$request->ajax())return redirect('/');
-        $Personal = Personal::select(DB::raw("CONCAT(nombre,' ',apellidos) AS name"))
-                     ->where('departamento_id', '=', '1' )->orderBy('name')
+        $Personal = Personal::select(DB::raw("CONCAT(nombre,' ',apellidos) AS name"),'id')
+                     ->where('departamento_id', '=', '1' )
+                     ->where('activo','=','1')
+                     ->orderBy('name')
                      ->get();
                      return['personal' => $Personal];
     }

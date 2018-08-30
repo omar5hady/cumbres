@@ -20,4 +20,8 @@ class Personal extends Model
     public function empresa(){
         return $this->belongsTo('App\Empresa');
     }
+
+    public function etapa(){
+        return $this->hasMany('App\Etapa');
+    }
 }

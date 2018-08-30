@@ -126,4 +126,11 @@ class FraccionamientoController extends Controller
         $fraccionamiento = Fraccionamiento::findOrFail($request->id);
         $fraccionamiento->delete();
     }
+
+    public function selectFraccionamiento(Request $request){
+        //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
+        //if(!$request->ajax())return redirect('/');
+        $fraccionamiento = Fraccionamiento::select('nombre','id')->get();
+        return['fraccionamientos' => $fraccionamiento];
+    }
 }
