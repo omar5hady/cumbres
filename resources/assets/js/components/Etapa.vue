@@ -17,20 +17,20 @@
                     </div>
                     <div class="card-body">
                         <div class="form-group row">
-                            <div class="col-md-6">
+                            <div class="col-md-8">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-5" v-model="criterio">
-                                        <option value="fraccionamiento_id">Fraccionamiento</option>
-                                        <option value="f_ini">Fecha inicio</option>
-                                        <option value="f_fin">Fecha termino</option>
+                                    <select class="form-control col-md-4" v-model="criterio">
+                                        <option value="fraccionamientos.nombre">Fraccionamiento</option>
+                                        <option value="f_ini">Fecha de inicio</option>
+                                        <option value="f_fin">Fecha de termino</option>
                                     </select>
-                                    <input type="date" v-if="criterio=='f_ini'" v-model="buscar" @keyup.enter="listarEtapa(1,buscar,criterio)" class="form-control" placeholder="fecha inicio">
-                                    <input type="date" v-if="criterio=='f_ini'" v-model="buscar2" @keyup.enter="listarEtapa(1,buscar2,criterio)" class="form-control" placeholder="fecha fin">
-                                     <input type="date" v-if="criterio=='f_fin'" v-model="buscar" @keyup.enter="listarEtapa(1,buscar,criterio)" class="form-control" placeholder="fecha inicio">
-                                    <input type="date" v-if="criterio=='f_fin'" v-model="buscar2" @keyup.enter="listarEtapa(1,buscar2,criterio)" class="form-control" placeholder="fecha fin">
-                                    <input type="text" v-if="criterio=='fraccionamiento_id'"  v-model="buscar" @keyup.enter="listarEtapa(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
-                                    <button type="submit" @click="listarEtapa(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <input type="date" v-if="criterio=='f_ini'" v-model="buscar" @keyup.enter="listarEtapa(1,buscar,buscar2,criterio)" class="form-control col-md-6" placeholder="fecha inicio">
+                                    <input type="date" v-if="criterio=='f_ini'" v-model="buscar2" @keyup.enter="listarEtapa(1,buscar,buscar2,criterio)" class="form-control col-md-6" placeholder="fecha fin">
+                                    <input type="date" v-if="criterio=='f_fin'" v-model="buscar" @keyup.enter="listarEtapa(1,buscar,buscar2,criterio)" class="form-control" placeholder="fecha inicio">
+                                    <input type="date" v-if="criterio=='f_fin'" v-model="buscar2" @keyup.enter="listarEtapa(1,buscar,buscar2,criterio)" class="form-control" placeholder="fecha fin">
+                                    <input type="text" v-if="criterio=='fraccionamientos.nombre'"  v-model="buscar" @keyup.enter="listarEtapa(1,buscar,buscar2,criterio)" class="form-control" placeholder="Texto a buscar">
+                                    <button type="submit" @click="listarEtapa(1,buscar,buscar2,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
                         </div>
@@ -40,8 +40,8 @@
                                     <th>Opciones</th>
                                     <th>Fraccionamiento</th>
                                     <th>Numero de etapa</th>
-                                    <th>Fecha de inicio de etapa</th>
-                                    <th>Fecha de terminacion de etapa</th>
+                                    <th>Fecha de inicio /th>
+                                    <th>Fecha de termino</th>
                                     <th>Encargado</th>
                                     
                                 </tr>
@@ -56,11 +56,11 @@
                                           <i class="icon-trash"></i>
                                         </button>
                                     </td>
-                                    <td v-text="etapa.fraccionamiento_id"></td>
+                                    <td v-text="etapa.fraccionamiento"></td>
                                     <td v-text="etapa.num_etapa"></td>
                                     <td v-text="etapa.f_ini"></td>
                                     <td v-text="etapa.f_fin"></td>
-                                    <td v-text="etapa.personal_id"></td>
+                                    <td v-text="etapa.name"></td>
                                 </tr>                               
                             </tbody>
                         </table>
@@ -96,7 +96,7 @@
                             <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Fraccionamientos</label>
-                                    <div class="col-md-9">
+                                    <div class="col-md-6">
                                        <select class="form-control" v-model="fraccionamiento_id">
                                             <option value="0">Seleccione</option>
                                             <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
@@ -105,8 +105,8 @@
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Numero de etapa</label>
-                                    <div class="col-md-9">
-                                        <input type="text" v-model="num_etapa" class="form-control" placeholder="numero de etapas">
+                                    <div class="col-md-4">
+                                        <input type="text" maxlength="2" v-model="num_etapa" v-on:keypress="isNumber(event)" class="form-control" placeholder="# de etapa">
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -186,7 +186,7 @@
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'nombre', 
+                criterio : 'fraccionamientos.nombre', 
                 buscar : '',
                 buscar2: '',
                 arrayFraccionamientos : [],
@@ -223,9 +223,9 @@
         },
         methods : {
             /**Metodo para mostrar los registros */
-            listarEtapa(page, buscar, criterio){
+            listarEtapa(page, buscar, buscar2, criterio){
                 let me = this;
-                var url = '/etapa?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
+                var url = '/etapa?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2 + '&criterio=' + criterio;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayEtapa = respuesta.etapas.data;
@@ -283,7 +283,7 @@
                     'personal_id': this.personal_id
                 }).then(function (response){
                     me.cerrarModal(); //al guardar el registro se cierra el modal
-                    me.listarEtapa(1,'','etapa'); //se enlistan nuevamente los registros
+                    me.listarEtapa(1,'','','etapa'); //se enlistan nuevamente los registros
                     //Se muestra mensaje Success
                     swal({
                         position: 'top-end',
@@ -313,7 +313,7 @@
                     'personal_id': this.personal_id
                 }).then(function (response){
                     me.cerrarModal();
-                    me.listarEtapa(1,'','etapa');
+                    me.listarEtapa(1,'','','etapa');
                     //window.alert("Cambios guardados correctamente");
                     swal({
                         position: 'top-end',
@@ -353,7 +353,7 @@
                         'Etapa borrada correctamente.',
                         'success'
                         )
-                        me.listarEtapa(1,'','etapa');
+                        me.listarEtapa(1,'','','etapa');
                     }).catch(function (error){
                         console.log(error);
                     });
@@ -371,6 +371,15 @@
                     this.errorEtapa = 1;
 
                 return this.errorEtapa;
+            },
+            isNumber: function(evt) {
+                evt = (evt) ? evt : window.event;
+                var charCode = (evt.which) ? evt.which : evt.keyCode;
+                if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
+                    evt.preventDefault();;
+                } else {
+                    return true;
+                }
             },
             cerrarModal(){
                 this.modal = 0;
@@ -394,11 +403,11 @@
                             {
                                 this.modal = 1;
                                 this.tituloModal = 'Registrar Etapa';
-                                this.fraccionamiento_id = '';
+                                this.fraccionamiento_id = '0';
                                 this.num_etapa = '';
                                 this.f_ini = '';
                                 this.f_fin = '';
-                                this.personal_id = '';
+                                this.personal_id = '0';
                                 this.tipoAccion = 1;
                                 break;
                             }
@@ -424,7 +433,7 @@
             }
         },
         mounted() {
-            this.listarEtapa(1,this.buscar,this.criterio);
+            this.listarEtapa(1,this.buscar,this.buscar2,this.criterio);
         }
     }
 </script>

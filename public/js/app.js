@@ -889,6 +889,10 @@ var defaults = {
     return data;
   }],
 
+  /**
+   * A timeout in milliseconds to abort a request. If set to 0 (default) a
+   * timeout is not created.
+   */
   timeout: 0,
 
   xsrfCookieName: 'XSRF-TOKEN',
@@ -21280,7 +21284,7 @@ Axios.prototype.request = function request(config) {
     }, arguments[1]);
   }
 
-  config = utils.merge(defaults, this.defaults, { method: 'get' }, config);
+  config = utils.merge(defaults, {method: 'get'}, this.defaults, config);
   config.method = config.method.toLowerCase();
 
   // Hook up interceptors middleware
@@ -21455,9 +21459,7 @@ module.exports = function buildURL(url, params, paramsSerializer) {
 
       if (utils.isArray(val)) {
         key = key + '[]';
-      }
-
-      if (!utils.isArray(val)) {
+      } else {
         val = [val];
       }
 
@@ -39622,7 +39624,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'to': 0
             },
             offset: 3,
-            criterio: 'nombre',
+            criterio: 'fraccionamientos.nombre',
             buscar: '',
             buscar2: '',
             arrayFraccionamientos: [],
@@ -39660,9 +39662,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     methods: {
         /**Metodo para mostrar los registros */
-        listarEtapa: function listarEtapa(page, buscar, criterio) {
+        listarEtapa: function listarEtapa(page, buscar, buscar2, criterio) {
             var me = this;
-            var url = '/etapa?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
+            var url = '/etapa?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2 + '&criterio=' + criterio;
             axios.get(url).then(function (response) {
                 var respuesta = response.data;
                 me.arrayEtapa = respuesta.etapas.data;
@@ -39718,7 +39720,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'personal_id': this.personal_id
             }).then(function (response) {
                 me.cerrarModal(); //al guardar el registro se cierra el modal
-                me.listarEtapa(1, '', 'etapa'); //se enlistan nuevamente los registros
+                me.listarEtapa(1, '', '', 'etapa'); //se enlistan nuevamente los registros
                 //Se muestra mensaje Success
                 swal({
                     position: 'top-end',
@@ -39748,7 +39750,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'personal_id': this.personal_id
             }).then(function (response) {
                 me.cerrarModal();
-                me.listarEtapa(1, '', 'etapa');
+                me.listarEtapa(1, '', '', 'etapa');
                 //window.alert("Cambios guardados correctamente");
                 swal({
                     position: 'top-end',
@@ -39787,7 +39789,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
                     axios.delete('/etapa/eliminar', { params: { 'id': _this.id } }).then(function (response) {
                         swal('Borrado!', 'Etapa borrada correctamente.', 'success');
-                        me.listarEtapa(1, '', 'etapa');
+                        me.listarEtapa(1, '', '', 'etapa');
                     }).catch(function (error) {
                         console.log(error);
                     });
@@ -39805,6 +39807,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 this.errorEtapa = 1;
 
             return this.errorEtapa;
+        },
+
+        isNumber: function isNumber(evt) {
+            evt = evt ? evt : window.event;
+            var charCode = evt.which ? evt.which : evt.keyCode;
+            if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode !== 46) {
+                evt.preventDefault();;
+            } else {
+                return true;
+            }
         },
         cerrarModal: function cerrarModal() {
             this.modal = 0;
@@ -39830,11 +39842,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                 {
                                     this.modal = 1;
                                     this.tituloModal = 'Registrar Etapa';
-                                    this.fraccionamiento_id = '';
+                                    this.fraccionamiento_id = '0';
                                     this.num_etapa = '';
                                     this.f_ini = '';
                                     this.f_fin = '';
-                                    this.personal_id = '';
+                                    this.personal_id = '0';
                                     this.tipoAccion = 1;
                                     break;
                                 }
@@ -39860,7 +39872,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         }
     },
     mounted: function mounted() {
-        this.listarEtapa(1, this.buscar, this.criterio);
+        this.listarEtapa(1, this.buscar, this.buscar2, this.criterio);
     }
 });
 
@@ -39901,7 +39913,7 @@ var render = function() {
         _vm._v(" "),
         _c("div", { staticClass: "card-body" }, [
           _c("div", { staticClass: "form-group row" }, [
-            _c("div", { staticClass: "col-md-6" }, [
+            _c("div", { staticClass: "col-md-8" }, [
               _c("div", { staticClass: "input-group" }, [
                 _c(
                   "select",
@@ -39914,7 +39926,7 @@ var render = function() {
                         expression: "criterio"
                       }
                     ],
-                    staticClass: "form-control col-md-5",
+                    staticClass: "form-control col-md-4",
                     on: {
                       change: function($event) {
                         var $$selectedVal = Array.prototype.filter
@@ -39932,16 +39944,18 @@ var render = function() {
                     }
                   },
                   [
-                    _c("option", { attrs: { value: "fraccionamiento_id" } }, [
-                      _vm._v("Fraccionamiento")
-                    ]),
+                    _c(
+                      "option",
+                      { attrs: { value: "fraccionamientos.nombre" } },
+                      [_vm._v("Fraccionamiento")]
+                    ),
                     _vm._v(" "),
                     _c("option", { attrs: { value: "f_ini" } }, [
-                      _vm._v("Fecha inicio")
+                      _vm._v("Fecha de inicio")
                     ]),
                     _vm._v(" "),
                     _c("option", { attrs: { value: "f_fin" } }, [
-                      _vm._v("Fecha termino")
+                      _vm._v("Fecha de termino")
                     ])
                   ]
                 ),
@@ -39956,7 +39970,7 @@ var render = function() {
                           expression: "buscar"
                         }
                       ],
-                      staticClass: "form-control",
+                      staticClass: "form-control col-md-6",
                       attrs: { type: "date", placeholder: "fecha inicio" },
                       domProps: { value: _vm.buscar },
                       on: {
@@ -39973,7 +39987,12 @@ var render = function() {
                           ) {
                             return null
                           }
-                          _vm.listarEtapa(1, _vm.buscar, _vm.criterio)
+                          _vm.listarEtapa(
+                            1,
+                            _vm.buscar,
+                            _vm.buscar2,
+                            _vm.criterio
+                          )
                         },
                         input: function($event) {
                           if ($event.target.composing) {
@@ -39995,7 +40014,7 @@ var render = function() {
                           expression: "buscar2"
                         }
                       ],
-                      staticClass: "form-control",
+                      staticClass: "form-control col-md-6",
                       attrs: { type: "date", placeholder: "fecha fin" },
                       domProps: { value: _vm.buscar2 },
                       on: {
@@ -40012,7 +40031,12 @@ var render = function() {
                           ) {
                             return null
                           }
-                          _vm.listarEtapa(1, _vm.buscar2, _vm.criterio)
+                          _vm.listarEtapa(
+                            1,
+                            _vm.buscar,
+                            _vm.buscar2,
+                            _vm.criterio
+                          )
                         },
                         input: function($event) {
                           if ($event.target.composing) {
@@ -40051,7 +40075,12 @@ var render = function() {
                           ) {
                             return null
                           }
-                          _vm.listarEtapa(1, _vm.buscar, _vm.criterio)
+                          _vm.listarEtapa(
+                            1,
+                            _vm.buscar,
+                            _vm.buscar2,
+                            _vm.criterio
+                          )
                         },
                         input: function($event) {
                           if ($event.target.composing) {
@@ -40090,7 +40119,12 @@ var render = function() {
                           ) {
                             return null
                           }
-                          _vm.listarEtapa(1, _vm.buscar2, _vm.criterio)
+                          _vm.listarEtapa(
+                            1,
+                            _vm.buscar,
+                            _vm.buscar2,
+                            _vm.criterio
+                          )
                         },
                         input: function($event) {
                           if ($event.target.composing) {
@@ -40102,7 +40136,7 @@ var render = function() {
                     })
                   : _vm._e(),
                 _vm._v(" "),
-                _vm.criterio == "fraccionamiento_id"
+                _vm.criterio == "fraccionamientos.nombre"
                   ? _c("input", {
                       directives: [
                         {
@@ -40129,7 +40163,12 @@ var render = function() {
                           ) {
                             return null
                           }
-                          _vm.listarEtapa(1, _vm.buscar, _vm.criterio)
+                          _vm.listarEtapa(
+                            1,
+                            _vm.buscar,
+                            _vm.buscar2,
+                            _vm.criterio
+                          )
                         },
                         input: function($event) {
                           if ($event.target.composing) {
@@ -40148,7 +40187,12 @@ var render = function() {
                     attrs: { type: "submit" },
                     on: {
                       click: function($event) {
-                        _vm.listarEtapa(1, _vm.buscar, _vm.criterio)
+                        _vm.listarEtapa(
+                          1,
+                          _vm.buscar,
+                          _vm.buscar2,
+                          _vm.criterio
+                        )
                       }
                     }
                   },
@@ -40199,9 +40243,7 @@ var render = function() {
                     ]),
                     _vm._v(" "),
                     _c("td", {
-                      domProps: {
-                        textContent: _vm._s(etapa.fraccionamiento_id)
-                      }
+                      domProps: { textContent: _vm._s(etapa.fraccionamiento) }
                     }),
                     _vm._v(" "),
                     _c("td", {
@@ -40216,9 +40258,7 @@ var render = function() {
                       domProps: { textContent: _vm._s(etapa.f_fin) }
                     }),
                     _vm._v(" "),
-                    _c("td", {
-                      domProps: { textContent: _vm._s(etapa.personal_id) }
-                    })
+                    _c("td", { domProps: { textContent: _vm._s(etapa.name) } })
                   ])
                 })
               )
@@ -40376,7 +40416,7 @@ var render = function() {
                         [_vm._v("Fraccionamientos")]
                       ),
                       _vm._v(" "),
-                      _c("div", { staticClass: "col-md-9" }, [
+                      _c("div", { staticClass: "col-md-6" }, [
                         _c(
                           "select",
                           {
@@ -40437,7 +40477,7 @@ var render = function() {
                         [_vm._v("Numero de etapa")]
                       ),
                       _vm._v(" "),
-                      _c("div", { staticClass: "col-md-9" }, [
+                      _c("div", { staticClass: "col-md-4" }, [
                         _c("input", {
                           directives: [
                             {
@@ -40450,10 +40490,14 @@ var render = function() {
                           staticClass: "form-control",
                           attrs: {
                             type: "text",
-                            placeholder: "numero de etapas"
+                            maxlength: "2",
+                            placeholder: "# de etapa"
                           },
                           domProps: { value: _vm.num_etapa },
                           on: {
+                            keypress: function($event) {
+                              _vm.isNumber(_vm.event)
+                            },
                             input: function($event) {
                               if ($event.target.composing) {
                                 return
@@ -40707,9 +40751,10 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Numero de etapa")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Fecha de inicio de etapa")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Fecha de terminacion de etapa")]),
+        _c("th", [
+          _vm._v("Fecha de inicio /th>\n                                ")
+        ]),
+        _c("th", [_vm._v("Fecha de termino")]),
         _vm._v(" "),
         _c("th", [_vm._v("Encargado")])
       ])

@@ -19,19 +19,39 @@ class EtapaController extends Controller
         //if(!$request->ajax())return redirect('/');
 
         $buscar = $request->buscar;
+        $buscar2 = $request->buscar2;
         $criterio = $request->criterio;
         
         if($buscar==''){
             $etapas = Etapa::join('personal','etapas.personal_id','=','personal.id')
-            ->join('fraccionamientos','etapas.fraccionamiento_id','=','fraccionamientos.id')
-            ->select('etapas.num_etapa','etapas.f_ini',
-                'etapas.f_fin','etapas.id','etapas.personal_id', 
-                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS name"),
-                'etapas.fraccionamiento_id','fraccionamientos.nombre as fraccionamiento')
-                ->orderBy('id','name')->paginate(5);
+                ->join('fraccionamientos','etapas.fraccionamiento_id','=','fraccionamientos.id')
+                ->select('etapas.num_etapa','etapas.f_ini',
+                    'etapas.f_fin','etapas.id','etapas.personal_id', 
+                    DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS name"),
+                    'etapas.fraccionamiento_id','fraccionamientos.nombre as fraccionamiento')
+                    ->orderBy('id','name')->paginate(5);
         }
         else{
-            $etapas = Etapa::where($criterio, 'like', '%'. $buscar . '%')->orderBy('id','desc')->paginate(5);
+            if($criterio == 'f_ini' || $criterio == 'f_fin')
+            {
+                $etapas = Etapa::join('personal','etapas.personal_id','=','personal.id')
+                    ->join('fraccionamientos','etapas.fraccionamiento_id','=','fraccionamientos.id')
+                    ->select('etapas.num_etapa','etapas.f_ini',
+                        'etapas.f_fin','etapas.id','etapas.personal_id', 
+                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS name"),
+                        'etapas.fraccionamiento_id','fraccionamientos.nombre as fraccionamiento')
+                        ->whereBetween($criterio, [$buscar,$buscar2])->orderBy('id','name')->paginate(5);
+            }
+            else{
+                $etapas = Etapa::join('personal','etapas.personal_id','=','personal.id')
+                    ->join('fraccionamientos','etapas.fraccionamiento_id','=','fraccionamientos.id')
+                    ->select('etapas.num_etapa','etapas.f_ini',
+                        'etapas.f_fin','etapas.id','etapas.personal_id', 
+                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS name"),
+                        'etapas.fraccionamiento_id','fraccionamientos.nombre as fraccionamiento')
+                        ->where($criterio, 'like', '%'. $buscar . '%')->orderBy('id','name')->paginate(5);
+            }
+            
         }
 
         return [
