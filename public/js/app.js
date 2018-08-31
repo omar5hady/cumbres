@@ -39695,12 +39695,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 console.log(error);
             });
         },
-        cambiarPagina: function cambiarPagina(page, buscar, criterio) {
+        cambiarPagina: function cambiarPagina(page, buscar, buscar2, criterio) {
             var me = this;
             //Actualiza la pagina actual
             me.pagination.current_page = page;
             //Envia la petición para visualizar la data de esta pagina
-            me.listarEmpresa(page, buscar, criterio);
+            me.listarEtapa(page, buscar, buscar2, criterio);
         },
 
         /**Metodo para registrar  */
@@ -40283,6 +40283,7 @@ var render = function() {
                               _vm.cambiarPagina(
                                 _vm.pagination.current_page - 1,
                                 _vm.buscar,
+                                _vm.buscar2,
                                 _vm.criterio
                               )
                             }
@@ -40309,7 +40310,12 @@ var render = function() {
                         on: {
                           click: function($event) {
                             $event.preventDefault()
-                            _vm.cambiarPagina(page, _vm.buscar, _vm.criterio)
+                            _vm.cambiarPagina(
+                              page,
+                              _vm.buscar,
+                              _vm.buscar2,
+                              _vm.criterio
+                            )
                           }
                         }
                       })
@@ -40330,6 +40336,7 @@ var render = function() {
                               _vm.cambiarPagina(
                                 _vm.pagination.current_page + 1,
                                 _vm.buscar,
+                                _vm.buscar2,
                                 _vm.criterio
                               )
                             }
@@ -40751,9 +40758,8 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Numero de etapa")]),
         _vm._v(" "),
-        _c("th", [
-          _vm._v("Fecha de inicio /th>\n                                ")
-        ]),
+        _c("th", [_vm._v("Fecha de inicio ")]),
+        _vm._v(" "),
         _c("th", [_vm._v("Fecha de termino")]),
         _vm._v(" "),
         _c("th", [_vm._v("Encargado")])

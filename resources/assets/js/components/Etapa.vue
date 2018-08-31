@@ -40,7 +40,7 @@
                                     <th>Opciones</th>
                                     <th>Fraccionamiento</th>
                                     <th>Numero de etapa</th>
-                                    <th>Fecha de inicio /th>
+                                    <th>Fecha de inicio </th>
                                     <th>Fecha de termino</th>
                                     <th>Encargado</th>
                                     
@@ -68,13 +68,13 @@
                             <!--Botones de paginacion -->
                             <ul class="pagination">
                                 <li class="page-item" v-if="pagination.current_page > 1">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,criterio)">Ant</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,buscar2,criterio)">Ant</a>
                                 </li>
                                 <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,criterio)" v-text="page"></a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,buscar2,criterio)" v-text="page"></a>
                                 </li>
                                 <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,criterio)">Sig</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,buscar2,criterio)">Sig</a>
                                 </li>
                             </ul>
                         </nav>
@@ -259,12 +259,12 @@
                     console.log(error);
                 });
             },
-            cambiarPagina(page, buscar, criterio){
+            cambiarPagina(page, buscar, buscar2, criterio){
                 let me = this;
                 //Actualiza la pagina actual
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
-                me.listarEmpresa(page,buscar,criterio);
+                me.listarEtapa(page,buscar,buscar2,criterio);
             },
             /**Metodo para registrar  */
             registrarEtapa(){
