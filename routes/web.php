@@ -55,4 +55,5 @@ Route::get('/select_empresas','EmpresaController@selectEmpresa');
 Route::get('/select_ciudades','CiudadController@selectCiudades');
 Route::get('/select_personal','PersonalController@selectNombre'); //Nombre completo de persona (Directivos activos)
 Route::get('/select_fraccionamiento','FraccionamientoController@selectFraccionamiento'); 
+Route::get('/contador_etapa','EtapaController@contEtapa'); 
 

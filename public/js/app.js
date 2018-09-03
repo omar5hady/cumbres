@@ -889,10 +889,6 @@ var defaults = {
     return data;
   }],
 
-  /**
-   * A timeout in milliseconds to abort a request. If set to 0 (default) a
-   * timeout is not created.
-   */
   timeout: 0,
 
   xsrfCookieName: 'XSRF-TOKEN',
@@ -21284,7 +21280,7 @@ Axios.prototype.request = function request(config) {
     }, arguments[1]);
   }
 
-  config = utils.merge(defaults, {method: 'get'}, this.defaults, config);
+  config = utils.merge(defaults, this.defaults, { method: 'get' }, config);
   config.method = config.method.toLowerCase();
 
   // Hook up interceptors middleware
@@ -21459,7 +21455,9 @@ module.exports = function buildURL(url, params, paramsSerializer) {
 
       if (utils.isArray(val)) {
         key = key + '[]';
-      } else {
+      }
+
+      if (!utils.isArray(val)) {
         val = [val];
       }
 
@@ -39604,6 +39602,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     data: function data() {
         return {
             id: 0,
+            contador: 0,
             fraccionamiento_id: 0,
             num_etapa: 0,
             f_ini: '',
@@ -39680,6 +39679,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             axios.get(url).then(function (response) {
                 var respuesta = response.data;
                 me.arrayFraccionamientos = respuesta.fraccionamientos;
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        selectContador: function selectContador(fraccionamiento_id) {
+            var me = this;
+            me.contador = 0;
+            var url = '/contador_etapa?fraccionamiento_id=' + fraccionamiento_id;
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.contador = respuesta;
+                me.num_etapa = me.contador;
             }).catch(function (error) {
                 console.log(error);
             });
@@ -39828,6 +39839,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.personal_id = '';
             this.errorEtapa = 0;
             this.errorMostrarMsjEtapa = [];
+            this.contador = 0;
         },
 
         /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
@@ -39843,7 +39855,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     this.modal = 1;
                                     this.tituloModal = 'Registrar Etapa';
                                     this.fraccionamiento_id = '0';
-                                    this.num_etapa = '';
+                                    this.num_etapa = this.contador;
                                     this.f_ini = '';
                                     this.f_fin = '';
                                     this.personal_id = '0';
@@ -40437,6 +40449,9 @@ var render = function() {
                             ],
                             staticClass: "form-control",
                             on: {
+                              click: function($event) {
+                                _vm.selectContador(_vm.fraccionamiento_id)
+                              },
                               change: function($event) {
                                 var $$selectedVal = Array.prototype.filter
                                   .call($event.target.options, function(o) {

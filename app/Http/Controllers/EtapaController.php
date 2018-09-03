@@ -151,4 +151,13 @@ class EtapaController extends Controller
         $etapa = Etapa::findOrFail($request->id);
         $etapa->delete();
     }
+
+    public function contEtapa(Request $request)
+    {
+        $fraccionamiento_id = $request->fraccionamiento_id;
+        $etapas = Etapa::where('fraccionamiento_id','=',$fraccionamiento_id)->get();
+        $contador = $etapas->count();
+
+        return $contador + 1;
+    }
 }

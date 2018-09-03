@@ -97,7 +97,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Fraccionamientos</label>
                                     <div class="col-md-6">
-                                       <select class="form-control" v-model="fraccionamiento_id">
+                                       <select class="form-control" @click="selectContador(fraccionamiento_id)" v-model="fraccionamiento_id">
                                             <option value="0">Seleccione</option>
                                             <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                         </select>
@@ -166,6 +166,7 @@
         data(){
             return{
                 id:0,
+                contador : 0,
                 fraccionamiento_id : 0,
                 num_etapa : 0,
                 f_ini : '',
@@ -242,6 +243,19 @@
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayFraccionamientos = respuesta.fraccionamientos;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            selectContador(fraccionamiento_id){
+                let me = this;
+                me.contador=0;
+                var url = '/contador_etapa?fraccionamiento_id='+fraccionamiento_id;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.contador = respuesta;
+                    me.num_etapa = me.contador;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -367,6 +381,8 @@
                 if(!this.num_etapa) //Si la variable Fraccionamiento esta vacia
                     this.errorMostrarMsjEtapa.push("El numero de etapa no puede ir vacio.");
 
+                
+
                 if(this.errorMostrarMsjEtapa.length)//Si el mensaje tiene almacenado algo en el array
                     this.errorEtapa = 1;
 
@@ -391,6 +407,7 @@
                 this.personal_id = '';
                 this.errorEtapa = 0;
                 this.errorMostrarMsjEtapa = [];
+                this.contador=0;
 
             },
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
@@ -404,7 +421,7 @@
                                 this.modal = 1;
                                 this.tituloModal = 'Registrar Etapa';
                                 this.fraccionamiento_id = '0';
-                                this.num_etapa = '';
+                                this.num_etapa = this.contador;
                                 this.f_ini = '';
                                 this.f_fin = '';
                                 this.personal_id = '0';
