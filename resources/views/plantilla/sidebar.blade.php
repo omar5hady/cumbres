@@ -16,6 +16,9 @@
                     <li @click="menu=2" class="nav-item">
                         <a class="nav-link" href="#"><i class="icon-bag"></i> Etapas</a>
                     </li>
+                    <li @click="menu=3" class="nav-item">
+                        <a class="nav-link" href="#"><i class="icon-bag"></i> Modelos</a>
+                    </li>
                 </ul>
             </li>
             <li class="nav-item nav-dropdown">
