@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Modelos;
+use App\Modelo;
 use DB;
 
-class ModelosController extends Controller
+class ModeloController extends Controller
 {
      /**
      * Display a listing of the resource.
@@ -22,7 +22,10 @@ class ModelosController extends Controller
         $criterio = $request->criterio;
         
         if($buscar==''){
-            
+            $modelos = Modelo::join('fraccionamientos','modelos.fraccionamiento_id','=','fraccionamientos.id')
+            ->select('modelos.nombre','modelos.tipo','modelos.fraccionamiento_id',
+            'fraccionamientos.nombre as fraccionamiento','modelos.terreno','modelos.construccion','modelos.archivo','modelos.id')
+                ->orderBy('id','modelos.nombre')->paginate(5);
         }
         else{
             
@@ -31,14 +34,14 @@ class ModelosController extends Controller
 
         return [
             'pagination' => [
-                'total'         => $etapas->total(),
-                'current_page'  => $etapas->currentPage(),
-                'per_page'      => $etapas->perPage(),
-                'last_page'     => $etapas->lastPage(),
-                'from'          => $etapas->firstItem(),
-                'to'            => $etapas->lastItem(),
+                'total'         => $modelos->total(),
+                'current_page'  => $modelos->currentPage(),
+                'per_page'      => $modelos->perPage(),
+                'last_page'     => $modelos->lastPage(),
+                'from'          => $modelos->firstItem(),
+                'to'            => $modelos->lastItem(),
             ],
-            'etapas' => $etapas
+            'modelos' => $modelos
         ];
     }
 
@@ -68,7 +71,6 @@ class ModelosController extends Controller
         $modelo->tipo = $request->tipo;
         $modelo->fraccionamiento_id = $request->fraccionamiento_id;
         $modelo->terreno = $request->terreno;
-        $modelo->construccion = $request->construccion;
         $modelo->archivo = $request->archivo;
         $modelo->planta = $request->planta;
         $modelo->save();

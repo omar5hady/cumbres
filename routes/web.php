@@ -48,10 +48,10 @@ Route::put('/empresa/actualizar','EmpresaController@update');
 Route::delete('/empresa/eliminar','EmpresaController@destroy');
 
 ////////////////////        RUTAS MODELOS     /////////////////////////////////
-Route::get('/modelo','ModelosController@index');
-Route::post('/modelo/registrar','ModelosController@store');
-Route::put('/modelo/actualizar','ModelosController@update');
-Route::delete('/modelo/eliminar','ModelosController@destroy');
+Route::get('/modelo','ModeloController@index');
+Route::post('/modelo/registrar','ModeloController@store');
+Route::put('/modelo/actualizar','ModeloController@update');
+Route::delete('/modelo/eliminar','ModeloController@destroy');
 
 
 /***************************************************************************** */

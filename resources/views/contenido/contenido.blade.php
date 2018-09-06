@@ -13,7 +13,7 @@
     </template>
 
     <template v-if="menu==3">
-        <modelos></modelos>
+        <modelo></modelo>
     </template>
 
     <template v-if="menu==4">

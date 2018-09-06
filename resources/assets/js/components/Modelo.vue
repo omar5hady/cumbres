@@ -25,13 +25,13 @@
                                       <option value="tipo_proyecto">Tipo de Proyecto</option>
                                     </select>
                                     
-                                    <input type="text" v-if="criterio=='nombre'" v-model="buscar" @keyup.enter="listarModelos(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
-                                    <select class="form-control col-md-5" v-if="criterio=='tipo_proyecto'" v-model="buscar" @keyup.enter="listarModelos(1,buscar,criterio)" >
+                                    <input type="text" v-if="criterio=='nombre'" v-model="buscar" @keyup.enter="listarModelo(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
+                                    <select class="form-control col-md-5" v-if="criterio=='tipo_proyecto'" v-model="buscar" @keyup.enter="listarModelo(1,buscar,criterio)" >
                                         <option value="1">Lotificación</option>
                                         <option value="2">Departamento</option>
                                         <option value="3">Terreno</option>
                                     </select>
-                                    <button type="submit" @click="listarModelos(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <button type="submit" @click="listarModelo(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
                         </div>
@@ -39,35 +39,32 @@
                             <thead>
                                 <tr>
                                     <th>Opciones</th>
-                                    <th>Nombre</th>
-                                    <th>Acabado</th>
+                                    <th>Modelo</th>
                                     <th>Tipo</th>
                                     <th>Fraccionamiento</th>
-                                    <th>terreno</th>
-                                    <th>construccion</th>
+                                    <th>Terreno</th>
+                                    <th>Construcción</th>
                                     <th>Archivo</th>
-                                    <th>Planta</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="fraccionamiento in arrayFraccionamiento" :key="fraccionamiento.id">
+                                <tr v-for="modelo in arrayModelo" :key="modelo.id">
                                     <td>
-                                        <button type="button" @click="abrirModal('fraccionamiento','actualizar',fraccionamiento)" class="btn btn-warning btn-sm">
+                                        <button type="button" @click="abrirModal('modelo','actualizar',modelo)" class="btn btn-warning btn-sm">
                                           <i class="icon-pencil"></i>
                                         </button> &nbsp;
-                                        <button type="button" class="btn btn-danger btn-sm" @click="eliminarFraccionamiento(fraccionamiento)">
+                                        <button type="button" class="btn btn-danger btn-sm" @click="eliminarModelo(modelo)">
                                           <i class="icon-trash"></i>
                                         </button>
                                     </td>
-                                    <td v-text="fraccionamiento.nombre"></td>
-                                    <td v-if="fraccionamiento.tipo_proyecto==1" v-text="'Lotificación'"></td>
-                                    <td v-if="fraccionamiento.tipo_proyecto==2" v-text="'Departamento'"></td>
-                                    <td v-if="fraccionamiento.tipo_proyecto==3" v-text="'Terreno'"></td>
-                                    <td v-text="fraccionamiento.calle"></td>
-                                    <td v-text="fraccionamiento.colonia"></td>
-                                    <td>
-                                        <span class="badge badge-success">Activo</span>
-                                    </td>
+                                    <td v-text="modelo.nombre"></td>
+                                    <td v-if="modelo.tipo==1" v-text="'Lotificación'"></td>
+                                    <td v-if="modelo.tipo==2" v-text="'Departamento'"></td>
+                                    <td v-if="modelo.tipo==3" v-text="'Terreno'"></td>
+                                    <td v-text="modelo.fraccionamiento"></td>
+                                    <td v-text="modelo.terreno"></td>
+                                    <td v-text="modelo.construccion"></td>
+                                    <td v-text="modelo.archivo"></td>
                                 </tr>                               
                             </tbody>
                         </table>
@@ -109,12 +106,6 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Acabado</label>
-                                    <div class="col-md-9">
-                                        <input type="text" v-model="acabado" class="form-control" placeholder="Acabado del modelo">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Tipo</label>
                                     <div class="col-md-3">
                                         <select class="form-control" v-model="tipo">
@@ -125,31 +116,15 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Terreno</label>
-                                    <div class="col-md-9">
+                                    <label class="col-md-3 form-control-label" for="text-input">Terreno (mts&sup2;)</label>
+                                    <div class="col-md-4">
                                         <input type="text" v-model="terreno" class="form-control" placeholder="Terreno">
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Construccion</label>
-                                    <div class="col-md-9">
+                                    <label class="col-md-3 form-control-label" for="text-input">Construcción (mts&sup2;)</label>
+                                    <div class="col-md-7">
                                         <input type="text" v-model="construccion" class="form-control" placeholder="Construccion">
-                                    </div>
-                                </div>
-                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Subir archivo del modelo</label>
-                                    <div class="col-md-9">
-                                        <input type="file" name="archivo" class="form-control" placeholder="Archivo">
-                                    </div>
-                                </div>
-                                
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Planta</label>
-                                    <div class="col-md-9">
-                                        <select class="form-control" v-model="planta">
-                                            <option v-for="ciudades in arrayCiudades" :key="ciudades.municipio" :value="ciudades.municipio" v-text="ciudades.municipio"></option>
-                                        </select>
-                                        <!--<input type="text" v-model="ciudad" class="form-control" placeholder="Ciudad">-->
                                     </div>
                                 </div>
                                 <!-- Div para mostrar los errores que mande validerModelo -->
@@ -190,19 +165,17 @@
             return{
                 id:0,
                 nombre : '',
-                acabado : '',
                 tipo : 0,
                 fraccionamiento_id : 0,
-                terrreno : 0.0,
+                terreno : 0,
                 construccion : 0.0,
                 archivo: '',
-                planta: '',
-                arrayModelos : [],
+                arrayModelo : [],
                 modal : 0,
                 tituloModal : '',
                 tipoAccion: 0,
-                errorModelos : 0,
-                errorMostrarMsjModelos : [],
+                errorModelo : 0,
+                errorMostrarMsjModelo : [],
                 pagination : {
                     'total' : 0,         
                     'current_page' : 0,
@@ -259,24 +232,12 @@
                     console.log(error);
                 });
             },
-            // selectCiudades(buscar){
-            //     let me = this;
-            //     me.arrayCiudades=[];
-            //     var url = '/select_ciudades?buscar=' + buscar;
-            //     axios.get(url).then(function (response) {
-            //         var respuesta = response.data;
-            //         me.arrayCiudades = respuesta.ciudades;
-            //     })
-            //     .catch(function (error) {
-            //         console.log(error);
-            //     });
-            // },
             cambiarPagina(page, buscar, criterio){
                 let me = this;
                 //Actualiza la pagina actual
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
-                me.listarFraccionamiento(page,buscar,criterio);
+                me.listarModelo(page,buscar,criterio);
             },
             /**Metodo para registrar  */
             registrarModelo(){
@@ -289,13 +250,11 @@
                 //Con axios se llama el metodo store de FraccionaminetoController
                 axios.post('/modelo/registrar',{
                     'nombre': this.nombre,
-                    'acabado': this.acabado,
                     'tipo': this.tipo,
                     'fraccionamiento_id': this.fraccionamiento_id,
                     'terreno': this.terreno,
                     'construccion': this.construccion,
-                    'archivo': this.archivo,
-                    'planta': this.planta
+                    'archivo': ''
                 }).then(function (response){
                     me.cerrarModal(); //al guardar el registro se cierra el modal
                     me.listarModelo(1,'','modelo'); //se enlistan nuevamente los registros
@@ -321,13 +280,10 @@
                 //Con axios se llama el metodo update de FraccionaminetoController
                 axios.put('/modelo/actualizar',{
                     'nombre': this.nombre,
-                    'acabado': this.acabado,
                     'tipo': this.tipo,
                     'fraccionamiento_id': this.fraccionamiento_id,
                     'terreno': this.terreno,
                     'construccion': this.construccion,
-                    'archivo': this.archivo,
-                    'planta': this.planta,
                     'id' : this.id
                 }).then(function (response){
                     me.cerrarModal();
@@ -344,17 +300,14 @@
                     console.log(error);
                 });
             },
-            eliminarFraccionamiento(data =[]){
+            eliminarModelo(data =[]){
                 this.id=data['id'];
                 this.nombre=data['nombre'];
-                this.acabado=data['acabado'];
                 this.tipo=data['tipo'];
                 this.fraccionamiento_id=data['fraccionamiento_id'];
                 this.terreno=data['terreno'];
                 this.construccion=data['construccion'];
                 this.archivo=data['archivo'];
-                this.planta=data['planta'];
-                //console.log(this.fraccionamiento_id);
                 swal({
                 title: '¿Desea eliminar?',
                 text: "Esta acción no se puede revertir!",
@@ -398,13 +351,11 @@
                 this.modal = 0;
                 this.tituloModal = '';
                 this.nombre = '';
-                this.acabado = '';
                 this.tipo = 0;
                 this.fraccionamiento_id = 0;
                 this.terreno = 0;
                 this.construccion = 0;
                 this.archivo = '';
-                this.planta = '';
                 this.errorModelo = 0;
                 this.errorMostrarMsjModelo = [];
 
@@ -420,31 +371,26 @@
                                 this.modal = 1;
                                 this.tituloModal = 'Registrar Modelo';
                                 this.nombre = '';
-                                this.acabado = '';
                                 this.tipo = 0;
                                 this.fraccionamiento_id = 0;
                                 this.terreno = 0;
                                 this.construccion = 0;
                                 this.archivo = '';
-                                this.planta = '';
                                 this.tipoAccion = 1;
                                 break;
                             }
                             case 'actualizar':
                             {
-                                //console.log(data);
                                 this.modal =1;
                                 this.tituloModal='Actualizar Modelo';
                                 this.tipoAccion=2;
                                 this.id=data['id'];
                                 this.nombre=data['nombre'];
-                                this.acabado=data['acabado'];
                                 this.tipo=data['tipo'];
                                 this.fraccionamiento_id=data['fraccionamiento_id'];
                                 this.terreno=data['terreno'];
                                 this.construccion=data['construccion'];
                                 this.archivo=data['archivo'];
-                                this.planta=data['planta'];
                                 break;
                             }
                         }

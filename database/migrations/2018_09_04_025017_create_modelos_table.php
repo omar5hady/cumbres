@@ -16,14 +16,11 @@ class CreateModelosTable extends Migration
         Schema::create('modelos', function (Blueprint $table) {
             $table->increments('id');
             $table->string('nombre');
-            $table->string('acabado');
             $table->integer('tipo');
             $table->unsignedInteger('fraccionamiento_id');
             $table->float('terreno');
             $table->float('construccion');
-            $table->string('archivo');
-            $table->string('planta');
-
+            $table->string('archivo')->nullable();
 
             $table->foreign('fraccionamiento_id')->references('id')->on('fraccionamientos');
 

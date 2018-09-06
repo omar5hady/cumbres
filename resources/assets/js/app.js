@@ -20,7 +20,7 @@ Vue.component('fraccionamiento', require('./components/Fraccionamiento.vue'));
 Vue.component('personal', require('./components/personal.vue'));
 Vue.component('empresa', require('./components/Empresa.vue'));
 Vue.component('etapa', require('./components/Etapa.vue'));
-Vue.component('modelos', require('./components/Modelos.vue'));
+Vue.component('modelo', require('./components/Modelo.vue'));
 
 const app = new Vue({
     el: '#app',

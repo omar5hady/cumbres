@@ -1410,7 +1410,7 @@ Vue.component('fraccionamiento', __webpack_require__(46));
 Vue.component('personal', __webpack_require__(51));
 Vue.component('empresa', __webpack_require__(56));
 Vue.component('etapa', __webpack_require__(61));
-Vue.component('modelos', __webpack_require__(66));
+Vue.component('modelo', __webpack_require__(66));
 
 var app = new Vue({
   el: '#app',
@@ -40822,7 +40822,7 @@ var Component = normalizeComponent(
   __vue_scopeId__,
   __vue_module_identifier__
 )
-Component.options.__file = "resources\\assets\\js\\components\\Modelos.vue"
+Component.options.__file = "resources\\assets\\js\\components\\Modelo.vue"
 
 /* hot reload */
 if (false) {(function () {
@@ -40831,9 +40831,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-65297b26", Component.options)
+    hotAPI.createRecord("data-v-242d599d", Component.options)
   } else {
-    hotAPI.reload("data-v-65297b26", Component.options)
+    hotAPI.reload("data-v-242d599d", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -40854,13 +40854,13 @@ var content = __webpack_require__(68);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("66d4d2ac", content, false, {});
+var update = __webpack_require__(2)("7c55101c", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
  if(!content.locals) {
-   module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-65297b26\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Modelos.vue", function() {
-     var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-65297b26\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Modelos.vue");
+   module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-242d599d\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Modelo.vue", function() {
+     var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-242d599d\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Modelo.vue");
      if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
      update(newContent);
    });
@@ -41050,50 +41050,23 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
             id: 0,
             nombre: '',
-            acabado: '',
             tipo: 0,
             fraccionamiento_id: 0,
-            terrreno: 0.0,
+            terreno: 0,
             construccion: 0.0,
             archivo: '',
-            planta: '',
-            arrayModelos: [],
+            arrayModelo: [],
             modal: 0,
             tituloModal: '',
             tipoAccion: 0,
-            errorModelos: 0,
-            errorMostrarMsjModelos: [],
+            errorModelo: 0,
+            errorMostrarMsjModelo: [],
             pagination: {
                 'total': 0,
                 'current_page': 0,
@@ -41150,25 +41123,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 console.log(error);
             });
         },
-
-        // selectCiudades(buscar){
-        //     let me = this;
-        //     me.arrayCiudades=[];
-        //     var url = '/select_ciudades?buscar=' + buscar;
-        //     axios.get(url).then(function (response) {
-        //         var respuesta = response.data;
-        //         me.arrayCiudades = respuesta.ciudades;
-        //     })
-        //     .catch(function (error) {
-        //         console.log(error);
-        //     });
-        // },
         cambiarPagina: function cambiarPagina(page, buscar, criterio) {
             var me = this;
             //Actualiza la pagina actual
             me.pagination.current_page = page;
             //Envia la petición para visualizar la data de esta pagina
-            me.listarFraccionamiento(page, buscar, criterio);
+            me.listarModelo(page, buscar, criterio);
         },
 
         /**Metodo para registrar  */
@@ -41182,13 +41142,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             //Con axios se llama el metodo store de FraccionaminetoController
             axios.post('/modelo/registrar', {
                 'nombre': this.nombre,
-                'acabado': this.acabado,
                 'tipo': this.tipo,
                 'fraccionamiento_id': this.fraccionamiento_id,
                 'terreno': this.terreno,
                 'construccion': this.construccion,
-                'archivo': this.archivo,
-                'planta': this.planta
+                'archivo': ''
             }).then(function (response) {
                 me.cerrarModal(); //al guardar el registro se cierra el modal
                 me.listarModelo(1, '', 'modelo'); //se enlistan nuevamente los registros
@@ -41214,13 +41172,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             //Con axios se llama el metodo update de FraccionaminetoController
             axios.put('/modelo/actualizar', {
                 'nombre': this.nombre,
-                'acabado': this.acabado,
                 'tipo': this.tipo,
                 'fraccionamiento_id': this.fraccionamiento_id,
                 'terreno': this.terreno,
                 'construccion': this.construccion,
-                'archivo': this.archivo,
-                'planta': this.planta,
                 'id': this.id
             }).then(function (response) {
                 me.cerrarModal();
@@ -41237,21 +41192,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 console.log(error);
             });
         },
-        eliminarFraccionamiento: function eliminarFraccionamiento() {
+        eliminarModelo: function eliminarModelo() {
             var _this = this;
 
             var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
 
             this.id = data['id'];
             this.nombre = data['nombre'];
-            this.acabado = data['acabado'];
             this.tipo = data['tipo'];
             this.fraccionamiento_id = data['fraccionamiento_id'];
             this.terreno = data['terreno'];
             this.construccion = data['construccion'];
             this.archivo = data['archivo'];
-            this.planta = data['planta'];
-            //console.log(this.fraccionamiento_id);
             swal({
                 title: '¿Desea eliminar?',
                 text: "Esta acción no se puede revertir!",
@@ -41290,13 +41242,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.modal = 0;
             this.tituloModal = '';
             this.nombre = '';
-            this.acabado = '';
             this.tipo = 0;
             this.fraccionamiento_id = 0;
             this.terreno = 0;
             this.construccion = 0;
             this.archivo = '';
-            this.planta = '';
             this.errorModelo = 0;
             this.errorMostrarMsjModelo = [];
         },
@@ -41314,31 +41264,26 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     this.modal = 1;
                                     this.tituloModal = 'Registrar Modelo';
                                     this.nombre = '';
-                                    this.acabado = '';
                                     this.tipo = 0;
                                     this.fraccionamiento_id = 0;
                                     this.terreno = 0;
                                     this.construccion = 0;
                                     this.archivo = '';
-                                    this.planta = '';
                                     this.tipoAccion = 1;
                                     break;
                                 }
                             case 'actualizar':
                                 {
-                                    //console.log(data);
                                     this.modal = 1;
                                     this.tituloModal = 'Actualizar Modelo';
                                     this.tipoAccion = 2;
                                     this.id = data['id'];
                                     this.nombre = data['nombre'];
-                                    this.acabado = data['acabado'];
                                     this.tipo = data['tipo'];
                                     this.fraccionamiento_id = data['fraccionamiento_id'];
                                     this.terreno = data['terreno'];
                                     this.construccion = data['construccion'];
                                     this.archivo = data['archivo'];
-                                    this.planta = data['planta'];
                                     break;
                                 }
                         }
@@ -41457,7 +41402,7 @@ var render = function() {
                           ) {
                             return null
                           }
-                          _vm.listarModelos(1, _vm.buscar, _vm.criterio)
+                          _vm.listarModelo(1, _vm.buscar, _vm.criterio)
                         },
                         input: function($event) {
                           if ($event.target.composing) {
@@ -41496,7 +41441,7 @@ var render = function() {
                             ) {
                               return null
                             }
-                            _vm.listarModelos(1, _vm.buscar, _vm.criterio)
+                            _vm.listarModelo(1, _vm.buscar, _vm.criterio)
                           },
                           change: function($event) {
                             var $$selectedVal = Array.prototype.filter
@@ -41536,7 +41481,7 @@ var render = function() {
                     attrs: { type: "submit" },
                     on: {
                       click: function($event) {
-                        _vm.listarModelos(1, _vm.buscar, _vm.criterio)
+                        _vm.listarModelo(1, _vm.buscar, _vm.criterio)
                       }
                     }
                   },
@@ -41554,8 +41499,8 @@ var render = function() {
               _vm._v(" "),
               _c(
                 "tbody",
-                _vm._l(_vm.arrayFraccionamiento, function(fraccionamiento) {
-                  return _c("tr", { key: fraccionamiento.id }, [
+                _vm._l(_vm.arrayModelo, function(modelo) {
+                  return _c("tr", { key: modelo.id }, [
                     _c("td", [
                       _c(
                         "button",
@@ -41564,11 +41509,7 @@ var render = function() {
                           attrs: { type: "button" },
                           on: {
                             click: function($event) {
-                              _vm.abrirModal(
-                                "fraccionamiento",
-                                "actualizar",
-                                fraccionamiento
-                              )
+                              _vm.abrirModal("modelo", "actualizar", modelo)
                             }
                           }
                         },
@@ -41582,7 +41523,7 @@ var render = function() {
                           attrs: { type: "button" },
                           on: {
                             click: function($event) {
-                              _vm.eliminarFraccionamiento(fraccionamiento)
+                              _vm.eliminarModelo(modelo)
                             }
                           }
                         },
@@ -41591,36 +41532,42 @@ var render = function() {
                     ]),
                     _vm._v(" "),
                     _c("td", {
-                      domProps: { textContent: _vm._s(fraccionamiento.nombre) }
+                      domProps: { textContent: _vm._s(modelo.nombre) }
                     }),
                     _vm._v(" "),
-                    fraccionamiento.tipo_proyecto == 1
+                    modelo.tipo == 1
                       ? _c("td", {
                           domProps: { textContent: _vm._s("Lotificación") }
                         })
                       : _vm._e(),
                     _vm._v(" "),
-                    fraccionamiento.tipo_proyecto == 2
+                    modelo.tipo == 2
                       ? _c("td", {
                           domProps: { textContent: _vm._s("Departamento") }
                         })
                       : _vm._e(),
                     _vm._v(" "),
-                    fraccionamiento.tipo_proyecto == 3
+                    modelo.tipo == 3
                       ? _c("td", {
                           domProps: { textContent: _vm._s("Terreno") }
                         })
                       : _vm._e(),
                     _vm._v(" "),
                     _c("td", {
-                      domProps: { textContent: _vm._s(fraccionamiento.calle) }
+                      domProps: { textContent: _vm._s(modelo.fraccionamiento) }
                     }),
                     _vm._v(" "),
                     _c("td", {
-                      domProps: { textContent: _vm._s(fraccionamiento.colonia) }
+                      domProps: { textContent: _vm._s(modelo.terreno) }
                     }),
                     _vm._v(" "),
-                    _vm._m(2, true)
+                    _c("td", {
+                      domProps: { textContent: _vm._s(modelo.construccion) }
+                    }),
+                    _vm._v(" "),
+                    _c("td", {
+                      domProps: { textContent: _vm._s(modelo.archivo) }
+                    })
                   ])
                 })
               )
@@ -41813,44 +41760,6 @@ var render = function() {
                           staticClass: "col-md-3 form-control-label",
                           attrs: { for: "text-input" }
                         },
-                        [_vm._v("Acabado")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-9" }, [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.acabado,
-                              expression: "acabado"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: {
-                            type: "text",
-                            placeholder: "Acabado del modelo"
-                          },
-                          domProps: { value: _vm.acabado },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.acabado = $event.target.value
-                            }
-                          }
-                        })
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "text-input" }
-                        },
                         [_vm._v("Tipo")]
                       ),
                       _vm._v(" "),
@@ -41907,10 +41816,10 @@ var render = function() {
                           staticClass: "col-md-3 form-control-label",
                           attrs: { for: "text-input" }
                         },
-                        [_vm._v("Terreno")]
+                        [_vm._v("Terreno (mts²)")]
                       ),
                       _vm._v(" "),
-                      _c("div", { staticClass: "col-md-9" }, [
+                      _c("div", { staticClass: "col-md-4" }, [
                         _c("input", {
                           directives: [
                             {
@@ -41942,10 +41851,10 @@ var render = function() {
                           staticClass: "col-md-3 form-control-label",
                           attrs: { for: "text-input" }
                         },
-                        [_vm._v("Construccion")]
+                        [_vm._v("Construcción (mts²)")]
                       ),
                       _vm._v(" "),
-                      _c("div", { staticClass: "col-md-9" }, [
+                      _c("div", { staticClass: "col-md-7" }, [
                         _c("input", {
                           directives: [
                             {
@@ -41967,60 +41876,6 @@ var render = function() {
                             }
                           }
                         })
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _vm._m(3),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "text-input" }
-                        },
-                        [_vm._v("Planta")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-9" }, [
-                        _c(
-                          "select",
-                          {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.planta,
-                                expression: "planta"
-                              }
-                            ],
-                            staticClass: "form-control",
-                            on: {
-                              change: function($event) {
-                                var $$selectedVal = Array.prototype.filter
-                                  .call($event.target.options, function(o) {
-                                    return o.selected
-                                  })
-                                  .map(function(o) {
-                                    var val = "_value" in o ? o._value : o.value
-                                    return val
-                                  })
-                                _vm.planta = $event.target.multiple
-                                  ? $$selectedVal
-                                  : $$selectedVal[0]
-                              }
-                            }
-                          },
-                          _vm._l(_vm.arrayCiudades, function(ciudades) {
-                            return _c("option", {
-                              key: ciudades.municipio,
-                              domProps: {
-                                value: ciudades.municipio,
-                                textContent: _vm._s(ciudades.municipio)
-                              }
-                            })
-                          })
-                        )
                       ])
                     ]),
                     _vm._v(" "),
@@ -42127,51 +41982,17 @@ var staticRenderFns = [
       _c("tr", [
         _c("th", [_vm._v("Opciones")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Nombre")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Acabado")]),
+        _c("th", [_vm._v("Modelo")]),
         _vm._v(" "),
         _c("th", [_vm._v("Tipo")]),
         _vm._v(" "),
         _c("th", [_vm._v("Fraccionamiento")]),
         _vm._v(" "),
-        _c("th", [_vm._v("terreno")]),
+        _c("th", [_vm._v("Terreno")]),
         _vm._v(" "),
-        _c("th", [_vm._v("construccion")]),
+        _c("th", [_vm._v("Construcción")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Archivo")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Planta")])
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("td", [
-      _c("span", { staticClass: "badge badge-success" }, [_vm._v("Activo")])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "form-group row" }, [
-      _c(
-        "label",
-        {
-          staticClass: "col-md-3 form-control-label",
-          attrs: { for: "text-input" }
-        },
-        [_vm._v("Subir archivo del modelo")]
-      ),
-      _vm._v(" "),
-      _c("div", { staticClass: "col-md-9" }, [
-        _c("input", {
-          staticClass: "form-control",
-          attrs: { type: "file", name: "archivo", placeholder: "Archivo" }
-        })
+        _c("th", [_vm._v("Archivo")])
       ])
     ])
   }
@@ -42181,7 +42002,7 @@ module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-65297b26", module.exports)
+    require("vue-hot-reload-api")      .rerender("data-v-242d599d", module.exports)
   }
 }
 
