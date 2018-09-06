@@ -889,6 +889,10 @@ var defaults = {
     return data;
   }],
 
+  /**
+   * A timeout in milliseconds to abort a request. If set to 0 (default) a
+   * timeout is not created.
+   */
   timeout: 0,
 
   xsrfCookieName: 'XSRF-TOKEN',
@@ -21281,7 +21285,7 @@ Axios.prototype.request = function request(config) {
     }, arguments[1]);
   }
 
-  config = utils.merge(defaults, this.defaults, { method: 'get' }, config);
+  config = utils.merge(defaults, {method: 'get'}, this.defaults, config);
   config.method = config.method.toLowerCase();
 
   // Hook up interceptors middleware
@@ -21456,9 +21460,7 @@ module.exports = function buildURL(url, params, paramsSerializer) {
 
       if (utils.isArray(val)) {
         key = key + '[]';
-      }
-
-      if (!utils.isArray(val)) {
+      } else {
         val = [val];
       }
 
@@ -41050,6 +41052,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -41078,7 +41089,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             offset: 3,
             criterio: 'nombre',
             buscar: '',
-            arrayCiudades: []
+            arrayCiudades: [],
+            arrayFraccionamientos: []
         };
     },
 
@@ -41130,6 +41142,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             //Envia la petición para visualizar la data de esta pagina
             me.listarModelo(page, buscar, criterio);
         },
+        selectFraccionamientos: function selectFraccionamientos(buscar) {
+            var me = this;
+            me.arrayFraccionamientos = [];
+            var url = '/select_Frac_Tipo?buscar=' + buscar;
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayFraccionamientos = respuesta.fraccionamientos;
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
 
         /**Metodo para registrar  */
         registrarModelo: function registrarModelo() {
@@ -41146,7 +41169,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'fraccionamiento_id': this.fraccionamiento_id,
                 'terreno': this.terreno,
                 'construccion': this.construccion,
-                'archivo': ''
+                'archivo': this.archivo
             }).then(function (response) {
                 me.cerrarModal(); //al guardar el registro se cierra el modal
                 me.listarModelo(1, '', 'modelo'); //se enlistan nuevamente los registros
@@ -41176,6 +41199,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'fraccionamiento_id': this.fraccionamiento_id,
                 'terreno': this.terreno,
                 'construccion': this.construccion,
+                'archivo': this.archivo,
                 'id': this.id
             }).then(function (response) {
                 me.cerrarModal();
@@ -41289,7 +41313,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                         }
                     }
             }
-            //this.selectCiudades(this.estado);
+            this.selectFraccionamientos(this.tipo);
         }
     },
     mounted: function mounted() {
@@ -41777,6 +41801,9 @@ var render = function() {
                             ],
                             staticClass: "form-control",
                             on: {
+                              click: function($event) {
+                                _vm.selectFraccionamientos(_vm.tipo)
+                              },
                               change: function($event) {
                                 var $$selectedVal = Array.prototype.filter
                                   .call($event.target.options, function(o) {
@@ -41805,6 +41832,67 @@ var render = function() {
                               _vm._v("Departamento")
                             ])
                           ]
+                        )
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "text-input" }
+                        },
+                        [_vm._v("Proyecto")]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-6" }, [
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.fraccionamiento_id,
+                                expression: "fraccionamiento_id"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            on: {
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.fraccionamiento_id = $event.target.multiple
+                                  ? $$selectedVal
+                                  : $$selectedVal[0]
+                              }
+                            }
+                          },
+                          [
+                            _c("option", { attrs: { value: "0" } }, [
+                              _vm._v("Seleccione")
+                            ]),
+                            _vm._v(" "),
+                            _vm._l(_vm.arrayFraccionamientos, function(
+                              fraccionamientos
+                            ) {
+                              return _c("option", {
+                                key: fraccionamientos.id,
+                                domProps: {
+                                  value: fraccionamientos.id,
+                                  textContent: _vm._s(fraccionamientos.nombre)
+                                }
+                              })
+                            })
+                          ],
+                          2
                         )
                       ])
                     ]),

@@ -108,10 +108,19 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Tipo</label>
                                     <div class="col-md-3">
-                                        <select class="form-control" v-model="tipo">
+                                        <select class="form-control" v-model="tipo" @click="selectFraccionamientos(tipo)">
                                             <option value="0">Seleccione</option>
                                             <option value="1">Fraccionamiento</option>
                                             <option value="2">Departamento</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
+                                    <div class="col-md-6">
+                                       <select class="form-control" v-model="fraccionamiento_id">
+                                            <option value="0">Seleccione</option>
+                                            <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                         </select>
                                     </div>
                                 </div>
@@ -187,7 +196,8 @@
                 offset : 3,
                 criterio : 'nombre', 
                 buscar : '',
-                arrayCiudades : []
+                arrayCiudades : [],
+                arrayFraccionamientos : []
             }
         },
         computed:{
@@ -239,6 +249,18 @@
                 //Envia la petición para visualizar la data de esta pagina
                 me.listarModelo(page,buscar,criterio);
             },
+            selectFraccionamientos(buscar){
+                let me = this;
+                me.arrayFraccionamientos=[];
+                var url = '/select_Frac_Tipo?buscar='+buscar;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayFraccionamientos = respuesta.fraccionamientos;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
             /**Metodo para registrar  */
             registrarModelo(){
                 if(this.validarModelo()) //Se verifica si hay un error (campo vacio)
@@ -254,7 +276,7 @@
                     'fraccionamiento_id': this.fraccionamiento_id,
                     'terreno': this.terreno,
                     'construccion': this.construccion,
-                    'archivo': ''
+                    'archivo': this.archivo
                 }).then(function (response){
                     me.cerrarModal(); //al guardar el registro se cierra el modal
                     me.listarModelo(1,'','modelo'); //se enlistan nuevamente los registros
@@ -284,6 +306,7 @@
                     'fraccionamiento_id': this.fraccionamiento_id,
                     'terreno': this.terreno,
                     'construccion': this.construccion,
+                     'archivo': this.archivo,
                     'id' : this.id
                 }).then(function (response){
                     me.cerrarModal();
@@ -396,7 +419,7 @@
                         }
                     }
                 }
-                //this.selectCiudades(this.estado);
+                this.selectFraccionamientos(this.tipo);
             }
         },
         mounted() {

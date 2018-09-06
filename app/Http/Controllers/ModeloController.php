@@ -16,7 +16,7 @@ class ModeloController extends Controller
     public function index(Request $request)
     {
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
-        //if(!$request->ajax())return redirect('/');
+        if(!$request->ajax())return redirect('/');
 
         $buscar = $request->buscar;
         $criterio = $request->criterio;
@@ -67,12 +67,11 @@ class ModeloController extends Controller
         if(!$request->ajax())return redirect('/');
         $modelo = new Modelo();
         $modelo->nombre = $request->nombre;
-        $modelo->acabado = $request->acabado;
         $modelo->tipo = $request->tipo;
         $modelo->fraccionamiento_id = $request->fraccionamiento_id;
         $modelo->terreno = $request->terreno;
+        $modelo->construccion = $request->construccion;
         $modelo->archivo = $request->archivo;
-        $modelo->planta = $request->planta;
         $modelo->save();
     }
 
@@ -110,17 +109,15 @@ class ModeloController extends Controller
     {
         if(!$request->ajax())return redirect('/');
         //FindOrFail se utiliza para buscar lo que recibe de argumento
-        $etapa = Etapa::findOrFail($request->id);
+        $modelo = Modelo::findOrFail($request->id);
         $modelo->nombre = $request->nombre;
-        $modelo->acabado = $request->acabado;
         $modelo->tipo = $request->tipo;
         $modelo->fraccionamiento_id = $request->fraccionamiento_id;
         $modelo->terreno = $request->terreno;
         $modelo->construccion = $request->construccion;
         $modelo->archivo = $request->archivo;
-        $modelo->planta = $request->planta;
 
-        $etapa->save();
+        $modelo->save();
     }
 
     /**
