@@ -52,6 +52,8 @@ Route::get('/modelo','ModeloController@index');
 Route::post('/modelo/registrar','ModeloController@store');
 Route::put('/modelo/actualizar','ModeloController@update');
 Route::delete('/modelo/eliminar','ModeloController@destroy');
+Route::post('/formSubmit/{id}','ModeloController@formSubmit');
+Route::get('/download/{fileName}' , 'ModeloController@downloadFile');
 
 
 /***************************************************************************** */

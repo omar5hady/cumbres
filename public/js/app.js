@@ -889,10 +889,6 @@ var defaults = {
     return data;
   }],
 
-  /**
-   * A timeout in milliseconds to abort a request. If set to 0 (default) a
-   * timeout is not created.
-   */
   timeout: 0,
 
   xsrfCookieName: 'XSRF-TOKEN',
@@ -21285,7 +21281,7 @@ Axios.prototype.request = function request(config) {
     }, arguments[1]);
   }
 
-  config = utils.merge(defaults, {method: 'get'}, this.defaults, config);
+  config = utils.merge(defaults, this.defaults, { method: 'get' }, config);
   config.method = config.method.toLowerCase();
 
   // Hook up interceptors middleware
@@ -21460,7 +21456,9 @@ module.exports = function buildURL(url, params, paramsSerializer) {
 
       if (utils.isArray(val)) {
         key = key + '[]';
-      } else {
+      }
+
+      if (!utils.isArray(val)) {
         val = [val];
       }
 
@@ -41061,6 +41059,57 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -41071,10 +41120,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             fraccionamiento_id: 0,
             terreno: 0,
             construccion: 0.0,
+
             archivo: '',
+            success: '',
             arrayModelo: [],
             modal: 0,
             tituloModal: '',
+            modal2: 0,
+            tituloModal2: '',
             tipoAccion: 0,
             errorModelo: 0,
             errorMostrarMsjModelo: [],
@@ -41123,6 +41176,50 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         }
     },
     methods: {
+        // Metodos para los archivos
+        onImageChange: function onImageChange(e) {
+
+            console.log(e.target.files[0]);
+
+            this.archivo = e.target.files[0];
+        },
+        formSubmit: function formSubmit(e) {
+
+            e.preventDefault();
+
+            var currentObj = this;
+            // const config = {
+
+            //     headers: { 'content-type': 'multipart/form-data' }
+
+            // }
+            var formData = new FormData();
+            // formData.append('id', this.id);
+            formData.append('archivo', this.archivo);
+            // formData.append('nombre', this.nombre);
+            // formData.append('tipo', this.tipo);
+            // formData.append('fraccionamiento_id', this.fraccionamiento_id);
+            // formData.append('terreno', this.terreno);
+            // formData.append('construccion', this.construccion);
+            var me = this;
+            axios.post('/formSubmit/' + this.id, formData).then(function (response) {
+                currentObj.success = response.data.success;
+                swal({
+                    position: 'top-end',
+                    type: 'success',
+                    title: 'Archivo guardado correctamente',
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+                me.cerrarModal2();
+                me.listarModelo(1, '', 'modelo');
+            }).catch(function (error) {
+
+                currentObj.output = error;
+            });
+        },
+
+
         /**Metodo para mostrar los registros */
         listarModelo: function listarModelo(page, buscar, criterio) {
             var me = this;
@@ -41270,6 +41367,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.fraccionamiento_id = 0;
             this.terreno = 0;
             this.construccion = 0;
+
+            this.errorModelo = 0;
+            this.errorMostrarMsjModelo = [];
+        },
+        cerrarModal2: function cerrarModal2() {
+            this.modal2 = 0;
+            this.tituloModal2 = '';
+            this.nombre = '';
             this.archivo = '';
             this.errorModelo = 0;
             this.errorMostrarMsjModelo = [];
@@ -41292,7 +41397,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     this.fraccionamiento_id = 0;
                                     this.terreno = 0;
                                     this.construccion = 0;
-                                    this.archivo = '';
                                     this.tipoAccion = 1;
                                     break;
                                 }
@@ -41307,6 +41411,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     this.fraccionamiento_id = data['fraccionamiento_id'];
                                     this.terreno = data['terreno'];
                                     this.construccion = data['construccion'];
+                                    break;
+                                }
+                            case 'subirArchivo':
+                                {
+                                    this.modal2 = 1;
+                                    this.tituloModal2 = 'Subir Archivo';
+                                    this.tipoAccion = 3;
+                                    this.id = data['id'];
+                                    this.nombre = data['nombre'];
                                     this.archivo = data['archivo'];
                                     break;
                                 }
@@ -41552,6 +41665,20 @@ var render = function() {
                           }
                         },
                         [_c("i", { staticClass: "icon-trash" })]
+                      ),
+                      _vm._v("  \n                                    "),
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-default btn-sm",
+                          attrs: { type: "button" },
+                          on: {
+                            click: function($event) {
+                              _vm.abrirModal("modelo", "subirArchivo", modelo)
+                            }
+                          }
+                        },
+                        [_c("i", { staticClass: "icon-cloud-upload" })]
                       )
                     ]),
                     _vm._v(" "),
@@ -41591,7 +41718,18 @@ var render = function() {
                     _vm._v(" "),
                     _c("td", {
                       domProps: { textContent: _vm._s(modelo.archivo) }
-                    })
+                    }),
+                    _vm._v(" "),
+                    _c("td", [
+                      _c(
+                        "a",
+                        {
+                          staticClass: "btn btn-default btn-sm",
+                          attrs: { href: "/download/" + modelo.archivo }
+                        },
+                        [_c("i", { staticClass: "icon-cloud-download" })]
+                      )
+                    ])
                   ])
                 })
               )
@@ -42048,6 +42186,159 @@ var render = function() {
           ]
         )
       ]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        class: { mostrar: _vm.modal2 },
+        staticStyle: { display: "none" },
+        attrs: {
+          tabindex: "-1",
+          role: "dialog",
+          "aria-labelledby": "myModalLabel",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c(
+          "div",
+          {
+            staticClass: "modal-dialog modal-primary modal-lg",
+            attrs: { role: "document" }
+          },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _c("div", { staticClass: "modal-header" }, [
+                _c("h4", {
+                  staticClass: "modal-title",
+                  domProps: { textContent: _vm._s(_vm.tituloModal2) }
+                }),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "close",
+                    attrs: { type: "button", "aria-label": "Close" },
+                    on: {
+                      click: function($event) {
+                        _vm.cerrarModal2()
+                      }
+                    }
+                  },
+                  [
+                    _c("span", { attrs: { "aria-hidden": "true" } }, [
+                      _vm._v("×")
+                    ])
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-body" }, [
+                _vm.success != ""
+                  ? _c(
+                      "div",
+                      {
+                        staticClass: "alert alert-success",
+                        attrs: { role: "alert" }
+                      },
+                      [
+                        _vm._v(
+                          "\n\n                      " +
+                            _vm._s(_vm.success) +
+                            "\n\n                    "
+                        )
+                      ]
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
+                _c(
+                  "form",
+                  {
+                    attrs: { method: "post", enctype: "multipart/form-data" },
+                    on: { submit: _vm.formSubmit }
+                  },
+                  [
+                    _c("strong", [_vm._v("Name:")]),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.nombre,
+                          expression: "nombre"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { type: "text" },
+                      domProps: { value: _vm.nombre },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.nombre = $event.target.value
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("strong", [_vm._v("Archivo:")]),
+                    _vm._v(" "),
+                    _c("input", {
+                      staticClass: "form-control",
+                      attrs: { type: "file" },
+                      on: { change: _vm.onImageChange }
+                    }),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-success",
+                        attrs: { type: "submit" }
+                      },
+                      [_vm._v("Cargar")]
+                    )
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-footer" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-secondary",
+                    attrs: { type: "button" },
+                    on: {
+                      click: function($event) {
+                        _vm.cerrarModal2()
+                      }
+                    }
+                  },
+                  [_vm._v("Cerrar")]
+                ),
+                _vm._v(" "),
+                _vm.tipoAccion == 2
+                  ? _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-primary",
+                        attrs: { type: "button" },
+                        on: {
+                          click: function($event) {
+                            _vm.actualizarModelo()
+                          }
+                        }
+                      },
+                      [_vm._v("Actualizar")]
+                    )
+                  : _vm._e()
+              ])
+            ])
+          ]
+        )
+      ]
     )
   ])
 }
@@ -42080,7 +42371,9 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Construcción")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Archivo")])
+        _c("th", [_vm._v("Archivo")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Descarga")])
       ])
     ])
   }

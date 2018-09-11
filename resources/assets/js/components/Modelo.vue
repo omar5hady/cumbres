@@ -45,6 +45,7 @@
                                     <th>Terreno</th>
                                     <th>Construcción</th>
                                     <th>Archivo</th>
+                                    <th>Descarga</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -55,6 +56,9 @@
                                         </button> &nbsp;
                                         <button type="button" class="btn btn-danger btn-sm" @click="eliminarModelo(modelo)">
                                           <i class="icon-trash"></i>
+                                        </button> &nbsp;
+                                        <button type="button" @click="abrirModal('modelo','subirArchivo',modelo)" class="btn btn-default btn-sm">
+                                          <i class="icon-cloud-upload"></i>
                                         </button>
                                     </td>
                                     <td v-text="modelo.nombre"></td>
@@ -65,9 +69,10 @@
                                     <td v-text="modelo.terreno"></td>
                                     <td v-text="modelo.construccion"></td>
                                     <td v-text="modelo.archivo"></td>
+                                    <td><a class="btn btn-default btn-sm" v-bind:href="'/download/'+modelo.archivo"><i class="icon-cloud-download"></i></a></td>
                                 </tr>                               
                             </tbody>
-                        </table>
+                        </table>  
                         <nav>
                             <!--Botones de paginacion -->
                             <ul class="pagination">
@@ -154,6 +159,52 @@
                             <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarModelo()">Actualizar</button>
                         </div>
                     </div>
+                      <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!--Fin del modal-->
+
+                    <!-- modal para la carga de archivos -->
+            <div class="modal fade" tabindex="-1" :class="{'mostrar': modal2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" v-text="tituloModal2"></h4>
+                            <button type="button" class="close" @click="cerrarModal2()" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div v-if="success != ''" class="alert alert-success" role="alert">
+
+                          {{success}}
+
+                        </div>
+                            <form  method="post" @submit="formSubmit" enctype="multipart/form-data">
+
+                                    <strong>Name:</strong>
+
+                                    <input type="text" class="form-control" v-model="nombre" >
+
+                                    <strong>Archivo:</strong>
+
+                                    <input type="file" class="form-control" v-on:change="onImageChange">
+
+
+
+                                    <button type="submit" class="btn btn-success">Cargar</button>
+                            </form>
+
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal2()">Cerrar</button>
+                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
+                            
+                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarModelo()">Actualizar</button>
+                         </div>
+                    </div> 
                     <!-- /.modal-content -->
                 </div>
                 <!-- /.modal-dialog -->
@@ -178,10 +229,14 @@
                 fraccionamiento_id : 0,
                 terreno : 0,
                 construccion : 0.0,
+             
                 archivo: '',
+                success: '',
                 arrayModelo : [],
                 modal : 0,
                 tituloModal : '',
+                modal2 : 0,
+                tituloModal2 : '',
                 tipoAccion: 0,
                 errorModelo : 0,
                 errorMostrarMsjModelo : [],
@@ -229,6 +284,57 @@
             }
         },
         methods : {
+            // Metodos para los archivos
+            onImageChange(e){
+
+                console.log(e.target.files[0]);
+
+                this.archivo = e.target.files[0];
+
+            },
+
+            formSubmit(e) {
+
+                e.preventDefault();
+
+                let currentObj = this;
+                // const config = {
+
+                //     headers: { 'content-type': 'multipart/form-data' }
+
+                // }
+                let formData = new FormData();
+               // formData.append('id', this.id);
+                formData.append('archivo', this.archivo);
+                // formData.append('nombre', this.nombre);
+                // formData.append('tipo', this.tipo);
+                // formData.append('fraccionamiento_id', this.fraccionamiento_id);
+                // formData.append('terreno', this.terreno);
+                // formData.append('construccion', this.construccion);
+                let me = this;
+                axios.post('/formSubmit/'+this.id, formData)
+                .then(function (response) {
+                    currentObj.success = response.data.success;
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Archivo guardado correctamente',
+                        showConfirmButton: false,
+                        timer: 2000
+                        })
+                    me.cerrarModal2();
+                    me.listarModelo(1,'','modelo');
+
+                })
+
+                .catch(function (error) {
+
+                    currentObj.output = error;
+
+                });
+
+            },
+
             /**Metodo para mostrar los registros */
             listarModelo(page, buscar, criterio){
                 let me = this;
@@ -378,6 +484,15 @@
                 this.fraccionamiento_id = 0;
                 this.terreno = 0;
                 this.construccion = 0;
+                
+                this.errorModelo = 0;
+                this.errorMostrarMsjModelo = [];
+
+            },
+              cerrarModal2(){
+                this.modal2 = 0;
+                this.tituloModal2 = '';
+                this.nombre = '';
                 this.archivo = '';
                 this.errorModelo = 0;
                 this.errorMostrarMsjModelo = [];
@@ -398,7 +513,6 @@
                                 this.fraccionamiento_id = 0;
                                 this.terreno = 0;
                                 this.construccion = 0;
-                                this.archivo = '';
                                 this.tipoAccion = 1;
                                 break;
                             }
@@ -413,6 +527,15 @@
                                 this.fraccionamiento_id=data['fraccionamiento_id'];
                                 this.terreno=data['terreno'];
                                 this.construccion=data['construccion'];
+                                break;
+                            }
+                            case 'subirArchivo':
+                            {
+                                this.modal2 =1;
+                                this.tituloModal2='Subir Archivo';
+                                this.tipoAccion=3;
+                                this.id=data['id'];
+                                this.nombre=data['nombre'];
                                 this.archivo=data['archivo'];
                                 break;
                             }

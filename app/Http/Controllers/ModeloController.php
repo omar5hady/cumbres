@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Modelo;
 use DB;
 
+
 class ModeloController extends Controller
 {
      /**
@@ -115,8 +116,7 @@ class ModeloController extends Controller
         $modelo->fraccionamiento_id = $request->fraccionamiento_id;
         $modelo->terreno = $request->terreno;
         $modelo->construccion = $request->construccion;
-        $modelo->archivo = $request->archivo;
-
+    
         $modelo->save();
     }
 
@@ -132,4 +132,31 @@ class ModeloController extends Controller
         $modelo = Modelo::findOrFail($request->id);
         $modelo->delete();
     }
+
+
+    public function formSubmit(Request $request, $id)
+    {
+
+        $fileName = time().'.'.$request->archivo->getClientOriginalExtension();
+        $moved =  $request->archivo->move(public_path('/files/modelos'), $fileName);
+
+        if($moved){
+            if(!$request->ajax())return redirect('/');
+            $modelo = Modelo::findOrFail($request->id);
+            $modelo->archivo = $fileName;
+            $modelo->id = $id;
+            $modelo->save(); //Insert
+    
+            }
+        
+    	return response()->json(['success'=>'You have successfully upload file.']);
+    }
+
+    public function downloadFile($fileName){
+        
+        $pathtoFile = public_path().'/files/modelos/'.$fileName;
+        return response()->download($pathtoFile);
+      }
+
+
 }
