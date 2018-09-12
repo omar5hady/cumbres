@@ -21,12 +21,14 @@
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
                                     <select class="form-control col-md-5" v-model="criterio">
-                                      <option value="nombre">Modelos</option>
-                                      <option value="tipo_proyecto">Tipo de Proyecto</option>
+                                      <option value="modelos.nombre">Modelos</option>
+                                      <option value="tipo">Tipo de Proyecto</option>
+                                      <option value="fraccionamientos.nombre">Proyecto</option>
                                     </select>
                                     
-                                    <input type="text" v-if="criterio=='nombre'" v-model="buscar" @keyup.enter="listarModelo(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
-                                    <select class="form-control col-md-5" v-if="criterio=='tipo_proyecto'" v-model="buscar" @keyup.enter="listarModelo(1,buscar,criterio)" >
+                                    <input type="text" v-if="criterio=='modelos.nombre'" v-model="buscar" @keyup.enter="listarModelo(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
+                                    <input type="text" v-if="criterio=='fraccionamientos.nombre'" v-model="buscar" @keyup.enter="listarModelo(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
+                                    <select class="form-control col-md-5" v-if="criterio=='tipo'" v-model="buscar" @keyup.enter="listarModelo(1,buscar,criterio)" >
                                         <option value="1">Lotificación</option>
                                         <option value="2">Departamento</option>
                                         <option value="3">Terreno</option>
@@ -41,23 +43,22 @@
                                     <th>Opciones</th>
                                     <th>Modelo</th>
                                     <th>Tipo</th>
-                                    <th>Fraccionamiento</th>
-                                    <th>Terreno</th>
-                                    <th>Construcción</th>
-                                    <th>Archivo</th>
+                                    <th>Proyecto</th>
+                                    <th>Terreno mts&sup2;</th>
+                                    <th>Construcción mts&sup2;</th>
                                     <th>Descarga</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr v-for="modelo in arrayModelo" :key="modelo.id">
-                                    <td>
-                                        <button type="button" @click="abrirModal('modelo','actualizar',modelo)" class="btn btn-warning btn-sm">
+                                    <td style="width:12%">
+                                        <button title="Editar" type="button" @click="abrirModal('modelo','actualizar',modelo)" class="btn btn-warning btn-sm">
                                           <i class="icon-pencil"></i>
                                         </button> &nbsp;
-                                        <button type="button" class="btn btn-danger btn-sm" @click="eliminarModelo(modelo)">
+                                        <button title="Borrar" type="button" class="btn btn-danger btn-sm" @click="eliminarModelo(modelo)">
                                           <i class="icon-trash"></i>
                                         </button> &nbsp;
-                                        <button type="button" @click="abrirModal('modelo','subirArchivo',modelo)" class="btn btn-default btn-sm">
+                                        <button title="Subir archivo" type="button" @click="abrirModal('modelo','subirArchivo',modelo)" class="btn btn-default btn-sm">
                                           <i class="icon-cloud-upload"></i>
                                         </button>
                                     </td>
@@ -68,14 +69,13 @@
                                     <td v-text="modelo.fraccionamiento"></td>
                                     <td v-text="modelo.terreno"></td>
                                     <td v-text="modelo.construccion"></td>
-                                    <td v-text="modelo.archivo"></td>
-                                    <td><a class="btn btn-default btn-sm" v-bind:href="'/download/'+modelo.archivo"><i class="icon-cloud-download"></i></a></td>
+                                    <td style="width:7%" v-if = "modelo.archivo"><a class="btn btn-default btn-sm" v-bind:href="'/download/'+modelo.archivo"><i class="icon-cloud-download"></i></a></td>
                                 </tr>                               
                             </tbody>
                         </table>  
                         <nav>
                             <!--Botones de paginacion -->
-                            <ul class="pagination">
+                            <ul class="pagination">"
                                 <li class="page-item" v-if="pagination.current_page > 1">
                                     <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,criterio)">Ant</a>
                                 </li>
@@ -249,7 +249,7 @@
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'nombre', 
+                criterio : 'modelos.nombre', 
                 buscar : '',
                 arrayCiudades : [],
                 arrayFraccionamientos : []

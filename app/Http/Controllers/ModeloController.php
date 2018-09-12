@@ -29,8 +29,11 @@ class ModeloController extends Controller
                 ->orderBy('id','modelos.nombre')->paginate(5);
         }
         else{
-            
-            
+            $modelos = Modelo::join('fraccionamientos','modelos.fraccionamiento_id','=','fraccionamientos.id')
+            ->select('modelos.nombre','modelos.tipo','modelos.fraccionamiento_id',
+            'fraccionamientos.nombre as fraccionamiento','modelos.terreno','modelos.construccion','modelos.archivo','modelos.id')
+                ->where($criterio, 'like', '%'. $buscar . '%')
+                ->orderBy('id','modelos.nombre')->paginate(5);
         }
 
         return [

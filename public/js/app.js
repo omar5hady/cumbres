@@ -41140,7 +41140,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'to': 0
             },
             offset: 3,
-            criterio: 'nombre',
+            criterio: 'modelos.nombre',
             buscar: '',
             arrayCiudades: [],
             arrayFraccionamientos: []
@@ -41502,17 +41502,23 @@ var render = function() {
                     }
                   },
                   [
-                    _c("option", { attrs: { value: "nombre" } }, [
+                    _c("option", { attrs: { value: "modelos.nombre" } }, [
                       _vm._v("Modelos")
                     ]),
                     _vm._v(" "),
-                    _c("option", { attrs: { value: "tipo_proyecto" } }, [
+                    _c("option", { attrs: { value: "tipo" } }, [
                       _vm._v("Tipo de Proyecto")
-                    ])
+                    ]),
+                    _vm._v(" "),
+                    _c(
+                      "option",
+                      { attrs: { value: "fraccionamientos.nombre" } },
+                      [_vm._v("Proyecto")]
+                    )
                   ]
                 ),
                 _vm._v(" "),
-                _vm.criterio == "nombre"
+                _vm.criterio == "modelos.nombre"
                   ? _c("input", {
                       directives: [
                         {
@@ -41551,7 +41557,46 @@ var render = function() {
                     })
                   : _vm._e(),
                 _vm._v(" "),
-                _vm.criterio == "tipo_proyecto"
+                _vm.criterio == "fraccionamientos.nombre"
+                  ? _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.buscar,
+                          expression: "buscar"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { type: "text", placeholder: "Texto a buscar" },
+                      domProps: { value: _vm.buscar },
+                      on: {
+                        keyup: function($event) {
+                          if (
+                            !("button" in $event) &&
+                            _vm._k(
+                              $event.keyCode,
+                              "enter",
+                              13,
+                              $event.key,
+                              "Enter"
+                            )
+                          ) {
+                            return null
+                          }
+                          _vm.listarModelo(1, _vm.buscar, _vm.criterio)
+                        },
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.buscar = $event.target.value
+                        }
+                      }
+                    })
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.criterio == "tipo"
                   ? _c(
                       "select",
                       {
@@ -41638,12 +41683,12 @@ var render = function() {
                 "tbody",
                 _vm._l(_vm.arrayModelo, function(modelo) {
                   return _c("tr", { key: modelo.id }, [
-                    _c("td", [
+                    _c("td", { staticStyle: { width: "12%" } }, [
                       _c(
                         "button",
                         {
                           staticClass: "btn btn-warning btn-sm",
-                          attrs: { type: "button" },
+                          attrs: { title: "Editar", type: "button" },
                           on: {
                             click: function($event) {
                               _vm.abrirModal("modelo", "actualizar", modelo)
@@ -41657,7 +41702,7 @@ var render = function() {
                         "button",
                         {
                           staticClass: "btn btn-danger btn-sm",
-                          attrs: { type: "button" },
+                          attrs: { title: "Borrar", type: "button" },
                           on: {
                             click: function($event) {
                               _vm.eliminarModelo(modelo)
@@ -41671,7 +41716,7 @@ var render = function() {
                         "button",
                         {
                           staticClass: "btn btn-default btn-sm",
-                          attrs: { type: "button" },
+                          attrs: { title: "Subir archivo", type: "button" },
                           on: {
                             click: function($event) {
                               _vm.abrirModal("modelo", "subirArchivo", modelo)
@@ -41716,20 +41761,18 @@ var render = function() {
                       domProps: { textContent: _vm._s(modelo.construccion) }
                     }),
                     _vm._v(" "),
-                    _c("td", {
-                      domProps: { textContent: _vm._s(modelo.archivo) }
-                    }),
-                    _vm._v(" "),
-                    _c("td", [
-                      _c(
-                        "a",
-                        {
-                          staticClass: "btn btn-default btn-sm",
-                          attrs: { href: "/download/" + modelo.archivo }
-                        },
-                        [_c("i", { staticClass: "icon-cloud-download" })]
-                      )
-                    ])
+                    modelo.archivo
+                      ? _c("td", { staticStyle: { width: "7%" } }, [
+                          _c(
+                            "a",
+                            {
+                              staticClass: "btn btn-default btn-sm",
+                              attrs: { href: "/download/" + modelo.archivo }
+                            },
+                            [_c("i", { staticClass: "icon-cloud-download" })]
+                          )
+                        ])
+                      : _vm._e()
                   ])
                 })
               )
@@ -41741,6 +41784,7 @@ var render = function() {
               "ul",
               { staticClass: "pagination" },
               [
+                _vm._v('"\n                            '),
                 _vm.pagination.current_page > 1
                   ? _c("li", { staticClass: "page-item" }, [
                       _c(
@@ -42365,13 +42409,11 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Tipo")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Fraccionamiento")]),
+        _c("th", [_vm._v("Proyecto")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Terreno")]),
+        _c("th", [_vm._v("Terreno mts²")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Construcción")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Archivo")]),
+        _c("th", [_vm._v("Construcción mts²")]),
         _vm._v(" "),
         _c("th", [_vm._v("Descarga")])
       ])
