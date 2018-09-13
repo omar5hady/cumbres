@@ -8,9 +8,9 @@
                 <!-- Ejemplo de tabla Listado -->
                 <div class="card">
                     <div class="card-header">
-                        <i class="fa fa-align-justify"></i> Modelos
+                        <i class="fa fa-align-justify"></i> Lotes
                         <!--   Boton Nuevo    -->
-                        <button type="button" @click="abrirModal('modelo','registrar')" class="btn btn-secondary">
+                        <button type="button" @click="abrirModal('lote','registrar')" class="btn btn-secondary">
                             <i class="icon-plus"></i>&nbsp;Nuevo
                         </button>
                         <!---->
@@ -41,12 +41,20 @@
                             <thead>
                                 <tr>
                                     <th>Opciones</th>
-                                    <th>Modelo</th>
-                                    <th>Tipo</th>
                                     <th>Proyecto</th>
+                                    <th>Etapa</th>
+                                    <th>Manzana</th>
+                                    <th>Numero de lote</th>
+                                    <th>Sublote</th>
+                                    <th>Modelo</th>
+                                    <th>Empresa</th>
+                                    <th>Calle</th>
+                                    <th>Numero</th>
+                                    <th>Interior</th>
                                     <th>Terreno mts&sup2;</th>
                                     <th>Construcción mts&sup2;</th>
-                                    <th>Descarga</th>
+                                    <th>Casa Muestra</th>
+                                    <th>Lote comercial</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -105,11 +113,66 @@
                             <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
 
                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Nombre</label>
-                                    <div class="col-md-9">
-                                        <input type="text" v-model="nombre" class="form-control" placeholder="Nombre del modelo">
+                                    <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
+                                    <div class="col-md-6">
+                                       <select class="form-control" v-model="fraccionamiento_id" >
+                                            <option value="0">Seleccione</option>
+                                            <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                                        </select>
                                     </div>
                                 </div>
+
+                                  <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Etapa</label>
+                                    <div class="col-md-6">
+                                       <select class="form-control" v-model="etapa_id">
+                                            <option value="0">Seleccione</option>
+                                            <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.fraccionamiento_id" v-text="etapas.num_etapa"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                  <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Manzana</label>
+                                    <div class="col-md-4">
+                                        <input type="text" v-model="manzana" class="form-control" placeholder="manzana">
+                                    </div>
+                                </div>
+
+                                   <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Etapa</label>
+                                    <div class="col-md-6">
+                                       <select class="form-control" v-model="etapa_id">
+                                            <option value="0">Seleccione</option>
+                                            <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.fraccionamiento_id" v-text="etapas.num_etapa"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                  <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input"># Lote</label>
+                                    <div class="col-md-4">
+                                        <input type="text" v-model="num_lote" class="form-control" placeholder="num_lote">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Sublote</label>
+                                    <div class="col-md-4">
+                                        <input type="text" v-model="sublote" class="form-control" placeholder="sublote">
+                                    </div>
+                                </div>
+
+                                  <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Modelo</label>
+                                    <div class="col-md-6">
+                                       <select class="form-control" v-model="etapa_id">
+                                            <option value="0">Seleccione</option>
+                                            <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.fraccionamiento_id" v-text="etapas.num_etapa"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Tipo</label>
                                     <div class="col-md-3">
@@ -165,53 +228,7 @@
             </div>
             <!--Fin del modal-->
 
-                    <!-- modal para la carga de archivos -->
-            <div class="modal fade" tabindex="-1" :class="{'mostrar': modal2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal2"></h4>
-                            <button type="button" class="close" @click="cerrarModal2()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div v-if="success != ''" class="alert alert-success" role="alert">
-
-                          {{success}}
-
-                        </div>
-                            <form  method="post" @submit="formSubmit" enctype="multipart/form-data">
-
-                                    <strong>Name:</strong>
-
-                                    <input type="text" class="form-control" v-model="nombre" >
-
-                                    <strong>Archivo:</strong>
-
-                                    <input type="file" class="form-control" v-on:change="onImageChange">
-
-
-
-                                    <button type="submit" class="btn btn-success">Cargar</button>
-                            </form>
-
-                        </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal2()">Cerrar</button>
-                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            
-                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarModelo()">Actualizar</button>
-                         </div>
-                    </div> 
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
-            <!--Fin del modal-->
-            
-
+                    
         </main>
 </template>
 
@@ -224,22 +241,29 @@
         data(){
             return{
                 id:0,
-                nombre : '',
-                tipo : 0,
                 fraccionamiento_id : 0,
-                terreno : 0,
+                etapa_id: 0,
+                manzana: '',
+                num_lote: 0,
+                sublote: '',
+                modelo_id: 0,
+                empresa_id: 0,
+                calle: '',
+                numero: '',
+                interior: '',
+                terreno : 0.0,
                 construccion : 0.0,
-             
-                archivo: '',
-                success: '',
-                arrayModelo : [],
+                casa_muestra: 0,
+                lote_comercial: 0,
+
+                arrayLote : [],
                 modal : 0,
                 tituloModal : '',
                 modal2 : 0,
                 tituloModal2 : '',
                 tipoAccion: 0,
                 errorModelo : 0,
-                errorMostrarMsjModelo : [],
+                errorMostrarMsjLote : [],
                 pagination : {
                     'total' : 0,         
                     'current_page' : 0,
@@ -249,10 +273,12 @@
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'modelos.nombre', 
+                criterio : 'lote.proyecto', 
                 buscar : '',
-                arrayCiudades : [],
-                arrayFraccionamientos : []
+                arrayFraccionamientos : [],
+                arrayEtapas : [],
+                arrayModelos : [],
+                arrayEmpresas : []
             }
         },
         computed:{
@@ -284,64 +310,14 @@
             }
         },
         methods : {
-            // Metodos para los archivos
-            onImageChange(e){
-
-                console.log(e.target.files[0]);
-
-                this.archivo = e.target.files[0];
-
-            },
-
-            formSubmit(e) {
-
-                e.preventDefault();
-
-                let currentObj = this;
-                // const config = {
-
-                //     headers: { 'content-type': 'multipart/form-data' }
-
-                // }
-                let formData = new FormData();
-               // formData.append('id', this.id);
-                formData.append('archivo', this.archivo);
-                // formData.append('nombre', this.nombre);
-                // formData.append('tipo', this.tipo);
-                // formData.append('fraccionamiento_id', this.fraccionamiento_id);
-                // formData.append('terreno', this.terreno);
-                // formData.append('construccion', this.construccion);
-                let me = this;
-                axios.post('/formSubmit/'+this.id, formData)
-                .then(function (response) {
-                    currentObj.success = response.data.success;
-                    swal({
-                        position: 'top-end',
-                        type: 'success',
-                        title: 'Archivo guardado correctamente',
-                        showConfirmButton: false,
-                        timer: 2000
-                        })
-                    me.cerrarModal2();
-                    me.listarModelo(1,'','modelo');
-
-                })
-
-                .catch(function (error) {
-
-                    currentObj.output = error;
-
-                });
-
-            },
-
+           
             /**Metodo para mostrar los registros */
-            listarModelo(page, buscar, criterio){
+            listarLote(page, buscar, criterio){
                 let me = this;
-                var url = '/modelo?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
+                var url = '/lote?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
-                    me.arrayModelo = respuesta.modelos.data;
+                    me.arrayLote = respuesta.lotes.data;
                     me.pagination = respuesta.pagination;
                 })
                 .catch(function (error) {
@@ -353,12 +329,12 @@
                 //Actualiza la pagina actual
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
-                me.listarModelo(page,buscar,criterio);
+                me.listarLote(page,buscar,criterio);
             },
-            selectFraccionamientos(buscar){
+             selectFraccionamientos(){
                 let me = this;
                 me.arrayFraccionamientos=[];
-                var url = '/select_Frac_Tipo?buscar='+buscar;
+                var url = '/select_fraccionamiento';
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayFraccionamientos = respuesta.fraccionamientos;
@@ -376,21 +352,29 @@
 
                 let me = this;
                 //Con axios se llama el metodo store de FraccionaminetoController
-                axios.post('/modelo/registrar',{
-                    'nombre': this.nombre,
-                    'tipo': this.tipo,
+                axios.post('/modelo/registrar',{                 
                     'fraccionamiento_id': this.fraccionamiento_id,
+                    'etapa_id': this.etapa_id,
+                    'manzana': this.manzana,
+                    'num_lote': this.num_lote,
+                    'sublote': this.sublote,
+                    'modelo_id': this.modelo_id,
+                    'empresa_id': this.empresa_id,
+                    'calle': this.calle,
+                    'numero': this.numero,
+                    'interior': this.interior,
                     'terreno': this.terreno,
                     'construccion': this.construccion,
-                    'archivo': this.archivo
+                    'casa_muestra': this.casa_muestra,
+                    'lote_comercial': this.lote_comercial
                 }).then(function (response){
                     me.cerrarModal(); //al guardar el registro se cierra el modal
-                    me.listarModelo(1,'','modelo'); //se enlistan nuevamente los registros
+                    me.listarLote(1,'','lote'); //se enlistan nuevamente los registros
                     //Se muestra mensaje Success
                     swal({
                         position: 'top-end',
                         type: 'success',
-                        title: 'Modelo agregado correctamente',
+                        title: 'Lote agregado correctamente',
                         showConfirmButton: false,
                         timer: 1500
                         })
@@ -398,25 +382,33 @@
                     console.log(error);
                 });
             },
-            actualizarModelo(){
-                if(this.validarModelo()) //Se verifica si hay un error (campo vacio)
+            actualizarLote(){
+                if(this.validarLote()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
 
                 let me = this;
                 //Con axios se llama el metodo update de FraccionaminetoController
-                axios.put('/modelo/actualizar',{
-                    'nombre': this.nombre,
-                    'tipo': this.tipo,
-                    'fraccionamiento_id': this.fraccionamiento_id,
+                axios.put('/lote/actualizar',{
+                   'fraccionamiento_id': this.fraccionamiento_id,
+                    'etapa_id': this.etapa_id,
+                    'manzana': this.manzana,
+                    'num_lote': this.num_lote,
+                    'sublote': this.sublote,
+                    'modelo_id': this.modelo_id,
+                    'empresa_id': this.empresa_id,
+                    'calle': this.calle,
+                    'numero': this.numero,
+                    'interior': this.interior,
                     'terreno': this.terreno,
                     'construccion': this.construccion,
-                     'archivo': this.archivo,
+                    'casa_muestra': this.casa_muestra,
+                    'lote_comercial': this.lote_comercial,
                     'id' : this.id
                 }).then(function (response){
                     me.cerrarModal();
-                    me.listarModelo(1,'','modelo');
+                    me.listarLote(1,'','lote');
                     //window.alert("Cambios guardados correctamente");
                     swal({
                         position: 'top-end',
@@ -429,14 +421,22 @@
                     console.log(error);
                 });
             },
-            eliminarModelo(data =[]){
+            eliminarLote(data =[]){
                 this.id=data['id'];
-                this.nombre=data['nombre'];
-                this.tipo=data['tipo'];
                 this.fraccionamiento_id=data['fraccionamiento_id'];
+                this.etapa_id=data['etapa_id'];
+                this.manzana=data['manzana'];
+                this.num_lote=data['num_lote'];
+                this.sublote=data['sublote'];
+                this.modelo_id=data['modelo_id'];
+                this.empresa_id=data['empresa_id'];
+                this.calle=data['calle'];
+                this.numero=data['numero'];
+                this.interior=data['interior'];
                 this.terreno=data['terreno'];
                 this.construccion=data['construccion'];
-                this.archivo=data['archivo'];
+                this.casa_muestra=data['casa_muestra'];
+                this.lote_comercial=data['lote_comercial'];
                 swal({
                 title: '¿Desea eliminar?',
                 text: "Esta acción no se puede revertir!",
@@ -450,83 +450,109 @@
                 if (result.value) {
                     let me = this;
 
-                axios.delete('/modelo/eliminar', 
+                axios.delete('/lote/eliminar', 
                         {params: {'id': this.id}}).then(function (response){
                         swal(
                         'Borrado!',
-                        'Modelo borrado correctamente.',
+                        'Lote borrado correctamente.',
                         'success'
                         )
-                        me.listarModelo(1,'','modelo');
+                        me.listarLote(1,'','lote');
                     }).catch(function (error){
                         console.log(error);
                     });
                 }
                 })
             },
-            validarModelo(){
-                this.errorModelo=0;
-                this.errorMostrarMsjModelo=[];
+            validarLote(){
+                this.errorLote=0;
+                this.errorMostrarMsjLote=[];
 
-                if(!this.nombre) //Si la variable Modelo esta vacia
-                    this.errorMostrarMsjModelo.push("El nombre del Modelo no puede ir vacio.");
+                if(!this.fraccionamiento_id) //Si la variable Lote esta vacia
+                    this.errorMostrarMsjLote.push("El nombre del proyecto para el Lote no puede ir vacio.");
 
-                if(this.errorMostrarMsjModelo.length)//Si el mensaje tiene almacenado algo en el array
-                    this.errorModelo = 1;
+                if(this.errorMostrarMsjLote.length)//Si el mensaje tiene almacenado algo en el array
+                    this.errorLote = 1;
 
-                return this.errorModelo;
+                return this.errorLote;
             },
             cerrarModal(){
                 this.modal = 0;
                 this.tituloModal = '';
-                this.nombre = '';
-                this.tipo = 0;
                 this.fraccionamiento_id = 0;
-                this.terreno = 0;
-                this.construccion = 0;
+                this.etapa_id= 0;
+                this.manzana= '';
+                this.num_lote= 0;
+                this.sublote= '';
+                this.modelo_id= 0;
+                this.empresa_id= 0;
+                this.calle= '';
+                this.numero= '';
+                this.interior= '';
+                this.terreno = 0.0;
+                this.construccion = 0.0;
+                this.casa_muestra= 0;
+                this.lote_comercial= 0;
                 
-                this.errorModelo = 0;
-                this.errorMostrarMsjModelo = [];
+                this.errorLote = 0;
+                this.errorMostrarMsjLote = [];
 
             },
               cerrarModal2(){
                 this.modal2 = 0;
                 this.tituloModal2 = '';
-                this.nombre = '';
-                this.archivo = '';
-                this.errorModelo = 0;
-                this.errorMostrarMsjModelo = [];
+             
+                this.errorLote = 0;
+                this.errorMostrarMsjLote = [];
 
             },
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
-            abrirModal(modelo, accion,data =[]){
-                switch(modelo){
-                    case "modelo":
+            abrirModal(lote, accion,data =[]){
+                switch(lote){
+                    case "lote":
                     {
                         switch(accion){
                             case 'registrar':
                             {
                                 this.modal = 1;
-                                this.tituloModal = 'Registrar Modelo';
-                                this.nombre = '';
-                                this.tipo = 0;
+                                this.tituloModal = 'Registrar Lote';
                                 this.fraccionamiento_id = 0;
-                                this.terreno = 0;
-                                this.construccion = 0;
+                                this.etapa_id= 0;
+                                this.manzana= '';
+                                this.num_lote= 0;
+                                this.sublote= '';
+                                this.modelo_id= 0;
+                                this.empresa_id= 0;
+                                this.calle= '';
+                                this.numero= '';
+                                this.interior= '';
+                                this.terreno = 0.0;
+                                this.construccion = 0.0;
+                                this.casa_muestra= 0;
+                                this.lote_comercial= 0;
                                 this.tipoAccion = 1;
                                 break;
                             }
                             case 'actualizar':
                             {
                                 this.modal =1;
-                                this.tituloModal='Actualizar Modelo';
+                                this.tituloModal='Actualizar Lote';
                                 this.tipoAccion=2;
                                 this.id=data['id'];
-                                this.nombre=data['nombre'];
-                                this.tipo=data['tipo'];
                                 this.fraccionamiento_id=data['fraccionamiento_id'];
+                                this.etapa_id=data['etapa_id'];
+                                this.manzana=data['manzana'];
+                                this.num_lote=data['num_lote'];
+                                this.sublote=data['sublote'];
+                                this.modelo_id=data['modelo_id'];
+                                this.empresa_id=data['empresa_id'];
+                                this.calle=data['calle'];
+                                this.numero=data['numero'];
+                                this.interior=data['interior'];
                                 this.terreno=data['terreno'];
                                 this.construccion=data['construccion'];
+                                this.casa_muestra=data['casa_muestra'];
+                                this.lote_comercial=data['lote_comercial'];
                                 break;
                             }
                             case 'subirArchivo':
@@ -535,8 +561,7 @@
                                 this.tituloModal2='Subir Archivo';
                                 this.tipoAccion=3;
                                 this.id=data['id'];
-                                this.nombre=data['nombre'];
-                                this.archivo=data['archivo'];
+                            
                                 break;
                             }
                         }
@@ -546,7 +571,7 @@
             }
         },
         mounted() {
-            this.listarModelo(1,this.buscar,this.criterio);
+            this.listarLote(1,this.buscar,this.criterio);
         }
     }
 </script>

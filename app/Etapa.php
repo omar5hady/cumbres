@@ -18,4 +18,8 @@ class Etapa extends Model
     public function personal(){
         return $this->belongsTo('App\Personal');
     }
+
+    public function lote(){
+        return $this->hasMany('App\Lote');
+    }
 }

@@ -41784,7 +41784,6 @@ var render = function() {
               "ul",
               { staticClass: "pagination" },
               [
-                _vm._v('"\n                            '),
                 _vm.pagination.current_page > 1
                   ? _c("li", { staticClass: "page-item" }, [
                       _c(

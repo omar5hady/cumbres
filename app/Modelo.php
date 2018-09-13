@@ -13,4 +13,8 @@ class Modelo extends Model
     public function fraccionamiento(){
         return $this->belongsTo('App\Fraccionamiento');
     }
+
+    public function lote(){
+        return $this->hasMany('App\Lote');
+    }
 }

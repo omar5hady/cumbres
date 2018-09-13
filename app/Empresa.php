@@ -13,4 +13,8 @@ class Empresa extends Model
     public function personal(){
         return $this->hasMany('App\Personal');
     }
+
+    public function lote(){
+        return $this->hasMany('App\Lote');
+    }
 }
