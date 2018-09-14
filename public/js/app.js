@@ -41785,7 +41785,6 @@ var render = function() {
               "ul",
               { staticClass: "pagination" },
               [
-                _vm._v('"\n                            '),
                 _vm.pagination.current_page > 1
                   ? _c("li", { staticClass: "page-item" }, [
                       _c(
@@ -42407,7 +42406,7 @@ var staticRenderFns = [
         _c("th", [_vm._v("Opciones")]),
         _vm._v(" "),
         _c("th", [_vm._v("Modelo")]),
-        _vm._v("|\n                                "),
+        _vm._v(" "),
         _c("th", [_vm._v("Tipo")]),
         _vm._v(" "),
         _c("th", [_vm._v("Proyecto")]),

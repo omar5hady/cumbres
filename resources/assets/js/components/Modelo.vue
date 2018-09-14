@@ -41,7 +41,7 @@
                             <thead>
                                 <tr>
                                     <th>Opciones</th>
-                                    <th>Modelo</th>|
+                                    <th>Modelo</th>
                                     <th>Tipo</th>
                                     <th>Proyecto</th>
                                     <th>Terreno mts&sup2;</th>
@@ -75,7 +75,7 @@
                         </table>  
                         <nav>
                             <!--Botones de paginacion -->
-                            <ul class="pagination">"
+                            <ul class="pagination">
                                 <li class="page-item" v-if="pagination.current_page > 1">
                                     <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,criterio)">Ant</a>
                                 </li>
