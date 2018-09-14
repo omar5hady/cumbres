@@ -66,4 +66,6 @@ Route::get('/select_personal','PersonalController@selectNombre'); //Nombre compl
 Route::get('/select_fraccionamiento','FraccionamientoController@selectFraccionamiento'); 
 Route::get('/select_Frac_Tipo','FraccionamientoController@selectFrac_Tipo');
 Route::get('/contador_etapa','EtapaController@contEtapa'); 
+Route::get('/select_etapa_proyecto','EtapaController@selectEtapa_proyecto'); 
+Route::get('/select_modelo_proyecto','ModeloController@selectModelo_proyecto'); 
 

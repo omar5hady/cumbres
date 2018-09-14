@@ -110,7 +110,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
                                     <div class="col-md-6">
-                                       <select class="form-control" v-model="fraccionamiento_id" >
+                                       <select class="form-control" v-model="fraccionamiento_id" @click="selectEtapa(fraccionamiento_id),selectModelo(fraccionamiento_id)" >
                                             <option value="0">Seleccione</option>
                                             <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                         </select>
@@ -122,7 +122,7 @@
                                     <div class="col-md-6">
                                        <select class="form-control" v-model="etapa_id">
                                             <option value="0">Seleccione</option>
-                                            <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.fraccionamiento_id" v-text="etapas.num_etapa"></option>
+                                            <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                         </select>
                                     </div>
                                 </div>
@@ -150,9 +150,9 @@
                                   <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Modelo</label>
                                     <div class="col-md-6">
-                                       <select class="form-control" v-model="etapa_id">
+                                       <select class="form-control" v-model="modelo_id">
                                             <option value="0">Seleccione</option>
-                                            <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.fraccionamiento_id" v-text="etapas.num_etapa"></option>
+                                            <option v-for="modelos in arrayModelos" :key="modelos.id" :value="modelos.id" v-text="modelos.nombre"></option>
                                         </select>
                                     </div>
                                 </div>
@@ -343,6 +343,32 @@
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayFraccionamientos = respuesta.fraccionamientos;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            selectEtapa(buscar){
+                let me = this;
+                me.etapa_id=0;
+                me.arrayEtapas=[];
+                var url = '/select_etapa_proyecto?buscar=' + buscar;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayEtapas = respuesta.etapas;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            selectModelo(buscar){
+                let me = this;
+                me.modelo_id=0;
+                me.arrayModelos=[];
+                var url = '/select_modelo_proyecto?buscar=' + buscar;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayModelos = respuesta.modelos;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -556,6 +582,8 @@
                     }
                 }
                 this.selectFraccionamientos(this.tipo);
+                this.selectEtapa(this.fraccionamiento_id);
+                this.selectModelo(this.fraccionamiento_id);
             }
         },
         mounted() {

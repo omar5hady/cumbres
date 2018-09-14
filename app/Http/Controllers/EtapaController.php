@@ -160,4 +160,14 @@ class EtapaController extends Controller
 
         return $contador + 1;
     }
+
+    public function selectEtapa_proyecto(Request $request){
+        //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
+        if(!$request->ajax())return redirect('/');
+
+        $buscar = $request->buscar;
+        $etapa = Etapa::select('num_etapa','id')
+        ->where('fraccionamiento_id', '=', $buscar )->get();
+        return['etapas' => $etapa];
+    }
 }

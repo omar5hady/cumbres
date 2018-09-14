@@ -42876,6 +42876,30 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 console.log(error);
             });
         },
+        selectEtapa: function selectEtapa(buscar) {
+            var me = this;
+            me.etapa_id = 0;
+            me.arrayEtapas = [];
+            var url = '/select_etapa_proyecto?buscar=' + buscar;
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayEtapas = respuesta.etapas;
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        selectModelo: function selectModelo(buscar) {
+            var me = this;
+            me.modelo_id = 0;
+            me.arrayModelos = [];
+            var url = '/select_modelo_proyecto?buscar=' + buscar;
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayModelos = respuesta.modelos;
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
 
         /**Metodo para registrar  */
         registrarLote: function registrarLote() {
@@ -43086,6 +43110,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     }
             }
             this.selectFraccionamientos(this.tipo);
+            this.selectEtapa(this.fraccionamiento_id);
+            this.selectModelo(this.fraccionamiento_id);
         }
     },
     mounted: function mounted() {
@@ -43527,6 +43553,10 @@ var render = function() {
                             ],
                             staticClass: "form-control",
                             on: {
+                              click: function($event) {
+                                _vm.selectEtapa(_vm.fraccionamiento_id),
+                                  _vm.selectModelo(_vm.fraccionamiento_id)
+                              },
                               change: function($event) {
                                 var $$selectedVal = Array.prototype.filter
                                   .call($event.target.options, function(o) {
@@ -43612,7 +43642,7 @@ var render = function() {
                               return _c("option", {
                                 key: etapas.id,
                                 domProps: {
-                                  value: etapas.fraccionamiento_id,
+                                  value: etapas.id,
                                   textContent: _vm._s(etapas.num_etapa)
                                 }
                               })
@@ -43746,8 +43776,8 @@ var render = function() {
                               {
                                 name: "model",
                                 rawName: "v-model",
-                                value: _vm.etapa_id,
-                                expression: "etapa_id"
+                                value: _vm.modelo_id,
+                                expression: "modelo_id"
                               }
                             ],
                             staticClass: "form-control",
@@ -43761,7 +43791,7 @@ var render = function() {
                                     var val = "_value" in o ? o._value : o.value
                                     return val
                                   })
-                                _vm.etapa_id = $event.target.multiple
+                                _vm.modelo_id = $event.target.multiple
                                   ? $$selectedVal
                                   : $$selectedVal[0]
                               }
@@ -43772,12 +43802,12 @@ var render = function() {
                               _vm._v("Seleccione")
                             ]),
                             _vm._v(" "),
-                            _vm._l(_vm.arrayEtapas, function(etapas) {
+                            _vm._l(_vm.arrayModelos, function(modelos) {
                               return _c("option", {
-                                key: etapas.id,
+                                key: modelos.id,
                                 domProps: {
-                                  value: etapas.fraccionamiento_id,
-                                  textContent: _vm._s(etapas.num_etapa)
+                                  value: modelos.id,
+                                  textContent: _vm._s(modelos.nombre)
                                 }
                               })
                             })

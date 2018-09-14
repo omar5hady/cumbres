@@ -161,5 +161,15 @@ class ModeloController extends Controller
         return response()->download($pathtoFile);
       }
 
+      public function selectModelo_proyecto(Request $request){
+        //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
+        if(!$request->ajax())return redirect('/');
+
+        $buscar = $request->buscar;
+        $modelo = Modelo::select('nombre','id')
+        ->where('fraccionamiento_id', '=', $buscar )->get();
+        return['modelos' => $modelo];
+    }
+
 
 }
