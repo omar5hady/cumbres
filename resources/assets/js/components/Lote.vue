@@ -22,18 +22,12 @@
                                     <!--Criterios para el listado de busqueda -->
                                     <select class="form-control col-md-5" v-model="criterio">
                                       <option value="modelos.nombre">Modelos</option>
-                                      <option value="tipo">Tipo de Proyecto</option>
                                       <option value="fraccionamientos.nombre">Proyecto</option>
                                     </select>
                                     
-                                    <input type="text" v-if="criterio=='modelos.nombre'" v-model="buscar" @keyup.enter="listarModelo(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
-                                    <input type="text" v-if="criterio=='fraccionamientos.nombre'" v-model="buscar" @keyup.enter="listarModelo(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
-                                    <select class="form-control col-md-5" v-if="criterio=='tipo'" v-model="buscar" @keyup.enter="listarModelo(1,buscar,criterio)" >
-                                        <option value="1">Lotificación</option>
-                                        <option value="2">Departamento</option>
-                                        <option value="3">Terreno</option>
-                                    </select>
-                                    <button type="submit" @click="listarModelo(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <input type="text" v-if="criterio=='modelos.nombre'" v-model="buscar" @keyup.enter="listarLote(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
+                                    <input type="text" v-if="criterio=='fraccionamientos.nombre'" v-model="buscar" @keyup.enter="listarLote(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
+                                    <button type="submit" @click="listarLote(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
                         </div>
@@ -44,10 +38,9 @@
                                     <th>Proyecto</th>
                                     <th>Etapa</th>
                                     <th>Manzana</th>
-                                    <th>Numero de lote</th>
+                                    <th># Lote</th>
                                     <th>Sublote</th>
                                     <th>Modelo</th>
-                                    <th>Empresa</th>
                                     <th>Calle</th>
                                     <th>Numero</th>
                                     <th>Interior</th>
@@ -58,26 +51,28 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="modelo in arrayModelo" :key="modelo.id">
+                                <tr v-for="lote in arrayLote" :key="lote.id">
                                     <td style="width:12%">
-                                        <button title="Editar" type="button" @click="abrirModal('modelo','actualizar',modelo)" class="btn btn-warning btn-sm">
+                                        <button title="Editar" type="button" @click="abrirModal('lote','actualizar',lote)" class="btn btn-warning btn-sm">
                                           <i class="icon-pencil"></i>
                                         </button> &nbsp;
-                                        <button title="Borrar" type="button" class="btn btn-danger btn-sm" @click="eliminarModelo(modelo)">
+                                        <button title="Borrar" type="button" class="btn btn-danger btn-sm" @click="eliminarLote(lote)">
                                           <i class="icon-trash"></i>
                                         </button> &nbsp;
-                                        <button title="Subir archivo" type="button" @click="abrirModal('modelo','subirArchivo',modelo)" class="btn btn-default btn-sm">
-                                          <i class="icon-cloud-upload"></i>
-                                        </button>
                                     </td>
-                                    <td v-text="modelo.nombre"></td>
-                                    <td v-if="modelo.tipo==1" v-text="'Lotificación'"></td>
-                                    <td v-if="modelo.tipo==2" v-text="'Departamento'"></td>
-                                    <td v-if="modelo.tipo==3" v-text="'Terreno'"></td>
-                                    <td v-text="modelo.fraccionamiento"></td>
-                                    <td v-text="modelo.terreno"></td>
-                                    <td v-text="modelo.construccion"></td>
-                                    <td style="width:7%" v-if = "modelo.archivo"><a class="btn btn-default btn-sm" v-bind:href="'/download/'+modelo.archivo"><i class="icon-cloud-download"></i></a></td>
+                                    <td v-text="lote.proyecto"></td>
+                                    <td v-text="lote.etapa"></td>
+                                    <td v-text="lote.manzana"></td>
+                                    <td v-text="lote.num_lote"></td>
+                                    <td v-text="lote.sublote"></td>
+                                    <td v-text="lote.modelo"></td>
+                                    <td v-text="lote.calle"></td>
+                                    <td v-text="lote.numero"></td>
+                                    <td v-text="lote.interior"></td>
+                                    <td v-text="lote.terreno"></td>
+                                    <td v-text="lote.construccion"></td>
+                                    <td v-text="lote.casa_muestra"></td>
+                                    <td v-text="lote.comercial"></td>
                                 </tr>                               
                             </tbody>
                         </table>  
@@ -138,17 +133,6 @@
                                         <input type="text" v-model="manzana" class="form-control" placeholder="manzana">
                                     </div>
                                 </div>
-
-                                   <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Etapa</label>
-                                    <div class="col-md-6">
-                                       <select class="form-control" v-model="etapa_id">
-                                            <option value="0">Seleccione</option>
-                                            <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.fraccionamiento_id" v-text="etapas.num_etapa"></option>
-                                        </select>
-                                    </div>
-                                </div>
-
                                   <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input"># Lote</label>
                                     <div class="col-md-4">
@@ -172,26 +156,19 @@
                                         </select>
                                     </div>
                                 </div>
-
                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Tipo</label>
-                                    <div class="col-md-3">
-                                        <select class="form-control" v-model="tipo" @click="selectFraccionamientos(tipo)">
-                                            <option value="0">Seleccione</option>
-                                            <option value="1">Fraccionamiento</option>
-                                            <option value="2">Departamento</option>
-                                        </select>
+                                    <label class="col-md-3 form-control-label" for="text-input">Dirección</label>
+                                    <div class="col-md-4">
+                                        <input type="text" v-model="calle" class="form-control" placeholder="Calle">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input type="text" v-model="numero" class="form-control" placeholder="Numero">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input type="text" v-model="interior" class="form-control" placeholder="Interior">
                                     </div>
                                 </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
-                                    <div class="col-md-6">
-                                       <select class="form-control" v-model="fraccionamiento_id">
-                                            <option value="0">Seleccione</option>
-                                            <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
-                                        </select>
-                                    </div>
-                                </div>
+                                
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Terreno (mts&sup2;)</label>
                                     <div class="col-md-4">
@@ -204,10 +181,40 @@
                                         <input type="text" v-model="construccion" class="form-control" placeholder="Construccion">
                                     </div>
                                 </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Casa muestra</label>
+                                    <div class="col-md-2">
+                                        <div class="form-check">
+                                            <input class="form-check-input" v-model="casa_muestra" id="radio1" type="radio" value="1" name="radios">
+                                            <label class="form-check-label" for="radio1">Si </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-check">
+                                            <input class="form-check-input" v-model="casa_muestra" id="radio2" type="radio" value="0" name="radios">
+                                            <label class="form-check-label" for="radio2">No </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Lote comercial</label>
+                                    <div class="col-md-2">
+                                        <div class="form-check">
+                                            <input class="form-check-input" v-model="lote_comercial" id="radio3" type="radio" value="1" name="radios2">
+                                            <label class="form-check-label" for="radio3">Si </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-check">
+                                            <input class="form-check-input" v-model="lote_comercial" id="radio4" type="radio" value="0" name="radios2">
+                                            <label class="form-check-label" for="radio4">No </label>
+                                        </div>
+                                    </div>
+                                </div>
                                 <!-- Div para mostrar los errores que mande validerModelo -->
                                 <div v-show="errorModelo" class="form-group row div-error">
                                     <div class="text-center text-error">
-                                        <div v-for="error in errorMostrarMsjModelo" :key="error" v-text="error">
+                                        <div v-for="error in errorMostrarMsjLote" :key="error" v-text="error">
 
                                         </div>
                                     </div>
@@ -218,8 +225,8 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
                             <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarModelo()">Guardar</button>
-                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarModelo()">Actualizar</button>
+                            <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarLote()">Guardar</button>
+                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarLote()">Actualizar</button>
                         </div>
                     </div>
                       <!-- /.modal-content -->
@@ -259,8 +266,6 @@
                 arrayLote : [],
                 modal : 0,
                 tituloModal : '',
-                modal2 : 0,
-                tituloModal2 : '',
                 tipoAccion: 0,
                 errorModelo : 0,
                 errorMostrarMsjLote : [],
@@ -344,7 +349,7 @@
                 });
             },
             /**Metodo para registrar  */
-            registrarModelo(){
+            registrarLote(){
                 if(this.validarModelo()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
@@ -498,14 +503,6 @@
                 this.errorMostrarMsjLote = [];
 
             },
-              cerrarModal2(){
-                this.modal2 = 0;
-                this.tituloModal2 = '';
-             
-                this.errorLote = 0;
-                this.errorMostrarMsjLote = [];
-
-            },
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
             abrirModal(lote, accion,data =[]){
                 switch(lote){
@@ -555,15 +552,6 @@
                                 this.lote_comercial=data['lote_comercial'];
                                 break;
                             }
-                            case 'subirArchivo':
-                            {
-                                this.modal2 =1;
-                                this.tituloModal2='Subir Archivo';
-                                this.tipoAccion=3;
-                                this.id=data['id'];
-                            
-                                break;
-                            }
                         }
                     }
                 }
@@ -585,6 +573,7 @@
         opacity: 1 !important;
         position: absolute !important;
         background-color: #3c29297a !important;
+        overflow-y: auto;
     }
     .div-error{
         display:flex;

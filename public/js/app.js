@@ -1411,6 +1411,7 @@ Vue.component('personal', __webpack_require__(51));
 Vue.component('empresa', __webpack_require__(56));
 Vue.component('etapa', __webpack_require__(61));
 Vue.component('modelo', __webpack_require__(66));
+Vue.component('lote', __webpack_require__(71));
 
 var app = new Vue({
   el: '#app',
@@ -41784,6 +41785,7 @@ var render = function() {
               "ul",
               { staticClass: "pagination" },
               [
+                _vm._v('"\n                            '),
                 _vm.pagination.current_page > 1
                   ? _c("li", { staticClass: "page-item" }, [
                       _c(
@@ -42405,7 +42407,7 @@ var staticRenderFns = [
         _c("th", [_vm._v("Opciones")]),
         _vm._v(" "),
         _c("th", [_vm._v("Modelo")]),
-        _vm._v(" "),
+        _vm._v("|\n                                "),
         _c("th", [_vm._v("Tipo")]),
         _vm._v(" "),
         _c("th", [_vm._v("Proyecto")]),
@@ -42425,6 +42427,1835 @@ if (false) {
   module.hot.accept()
   if (module.hot.data) {
     require("vue-hot-reload-api")      .rerender("data-v-242d599d", module.exports)
+  }
+}
+
+/***/ }),
+/* 71 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(72)
+}
+var normalizeComponent = __webpack_require__(3)
+/* script */
+var __vue_script__ = __webpack_require__(74)
+/* template */
+var __vue_template__ = __webpack_require__(75)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources\\assets\\js\\components\\Lote.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-687efb2b", Component.options)
+  } else {
+    hotAPI.reload("data-v-687efb2b", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 72 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(73);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(2)("0dfacede", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-687efb2b\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Lote.vue", function() {
+     var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-687efb2b\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Lote.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 73 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(1)(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: absolute !important;\n    background-color: #3c29297a !important;\n    overflow-y: auto;\n}\n.div-error{\n    display:flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 74 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    data: function data() {
+        return {
+            id: 0,
+            fraccionamiento_id: 0,
+            etapa_id: 0,
+            manzana: '',
+            num_lote: 0,
+            sublote: '',
+            modelo_id: 0,
+            empresa_id: 0,
+            calle: '',
+            numero: '',
+            interior: '',
+            terreno: 0.0,
+            construccion: 0.0,
+            casa_muestra: 0,
+            lote_comercial: 0,
+
+            arrayLote: [],
+            modal: 0,
+            tituloModal: '',
+            tipoAccion: 0,
+            errorModelo: 0,
+            errorMostrarMsjLote: [],
+            pagination: {
+                'total': 0,
+                'current_page': 0,
+                'per_page': 0,
+                'last_page': 0,
+                'from': 0,
+                'to': 0
+            },
+            offset: 3,
+            criterio: 'lote.proyecto',
+            buscar: '',
+            arrayFraccionamientos: [],
+            arrayEtapas: [],
+            arrayModelos: [],
+            arrayEmpresas: []
+        };
+    },
+
+    computed: {
+        isActived: function isActived() {
+            return this.pagination.current_page;
+        },
+        //Calcula los elementos de la paginación
+        pagesNumber: function pagesNumber() {
+            if (!this.pagination.to) {
+                return [];
+            }
+
+            var from = this.pagination.current_page - this.offset;
+            if (from < 1) {
+                from = 1;
+            }
+
+            var to = from + this.offset * 2;
+            if (to >= this.pagination.last_page) {
+                to = this.pagination.last_page;
+            }
+
+            var pagesArray = [];
+            while (from <= to) {
+                pagesArray.push(from);
+                from++;
+            }
+            return pagesArray;
+        }
+    },
+    methods: {
+
+        /**Metodo para mostrar los registros */
+        listarLote: function listarLote(page, buscar, criterio) {
+            var me = this;
+            var url = '/lote?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayLote = respuesta.lotes.data;
+                me.pagination = respuesta.pagination;
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        cambiarPagina: function cambiarPagina(page, buscar, criterio) {
+            var me = this;
+            //Actualiza la pagina actual
+            me.pagination.current_page = page;
+            //Envia la petición para visualizar la data de esta pagina
+            me.listarLote(page, buscar, criterio);
+        },
+        selectFraccionamientos: function selectFraccionamientos() {
+            var me = this;
+            me.arrayFraccionamientos = [];
+            var url = '/select_fraccionamiento';
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayFraccionamientos = respuesta.fraccionamientos;
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+
+        /**Metodo para registrar  */
+        registrarLote: function registrarLote() {
+            if (this.validarModelo()) //Se verifica si hay un error (campo vacio)
+                {
+                    return;
+                }
+
+            var me = this;
+            //Con axios se llama el metodo store de FraccionaminetoController
+            axios.post('/modelo/registrar', {
+                'fraccionamiento_id': this.fraccionamiento_id,
+                'etapa_id': this.etapa_id,
+                'manzana': this.manzana,
+                'num_lote': this.num_lote,
+                'sublote': this.sublote,
+                'modelo_id': this.modelo_id,
+                'empresa_id': this.empresa_id,
+                'calle': this.calle,
+                'numero': this.numero,
+                'interior': this.interior,
+                'terreno': this.terreno,
+                'construccion': this.construccion,
+                'casa_muestra': this.casa_muestra,
+                'lote_comercial': this.lote_comercial
+            }).then(function (response) {
+                me.cerrarModal(); //al guardar el registro se cierra el modal
+                me.listarLote(1, '', 'lote'); //se enlistan nuevamente los registros
+                //Se muestra mensaje Success
+                swal({
+                    position: 'top-end',
+                    type: 'success',
+                    title: 'Lote agregado correctamente',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        actualizarLote: function actualizarLote() {
+            if (this.validarLote()) //Se verifica si hay un error (campo vacio)
+                {
+                    return;
+                }
+
+            var me = this;
+            //Con axios se llama el metodo update de FraccionaminetoController
+            axios.put('/lote/actualizar', {
+                'fraccionamiento_id': this.fraccionamiento_id,
+                'etapa_id': this.etapa_id,
+                'manzana': this.manzana,
+                'num_lote': this.num_lote,
+                'sublote': this.sublote,
+                'modelo_id': this.modelo_id,
+                'empresa_id': this.empresa_id,
+                'calle': this.calle,
+                'numero': this.numero,
+                'interior': this.interior,
+                'terreno': this.terreno,
+                'construccion': this.construccion,
+                'casa_muestra': this.casa_muestra,
+                'lote_comercial': this.lote_comercial,
+                'id': this.id
+            }).then(function (response) {
+                me.cerrarModal();
+                me.listarLote(1, '', 'lote');
+                //window.alert("Cambios guardados correctamente");
+                swal({
+                    position: 'top-end',
+                    type: 'success',
+                    title: 'Cambios guardados correctamente',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        eliminarLote: function eliminarLote() {
+            var _this = this;
+
+            var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+
+            this.id = data['id'];
+            this.fraccionamiento_id = data['fraccionamiento_id'];
+            this.etapa_id = data['etapa_id'];
+            this.manzana = data['manzana'];
+            this.num_lote = data['num_lote'];
+            this.sublote = data['sublote'];
+            this.modelo_id = data['modelo_id'];
+            this.empresa_id = data['empresa_id'];
+            this.calle = data['calle'];
+            this.numero = data['numero'];
+            this.interior = data['interior'];
+            this.terreno = data['terreno'];
+            this.construccion = data['construccion'];
+            this.casa_muestra = data['casa_muestra'];
+            this.lote_comercial = data['lote_comercial'];
+            swal({
+                title: '¿Desea eliminar?',
+                text: "Esta acción no se puede revertir!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Si, eliminar!'
+            }).then(function (result) {
+                if (result.value) {
+                    var me = _this;
+
+                    axios.delete('/lote/eliminar', { params: { 'id': _this.id } }).then(function (response) {
+                        swal('Borrado!', 'Lote borrado correctamente.', 'success');
+                        me.listarLote(1, '', 'lote');
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                }
+            });
+        },
+        validarLote: function validarLote() {
+            this.errorLote = 0;
+            this.errorMostrarMsjLote = [];
+
+            if (!this.fraccionamiento_id) //Si la variable Lote esta vacia
+                this.errorMostrarMsjLote.push("El nombre del proyecto para el Lote no puede ir vacio.");
+
+            if (this.errorMostrarMsjLote.length) //Si el mensaje tiene almacenado algo en el array
+                this.errorLote = 1;
+
+            return this.errorLote;
+        },
+        cerrarModal: function cerrarModal() {
+            this.modal = 0;
+            this.tituloModal = '';
+            this.fraccionamiento_id = 0;
+            this.etapa_id = 0;
+            this.manzana = '';
+            this.num_lote = 0;
+            this.sublote = '';
+            this.modelo_id = 0;
+            this.empresa_id = 0;
+            this.calle = '';
+            this.numero = '';
+            this.interior = '';
+            this.terreno = 0.0;
+            this.construccion = 0.0;
+            this.casa_muestra = 0;
+            this.lote_comercial = 0;
+
+            this.errorLote = 0;
+            this.errorMostrarMsjLote = [];
+        },
+
+        /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
+        abrirModal: function abrirModal(lote, accion) {
+            var data = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+
+            switch (lote) {
+                case "lote":
+                    {
+                        switch (accion) {
+                            case 'registrar':
+                                {
+                                    this.modal = 1;
+                                    this.tituloModal = 'Registrar Lote';
+                                    this.fraccionamiento_id = 0;
+                                    this.etapa_id = 0;
+                                    this.manzana = '';
+                                    this.num_lote = 0;
+                                    this.sublote = '';
+                                    this.modelo_id = 0;
+                                    this.empresa_id = 0;
+                                    this.calle = '';
+                                    this.numero = '';
+                                    this.interior = '';
+                                    this.terreno = 0.0;
+                                    this.construccion = 0.0;
+                                    this.casa_muestra = 0;
+                                    this.lote_comercial = 0;
+                                    this.tipoAccion = 1;
+                                    break;
+                                }
+                            case 'actualizar':
+                                {
+                                    this.modal = 1;
+                                    this.tituloModal = 'Actualizar Lote';
+                                    this.tipoAccion = 2;
+                                    this.id = data['id'];
+                                    this.fraccionamiento_id = data['fraccionamiento_id'];
+                                    this.etapa_id = data['etapa_id'];
+                                    this.manzana = data['manzana'];
+                                    this.num_lote = data['num_lote'];
+                                    this.sublote = data['sublote'];
+                                    this.modelo_id = data['modelo_id'];
+                                    this.empresa_id = data['empresa_id'];
+                                    this.calle = data['calle'];
+                                    this.numero = data['numero'];
+                                    this.interior = data['interior'];
+                                    this.terreno = data['terreno'];
+                                    this.construccion = data['construccion'];
+                                    this.casa_muestra = data['casa_muestra'];
+                                    this.lote_comercial = data['lote_comercial'];
+                                    break;
+                                }
+                        }
+                    }
+            }
+            this.selectFraccionamientos(this.tipo);
+        }
+    },
+    mounted: function mounted() {
+        this.listarLote(1, this.buscar, this.criterio);
+    }
+});
+
+/***/ }),
+/* 75 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("main", { staticClass: "main" }, [
+    _vm._m(0),
+    _vm._v(" "),
+    _c("div", { staticClass: "container-fluid" }, [
+      _c("div", { staticClass: "card" }, [
+        _c("div", { staticClass: "card-header" }, [
+          _c("i", { staticClass: "fa fa-align-justify" }),
+          _vm._v(" Lotes\n                    "),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-secondary",
+              attrs: { type: "button" },
+              on: {
+                click: function($event) {
+                  _vm.abrirModal("lote", "registrar")
+                }
+              }
+            },
+            [
+              _c("i", { staticClass: "icon-plus" }),
+              _vm._v(" Nuevo\n                    ")
+            ]
+          )
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "card-body" }, [
+          _c("div", { staticClass: "form-group row" }, [
+            _c("div", { staticClass: "col-md-6" }, [
+              _c("div", { staticClass: "input-group" }, [
+                _c(
+                  "select",
+                  {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.criterio,
+                        expression: "criterio"
+                      }
+                    ],
+                    staticClass: "form-control col-md-5",
+                    on: {
+                      change: function($event) {
+                        var $$selectedVal = Array.prototype.filter
+                          .call($event.target.options, function(o) {
+                            return o.selected
+                          })
+                          .map(function(o) {
+                            var val = "_value" in o ? o._value : o.value
+                            return val
+                          })
+                        _vm.criterio = $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      }
+                    }
+                  },
+                  [
+                    _c("option", { attrs: { value: "modelos.nombre" } }, [
+                      _vm._v("Modelos")
+                    ]),
+                    _vm._v(" "),
+                    _c(
+                      "option",
+                      { attrs: { value: "fraccionamientos.nombre" } },
+                      [_vm._v("Proyecto")]
+                    )
+                  ]
+                ),
+                _vm._v(" "),
+                _vm.criterio == "modelos.nombre"
+                  ? _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.buscar,
+                          expression: "buscar"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { type: "text", placeholder: "Texto a buscar" },
+                      domProps: { value: _vm.buscar },
+                      on: {
+                        keyup: function($event) {
+                          if (
+                            !("button" in $event) &&
+                            _vm._k(
+                              $event.keyCode,
+                              "enter",
+                              13,
+                              $event.key,
+                              "Enter"
+                            )
+                          ) {
+                            return null
+                          }
+                          _vm.listarLote(1, _vm.buscar, _vm.criterio)
+                        },
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.buscar = $event.target.value
+                        }
+                      }
+                    })
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.criterio == "fraccionamientos.nombre"
+                  ? _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.buscar,
+                          expression: "buscar"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { type: "text", placeholder: "Texto a buscar" },
+                      domProps: { value: _vm.buscar },
+                      on: {
+                        keyup: function($event) {
+                          if (
+                            !("button" in $event) &&
+                            _vm._k(
+                              $event.keyCode,
+                              "enter",
+                              13,
+                              $event.key,
+                              "Enter"
+                            )
+                          ) {
+                            return null
+                          }
+                          _vm.listarLote(1, _vm.buscar, _vm.criterio)
+                        },
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.buscar = $event.target.value
+                        }
+                      }
+                    })
+                  : _vm._e(),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary",
+                    attrs: { type: "submit" },
+                    on: {
+                      click: function($event) {
+                        _vm.listarLote(1, _vm.buscar, _vm.criterio)
+                      }
+                    }
+                  },
+                  [_c("i", { staticClass: "fa fa-search" }), _vm._v(" Buscar")]
+                )
+              ])
+            ])
+          ]),
+          _vm._v(" "),
+          _c(
+            "table",
+            { staticClass: "table table-bordered table-striped table-sm" },
+            [
+              _vm._m(1),
+              _vm._v(" "),
+              _c(
+                "tbody",
+                _vm._l(_vm.arrayLote, function(lote) {
+                  return _c("tr", { key: lote.id }, [
+                    _c("td", { staticStyle: { width: "12%" } }, [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-warning btn-sm",
+                          attrs: { title: "Editar", type: "button" },
+                          on: {
+                            click: function($event) {
+                              _vm.abrirModal("lote", "actualizar", lote)
+                            }
+                          }
+                        },
+                        [_c("i", { staticClass: "icon-pencil" })]
+                      ),
+                      _vm._v("  \n                                    "),
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-danger btn-sm",
+                          attrs: { title: "Borrar", type: "button" },
+                          on: {
+                            click: function($event) {
+                              _vm.eliminarLote(lote)
+                            }
+                          }
+                        },
+                        [_c("i", { staticClass: "icon-trash" })]
+                      ),
+                      _vm._v("  \n                                ")
+                    ]),
+                    _vm._v(" "),
+                    _c("td", {
+                      domProps: { textContent: _vm._s(lote.proyecto) }
+                    }),
+                    _vm._v(" "),
+                    _c("td", { domProps: { textContent: _vm._s(lote.etapa) } }),
+                    _vm._v(" "),
+                    _c("td", {
+                      domProps: { textContent: _vm._s(lote.manzana) }
+                    }),
+                    _vm._v(" "),
+                    _c("td", {
+                      domProps: { textContent: _vm._s(lote.num_lote) }
+                    }),
+                    _vm._v(" "),
+                    _c("td", {
+                      domProps: { textContent: _vm._s(lote.sublote) }
+                    }),
+                    _vm._v(" "),
+                    _c("td", {
+                      domProps: { textContent: _vm._s(lote.modelo) }
+                    }),
+                    _vm._v(" "),
+                    _c("td", { domProps: { textContent: _vm._s(lote.calle) } }),
+                    _vm._v(" "),
+                    _c("td", {
+                      domProps: { textContent: _vm._s(lote.numero) }
+                    }),
+                    _vm._v(" "),
+                    _c("td", {
+                      domProps: { textContent: _vm._s(lote.interior) }
+                    }),
+                    _vm._v(" "),
+                    _c("td", {
+                      domProps: { textContent: _vm._s(lote.terreno) }
+                    }),
+                    _vm._v(" "),
+                    _c("td", {
+                      domProps: { textContent: _vm._s(lote.construccion) }
+                    }),
+                    _vm._v(" "),
+                    _c("td", {
+                      domProps: { textContent: _vm._s(lote.casa_muestra) }
+                    }),
+                    _vm._v(" "),
+                    _c("td", {
+                      domProps: { textContent: _vm._s(lote.comercial) }
+                    })
+                  ])
+                })
+              )
+            ]
+          ),
+          _vm._v(" "),
+          _c("nav", [
+            _c(
+              "ul",
+              { staticClass: "pagination" },
+              [
+                _vm.pagination.current_page > 1
+                  ? _c("li", { staticClass: "page-item" }, [
+                      _c(
+                        "a",
+                        {
+                          staticClass: "page-link",
+                          attrs: { href: "#" },
+                          on: {
+                            click: function($event) {
+                              $event.preventDefault()
+                              _vm.cambiarPagina(
+                                _vm.pagination.current_page - 1,
+                                _vm.buscar,
+                                _vm.criterio
+                              )
+                            }
+                          }
+                        },
+                        [_vm._v("Ant")]
+                      )
+                    ])
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm._l(_vm.pagesNumber, function(page) {
+                  return _c(
+                    "li",
+                    {
+                      key: page,
+                      staticClass: "page-item",
+                      class: [page == _vm.isActived ? "active" : ""]
+                    },
+                    [
+                      _c("a", {
+                        staticClass: "page-link",
+                        attrs: { href: "#" },
+                        domProps: { textContent: _vm._s(page) },
+                        on: {
+                          click: function($event) {
+                            $event.preventDefault()
+                            _vm.cambiarPagina(page, _vm.buscar, _vm.criterio)
+                          }
+                        }
+                      })
+                    ]
+                  )
+                }),
+                _vm._v(" "),
+                _vm.pagination.current_page < _vm.pagination.last_page
+                  ? _c("li", { staticClass: "page-item" }, [
+                      _c(
+                        "a",
+                        {
+                          staticClass: "page-link",
+                          attrs: { href: "#" },
+                          on: {
+                            click: function($event) {
+                              $event.preventDefault()
+                              _vm.cambiarPagina(
+                                _vm.pagination.current_page + 1,
+                                _vm.buscar,
+                                _vm.criterio
+                              )
+                            }
+                          }
+                        },
+                        [_vm._v("Sig")]
+                      )
+                    ])
+                  : _vm._e()
+              ],
+              2
+            )
+          ])
+        ])
+      ])
+    ]),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        class: { mostrar: _vm.modal },
+        staticStyle: { display: "none" },
+        attrs: {
+          tabindex: "-1",
+          role: "dialog",
+          "aria-labelledby": "myModalLabel",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c(
+          "div",
+          {
+            staticClass: "modal-dialog modal-primary modal-lg",
+            attrs: { role: "document" }
+          },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _c("div", { staticClass: "modal-header" }, [
+                _c("h4", {
+                  staticClass: "modal-title",
+                  domProps: { textContent: _vm._s(_vm.tituloModal) }
+                }),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "close",
+                    attrs: { type: "button", "aria-label": "Close" },
+                    on: {
+                      click: function($event) {
+                        _vm.cerrarModal()
+                      }
+                    }
+                  },
+                  [
+                    _c("span", { attrs: { "aria-hidden": "true" } }, [
+                      _vm._v("×")
+                    ])
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-body" }, [
+                _c(
+                  "form",
+                  {
+                    staticClass: "form-horizontal",
+                    attrs: {
+                      action: "",
+                      method: "post",
+                      enctype: "multipart/form-data"
+                    }
+                  },
+                  [
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "text-input" }
+                        },
+                        [_vm._v("Proyecto")]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-6" }, [
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.fraccionamiento_id,
+                                expression: "fraccionamiento_id"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            on: {
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.fraccionamiento_id = $event.target.multiple
+                                  ? $$selectedVal
+                                  : $$selectedVal[0]
+                              }
+                            }
+                          },
+                          [
+                            _c("option", { attrs: { value: "0" } }, [
+                              _vm._v("Seleccione")
+                            ]),
+                            _vm._v(" "),
+                            _vm._l(_vm.arrayFraccionamientos, function(
+                              fraccionamientos
+                            ) {
+                              return _c("option", {
+                                key: fraccionamientos.id,
+                                domProps: {
+                                  value: fraccionamientos.id,
+                                  textContent: _vm._s(fraccionamientos.nombre)
+                                }
+                              })
+                            })
+                          ],
+                          2
+                        )
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "text-input" }
+                        },
+                        [_vm._v("Etapa")]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-6" }, [
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.etapa_id,
+                                expression: "etapa_id"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            on: {
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.etapa_id = $event.target.multiple
+                                  ? $$selectedVal
+                                  : $$selectedVal[0]
+                              }
+                            }
+                          },
+                          [
+                            _c("option", { attrs: { value: "0" } }, [
+                              _vm._v("Seleccione")
+                            ]),
+                            _vm._v(" "),
+                            _vm._l(_vm.arrayEtapas, function(etapas) {
+                              return _c("option", {
+                                key: etapas.id,
+                                domProps: {
+                                  value: etapas.fraccionamiento_id,
+                                  textContent: _vm._s(etapas.num_etapa)
+                                }
+                              })
+                            })
+                          ],
+                          2
+                        )
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "text-input" }
+                        },
+                        [_vm._v("Manzana")]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-4" }, [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.manzana,
+                              expression: "manzana"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: { type: "text", placeholder: "manzana" },
+                          domProps: { value: _vm.manzana },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.manzana = $event.target.value
+                            }
+                          }
+                        })
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "text-input" }
+                        },
+                        [_vm._v("# Lote")]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-4" }, [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.num_lote,
+                              expression: "num_lote"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: { type: "text", placeholder: "num_lote" },
+                          domProps: { value: _vm.num_lote },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.num_lote = $event.target.value
+                            }
+                          }
+                        })
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "text-input" }
+                        },
+                        [_vm._v("Sublote")]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-4" }, [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.sublote,
+                              expression: "sublote"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: { type: "text", placeholder: "sublote" },
+                          domProps: { value: _vm.sublote },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.sublote = $event.target.value
+                            }
+                          }
+                        })
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "text-input" }
+                        },
+                        [_vm._v("Modelo")]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-6" }, [
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.etapa_id,
+                                expression: "etapa_id"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            on: {
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.etapa_id = $event.target.multiple
+                                  ? $$selectedVal
+                                  : $$selectedVal[0]
+                              }
+                            }
+                          },
+                          [
+                            _c("option", { attrs: { value: "0" } }, [
+                              _vm._v("Seleccione")
+                            ]),
+                            _vm._v(" "),
+                            _vm._l(_vm.arrayEtapas, function(etapas) {
+                              return _c("option", {
+                                key: etapas.id,
+                                domProps: {
+                                  value: etapas.fraccionamiento_id,
+                                  textContent: _vm._s(etapas.num_etapa)
+                                }
+                              })
+                            })
+                          ],
+                          2
+                        )
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "text-input" }
+                        },
+                        [_vm._v("Dirección")]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-4" }, [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.calle,
+                              expression: "calle"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: { type: "text", placeholder: "Calle" },
+                          domProps: { value: _vm.calle },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.calle = $event.target.value
+                            }
+                          }
+                        })
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-2" }, [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.numero,
+                              expression: "numero"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: { type: "text", placeholder: "Numero" },
+                          domProps: { value: _vm.numero },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.numero = $event.target.value
+                            }
+                          }
+                        })
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-2" }, [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.interior,
+                              expression: "interior"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: { type: "text", placeholder: "Interior" },
+                          domProps: { value: _vm.interior },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.interior = $event.target.value
+                            }
+                          }
+                        })
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "text-input" }
+                        },
+                        [_vm._v("Terreno (mts²)")]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-4" }, [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.terreno,
+                              expression: "terreno"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: { type: "text", placeholder: "Terreno" },
+                          domProps: { value: _vm.terreno },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.terreno = $event.target.value
+                            }
+                          }
+                        })
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "text-input" }
+                        },
+                        [_vm._v("Construcción (mts²)")]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-7" }, [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.construccion,
+                              expression: "construccion"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: { type: "text", placeholder: "Construccion" },
+                          domProps: { value: _vm.construccion },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.construccion = $event.target.value
+                            }
+                          }
+                        })
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "text-input" }
+                        },
+                        [_vm._v("Casa muestra")]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-2" }, [
+                        _c("div", { staticClass: "form-check" }, [
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.casa_muestra,
+                                expression: "casa_muestra"
+                              }
+                            ],
+                            staticClass: "form-check-input",
+                            attrs: {
+                              id: "radio1",
+                              type: "radio",
+                              value: "1",
+                              name: "radios"
+                            },
+                            domProps: {
+                              checked: _vm._q(_vm.casa_muestra, "1")
+                            },
+                            on: {
+                              change: function($event) {
+                                _vm.casa_muestra = "1"
+                              }
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c(
+                            "label",
+                            {
+                              staticClass: "form-check-label",
+                              attrs: { for: "radio1" }
+                            },
+                            [_vm._v("Si ")]
+                          )
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-2" }, [
+                        _c("div", { staticClass: "form-check" }, [
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.casa_muestra,
+                                expression: "casa_muestra"
+                              }
+                            ],
+                            staticClass: "form-check-input",
+                            attrs: {
+                              id: "radio2",
+                              type: "radio",
+                              value: "0",
+                              name: "radios"
+                            },
+                            domProps: {
+                              checked: _vm._q(_vm.casa_muestra, "0")
+                            },
+                            on: {
+                              change: function($event) {
+                                _vm.casa_muestra = "0"
+                              }
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c(
+                            "label",
+                            {
+                              staticClass: "form-check-label",
+                              attrs: { for: "radio2" }
+                            },
+                            [_vm._v("No ")]
+                          )
+                        ])
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "text-input" }
+                        },
+                        [_vm._v("Lote comercial")]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-2" }, [
+                        _c("div", { staticClass: "form-check" }, [
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.lote_comercial,
+                                expression: "lote_comercial"
+                              }
+                            ],
+                            staticClass: "form-check-input",
+                            attrs: {
+                              id: "radio3",
+                              type: "radio",
+                              value: "1",
+                              name: "radios2"
+                            },
+                            domProps: {
+                              checked: _vm._q(_vm.lote_comercial, "1")
+                            },
+                            on: {
+                              change: function($event) {
+                                _vm.lote_comercial = "1"
+                              }
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c(
+                            "label",
+                            {
+                              staticClass: "form-check-label",
+                              attrs: { for: "radio3" }
+                            },
+                            [_vm._v("Si ")]
+                          )
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-2" }, [
+                        _c("div", { staticClass: "form-check" }, [
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.lote_comercial,
+                                expression: "lote_comercial"
+                              }
+                            ],
+                            staticClass: "form-check-input",
+                            attrs: {
+                              id: "radio4",
+                              type: "radio",
+                              value: "0",
+                              name: "radios2"
+                            },
+                            domProps: {
+                              checked: _vm._q(_vm.lote_comercial, "0")
+                            },
+                            on: {
+                              change: function($event) {
+                                _vm.lote_comercial = "0"
+                              }
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c(
+                            "label",
+                            {
+                              staticClass: "form-check-label",
+                              attrs: { for: "radio4" }
+                            },
+                            [_vm._v("No ")]
+                          )
+                        ])
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      {
+                        directives: [
+                          {
+                            name: "show",
+                            rawName: "v-show",
+                            value: _vm.errorModelo,
+                            expression: "errorModelo"
+                          }
+                        ],
+                        staticClass: "form-group row div-error"
+                      },
+                      [
+                        _c(
+                          "div",
+                          { staticClass: "text-center text-error" },
+                          _vm._l(_vm.errorMostrarMsjLote, function(error) {
+                            return _c("div", {
+                              key: error,
+                              domProps: { textContent: _vm._s(error) }
+                            })
+                          })
+                        )
+                      ]
+                    )
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-footer" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-secondary",
+                    attrs: { type: "button" },
+                    on: {
+                      click: function($event) {
+                        _vm.cerrarModal()
+                      }
+                    }
+                  },
+                  [_vm._v("Cerrar")]
+                ),
+                _vm._v(" "),
+                _vm.tipoAccion == 1
+                  ? _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-primary",
+                        attrs: { type: "button" },
+                        on: {
+                          click: function($event) {
+                            _vm.registrarLote()
+                          }
+                        }
+                      },
+                      [_vm._v("Guardar")]
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.tipoAccion == 2
+                  ? _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-primary",
+                        attrs: { type: "button" },
+                        on: {
+                          click: function($event) {
+                            _vm.actualizarLote()
+                          }
+                        }
+                      },
+                      [_vm._v("Actualizar")]
+                    )
+                  : _vm._e()
+              ])
+            ])
+          ]
+        )
+      ]
+    )
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("ol", { staticClass: "breadcrumb" }, [
+      _c("li", { staticClass: "breadcrumb-item" }, [
+        _c("a", { attrs: { href: "/" } }, [_vm._v("Home")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("Opciones")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Proyecto")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Etapa")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Manzana")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("# Lote")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Sublote")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Modelo")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Calle")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Numero")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Interior")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Terreno mts²")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Construcción mts²")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Casa Muestra")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Lote comercial")])
+      ])
+    ])
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-687efb2b", module.exports)
   }
 }
 
