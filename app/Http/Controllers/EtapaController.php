@@ -166,8 +166,8 @@ class EtapaController extends Controller
         if(!$request->ajax())return redirect('/');
 
         $buscar = $request->buscar;
-        $etapa = Etapa::select('num_etapa','id')
+        $etapas = Etapa::select('num_etapa','id')
         ->where('fraccionamiento_id', '=', $buscar )->get();
-        return['etapas' => $etapa];
+        return['etapas' => $etapas];
     }
 }

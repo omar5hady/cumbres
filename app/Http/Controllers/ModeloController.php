@@ -166,9 +166,9 @@ class ModeloController extends Controller
         if(!$request->ajax())return redirect('/');
 
         $buscar = $request->buscar;
-        $modelo = Modelo::select('nombre','id')
+        $modelos = Modelo::select('nombre','id')
         ->where('fraccionamiento_id', '=', $buscar )->get();
-        return['modelos' => $modelo];
+        return['modelos' => $modelos];
     }
 
 

@@ -42771,6 +42771,20 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -42795,7 +42809,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             modal: 0,
             tituloModal: '',
             tipoAccion: 0,
-            errorModelo: 0,
+            errorLote: 0,
             errorMostrarMsjLote: [],
             pagination: {
                 'total': 0,
@@ -42877,7 +42891,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         },
         selectEtapa: function selectEtapa(buscar) {
             var me = this;
-            me.etapa_id = 0;
+
             me.arrayEtapas = [];
             var url = '/select_etapa_proyecto?buscar=' + buscar;
             axios.get(url).then(function (response) {
@@ -42889,7 +42903,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         },
         selectModelo: function selectModelo(buscar) {
             var me = this;
-            me.modelo_id = 0;
+
             me.arrayModelos = [];
             var url = '/select_modelo_proyecto?buscar=' + buscar;
             axios.get(url).then(function (response) {
@@ -42902,14 +42916,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         /**Metodo para registrar  */
         registrarLote: function registrarLote() {
-            if (this.validarModelo()) //Se verifica si hay un error (campo vacio)
+            if (this.validarLote()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
 
             var me = this;
             //Con axios se llama el metodo store de FraccionaminetoController
-            axios.post('/modelo/registrar', {
+            axios.post('/lote/registrar', {
                 'fraccionamiento_id': this.fraccionamiento_id,
                 'etapa_id': this.etapa_id,
                 'manzana': this.manzana,
@@ -42946,8 +42960,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 }
 
             var me = this;
-            //Con axios se llama el metodo update de FraccionaminetoController
+            //Con axios se llama el metodo update de LoteController
             axios.put('/lote/actualizar', {
+                'id': this.id,
                 'fraccionamiento_id': this.fraccionamiento_id,
                 'etapa_id': this.etapa_id,
                 'manzana': this.manzana,
@@ -42961,8 +42976,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'terreno': this.terreno,
                 'construccion': this.construccion,
                 'casa_muestra': this.casa_muestra,
-                'lote_comercial': this.lote_comercial,
-                'id': this.id
+                'lote_comercial': this.lote_comercial
+
             }).then(function (response) {
                 me.cerrarModal();
                 me.listarLote(1, '', 'lote');
@@ -43035,20 +43050,20 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         cerrarModal: function cerrarModal() {
             this.modal = 0;
             this.tituloModal = '';
-            this.fraccionamiento_id = 0;
-            this.etapa_id = 0;
+            this.fraccionamiento_id = '';
+            this.etapa_id = '';
             this.manzana = '';
-            this.num_lote = 0;
+            this.num_lote = '';
             this.sublote = '';
-            this.modelo_id = 0;
-            this.empresa_id = 0;
+            this.modelo_id = '';
+            this.empresa_id = 1;
             this.calle = '';
             this.numero = '';
             this.interior = '';
-            this.terreno = 0.0;
-            this.construccion = 0.0;
-            this.casa_muestra = 0;
-            this.lote_comercial = 0;
+            this.terreno = '';
+            this.construccion = '';
+            this.casa_muestra = '';
+            this.lote_comercial = '';
 
             this.errorLote = 0;
             this.errorMostrarMsjLote = [];
@@ -43066,13 +43081,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                 {
                                     this.modal = 1;
                                     this.tituloModal = 'Registrar Lote';
-                                    this.fraccionamiento_id = 0;
-                                    this.etapa_id = 0;
+                                    this.fraccionamiento_id = '0';
+                                    this.etapa_id = '0';
                                     this.manzana = '';
                                     this.num_lote = 0;
                                     this.sublote = '';
-                                    this.modelo_id = 0;
-                                    this.empresa_id = 0;
+                                    this.modelo_id = '0';
+                                    this.empresa_id = 1;
                                     this.calle = '';
                                     this.numero = '';
                                     this.interior = '';
@@ -43108,7 +43123,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                         }
                     }
             }
-            this.selectFraccionamientos(this.tipo);
+            this.selectFraccionamientos();
             this.selectEtapa(this.fraccionamiento_id);
             this.selectModelo(this.fraccionamiento_id);
         }
@@ -43149,6 +43164,23 @@ var render = function() {
             [
               _c("i", { staticClass: "icon-plus" }),
               _vm._v(" Nuevo\n                    ")
+            ]
+          ),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-secondary",
+              attrs: { type: "button" },
+              on: {
+                click: function($event) {
+                  _vm.abrirModal("lote", "registrar")
+                }
+              }
+            },
+            [
+              _c("i", { staticClass: "icon-plus" }),
+              _vm._v(" Cargar Excel\n                    ")
             ]
           )
         ]),
@@ -43338,7 +43370,9 @@ var render = function() {
                       domProps: { textContent: _vm._s(lote.proyecto) }
                     }),
                     _vm._v(" "),
-                    _c("td", { domProps: { textContent: _vm._s(lote.etapa) } }),
+                    _c("td", {
+                      domProps: { textContent: _vm._s(lote.etapas) }
+                    }),
                     _vm._v(" "),
                     _c("td", {
                       domProps: { textContent: _vm._s(lote.manzana) }
@@ -43379,7 +43413,7 @@ var render = function() {
                     }),
                     _vm._v(" "),
                     _c("td", {
-                      domProps: { textContent: _vm._s(lote.comercial) }
+                      domProps: { textContent: _vm._s(lote.lote_comercial) }
                     })
                   ])
                 })
@@ -44144,6 +44178,32 @@ var render = function() {
                             [_vm._v("No ")]
                           )
                         ])
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "form-group row" }, [
+                        _c("div", { staticClass: "col-md-4" }, [
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.empresa_id,
+                                expression: "empresa_id"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: { type: "hidden", value: "1" },
+                            domProps: { value: _vm.empresa_id },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.empresa_id = $event.target.value
+                              }
+                            }
+                          })
+                        ])
                       ])
                     ]),
                     _vm._v(" "),
@@ -44154,8 +44214,8 @@ var render = function() {
                           {
                             name: "show",
                             rawName: "v-show",
-                            value: _vm.errorModelo,
-                            expression: "errorModelo"
+                            value: _vm.errorLote,
+                            expression: "errorLote"
                           }
                         ],
                         staticClass: "form-group row div-error"

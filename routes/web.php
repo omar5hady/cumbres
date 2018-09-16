@@ -55,6 +55,11 @@ Route::delete('/modelo/eliminar','ModeloController@destroy');
 Route::post('/formSubmit/{id}','ModeloController@formSubmit');
 Route::get('/download/{fileName}' , 'ModeloController@downloadFile');
 
+////////////////////        RUTAS LOTES    /////////////////////////////////
+Route::get('/lote','LoteController@index');
+Route::post('/lote/registrar','LoteController@store');
+Route::put('/lote/actualizar','LoteController@update');
+Route::delete('/lote/eliminar','LoteController@destroy');
 
 /***************************************************************************** */
 ///////////////////       RUTAS SELECT    ////////////////////////////////////
@@ -68,4 +73,5 @@ Route::get('/select_Frac_Tipo','FraccionamientoController@selectFrac_Tipo');
 Route::get('/contador_etapa','EtapaController@contEtapa'); 
 Route::get('/select_etapa_proyecto','EtapaController@selectEtapa_proyecto'); 
 Route::get('/select_modelo_proyecto','ModeloController@selectModelo_proyecto'); 
+
 

@@ -13,6 +13,9 @@
                         <button type="button" @click="abrirModal('lote','registrar')" class="btn btn-secondary">
                             <i class="icon-plus"></i>&nbsp;Nuevo
                         </button>
+                        <button type="button" @click="abrirModal('lote','registrar')" class="btn btn-secondary">
+                            <i class="icon-plus"></i>&nbsp;Cargar Excel
+                        </button>
                         <!---->
                     </div>
                     <div class="card-body">
@@ -61,7 +64,7 @@
                                         </button> &nbsp;
                                     </td>
                                     <td v-text="lote.proyecto"></td>
-                                    <td v-text="lote.etapa"></td>
+                                    <td v-text="lote.etapas"></td>
                                     <td v-text="lote.manzana"></td>
                                     <td v-text="lote.num_lote"></td>
                                     <td v-text="lote.sublote"></td>
@@ -72,7 +75,7 @@
                                     <td v-text="lote.terreno"></td>
                                     <td v-text="lote.construccion"></td>
                                     <td v-text="lote.casa_muestra"></td>
-                                    <td v-text="lote.comercial"></td>
+                                    <td v-text="lote.lote_comercial"></td>
                                 </tr>                               
                             </tbody>
                         </table>  
@@ -133,6 +136,7 @@
                                         <input type="text" v-model="manzana" class="form-control" placeholder="manzana">
                                     </div>
                                 </div>
+
                                   <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input"># Lote</label>
                                     <div class="col-md-4">
@@ -210,9 +214,19 @@
                                             <label class="form-check-label" for="radio4">No </label>
                                         </div>
                                     </div>
+
+                                    <!-- Hidden para agregar el id de la empresa -->
+                                    
+                                  <div class="form-group row">
+                                    
+                                    <div class="col-md-4">
+                                        <input type="hidden" value="1" v-model="empresa_id" class="form-control">
+                                    </div>
+                                </div>
+
                                 </div>
                                 <!-- Div para mostrar los errores que mande validerModelo -->
-                                <div v-show="errorModelo" class="form-group row div-error">
+                                <div v-show="errorLote" class="form-group row div-error">
                                     <div class="text-center text-error">
                                         <div v-for="error in errorMostrarMsjLote" :key="error" v-text="error">
 
@@ -247,7 +261,7 @@
     export default {
         data(){
             return{
-                id:0,
+                id: 0,
                 fraccionamiento_id : 0,
                 etapa_id: 0,
                 manzana: '',
@@ -267,7 +281,7 @@
                 modal : 0,
                 tituloModal : '',
                 tipoAccion: 0,
-                errorModelo : 0,
+                errorLote : 0,
                 errorMostrarMsjLote : [],
                 pagination : {
                     'total' : 0,         
@@ -350,7 +364,7 @@
             },
             selectEtapa(buscar){
                 let me = this;
-                me.etapa_id=0;
+                
                 me.arrayEtapas=[];
                 var url = '/select_etapa_proyecto?buscar=' + buscar;
                 axios.get(url).then(function (response) {
@@ -363,7 +377,7 @@
             },
             selectModelo(buscar){
                 let me = this;
-                me.modelo_id=0;
+              
                 me.arrayModelos=[];
                 var url = '/select_modelo_proyecto?buscar=' + buscar;
                 axios.get(url).then(function (response) {
@@ -376,14 +390,14 @@
             },
             /**Metodo para registrar  */
             registrarLote(){
-                if(this.validarModelo()) //Se verifica si hay un error (campo vacio)
+                if(this.validarLote()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
 
                 let me = this;
                 //Con axios se llama el metodo store de FraccionaminetoController
-                axios.post('/modelo/registrar',{                 
+                axios.post('/lote/registrar',{                 
                     'fraccionamiento_id': this.fraccionamiento_id,
                     'etapa_id': this.etapa_id,
                     'manzana': this.manzana,
@@ -420,9 +434,10 @@
                 }
 
                 let me = this;
-                //Con axios se llama el metodo update de FraccionaminetoController
+                //Con axios se llama el metodo update de LoteController
                 axios.put('/lote/actualizar',{
-                   'fraccionamiento_id': this.fraccionamiento_id,
+                    'id' : this.id,
+                    'fraccionamiento_id': this.fraccionamiento_id,
                     'etapa_id': this.etapa_id,
                     'manzana': this.manzana,
                     'num_lote': this.num_lote,
@@ -435,8 +450,8 @@
                     'terreno': this.terreno,
                     'construccion': this.construccion,
                     'casa_muestra': this.casa_muestra,
-                    'lote_comercial': this.lote_comercial,
-                    'id' : this.id
+                    'lote_comercial': this.lote_comercial
+                    
                 }).then(function (response){
                     me.cerrarModal();
                     me.listarLote(1,'','lote');
@@ -510,20 +525,20 @@
             cerrarModal(){
                 this.modal = 0;
                 this.tituloModal = '';
-                this.fraccionamiento_id = 0;
-                this.etapa_id= 0;
+                this.fraccionamiento_id = '';
+                this.etapa_id= '';
                 this.manzana= '';
-                this.num_lote= 0;
+                this.num_lote= '';
                 this.sublote= '';
-                this.modelo_id= 0;
-                this.empresa_id= 0;
+                this.modelo_id= '';
+                this.empresa_id= 1;
                 this.calle= '';
                 this.numero= '';
                 this.interior= '';
-                this.terreno = 0.0;
-                this.construccion = 0.0;
-                this.casa_muestra= 0;
-                this.lote_comercial= 0;
+                this.terreno = '';
+                this.construccion = '';
+                this.casa_muestra= '';
+                this.lote_comercial= '';
                 
                 this.errorLote = 0;
                 this.errorMostrarMsjLote = [];
@@ -539,13 +554,13 @@
                             {
                                 this.modal = 1;
                                 this.tituloModal = 'Registrar Lote';
-                                this.fraccionamiento_id = 0;
-                                this.etapa_id= 0;
+                                this.fraccionamiento_id = '0';
+                                this.etapa_id= '0';
                                 this.manzana= '';
                                 this.num_lote= 0;
                                 this.sublote= '';
-                                this.modelo_id= 0;
-                                this.empresa_id= 0;
+                                this.modelo_id= '0';
+                                this.empresa_id= 1;
                                 this.calle= '';
                                 this.numero= '';
                                 this.interior= '';
@@ -581,7 +596,7 @@
                         }
                     }
                 }
-                this.selectFraccionamientos(this.tipo);
+                this.selectFraccionamientos();
                 this.selectEtapa(this.fraccionamiento_id);
                 this.selectModelo(this.fraccionamiento_id);
             }
