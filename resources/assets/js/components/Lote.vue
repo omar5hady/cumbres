@@ -13,7 +13,7 @@
                         <button type="button" @click="abrirModal('lote','registrar')" class="btn btn-secondary">
                             <i class="icon-plus"></i>&nbsp;Nuevo
                         </button>
-                        <button type="button" @click="abrirModal('lote','registrar')" class="btn btn-secondary">
+                        <button type="button" @click="abrirModal('lote','excel')" class="btn btn-secondary">
                             <i class="icon-plus"></i>&nbsp;Cargar Excel
                         </button>
                         <!---->
@@ -218,7 +218,6 @@
                                     <!-- Hidden para agregar el id de la empresa -->
                                     
                                   <div class="form-group row">
-                                    
                                     <div class="col-md-4">
                                         <input type="hidden" value="1" v-model="empresa_id" class="form-control">
                                     </div>
@@ -248,6 +247,34 @@
                 <!-- /.modal-dialog -->
             </div>
             <!--Fin del modal-->
+
+            <!-- Modal para el archivo excel -->
+             <div class="modal fade" tabindex="-1" :class="{'mostrar': modal2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" v-text="tituloModal2"></h4>
+                            <button type="button" class="close" @click="cerrarModal2()" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+
+                            </form>
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal2()">Cerrar</button>
+                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
+                        </div>
+                    </div>
+                      <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!--Fin del modal-->
+
 
                     
         </main>
@@ -280,6 +307,8 @@
                 arrayLote : [],
                 modal : 0,
                 tituloModal : '',
+                modal2: 0,
+                tituloModal2: '',
                 tipoAccion: 0,
                 errorLote : 0,
                 errorMostrarMsjLote : [],
@@ -544,6 +573,10 @@
                 this.errorMostrarMsjLote = [];
 
             },
+            cerrarModal2(){
+                this.modal2 = 0;
+                this.tituloModal2 = '';
+            },
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
             abrirModal(lote, accion,data =[]){
                 switch(lote){
@@ -592,6 +625,13 @@
                                 this.casa_muestra=data['casa_muestra'];
                                 this.lote_comercial=data['lote_comercial'];
                                 break;
+                            }
+
+                            case 'excel':
+                            {
+                                this.modal2 =1;
+                                this.tituloModal2= 'Cargar desde Excel';
+                                this.tipoAccion=3;
                             }
                         }
                     }

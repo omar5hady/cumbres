@@ -42785,6 +42785,33 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -42808,6 +42835,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             arrayLote: [],
             modal: 0,
             tituloModal: '',
+            modal2: 0,
+            tituloModal2: '',
             tipoAccion: 0,
             errorLote: 0,
             errorMostrarMsjLote: [],
@@ -43068,6 +43097,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.errorLote = 0;
             this.errorMostrarMsjLote = [];
         },
+        cerrarModal2: function cerrarModal2() {
+            this.modal2 = 0;
+            this.tituloModal2 = '';
+        },
 
         /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
         abrirModal: function abrirModal(lote, accion) {
@@ -43119,6 +43152,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     this.casa_muestra = data['casa_muestra'];
                                     this.lote_comercial = data['lote_comercial'];
                                     break;
+                                }
+
+                            case 'excel':
+                                {
+                                    this.modal2 = 1;
+                                    this.tituloModal2 = 'Cargar desde Excel';
+                                    this.tipoAccion = 3;
                                 }
                         }
                     }
@@ -43174,7 +43214,7 @@ var render = function() {
               attrs: { type: "button" },
               on: {
                 click: function($event) {
-                  _vm.abrirModal("lote", "registrar")
+                  _vm.abrirModal("lote", "excel")
                 }
               }
             },
@@ -44288,6 +44328,76 @@ var render = function() {
           ]
         )
       ]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        class: { mostrar: _vm.modal2 },
+        staticStyle: { display: "none" },
+        attrs: {
+          tabindex: "-1",
+          role: "dialog",
+          "aria-labelledby": "myModalLabel",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c(
+          "div",
+          {
+            staticClass: "modal-dialog modal-primary modal-lg",
+            attrs: { role: "document" }
+          },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _c("div", { staticClass: "modal-header" }, [
+                _c("h4", {
+                  staticClass: "modal-title",
+                  domProps: { textContent: _vm._s(_vm.tituloModal2) }
+                }),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "close",
+                    attrs: { type: "button", "aria-label": "Close" },
+                    on: {
+                      click: function($event) {
+                        _vm.cerrarModal2()
+                      }
+                    }
+                  },
+                  [
+                    _c("span", { attrs: { "aria-hidden": "true" } }, [
+                      _vm._v("×")
+                    ])
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _vm._m(2),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-footer" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-secondary",
+                    attrs: { type: "button" },
+                    on: {
+                      click: function($event) {
+                        _vm.cerrarModal2()
+                      }
+                    }
+                  },
+                  [_vm._v("Cerrar")]
+                )
+              ])
+            ])
+          ]
+        )
+      ]
     )
   ])
 }
@@ -44336,6 +44446,17 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Lote comercial")])
       ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-body" }, [
+      _c("form", {
+        staticClass: "form-horizontal",
+        attrs: { action: "", method: "post", enctype: "multipart/form-data" }
+      })
     ])
   }
 ]
