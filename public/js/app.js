@@ -42921,7 +42921,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     type: 'success',
                     title: 'Archivo cargado correctamente',
                     showConfirmButton: false,
-                    timer: 2000
+                    timer: 2500
                 });
                 me.cerrarModal2();
                 me.listarLote(1, '', 'lote');

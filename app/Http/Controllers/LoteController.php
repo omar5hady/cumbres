@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Lote;
+use App\Modelo;
 use Session;
 use Excel;
 use File;
@@ -181,6 +182,8 @@ class LoteController extends Controller
                 if(!empty($data) && $data->count()){
  
                     foreach ($data as $key => $value) {
+                        $terreno = Modelo::select('terreno','construccion')
+                            ->where('id', '=', $value->modelo_id )->get();
                         $insert[] = [
                         'fraccionamiento_id' => $value->fraccionamiento_id,
                         'etapa_id' => $value->etapa_id,
@@ -192,8 +195,8 @@ class LoteController extends Controller
                         'calle' => $value->calle,
                         'numero' => $value->numero,
                         'interior' => $value->interior,
-                        'terreno' => $value->terreno,
-                        'construccion' => $value->construccion,
+                        'terreno' => $terreno[0]->terreno,
+                        'construccion' => $terreno[0]->construccion,
                         'casa_muestra' => $value->casa_muestra,
                         'lote_comercial' => $value->lote_comercial,
                         
