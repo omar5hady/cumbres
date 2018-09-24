@@ -1,5 +1,5 @@
-<template>
-    <main class="main">
+<template >
+    <main class="main" >
             <!-- Breadcrumb -->
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/">Home</a></li>
@@ -63,6 +63,8 @@
                                           <i class="icon-trash"></i>
                                         </button> &nbsp;
                                     </td>
+
+                                    
                                     <td v-text="lote.proyecto"></td>
                                     <td v-text="lote.etapas"></td>
                                     <td v-text="lote.manzana"></td>
@@ -154,7 +156,7 @@
                                   <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Modelo</label>
                                     <div class="col-md-6">
-                                       <select class="form-control" v-model="modelo_id">
+                                       <select class="form-control" @click="selectConsYTerreno(modelo_id)" v-model="modelo_id">
                                             <option value="0">Seleccione</option>
                                             <option v-for="modelos in arrayModelos" :key="modelos.id" :value="modelos.id" v-text="modelos.nombre"></option>
                                         </select>
@@ -175,14 +177,18 @@
                                 
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Terreno (mts&sup2;)</label>
-                                    <div class="col-md-4">
-                                        <input type="text" v-model="terreno" class="form-control" placeholder="Terreno">
+                                    <div class="col-md-4" >
+                                     
+                                        <input type="text"  v-model="terreno" class="form-control" placeholder="Terreno">
+                                
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Construcción (mts&sup2;)</label>
                                     <div class="col-md-7">
-                                        <input type="text" v-model="construccion" class="form-control" placeholder="Construccion">
+
+                                        <input type="text" v-model="construccion" disabled class="form-control" placeholder="Construccion">
+                                  
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -259,9 +265,13 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+                         <form method="post" @submit="formSubmit"  enctype="multipart/form-data">
+                            <!-- {{ csrf_field() }} -->
+                            Choose your xls/csv File : <input type="file" v-on:change="onImageChange" class="form-control">
 
-                            </form>
+                            <input type="submit" class="btn btn-primary btn-lg" style="margin-top: 3%">
+                            
+                         </form>
                         </div>
                         <!-- Botones del modal -->
                         <div class="modal-footer">
@@ -299,11 +309,13 @@
                 calle: '',
                 numero: '',
                 interior: '',
-                terreno : 0.0,
-                construccion : 0.0,
+                terreno : 0,
+                construccion : 0,
                 casa_muestra: 0,
                 lote_comercial: 0,
-
+                
+                file: '',
+                modelostc :'',
                 arrayLote : [],
                 modal : 0,
                 tituloModal : '',
@@ -326,10 +338,12 @@
                 arrayFraccionamientos : [],
                 arrayEtapas : [],
                 arrayModelos : [],
+                arrayModelosTC: [],
                 arrayEmpresas : []
             }
         },
         computed:{
+
             isActived: function(){
                 return this.pagination.current_page;
             },
@@ -357,8 +371,47 @@
                 return pagesArray;
             }
         },
+
+        
         methods : {
+
+            onImageChange(e){
+
+                console.log(e.target.files[0]);
+
+                this.file = e.target.files[0];
+
+            },
            
+            formSubmit(e) {
+
+                e.preventDefault();
+               
+               let formData = new FormData();
+                formData.append('file', this.file);
+                let me = this;
+                axios.post('/import',formData)
+                .then(function (response) {
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Archivo cargado correctamente',
+                        showConfirmButton: false,
+                        timer: 2500
+                        })
+                    me.cerrarModal2();
+                    me.listarLote(1,'','lote');
+
+                })
+
+                .catch(function (error) {
+
+                  console.log(error);
+
+                });
+
+            },
+
             /**Metodo para mostrar los registros */
             listarLote(page, buscar, criterio){
                 let me = this;
@@ -412,6 +465,25 @@
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayModelos = respuesta.modelos;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
+            selectConsYTerreno(buscar){
+                let me = this;
+              
+                me.arrayModelosTC=[];
+                var url = '/select_construcc_terreno?buscar=' + buscar;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayModelosTC = respuesta.modelosTc;
+
+                    me.terreno = me.arrayModelosTC[0].terreno;
+                    me.construccion = me.arrayModelosTC[0].construccion;
+
+
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -597,7 +669,7 @@
                                 this.calle= '';
                                 this.numero= '';
                                 this.interior= '';
-                                this.terreno = 0.0;
+                                this.terreno = this.terrenoModelo;
                                 this.construccion = 0.0;
                                 this.casa_muestra= 0;
                                 this.lote_comercial= 0;
@@ -627,6 +699,27 @@
                                 break;
                             }
 
+                             case 'actualizarTab':
+                            {
+                                this.id=data['id'];
+                                this.fraccionamiento_id=data['fraccionamiento_id'];
+                                this.etapa_id=data['etapa_id'];
+                                this.manzana=data['manzana'];
+                                this.num_lote=data['num_lote'];
+                                this.sublote=data['sublote'];
+                                this.modelo_id=data['modelo_id'];
+                                this.empresa_id=data['empresa_id'];
+                                this.calle=data['calle'];
+                                this.numero=data['numero'];
+                                this.interior=data['interior'];
+                                this.terreno=data['terreno'];
+                                this.construccion=data['construccion'];
+                                this.casa_muestra=data['casa_muestra'];
+                                this.lote_comercial=data['lote_comercial'];
+                                break;
+                            }
+
+
                             case 'excel':
                             {
                                 this.modal2 =1;
@@ -639,6 +732,8 @@
                 this.selectFraccionamientos();
                 this.selectEtapa(this.fraccionamiento_id);
                 this.selectModelo(this.fraccionamiento_id);
+                this.selectConsYTerreno(this.modelo_id);
+
             }
         },
         mounted() {

@@ -171,5 +171,16 @@ class ModeloController extends Controller
         return['modelos' => $modelos];
     }
 
+    public function selectConsYTerreno(Request $request){
+        //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
+       // if(!$request->ajax())return redirect('/');
+
+        $buscar = $request->buscar;
+        $modelosTc = Modelo::select('id','terreno','construccion')
+        ->where('id', '=', $buscar )->get();
+
+        return ['modelosTc' => $modelosTc];
+    }
+
 
 }

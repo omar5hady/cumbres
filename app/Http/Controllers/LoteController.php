@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Lote;
+use Session;
+use Excel;
+use File;
+use DB;
 
 class LoteController extends Controller
 {
@@ -158,6 +162,63 @@ class LoteController extends Controller
         if(!$request->ajax())return redirect('/');
         $lote = Lote::findOrFail($request->id);
         $lote->delete();
+    }
+
+
+    public function import(Request $request){
+        //validate the xls file
+        $this->validate($request, array(
+            'file'      => 'required'
+        ));
+ 
+        if($request->hasFile('file')){
+            $extension = File::extension($request->file->getClientOriginalName());
+            if ($extension == "xlsx" || $extension == "xls" || $extension == "csv") {
+ 
+                $path = $request->file->getRealPath();
+                $data = Excel::load($path, function($reader) {
+                })->get();
+                if(!empty($data) && $data->count()){
+ 
+                    foreach ($data as $key => $value) {
+                        $insert[] = [
+                        'fraccionamiento_id' => $value->fraccionamiento_id,
+                        'etapa_id' => $value->etapa_id,
+                        'manzana' => $value->manzana,
+                        'num_lote' => $value->num_lote,
+                        'sublote' => $value->sublote,
+                        'modelo_id' => $value->modelo_id,
+                        'empresa_id' => $value->empresa_id,
+                        'calle' => $value->calle,
+                        'numero' => $value->numero,
+                        'interior' => $value->interior,
+                        'terreno' => $value->terreno,
+                        'construccion' => $value->construccion,
+                        'casa_muestra' => $value->casa_muestra,
+                        'lote_comercial' => $value->lote_comercial,
+                        
+                        ];
+                    }
+ 
+                    if(!empty($insert)){
+ 
+                        $insertData = DB::table('lotes')->insert($insert);
+                        if ($insertData) {
+                            Session::flash('success', 'Your Data has successfully imported');
+                        }else {                        
+                            Session::flash('error', 'Error inserting the data..');
+                            return back();
+                        }
+                    }
+                }
+ 
+                return back();
+ 
+            }else {
+                Session::flash('error', 'File is a '.$extension.' file.!! Please upload a valid xls/csv file..!!');
+                return back();
+            }
+        }
     }
 
 

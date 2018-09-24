@@ -42812,6 +42812,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -42827,11 +42837,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             calle: '',
             numero: '',
             interior: '',
-            terreno: 0.0,
-            construccion: 0.0,
+            terreno: 0,
+            construccion: 0,
             casa_muestra: 0,
             lote_comercial: 0,
 
+            file: '',
+            modelostc: '',
             arrayLote: [],
             modal: 0,
             tituloModal: '',
@@ -42854,11 +42866,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             arrayFraccionamientos: [],
             arrayEtapas: [],
             arrayModelos: [],
+            arrayModelosTC: [],
             arrayEmpresas: []
         };
     },
 
     computed: {
+
         isActived: function isActived() {
             return this.pagination.current_page;
         },
@@ -42886,7 +42900,37 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             return pagesArray;
         }
     },
+
     methods: {
+        onImageChange: function onImageChange(e) {
+
+            console.log(e.target.files[0]);
+
+            this.file = e.target.files[0];
+        },
+        formSubmit: function formSubmit(e) {
+
+            e.preventDefault();
+
+            var formData = new FormData();
+            formData.append('file', this.file);
+            var me = this;
+            axios.post('/import', formData).then(function (response) {
+                swal({
+                    position: 'top-end',
+                    type: 'success',
+                    title: 'Archivo cargado correctamente',
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+                me.cerrarModal2();
+                me.listarLote(1, '', 'lote');
+            }).catch(function (error) {
+
+                console.log(error);
+            });
+        },
+
 
         /**Metodo para mostrar los registros */
         listarLote: function listarLote(page, buscar, criterio) {
@@ -42938,6 +42982,21 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             axios.get(url).then(function (response) {
                 var respuesta = response.data;
                 me.arrayModelos = respuesta.modelos;
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        selectConsYTerreno: function selectConsYTerreno(buscar) {
+            var me = this;
+
+            me.arrayModelosTC = [];
+            var url = '/select_construcc_terreno?buscar=' + buscar;
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayModelosTC = respuesta.modelosTc;
+
+                me.terreno = me.arrayModelosTC[0].terreno;
+                me.construccion = me.arrayModelosTC[0].construccion;
             }).catch(function (error) {
                 console.log(error);
             });
@@ -43124,7 +43183,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     this.calle = '';
                                     this.numero = '';
                                     this.interior = '';
-                                    this.terreno = 0.0;
+                                    this.terreno = this.terrenoModelo;
                                     this.construccion = 0.0;
                                     this.casa_muestra = 0;
                                     this.lote_comercial = 0;
@@ -43136,6 +43195,26 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     this.modal = 1;
                                     this.tituloModal = 'Actualizar Lote';
                                     this.tipoAccion = 2;
+                                    this.id = data['id'];
+                                    this.fraccionamiento_id = data['fraccionamiento_id'];
+                                    this.etapa_id = data['etapa_id'];
+                                    this.manzana = data['manzana'];
+                                    this.num_lote = data['num_lote'];
+                                    this.sublote = data['sublote'];
+                                    this.modelo_id = data['modelo_id'];
+                                    this.empresa_id = data['empresa_id'];
+                                    this.calle = data['calle'];
+                                    this.numero = data['numero'];
+                                    this.interior = data['interior'];
+                                    this.terreno = data['terreno'];
+                                    this.construccion = data['construccion'];
+                                    this.casa_muestra = data['casa_muestra'];
+                                    this.lote_comercial = data['lote_comercial'];
+                                    break;
+                                }
+
+                            case 'actualizarTab':
+                                {
                                     this.id = data['id'];
                                     this.fraccionamiento_id = data['fraccionamiento_id'];
                                     this.etapa_id = data['etapa_id'];
@@ -43166,6 +43245,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.selectFraccionamientos();
             this.selectEtapa(this.fraccionamiento_id);
             this.selectModelo(this.fraccionamiento_id);
+            this.selectConsYTerreno(this.modelo_id);
         }
     },
     mounted: function mounted() {
@@ -43855,6 +43935,9 @@ var render = function() {
                             ],
                             staticClass: "form-control",
                             on: {
+                              click: function($event) {
+                                _vm.selectConsYTerreno(_vm.modelo_id)
+                              },
                               change: function($event) {
                                 var $$selectedVal = Array.prototype.filter
                                   .call($event.target.options, function(o) {
@@ -44029,7 +44112,11 @@ var render = function() {
                             }
                           ],
                           staticClass: "form-control",
-                          attrs: { type: "text", placeholder: "Construccion" },
+                          attrs: {
+                            type: "text",
+                            disabled: "",
+                            placeholder: "Construccion"
+                          },
                           domProps: { value: _vm.construccion },
                           on: {
                             input: function($event) {
@@ -44377,7 +44464,31 @@ var render = function() {
                 )
               ]),
               _vm._v(" "),
-              _vm._m(2),
+              _c("div", { staticClass: "modal-body" }, [
+                _c(
+                  "form",
+                  {
+                    attrs: { method: "post", enctype: "multipart/form-data" },
+                    on: { submit: _vm.formSubmit }
+                  },
+                  [
+                    _vm._v(
+                      "\n                        Choose your xls/csv File : "
+                    ),
+                    _c("input", {
+                      staticClass: "form-control",
+                      attrs: { type: "file" },
+                      on: { change: _vm.onImageChange }
+                    }),
+                    _vm._v(" "),
+                    _c("input", {
+                      staticClass: "btn btn-primary btn-lg",
+                      staticStyle: { "margin-top": "3%" },
+                      attrs: { type: "submit" }
+                    })
+                  ]
+                )
+              ]),
               _vm._v(" "),
               _c("div", { staticClass: "modal-footer" }, [
                 _c(
@@ -44446,17 +44557,6 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Lote comercial")])
       ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "modal-body" }, [
-      _c("form", {
-        staticClass: "form-horizontal",
-        attrs: { action: "", method: "post", enctype: "multipart/form-data" }
-      })
     ])
   }
 ]
