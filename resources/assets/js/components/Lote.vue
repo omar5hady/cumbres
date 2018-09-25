@@ -2,7 +2,7 @@
     <main class="main" >
             <!-- Breadcrumb -->
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item"><strong><a style="color:#FFFFFF;" href="/">Home</a></strong></li>
             </ol>
             <div class="container-fluid">
                 <!-- Ejemplo de tabla Listado -->
@@ -266,6 +266,37 @@
                         </div>
                         <div class="modal-body">
                          <form method="post" @submit="formSubmit"  enctype="multipart/form-data">
+
+                             <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
+                                    <div class="col-md-6">
+                                       <select class="form-control" v-model="fraccionamiento_id" @click="selectEtapa(fraccionamiento_id),selectModelo(fraccionamiento_id)" >
+                                            <option value="0">Seleccione</option>
+                                            <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                             <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Etapa</label>
+                                    <div class="col-md-6">
+                                       <select class="form-control" v-model="etapa_id">
+                                            <option value="0">Seleccione</option>
+                                            <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Modelo</label>
+                                    <div class="col-md-6">
+                                       <select class="form-control" @click="selectConsYTerreno(modelo_id)" v-model="modelo_id">
+                                            <option value="0">Seleccione</option>
+                                            <option v-for="modelos in arrayModelos" :key="modelos.id" :value="modelos.id" v-text="modelos.nombre"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
                             <!-- {{ csrf_field() }} -->
                             Choose your xls/csv File : <input type="file" v-on:change="onImageChange" class="form-control">
 
@@ -389,6 +420,9 @@
                
                let formData = new FormData();
                 formData.append('file', this.file);
+                formData.append('fraccionamiento_id', this.fraccionamiento_id);
+                formData.append('etapa_id', this.etapa_id);
+                formData.append('modelo_id', this.modelo_id);
                 let me = this;
                 axios.post('/import',formData)
                 .then(function (response) {

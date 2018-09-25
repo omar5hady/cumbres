@@ -183,15 +183,16 @@ class LoteController extends Controller
  
                     foreach ($data as $key => $value) {
                         $terreno = Modelo::select('terreno','construccion')
-                            ->where('id', '=', $value->modelo_id )->get();
+                            ->where('id', '=', $request->modelo_id )->get();
+
                         $insert[] = [
-                        'fraccionamiento_id' => $value->fraccionamiento_id,
-                        'etapa_id' => $value->etapa_id,
+                        'fraccionamiento_id' => $request->fraccionamiento_id,
+                        'etapa_id' => $request->etapa_id,
                         'manzana' => $value->manzana,
                         'num_lote' => $value->num_lote,
                         'sublote' => $value->sublote,
-                        'modelo_id' => $value->modelo_id,
-                        'empresa_id' => $value->empresa_id,
+                        'modelo_id' => $request->modelo_id,
+                        'empresa_id' => 1,
                         'calle' => $value->calle,
                         'numero' => $value->numero,
                         'interior' => $value->interior,

@@ -5,9 +5,9 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Sistema Ventas Laravel Vue Js- IncanatoIT">
-    <meta name="author" content="Incanatoit.com">
-    <meta name="keyword" content="Sistema ventas Laravel Vue Js, Sistema compras Laravel Vue Js">
+    <meta name="description" content="Sistema cumbres>
+    <meta name="author" content="casascumbres.mx">
+    <meta name="keyword" content="Sistema de administracion cumbres">
     <link rel="shortcut icon" href="img/favicon.png">
     <title>Sistema Cumbres</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -79,8 +79,10 @@
     </div>
     </div>
 
-    <!-- /Div para iconos de redes sociales-->
-    <div class="app-footer">
+
+    
+         <!-- /Div para iconos de redes sociales-->
+         <div class="app-footer">
         <a class="btn" href="https://www.facebook.com/CasasCumbresSLP/">
             <button type="button" class="btn btn-brand btn-sm btn-facebook" >
                 <i class="fa fa-facebook"></i>
@@ -88,8 +90,10 @@
         </a>
     </div>
 
-    <footer class="app-footer">
+   
 
+    <footer class="app-footer">
+        
         <span><a href="http://www.casascumbres.mx/">Casas Cumbres</a> &copy; 2018</span>
         
         <span class="ml-auto">Desarrollado por <a href="http://www.casascumbres.mx/">Casas Cumbres</a></span>
