@@ -22,4 +22,8 @@ class Etapa extends Model
     public function lote(){
         return $this->hasMany('App\Lote');
     }
+
+    public function terreno(){
+        return $this->hasMany('App\Terreno');
+    }
 }

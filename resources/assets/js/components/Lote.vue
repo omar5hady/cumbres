@@ -24,11 +24,19 @@
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
                                     <select class="form-control col-md-5" v-model="criterio">
-                                      <option value="modelos.nombre">Modelos</option>
-                                      <option value="fraccionamientos.nombre">Proyecto</option>
+                                      <option value="fraccionamiento_id">Proyecto</option>
                                     </select>
                                     
-                                    <input type="text" v-if="criterio=='modelos.nombre'" v-model="buscar" @keyup.enter="listarLote(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
+                                    <select class="form-control" v-if="criterio=='fraccionamiento_id'" v-model="buscar" >
+                                            <option value="0">Seleccione</option>
+                                           <option v-for="lote in arrayProyectos" :key="lote.id" :value="lote.fraccionamiento_id" v-text="lote.proyecto"></option>
+                                    </select> 
+
+                                      <select class="form-control col-md-5" v-if="criterio=='lote.etapa'" v-model="buscar" @keyup.enter="listarLote(1,buscar,criterio)"> 
+                                      <option value="lote.manzana">Manzana</option>
+                                    </select>
+
+                                    
                                     <input type="text" v-if="criterio=='fraccionamientos.nombre'" v-model="buscar" @keyup.enter="listarLote(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
                                     <button type="submit" @click="listarLote(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
@@ -115,7 +123,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
                                     <div class="col-md-6">
-                                       <select class="form-control" v-model="fraccionamiento_id" @click="selectEtapa(fraccionamiento_id),selectModelo(fraccionamiento_id)" >
+                                       <select class="form-control" v-model="fraccionamiento_id" @click="selectEtapa(fraccionamiento_id),selectModelo(fraccionamiento_id),selectManzana(fraccionamiento_id)" >
                                             <option value="0">Seleccione</option>
                                             <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                         </select>
@@ -132,12 +140,54 @@
                                     </div>
                                 </div>
 
-                                  <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Manzana</label>
-                                    <div class="col-md-4">
-                                        <input type="text" v-model="manzana" class="form-control" placeholder="manzana">
+                                
+
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Manzana</label>
+                            <div class="col-md-6">
+                                <select class="form-control" v-model="manzana">
+                                    <option value="0">Seleccione</option>
+                                    <option v-for="manzanas in arrayManzanas" :key="manzanas.id" :value="manzanas.id" v-text="manzanas.manzana"></option>
+                                </select>
+                            </div>
+                                <button title="Editar" type="button" @click="abrirModal('lote','addmanzana')" class="btn btn-warning btn-sm">
+                                    <i class="icon-pencil"></i>
+                                </button>
+                                <div class="modal fade" tabindex="-1" :class="{'mostrar': modal3}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                                <div class="modal-dialog modal-primary modal-lg" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title" v-text="tituloModal3"></h4>
+                                            <button type="button" class="close" @click="cerrarModal3()" aria-label="Close">
+                                                <span aria-hidden="true">×</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                                <div class="form-group row">
+                                                    <label class="col-md-3 form-control-label" for="text-input">Manzana</label>
+                                                    <div class="col-md-4">
+                                                        <input type="text" v-model="manzana" class="form-control" placeholder="manzana">
+                                                    </div>
+                                                </div>
+                                    </div>
+                                <div v-show="errorLote" class="form-group row div-error">
+                                        <div class="text-center text-error">
+                                    <div v-for="error in errorMostrarMsjLote" :key="error" v-text="error">
+
+                                        </div>
                                     </div>
                                 </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" @click="cerrarModal3()">Cerrar</button>
+                                        <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
+                                        <button type="button" v-if="tipoAccion==4" class="btn btn-primary" @click="registrarManzana()">Guardar</button>
+                                        </div>
+                            </div>
+                        </div>
+                        </div>
+                        </div>
+                                
+
 
                                   <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input"># Lote</label>
@@ -326,6 +376,7 @@
 <!-- ************************************************************************************************************************************  -->
 
 <script>
+ import _ from 'lodash'
     export default {
         data(){
             return{
@@ -352,6 +403,8 @@
                 tituloModal : '',
                 modal2: 0,
                 tituloModal2: '',
+                modal3: 0,
+                tituloModal3: '',
                 tipoAccion: 0,
                 errorLote : 0,
                 errorMostrarMsjLote : [],
@@ -370,7 +423,8 @@
                 arrayEtapas : [],
                 arrayModelos : [],
                 arrayModelosTC: [],
-                arrayEmpresas : []
+                arrayEmpresas : [],
+                arrayManzanas: []
             }
         },
         computed:{
@@ -400,7 +454,12 @@
                     from++;
                 }
                 return pagesArray;
+            },
+
+            arrayProyectos(){ 
+                return _.uniqBy(this.arrayLote, 'proyecto');
             }
+
         },
 
         
@@ -459,6 +518,7 @@
                     console.log(error);
                 });
             },
+
             cambiarPagina(page, buscar, criterio){
                 let me = this;
                 //Actualiza la pagina actual
@@ -466,6 +526,7 @@
                 //Envia la petición para visualizar la data de esta pagina
                 me.listarLote(page,buscar,criterio);
             },
+
              selectFraccionamientos(){
                 let me = this;
                 me.arrayFraccionamientos=[];
@@ -491,6 +552,21 @@
                     console.log(error);
                 });
             },
+
+            selectManzana(buscar){
+                let me = this;
+                
+                me.arrayManzanas=[];
+                var url = '/select_manzana_proyecto?buscar=' + buscar;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayManzanas = respuesta.manzanas;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
             selectModelo(buscar){
                 let me = this;
               
@@ -562,6 +638,35 @@
                     console.log(error);
                 });
             },
+
+            registrarManzana(){
+
+               if(this.validarManzana()) //Se verifica si se selecciono un fraccionamiento
+                {
+                    return;
+                }
+
+                let me = this;
+                //Con axios se llama el metodo store de FraccionaminetoController
+                axios.post('/lote/registrar_manzana',{
+                    'fraccionamiento_id': this.fraccionamiento_id,         
+                    'manzana': this.manzana
+                }).then(function (response){
+                    me.cerrarModal3(); //al guardar el registro se cierra el modal
+                   
+                    //Se muestra mensaje Success
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Manzana agregada correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
             actualizarLote(){
                 if(this.validarLote()) //Se verifica si hay un error (campo vacio)
                 {
@@ -657,6 +762,19 @@
 
                 return this.errorLote;
             },
+
+            validarManzana(){
+                this.errorLote=0;
+                this.errorMostrarMsjLote=[];
+                 if(this.fraccionamiento_id == 0) //Si la variable Lote esta vacia
+                    this.errorMostrarMsjLote.push("Seleccione primero el fraccionamiento a asignar las manzanas");
+
+                if(this.errorMostrarMsjLote.length)//Si el mensaje tiene almacenado algo en el array
+                    this.errorLote = 1;
+
+                return this.errorLote;
+            },
+
             cerrarModal(){
                 this.modal = 0;
                 this.tituloModal = '';
@@ -683,6 +801,12 @@
                 this.modal2 = 0;
                 this.tituloModal2 = '';
             },
+
+            cerrarModal3(){
+                this.modal3 = 0;
+                this.tituloModal3 = '';
+                this.tipoAccion = 1;
+            },
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
             abrirModal(lote, accion,data =[]){
                 switch(lote){
@@ -695,7 +819,6 @@
                                 this.tituloModal = 'Registrar Lote';
                                 this.fraccionamiento_id = '0';
                                 this.etapa_id= '0';
-                                this.manzana= '';
                                 this.num_lote= 0;
                                 this.sublote= '';
                                 this.modelo_id= '0';
@@ -733,32 +856,22 @@
                                 break;
                             }
 
-                             case 'actualizarTab':
-                            {
-                                this.id=data['id'];
-                                this.fraccionamiento_id=data['fraccionamiento_id'];
-                                this.etapa_id=data['etapa_id'];
-                                this.manzana=data['manzana'];
-                                this.num_lote=data['num_lote'];
-                                this.sublote=data['sublote'];
-                                this.modelo_id=data['modelo_id'];
-                                this.empresa_id=data['empresa_id'];
-                                this.calle=data['calle'];
-                                this.numero=data['numero'];
-                                this.interior=data['interior'];
-                                this.terreno=data['terreno'];
-                                this.construccion=data['construccion'];
-                                this.casa_muestra=data['casa_muestra'];
-                                this.lote_comercial=data['lote_comercial'];
-                                break;
-                            }
-
-
                             case 'excel':
                             {
                                 this.modal2 =1;
                                 this.tituloModal2= 'Cargar desde Excel';
                                 this.tipoAccion=3;
+                                break;
+                            }
+
+                            case 'addmanzana':
+                            {
+                                
+                                this.modal3 =1;
+                                this.manzana= '';
+                                this.tituloModal3 = 'Agregar una manzana';
+                                this.tipoAccion = 4;
+                                break;
                             }
                         }
                     }
@@ -767,6 +880,7 @@
                 this.selectEtapa(this.fraccionamiento_id);
                 this.selectModelo(this.fraccionamiento_id);
                 this.selectConsYTerreno(this.modelo_id);
+                this.selectManzana(this.fraccionamiento_id);
 
             }
         },

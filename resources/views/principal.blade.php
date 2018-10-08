@@ -94,7 +94,7 @@
 
     <footer class="app-footer">
         
-        <span><a href="http://www.casascumbres.mx/">Casas Cumbres</a> &copy; 2018</span>
+        <span><a href="http://www.casascumbres.mx/">Grupo constructor cumbres</a> &copy; 2018</span>
         
         <span class="ml-auto">Desarrollado por <a href="http://www.casascumbres.mx/">Casas Cumbres</a></span>
     </footer>

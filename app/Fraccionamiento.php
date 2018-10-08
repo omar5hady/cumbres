@@ -21,4 +21,12 @@ class Fraccionamiento extends Model
     public function lote(){
         return $this->hasMany('App\Lote');
     }
+
+    public function terreno(){
+        return $this->hasMany('App\Terreno');
+    }
+
+    public function manzana(){
+        return $this->hasMany('App\Manzana');
+    }
 }

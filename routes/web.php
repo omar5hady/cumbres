@@ -60,7 +60,14 @@ Route::get('/lote','LoteController@index');
 Route::post('/lote/registrar','LoteController@store');
 Route::put('/lote/actualizar','LoteController@update');
 Route::delete('/lote/eliminar','LoteController@destroy');
+Route::post('/lote/registrar_manzana','LoteController@storeManzana');
 Route::post('/import', 'LoteController@import');
+
+////////////////////        RUTAS TERRENOS    /////////////////////////////////
+Route::get('/terreno','TerrenoController@index');
+Route::post('/terreno/registrar','TerrenoController@store');
+Route::put('/terreno/actualizar','TerrenoController@update');
+Route::delete('/terreno/eliminar','TerrenoController@destroy');
 
 /***************************************************************************** */
 ///////////////////       RUTAS SELECT    ////////////////////////////////////
@@ -73,7 +80,8 @@ Route::get('/select_fraccionamiento','FraccionamientoController@selectFraccionam
 Route::get('/select_Frac_Tipo','FraccionamientoController@selectFrac_Tipo');
 Route::get('/contador_etapa','EtapaController@contEtapa'); 
 Route::get('/select_etapa_proyecto','EtapaController@selectEtapa_proyecto'); 
-Route::get('/select_modelo_proyecto','ModeloController@selectModelo_proyecto'); 
+Route::get('/select_modelo_proyecto','ModeloController@selectModelo_proyecto');
+Route::get('/select_manzana_proyecto','LoteController@selectManzana_proyecto'); 
 Route::get('/select_construcc_terreno','ModeloController@selectConsYTerreno'); 
 
 

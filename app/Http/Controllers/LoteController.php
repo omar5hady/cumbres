@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Lote;
 use App\Modelo;
+use App\Manzana;
 use Session;
 use Excel;
 use File;
@@ -223,6 +224,26 @@ class LoteController extends Controller
                 return back();
             }
         }
+    }
+
+
+    public function selectManzana_proyecto(Request $request){
+        //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
+        if(!$request->ajax())return redirect('/');
+
+        $buscar = $request->buscar;
+        $manzanas = Manzana::select('manzana','id')
+        ->where('fraccionamiento_id', '=', $buscar )->get();
+        return['manzanas' => $manzanas];
+    }
+
+    public function storeManzana(Request $request)
+    {
+        if(!$request->ajax())return redirect('/');
+        $manzana = new Manzana();
+        $manzana->fraccionamiento_id = $request->fraccionamiento_id;
+        $manzana->manzana = $request->manzana;
+        $manzana->save();
     }
 
 
