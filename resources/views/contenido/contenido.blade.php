@@ -21,7 +21,7 @@
     </template>
 
     <template v-if="menu==5">
-       <terreno></terreno>
+        <h1>Contenido del menu 5</h1>
     </template>
 
     <template v-if="menu==6">

@@ -21,7 +21,7 @@
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
                                     <select class="form-control col-md-5" @click="selectDepartamento()" v-model="criterio">
-                                      <option value="nombre">Nombre</option>
+                                      <option value="personal.nombre">Nombre</option>
                                       <option value="apellidos">Apellidos</option>
                                       <option value="rfc">RFC</option>
                                       <option value="id_departamento">Departamento</option>
@@ -290,7 +290,7 @@
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'nombre', 
+                criterio : 'personal.nombre', 
                 buscar : '',
                 arrayColonias : []
             }

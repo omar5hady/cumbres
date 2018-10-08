@@ -24,9 +24,9 @@
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
                                     <select class="form-control col-md-5" v-model="criterio" @click="selectFraccionamientos()">
-                                      <option value="lotes.fraccionamiento_id">Proyecto</option>
-                                      <option value="modelos.nombre">Modelo</option>
-                                      <option value="lotes.calle">Calle</option>
+                                        <option value="lotes.fraccionamiento_id">Proyecto</option>
+                                        <option value="modelos.nombre">Modelo</option>
+                                        <option value="lotes.calle">Calle</option>
                                     </select>
                                     
                                     <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @click="selectEtapa(buscar)" >
@@ -98,6 +98,9 @@
                         <nav>
                             <!--Botones de paginacion -->
                             <ul class="pagination">
+                                <li class="page-item" v-if="pagination.last_page > 7 && pagination.current_page > 7">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(1,buscar,buscar2,buscar3,criterio)">Inicio</a>
+                                </li>
                                 <li class="page-item" v-if="pagination.current_page > 1">
                                     <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,buscar2,buscar3,criterio)">Ant</a>
                                 </li>
@@ -106,6 +109,9 @@
                                 </li>
                                 <li class="page-item" v-if="pagination.current_page < pagination.last_page">
                                     <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,buscar2,buscar3,criterio)">Sig</a>
+                                </li>
+                                <li class="page-item" v-if="pagination.last_page > 7 && pagination.current_page<pagination.last_page">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.last_page,buscar,buscar2,buscar3,criterio)">Ultimo</a>
                                 </li>
                             </ul>
                         </nav>
@@ -248,6 +254,12 @@
 
                                         <input type="text" v-model="construccion" disabled class="form-control" placeholder="Construccion">
                                   
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Comentarios </label>
+                                    <div class="col-md-7">
+                                        <input type="text" v-model="comentarios" class="form-control" placeholder="Comentarios">
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -404,6 +416,7 @@
                 construccion : 0,
                 casa_muestra: 0,
                 lote_comercial: 0,
+                comentarios: '',
                 
                 file: '',
                 modelostc :'',
@@ -426,7 +439,7 @@
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'lote.proyecto', 
+                criterio : 'modelos.nombre', 
                 buscar2 : '',
                 buscar3 : '',
                 buscar : '',
@@ -540,6 +553,9 @@
 
              selectFraccionamientos(){
                 let me = this;
+                me.buscar=""
+                me.buscar2=""
+                me.buscar3=""
                 me.arrayFraccionamientos=[];
                 var url = '/select_fraccionamiento';
                 axios.get(url).then(function (response) {
@@ -552,6 +568,8 @@
             },
             selectEtapa(buscar){
                 let me = this;
+                me.buscar2=""
+                me.buscar3=""
                 
                 me.arrayEtapas=[];
                 var url = '/select_etapa_proyecto?buscar=' + buscar;
@@ -633,7 +651,8 @@
                     'terreno': this.terreno,
                     'construccion': this.construccion,
                     'casa_muestra': this.casa_muestra,
-                    'lote_comercial': this.lote_comercial
+                    'lote_comercial': this.lote_comercial,
+                    'comentarios': this.comentarios,
                 }).then(function (response){
                     me.cerrarModal(); //al guardar el registro se cierra el modal
                     me.listarLote(1,'','','','lote'); //se enlistan nuevamente los registros
@@ -701,7 +720,8 @@
                     'terreno': this.terreno,
                     'construccion': this.construccion,
                     'casa_muestra': this.casa_muestra,
-                    'lote_comercial': this.lote_comercial
+                    'lote_comercial': this.lote_comercial,
+                    'comentarios': this.comentarios,
                     
                 }).then(function (response){
                     me.cerrarModal();
@@ -734,6 +754,7 @@
                 this.construccion=data['construccion'];
                 this.casa_muestra=data['casa_muestra'];
                 this.lote_comercial=data['lote_comercial'];
+                this.comentarios=data['comentarios'];
                 swal({
                 title: '¿Desea eliminar?',
                 text: "Esta acción no se puede revertir!",
@@ -803,6 +824,7 @@
                 this.construccion = '';
                 this.casa_muestra= '';
                 this.lote_comercial= '';
+                this.comentarios= '';
                 
                 this.errorLote = 0;
                 this.errorMostrarMsjLote = [];
@@ -837,6 +859,7 @@
                                 this.calle= '';
                                 this.numero= '';
                                 this.interior= '';
+                                this.comentarios= '';
                                 this.terreno = this.terrenoModelo;
                                 this.construccion = 0.0;
                                 this.casa_muestra= 0;
@@ -864,6 +887,7 @@
                                 this.construccion=data['construccion'];
                                 this.casa_muestra=data['casa_muestra'];
                                 this.lote_comercial=data['lote_comercial'];
+                                this.comentarios=data['comentarios'];
                                 break;
                             }
 

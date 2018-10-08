@@ -35,7 +35,8 @@ class LoteController extends Controller
             ->join('empresas','lotes.empresa_id','=','empresas.id')
             ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
                       'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                      'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id','lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id')
+                      'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
+                      'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios')
                 ->orderBy('fraccionamientos.nombre','lotes.id')->paginate(5);
         }
         else{
@@ -47,7 +48,8 @@ class LoteController extends Controller
                 ->join('empresas','lotes.empresa_id','=','empresas.id')
                 ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
                         'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                        'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id','lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id')
+                        'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
+                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios')
                     ->where($criterio, 'like', '%'. $buscar . '%')
                     ->orderBy('fraccionamientos.nombre','lotes.id')->paginate(5);
             }
@@ -60,7 +62,8 @@ class LoteController extends Controller
                     ->join('empresas','lotes.empresa_id','=','empresas.id')
                     ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
                             'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                            'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id','lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id')
+                            'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
+                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios')
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                         ->orderBy('fraccionamientos.nombre','lotes.id')->paginate(5);
@@ -72,7 +75,8 @@ class LoteController extends Controller
                     ->join('empresas','lotes.empresa_id','=','empresas.id')
                     ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
                             'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                            'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id','lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id')
+                            'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
+                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios')
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                         ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
@@ -129,6 +133,7 @@ class LoteController extends Controller
         $lote->construccion = $request->construccion;
         $lote->casa_muestra = $request->casa_muestra;
         $lote->lote_comercial = $request->lote_comercial;
+        $lote->comentarios = $request->comentarios;
 
         $lote->save();
     }
@@ -182,6 +187,7 @@ class LoteController extends Controller
         $lote->construccion = $request->construccion;
         $lote->casa_muestra = $request->casa_muestra;
         $lote->lote_comercial = $request->lote_comercial;
+        $lote->comentarios = $request->comentarios;
 
         $lote->save();
     }
@@ -230,10 +236,11 @@ class LoteController extends Controller
                         'calle' => $value->calle,
                         'numero' => $value->numero,
                         'interior' => $value->interior,
-                        'terreno' => $terreno[0]->terreno,
+                        'terreno' => $value->terreno,
                         'construccion' => $terreno[0]->construccion,
                         'casa_muestra' => $value->casa_muestra,
                         'lote_comercial' => $value->lote_comercial,
+                        'comentarios' => $value->comentarios,
                         
                         ];
                     }

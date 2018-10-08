@@ -22,8 +22,19 @@
                     <li @click="menu=4" class="nav-item">
                         <a class="nav-link" href="#"><i class="icon-bag"></i> Lotes</a>
                     </li>
-                    <li @click="menu=5" class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-bag"></i> Terrenos</a>
+                </ul>
+            </li>
+            <li class="nav-item nav-dropdown">
+                <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-energy"></i> Precios </a>
+                <ul class="nav-dropdown-items">
+                    <li @click="menu=21" class="nav-item">
+                        <a class="nav-link" href="#"><i class="icon-bag"></i> Precios de etapa</a>
+                    </li>
+                    <li @click="menu=22" class="nav-item">
+                        <a class="nav-link" href="#"><i class="icon-bag"></i> Precios vivienda</a>
+                    </li>
+                    <li @click="menu=23" class="nav-item">
+                        <a class="nav-link" href="#"><i class="icon-bag"></i> Sobreprecios</a>
                     </li>
                 </ul>
             </li>
@@ -44,10 +55,10 @@
             <li class="nav-item nav-dropdown">
                 <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-wallet"></i> Compras</a>
                 <ul class="nav-dropdown-items">
-                    <li @click="menu=21" class="nav-item">
+                    <li @click="menu=50" class="nav-item">
                         <a class="nav-link" href="#"><i class="icon-wallet"></i> Ingresos</a>
                     </li>
-                    <li @click="menu=4 "class="nav-item">
+                    <li @click="menu=51 "class="nav-item">
                         <a class="nav-link" href="#"><i class="icon-notebook"></i> Proveedores</a>
                     </li>
                 </ul>
@@ -55,10 +66,10 @@
             <li class="nav-item nav-dropdown">
                 <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-basket"></i> Ventas</a>
                 <ul class="nav-dropdown-items">
-                    <li @click="menu=5" class="nav-item">
+                    <li @click="menu=60" class="nav-item">
                         <a class="nav-link" href="#"><i class="icon-basket-loaded"></i> Ventas</a>
                     </li>
-                    <li @click="menu=6" class="nav-item">
+                    <li @click="menu=61" class="nav-item">
                         <a class="nav-link" href="#"><i class="icon-notebook"></i> Clientes</a>
                     </li>
                 </ul>
@@ -66,10 +77,10 @@
             <li class="nav-item nav-dropdown">
                 <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-people"></i> Acceso</a>
                 <ul class="nav-dropdown-items">
-                    <li @click="menu=7" class="nav-item">
+                    <li @click="menu=70" class="nav-item">
                         <a class="nav-link" href="#"><i class="icon-user"></i> Usuarios</a>
                     </li>
-                    <li @click="menu=8" class="nav-item">
+                    <li @click="menu=71" class="nav-item">
                         <a class="nav-link" href="#"><i class="icon-user-following"></i> Roles</a>
                     </li>
                 </ul>

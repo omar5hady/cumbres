@@ -22,7 +22,6 @@ Vue.component('empresa', require('./components/Empresa.vue'));
 Vue.component('etapa', require('./components/Etapa.vue'));
 Vue.component('modelo', require('./components/Modelo.vue'));
 Vue.component('lote', require('./components/Lote.vue'));
-Vue.component('terreno', require('./components/Terreno.vue'));
 
 const app = new Vue({
     el: '#app',
