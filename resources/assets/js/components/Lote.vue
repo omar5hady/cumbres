@@ -23,22 +23,28 @@
                             <div class="col-md-6">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-5" v-model="criterio">
-                                      <option value="fraccionamiento_id">Proyecto</option>
+                                    <select class="form-control col-md-5" v-model="criterio" @click="selectFraccionamientos()">
+                                      <option value="lotes.fraccionamiento_id">Proyecto</option>
+                                      <option value="modelos.nombre">Modelo</option>
+                                      <option value="lotes.calle">Calle</option>
                                     </select>
                                     
-                                    <select class="form-control" v-if="criterio=='fraccionamiento_id'" v-model="buscar" >
-                                            <option value="0">Seleccione</option>
-                                           <option v-for="lote in arrayProyectos" :key="lote.id" :value="lote.fraccionamiento_id" v-text="lote.proyecto"></option>
-                                    </select> 
-
-                                      <select class="form-control col-md-5" v-if="criterio=='lote.etapa'" v-model="buscar" @keyup.enter="listarLote(1,buscar,criterio)"> 
-                                      <option value="lote.manzana">Manzana</option>
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @click="selectEtapa(buscar)" >
+                                        <option value="">Seleccione</option>
+                                        <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
 
-                                    
-                                    <input type="text" v-if="criterio=='fraccionamientos.nombre'" v-model="buscar" @keyup.enter="listarLote(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
-                                    <button type="submit" @click="listarLote(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar2" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio)"> 
+                                        <option value="">Seleccione</option>
+                                        <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
+                                    </select>
+                                    <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar3" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio)" class="form-control" placeholder="Manzana a buscar">
+
+                                    <input type="text" v-if="criterio=='modelos.nombre'" v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio)" class="form-control" placeholder="Texto a buscar">
+                                    <input type="text" v-if="criterio=='lotes.calle'" v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio)" class="form-control" placeholder="Texto a buscar">
+                                                                        
+                                    <input type="text" v-if="criterio=='fraccionamientos.nombre'" v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio)" class="form-control" placeholder="Texto a buscar">
+                                    <button type="submit" @click="listarLote(1,buscar,buscar2,buscar3,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
                         </div>
@@ -93,13 +99,13 @@
                             <!--Botones de paginacion -->
                             <ul class="pagination">
                                 <li class="page-item" v-if="pagination.current_page > 1">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,criterio)">Ant</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,buscar2,buscar3,criterio)">Ant</a>
                                 </li>
                                 <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,criterio)" v-text="page"></a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,buscar2,buscar3,criterio)" v-text="page"></a>
                                 </li>
                                 <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,criterio)">Sig</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,buscar2,buscar3,criterio)">Sig</a>
                                 </li>
                             </ul>
                         </nav>
@@ -140,9 +146,7 @@
                                     </div>
                                 </div>
 
-                                
-
-                        <div class="form-group row">
+                        <!--<div class="form-group row">
                             <label class="col-md-3 form-control-label" for="text-input">Manzana</label>
                             <div class="col-md-6">
                                 <select class="form-control" v-model="manzana">
@@ -178,18 +182,23 @@
                                     </div>
                                 </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" @click="cerrarModal3()">Cerrar</button>
+                                        <button type="button" class="btn btn-secondary" @click="cerrarModal3()">Cerrar</button>-->
                                         <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                                        <button type="button" v-if="tipoAccion==4" class="btn btn-primary" @click="registrarManzana()">Guardar</button>
+                                        <!--<button type="button" v-if="tipoAccion==4" class="btn btn-primary" @click="registrarManzana()">Guardar</button>
                                         </div>
                             </div>
                         </div>
                         </div>
-                        </div>
+                        </div>-->
                                 
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Manzana</label>
+                                    <div class="col-md-4">
+                                        <input type="text" v-model="manzana" class="form-control" placeholder="Manzana">
+                                    </div>
+                                </div>
 
-
-                                  <div class="form-group row">
+                                <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input"># Lote</label>
                                     <div class="col-md-4">
                                         <input type="text" v-model="num_lote" class="form-control" placeholder="num_lote">
@@ -418,6 +427,8 @@
                 },
                 offset : 3,
                 criterio : 'lote.proyecto', 
+                buscar2 : '',
+                buscar3 : '',
                 buscar : '',
                 arrayFraccionamientos : [],
                 arrayEtapas : [],
@@ -493,7 +504,7 @@
                         timer: 2500
                         })
                     me.cerrarModal2();
-                    me.listarLote(1,'','lote');
+                    me.listarLote(1,'','','','lote');
 
                 })
 
@@ -506,9 +517,9 @@
             },
 
             /**Metodo para mostrar los registros */
-            listarLote(page, buscar, criterio){
+            listarLote(page, buscar, buscar2, buscar3, criterio){
                 let me = this;
-                var url = '/lote?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
+                var url = '/lote?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2+ '&buscar3=' + buscar3 + '&criterio=' + criterio;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayLote = respuesta.lotes.data;
@@ -519,12 +530,12 @@
                 });
             },
 
-            cambiarPagina(page, buscar, criterio){
+            cambiarPagina(page, buscar, buscar2, buscar3, criterio){
                 let me = this;
                 //Actualiza la pagina actual
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
-                me.listarLote(page,buscar,criterio);
+                me.listarLote(page,buscar,buscar2,buscar3,criterio);
             },
 
              selectFraccionamientos(){
@@ -625,7 +636,7 @@
                     'lote_comercial': this.lote_comercial
                 }).then(function (response){
                     me.cerrarModal(); //al guardar el registro se cierra el modal
-                    me.listarLote(1,'','lote'); //se enlistan nuevamente los registros
+                    me.listarLote(1,'','','','lote'); //se enlistan nuevamente los registros
                     //Se muestra mensaje Success
                     swal({
                         position: 'top-end',
@@ -694,7 +705,7 @@
                     
                 }).then(function (response){
                     me.cerrarModal();
-                    me.listarLote(1,'','lote');
+                    me.listarLote(1,'','','','lote');
                     //window.alert("Cambios guardados correctamente");
                     swal({
                         position: 'top-end',
@@ -743,7 +754,7 @@
                         'Lote borrado correctamente.',
                         'success'
                         )
-                        me.listarLote(1,'','lote');
+                        me.listarLote(1,'','','','lote');
                     }).catch(function (error){
                         console.log(error);
                     });
@@ -885,7 +896,7 @@
             }
         },
         mounted() {
-            this.listarLote(1,this.buscar,this.criterio);
+            this.listarLote(1,this.buscar,this.buscar2,this.buscar3,this.criterio);
         }
     }
 </script>

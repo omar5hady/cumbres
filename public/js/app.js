@@ -42924,6 +42924,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -42967,6 +42976,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             },
             offset: 3,
             criterio: 'lote.proyecto',
+            buscar2: '',
+            buscar3: '',
             buscar: '',
             arrayFraccionamientos: [],
             arrayEtapas: [],
@@ -43037,7 +43048,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     timer: 2500
                 });
                 me.cerrarModal2();
-                me.listarLote(1, '', 'lote');
+                me.listarLote(1, '', '', '', 'lote');
             }).catch(function (error) {
 
                 console.log(error);
@@ -43046,9 +43057,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
         /**Metodo para mostrar los registros */
-        listarLote: function listarLote(page, buscar, criterio) {
+        listarLote: function listarLote(page, buscar, buscar2, buscar3, criterio) {
             var me = this;
-            var url = '/lote?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
+            var url = '/lote?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3 + '&criterio=' + criterio;
             axios.get(url).then(function (response) {
                 var respuesta = response.data;
                 me.arrayLote = respuesta.lotes.data;
@@ -43057,12 +43068,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 console.log(error);
             });
         },
-        cambiarPagina: function cambiarPagina(page, buscar, criterio) {
+        cambiarPagina: function cambiarPagina(page, buscar, buscar2, buscar3, criterio) {
             var me = this;
             //Actualiza la pagina actual
             me.pagination.current_page = page;
             //Envia la petición para visualizar la data de esta pagina
-            me.listarLote(page, buscar, criterio);
+            me.listarLote(page, buscar, buscar2, buscar3, criterio);
         },
         selectFraccionamientos: function selectFraccionamientos() {
             var me = this;
@@ -43153,7 +43164,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'lote_comercial': this.lote_comercial
             }).then(function (response) {
                 me.cerrarModal(); //al guardar el registro se cierra el modal
-                me.listarLote(1, '', 'lote'); //se enlistan nuevamente los registros
+                me.listarLote(1, '', '', '', 'lote'); //se enlistan nuevamente los registros
                 //Se muestra mensaje Success
                 swal({
                     position: 'top-end',
@@ -43220,7 +43231,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             }).then(function (response) {
                 me.cerrarModal();
-                me.listarLote(1, '', 'lote');
+                me.listarLote(1, '', '', '', 'lote');
                 //window.alert("Cambios guardados correctamente");
                 swal({
                     position: 'top-end',
@@ -43268,7 +43279,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
                     axios.delete('/lote/eliminar', { params: { 'id': _this.id } }).then(function (response) {
                         swal('Borrado!', 'Lote borrado correctamente.', 'success');
-                        me.listarLote(1, '', 'lote');
+                        me.listarLote(1, '', '', '', 'lote');
                     }).catch(function (error) {
                         console.log(error);
                     });
@@ -43408,7 +43419,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         }
     },
     mounted: function mounted() {
-        this.listarLote(1, this.buscar, this.criterio);
+        this.listarLote(1, this.buscar, this.buscar2, this.buscar3, this.criterio);
     }
 });
 
@@ -43481,6 +43492,9 @@ var render = function() {
                     ],
                     staticClass: "form-control col-md-5",
                     on: {
+                      click: function($event) {
+                        _vm.selectFraccionamientos()
+                      },
                       change: function($event) {
                         var $$selectedVal = Array.prototype.filter
                           .call($event.target.options, function(o) {
@@ -43497,13 +43511,23 @@ var render = function() {
                     }
                   },
                   [
-                    _c("option", { attrs: { value: "fraccionamiento_id" } }, [
-                      _vm._v("Proyecto")
+                    _c(
+                      "option",
+                      { attrs: { value: "lotes.fraccionamiento_id" } },
+                      [_vm._v("Proyecto")]
+                    ),
+                    _vm._v(" "),
+                    _c("option", { attrs: { value: "modelos.nombre" } }, [
+                      _vm._v("Modelo")
+                    ]),
+                    _vm._v(" "),
+                    _c("option", { attrs: { value: "lotes.calle" } }, [
+                      _vm._v("Calle")
                     ])
                   ]
                 ),
                 _vm._v(" "),
-                _vm.criterio == "fraccionamiento_id"
+                _vm.criterio == "lotes.fraccionamiento_id"
                   ? _c(
                       "select",
                       {
@@ -43517,68 +43541,8 @@ var render = function() {
                         ],
                         staticClass: "form-control",
                         on: {
-                          change: function($event) {
-                            var $$selectedVal = Array.prototype.filter
-                              .call($event.target.options, function(o) {
-                                return o.selected
-                              })
-                              .map(function(o) {
-                                var val = "_value" in o ? o._value : o.value
-                                return val
-                              })
-                            _vm.buscar = $event.target.multiple
-                              ? $$selectedVal
-                              : $$selectedVal[0]
-                          }
-                        }
-                      },
-                      [
-                        _c("option", { attrs: { value: "0" } }, [
-                          _vm._v("Seleccione")
-                        ]),
-                        _vm._v(" "),
-                        _vm._l(_vm.arrayProyectos, function(lote) {
-                          return _c("option", {
-                            key: lote.id,
-                            domProps: {
-                              value: lote.fraccionamiento_id,
-                              textContent: _vm._s(lote.proyecto)
-                            }
-                          })
-                        })
-                      ],
-                      2
-                    )
-                  : _vm._e(),
-                _vm._v(" "),
-                _vm.criterio == "lote.etapa"
-                  ? _c(
-                      "select",
-                      {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.buscar,
-                            expression: "buscar"
-                          }
-                        ],
-                        staticClass: "form-control col-md-5",
-                        on: {
-                          keyup: function($event) {
-                            if (
-                              !("button" in $event) &&
-                              _vm._k(
-                                $event.keyCode,
-                                "enter",
-                                13,
-                                $event.key,
-                                "Enter"
-                              )
-                            ) {
-                              return null
-                            }
-                            _vm.listarLote(1, _vm.buscar, _vm.criterio)
+                          click: function($event) {
+                            _vm.selectEtapa(_vm.buscar)
                           },
                           change: function($event) {
                             var $$selectedVal = Array.prototype.filter
@@ -43596,11 +43560,228 @@ var render = function() {
                         }
                       },
                       [
-                        _c("option", { attrs: { value: "lote.manzana" } }, [
-                          _vm._v("Manzana")
-                        ])
-                      ]
+                        _c("option", { attrs: { value: "" } }, [
+                          _vm._v("Seleccione")
+                        ]),
+                        _vm._v(" "),
+                        _vm._l(_vm.arrayFraccionamientos, function(
+                          fraccionamientos
+                        ) {
+                          return _c("option", {
+                            key: fraccionamientos.id,
+                            domProps: {
+                              value: fraccionamientos.id,
+                              textContent: _vm._s(fraccionamientos.nombre)
+                            }
+                          })
+                        })
+                      ],
+                      2
                     )
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.criterio == "lotes.fraccionamiento_id"
+                  ? _c(
+                      "select",
+                      {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.buscar2,
+                            expression: "buscar2"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        on: {
+                          keyup: function($event) {
+                            if (
+                              !("button" in $event) &&
+                              _vm._k(
+                                $event.keyCode,
+                                "enter",
+                                13,
+                                $event.key,
+                                "Enter"
+                              )
+                            ) {
+                              return null
+                            }
+                            _vm.listarLote(
+                              1,
+                              _vm.buscar,
+                              _vm.buscar2,
+                              _vm.buscar3,
+                              _vm.criterio
+                            )
+                          },
+                          change: function($event) {
+                            var $$selectedVal = Array.prototype.filter
+                              .call($event.target.options, function(o) {
+                                return o.selected
+                              })
+                              .map(function(o) {
+                                var val = "_value" in o ? o._value : o.value
+                                return val
+                              })
+                            _vm.buscar2 = $event.target.multiple
+                              ? $$selectedVal
+                              : $$selectedVal[0]
+                          }
+                        }
+                      },
+                      [
+                        _c("option", { attrs: { value: "" } }, [
+                          _vm._v("Seleccione")
+                        ]),
+                        _vm._v(" "),
+                        _vm._l(_vm.arrayEtapas, function(etapas) {
+                          return _c("option", {
+                            key: etapas.id,
+                            domProps: {
+                              value: etapas.id,
+                              textContent: _vm._s(etapas.num_etapa)
+                            }
+                          })
+                        })
+                      ],
+                      2
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.criterio == "lotes.fraccionamiento_id"
+                  ? _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.buscar3,
+                          expression: "buscar3"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { type: "text", placeholder: "Manzana a buscar" },
+                      domProps: { value: _vm.buscar3 },
+                      on: {
+                        keyup: function($event) {
+                          if (
+                            !("button" in $event) &&
+                            _vm._k(
+                              $event.keyCode,
+                              "enter",
+                              13,
+                              $event.key,
+                              "Enter"
+                            )
+                          ) {
+                            return null
+                          }
+                          _vm.listarLote(
+                            1,
+                            _vm.buscar,
+                            _vm.buscar2,
+                            _vm.buscar3,
+                            _vm.criterio
+                          )
+                        },
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.buscar3 = $event.target.value
+                        }
+                      }
+                    })
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.criterio == "modelos.nombre"
+                  ? _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.buscar,
+                          expression: "buscar"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { type: "text", placeholder: "Texto a buscar" },
+                      domProps: { value: _vm.buscar },
+                      on: {
+                        keyup: function($event) {
+                          if (
+                            !("button" in $event) &&
+                            _vm._k(
+                              $event.keyCode,
+                              "enter",
+                              13,
+                              $event.key,
+                              "Enter"
+                            )
+                          ) {
+                            return null
+                          }
+                          _vm.listarLote(
+                            1,
+                            _vm.buscar,
+                            _vm.buscar2,
+                            _vm.buscar3,
+                            _vm.criterio
+                          )
+                        },
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.buscar = $event.target.value
+                        }
+                      }
+                    })
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.criterio == "lotes.calle"
+                  ? _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.buscar,
+                          expression: "buscar"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { type: "text", placeholder: "Texto a buscar" },
+                      domProps: { value: _vm.buscar },
+                      on: {
+                        keyup: function($event) {
+                          if (
+                            !("button" in $event) &&
+                            _vm._k(
+                              $event.keyCode,
+                              "enter",
+                              13,
+                              $event.key,
+                              "Enter"
+                            )
+                          ) {
+                            return null
+                          }
+                          _vm.listarLote(
+                            1,
+                            _vm.buscar,
+                            _vm.buscar2,
+                            _vm.buscar3,
+                            _vm.criterio
+                          )
+                        },
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.buscar = $event.target.value
+                        }
+                      }
+                    })
                   : _vm._e(),
                 _vm._v(" "),
                 _vm.criterio == "fraccionamientos.nombre"
@@ -43630,7 +43811,13 @@ var render = function() {
                           ) {
                             return null
                           }
-                          _vm.listarLote(1, _vm.buscar, _vm.criterio)
+                          _vm.listarLote(
+                            1,
+                            _vm.buscar,
+                            _vm.buscar2,
+                            _vm.buscar3,
+                            _vm.criterio
+                          )
                         },
                         input: function($event) {
                           if ($event.target.composing) {
@@ -43649,7 +43836,13 @@ var render = function() {
                     attrs: { type: "submit" },
                     on: {
                       click: function($event) {
-                        _vm.listarLote(1, _vm.buscar, _vm.criterio)
+                        _vm.listarLote(
+                          1,
+                          _vm.buscar,
+                          _vm.buscar2,
+                          _vm.buscar3,
+                          _vm.criterio
+                        )
                       }
                     }
                   },
@@ -43773,6 +43966,8 @@ var render = function() {
                               _vm.cambiarPagina(
                                 _vm.pagination.current_page - 1,
                                 _vm.buscar,
+                                _vm.buscar2,
+                                _vm.buscar3,
                                 _vm.criterio
                               )
                             }
@@ -43799,7 +43994,13 @@ var render = function() {
                         on: {
                           click: function($event) {
                             $event.preventDefault()
-                            _vm.cambiarPagina(page, _vm.buscar, _vm.criterio)
+                            _vm.cambiarPagina(
+                              page,
+                              _vm.buscar,
+                              _vm.buscar2,
+                              _vm.buscar3,
+                              _vm.criterio
+                            )
                           }
                         }
                       })
@@ -43820,6 +44021,8 @@ var render = function() {
                               _vm.cambiarPagina(
                                 _vm.pagination.current_page + 1,
                                 _vm.buscar,
+                                _vm.buscar2,
+                                _vm.buscar3,
                                 _vm.criterio
                               )
                             }
@@ -44031,231 +44234,29 @@ var render = function() {
                         [_vm._v("Manzana")]
                       ),
                       _vm._v(" "),
-                      _c("div", { staticClass: "col-md-6" }, [
-                        _c(
-                          "select",
-                          {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.manzana,
-                                expression: "manzana"
-                              }
-                            ],
-                            staticClass: "form-control",
-                            on: {
-                              change: function($event) {
-                                var $$selectedVal = Array.prototype.filter
-                                  .call($event.target.options, function(o) {
-                                    return o.selected
-                                  })
-                                  .map(function(o) {
-                                    var val = "_value" in o ? o._value : o.value
-                                    return val
-                                  })
-                                _vm.manzana = $event.target.multiple
-                                  ? $$selectedVal
-                                  : $$selectedVal[0]
-                              }
-                            }
-                          },
-                          [
-                            _c("option", { attrs: { value: "0" } }, [
-                              _vm._v("Seleccione")
-                            ]),
-                            _vm._v(" "),
-                            _vm._l(_vm.arrayManzanas, function(manzanas) {
-                              return _c("option", {
-                                key: manzanas.id,
-                                domProps: {
-                                  value: manzanas.id,
-                                  textContent: _vm._s(manzanas.manzana)
-                                }
-                              })
-                            })
-                          ],
-                          2
-                        )
-                      ]),
-                      _vm._v(" "),
-                      _c(
-                        "button",
-                        {
-                          staticClass: "btn btn-warning btn-sm",
-                          attrs: { title: "Editar", type: "button" },
-                          on: {
-                            click: function($event) {
-                              _vm.abrirModal("lote", "addmanzana")
-                            }
-                          }
-                        },
-                        [_c("i", { staticClass: "icon-pencil" })]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        {
-                          staticClass: "modal fade",
-                          class: { mostrar: _vm.modal3 },
-                          staticStyle: { display: "none" },
-                          attrs: {
-                            tabindex: "-1",
-                            role: "dialog",
-                            "aria-labelledby": "myModalLabel",
-                            "aria-hidden": "true"
-                          }
-                        },
-                        [
-                          _c(
-                            "div",
+                      _c("div", { staticClass: "col-md-4" }, [
+                        _c("input", {
+                          directives: [
                             {
-                              staticClass:
-                                "modal-dialog modal-primary modal-lg",
-                              attrs: { role: "document" }
-                            },
-                            [
-                              _c("div", { staticClass: "modal-content" }, [
-                                _c("div", { staticClass: "modal-header" }, [
-                                  _c("h4", {
-                                    staticClass: "modal-title",
-                                    domProps: {
-                                      textContent: _vm._s(_vm.tituloModal3)
-                                    }
-                                  }),
-                                  _vm._v(" "),
-                                  _c(
-                                    "button",
-                                    {
-                                      staticClass: "close",
-                                      attrs: {
-                                        type: "button",
-                                        "aria-label": "Close"
-                                      },
-                                      on: {
-                                        click: function($event) {
-                                          _vm.cerrarModal3()
-                                        }
-                                      }
-                                    },
-                                    [
-                                      _c(
-                                        "span",
-                                        { attrs: { "aria-hidden": "true" } },
-                                        [_vm._v("×")]
-                                      )
-                                    ]
-                                  )
-                                ]),
-                                _vm._v(" "),
-                                _c("div", { staticClass: "modal-body" }, [
-                                  _c("div", { staticClass: "form-group row" }, [
-                                    _c(
-                                      "label",
-                                      {
-                                        staticClass:
-                                          "col-md-3 form-control-label",
-                                        attrs: { for: "text-input" }
-                                      },
-                                      [_vm._v("Manzana")]
-                                    ),
-                                    _vm._v(" "),
-                                    _c("div", { staticClass: "col-md-4" }, [
-                                      _c("input", {
-                                        directives: [
-                                          {
-                                            name: "model",
-                                            rawName: "v-model",
-                                            value: _vm.manzana,
-                                            expression: "manzana"
-                                          }
-                                        ],
-                                        staticClass: "form-control",
-                                        attrs: {
-                                          type: "text",
-                                          placeholder: "manzana"
-                                        },
-                                        domProps: { value: _vm.manzana },
-                                        on: {
-                                          input: function($event) {
-                                            if ($event.target.composing) {
-                                              return
-                                            }
-                                            _vm.manzana = $event.target.value
-                                          }
-                                        }
-                                      })
-                                    ])
-                                  ])
-                                ]),
-                                _vm._v(" "),
-                                _c(
-                                  "div",
-                                  {
-                                    directives: [
-                                      {
-                                        name: "show",
-                                        rawName: "v-show",
-                                        value: _vm.errorLote,
-                                        expression: "errorLote"
-                                      }
-                                    ],
-                                    staticClass: "form-group row div-error"
-                                  },
-                                  [
-                                    _c(
-                                      "div",
-                                      { staticClass: "text-center text-error" },
-                                      _vm._l(_vm.errorMostrarMsjLote, function(
-                                        error
-                                      ) {
-                                        return _c("div", {
-                                          key: error,
-                                          domProps: {
-                                            textContent: _vm._s(error)
-                                          }
-                                        })
-                                      })
-                                    )
-                                  ]
-                                ),
-                                _vm._v(" "),
-                                _c("div", { staticClass: "modal-footer" }, [
-                                  _c(
-                                    "button",
-                                    {
-                                      staticClass: "btn btn-secondary",
-                                      attrs: { type: "button" },
-                                      on: {
-                                        click: function($event) {
-                                          _vm.cerrarModal3()
-                                        }
-                                      }
-                                    },
-                                    [_vm._v("Cerrar")]
-                                  ),
-                                  _vm._v(" "),
-                                  _vm.tipoAccion == 4
-                                    ? _c(
-                                        "button",
-                                        {
-                                          staticClass: "btn btn-primary",
-                                          attrs: { type: "button" },
-                                          on: {
-                                            click: function($event) {
-                                              _vm.registrarManzana()
-                                            }
-                                          }
-                                        },
-                                        [_vm._v("Guardar")]
-                                      )
-                                    : _vm._e()
-                                ])
-                              ])
-                            ]
-                          )
-                        ]
-                      )
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.manzana,
+                              expression: "manzana"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: { type: "text", placeholder: "Manzana" },
+                          domProps: { value: _vm.manzana },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.manzana = $event.target.value
+                            }
+                          }
+                        })
+                      ])
                     ]),
                     _vm._v(" "),
                     _c("div", { staticClass: "form-group row" }, [
