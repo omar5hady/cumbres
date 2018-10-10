@@ -106,7 +106,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Numero de etapa</label>
                                     <div class="col-md-4">
-                                        <input type="text" maxlength="2" v-model="num_etapa" v-on:keypress="isNumber(event)" class="form-control" placeholder="# de etapa">
+                                        <input type="text" v-model="num_etapa" class="form-control" placeholder="# de etapa">
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -388,15 +388,17 @@
 
                 return this.errorEtapa;
             },
-            isNumber: function(evt) {
-                evt = (evt) ? evt : window.event;
-                var charCode = (evt.which) ? evt.which : evt.keyCode;
-                if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
-                    evt.preventDefault();;
-                } else {
-                    return true;
-                }
-            },
+
+            // isNumber: function(evt) {
+            //     evt = (evt) ? evt : window.event;
+            //     var charCode = (evt.which) ? evt.which : evt.keyCode;
+            //     if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
+            //         evt.preventDefault();;
+            //     } else {
+            //         return true;
+            //     }
+            // },
+
             cerrarModal(){
                 this.modal = 0;
                 this.tituloModal = '';

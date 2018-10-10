@@ -39832,15 +39832,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             return this.errorEtapa;
         },
 
-        isNumber: function isNumber(evt) {
-            evt = evt ? evt : window.event;
-            var charCode = evt.which ? evt.which : evt.keyCode;
-            if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode !== 46) {
-                evt.preventDefault();;
-            } else {
-                return true;
-            }
-        },
+
+        // isNumber: function(evt) {
+        //     evt = (evt) ? evt : window.event;
+        //     var charCode = (evt.which) ? evt.which : evt.keyCode;
+        //     if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
+        //         evt.preventDefault();;
+        //     } else {
+        //         return true;
+        //     }
+        // },
+
         cerrarModal: function cerrarModal() {
             this.modal = 0;
             this.tituloModal = '';
@@ -40522,16 +40524,9 @@ var render = function() {
                             }
                           ],
                           staticClass: "form-control",
-                          attrs: {
-                            type: "text",
-                            maxlength: "2",
-                            placeholder: "# de etapa"
-                          },
+                          attrs: { type: "text", placeholder: "# de etapa" },
                           domProps: { value: _vm.num_etapa },
                           on: {
-                            keypress: function($event) {
-                              _vm.isNumber(_vm.event)
-                            },
                             input: function($event) {
                               if ($event.target.composing) {
                                 return

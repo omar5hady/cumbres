@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Fraccionamiento; //Importar el modelo
+use App\Etapa;
 
 class FraccionamientoController extends Controller
 {
@@ -124,6 +125,7 @@ class FraccionamientoController extends Controller
     {
         if(!$request->ajax())return redirect('/');
         $fraccionamiento = Fraccionamiento::findOrFail($request->id);
+
         $fraccionamiento->delete();
     }
 

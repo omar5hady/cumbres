@@ -16,7 +16,7 @@ class CreateEtapasTable extends Migration
         Schema::create('etapas', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('fraccionamiento_id');
-            $table->integer('num_etapa');
+            $table->string('num_etapa');
             $table->date('f_ini')->nullable();
             $table->date('f_fin')->nullable();
             $table->unsignedInteger('personal_id');
