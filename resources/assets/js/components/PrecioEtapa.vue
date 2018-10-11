@@ -8,7 +8,7 @@
                 <!-- Ejemplo de tabla Listado -->
                 <div class="card">
                     <div class="card-header">
-                        <i class="fa fa-align-justify"></i> Categorías
+                        <i class="fa fa-align-justify"></i> Precios por etapa
                         <!--   Boton Nuevo    -->
                         <button type="button" @click="abrirModal('precio_etapa','registrar')" class="btn btn-secondary">
                             <i class="icon-plus"></i>&nbsp;Nuevo
@@ -42,9 +42,12 @@
                                     <td style="width:20%">
                                         <button type="button" @click="abrirModal('precio_etapa','actualizar',precioEtapa)" class="btn btn-warning btn-sm">
                                           <i class="icon-pencil"></i>
-                                        </button> &nbsp;
+                                        </button>
                                         <button type="button" class="btn btn-danger btn-sm" @click="eliminarDepartamento(precioEtapa)">
                                           <i class="icon-trash"></i>
+                                        </button>
+                                        <button type="button" @click="abrirModal('precio_etapa','modelos',precioEtapa)" class="btn btn-info btn-sm" title="Precios para modelos">
+                                          <i class="icon-home"></i>
                                         </button>
                                     </td>
                                     <td v-text="precioEtapa.fraccionamiento"></td>
@@ -138,6 +141,70 @@
                 <!-- /.modal-dialog -->
             </div>
             <!--Fin del modal-->
+
+
+            <!--Inicio del modal 2-->
+            <div class="modal fade" tabindex="-1" :class="{'mostrar': modal2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" v-text="tituloModal2"></h4>
+                            <button type="button" class="close" @click="cerrarModal2()" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
+                                    <div class="col-md-6">
+                                       <select class="form-control" v-model="fraccionamiento_id" @click="selectEtapa(fraccionamiento_id)" >
+                                            <option value="0">Seleccione</option>
+                                            <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Etapa</label>
+                                    <div class="col-md-6">
+                                       <select class="form-control" v-model="etapa_id">
+                                            <option value="0">Seleccione</option>
+                                            <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row" v-for="(modelos,index) in arrayModelos"  :key="modelos.id" :value="modelos.id">
+                                    <label class="col-md-3 form-control-label" for="text-input" v-text="modelos.nombre"></label>
+                                    <div class="col-md-4" >
+                                        <input type="text"  v-model="arrayPreciosModelo[index]" class="form-control" placeholder="Precio modelos">
+                                    </div>
+                                </div>
+
+                                <!-- Div para mostrar los errores que mande validerDepartamento -->
+                                <div v-show="errorPrecioEtapa" class="form-group row div-error">
+                                    <div class="text-center text-error">
+                                        <div v-for="error in errorMostrarMsjPrecioEtapa" :key="error" v-text="error">
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal2()">Cerrar</button>
+                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
+                            <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarPrecioEtapa()">Guardar</button>
+                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarPrecioEtapa()">Actualizar</button>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!--Fin del modal-->
             
 
         </main>
@@ -157,9 +224,13 @@
                 precio_excedente : 0,
                 arrayPrecioEtapa : [],
                 arrayFraccionamientos:[],
+                arrayModelos:[],
+                arrayPreciosModelo:[],
                 arrayEtapas:[],
                 modal : 0,
                 tituloModal : '',
+                modal2 : 0,
+                tituloModal2 : '',
                 tipoAccion: 0,
                 errorPrecioEtapa : 0,
                 errorMostrarMsjPrecioEtapa : [],
@@ -233,6 +304,19 @@
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayFraccionamientos = respuesta.fraccionamientos;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            selectModelos(buscar1, buscar2){
+                let me = this;
+
+                me.arrayModelos=[];
+                var url = '/select_modelos_etapa?buscar1=' + buscar1 + '&buscar2='+ buscar2;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayModelos = respuesta.lotes;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -367,6 +451,15 @@
                 this.errorMostrarMsjPrecioEtapa = [];
 
             },
+            cerrarModal2(){
+                this.modal2 = 0;
+                this.tituloModal2 = '';
+                this.id = '';
+                this.fraccionamiento_id = '';
+                this.etapa_id = '';
+                this.errorMostrarMsjPrecioEtapa = [];
+
+            },
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
             abrirModal(modelo, accion,data =[]){
                 switch(modelo){
@@ -395,11 +488,24 @@
                                 this.precio_excedente=data['precio_excedente'];
                                 break;
                             }
+                            case 'modelos':
+                            {
+                                //console.log(data);
+                                this.modal2 =1;
+                                this.tituloModal2='Precios Modelos';
+                                this.tipoAccion=1;
+                                this.id=data['id'];
+                                this.fraccionamiento_id=data['fraccionamiento_id'];
+                                this.etapa_id=data['etapa_id'];
+                                this.precio_excedente=data['precio_excedente'];
+                                break;
+                            }
                         }
                     }
                 }
                 this.selectFraccionamientos();
                 this.selectEtapa(this.fraccionamiento_id);
+                this.selectModelos(this.fraccionamiento_id, this.etapa_id);
             }
         },
         mounted() {

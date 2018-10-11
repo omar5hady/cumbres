@@ -89,5 +89,6 @@ Route::get('/select_etapa_proyecto','EtapaController@selectEtapa_proyecto');
 Route::get('/select_modelo_proyecto','ModeloController@selectModelo_proyecto');
 Route::get('/select_manzana_proyecto','LoteController@selectManzana_proyecto'); 
 Route::get('/select_construcc_terreno','ModeloController@selectConsYTerreno'); 
+Route::get('/select_modelos_etapa','LoteController@select_modelos_etapa'); 
 
 

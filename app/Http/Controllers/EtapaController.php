@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Etapa; //Importar el modelo
+use App\Precio_etapa; //Importar el modelo
 use DB;
 
 class EtapaController extends Controller
@@ -94,6 +95,12 @@ class EtapaController extends Controller
         $etapa->f_fin = $request->f_fin;
         $etapa->personal_id = $request->personal_id;
         $etapa->save();
+
+        $precio_etapa = new Precio_etapa();
+        $precio_etapa->fraccionamiento_id = $request->fraccionamiento_id;
+        $precio_etapa->etapa_id = $etapa->id;
+        $precio_etapa->precio_excedente = 0;
+        $precio_etapa->save();
     }
 
     /**

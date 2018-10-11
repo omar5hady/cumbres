@@ -285,5 +285,21 @@ class LoteController extends Controller
         $manzana->save();
     }
 
+    public function select_modelos_etapa(Request $request){
+        //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
+        if(!$request->ajax())return redirect('/');
+
+        $buscar1 = $request->buscar1;
+        $buscar2 = $request->buscar2;
+        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+        ->join('etapas','lotes.etapa_id','=','etapas.id')
+        ->join('modelos','lotes.modelo_id','=','modelos.id')
+        ->select('modelos.nombre', 'lotes.modelo_id', 'lotes.fraccionamiento_id',  'lotes.etapa_id')
+        ->distinct()
+        ->where('lotes.fraccionamiento_id', '=', $buscar1)
+        ->where('lotes.etapa_id', '=', $buscar2)->get();
+        return['lotes' => $lotes];
+    }
+
 
 }

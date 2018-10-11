@@ -65,7 +65,7 @@ class PrecioEtapaController extends Controller
     //funcion para insertar en la tabla
     public function store(Request $request)
     {
-        //if(!$request->ajax())return redirect('/');
+        if(!$request->ajax())return redirect('/');
         $precio_etapa = new Precio_etapa();
         $precio_etapa->fraccionamiento_id = $request->fraccionamiento_id;
         $precio_etapa->etapa_id = $request->etapa_id;
