@@ -23,6 +23,8 @@ Vue.component('etapa', require('./components/Etapa.vue'));
 Vue.component('modelo', require('./components/Modelo.vue'));
 Vue.component('lote', require('./components/Lote.vue'));
 
+Vue.component('precio-etapa', require('./components/PrecioEtapa.vue'));
+
 const app = new Vue({
     el: '#app',
     data :{

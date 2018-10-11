@@ -26,4 +26,8 @@ class Etapa extends Model
     public function terreno(){
         return $this->hasMany('App\Terreno');
     }
+
+    public function precio_etapa(){
+        return $this->hasMany('App\Precio_etapa');
+    }
 }

@@ -12,20 +12,20 @@ class lote extends Model
                            'construccion','casa_muestra','lote_comercial'];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
     
                            
-public function fraccionamiento(){
-    return $this->belongsTo('App\Fraccionamiento');
-}
+    public function fraccionamiento(){
+        return $this->belongsTo('App\Fraccionamiento');
+    }
 
-public function etapa(){
-    return $this->belongsTo('App\Etapa');
-}
+    public function etapa(){
+        return $this->belongsTo('App\Etapa');
+    }
 
-public function modelo(){
-    return $this->belongsTo('App\Modelo');
-}
+    public function modelo(){
+        return $this->belongsTo('App\Modelo');
+    }
 
-public function empresa(){
-    return $this->belongsTo('App\Empresa');
-}
+    public function empresa(){
+        return $this->belongsTo('App\Empresa');
+    }
 
 }

@@ -69,6 +69,12 @@ Route::post('/terreno/registrar','TerrenoController@store');
 Route::put('/terreno/actualizar','TerrenoController@update');
 Route::delete('/terreno/eliminar','TerrenoController@destroy');
 
+////////////////////        RUTAS PRECIO ETAPA    /////////////////////////////////
+Route::get('/precio_etapa','PrecioEtapaController@index');
+Route::post('/precio_etapa/registrar','PrecioEtapaController@store');
+Route::put('/precio_etapa/actualizar','PrecioEtapaController@update');
+Route::delete('/precio_etapa/eliminar','PrecioEtapaController@destroy');
+
 /***************************************************************************** */
 ///////////////////       RUTAS SELECT    ////////////////////////////////////
 Route::get('/select_departamentos','DepartamentoController@selectDepartamento');

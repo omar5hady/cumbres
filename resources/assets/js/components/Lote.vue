@@ -63,8 +63,8 @@
                                     <th>Interior</th>
                                     <th>Terreno mts&sup2;</th>
                                     <th>Construcción mts&sup2;</th>
-                                    <th>Casa Muestra</th>
-                                    <th>Lote comercial</th>
+                                    <!--<th>Casa Muestra</th>-->
+                                    <th>Casa en venta</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -90,8 +90,12 @@
                                     <td v-text="lote.interior"></td>
                                     <td v-text="lote.terreno"></td>
                                     <td v-text="lote.construccion"></td>
-                                    <td v-text="lote.casa_muestra"></td>
-                                    <td v-text="lote.lote_comercial"></td>
+                                    <!--<td v-text="lote.casa_muestra"></td>
+                                    <td v-text="lote.lote_comercial"></td>-->
+                                    <td>
+                                        <span v-if = "lote.casa_muestra==0 && lote.lote_comercial==0" class="badge badge-success">Activo</span>
+                                        <span v-else class="badge badge-danger">Inactivo</span>
+                                    </td> 
                                 </tr>                               
                             </tbody>
                         </table>  
@@ -551,7 +555,7 @@
                 me.listarLote(page,buscar,buscar2,buscar3,criterio);
             },
 
-             selectFraccionamientos(){
+            selectFraccionamientos(){
                 let me = this;
                 me.buscar=""
                 me.buscar2=""

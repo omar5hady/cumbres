@@ -59,4 +59,8 @@
     <template v-if="menu==20">
         <h1>Contenido del menu 20</h1>
     </template>
+    
+    <template v-if="menu==21">
+        <precio-etapa></precio-etapa>
+    </template>
 @endsection
