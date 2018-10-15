@@ -12,10 +12,14 @@ class Precio_etapa extends Model
     
                            
     public function fraccionamiento(){
-        return $this->belongsTo('App\Fraccionamiento');
+        return $this->hasMany('App\Fraccionamiento');
     }
 
     public function etapa(){
-        return $this->belongsTo('App\Etapa');
+        return $this->hasMany('App\Etapa');
+    }
+
+    public function precio_modelo(){
+        return $this->belongsTo('App\Precio_modelo');
     }
 }

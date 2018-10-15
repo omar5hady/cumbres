@@ -74,6 +74,7 @@ Route::get('/precio_etapa','PrecioEtapaController@index');
 Route::post('/precio_etapa/registrar','PrecioEtapaController@store');
 Route::put('/precio_etapa/actualizar','PrecioEtapaController@update');
 Route::delete('/precio_etapa/eliminar','PrecioEtapaController@destroy');
+Route::post('/precio_modelo/registrar','PrecioEtapaController@storePrecioModelo');
 
 /***************************************************************************** */
 ///////////////////       RUTAS SELECT    ////////////////////////////////////

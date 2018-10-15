@@ -45600,6 +45600,27 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -45608,10 +45629,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             fraccionamiento_id: '',
             etapa_id: '',
             precio_excedente: 0,
+            precio_modelo: 0,
             arrayPrecioEtapa: [],
             arrayFraccionamientos: [],
             arrayModelos: [],
-            arrayPreciosModelo: [],
+            modelo_id: [],
             arrayEtapas: [],
             modal: 0,
             tituloModal: '',
@@ -45630,7 +45652,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             },
             offset: 3,
             criterio: 'fraccionamientos.nombre',
-            buscar: ''
+            buscar: '',
+            buscar2: ''
         };
     },
 
@@ -45702,6 +45725,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             axios.get(url).then(function (response) {
                 var respuesta = response.data;
                 me.arrayModelos = respuesta.lotes;
+                var results = me.arrayModelos[1].modelo_id;
+                me.modelo_id = results;
             }).catch(function (error) {
                 console.log(error);
             });
@@ -45877,11 +45902,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     //console.log(data);
                                     this.modal2 = 1;
                                     this.tituloModal2 = 'Precios Modelos';
-                                    this.tipoAccion = 1;
+                                    this.tipoAccion = 3;
                                     this.id = data['id'];
                                     this.fraccionamiento_id = data['fraccionamiento_id'];
+                                    this.modelo_id = data['modelo_id'];
                                     this.etapa_id = data['etapa_id'];
                                     this.precio_excedente = data['precio_excedente'];
+
                                     break;
                                 }
                         }
@@ -45893,6 +45920,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         }
     },
     mounted: function mounted() {
+        this.selectFraccionamientos();
+        this.selectEtapa(this.fraccionamiento_id);
+        this.selectModelos(this.fraccionamiento_id, this.etapa_id);
         this.listarPrecioEtapa(1, this.buscar, this.criterio);
     }
 });
@@ -45909,7 +45939,7 @@ var render = function() {
     _vm._m(0),
     _vm._v(" "),
     _c("div", { staticClass: "container-fluid" }, [
-      _c("div", { staticClass: "card" }, [
+      _c("div", { staticClass: "card w-75" }, [
         _c("div", { staticClass: "card-header" }, [
           _c("i", { staticClass: "fa fa-align-justify" }),
           _vm._v(" Precios por etapa\n                    "),
@@ -45973,33 +46003,124 @@ var render = function() {
                   ]
                 ),
                 _vm._v(" "),
+                _c(
+                  "select",
+                  {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.fraccionamiento_id,
+                        expression: "fraccionamiento_id"
+                      }
+                    ],
+                    staticClass: "form-control",
+                    on: {
+                      click: function($event) {
+                        _vm.selectEtapa(_vm.fraccionamiento_id)
+                      },
+                      change: function($event) {
+                        var $$selectedVal = Array.prototype.filter
+                          .call($event.target.options, function(o) {
+                            return o.selected
+                          })
+                          .map(function(o) {
+                            var val = "_value" in o ? o._value : o.value
+                            return val
+                          })
+                        _vm.fraccionamiento_id = $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      }
+                    }
+                  },
+                  [
+                    _c("option", { attrs: { value: "0" } }, [
+                      _vm._v("Seleccione")
+                    ]),
+                    _vm._v(" "),
+                    _vm._l(_vm.arrayFraccionamientos, function(
+                      fraccionamientos
+                    ) {
+                      return _c("option", {
+                        key: fraccionamientos.id,
+                        domProps: {
+                          value: fraccionamientos.id,
+                          textContent: _vm._s(fraccionamientos.nombre)
+                        }
+                      })
+                    })
+                  ],
+                  2
+                ),
+                _vm._v(" "),
+                _c(
+                  "select",
+                  {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.etapa_id,
+                        expression: "etapa_id"
+                      }
+                    ],
+                    staticClass: "form-control",
+                    on: {
+                      change: function($event) {
+                        var $$selectedVal = Array.prototype.filter
+                          .call($event.target.options, function(o) {
+                            return o.selected
+                          })
+                          .map(function(o) {
+                            var val = "_value" in o ? o._value : o.value
+                            return val
+                          })
+                        _vm.etapa_id = $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      }
+                    }
+                  },
+                  [
+                    _c("option", { attrs: { value: "0" } }, [
+                      _vm._v("Seleccione")
+                    ]),
+                    _vm._v(" "),
+                    _vm._l(_vm.arrayEtapas, function(etapas) {
+                      return _c("option", {
+                        key: etapas.id,
+                        domProps: {
+                          value: etapas.id,
+                          textContent: _vm._s(etapas.num_etapa)
+                        }
+                      })
+                    })
+                  ],
+                  2
+                ),
+                _vm._v(" "),
                 _c("input", {
                   directives: [
                     {
                       name: "model",
                       rawName: "v-model",
-                      value: _vm.buscar,
-                      expression: "buscar"
+                      value: _vm.precio_excedente,
+                      expression: "precio_excedente"
                     }
                   ],
                   staticClass: "form-control",
-                  attrs: { type: "text", placeholder: "Texto a buscar" },
-                  domProps: { value: _vm.buscar },
+                  attrs: {
+                    type: "text",
+                    placeholder: "Precio (mts&sup2;) excedente"
+                  },
+                  domProps: { value: _vm.precio_excedente },
                   on: {
-                    keyup: function($event) {
-                      if (
-                        !("button" in $event) &&
-                        _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
-                      ) {
-                        return null
-                      }
-                      _vm.listarPrecioEtapa(1, _vm.buscar, _vm.criterio)
-                    },
                     input: function($event) {
                       if ($event.target.composing) {
                         return
                       }
-                      _vm.buscar = $event.target.value
+                      _vm.precio_excedente = $event.target.value
                     }
                   }
                 }),
@@ -46008,14 +46129,15 @@ var render = function() {
                   "button",
                   {
                     staticClass: "btn btn-primary",
-                    attrs: { type: "submit" },
+                    attrs: { type: "button" },
                     on: {
                       click: function($event) {
-                        _vm.listarPrecioEtapa(1, _vm.buscar, _vm.criterio)
+                        _vm.registrarPrecioEtapa(),
+                          _vm.listarPrecioEtapa(1, _vm.buscar, _vm.criterio)
                       }
                     }
                   },
-                  [_c("i", { staticClass: "fa fa-search" }), _vm._v(" Buscar")]
+                  [_vm._v("Guardar")]
                 )
               ])
             ])
@@ -46336,6 +46458,12 @@ var render = function() {
                             ],
                             staticClass: "form-control",
                             on: {
+                              click: function($event) {
+                                _vm.selectModelos(
+                                  _vm.fraccionamiento_id,
+                                  _vm.etapa_id
+                                )
+                              },
                               change: function($event) {
                                 var $$selectedVal = Array.prototype.filter
                                   .call($event.target.options, function(o) {
@@ -46378,7 +46506,66 @@ var render = function() {
                           staticClass: "col-md-3 form-control-label",
                           attrs: { for: "text-input" }
                         },
-                        [_vm._v("Precio por (mts²) excedente")]
+                        [_vm._v("Modelo")]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-6" }, [
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.modelo_id,
+                                expression: "modelo_id"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            on: {
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.modelo_id = $event.target.multiple
+                                  ? $$selectedVal
+                                  : $$selectedVal[0]
+                              }
+                            }
+                          },
+                          [
+                            _c("option", { attrs: { value: "0" } }, [
+                              _vm._v("Seleccione")
+                            ]),
+                            _vm._v(" "),
+                            _vm._l(_vm.arrayModelos, function(modelos) {
+                              return _c("option", {
+                                key: modelos.id,
+                                domProps: {
+                                  value: modelos.id,
+                                  textContent: _vm._s(modelos.nombre)
+                                }
+                              })
+                            })
+                          ],
+                          2
+                        )
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "text-input" }
+                        },
+                        [_vm._v("Precio del modelo")]
                       ),
                       _vm._v(" "),
                       _c("div", { staticClass: "col-md-4" }, [
@@ -46387,22 +46574,22 @@ var render = function() {
                             {
                               name: "model",
                               rawName: "v-model",
-                              value: _vm.precio_excedente,
-                              expression: "precio_excedente"
+                              value: _vm.precio_modelo,
+                              expression: "precio_modelo"
                             }
                           ],
                           staticClass: "form-control",
                           attrs: {
                             type: "text",
-                            placeholder: "Precio (mts&sup2;) excedente"
+                            placeholder: "Precio del modelo"
                           },
-                          domProps: { value: _vm.precio_excedente },
+                          domProps: { value: _vm.precio_modelo },
                           on: {
                             input: function($event) {
                               if ($event.target.composing) {
                                 return
                               }
-                              _vm.precio_excedente = $event.target.value
+                              _vm.precio_modelo = $event.target.value
                             }
                           }
                         })
@@ -46775,7 +46962,7 @@ var render = function() {
                   [_vm._v("Cerrar")]
                 ),
                 _vm._v(" "),
-                _vm.tipoAccion == 1
+                _vm.tipoAccion == 3
                   ? _c(
                       "button",
                       {
@@ -46783,7 +46970,7 @@ var render = function() {
                         attrs: { type: "button" },
                         on: {
                           click: function($event) {
-                            _vm.registrarPrecioEtapa()
+                            _vm.registrarPrecioModelos()
                           }
                         }
                       },

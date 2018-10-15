@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Precio_etapa;
+use App\Precio_modelo;
 
 class PrecioEtapaController extends Controller
 {
@@ -128,4 +129,17 @@ class PrecioEtapaController extends Controller
         $precio_etapa = Precio_etapa::findOrFail($request->id);
         $precio_etapa->delete();
     }
+
+    public function storePrecioModelo(Request $request){
+        if(!$request->ajax())return redirect('/');
+        $precio_etapa = Precio_etapa::findOrfail($request->id);
+        $precio_modelo = new Precio_modelo();
+                
+         $precio_modelo->precio_etapa_id = $precio_etapa->id;
+         $precio_modelo->modelo_id = $request->modelo_id;
+         $precio_modelo->precio_modelo = $request->arrayPreciosModelos;
+         $precio_modelo->save();
+
+    }
+
 }

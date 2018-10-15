@@ -6,7 +6,7 @@
             </ol>
             <div class="container-fluid">
                 <!-- Ejemplo de tabla Listado -->
-                <div class="card">
+                <div class="card w-75">
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Precios por etapa
                         <!--   Boton Nuevo    -->
@@ -23,8 +23,19 @@
                                     <select class="form-control col-md-4" v-model="criterio">
                                       <option value="fraccionamientos.nombre">Proyecto</option>
                                     </select>
-                                    <input type="text" v-model="buscar" @keyup.enter="listarPrecioEtapa(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
-                                    <button type="submit" @click="listarPrecioEtapa(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+
+                                    <select class="form-control" v-model="fraccionamiento_id" @click="selectEtapa(fraccionamiento_id)" >
+                                        <option value="0">Seleccione</option>
+                                        <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                                    </select>
+
+                                    <select class="form-control" v-model="etapa_id">
+                                            <option value="0">Seleccione</option>
+                                            <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
+                                    </select>
+
+                                    <input type="text"  v-model="precio_excedente" class="form-control" placeholder="Precio (mts&sup2;) excedente">
+                                    <button type="button"  class="btn btn-primary" @click="registrarPrecioEtapa(),listarPrecioEtapa(1,buscar,criterio)">Guardar</button>
                                 </div>
                             </div>
                         </div>
@@ -104,7 +115,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Etapa</label>
                                     <div class="col-md-6">
-                                       <select class="form-control" v-model="etapa_id">
+                                       <select class="form-control" v-model="etapa_id" @click="selectModelos(fraccionamiento_id,etapa_id)" >
                                             <option value="0">Seleccione</option>
                                             <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                         </select>
@@ -112,9 +123,19 @@
                                 </div>
 
                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Precio por (mts&sup2;) excedente</label>
+                                    <label class="col-md-3 form-control-label" for="text-input">Modelo</label>
+                                    <div class="col-md-6">
+                                       <select class="form-control" v-model="modelo_id">
+                                            <option value="0">Seleccione</option>
+                                            <option v-for="modelos in arrayModelos" :key="modelos.id" :value="modelos.id" v-text="modelos.nombre"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Precio del modelo</label>
                                     <div class="col-md-4" >
-                                        <input type="text"  v-model="precio_excedente" class="form-control" placeholder="Precio (mts&sup2;) excedente">
+                                        <input type="text"  v-model="precio_modelo" class="form-control" placeholder="Precio del modelo">
                                     </div>
                                 </div>
 
@@ -196,7 +217,7 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal2()">Cerrar</button>
                             <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarPrecioEtapa()">Guardar</button>
+                            <button type="button" v-if="tipoAccion==3" class="btn btn-primary" @click="registrarPrecioModelos()">Guardar</button>
                             <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarPrecioEtapa()">Actualizar</button>
                         </div>
                     </div>
@@ -222,10 +243,11 @@
                 fraccionamiento_id : '',
                 etapa_id : '',
                 precio_excedente : 0,
+                precio_modelo: 0,
                 arrayPrecioEtapa : [],
                 arrayFraccionamientos:[],
                 arrayModelos:[],
-                arrayPreciosModelo:[],
+                modelo_id: [],
                 arrayEtapas:[],
                 modal : 0,
                 tituloModal : '',
@@ -244,7 +266,8 @@
                 },
                 offset : 3,
                 criterio : 'fraccionamientos.nombre', 
-                buscar : ''
+                buscar : '',
+                buscar2: ''
             }
         },
         computed:{
@@ -317,6 +340,8 @@
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayModelos = respuesta.lotes;
+                    var results = me.arrayModelos[1].modelo_id;
+                    me.modelo_id = results;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -493,11 +518,13 @@
                                 //console.log(data);
                                 this.modal2 =1;
                                 this.tituloModal2='Precios Modelos';
-                                this.tipoAccion=1;
+                                this.tipoAccion=3;
                                 this.id=data['id'];
                                 this.fraccionamiento_id=data['fraccionamiento_id'];
+                                this.modelo_id=data['modelo_id'];
                                 this.etapa_id=data['etapa_id'];
                                 this.precio_excedente=data['precio_excedente'];
+
                                 break;
                             }
                         }
@@ -509,6 +536,9 @@
             }
         },
         mounted() {
+            this.selectFraccionamientos();
+            this.selectEtapa(this.fraccionamiento_id);
+            this.selectModelos(this.fraccionamiento_id, this.etapa_id);
             this.listarPrecioEtapa(1,this.buscar,this.criterio);
         }
     }
