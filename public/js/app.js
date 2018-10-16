@@ -45675,6 +45675,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
                 me.precio_excedente = me.arrayPreciosEtapa[0].precio_excedente;
                 me.id = me.arrayPreciosEtapa[0].id;
+
+                me.listarPrecioModelo(1, me.id);
             }).catch(function (error) {
                 console.log(error);
             });
@@ -45725,7 +45727,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 'precio_modelo': this.precio_modelo
             }).then(function (response) {
                 me.cerrarModal(); //al guardar el registro se cierra el modal
-                me.listarPrecioModelo(1, ''); //se enlistan nuevamente los registros
+                me.listarPrecioModelo(1, this.id); //se enlistan nuevamente los registros
                 //Se muestra mensaje Success
                 swal({
                     position: 'top-end',
@@ -45745,6 +45747,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 }
 
             var me = this;
+            var proyecto = this.id;
             //Con axios se llama el metodo update de DepartamentoController
             axios.put('/precio_etapa/actualizar', {
                 'id': this.id,
@@ -45753,7 +45756,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 'precio_excedente': this.precio_excedente
             }).then(function (response) {
                 me.cerrarModal();
-                me.listarPrecioModelo(1, this.id);
+                me.listarPrecioModelo(1, proyecto);
                 //window.alert("Cambios guardados correctamente");
                 swal({
                     position: 'top-end',
@@ -45862,6 +45865,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                                     this.modal = 1;
                                     this.tituloModal = 'Registrar precio para modelo';
                                     this.precio_modelo = 0;
+                                    this.modelo_id = 0;
                                     this.tipoAccion = 1;
                                     break;
                                 }
@@ -45904,7 +45908,7 @@ var render = function() {
     _vm._m(0),
     _vm._v(" "),
     _c("div", { staticClass: "container-fluid" }, [
-      _c("div", { staticClass: "card w-75" }, [
+      _c("div", { staticClass: "card text-white bg-primary mb-3" }, [
         _c("div", { staticClass: "card-header" }, [
           _c("i", { staticClass: "fa fa-align-justify" }),
           _vm._v(" Precios por etapa\n                    "),
@@ -45927,7 +45931,7 @@ var render = function() {
           )
         ]),
         _vm._v(" "),
-        _c("div", { staticClass: "card-body" }, [
+        _c("div", { staticClass: "card-body bg-info" }, [
           _c("div", { staticClass: "form-group row" }, [
             _c("div", { staticClass: "col-md-8" }, [
               _c("div", { staticClass: "input-group" }, [
@@ -45999,8 +46003,7 @@ var render = function() {
                         _vm.selectPrecioEtapa(
                           _vm.fraccionamiento_id,
                           _vm.etapa_id
-                        ),
-                          _vm.listarPrecioModelo(1, _vm.id)
+                        )
                       },
                       change: function($event) {
                         var $$selectedVal = Array.prototype.filter
@@ -46079,7 +46082,10 @@ var render = function() {
           _vm._v(" "),
           _c(
             "table",
-            { staticClass: "table table-bordered table-striped table-sm" },
+            {
+              staticClass:
+                "table bg-light text-dark table-bordered table-striped table-sm"
+            },
             [
               _vm._m(1),
               _vm._v(" "),
@@ -46122,7 +46128,7 @@ var render = function() {
                     ]),
                     _vm._v(" "),
                     _c("td", {
-                      domProps: { textContent: _vm._s(precioModelo.proyecto) }
+                      domProps: { textContent: _vm._s(precioModelo.modelo) }
                     }),
                     _vm._v(" "),
                     _c("td", {

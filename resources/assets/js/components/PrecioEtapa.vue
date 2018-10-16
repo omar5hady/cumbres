@@ -6,7 +6,7 @@
             </ol>
             <div class="container-fluid">
                 <!-- Ejemplo de tabla Listado -->
-                <div class="card w-75">
+                <div class="card text-white bg-primary mb-3" >
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Precios por etapa
                         <!--   Boton Nuevo    -->
@@ -15,7 +15,7 @@
                         </button>
                         <!---->
                     </div>
-                    <div class="card-body">
+                    <div class="card-body bg-info">
                         <div class="form-group row">
                             <div class="col-md-8">
                                 <div class="input-group">
@@ -25,7 +25,7 @@
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
 
-                                    <select class="form-control" v-model="etapa_id" @click="selectPrecioEtapa(fraccionamiento_id,etapa_id),listarPrecioModelo(1,id)">
+                                    <select class="form-control" v-model="etapa_id" @click="selectPrecioEtapa(fraccionamiento_id,etapa_id)">
                                             <option value="0">Seleccione etapa</option>
                                             <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                     </select>
@@ -39,7 +39,7 @@
                                 </div>
                             </div>
                         </div>
-                        <table class="table table-bordered table-striped table-sm">
+                        <table class="table bg-light text-dark table-bordered table-striped table-sm">
                             <thead>
                                 <tr>
                                     <th>Opciones</th>
@@ -57,7 +57,7 @@
                                           <i class="icon-trash"></i>
                                         </button>
                                     </td>
-                                    <td v-text="precioModelo.proyecto"></td>
+                                    <td v-text="precioModelo.modelo"></td>
                                     <td v-text="'$ '+precioModelo.precio_modelo"></td>
                                 </tr>                               
                             </tbody>
@@ -307,6 +307,8 @@
                     me.precio_excedente = me.arrayPreciosEtapa[0].precio_excedente;
                     me.id = me.arrayPreciosEtapa[0].id;
 
+                    me.listarPrecioModelo(1,me.id);
+
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -356,7 +358,7 @@
                     'precio_modelo': this.precio_modelo
                 }).then(function (response){
                     me.cerrarModal(); //al guardar el registro se cierra el modal
-                    me.listarPrecioModelo(1,''); //se enlistan nuevamente los registros
+                    me.listarPrecioModelo(1,this.id); //se enlistan nuevamente los registros
                     //Se muestra mensaje Success
                     swal({
                         position: 'top-end',
@@ -376,6 +378,7 @@
                 }
 
                 let me = this;
+                var proyecto = this.id
                 //Con axios se llama el metodo update de DepartamentoController
                 axios.put('/precio_etapa/actualizar',{
                     'id': this.id,
@@ -384,7 +387,7 @@
                     'precio_excedente': this.precio_excedente
                 }).then(function (response){
                     me.cerrarModal();
-                    me.listarPrecioModelo(1,this.id);
+                    me.listarPrecioModelo(1,proyecto);
                     //window.alert("Cambios guardados correctamente");
                     swal({
                         position: 'top-end',
@@ -492,6 +495,7 @@
                                 this.modal = 1;
                                 this.tituloModal = 'Registrar precio para modelo';
                                 this.precio_modelo = 0;
+                                this.modelo_id = 0;
                                 this.tipoAccion = 1;
                                 break;
                             }
