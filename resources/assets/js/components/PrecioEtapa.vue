@@ -17,25 +17,25 @@
                     </div>
                     <div class="card-body">
                         <div class="form-group row">
-                            <div class="col-md-6">
+                            <div class="col-md-8">
                                 <div class="input-group">
-                                    <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-4" v-model="criterio">
-                                      <option value="fraccionamientos.nombre">Proyecto</option>
-                                    </select>
 
                                     <select class="form-control" v-model="fraccionamiento_id" @click="selectEtapa(fraccionamiento_id)" >
-                                        <option value="0">Seleccione</option>
+                                        <option value="0">Seleccione proyecto</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
 
-                                    <select class="form-control" v-model="etapa_id">
-                                            <option value="0">Seleccione</option>
+                                    <select class="form-control" v-model="etapa_id" @click="selectPrecioEtapa(fraccionamiento_id,etapa_id),listarPrecioModelo(1,id)">
+                                            <option value="0">Seleccione etapa</option>
                                             <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                     </select>
 
-                                    <input type="text"  v-model="precio_excedente" class="form-control" placeholder="Precio (mts&sup2;) excedente">
-                                    <button type="button"  class="btn btn-primary" @click="registrarPrecioEtapa(),listarPrecioEtapa(1,buscar,criterio)">Guardar</button>
+                                    <input type="number"  v-model="precio_excedente" class="form-control" placeholder="Precio excedente">
+                                    <button type="button"  class="btn btn-primary" @click="actualizarPrecioEtapa(),listarPrecioModelo(1,id)">Guardar</button>
+                                </div>
+
+                                <div class="input-group">
+                                   
                                 </div>
                             </div>
                         </div>
@@ -43,27 +43,22 @@
                             <thead>
                                 <tr>
                                     <th>Opciones</th>
-                                    <th>Proyecto</th>
-                                    <th>Etapa</th>
-                                    <th>Precio mts&sup2; excedente</th>
+                                    <th>Modelo</th>
+                                    <th>Precio Modelo</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="precioEtapa in arrayPrecioEtapa" :key="precioEtapa.id">
-                                    <td style="width:20%">
-                                        <button type="button" @click="abrirModal('precio_etapa','actualizar',precioEtapa)" class="btn btn-warning btn-sm">
+                                <tr v-for="precioModelo in arrayPrecioModelos" :key="precioModelo.id">
+                                    <td style="width:10%">
+                                        <button type="button" @click="abrirModal('precio_etapa','actualizar',precioModelo)" class="btn btn-warning btn-sm">
                                           <i class="icon-pencil"></i>
                                         </button>
-                                        <button type="button" class="btn btn-danger btn-sm" @click="eliminarDepartamento(precioEtapa)">
+                                        <button type="button" class="btn btn-danger btn-sm" @click="eliminarPrecioModelo(precioModelo)">
                                           <i class="icon-trash"></i>
                                         </button>
-                                        <button type="button" @click="abrirModal('precio_etapa','modelos',precioEtapa)" class="btn btn-info btn-sm" title="Precios para modelos">
-                                          <i class="icon-home"></i>
-                                        </button>
                                     </td>
-                                    <td v-text="precioEtapa.fraccionamiento"></td>
-                                    <td v-text="precioEtapa.etapas"></td>
-                                    <td v-text="'$ '+precioEtapa.precio_excedente"></td>
+                                    <td v-text="precioModelo.proyecto"></td>
+                                    <td v-text="'$ '+precioModelo.precio_modelo"></td>
                                 </tr>                               
                             </tbody>
                         </table>
@@ -71,13 +66,13 @@
                             <!--Botones de paginacion -->
                             <ul class="pagination">
                                 <li class="page-item" v-if="pagination.current_page > 1">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,criterio)">Ant</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar)">Ant</a>
                                 </li>
                                 <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,criterio)" v-text="page"></a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar)" v-text="page"></a>
                                 </li>
                                 <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,criterio)">Sig</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar)">Sig</a>
                                 </li>
                             </ul>
                         </nav>
@@ -127,7 +122,7 @@
                                     <div class="col-md-6">
                                        <select class="form-control" v-model="modelo_id">
                                             <option value="0">Seleccione</option>
-                                            <option v-for="modelos in arrayModelos" :key="modelos.id" :value="modelos.id" v-text="modelos.nombre"></option>
+                                            <option v-for="modelos in arrayModelos" :key="modelos.modelo_id" :value="modelos.modelo_id" v-text="modelos.nombre"></option>
                                         </select>
                                     </div>
                                 </div>
@@ -153,8 +148,8 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
                             <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarPrecioEtapa()">Guardar</button>
-                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarPrecioEtapa()">Actualizar</button>
+                            <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarPrecioModelo()">Guardar</button>
+                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarPrecioModelo()">Actualizar</button>
                         </div>
                     </div>
                     <!-- /.modal-content -->
@@ -162,71 +157,7 @@
                 <!-- /.modal-dialog -->
             </div>
             <!--Fin del modal-->
-
-
-            <!--Inicio del modal 2-->
-            <div class="modal fade" tabindex="-1" :class="{'mostrar': modal2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal2"></h4>
-                            <button type="button" class="close" @click="cerrarModal2()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
-                                    <div class="col-md-6">
-                                       <select class="form-control" v-model="fraccionamiento_id" @click="selectEtapa(fraccionamiento_id)" >
-                                            <option value="0">Seleccione</option>
-                                            <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Etapa</label>
-                                    <div class="col-md-6">
-                                       <select class="form-control" v-model="etapa_id">
-                                            <option value="0">Seleccione</option>
-                                            <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row" v-for="(modelos,index) in arrayModelos"  :key="modelos.id" :value="modelos.id">
-                                    <label class="col-md-3 form-control-label" for="text-input" v-text="modelos.nombre"></label>
-                                    <div class="col-md-4" >
-                                        <input type="text"  v-model="arrayPreciosModelo[index]" class="form-control" placeholder="Precio modelos">
-                                    </div>
-                                </div>
-
-                                <!-- Div para mostrar los errores que mande validerDepartamento -->
-                                <div v-show="errorPrecioEtapa" class="form-group row div-error">
-                                    <div class="text-center text-error">
-                                        <div v-for="error in errorMostrarMsjPrecioEtapa" :key="error" v-text="error">
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal2()">Cerrar</button>
-                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" v-if="tipoAccion==3" class="btn btn-primary" @click="registrarPrecioModelos()">Guardar</button>
-                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarPrecioEtapa()">Actualizar</button>
-                        </div>
-                    </div>
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
-            <!--Fin del modal-->
-            
+        
 
         </main>
 </template>
@@ -239,20 +170,22 @@
     export default {
         data(){
             return{
+                id_precioModelo: 0,
+                precio_modelo: 0,
                 id:0,
-                fraccionamiento_id : '',
-                etapa_id : '',
+                fraccionamiento_id : 0,
+                etapa_id : 0,
                 precio_excedente : 0,
                 precio_modelo: 0,
                 arrayPrecioEtapa : [],
+                arrayPreciosEtapa : [],
+                arrayPrecioModelos : [],
                 arrayFraccionamientos:[],
                 arrayModelos:[],
-                modelo_id: [],
+                modelo_id: 0,
                 arrayEtapas:[],
                 modal : 0,
                 tituloModal : '',
-                modal2 : 0,
-                tituloModal2 : '',
                 tipoAccion: 0,
                 errorPrecioEtapa : 0,
                 errorMostrarMsjPrecioEtapa : [],
@@ -265,7 +198,6 @@
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'fraccionamientos.nombre', 
                 buscar : '',
                 buscar2: ''
             }
@@ -300,24 +232,24 @@
         },
         methods : {
             /**Metodo para mostrar los registros */
-            listarPrecioEtapa(page, buscar, criterio){
+            listarPrecioModelo(page, buscar){
                 let me = this;
-                var url = '/precio_etapa?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
+                var url = '/precio_modelo?page=' + page + '&buscar=' + buscar;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
-                    me.arrayPrecioEtapa = respuesta.precios_etapas.data;
+                    me.arrayPrecioModelos = respuesta.precios_modelos.data;
                     me.pagination = respuesta.pagination;
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
             },
-            cambiarPagina(page, buscar, criterio){
+            cambiarPagina(page, buscar,){
                 let me = this;
                 //Actualiza la pagina actual
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
-                me.listarPrecioEtapa(page,buscar,criterio);
+                me.listarPrecioModelo(page,buscar);
             },
             selectFraccionamientos(){
                 let me = this;
@@ -361,6 +293,26 @@
                 });
             },
 
+            selectPrecioEtapa(buscar,buscar2){
+                let me = this;
+                
+                me.arrayPreciosEtapa=[];
+                me.precio_excedente = 0;
+                me.id = 0;
+                var url = '/select_precio_etapa?buscar=' + buscar + '&buscar2='+ buscar2;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayPreciosEtapa = respuesta.precio_etapa;
+
+                    me.precio_excedente = me.arrayPreciosEtapa[0].precio_excedente;
+                    me.id = me.arrayPreciosEtapa[0].id;
+
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
             /**Metodo para registrar  */
             registrarPrecioEtapa(){
                 if(this.validarPrecioEtapa()) //Se verifica si hay un error (campo vacio)
@@ -376,7 +328,35 @@
                     'precio_excedente': this.precio_excedente
                 }).then(function (response){
                     me.cerrarModal(); //al guardar el registro se cierra el modal
-                    me.listarPrecioEtapa(1,'','fraccionamientos.nombre'); //se enlistan nuevamente los registros
+                    me.listarPrecioModelo(1,''); //se enlistan nuevamente los registros
+                    //Se muestra mensaje Success
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Precio de modelo agregado correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+             /**Metodo para registrar  */
+            registrarPrecioModelo(){
+                if(this.validarPrecioEtapa()) //Se verifica si hay un error (campo vacio)
+                {
+                    return;
+                }
+
+                let me = this;
+                //Con axios se llama el metodo store de DepartamentoController
+                axios.post('/precio_modelo/registrar',{
+                    'precio_etapa_id': this.id,
+                    'modelo_id': this.modelo_id,
+                    'precio_modelo': this.precio_modelo
+                }).then(function (response){
+                    me.cerrarModal(); //al guardar el registro se cierra el modal
+                    me.listarPrecioModelo(1,''); //se enlistan nuevamente los registros
                     //Se muestra mensaje Success
                     swal({
                         position: 'top-end',
@@ -404,7 +384,7 @@
                     'precio_excedente': this.precio_excedente
                 }).then(function (response){
                     me.cerrarModal();
-                    me.listarPrecioEtapa(1,'','fraccionamientos.nombre');
+                    me.listarPrecioModelo(1,this.id);
                     //window.alert("Cambios guardados correctamente");
                     swal({
                         position: 'top-end',
@@ -417,11 +397,39 @@
                     console.log(error);
                 });
             },
-            eliminarDepartamento(data =[]){
-                this.id=data['id'];
-                this.fraccionamiento_id=data['fraccionamiento_id'];
-                this.etapa_id=data['etapa_id'];
-                this.precio_excedente=data['precio_excedente']
+            actualizarPrecioModelo(){
+                if(this.validarPrecioEtapa()) //Se verifica si hay un error (campo vacio)
+                {
+                    return;
+                }
+
+                let me = this;
+                //Con axios se llama el metodo update de DepartamentoController
+                axios.put('/precio_modelo/actualizar',{
+                    'id': this.id_precioModelo,
+                    'precio_etapa_id': this.id,
+                    'modelo_id': this.modelo_id,
+                    'precio_modelo': this.precio_modelo
+                }).then(function (response){
+                    me.cerrarModal();
+                    me.listarPrecioModelo(1,this.id);
+                    //window.alert("Cambios guardados correctamente");
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Cambios guardados correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+            eliminarPrecioModelo(data =[]){
+                this.id_precioModelo=data['id'];
+                this.modelo_id=data['modelo_id'];
+                this.id=data['precio_etapa_id'];
+                this.precio_modelo=data['precio_modelo']
                 //console.log(this.departamento_id);
                 swal({
                 title: '¿Desea eliminar?',
@@ -436,14 +444,14 @@
                 if (result.value) {
                     let me = this;
 
-                axios.delete('/precio_etapa/eliminar', 
-                        {params: {'id': this.id}}).then(function (response){
+                axios.delete('/precio_modelo/eliminar', 
+                        {params: {'id': this.id_precioModelo}}).then(function (response){
                         swal(
                         'Borrado!',
                         'Departamento borrado correctamente.',
                         'success'
                         )
-                        me.listarPrecioEtapa(1,'','fraccionamientos.nombre');
+                        me.listarPrecioModelo(1,'');
                     }).catch(function (error){
                         console.log(error);
                     });
@@ -468,23 +476,11 @@
             cerrarModal(){
                 this.modal = 0;
                 this.tituloModal = '';
-                this.id = '';
-                this.fraccionamiento_id = '';
-                this.etapa_id = '';
-                this.precio_excedente = '';
                 this.errorPrecioEtapa = 0;
                 this.errorMostrarMsjPrecioEtapa = [];
 
             },
-            cerrarModal2(){
-                this.modal2 = 0;
-                this.tituloModal2 = '';
-                this.id = '';
-                this.fraccionamiento_id = '';
-                this.etapa_id = '';
-                this.errorMostrarMsjPrecioEtapa = [];
-
-            },
+            
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
             abrirModal(modelo, accion,data =[]){
                 switch(modelo){
@@ -494,10 +490,8 @@
                             case 'registrar':
                             {
                                 this.modal = 1;
-                                this.tituloModal = 'Registrar precio para etapa';
-                                this.fraccionamiento_id ='';
-                                this.etapa_id ='';
-                                this.precio_excedente ='';
+                                this.tituloModal = 'Registrar precio para modelo';
+                                this.precio_modelo = 0;
                                 this.tipoAccion = 1;
                                 break;
                             }
@@ -505,26 +499,11 @@
                             {
                                 //console.log(data);
                                 this.modal =1;
-                                this.tituloModal='Actualizar precio para etapa';
+                                this.tituloModal='Actualizar precio para modelo';
                                 this.tipoAccion=2;
-                                this.id=data['id'];
-                                this.fraccionamiento_id=data['fraccionamiento_id'];
-                                this.etapa_id=data['etapa_id'];
-                                this.precio_excedente=data['precio_excedente'];
-                                break;
-                            }
-                            case 'modelos':
-                            {
-                                //console.log(data);
-                                this.modal2 =1;
-                                this.tituloModal2='Precios Modelos';
-                                this.tipoAccion=3;
-                                this.id=data['id'];
-                                this.fraccionamiento_id=data['fraccionamiento_id'];
-                                this.modelo_id=data['modelo_id'];
-                                this.etapa_id=data['etapa_id'];
-                                this.precio_excedente=data['precio_excedente'];
-
+                                this.id_precioModelo=data['id'];
+                                this.modelo_id = data['modelo_id']
+                                this.precio_modelo = data['precio_modelo'];
                                 break;
                             }
                         }
@@ -539,11 +518,16 @@
             this.selectFraccionamientos();
             this.selectEtapa(this.fraccionamiento_id);
             this.selectModelos(this.fraccionamiento_id, this.etapa_id);
-            this.listarPrecioEtapa(1,this.buscar,this.criterio);
+            this.listarPrecioModelo(1,this.buscar);
         }
     }
 </script>
 <style>
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { 
+        -webkit-appearance: none; 
+        margin: 0; 
+    }
     .modal-content{
         width: 100% !important;
         position: absolute !important;

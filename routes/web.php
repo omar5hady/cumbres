@@ -74,7 +74,13 @@ Route::get('/precio_etapa','PrecioEtapaController@index');
 Route::post('/precio_etapa/registrar','PrecioEtapaController@store');
 Route::put('/precio_etapa/actualizar','PrecioEtapaController@update');
 Route::delete('/precio_etapa/eliminar','PrecioEtapaController@destroy');
-Route::post('/precio_modelo/registrar','PrecioEtapaController@storePrecioModelo');
+//Route::post('/precio_modelo/registrar','PrecioEtapaController@storePrecioModelo');
+
+////////////////////        RUTAS PRECIO MODELO    /////////////////////////////////
+Route::get('/precio_modelo','PrecioModeloController@index');
+Route::post('/precio_modelo/registrar','PrecioModeloController@store');
+Route::put('/precio_modelo/actualizar','PrecioModeloController@update');
+Route::delete('/precio_modelo/eliminar','PrecioModeloController@destroy');
 
 /***************************************************************************** */
 ///////////////////       RUTAS SELECT    ////////////////////////////////////
@@ -91,5 +97,6 @@ Route::get('/select_modelo_proyecto','ModeloController@selectModelo_proyecto');
 Route::get('/select_manzana_proyecto','LoteController@selectManzana_proyecto'); 
 Route::get('/select_construcc_terreno','ModeloController@selectConsYTerreno'); 
 Route::get('/select_modelos_etapa','LoteController@select_modelos_etapa'); 
+Route::get('/select_precio_etapa','PrecioEtapaController@selectPrecioEtapa'); 
 
 

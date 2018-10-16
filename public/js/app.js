@@ -45373,7 +45373,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: absolute !important;\n    background-color: #3c29297a !important;\n}\n.div-error{\n    display:flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n", ""]);
+exports.push([module.i, "\ninput[type=number]::-webkit-inner-spin-button, \ninput[type=number]::-webkit-outer-spin-button { \n    -webkit-appearance: none; \n    margin: 0;\n}\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: absolute !important;\n    background-color: #3c29297a !important;\n}\n.div-error{\n    display:flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n", ""]);
 
 // exports
 
@@ -45384,75 +45384,8 @@ exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    pos
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 //
 //
 //
@@ -45624,37 +45557,23 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
-        return {
-            id: 0,
-            fraccionamiento_id: '',
-            etapa_id: '',
-            precio_excedente: 0,
+        var _ref;
+
+        return _ref = {
+            id_precioModelo: 0,
             precio_modelo: 0,
-            arrayPrecioEtapa: [],
-            arrayFraccionamientos: [],
-            arrayModelos: [],
-            modelo_id: [],
-            arrayEtapas: [],
-            modal: 0,
-            tituloModal: '',
-            modal2: 0,
-            tituloModal2: '',
-            tipoAccion: 0,
-            errorPrecioEtapa: 0,
-            errorMostrarMsjPrecioEtapa: [],
-            pagination: {
-                'total': 0,
-                'current_page': 0,
-                'per_page': 0,
-                'last_page': 0,
-                'from': 0,
-                'to': 0
-            },
-            offset: 3,
-            criterio: 'fraccionamientos.nombre',
-            buscar: '',
-            buscar2: ''
-        };
+            id: 0,
+            fraccionamiento_id: 0,
+            etapa_id: 0,
+            precio_excedente: 0
+        }, _defineProperty(_ref, 'precio_modelo', 0), _defineProperty(_ref, 'arrayPrecioEtapa', []), _defineProperty(_ref, 'arrayPreciosEtapa', []), _defineProperty(_ref, 'arrayPrecioModelos', []), _defineProperty(_ref, 'arrayFraccionamientos', []), _defineProperty(_ref, 'arrayModelos', []), _defineProperty(_ref, 'modelo_id', 0), _defineProperty(_ref, 'arrayEtapas', []), _defineProperty(_ref, 'modal', 0), _defineProperty(_ref, 'tituloModal', ''), _defineProperty(_ref, 'tipoAccion', 0), _defineProperty(_ref, 'errorPrecioEtapa', 0), _defineProperty(_ref, 'errorMostrarMsjPrecioEtapa', []), _defineProperty(_ref, 'pagination', {
+            'total': 0,
+            'current_page': 0,
+            'per_page': 0,
+            'last_page': 0,
+            'from': 0,
+            'to': 0
+        }), _defineProperty(_ref, 'offset', 3), _defineProperty(_ref, 'buscar', ''), _defineProperty(_ref, 'buscar2', ''), _ref;
     },
 
     computed: {
@@ -45687,23 +45606,23 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     methods: {
         /**Metodo para mostrar los registros */
-        listarPrecioEtapa: function listarPrecioEtapa(page, buscar, criterio) {
+        listarPrecioModelo: function listarPrecioModelo(page, buscar) {
             var me = this;
-            var url = '/precio_etapa?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
+            var url = '/precio_modelo?page=' + page + '&buscar=' + buscar;
             axios.get(url).then(function (response) {
                 var respuesta = response.data;
-                me.arrayPrecioEtapa = respuesta.precios_etapas.data;
+                me.arrayPrecioModelos = respuesta.precios_modelos.data;
                 me.pagination = respuesta.pagination;
             }).catch(function (error) {
                 console.log(error);
             });
         },
-        cambiarPagina: function cambiarPagina(page, buscar, criterio) {
+        cambiarPagina: function cambiarPagina(page, buscar) {
             var me = this;
             //Actualiza la pagina actual
             me.pagination.current_page = page;
             //Envia la petición para visualizar la data de esta pagina
-            me.listarPrecioEtapa(page, buscar, criterio);
+            me.listarPrecioModelo(page, buscar);
         },
         selectFraccionamientos: function selectFraccionamientos() {
             var me = this;
@@ -45743,6 +45662,23 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 console.log(error);
             });
         },
+        selectPrecioEtapa: function selectPrecioEtapa(buscar, buscar2) {
+            var me = this;
+
+            me.arrayPreciosEtapa = [];
+            me.precio_excedente = 0;
+            me.id = 0;
+            var url = '/select_precio_etapa?buscar=' + buscar + '&buscar2=' + buscar2;
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayPreciosEtapa = respuesta.precio_etapa;
+
+                me.precio_excedente = me.arrayPreciosEtapa[0].precio_excedente;
+                me.id = me.arrayPreciosEtapa[0].id;
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
 
 
         /**Metodo para registrar  */
@@ -45760,7 +45696,36 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'precio_excedente': this.precio_excedente
             }).then(function (response) {
                 me.cerrarModal(); //al guardar el registro se cierra el modal
-                me.listarPrecioEtapa(1, '', 'fraccionamientos.nombre'); //se enlistan nuevamente los registros
+                me.listarPrecioModelo(1, ''); //se enlistan nuevamente los registros
+                //Se muestra mensaje Success
+                swal({
+                    position: 'top-end',
+                    type: 'success',
+                    title: 'Precio de modelo agregado correctamente',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+
+        /**Metodo para registrar  */
+        registrarPrecioModelo: function registrarPrecioModelo() {
+            if (this.validarPrecioEtapa()) //Se verifica si hay un error (campo vacio)
+                {
+                    return;
+                }
+
+            var me = this;
+            //Con axios se llama el metodo store de DepartamentoController
+            axios.post('/precio_modelo/registrar', {
+                'precio_etapa_id': this.id,
+                'modelo_id': this.modelo_id,
+                'precio_modelo': this.precio_modelo
+            }).then(function (response) {
+                me.cerrarModal(); //al guardar el registro se cierra el modal
+                me.listarPrecioModelo(1, ''); //se enlistan nuevamente los registros
                 //Se muestra mensaje Success
                 swal({
                     position: 'top-end',
@@ -45788,7 +45753,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'precio_excedente': this.precio_excedente
             }).then(function (response) {
                 me.cerrarModal();
-                me.listarPrecioEtapa(1, '', 'fraccionamientos.nombre');
+                me.listarPrecioModelo(1, this.id);
                 //window.alert("Cambios guardados correctamente");
                 swal({
                     position: 'top-end',
@@ -45801,15 +45766,43 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 console.log(error);
             });
         },
-        eliminarDepartamento: function eliminarDepartamento() {
+        actualizarPrecioModelo: function actualizarPrecioModelo() {
+            if (this.validarPrecioEtapa()) //Se verifica si hay un error (campo vacio)
+                {
+                    return;
+                }
+
+            var me = this;
+            //Con axios se llama el metodo update de DepartamentoController
+            axios.put('/precio_modelo/actualizar', {
+                'id': this.id_precioModelo,
+                'precio_etapa_id': this.id,
+                'modelo_id': this.modelo_id,
+                'precio_modelo': this.precio_modelo
+            }).then(function (response) {
+                me.cerrarModal();
+                me.listarPrecioModelo(1, this.id);
+                //window.alert("Cambios guardados correctamente");
+                swal({
+                    position: 'top-end',
+                    type: 'success',
+                    title: 'Cambios guardados correctamente',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        eliminarPrecioModelo: function eliminarPrecioModelo() {
             var _this = this;
 
             var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
 
-            this.id = data['id'];
-            this.fraccionamiento_id = data['fraccionamiento_id'];
-            this.etapa_id = data['etapa_id'];
-            this.precio_excedente = data['precio_excedente'];
+            this.id_precioModelo = data['id'];
+            this.modelo_id = data['modelo_id'];
+            this.id = data['precio_etapa_id'];
+            this.precio_modelo = data['precio_modelo'];
             //console.log(this.departamento_id);
             swal({
                 title: '¿Desea eliminar?',
@@ -45824,9 +45817,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 if (result.value) {
                     var me = _this;
 
-                    axios.delete('/precio_etapa/eliminar', { params: { 'id': _this.id } }).then(function (response) {
+                    axios.delete('/precio_modelo/eliminar', { params: { 'id': _this.id_precioModelo } }).then(function (response) {
                         swal('Borrado!', 'Departamento borrado correctamente.', 'success');
-                        me.listarPrecioEtapa(1, '', 'fraccionamientos.nombre');
+                        me.listarPrecioModelo(1, '');
                     }).catch(function (error) {
                         console.log(error);
                     });
@@ -45851,21 +45844,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         cerrarModal: function cerrarModal() {
             this.modal = 0;
             this.tituloModal = '';
-            this.id = '';
-            this.fraccionamiento_id = '';
-            this.etapa_id = '';
-            this.precio_excedente = '';
             this.errorPrecioEtapa = 0;
             this.errorMostrarMsjPrecioEtapa = [];
         },
-        cerrarModal2: function cerrarModal2() {
-            this.modal2 = 0;
-            this.tituloModal2 = '';
-            this.id = '';
-            this.fraccionamiento_id = '';
-            this.etapa_id = '';
-            this.errorMostrarMsjPrecioEtapa = [];
-        },
+
 
         /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
         abrirModal: function abrirModal(modelo, accion) {
@@ -45878,10 +45860,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                             case 'registrar':
                                 {
                                     this.modal = 1;
-                                    this.tituloModal = 'Registrar precio para etapa';
-                                    this.fraccionamiento_id = '';
-                                    this.etapa_id = '';
-                                    this.precio_excedente = '';
+                                    this.tituloModal = 'Registrar precio para modelo';
+                                    this.precio_modelo = 0;
                                     this.tipoAccion = 1;
                                     break;
                                 }
@@ -45889,26 +45869,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                 {
                                     //console.log(data);
                                     this.modal = 1;
-                                    this.tituloModal = 'Actualizar precio para etapa';
+                                    this.tituloModal = 'Actualizar precio para modelo';
                                     this.tipoAccion = 2;
-                                    this.id = data['id'];
-                                    this.fraccionamiento_id = data['fraccionamiento_id'];
-                                    this.etapa_id = data['etapa_id'];
-                                    this.precio_excedente = data['precio_excedente'];
-                                    break;
-                                }
-                            case 'modelos':
-                                {
-                                    //console.log(data);
-                                    this.modal2 = 1;
-                                    this.tituloModal2 = 'Precios Modelos';
-                                    this.tipoAccion = 3;
-                                    this.id = data['id'];
-                                    this.fraccionamiento_id = data['fraccionamiento_id'];
+                                    this.id_precioModelo = data['id'];
                                     this.modelo_id = data['modelo_id'];
-                                    this.etapa_id = data['etapa_id'];
-                                    this.precio_excedente = data['precio_excedente'];
-
+                                    this.precio_modelo = data['precio_modelo'];
                                     break;
                                 }
                         }
@@ -45923,7 +45888,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         this.selectFraccionamientos();
         this.selectEtapa(this.fraccionamiento_id);
         this.selectModelos(this.fraccionamiento_id, this.etapa_id);
-        this.listarPrecioEtapa(1, this.buscar, this.criterio);
+        this.listarPrecioModelo(1, this.buscar);
     }
 });
 
@@ -45964,45 +45929,8 @@ var render = function() {
         _vm._v(" "),
         _c("div", { staticClass: "card-body" }, [
           _c("div", { staticClass: "form-group row" }, [
-            _c("div", { staticClass: "col-md-6" }, [
+            _c("div", { staticClass: "col-md-8" }, [
               _c("div", { staticClass: "input-group" }, [
-                _c(
-                  "select",
-                  {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.criterio,
-                        expression: "criterio"
-                      }
-                    ],
-                    staticClass: "form-control col-md-4",
-                    on: {
-                      change: function($event) {
-                        var $$selectedVal = Array.prototype.filter
-                          .call($event.target.options, function(o) {
-                            return o.selected
-                          })
-                          .map(function(o) {
-                            var val = "_value" in o ? o._value : o.value
-                            return val
-                          })
-                        _vm.criterio = $event.target.multiple
-                          ? $$selectedVal
-                          : $$selectedVal[0]
-                      }
-                    }
-                  },
-                  [
-                    _c(
-                      "option",
-                      { attrs: { value: "fraccionamientos.nombre" } },
-                      [_vm._v("Proyecto")]
-                    )
-                  ]
-                ),
-                _vm._v(" "),
                 _c(
                   "select",
                   {
@@ -46036,7 +45964,7 @@ var render = function() {
                   },
                   [
                     _c("option", { attrs: { value: "0" } }, [
-                      _vm._v("Seleccione")
+                      _vm._v("Seleccione proyecto")
                     ]),
                     _vm._v(" "),
                     _vm._l(_vm.arrayFraccionamientos, function(
@@ -46067,6 +45995,13 @@ var render = function() {
                     ],
                     staticClass: "form-control",
                     on: {
+                      click: function($event) {
+                        _vm.selectPrecioEtapa(
+                          _vm.fraccionamiento_id,
+                          _vm.etapa_id
+                        ),
+                          _vm.listarPrecioModelo(1, _vm.id)
+                      },
                       change: function($event) {
                         var $$selectedVal = Array.prototype.filter
                           .call($event.target.options, function(o) {
@@ -46084,7 +46019,7 @@ var render = function() {
                   },
                   [
                     _c("option", { attrs: { value: "0" } }, [
-                      _vm._v("Seleccione")
+                      _vm._v("Seleccione etapa")
                     ]),
                     _vm._v(" "),
                     _vm._l(_vm.arrayEtapas, function(etapas) {
@@ -46110,10 +46045,7 @@ var render = function() {
                     }
                   ],
                   staticClass: "form-control",
-                  attrs: {
-                    type: "text",
-                    placeholder: "Precio (mts&sup2;) excedente"
-                  },
+                  attrs: { type: "number", placeholder: "Precio excedente" },
                   domProps: { value: _vm.precio_excedente },
                   on: {
                     input: function($event) {
@@ -46132,14 +46064,16 @@ var render = function() {
                     attrs: { type: "button" },
                     on: {
                       click: function($event) {
-                        _vm.registrarPrecioEtapa(),
-                          _vm.listarPrecioEtapa(1, _vm.buscar, _vm.criterio)
+                        _vm.actualizarPrecioEtapa(),
+                          _vm.listarPrecioModelo(1, _vm.id)
                       }
                     }
                   },
                   [_vm._v("Guardar")]
                 )
-              ])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "input-group" })
             ])
           ]),
           _vm._v(" "),
@@ -46151,9 +46085,9 @@ var render = function() {
               _vm._v(" "),
               _c(
                 "tbody",
-                _vm._l(_vm.arrayPrecioEtapa, function(precioEtapa) {
-                  return _c("tr", { key: precioEtapa.id }, [
-                    _c("td", { staticStyle: { width: "20%" } }, [
+                _vm._l(_vm.arrayPrecioModelos, function(precioModelo) {
+                  return _c("tr", { key: precioModelo.id }, [
+                    _c("td", { staticStyle: { width: "10%" } }, [
                       _c(
                         "button",
                         {
@@ -46164,7 +46098,7 @@ var render = function() {
                               _vm.abrirModal(
                                 "precio_etapa",
                                 "actualizar",
-                                precioEtapa
+                                precioModelo
                               )
                             }
                           }
@@ -46179,48 +46113,21 @@ var render = function() {
                           attrs: { type: "button" },
                           on: {
                             click: function($event) {
-                              _vm.eliminarDepartamento(precioEtapa)
+                              _vm.eliminarPrecioModelo(precioModelo)
                             }
                           }
                         },
                         [_c("i", { staticClass: "icon-trash" })]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "button",
-                        {
-                          staticClass: "btn btn-info btn-sm",
-                          attrs: {
-                            type: "button",
-                            title: "Precios para modelos"
-                          },
-                          on: {
-                            click: function($event) {
-                              _vm.abrirModal(
-                                "precio_etapa",
-                                "modelos",
-                                precioEtapa
-                              )
-                            }
-                          }
-                        },
-                        [_c("i", { staticClass: "icon-home" })]
                       )
                     ]),
                     _vm._v(" "),
                     _c("td", {
-                      domProps: {
-                        textContent: _vm._s(precioEtapa.fraccionamiento)
-                      }
-                    }),
-                    _vm._v(" "),
-                    _c("td", {
-                      domProps: { textContent: _vm._s(precioEtapa.etapas) }
+                      domProps: { textContent: _vm._s(precioModelo.proyecto) }
                     }),
                     _vm._v(" "),
                     _c("td", {
                       domProps: {
-                        textContent: _vm._s("$ " + precioEtapa.precio_excedente)
+                        textContent: _vm._s("$ " + precioModelo.precio_modelo)
                       }
                     })
                   ])
@@ -46246,8 +46153,7 @@ var render = function() {
                               $event.preventDefault()
                               _vm.cambiarPagina(
                                 _vm.pagination.current_page - 1,
-                                _vm.buscar,
-                                _vm.criterio
+                                _vm.buscar
                               )
                             }
                           }
@@ -46273,7 +46179,7 @@ var render = function() {
                         on: {
                           click: function($event) {
                             $event.preventDefault()
-                            _vm.cambiarPagina(page, _vm.buscar, _vm.criterio)
+                            _vm.cambiarPagina(page, _vm.buscar)
                           }
                         }
                       })
@@ -46293,8 +46199,7 @@ var render = function() {
                               $event.preventDefault()
                               _vm.cambiarPagina(
                                 _vm.pagination.current_page + 1,
-                                _vm.buscar,
-                                _vm.criterio
+                                _vm.buscar
                               )
                             }
                           }
@@ -46545,9 +46450,9 @@ var render = function() {
                             _vm._v(" "),
                             _vm._l(_vm.arrayModelos, function(modelos) {
                               return _c("option", {
-                                key: modelos.id,
+                                key: modelos.modelo_id,
                                 domProps: {
-                                  value: modelos.id,
+                                  value: modelos.modelo_id,
                                   textContent: _vm._s(modelos.nombre)
                                 }
                               })
@@ -46651,7 +46556,7 @@ var render = function() {
                         attrs: { type: "button" },
                         on: {
                           click: function($event) {
-                            _vm.registrarPrecioEtapa()
+                            _vm.registrarPrecioModelo()
                           }
                         }
                       },
@@ -46667,326 +46572,7 @@ var render = function() {
                         attrs: { type: "button" },
                         on: {
                           click: function($event) {
-                            _vm.actualizarPrecioEtapa()
-                          }
-                        }
-                      },
-                      [_vm._v("Actualizar")]
-                    )
-                  : _vm._e()
-              ])
-            ])
-          ]
-        )
-      ]
-    ),
-    _vm._v(" "),
-    _c(
-      "div",
-      {
-        staticClass: "modal fade",
-        class: { mostrar: _vm.modal2 },
-        staticStyle: { display: "none" },
-        attrs: {
-          tabindex: "-1",
-          role: "dialog",
-          "aria-labelledby": "myModalLabel",
-          "aria-hidden": "true"
-        }
-      },
-      [
-        _c(
-          "div",
-          {
-            staticClass: "modal-dialog modal-primary modal-lg",
-            attrs: { role: "document" }
-          },
-          [
-            _c("div", { staticClass: "modal-content" }, [
-              _c("div", { staticClass: "modal-header" }, [
-                _c("h4", {
-                  staticClass: "modal-title",
-                  domProps: { textContent: _vm._s(_vm.tituloModal2) }
-                }),
-                _vm._v(" "),
-                _c(
-                  "button",
-                  {
-                    staticClass: "close",
-                    attrs: { type: "button", "aria-label": "Close" },
-                    on: {
-                      click: function($event) {
-                        _vm.cerrarModal2()
-                      }
-                    }
-                  },
-                  [
-                    _c("span", { attrs: { "aria-hidden": "true" } }, [
-                      _vm._v("×")
-                    ])
-                  ]
-                )
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "modal-body" }, [
-                _c(
-                  "form",
-                  {
-                    staticClass: "form-horizontal",
-                    attrs: {
-                      action: "",
-                      method: "post",
-                      enctype: "multipart/form-data"
-                    }
-                  },
-                  [
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "text-input" }
-                        },
-                        [_vm._v("Proyecto")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-6" }, [
-                        _c(
-                          "select",
-                          {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.fraccionamiento_id,
-                                expression: "fraccionamiento_id"
-                              }
-                            ],
-                            staticClass: "form-control",
-                            on: {
-                              click: function($event) {
-                                _vm.selectEtapa(_vm.fraccionamiento_id)
-                              },
-                              change: function($event) {
-                                var $$selectedVal = Array.prototype.filter
-                                  .call($event.target.options, function(o) {
-                                    return o.selected
-                                  })
-                                  .map(function(o) {
-                                    var val = "_value" in o ? o._value : o.value
-                                    return val
-                                  })
-                                _vm.fraccionamiento_id = $event.target.multiple
-                                  ? $$selectedVal
-                                  : $$selectedVal[0]
-                              }
-                            }
-                          },
-                          [
-                            _c("option", { attrs: { value: "0" } }, [
-                              _vm._v("Seleccione")
-                            ]),
-                            _vm._v(" "),
-                            _vm._l(_vm.arrayFraccionamientos, function(
-                              fraccionamientos
-                            ) {
-                              return _c("option", {
-                                key: fraccionamientos.id,
-                                domProps: {
-                                  value: fraccionamientos.id,
-                                  textContent: _vm._s(fraccionamientos.nombre)
-                                }
-                              })
-                            })
-                          ],
-                          2
-                        )
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "text-input" }
-                        },
-                        [_vm._v("Etapa")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-6" }, [
-                        _c(
-                          "select",
-                          {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.etapa_id,
-                                expression: "etapa_id"
-                              }
-                            ],
-                            staticClass: "form-control",
-                            on: {
-                              change: function($event) {
-                                var $$selectedVal = Array.prototype.filter
-                                  .call($event.target.options, function(o) {
-                                    return o.selected
-                                  })
-                                  .map(function(o) {
-                                    var val = "_value" in o ? o._value : o.value
-                                    return val
-                                  })
-                                _vm.etapa_id = $event.target.multiple
-                                  ? $$selectedVal
-                                  : $$selectedVal[0]
-                              }
-                            }
-                          },
-                          [
-                            _c("option", { attrs: { value: "0" } }, [
-                              _vm._v("Seleccione")
-                            ]),
-                            _vm._v(" "),
-                            _vm._l(_vm.arrayEtapas, function(etapas) {
-                              return _c("option", {
-                                key: etapas.id,
-                                domProps: {
-                                  value: etapas.id,
-                                  textContent: _vm._s(etapas.num_etapa)
-                                }
-                              })
-                            })
-                          ],
-                          2
-                        )
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _vm._l(_vm.arrayModelos, function(modelos, index) {
-                      return _c(
-                        "div",
-                        {
-                          key: modelos.id,
-                          staticClass: "form-group row",
-                          attrs: { value: modelos.id }
-                        },
-                        [
-                          _c("label", {
-                            staticClass: "col-md-3 form-control-label",
-                            attrs: { for: "text-input" },
-                            domProps: { textContent: _vm._s(modelos.nombre) }
-                          }),
-                          _vm._v(" "),
-                          _c("div", { staticClass: "col-md-4" }, [
-                            _c("input", {
-                              directives: [
-                                {
-                                  name: "model",
-                                  rawName: "v-model",
-                                  value: _vm.arrayPreciosModelo[index],
-                                  expression: "arrayPreciosModelo[index]"
-                                }
-                              ],
-                              staticClass: "form-control",
-                              attrs: {
-                                type: "text",
-                                placeholder: "Precio modelos"
-                              },
-                              domProps: {
-                                value: _vm.arrayPreciosModelo[index]
-                              },
-                              on: {
-                                input: function($event) {
-                                  if ($event.target.composing) {
-                                    return
-                                  }
-                                  _vm.$set(
-                                    _vm.arrayPreciosModelo,
-                                    index,
-                                    $event.target.value
-                                  )
-                                }
-                              }
-                            })
-                          ])
-                        ]
-                      )
-                    }),
-                    _vm._v(" "),
-                    _c(
-                      "div",
-                      {
-                        directives: [
-                          {
-                            name: "show",
-                            rawName: "v-show",
-                            value: _vm.errorPrecioEtapa,
-                            expression: "errorPrecioEtapa"
-                          }
-                        ],
-                        staticClass: "form-group row div-error"
-                      },
-                      [
-                        _c(
-                          "div",
-                          { staticClass: "text-center text-error" },
-                          _vm._l(_vm.errorMostrarMsjPrecioEtapa, function(
-                            error
-                          ) {
-                            return _c("div", {
-                              key: error,
-                              domProps: { textContent: _vm._s(error) }
-                            })
-                          })
-                        )
-                      ]
-                    )
-                  ],
-                  2
-                )
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "modal-footer" }, [
-                _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-secondary",
-                    attrs: { type: "button" },
-                    on: {
-                      click: function($event) {
-                        _vm.cerrarModal2()
-                      }
-                    }
-                  },
-                  [_vm._v("Cerrar")]
-                ),
-                _vm._v(" "),
-                _vm.tipoAccion == 3
-                  ? _c(
-                      "button",
-                      {
-                        staticClass: "btn btn-primary",
-                        attrs: { type: "button" },
-                        on: {
-                          click: function($event) {
-                            _vm.registrarPrecioModelos()
-                          }
-                        }
-                      },
-                      [_vm._v("Guardar")]
-                    )
-                  : _vm._e(),
-                _vm._v(" "),
-                _vm.tipoAccion == 2
-                  ? _c(
-                      "button",
-                      {
-                        staticClass: "btn btn-primary",
-                        attrs: { type: "button" },
-                        on: {
-                          click: function($event) {
-                            _vm.actualizarPrecioEtapa()
+                            _vm.actualizarPrecioModelo()
                           }
                         }
                       },
@@ -47024,11 +46610,9 @@ var staticRenderFns = [
       _c("tr", [
         _c("th", [_vm._v("Opciones")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Proyecto")]),
+        _c("th", [_vm._v("Modelo")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Etapa")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Precio mts² excedente")])
+        _c("th", [_vm._v("Precio Modelo")])
       ])
     ])
   }

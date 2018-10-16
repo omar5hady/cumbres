@@ -130,7 +130,7 @@ class PrecioEtapaController extends Controller
         $precio_etapa->delete();
     }
 
-    public function storePrecioModelo(Request $request){
+    /*public function storePrecioModelo(Request $request){
         if(!$request->ajax())return redirect('/');
         $precio_etapa = Precio_etapa::findOrfail($request->id);
         $precio_modelo = new Precio_modelo();
@@ -140,6 +140,19 @@ class PrecioEtapaController extends Controller
          $precio_modelo->precio_modelo = $request->arrayPreciosModelos;
          $precio_modelo->save();
 
+    }*/
+
+    public function selectPrecioEtapa(Request $request){
+        //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
+       // if(!$request->ajax())return redirect('/');
+
+        $buscar = $request->buscar;
+        $buscar2 = $request->buscar2;
+        $precio_etapa = Precio_etapa::select('precio_excedente','id')
+        ->where('fraccionamiento_id', '=', $buscar )
+        ->where('etapa_id', '=', $buscar2 )->get();
+
+        return ['precio_etapa' => $precio_etapa];
     }
 
 }
