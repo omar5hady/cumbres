@@ -6,9 +6,85 @@
             </ol>
             <div class="container-fluid">
                 <!-- Ejemplo de tabla Listado -->
-                <div class="card" >
+
+                <!-- div para sobreprecio de etapas -->
+                <div class="card w75" >
                     <div class="card-header">
-                        <i class="fa fa-align-justify"></i> Precios por etapa
+                        <i class="fa fa-align-justify"></i> Sobreprecios Etapas
+                        <!--   Boton Nuevo    -->
+                        <button type="button" @click="abrirModal('sobreprecio_etapa','registrar')" class="btn btn-secondary">
+                            <i class="icon-plus"></i>&nbsp;Nuevo
+                        </button>
+                        <!---->
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group row">
+                            <div class="col-md-8">
+                                <div class="input-group">
+
+                                    <select class="form-control" v-model="fraccionamiento_id" @click="selectEtapa(fraccionamiento_id)" >
+                                        <option value="0">Seleccione proyecto</option>
+                                        <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                                    </select>
+
+                                    <select class="form-control" v-model="etapa_id" @click="selectPrecioEtapa(fraccionamiento_id,etapa_id)">
+                                            <option value="0">Seleccione etapa</option>
+                                            <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
+                                    </select>
+
+                                    <input type="number"  v-model="precio_excedente" class="form-control" placeholder="Precio excedente">
+                                    <button type="button"  class="btn btn-primary" @click="actualizarPrecioEtapa(),listarPrecioModelo(1,id)">Guardar</button>
+                                </div>
+
+                                <div class="input-group">
+                                   
+                                </div>
+                            </div>
+                        </div>
+                        <table class="table bg-light text-dark table-bordered table-striped table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Opciones</th>
+                                    <th>Modelo</th>
+                                    <th>Precio Modelo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="precioModelo in arrayPrecioModelos" :key="precioModelo.id">
+                                    <td style="width:10%">
+                                        <button type="button" @click="abrirModal('precio_etapa','actualizar',precioModelo)" class="btn btn-warning btn-sm">
+                                          <i class="icon-pencil"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-danger btn-sm" @click="eliminarPrecioModelo(precioModelo)">
+                                          <i class="icon-trash"></i>
+                                        </button>
+                                    </td>
+                                    <td v-text="precioModelo.modelo"></td>
+                                    <td v-text="'$ '+precioModelo.precio_modelo"></td>
+                                </tr>                               
+                            </tbody>
+                        </table>
+                        <nav>
+                            <!--Botones de paginacion -->
+                            <ul class="pagination">
+                                <li class="page-item" v-if="pagination.current_page > 1">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar)">Ant</a>
+                                </li>
+                                <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar)" v-text="page"></a>
+                                </li>
+                                <li class="page-item" v-if="pagination.current_page < pagination.last_page">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar)">Sig</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+
+                <!-- div para sobreprecio modelo-->
+                <div class="card w75" >
+                    <div class="card-header">
+                        <i class="fa fa-align-justify"></i> Sobreprecios
                         <!--   Boton Nuevo    -->
                         <button type="button" @click="abrirModal('precio_etapa','registrar')" class="btn btn-secondary">
                             <i class="icon-plus"></i>&nbsp;Nuevo

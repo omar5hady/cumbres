@@ -28,4 +28,9 @@ class lote extends Model
         return $this->belongsTo('App\Empresa');
     }
 
+    public function sobreprecio_modelo(){
+        return $this->belongsTo('App\Sobreprecio_modelo');
+    }
+
+
 }

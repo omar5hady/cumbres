@@ -30,4 +30,8 @@ class Etapa extends Model
     public function precio_etapa(){
         return $this->belongsTo('App\Precio_etapa');
     }
+
+    public function sobreprecio_etapa(){
+        return $this->belongsTo('App\Sobreprecio_etapa');
+    }
 }

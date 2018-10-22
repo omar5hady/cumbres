@@ -82,6 +82,13 @@ Route::post('/precio_modelo/registrar','PrecioModeloController@store');
 Route::put('/precio_modelo/actualizar','PrecioModeloController@update');
 Route::delete('/precio_modelo/eliminar','PrecioModeloController@destroy');
 
+////////////////////        RUTAS SOBREPRECIO ETAPA    /////////////////////////////////
+Route::get('/sobreprecio_etapa','SobreprecioEtapaController@index');
+Route::post('/sobreprecio_etapa/registrar','SobreprecioEtapaController@store');
+Route::put('/sobreprecio_etapa/actualizar','SobreprecioEtapaController@update');
+Route::delete('/sobreprecio_etapa/eliminar','SobreprecioEtapaController@destroy');
+
+
 /***************************************************************************** */
 ///////////////////       RUTAS SELECT    ////////////////////////////////////
 Route::get('/select_departamentos','DepartamentoController@selectDepartamento');

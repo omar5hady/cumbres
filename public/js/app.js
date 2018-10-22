@@ -45908,7 +45908,7 @@ var render = function() {
     _vm._m(0),
     _vm._v(" "),
     _c("div", { staticClass: "container-fluid" }, [
-      _c("div", { staticClass: "card text-white bg-primary mb-3" }, [
+      _c("div", { staticClass: "card" }, [
         _c("div", { staticClass: "card-header" }, [
           _c("i", { staticClass: "fa fa-align-justify" }),
           _vm._v(" Precios por etapa\n                    "),
@@ -45931,7 +45931,7 @@ var render = function() {
           )
         ]),
         _vm._v(" "),
-        _c("div", { staticClass: "card-body bg-info" }, [
+        _c("div", { staticClass: "card-body" }, [
           _c("div", { staticClass: "form-group row" }, [
             _c("div", { staticClass: "col-md-8" }, [
               _c("div", { staticClass: "input-group" }, [
