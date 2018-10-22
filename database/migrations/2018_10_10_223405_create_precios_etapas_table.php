@@ -17,7 +17,7 @@ class CreatePreciosEtapasTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('fraccionamiento_id');
             $table->unsignedInteger('etapa_id');
-            $table->float('precio_excedente');
+            $table->double('precio_excedente',10,2);
             $table->timestamps();
 
             $table->foreign('fraccionamiento_id')->references('id')->on('fraccionamientos');

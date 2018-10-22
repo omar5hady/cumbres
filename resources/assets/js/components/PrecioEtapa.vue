@@ -273,7 +273,7 @@
                     var respuesta = response.data;
                     me.arrayModelos = respuesta.lotes;
                     var results = me.arrayModelos[1].modelo_id;
-                    me.modelo_id = results;
+                    //me.modelo_id = results;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -358,7 +358,7 @@
                     'precio_modelo': this.precio_modelo
                 }).then(function (response){
                     me.cerrarModal(); //al guardar el registro se cierra el modal
-                    me.listarPrecioModelo(1,this.id); //se enlistan nuevamente los registros
+                    me.listarPrecioModelo(1,me.id); //se enlistan nuevamente los registros
                     //Se muestra mensaje Success
                     swal({
                         position: 'top-end',
@@ -415,7 +415,7 @@
                     'precio_modelo': this.precio_modelo
                 }).then(function (response){
                     me.cerrarModal();
-                    me.listarPrecioModelo(1,this.id);
+                    me.listarPrecioModelo(1,me.id);
                     //window.alert("Cambios guardados correctamente");
                     swal({
                         position: 'top-end',

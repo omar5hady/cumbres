@@ -8,16 +8,20 @@
                 <!-- Ejemplo de tabla Listado -->
 
                 <!-- div para sobreprecio de etapas -->
-                <div class="card w75" >
+                <div class="card w75" v-if="oso==1">
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Sobreprecios Etapas
+                        <button type="button" @click="changeVista()" class="btn btn-primary">
+                            <i class="fa fa-sticky-note-o"></i>&nbsp; Ocultar Sobreprecios Etapas
+                        </button>
+                        
                         <!--   Boton Nuevo    -->
                         <button type="button" @click="abrirModal('sobreprecio_etapa','registrar')" class="btn btn-secondary">
                             <i class="icon-plus"></i>&nbsp;Nuevo
                         </button>
                         <!---->
                     </div>
-                    <div class="card-body">
+                    <div class="card-body" >
                         <div class="form-group row">
                             <div class="col-md-8">
                                 <div class="input-group">
@@ -81,17 +85,20 @@
                     </div>
                 </div>
 
-                <!-- div para sobreprecio modelo-->
-                <div class="card w75" >
+                <!-- div para sobreprecio modelo -->
+                <div class="card w75">
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Sobreprecios
+                        <button v-if="oso==0" type="button" @click="changeVista()" class="btn btn-primary">
+                            <i class="fa fa-sticky-note-o"></i>&nbsp;Mostrar Sobreprecios Etapas
+                        </button>
                         <!--   Boton Nuevo    -->
                         <button type="button" @click="abrirModal('precio_etapa','registrar')" class="btn btn-secondary">
                             <i class="icon-plus"></i>&nbsp;Nuevo
                         </button>
                         <!---->
                     </div>
-                    <div class="card-body">
+                    <div class="card-body" >
                         <div class="form-group row">
                             <div class="col-md-8">
                                 <div class="input-group">
@@ -249,6 +256,7 @@
                 id_precioModelo: 0,
                 precio_modelo: 0,
                 id:0,
+                oso:0,
                 fraccionamiento_id : 0,
                 etapa_id : 0,
                 precio_excedente : 0,
@@ -339,6 +347,15 @@
                 .catch(function (error) {
                     console.log(error);
                 });
+            },
+            changeVista(){
+                let me=this;
+
+                if(this.oso==0)
+                    this.oso = 1
+                else
+                    this.oso = 0
+
             },
             selectModelos(buscar1, buscar2){
                 let me = this;

@@ -64,7 +64,8 @@
         <precio-etapa></precio-etapa>
     </template>
 
-    <template v-if="menu==23">
-        <Sobreprecio></Sobreprecio>
+    <template v-if="menu==22">
+        <sobreprecios></sobreprecios>
     </template>
+    
 @endsection

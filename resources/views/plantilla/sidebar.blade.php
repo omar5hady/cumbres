@@ -31,9 +31,6 @@
                         <a class="nav-link" href="#"><i class="icon-bag"></i> Precios de etapa</a>
                     </li>
                     <li @click="menu=22" class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-bag"></i> Precios vivienda</a>
-                    </li>
-                    <li @click="menu=23" class="nav-item">
                         <a class="nav-link" href="#"><i class="icon-bag"></i> Sobreprecios</a>
                     </li>
                 </ul>

@@ -17,7 +17,7 @@ class CreateSobrepreciosModelosTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('lote_id');
             $table->unsignedInteger('sobreprecio_etapa_id');
-            $table->float('ajuste');
+            $table->double('ajuste',10,2);
             $table->timestamps();
 
             $table->foreign('lote_id')->references('id')->on('lotes');

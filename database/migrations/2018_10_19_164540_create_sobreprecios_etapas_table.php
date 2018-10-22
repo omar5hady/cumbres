@@ -17,7 +17,7 @@ class CreateSobrepreciosEtapasTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('etapa_id');
             $table->unsignedInteger('sobreprecio_id');
-            $table->float('sobreprecio');
+            $table->double('sobreprecio',10,2);
             $table->timestamps();
 
             $table->foreign('etapa_id')->references('id')->on('etapas');

@@ -17,7 +17,7 @@ class CreatePreciosModelosTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('precio_etapa_id');
             $table->unsignedInteger('modelo_id');
-            $table->float('precio_modelo');
+            $table->double('precio_modelo',10,2);
             $table->timestamps();
 
             $table->foreign('precio_etapa_id')->references('id')->on('precios_etapas');
