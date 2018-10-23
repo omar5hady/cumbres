@@ -171,7 +171,6 @@
         data(){
             return{
                 id_precioModelo: 0,
-                precio_modelo: 0,
                 id:0,
                 fraccionamiento_id : 0,
                 etapa_id : 0,

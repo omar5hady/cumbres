@@ -11,26 +11,25 @@ class SobreprecioEtapaController extends Controller
     public function index(Request $request)
     {
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
-        if(!$request->ajax())return redirect('/');
+        //if(!$request->ajax())return redirect('/');
 
         $buscar = $request->buscar;
-        $criterio = $request->criterio;
         
         if($buscar==''){
             $sobreprecio_etapa = Sobreprecio_etapa::join('etapas','sobreprecios_etapas.etapa_id','=','etapas.id')
-            ->join('sobreprecio','sobreprecios_etapas.sobreprecio_id','=','sobreprecio.id')
-            ->select('etapas.num_etapa as etapas','sobreprecio.nombre as sobreprecionom', 
+            ->join('sobreprecios','sobreprecios_etapas.sobreprecio_id','=','sobreprecios.id')
+            ->select('etapas.num_etapa as etapas','sobreprecios.nombre as sobreprecionom', 
                     'sobreprecios_etapas.id','sobreprecios_etapas.etapa_id',
-                    'sobreprecios_etapas.sobreprecio_id','sobreprecios_etapas.sobreprecios' )
+                    'sobreprecios_etapas.sobreprecio_id','sobreprecios_etapas.sobreprecio' )
                 ->orderBy('id','sobreprecios_etapas.etapa_id')->paginate(5);
         }
        else{
-        $sobreprecio_etapa = Sobreprecio_etapa::join('etapas','sobreprecios_etapas.etapa_id','=','etapas.id')
-            ->join('sobreprecio','sobreprecios_etapas.sobreprecio_id','=','sobreprecio.id')
-            ->select('etapas.num_etapa as etapas','sobreprecio.nombre as sobreprecionom', 
+            $sobreprecio_etapa = Sobreprecio_etapa::join('etapas','sobreprecios_etapas.etapa_id','=','etapas.id')
+            ->join('sobreprecios','sobreprecios_etapas.sobreprecio_id','=','sobreprecios.id')
+            ->select('etapas.num_etapa as etapas','sobreprecios.nombre as sobreprecionom', 
                     'sobreprecios_etapas.id','sobreprecios_etapas.etapa_id',
-                    'sobreprecios_etapas.sobreprecio_id','sobreprecios_etapas.sobreprecios' )
-            ->where($criterio, 'like', '%'. $buscar . '%')
+                    'sobreprecios_etapas.sobreprecio_id','sobreprecios_etapas.sobreprecio' )
+            ->where('sobreprecios_etapas.etapa_id','=', $buscar)
             ->orderBy('id','sobreprecios_etapas.etapa_id')->paginate(5);
         }
 

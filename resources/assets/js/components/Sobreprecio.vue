@@ -49,22 +49,19 @@
                             <thead>
                                 <tr>
                                     <th>Opciones</th>
-                                    <th>Modelo</th>
-                                    <th>Precio Modelo</th>
+                                    <th>Sobreprecio</th>
+                                    <th> $ </th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="precioModelo in arrayPrecioModelos" :key="precioModelo.id">
+                                <tr v-for="sobrePrecioEtapa in arraySobreprecioEtapa" :key="sobrePrecioEtapa.id">
                                     <td style="width:10%">
-                                        <button type="button" @click="abrirModal('precio_etapa','actualizar',precioModelo)" class="btn btn-warning btn-sm">
+                                        <button type="button" @click="abrirModal('precio_etapa','actualizar',sobrePrecioEtapa)" class="btn btn-warning btn-sm">
                                           <i class="icon-pencil"></i>
                                         </button>
-                                        <button type="button" class="btn btn-danger btn-sm" @click="eliminarPrecioModelo(precioModelo)">
-                                          <i class="icon-trash"></i>
-                                        </button>
                                     </td>
-                                    <td v-text="precioModelo.modelo"></td>
-                                    <td v-text="'$ '+precioModelo.precio_modelo"></td>
+                                    <td v-text="sobrePrecioEtapa.sobreprecionom"></td>
+                                    <td v-text="'$ '+sobrePrecioEtapa.sobreprecio"></td>
                                 </tr>                               
                             </tbody>
                         </table>
@@ -253,8 +250,7 @@
     export default {
         data(){
             return{
-                id_precioModelo: 0,
-                precio_modelo: 0,
+                id_sobrePrecioEtapa: 0,
                 id:0,
                 oso:0,
                 fraccionamiento_id : 0,
@@ -263,7 +259,7 @@
                 precio_modelo: 0,
                 arrayPrecioEtapa : [],
                 arrayPreciosEtapa : [],
-                arrayPrecioModelos : [],
+                arraySobreprecioEtapa : [],
                 arrayFraccionamientos:[],
                 arrayModelos:[],
                 modelo_id: 0,
@@ -321,7 +317,7 @@
                 var url = '/precio_modelo?page=' + page + '&buscar=' + buscar;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
-                    me.arrayPrecioModelos = respuesta.precios_modelos.data;
+                    me.arraySobreprecioEtapa = respuesta.precios_modelos.data;
                     me.pagination = respuesta.pagination;
                 })
                 .catch(function (error) {
@@ -502,7 +498,7 @@
                 let me = this;
                 //Con axios se llama el metodo update de DepartamentoController
                 axios.put('/precio_modelo/actualizar',{
-                    'id': this.id_precioModelo,
+                    'id': this.id_sobrePrecioEtapa,
                     'precio_etapa_id': this.id,
                     'modelo_id': this.modelo_id,
                     'precio_modelo': this.precio_modelo
@@ -522,7 +518,7 @@
                 });
             },
             eliminarPrecioModelo(data =[]){
-                this.id_precioModelo=data['id'];
+                this.id_sobrePrecioEtapa=data['id'];
                 this.modelo_id=data['modelo_id'];
                 this.id=data['precio_etapa_id'];
                 this.precio_modelo=data['precio_modelo']
@@ -541,7 +537,7 @@
                     let me = this;
 
                 axios.delete('/precio_modelo/eliminar', 
-                        {params: {'id': this.id_precioModelo}}).then(function (response){
+                        {params: {'id': this.id_sobrePrecioEtapa}}).then(function (response){
                         swal(
                         'Borrado!',
                         'Departamento borrado correctamente.',
@@ -598,7 +594,7 @@
                                 this.modal =1;
                                 this.tituloModal='Actualizar precio para modelo';
                                 this.tipoAccion=2;
-                                this.id_precioModelo=data['id'];
+                                this.id_sobrePrecioEtapa=data['id'];
                                 this.modelo_id = data['modelo_id']
                                 this.precio_modelo = data['precio_modelo'];
                                 break;

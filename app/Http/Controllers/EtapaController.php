@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Etapa; //Importar el modelo
 use App\Precio_etapa; //Importar el modelo
+use App\Sobreprecio_etapa; //Importar el modelo
 use DB;
 
 class EtapaController extends Controller
@@ -101,6 +102,14 @@ class EtapaController extends Controller
         $precio_etapa->etapa_id = $etapa->id;
         $precio_etapa->precio_excedente = 0;
         $precio_etapa->save();
+
+        for($i=1;$i<=6;$i++){
+            $sobreprecio_etapa= new Sobreprecio_etapa();
+            $sobreprecio_etapa->etapa_id= $etapa->id;
+            $sobreprecio_etapa->sobreprecio_id = $i;
+            $sobreprecio_etapa->sobreprecio = 0;
+            $sobreprecio_etapa->save();
+        }
     }
 
     /**
