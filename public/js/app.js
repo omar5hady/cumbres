@@ -45385,8 +45385,6 @@ exports.push([module.i, "\ninput[type=number]::-webkit-inner-spin-button, \ninpu
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 //
 //
 //
@@ -45558,23 +45556,37 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
-        var _ref;
-
-        return _ref = {
+        return {
             id_precioModelo: 0,
-            precio_modelo: 0,
             id: 0,
             fraccionamiento_id: 0,
             etapa_id: 0,
-            precio_excedente: 0
-        }, _defineProperty(_ref, 'precio_modelo', 0), _defineProperty(_ref, 'arrayPrecioEtapa', []), _defineProperty(_ref, 'arrayPreciosEtapa', []), _defineProperty(_ref, 'arrayPrecioModelos', []), _defineProperty(_ref, 'arrayFraccionamientos', []), _defineProperty(_ref, 'arrayModelos', []), _defineProperty(_ref, 'modelo_id', 0), _defineProperty(_ref, 'arrayEtapas', []), _defineProperty(_ref, 'modal', 0), _defineProperty(_ref, 'tituloModal', ''), _defineProperty(_ref, 'tipoAccion', 0), _defineProperty(_ref, 'errorPrecioEtapa', 0), _defineProperty(_ref, 'errorMostrarMsjPrecioEtapa', []), _defineProperty(_ref, 'pagination', {
-            'total': 0,
-            'current_page': 0,
-            'per_page': 0,
-            'last_page': 0,
-            'from': 0,
-            'to': 0
-        }), _defineProperty(_ref, 'offset', 3), _defineProperty(_ref, 'buscar', ''), _defineProperty(_ref, 'buscar2', ''), _ref;
+            precio_excedente: 0,
+            precio_modelo: 0,
+            arrayPrecioEtapa: [],
+            arrayPreciosEtapa: [],
+            arrayPrecioModelos: [],
+            arrayFraccionamientos: [],
+            arrayModelos: [],
+            modelo_id: 0,
+            arrayEtapas: [],
+            modal: 0,
+            tituloModal: '',
+            tipoAccion: 0,
+            errorPrecioEtapa: 0,
+            errorMostrarMsjPrecioEtapa: [],
+            pagination: {
+                'total': 0,
+                'current_page': 0,
+                'per_page': 0,
+                'last_page': 0,
+                'from': 0,
+                'to': 0
+            },
+            offset: 3,
+            buscar: '',
+            buscar2: ''
+        };
     },
 
     computed: {
@@ -46730,8 +46742,10 @@ exports.push([module.i, "\ninput[type=number]::-webkit-inner-spin-button, \ninpu
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
+//
+//
+//
+//
 //
 //
 //
@@ -46986,24 +47000,39 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
-        var _ref;
-
-        return _ref = {
-            id_precioModelo: 0,
-            precio_modelo: 0,
+        return {
+            id_sobrePrecioEtapa: 0,
             id: 0,
             oso: 0,
             fraccionamiento_id: 0,
             etapa_id: 0,
-            precio_excedente: 0
-        }, _defineProperty(_ref, 'precio_modelo', 0), _defineProperty(_ref, 'arrayPrecioEtapa', []), _defineProperty(_ref, 'arrayPreciosEtapa', []), _defineProperty(_ref, 'arrayPrecioModelos', []), _defineProperty(_ref, 'arrayFraccionamientos', []), _defineProperty(_ref, 'arrayModelos', []), _defineProperty(_ref, 'modelo_id', 0), _defineProperty(_ref, 'arrayEtapas', []), _defineProperty(_ref, 'modal', 0), _defineProperty(_ref, 'tituloModal', ''), _defineProperty(_ref, 'tipoAccion', 0), _defineProperty(_ref, 'errorPrecioEtapa', 0), _defineProperty(_ref, 'errorMostrarMsjPrecioEtapa', []), _defineProperty(_ref, 'pagination', {
-            'total': 0,
-            'current_page': 0,
-            'per_page': 0,
-            'last_page': 0,
-            'from': 0,
-            'to': 0
-        }), _defineProperty(_ref, 'offset', 3), _defineProperty(_ref, 'buscar', ''), _defineProperty(_ref, 'buscar2', ''), _ref;
+            sobreprecio_id: 0,
+            precio_excedente: 0,
+            precio_modelo: 0,
+            arrayPrecioEtapa: [],
+            arrayPreciosEtapa: [],
+            arraySobreprecioEtapa: [],
+            arrayFraccionamientos: [],
+            arrayModelos: [],
+            modelo_id: 0,
+            arrayEtapas: [],
+            modal: 0,
+            tituloModal: '',
+            tipoAccion: 0,
+            errorSobrePrecioEtapa: 0,
+            errorMostrarMsjSobrePrecioEtapa: [],
+            pagination: {
+                'total': 0,
+                'current_page': 0,
+                'per_page': 0,
+                'last_page': 0,
+                'from': 0,
+                'to': 0
+            },
+            offset: 3,
+            buscar: '',
+            buscar2: ''
+        };
     },
 
     computed: {
@@ -47036,12 +47065,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     methods: {
         /**Metodo para mostrar los registros */
-        listarPrecioModelo: function listarPrecioModelo(page, buscar) {
+        listarSobrePrecioEtapa: function listarSobrePrecioEtapa(page, buscar) {
             var me = this;
-            var url = '/precio_modelo?page=' + page + '&buscar=' + buscar;
+            var url = '/sobreprecio_etapa?page=' + page + '&buscar=' + buscar;
             axios.get(url).then(function (response) {
                 var respuesta = response.data;
-                me.arrayPrecioModelos = respuesta.precios_modelos.data;
+                me.arraySobreprecioEtapa = respuesta.sobreprecio_etapa.data;
                 me.pagination = respuesta.pagination;
             }).catch(function (error) {
                 console.log(error);
@@ -47052,7 +47081,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             //Actualiza la pagina actual
             me.pagination.current_page = page;
             //Envia la petición para visualizar la data de esta pagina
-            me.listarPrecioModelo(page, buscar);
+            me.listarSobrePrecioEtapa(page, buscar);
         },
         selectFraccionamientos: function selectFraccionamientos() {
             var me = this;
@@ -47097,59 +47126,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 console.log(error);
             });
         },
-        selectPrecioEtapa: function selectPrecioEtapa(buscar, buscar2) {
-            var me = this;
-
-            me.arrayPreciosEtapa = [];
-            me.precio_excedente = 0;
-            me.id = 0;
-            var url = '/select_precio_etapa?buscar=' + buscar + '&buscar2=' + buscar2;
-            axios.get(url).then(function (response) {
-                var respuesta = response.data;
-                me.arrayPreciosEtapa = respuesta.precio_etapa;
-
-                me.precio_excedente = me.arrayPreciosEtapa[0].precio_excedente;
-                me.id = me.arrayPreciosEtapa[0].id;
-
-                me.listarPrecioModelo(1, me.id);
-            }).catch(function (error) {
-                console.log(error);
-            });
-        },
-
-
-        /**Metodo para registrar  */
-        registrarPrecioEtapa: function registrarPrecioEtapa() {
-            if (this.validarPrecioEtapa()) //Se verifica si hay un error (campo vacio)
-                {
-                    return;
-                }
-
-            var me = this;
-            //Con axios se llama el metodo store de DepartamentoController
-            axios.post('/precio_etapa/registrar', {
-                'fraccionamiento_id': this.fraccionamiento_id,
-                'etapa_id': this.etapa_id,
-                'precio_excedente': this.precio_excedente
-            }).then(function (response) {
-                me.cerrarModal(); //al guardar el registro se cierra el modal
-                me.listarPrecioModelo(1, ''); //se enlistan nuevamente los registros
-                //Se muestra mensaje Success
-                swal({
-                    position: 'top-end',
-                    type: 'success',
-                    title: 'Precio de modelo agregado correctamente',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-            }).catch(function (error) {
-                console.log(error);
-            });
-        },
 
         /**Metodo para registrar  */
         registrarPrecioModelo: function registrarPrecioModelo() {
-            if (this.validarPrecioEtapa()) //Se verifica si hay un error (campo vacio)
+            if (this.validarSobrePrecioEtapa()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
@@ -47162,7 +47142,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 'precio_modelo': this.precio_modelo
             }).then(function (response) {
                 me.cerrarModal(); //al guardar el registro se cierra el modal
-                me.listarPrecioModelo(1, this.id); //se enlistan nuevamente los registros
+                me.listarSobrePrecioEtapa(1, this.id); //se enlistan nuevamente los registros
                 //Se muestra mensaje Success
                 swal({
                     position: 'top-end',
@@ -47175,23 +47155,23 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 console.log(error);
             });
         },
-        actualizarPrecioEtapa: function actualizarPrecioEtapa() {
-            if (this.validarPrecioEtapa()) //Se verifica si hay un error (campo vacio)
+        actualizarSobrePrecioEtapa: function actualizarSobrePrecioEtapa() {
+            if (this.validarSobrePrecioEtapa()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
 
             var me = this;
-            var proyecto = this.id;
+            var etapa = this.etapa_id;
             //Con axios se llama el metodo update de DepartamentoController
-            axios.put('/precio_etapa/actualizar', {
-                'id': this.id,
-                'fraccionamiento_id': this.fraccionamiento_id,
+            axios.put('/sobreprecio_etapa/actualizar', {
+                'id': this.id_sobrePrecioEtapa,
                 'etapa_id': this.etapa_id,
-                'precio_excedente': this.precio_excedente
+                'sobreprecio_id': this.sobreprecio_id,
+                'sobreprecio': this.sobreprecioEtapa
             }).then(function (response) {
                 me.cerrarModal();
-                me.listarPrecioModelo(1, proyecto);
+                me.listarSobrePrecioEtapa(1, etapa);
                 //window.alert("Cambios guardados correctamente");
                 swal({
                     position: 'top-end',
@@ -47205,7 +47185,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             });
         },
         actualizarPrecioModelo: function actualizarPrecioModelo() {
-            if (this.validarPrecioEtapa()) //Se verifica si hay un error (campo vacio)
+            if (this.validarSobrePrecioEtapa()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
@@ -47213,13 +47193,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             var me = this;
             //Con axios se llama el metodo update de DepartamentoController
             axios.put('/precio_modelo/actualizar', {
-                'id': this.id_precioModelo,
+                'id': this.id_sobrePrecioEtapa,
                 'precio_etapa_id': this.id,
                 'modelo_id': this.modelo_id,
                 'precio_modelo': this.precio_modelo
             }).then(function (response) {
                 me.cerrarModal();
-                me.listarPrecioModelo(1, this.id);
+                me.listarSobrePrecioEtapa(1, this.id);
                 //window.alert("Cambios guardados correctamente");
                 swal({
                     position: 'top-end',
@@ -47237,7 +47217,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
             var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
 
-            this.id_precioModelo = data['id'];
+            this.id_sobrePrecioEtapa = data['id'];
             this.modelo_id = data['modelo_id'];
             this.id = data['precio_etapa_id'];
             this.precio_modelo = data['precio_modelo'];
@@ -47255,35 +47235,35 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 if (result.value) {
                     var me = _this;
 
-                    axios.delete('/precio_modelo/eliminar', { params: { 'id': _this.id_precioModelo } }).then(function (response) {
+                    axios.delete('/precio_modelo/eliminar', { params: { 'id': _this.id_sobrePrecioEtapa } }).then(function (response) {
                         swal('Borrado!', 'Departamento borrado correctamente.', 'success');
-                        me.listarPrecioModelo(1, '');
+                        me.listarSobrePrecioEtapa(1, '');
                     }).catch(function (error) {
                         console.log(error);
                     });
                 }
             });
         },
-        validarPrecioEtapa: function validarPrecioEtapa() {
-            this.errorPrecioEtapa = 0;
-            this.errorMostrarMsjPrecioEtapa = [];
+        validarSobrePrecioEtapa: function validarSobrePrecioEtapa() {
+            this.errorSobrePrecioEtapa = 0;
+            this.errorMostrarMsjSobrePrecioEtapa = [];
 
             if (!this.fraccionamiento_id) //Si la variable departamento esta vacia
-                this.errorMostrarMsjPrecioEtapa.push("Seleccione un proyecto.");
+                this.errorMostrarMsjSobrePrecioEtapa.push("Seleccione un proyecto.");
 
             if (!this.etapa_id) //Si la variable departamento esta vacia
-                this.errorMostrarMsjPrecioEtapa.push("Seleccione una etapa.");
+                this.errorMostrarMsjSobrePrecioEtapa.push("Seleccione una etapa.");
 
-            if (this.errorMostrarMsjPrecioEtapa.length) //Si el mensaje tiene almacenado algo en el array
-                this.errorPrecioEtapa = 1;
+            if (this.errorMostrarMsjSobrePrecioEtapa.length) //Si el mensaje tiene almacenado algo en el array
+                this.errorSobrePrecioEtapa = 1;
 
-            return this.errorPrecioEtapa;
+            return this.errorSobrePrecioEtapa;
         },
         cerrarModal: function cerrarModal() {
             this.modal = 0;
             this.tituloModal = '';
-            this.errorPrecioEtapa = 0;
-            this.errorMostrarMsjPrecioEtapa = [];
+            this.errorSobrePrecioEtapa = 0;
+            this.errorMostrarMsjSobrePrecioEtapa = [];
         },
 
 
@@ -47304,13 +47284,25 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                                     this.tipoAccion = 1;
                                     break;
                                 }
-                            case 'actualizar':
+                            case 'actualizarEtapa':
+                                {
+                                    //console.log(data);
+                                    this.modal = 1;
+                                    this.tituloModal = 'Actualizar Sobreprecio para etapa';
+                                    this.tipoAccion = 3;
+                                    this.id_sobrePrecioEtapa = data['id'];
+                                    this.etapa_id = data['etapa_id'];
+                                    this.sobreprecio_id = data['sobreprecio_id'];
+                                    this.sobreprecioEtapa = data['sobreprecio'];
+                                    break;
+                                }
+                            case 'actualizarLote':
                                 {
                                     //console.log(data);
                                     this.modal = 1;
                                     this.tituloModal = 'Actualizar precio para modelo';
                                     this.tipoAccion = 2;
-                                    this.id_precioModelo = data['id'];
+                                    this.id_sobrePrecioEtapa = data['id'];
                                     this.modelo_id = data['modelo_id'];
                                     this.precio_modelo = data['precio_modelo'];
                                     break;
@@ -47327,7 +47319,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         this.selectFraccionamientos();
         this.selectEtapa(this.fraccionamiento_id);
         this.selectModelos(this.fraccionamiento_id, this.etapa_id);
-        this.listarPrecioModelo(1, this.buscar);
+        this.listarSobrePrecioEtapa(1, this.buscar);
     }
 });
 
@@ -47451,12 +47443,6 @@ var render = function() {
                         ],
                         staticClass: "form-control",
                         on: {
-                          click: function($event) {
-                            _vm.selectPrecioEtapa(
-                              _vm.fraccionamiento_id,
-                              _vm.etapa_id
-                            )
-                          },
                           change: function($event) {
                             var $$selectedVal = Array.prototype.filter
                               .call($event.target.options, function(o) {
@@ -47490,31 +47476,6 @@ var render = function() {
                       2
                     ),
                     _vm._v(" "),
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.precio_excedente,
-                          expression: "precio_excedente"
-                        }
-                      ],
-                      staticClass: "form-control",
-                      attrs: {
-                        type: "number",
-                        placeholder: "Precio excedente"
-                      },
-                      domProps: { value: _vm.precio_excedente },
-                      on: {
-                        input: function($event) {
-                          if ($event.target.composing) {
-                            return
-                          }
-                          _vm.precio_excedente = $event.target.value
-                        }
-                      }
-                    }),
-                    _vm._v(" "),
                     _c(
                       "button",
                       {
@@ -47522,12 +47483,11 @@ var render = function() {
                         attrs: { type: "button" },
                         on: {
                           click: function($event) {
-                            _vm.actualizarPrecioEtapa(),
-                              _vm.listarPrecioModelo(1, _vm.id)
+                            _vm.listarSobrePrecioEtapa(1, _vm.etapa_id)
                           }
                         }
                       },
-                      [_vm._v("Guardar")]
+                      [_vm._v("Buscar")]
                     )
                   ]),
                   _vm._v(" "),
@@ -47546,8 +47506,10 @@ var render = function() {
                   _vm._v(" "),
                   _c(
                     "tbody",
-                    _vm._l(_vm.arrayPrecioModelos, function(precioModelo) {
-                      return _c("tr", { key: precioModelo.id }, [
+                    _vm._l(_vm.arraySobreprecioEtapa, function(
+                      sobrePrecioEtapa
+                    ) {
+                      return _c("tr", { key: sobrePrecioEtapa.id }, [
                         _c("td", { staticStyle: { width: "10%" } }, [
                           _c(
                             "button",
@@ -47558,38 +47520,26 @@ var render = function() {
                                 click: function($event) {
                                   _vm.abrirModal(
                                     "precio_etapa",
-                                    "actualizar",
-                                    precioModelo
+                                    "actualizarEtapa",
+                                    sobrePrecioEtapa
                                   )
                                 }
                               }
                             },
                             [_c("i", { staticClass: "icon-pencil" })]
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-danger btn-sm",
-                              attrs: { type: "button" },
-                              on: {
-                                click: function($event) {
-                                  _vm.eliminarPrecioModelo(precioModelo)
-                                }
-                              }
-                            },
-                            [_c("i", { staticClass: "icon-trash" })]
                           )
                         ]),
                         _vm._v(" "),
                         _c("td", {
-                          domProps: { textContent: _vm._s(precioModelo.modelo) }
+                          domProps: {
+                            textContent: _vm._s(sobrePrecioEtapa.sobreprecionom)
+                          }
                         }),
                         _vm._v(" "),
                         _c("td", {
                           domProps: {
                             textContent: _vm._s(
-                              "$ " + precioModelo.precio_modelo
+                              "$ " + sobrePrecioEtapa.sobreprecio
                             )
                           }
                         })
@@ -47616,7 +47566,7 @@ var render = function() {
                                   $event.preventDefault()
                                   _vm.cambiarPagina(
                                     _vm.pagination.current_page - 1,
-                                    _vm.buscar
+                                    _vm.etapa_id
                                   )
                                 }
                               }
@@ -47642,7 +47592,7 @@ var render = function() {
                             on: {
                               click: function($event) {
                                 $event.preventDefault()
-                                _vm.cambiarPagina(page, _vm.buscar)
+                                _vm.cambiarPagina(page, _vm.etapa_id)
                               }
                             }
                           })
@@ -47662,7 +47612,7 @@ var render = function() {
                                   $event.preventDefault()
                                   _vm.cambiarPagina(
                                     _vm.pagination.current_page + 1,
-                                    _vm.buscar
+                                    _vm.etapa_id
                                   )
                                 }
                               }
@@ -47682,7 +47632,7 @@ var render = function() {
       _c("div", { staticClass: "card w75" }, [
         _c("div", { staticClass: "card-header" }, [
           _c("i", { staticClass: "fa fa-align-justify" }),
-          _vm._v(" Sobreprecios\n                    "),
+          _vm._v(" Sobreprecios Lotes\n                    "),
           _vm.oso == 0
             ? _c(
                 "button",
@@ -47788,12 +47738,6 @@ var render = function() {
                     ],
                     staticClass: "form-control",
                     on: {
-                      click: function($event) {
-                        _vm.selectPrecioEtapa(
-                          _vm.fraccionamiento_id,
-                          _vm.etapa_id
-                        )
-                      },
                       change: function($event) {
                         var $$selectedVal = Array.prototype.filter
                           .call($event.target.options, function(o) {
@@ -47857,7 +47801,7 @@ var render = function() {
                     on: {
                       click: function($event) {
                         _vm.actualizarPrecioEtapa(),
-                          _vm.listarPrecioModelo(1, _vm.id)
+                          _vm.listarSobrePrecioEtapa(1, _vm.id)
                       }
                     }
                   },
@@ -48206,7 +48150,7 @@ var render = function() {
                           staticClass: "col-md-3 form-control-label",
                           attrs: { for: "text-input" }
                         },
-                        [_vm._v("Modelo")]
+                        [_vm._v("Sobreprecios")]
                       ),
                       _vm._v(" "),
                       _c("div", { staticClass: "col-md-6" }, [
@@ -48217,8 +48161,8 @@ var render = function() {
                               {
                                 name: "model",
                                 rawName: "v-model",
-                                value: _vm.modelo_id,
-                                expression: "modelo_id"
+                                value: _vm.sobreprecio_id,
+                                expression: "sobreprecio_id"
                               }
                             ],
                             staticClass: "form-control",
@@ -48232,7 +48176,7 @@ var render = function() {
                                     var val = "_value" in o ? o._value : o.value
                                     return val
                                   })
-                                _vm.modelo_id = $event.target.multiple
+                                _vm.sobreprecio_id = $event.target.multiple
                                   ? $$selectedVal
                                   : $$selectedVal[0]
                               }
@@ -48243,17 +48187,30 @@ var render = function() {
                               _vm._v("Seleccione")
                             ]),
                             _vm._v(" "),
-                            _vm._l(_vm.arrayModelos, function(modelos) {
-                              return _c("option", {
-                                key: modelos.modelo_id,
-                                domProps: {
-                                  value: modelos.modelo_id,
-                                  textContent: _vm._s(modelos.nombre)
-                                }
-                              })
-                            })
-                          ],
-                          2
+                            _c("option", { attrs: { value: "1" } }, [
+                              _vm._v("Avenida")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "2" } }, [
+                              _vm._v("Avenida y Esquina")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "3" } }, [
+                              _vm._v("Esquina")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "4" } }, [
+                              _vm._v("Obra colindante a área verde")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "5" } }, [
+                              _vm._v("Obra de fachada lateral")
+                            ]),
+                            _vm._v(" "),
+                            _c("option", { attrs: { value: "6" } }, [
+                              _vm._v("Protecciones en la vivienda")
+                            ])
+                          ]
                         )
                       ])
                     ]),
@@ -48265,7 +48222,7 @@ var render = function() {
                           staticClass: "col-md-3 form-control-label",
                           attrs: { for: "text-input" }
                         },
-                        [_vm._v("Precio del modelo")]
+                        [_vm._v("Costo $")]
                       ),
                       _vm._v(" "),
                       _c("div", { staticClass: "col-md-4" }, [
@@ -48274,22 +48231,22 @@ var render = function() {
                             {
                               name: "model",
                               rawName: "v-model",
-                              value: _vm.precio_modelo,
-                              expression: "precio_modelo"
+                              value: _vm.sobreprecioEtapa,
+                              expression: "sobreprecioEtapa"
                             }
                           ],
                           staticClass: "form-control",
                           attrs: {
                             type: "text",
-                            placeholder: "Precio del modelo"
+                            placeholder: "Costo del sobreprecio"
                           },
-                          domProps: { value: _vm.precio_modelo },
+                          domProps: { value: _vm.sobreprecioEtapa },
                           on: {
                             input: function($event) {
                               if ($event.target.composing) {
                                 return
                               }
-                              _vm.precio_modelo = $event.target.value
+                              _vm.sobreprecioEtapa = $event.target.value
                             }
                           }
                         })
@@ -48303,8 +48260,8 @@ var render = function() {
                           {
                             name: "show",
                             rawName: "v-show",
-                            value: _vm.errorPrecioEtapa,
-                            expression: "errorPrecioEtapa"
+                            value: _vm.errorSobrePrecioEtapa,
+                            expression: "errorSobrePrecioEtapa"
                           }
                         ],
                         staticClass: "form-group row div-error"
@@ -48313,7 +48270,7 @@ var render = function() {
                         _c(
                           "div",
                           { staticClass: "text-center text-error" },
-                          _vm._l(_vm.errorMostrarMsjPrecioEtapa, function(
+                          _vm._l(_vm.errorMostrarMsjSobrePrecioEtapa, function(
                             error
                           ) {
                             return _c("div", {
@@ -48373,6 +48330,22 @@ var render = function() {
                       },
                       [_vm._v("Actualizar")]
                     )
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.tipoAccion == 3
+                  ? _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-primary",
+                        attrs: { type: "button" },
+                        on: {
+                          click: function($event) {
+                            _vm.actualizarSobrePrecioEtapa()
+                          }
+                        }
+                      },
+                      [_vm._v("Actualizar")]
+                    )
                   : _vm._e()
               ])
             ])
@@ -48405,9 +48378,9 @@ var staticRenderFns = [
       _c("tr", [
         _c("th", [_vm._v("Opciones")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Modelo")]),
+        _c("th", [_vm._v("Sobreprecio")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Precio Modelo")])
+        _c("th", [_vm._v(" $ ")])
       ])
     ])
   },

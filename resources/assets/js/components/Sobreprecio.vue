@@ -31,13 +31,12 @@
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
 
-                                    <select class="form-control" v-model="etapa_id" @click="selectPrecioEtapa(fraccionamiento_id,etapa_id)">
+                                    <select class="form-control" v-model="etapa_id">
                                             <option value="0">Seleccione etapa</option>
                                             <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                     </select>
-
-                                    <input type="number"  v-model="precio_excedente" class="form-control" placeholder="Precio excedente">
-                                    <button type="button"  class="btn btn-primary" @click="actualizarPrecioEtapa(),listarPrecioModelo(1,id)">Guardar</button>
+                                    
+                                    <button type="button"  class="btn btn-primary" @click="listarSobrePrecioEtapa(1,etapa_id)">Buscar</button>
                                 </div>
 
                                 <div class="input-group">
@@ -56,7 +55,7 @@
                             <tbody>
                                 <tr v-for="sobrePrecioEtapa in arraySobreprecioEtapa" :key="sobrePrecioEtapa.id">
                                     <td style="width:10%">
-                                        <button type="button" @click="abrirModal('precio_etapa','actualizar',sobrePrecioEtapa)" class="btn btn-warning btn-sm">
+                                        <button type="button" @click="abrirModal('precio_etapa','actualizarEtapa',sobrePrecioEtapa)" class="btn btn-warning btn-sm">
                                           <i class="icon-pencil"></i>
                                         </button>
                                     </td>
@@ -69,13 +68,13 @@
                             <!--Botones de paginacion -->
                             <ul class="pagination">
                                 <li class="page-item" v-if="pagination.current_page > 1">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar)">Ant</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,etapa_id)">Ant</a>
                                 </li>
                                 <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar)" v-text="page"></a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,etapa_id)" v-text="page"></a>
                                 </li>
                                 <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar)">Sig</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,etapa_id)">Sig</a>
                                 </li>
                             </ul>
                         </nav>
@@ -85,7 +84,7 @@
                 <!-- div para sobreprecio modelo -->
                 <div class="card w75">
                     <div class="card-header">
-                        <i class="fa fa-align-justify"></i> Sobreprecios
+                        <i class="fa fa-align-justify"></i> Sobreprecios Lotes
                         <button v-if="oso==0" type="button" @click="changeVista()" class="btn btn-primary">
                             <i class="fa fa-sticky-note-o"></i>&nbsp;Mostrar Sobreprecios Etapas
                         </button>
@@ -105,13 +104,13 @@
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
 
-                                    <select class="form-control" v-model="etapa_id" @click="selectPrecioEtapa(fraccionamiento_id,etapa_id)">
+                                    <select class="form-control" v-model="etapa_id">
                                             <option value="0">Seleccione etapa</option>
                                             <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                     </select>
 
                                     <input type="number"  v-model="precio_excedente" class="form-control" placeholder="Precio excedente">
-                                    <button type="button"  class="btn btn-primary" @click="actualizarPrecioEtapa(),listarPrecioModelo(1,id)">Guardar</button>
+                                    <button type="button"  class="btn btn-primary" @click="actualizarPrecioEtapa(),listarSobrePrecioEtapa(1,id)">Guardar</button>
                                 </div>
 
                                 <div class="input-group">
@@ -180,7 +179,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
                                     <div class="col-md-6">
-                                       <select class="form-control" v-model="fraccionamiento_id" @click="selectEtapa(fraccionamiento_id)" >
+                                        <select class="form-control" v-model="fraccionamiento_id" @click="selectEtapa(fraccionamiento_id)" >
                                             <option value="0">Seleccione</option>
                                             <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                         </select>
@@ -198,26 +197,31 @@
                                 </div>
 
                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Modelo</label>
+                                    <label class="col-md-3 form-control-label" for="text-input">Sobreprecios</label>
                                     <div class="col-md-6">
-                                       <select class="form-control" v-model="modelo_id">
+                                       <select class="form-control" v-model="sobreprecio_id">
                                             <option value="0">Seleccione</option>
-                                            <option v-for="modelos in arrayModelos" :key="modelos.modelo_id" :value="modelos.modelo_id" v-text="modelos.nombre"></option>
+                                            <option value="1">Avenida</option>
+                                            <option value="2">Avenida y Esquina</option>
+                                            <option value="3">Esquina</option>
+                                            <option value="4">Obra colindante a área verde</option>
+                                            <option value="5">Obra de fachada lateral</option>
+                                            <option value="6">Protecciones en la vivienda</option>
                                         </select>
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Precio del modelo</label>
+                                    <label class="col-md-3 form-control-label" for="text-input">Costo $</label>
                                     <div class="col-md-4" >
-                                        <input type="text"  v-model="precio_modelo" class="form-control" placeholder="Precio del modelo">
+                                        <input type="text"  v-model="sobreprecioEtapa" class="form-control" placeholder="Costo del sobreprecio">
                                     </div>
                                 </div>
 
                                 <!-- Div para mostrar los errores que mande validerDepartamento -->
-                                <div v-show="errorPrecioEtapa" class="form-group row div-error">
+                                <div v-show="errorSobrePrecioEtapa" class="form-group row div-error">
                                     <div class="text-center text-error">
-                                        <div v-for="error in errorMostrarMsjPrecioEtapa" :key="error" v-text="error">
+                                        <div v-for="error in errorMostrarMsjSobrePrecioEtapa" :key="error" v-text="error">
 
                                         </div>
                                     </div>
@@ -230,6 +234,7 @@
                             <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
                             <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarPrecioModelo()">Guardar</button>
                             <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarPrecioModelo()">Actualizar</button>
+                            <button type="button" v-if="tipoAccion==3" class="btn btn-primary" @click="actualizarSobrePrecioEtapa()">Actualizar</button>
                         </div>
                     </div>
                     <!-- /.modal-content -->
@@ -237,6 +242,8 @@
                 <!-- /.modal-dialog -->
             </div>
             <!--Fin del modal-->
+
+
         
 
         </main>
@@ -255,6 +262,7 @@
                 oso:0,
                 fraccionamiento_id : 0,
                 etapa_id : 0,
+                sobreprecio_id : 0,
                 precio_excedente : 0,
                 precio_modelo: 0,
                 arrayPrecioEtapa : [],
@@ -267,8 +275,8 @@
                 modal : 0,
                 tituloModal : '',
                 tipoAccion: 0,
-                errorPrecioEtapa : 0,
-                errorMostrarMsjPrecioEtapa : [],
+                errorSobrePrecioEtapa : 0,
+                errorMostrarMsjSobrePrecioEtapa : [],
                 pagination : {
                     'total' : 0,         
                     'current_page' : 0,
@@ -312,12 +320,12 @@
         },
         methods : {
             /**Metodo para mostrar los registros */
-            listarPrecioModelo(page, buscar){
+            listarSobrePrecioEtapa(page, buscar){
                 let me = this;
-                var url = '/precio_modelo?page=' + page + '&buscar=' + buscar;
+                var url = '/sobreprecio_etapa?page=' + page + '&buscar=' + buscar;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
-                    me.arraySobreprecioEtapa = respuesta.precios_modelos.data;
+                    me.arraySobreprecioEtapa = respuesta.sobreprecio_etapa.data;
                     me.pagination = respuesta.pagination;
                 })
                 .catch(function (error) {
@@ -329,7 +337,7 @@
                 //Actualiza la pagina actual
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
-                me.listarPrecioModelo(page,buscar);
+                me.listarSobrePrecioEtapa(page,buscar);
             },
             selectFraccionamientos(){
                 let me = this;
@@ -381,60 +389,9 @@
                     console.log(error);
                 });
             },
-
-            selectPrecioEtapa(buscar,buscar2){
-                let me = this;
-                
-                me.arrayPreciosEtapa=[];
-                me.precio_excedente = 0;
-                me.id = 0;
-                var url = '/select_precio_etapa?buscar=' + buscar + '&buscar2='+ buscar2;
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayPreciosEtapa = respuesta.precio_etapa;
-
-                    me.precio_excedente = me.arrayPreciosEtapa[0].precio_excedente;
-                    me.id = me.arrayPreciosEtapa[0].id;
-
-                    me.listarPrecioModelo(1,me.id);
-
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            },
-
-            /**Metodo para registrar  */
-            registrarPrecioEtapa(){
-                if(this.validarPrecioEtapa()) //Se verifica si hay un error (campo vacio)
-                {
-                    return;
-                }
-
-                let me = this;
-                //Con axios se llama el metodo store de DepartamentoController
-                axios.post('/precio_etapa/registrar',{
-                    'fraccionamiento_id': this.fraccionamiento_id,
-                    'etapa_id': this.etapa_id,
-                    'precio_excedente': this.precio_excedente
-                }).then(function (response){
-                    me.cerrarModal(); //al guardar el registro se cierra el modal
-                    me.listarPrecioModelo(1,''); //se enlistan nuevamente los registros
-                    //Se muestra mensaje Success
-                    swal({
-                        position: 'top-end',
-                        type: 'success',
-                        title: 'Precio de modelo agregado correctamente',
-                        showConfirmButton: false,
-                        timer: 1500
-                        })
-                }).catch(function (error){
-                    console.log(error);
-                });
-            },
              /**Metodo para registrar  */
             registrarPrecioModelo(){
-                if(this.validarPrecioEtapa()) //Se verifica si hay un error (campo vacio)
+                if(this.validarSobrePrecioEtapa()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
@@ -447,7 +404,7 @@
                     'precio_modelo': this.precio_modelo
                 }).then(function (response){
                     me.cerrarModal(); //al guardar el registro se cierra el modal
-                    me.listarPrecioModelo(1,this.id); //se enlistan nuevamente los registros
+                    me.listarSobrePrecioEtapa(1,this.id); //se enlistan nuevamente los registros
                     //Se muestra mensaje Success
                     swal({
                         position: 'top-end',
@@ -460,23 +417,23 @@
                     console.log(error);
                 });
             },
-            actualizarPrecioEtapa(){
-                if(this.validarPrecioEtapa()) //Se verifica si hay un error (campo vacio)
+            actualizarSobrePrecioEtapa(){
+                if(this.validarSobrePrecioEtapa()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
 
                 let me = this;
-                var proyecto = this.id
+                var etapa = this.etapa_id
                 //Con axios se llama el metodo update de DepartamentoController
-                axios.put('/precio_etapa/actualizar',{
-                    'id': this.id,
-                    'fraccionamiento_id': this.fraccionamiento_id,
+                axios.put('/sobreprecio_etapa/actualizar',{
+                    'id': this.id_sobrePrecioEtapa,
                     'etapa_id': this.etapa_id,
-                    'precio_excedente': this.precio_excedente
+                    'sobreprecio_id': this.sobreprecio_id,
+                    'sobreprecio' : this.sobreprecioEtapa
                 }).then(function (response){
                     me.cerrarModal();
-                    me.listarPrecioModelo(1,proyecto);
+                    me.listarSobrePrecioEtapa(1,etapa);
                     //window.alert("Cambios guardados correctamente");
                     swal({
                         position: 'top-end',
@@ -490,7 +447,7 @@
                 });
             },
             actualizarPrecioModelo(){
-                if(this.validarPrecioEtapa()) //Se verifica si hay un error (campo vacio)
+                if(this.validarSobrePrecioEtapa()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
@@ -504,7 +461,7 @@
                     'precio_modelo': this.precio_modelo
                 }).then(function (response){
                     me.cerrarModal();
-                    me.listarPrecioModelo(1,this.id);
+                    me.listarSobrePrecioEtapa(1,this.id);
                     //window.alert("Cambios guardados correctamente");
                     swal({
                         position: 'top-end',
@@ -543,33 +500,33 @@
                         'Departamento borrado correctamente.',
                         'success'
                         )
-                        me.listarPrecioModelo(1,'');
+                        me.listarSobrePrecioEtapa(1,'');
                     }).catch(function (error){
                         console.log(error);
                     });
                 }
                 })
             },
-            validarPrecioEtapa(){
-                this.errorPrecioEtapa=0;
-                this.errorMostrarMsjPrecioEtapa=[];
+            validarSobrePrecioEtapa(){
+                this.errorSobrePrecioEtapa=0;
+                this.errorMostrarMsjSobrePrecioEtapa=[];
 
                 if(!this.fraccionamiento_id) //Si la variable departamento esta vacia
-                    this.errorMostrarMsjPrecioEtapa.push("Seleccione un proyecto.");
+                    this.errorMostrarMsjSobrePrecioEtapa.push("Seleccione un proyecto.");
 
                 if(!this.etapa_id) //Si la variable departamento esta vacia
-                     this.errorMostrarMsjPrecioEtapa.push("Seleccione una etapa.");
+                     this.errorMostrarMsjSobrePrecioEtapa.push("Seleccione una etapa.");
 
-                if(this.errorMostrarMsjPrecioEtapa.length)//Si el mensaje tiene almacenado algo en el array
-                    this.errorPrecioEtapa = 1;
+                if(this.errorMostrarMsjSobrePrecioEtapa.length)//Si el mensaje tiene almacenado algo en el array
+                    this.errorSobrePrecioEtapa = 1;
 
-                return this.errorPrecioEtapa;
+                return this.errorSobrePrecioEtapa;
             },
             cerrarModal(){
                 this.modal = 0;
                 this.tituloModal = '';
-                this.errorPrecioEtapa = 0;
-                this.errorMostrarMsjPrecioEtapa = [];
+                this.errorSobrePrecioEtapa = 0;
+                this.errorMostrarMsjSobrePrecioEtapa = [];
 
             },
             
@@ -588,7 +545,19 @@
                                 this.tipoAccion = 1;
                                 break;
                             }
-                            case 'actualizar':
+                            case 'actualizarEtapa':
+                            {
+                                //console.log(data);
+                                this.modal =1;
+                                this.tituloModal='Actualizar Sobreprecio para etapa';
+                                this.tipoAccion=3;
+                                this.id_sobrePrecioEtapa=data['id'];
+                                this.etapa_id = data['etapa_id']
+                                this.sobreprecio_id = data['sobreprecio_id'];
+                                this.sobreprecioEtapa = data['sobreprecio'];
+                                break;
+                            }
+                            case 'actualizarLote':
                             {
                                 //console.log(data);
                                 this.modal =1;
@@ -611,7 +580,7 @@
             this.selectFraccionamientos();
             this.selectEtapa(this.fraccionamiento_id);
             this.selectModelos(this.fraccionamiento_id, this.etapa_id);
-            this.listarPrecioModelo(1,this.buscar);
+            this.listarSobrePrecioEtapa(1,this.buscar);
         }
     }
 </script>
