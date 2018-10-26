@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Sobreprecio_etapa;
+use DB;
 
 
 class SobreprecioEtapaController extends Controller
@@ -115,6 +116,20 @@ class SobreprecioEtapaController extends Controller
         if(!$request->ajax())return redirect('/');
         $sobreprecio_etapa = Sobreprecio_etapa::findOrFail($request->id);
         $sobreprecio_etapa->delete();
+    }
+
+
+    public function select_sobreprecios_etapa(Request $request){
+        // if(!$request->ajax())return redirect('/');
+        $buscar = $request->buscar;
+        $sobreprecio_etapaM = 
+            Sobreprecio_etapa::join('sobreprecios','sobreprecios_etapas.sobreprecio_id','=','sobreprecios.id')
+                    ->select
+                    (DB::raw("CONCAT(sobreprecios.nombre,' $',sobreprecios_etapas.sobreprecio) AS sobreprecioEtapa"),
+                    'sobreprecios_etapas.id')
+                    ->where('sobreprecios_etapas.etapa_id','=', $buscar)
+                    ->get();
+        return ['sobreprecio_etapaM' => $sobreprecio_etapaM];
     }
 
 }

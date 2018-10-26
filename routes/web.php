@@ -89,6 +89,13 @@ Route::put('/sobreprecio_etapa/actualizar','SobreprecioEtapaController@update');
 Route::delete('/sobreprecio_etapa/eliminar','SobreprecioEtapaController@destroy');
 
 
+////////////////////        RUTAS SOBREPRECIO MODELO    /////////////////////////////////
+Route::get('/sobreprecio_modelo','SobreprecioModeloController@index');
+Route::post('/sobreprecio_modelo/registrar','SobreprecioModeloController@store');
+Route::put('/sobreprecio_modelo/actualizar','SobreprecioModeloController@update');
+Route::delete('/sobreprecio_modelo/eliminar','SobreprecioModeloController@destroy');
+
+
 /***************************************************************************** */
 ///////////////////       RUTAS SELECT    ////////////////////////////////////
 Route::get('/select_departamentos','DepartamentoController@selectDepartamento');
@@ -104,6 +111,9 @@ Route::get('/select_modelo_proyecto','ModeloController@selectModelo_proyecto');
 Route::get('/select_manzana_proyecto','LoteController@selectManzana_proyecto'); 
 Route::get('/select_construcc_terreno','ModeloController@selectConsYTerreno'); 
 Route::get('/select_modelos_etapa','LoteController@select_modelos_etapa'); 
+Route::get('/select_manzanas_etapa','LoteController@select_manzanas_etapa'); 
+Route::get('/select_lotes_manzana','LoteController@select_lote_manzana'); 
 Route::get('/select_precio_etapa','PrecioEtapaController@selectPrecioEtapa'); 
+Route::get('/select_sobreprecios_etapa','SobreprecioEtapaController@select_sobreprecios_etapa'); 
 
 

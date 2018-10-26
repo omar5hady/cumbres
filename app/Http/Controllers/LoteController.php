@@ -266,15 +266,15 @@ class LoteController extends Controller
         }
     }
 
-    public function selectManzana_proyecto(Request $request){
-        //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
-        if(!$request->ajax())return redirect('/');
+    // public function selectManzana_proyecto(Request $request){
+    //     //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
+    //     if(!$request->ajax())return redirect('/');
 
-        $buscar = $request->buscar;
-        $manzanas = Manzana::select('manzana','id')
-        ->where('fraccionamiento_id', '=', $buscar )->get();
-        return['manzanas' => $manzanas];
-    }
+    //     $buscar = $request->buscar;
+    //     $manzanas = Manzana::select('manzana','id')
+    //     ->where('fraccionamiento_id', '=', $buscar )->get();
+    //     return['manzanas' => $manzanas];
+    // }
 
     public function storeManzana(Request $request)
     {
@@ -299,6 +299,33 @@ class LoteController extends Controller
         ->where('lotes.fraccionamiento_id', '=', $buscar1)
         ->where('lotes.etapa_id', '=', $buscar2)->get();
         return['lotes' => $lotes];
+    }
+
+    public function select_manzanas_etapa (Request $request){
+        if(!$request->ajax())return redirect('/');
+        
+        $buscar = $request->buscar;
+        $buscar1 = $request->buscar1;
+        $manzana = Lote::select('lotes.manzana')->distinct()
+                        ->where('lotes.fraccionamiento_id','=', $buscar)
+                        ->where('lotes.etapa_id','=', $buscar1)->get();
+
+        return ['manzana' => $manzana];
+
+    }
+
+    public function select_lote_manzana (Request $request){
+        if(!$request->ajax())return redirect('/');
+
+        $buscar = $request->buscar;
+        $buscar1 = $request->buscar1;
+        $buscar2 = $request->buscar2;
+        $lote_manzana = Lote::select ('lotes.num_lote','lotes.id')
+                             ->where('lotes.fraccionamiento_id','=', $buscar)
+                             ->where('lotes.etapa_id','=', $buscar1)
+                             ->where('lotes.manzana','=', $buscar2)->get();
+
+        return ['lote_manzana' => $lote_manzana];
     }
 
 
