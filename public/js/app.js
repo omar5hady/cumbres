@@ -46999,6 +46999,21 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -47011,7 +47026,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             manzana: '',
             sobreprecio_id: 0,
             sobreprecioModelo_id: 0,
-            precio_excedente: 0,
+            sobreprecioEtapa: 0,
+            ajuste: 0,
             precio_modelo: 0,
             arraySobreprecioEtapa: [],
             arraySobreprecioEtapaModelo: [],
@@ -47274,7 +47290,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                 {
                                     this.modal = 1;
                                     this.tituloModal = 'Registrar precio para modelo';
-                                    this.precio_modelo = 0;
+                                    this.ajuste = 0;
                                     this.modelo_id = 0;
                                     this.tipoAccion = 1;
                                     break;
@@ -47999,187 +48015,281 @@ var render = function() {
                       ])
                     ]),
                     _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "text-input" }
-                        },
-                        [_vm._v("Manzanas")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-6" }, [
-                        _c(
-                          "select",
-                          {
-                            directives: [
+                    _vm.tipoAccion < 3
+                      ? _c("div", { staticClass: "form-group row" }, [
+                          _c(
+                            "label",
+                            {
+                              staticClass: "col-md-3 form-control-label",
+                              attrs: { for: "text-input" }
+                            },
+                            [_vm._v("Manzanas")]
+                          ),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col-md-6" }, [
+                            _c(
+                              "select",
                               {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.manzana,
-                                expression: "manzana"
-                              }
-                            ],
-                            staticClass: "form-control",
-                            on: {
-                              click: function($event) {
-                                _vm.selectLotesManzana(
-                                  _vm.fraccionamiento_id,
-                                  _vm.etapa_id,
-                                  _vm.manzana
-                                )
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.manzana,
+                                    expression: "manzana"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                on: {
+                                  click: function($event) {
+                                    _vm.selectLotesManzana(
+                                      _vm.fraccionamiento_id,
+                                      _vm.etapa_id,
+                                      _vm.manzana
+                                    )
+                                  },
+                                  change: function($event) {
+                                    var $$selectedVal = Array.prototype.filter
+                                      .call($event.target.options, function(o) {
+                                        return o.selected
+                                      })
+                                      .map(function(o) {
+                                        var val =
+                                          "_value" in o ? o._value : o.value
+                                        return val
+                                      })
+                                    _vm.manzana = $event.target.multiple
+                                      ? $$selectedVal
+                                      : $$selectedVal[0]
+                                  }
+                                }
                               },
-                              change: function($event) {
-                                var $$selectedVal = Array.prototype.filter
-                                  .call($event.target.options, function(o) {
-                                    return o.selected
+                              [
+                                _c("option", { attrs: { value: "" } }, [
+                                  _vm._v("Seleccione")
+                                ]),
+                                _vm._v(" "),
+                                _vm._l(_vm.arrayManzanas, function(manzanas) {
+                                  return _c("option", {
+                                    key: manzanas.id,
+                                    domProps: {
+                                      value: manzanas.manzana,
+                                      textContent: _vm._s(manzanas.manzana)
+                                    }
                                   })
-                                  .map(function(o) {
-                                    var val = "_value" in o ? o._value : o.value
-                                    return val
-                                  })
-                                _vm.manzana = $event.target.multiple
-                                  ? $$selectedVal
-                                  : $$selectedVal[0]
-                              }
-                            }
-                          },
-                          [
-                            _c("option", { attrs: { value: "0" } }, [
-                              _vm._v("Seleccione")
-                            ]),
-                            _vm._v(" "),
-                            _vm._l(_vm.arrayManzanas, function(manzanas) {
-                              return _c("option", {
-                                key: manzanas.id,
-                                domProps: {
-                                  value: manzanas.manzana,
-                                  textContent: _vm._s(manzanas.manzana)
-                                }
-                              })
-                            })
-                          ],
-                          2
-                        )
-                      ])
-                    ]),
+                                })
+                              ],
+                              2
+                            )
+                          ])
+                        ])
+                      : _vm._e(),
                     _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "text-input" }
-                        },
-                        [_vm._v("Lote")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-6" }, [
-                        _c(
-                          "select",
-                          {
-                            directives: [
+                    _vm.tipoAccion < 3
+                      ? _c("div", { staticClass: "form-group row" }, [
+                          _c(
+                            "label",
+                            {
+                              staticClass: "col-md-3 form-control-label",
+                              attrs: { for: "text-input" }
+                            },
+                            [_vm._v("Lote")]
+                          ),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col-md-6" }, [
+                            _c(
+                              "select",
                               {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.lote_id,
-                                expression: "lote_id"
-                              }
-                            ],
-                            staticClass: "form-control",
-                            on: {
-                              change: function($event) {
-                                var $$selectedVal = Array.prototype.filter
-                                  .call($event.target.options, function(o) {
-                                    return o.selected
-                                  })
-                                  .map(function(o) {
-                                    var val = "_value" in o ? o._value : o.value
-                                    return val
-                                  })
-                                _vm.lote_id = $event.target.multiple
-                                  ? $$selectedVal
-                                  : $$selectedVal[0]
-                              }
-                            }
-                          },
-                          [
-                            _c("option", { attrs: { value: "0" } }, [
-                              _vm._v("Seleccione")
-                            ]),
-                            _vm._v(" "),
-                            _vm._l(_vm.arrayLotes, function(lotes) {
-                              return _c("option", {
-                                key: lotes.id,
-                                domProps: {
-                                  value: lotes.id,
-                                  textContent: _vm._s(lotes.num_lote)
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.lote_id,
+                                    expression: "lote_id"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                on: {
+                                  change: function($event) {
+                                    var $$selectedVal = Array.prototype.filter
+                                      .call($event.target.options, function(o) {
+                                        return o.selected
+                                      })
+                                      .map(function(o) {
+                                        var val =
+                                          "_value" in o ? o._value : o.value
+                                        return val
+                                      })
+                                    _vm.lote_id = $event.target.multiple
+                                      ? $$selectedVal
+                                      : $$selectedVal[0]
+                                  }
                                 }
-                              })
-                            })
-                          ],
-                          2
-                        )
-                      ])
-                    ]),
+                              },
+                              [
+                                _c("option", { attrs: { value: "0" } }, [
+                                  _vm._v("Seleccione")
+                                ]),
+                                _vm._v(" "),
+                                _vm._l(_vm.arrayLotes, function(lotes) {
+                                  return _c("option", {
+                                    key: lotes.id,
+                                    domProps: {
+                                      value: lotes.id,
+                                      textContent: _vm._s(lotes.num_lote)
+                                    }
+                                  })
+                                })
+                              ],
+                              2
+                            )
+                          ])
+                        ])
+                      : _vm._e(),
                     _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "text-input" }
-                        },
-                        [_vm._v("Sobreprecios")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-6" }, [
-                        _c(
-                          "select",
-                          {
-                            directives: [
+                    _vm.tipoAccion < 3
+                      ? _c("div", { staticClass: "form-group row" }, [
+                          _c(
+                            "label",
+                            {
+                              staticClass: "col-md-3 form-control-label",
+                              attrs: { for: "text-input" }
+                            },
+                            [_vm._v("Sobreprecios")]
+                          ),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col-md-6" }, [
+                            _c(
+                              "select",
                               {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.sobreprecioModelo_id,
-                                expression: "sobreprecioModelo_id"
-                              }
-                            ],
-                            staticClass: "form-control",
-                            on: {
-                              change: function($event) {
-                                var $$selectedVal = Array.prototype.filter
-                                  .call($event.target.options, function(o) {
-                                    return o.selected
-                                  })
-                                  .map(function(o) {
-                                    var val = "_value" in o ? o._value : o.value
-                                    return val
-                                  })
-                                _vm.sobreprecioModelo_id = $event.target
-                                  .multiple
-                                  ? $$selectedVal
-                                  : $$selectedVal[0]
-                              }
-                            }
-                          },
-                          _vm._l(_vm.arraySobreprecioEtapaModelo, function(
-                            sobrepreciosM
-                          ) {
-                            return _c("option", {
-                              key: sobrepreciosM.id,
-                              domProps: {
-                                value: sobrepreciosM.id,
-                                textContent: _vm._s(
-                                  sobrepreciosM.sobreprecioEtapa
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.sobreprecioModelo_id,
+                                    expression: "sobreprecioModelo_id"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                on: {
+                                  change: function($event) {
+                                    var $$selectedVal = Array.prototype.filter
+                                      .call($event.target.options, function(o) {
+                                        return o.selected
+                                      })
+                                      .map(function(o) {
+                                        var val =
+                                          "_value" in o ? o._value : o.value
+                                        return val
+                                      })
+                                    _vm.sobreprecioModelo_id = $event.target
+                                      .multiple
+                                      ? $$selectedVal
+                                      : $$selectedVal[0]
+                                  }
+                                }
+                              },
+                              [
+                                _c("option", { attrs: { value: "0" } }, [
+                                  _vm._v("Seleccione")
+                                ]),
+                                _vm._v(" "),
+                                _vm._l(
+                                  _vm.arraySobreprecioEtapaModelo,
+                                  function(sobrepreciosM) {
+                                    return _c("option", {
+                                      key: sobrepreciosM.id,
+                                      domProps: {
+                                        value: sobrepreciosM.id,
+                                        textContent: _vm._s(
+                                          sobrepreciosM.sobreprecioEtapa
+                                        )
+                                      }
+                                    })
+                                  }
                                 )
+                              ],
+                              2
+                            )
+                          ])
+                        ])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.tipoAccion == 3
+                      ? _c("div", { staticClass: "form-group row" }, [
+                          _c(
+                            "label",
+                            {
+                              staticClass: "col-md-3 form-control-label",
+                              attrs: { for: "text-input" }
+                            },
+                            [_vm._v("Costo de sobreprecio")]
+                          ),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col-md-4" }, [
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.sobreprecioEtapa,
+                                  expression: "sobreprecioEtapa"
+                                }
+                              ],
+                              staticClass: "form-control",
+                              attrs: {
+                                type: "text",
+                                placeholder: "Costo Sobreprecio $"
+                              },
+                              domProps: { value: _vm.sobreprecioEtapa },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.sobreprecioEtapa = $event.target.value
+                                }
                               }
                             })
-                          })
-                        )
-                      ])
-                    ]),
+                          ])
+                        ])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.tipoAccion < 3
+                      ? _c("div", { staticClass: "form-group row" }, [
+                          _c(
+                            "label",
+                            {
+                              staticClass: "col-md-3 form-control-label",
+                              attrs: { for: "text-input" }
+                            },
+                            [_vm._v("Ajuste")]
+                          ),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col-md-4" }, [
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.Ajuste,
+                                  expression: "Ajuste"
+                                }
+                              ],
+                              staticClass: "form-control",
+                              attrs: { type: "text", placeholder: "Ajuste $" },
+                              domProps: { value: _vm.Ajuste },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.Ajuste = $event.target.value
+                                }
+                              }
+                            })
+                          ])
+                        ])
+                      : _vm._e(),
                     _vm._v(" "),
                     _c(
                       "div",

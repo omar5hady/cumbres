@@ -191,17 +191,17 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group row">
+                                <div class="form-group row" v-if="tipoAccion<3">
                                     <label class="col-md-3 form-control-label" for="text-input">Manzanas</label>
                                     <div class="col-md-6">
                                        <select class="form-control" v-model="manzana" @click="selectLotesManzana(fraccionamiento_id,etapa_id,manzana)">
-                                            <option value="0">Seleccione</option>
+                                            <option value="">Seleccione</option>
                                             <option v-for="manzanas in arrayManzanas" :key="manzanas.id" :value="manzanas.manzana" v-text="manzanas.manzana"></option>
                                         </select>
                                     </div>
                                 </div>
 
-                                <div class="form-group row">
+                                <div class="form-group row" v-if="tipoAccion<3">
                                     <label class="col-md-3 form-control-label" for="text-input">Lote</label>
                                     <div class="col-md-6">
                                        <select class="form-control" v-model="lote_id">
@@ -211,12 +211,27 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group row">
+                                <div class="form-group row" v-if="tipoAccion<3">
                                     <label class="col-md-3 form-control-label" for="text-input">Sobreprecios</label>
                                     <div class="col-md-6">
                                        <select class="form-control" v-model="sobreprecioModelo_id">
+                                            <option value="0">Seleccione</option>
                                              <option v-for="sobrepreciosM in arraySobreprecioEtapaModelo" :key="sobrepreciosM.id" :value="sobrepreciosM.id" v-text="sobrepreciosM.sobreprecioEtapa"></option>
                                         </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row" v-if="tipoAccion==3">
+                                    <label class="col-md-3 form-control-label" for="text-input">Costo de sobreprecio</label>
+                                    <div class="col-md-4" >
+                                        <input type="text"  v-model="sobreprecioEtapa" class="form-control" placeholder="Costo Sobreprecio $">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row" v-if="tipoAccion<3">
+                                    <label class="col-md-3 form-control-label" for="text-input">Ajuste</label>
+                                    <div class="col-md-4" >
+                                        <input type="text"  v-model="Ajuste" class="form-control" placeholder="Ajuste $">
                                     </div>
                                 </div>
 
@@ -267,7 +282,8 @@
                 manzana : '',
                 sobreprecio_id : 0,
                 sobreprecioModelo_id : 0,
-                precio_excedente : 0,
+                sobreprecioEtapa : 0,
+                ajuste : 0,
                 precio_modelo: 0,
                 arraySobreprecioEtapa : [],
                 arraySobreprecioEtapaModelo : [],
@@ -533,7 +549,7 @@
                             {
                                 this.modal = 1;
                                 this.tituloModal = 'Registrar precio para modelo';
-                                this.precio_modelo = 0;
+                                this.ajuste = 0;
                                 this.modelo_id = 0;
                                 this.tipoAccion = 1;
                                 break;
