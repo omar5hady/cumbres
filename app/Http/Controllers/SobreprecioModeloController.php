@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use App\Sobreprecio_modelo;
+use DB;
 
 class SobreprecioModeloController extends Controller
 {
@@ -13,13 +14,64 @@ class SobreprecioModeloController extends Controller
         //if(!$request->ajax())return redirect('/');
 
         $buscar = $request->buscar;
+        $buscar2 = $request->buscar2;
+        $buscar3= $request->buscar3;
         
+        if($buscar == ''){
         $sobreprecio_modelo = Sobreprecio_modelo::join('lotes','sobreprecios_modelos.lote_id','=','lotes.id')
-        ->join('sobreprecios_etapas','sobreprecios_modelos.sobreprecio_etapa_id','=','sobreprecios_etapas.id')
-        ->select('lotes.num_lote as lotes','sobreprecios_etapas.sobreprecio as sobreprecio','sobreprecios_modelos.id',
-                 'sobreprecios_modelos.sobreprecio_etapa_id','sobreprecios_modelos.ajuste')
-        ->where('sobreprecios_modelos.lote_id','=', $buscar)
-        ->orderBy('id','sobreprecios_modelos.lote_id')->paginate(7);
+            ->join('sobreprecios_etapas','sobreprecios_modelos.sobreprecio_etapa_id','=','sobreprecios_etapas.id')
+            ->join('sobreprecios','sobreprecios_etapas.sobreprecio_id','=','sobreprecios.id')
+            ->select('lotes.num_lote as lotes',DB::raw("CONCAT(sobreprecios.nombre,' $',sobreprecios_etapas.sobreprecio) AS sobreprecioModelo"),'sobreprecios_modelos.id',
+                    'sobreprecios_modelos.sobreprecio_etapa_id','sobreprecios_modelos.ajuste')
+            ->orderBy('id','sobreprecios_modelos.lote_id')->paginate(7);
+        }
+        else{
+            if($buscar2 == '' && $buscar3 == '') {
+                $sobreprecio_modelo = Sobreprecio_modelo::join('lotes','sobreprecios_modelos.lote_id','=','lotes.id')
+                ->join('sobreprecios_etapas','sobreprecios_modelos.sobreprecio_etapa_id','=','sobreprecios_etapas.id')
+                ->join('sobreprecios','sobreprecios_etapas.sobreprecio_id','=','sobreprecios.id')
+                ->select('lotes.num_lote as lotes',DB::raw("CONCAT(sobreprecios.nombre,' $',sobreprecios_etapas.sobreprecio) AS sobreprecioModelo"),'sobreprecios_modelos.id',
+                        'sobreprecios_modelos.sobreprecio_etapa_id','sobreprecios_modelos.ajuste')
+                    ->where('sobreprecios_etapas.etapa_id','=', $buscar)
+                    ->orderBy('id','sobreprecios_modelos.lote_id')->paginate(7);
+            }
+            else{
+                if($buscar2 == ''){
+                    $sobreprecio_modelo = Sobreprecio_modelo::join('lotes','sobreprecios_modelos.lote_id','=','lotes.id')
+                    ->join('sobreprecios_etapas','sobreprecios_modelos.sobreprecio_etapa_id','=','sobreprecios_etapas.id')
+                    ->join('sobreprecios','sobreprecios_etapas.sobreprecio_id','=','sobreprecios.id')
+                    ->select('lotes.num_lote as lotes',DB::raw("CONCAT(sobreprecios.nombre,' $',sobreprecios_etapas.sobreprecio) AS sobreprecioModelo"),'sobreprecios_modelos.id',
+                            'sobreprecios_modelos.sobreprecio_etapa_id','sobreprecios_modelos.ajuste')
+                        ->where('sobreprecios_etapas.etapa_id','=', $buscar)
+                        ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
+                        ->orderBy('id','sobreprecios_modelos.lote_id')->paginate(7);
+                    }
+                
+                if($buscar3 == ''){
+                    $sobreprecio_modelo = Sobreprecio_modelo::join('lotes','sobreprecios_modelos.lote_id','=','lotes.id')
+                    ->join('sobreprecios_etapas','sobreprecios_modelos.sobreprecio_etapa_id','=','sobreprecios_etapas.id')
+                    ->join('sobreprecios','sobreprecios_etapas.sobreprecio_id','=','sobreprecios.id')
+                    ->select('lotes.num_lote as lotes',DB::raw("CONCAT(sobreprecios.nombre,' $',sobreprecios_etapas.sobreprecio) AS sobreprecioModelo"),'sobreprecios_modelos.id',
+                            'sobreprecios_modelos.sobreprecio_etapa_id','sobreprecios_modelos.ajuste')
+                        ->where('sobreprecios_etapas.etapa_id','=', $buscar)
+                        ->where('lotes.num_lote', 'like', '%'. $buscar2 . '%')
+                        ->orderBy('id','sobreprecios_modelos.lote_id')->paginate(7);
+                    }
+                else{
+                    $sobreprecio_modelo = Sobreprecio_modelo::join('lotes','sobreprecios_modelos.lote_id','=','lotes.id')
+                    ->join('sobreprecios_etapas','sobreprecios_modelos.sobreprecio_etapa_id','=','sobreprecios_etapas.id')
+                    ->join('sobreprecios','sobreprecios_etapas.sobreprecio_id','=','sobreprecios.id')
+                    ->select('lotes.num_lote as lotes',DB::raw("CONCAT(sobreprecios.nombre,' $',sobreprecios_etapas.sobreprecio) AS sobreprecioModelo"),'sobreprecios_modelos.id',
+                            'sobreprecios_modelos.sobreprecio_etapa_id','sobreprecios_modelos.ajuste')
+                        ->where('sobreprecios_etapas.etapa_id','=', $buscar)
+                        ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
+                        ->where('lotes.num_lote', 'like', '%'. $buscar2 . '%')
+                        ->orderBy('id','sobreprecios_modelos.lote_id')->paginate(7);
+
+                    }
+            }
+        }
+
 
         return [
             'pagination' => [
