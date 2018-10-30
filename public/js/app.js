@@ -47033,6 +47033,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -47043,11 +47050,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             fraccionamiento_id: 0,
             etapa_id: 0,
             lote_id: 0,
+            num_lote: '',
             manzana: '',
             sobreprecio_id: 0,
             sobreprecioEtapaModelo_id: 0,
             sobreprecioEtapa: 0,
-            ajuste: 0,
             precio_modelo: 0,
             arraySobreprecioEtapa: [],
             arraySobreprecioModelo: [],
@@ -47057,10 +47064,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             arrayManzanas: [],
             arrayEtapas: [],
             modal: 0,
+            mostrar: 0,
             tituloModal: '',
             tipoAccion: 0,
             errorSobrePrecioEtapa: 0,
             errorMostrarMsjSobrePrecioEtapa: [],
+            errorSobrePrecioModelo: 0,
+            errorMostrarMsjSobrePrecioModelo: [],
             pagination: {
                 'total': 0,
                 'current_page': 0,
@@ -47157,6 +47167,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 console.log(error);
             });
         },
+        mostrarMasFiltros: function mostrarMasFiltros() {
+            var me = this;
+
+            if (me.mostrar == 0) {
+                me.mostrar = 1;
+            } else {
+                me.arrayLotes = [];
+                me.num_lote = '';
+                me.mostrar = 0;
+            }
+        },
         selectLotesManzana: function selectLotesManzana(buscar1, buscar2, buscar3) {
             var me = this;
 
@@ -47208,7 +47229,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         /**Metodo para registrar  */
         registrarSobrePrecioModelo: function registrarSobrePrecioModelo() {
-            if (this.validarSobrePrecioEtapa()) //Se verifica si hay un error (campo vacio)
+            if (this.validarSobrePrecioModelo()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
@@ -47218,8 +47239,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             //Con axios se llama el metodo store de DepartamentoController
             axios.post('/sobreprecio_modelo/registrar', {
                 'lote_id': this.lote_id,
-                'sobreprecio_etapa_id': this.sobreprecioEtapaModelo_id,
-                'ajuste': this.ajuste
+                'sobreprecio_etapa_id': this.sobreprecioEtapaModelo_id
             }).then(function (response) {
                 me.cerrarModal(); //al guardar el registro se cierra el modal
                 me.listarSobrePrecioModelo(1, me.buscar, me.buscar2, me.buscar3); //se enlistan nuevamente los registros
@@ -47244,14 +47264,43 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var me = this;
             var etapa = this.etapa_id;
             //Con axios se llama el metodo update de DepartamentoController
-            axios.put('/sobreprecio_modelo/actualizar', {
-                'id': this.id_sobrePrecioModelo,
-                'lote_id': this.lote_id,
-                'sobreprecio_etapa_id': this.sobreprecioEtapaModelo_id,
-                'ajuste': this.ajuste
+            axios.put('/sobreprecio_etapa/actualizar', {
+                'id': this.id_sobrePrecioEtapa,
+                'etapa_id': this.etapa_id,
+                'sobreprecio_id': this.sobreprecio_id,
+                'sobreprecio': this.sobreprecioEtapa
             }).then(function (response) {
                 me.cerrarModal();
                 me.listarSobrePrecioEtapa(1, etapa);
+                me.listarSobrePrecioModelo(1, me.etapa_id, '', ''); //se enlistan nuevamente los registros
+                //window.alert("Cambios guardados correctamente");
+                swal({
+                    position: 'top-end',
+                    type: 'success',
+                    title: 'Cambios guardados correctamente',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        actualizarSobrePrecioModelo: function actualizarSobrePrecioModelo() {
+            if (this.validarSobrePrecioModelo()) //Se verifica si hay un error (campo vacio)
+                {
+                    return;
+                }
+
+            var me = this;
+            var etapa = this.etapa_id;
+            //Con axios se llama el metodo update de DepartamentoController
+            axios.put('/sobreprecio_modelo/actualizar', {
+                'id': this.id_sobrePrecioModelo,
+                'lote_id': this.lote_id,
+                'sobreprecio_etapa_id': this.sobreprecioEtapaModelo_id
+            }).then(function (response) {
+                me.cerrarModal();
+                me.listarSobrePrecioModelo(1, me.etapa_id, '', me.buscar3); //se enlistan nuevamente los registros
                 //window.alert("Cambios guardados correctamente");
                 swal({
                     position: 'top-end',
@@ -47272,7 +47321,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.id_sobrePrecioModelo = data['id'];
             this.lote_id = data['lote_id'];
             this.sobreprecioEtapaModelo_id = data['sobreprecio_etapa_id'];
-            this.ajuste = data['ajuste'];
             //console.log(this.departamento_id);
             swal({
                 title: '¿Desea eliminar?',
@@ -47311,11 +47359,28 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             return this.errorSobrePrecioEtapa;
         },
+        validarSobrePrecioModelo: function validarSobrePrecioModelo() {
+            this.errorSobrePrecioModelo = 0;
+            this.errorMostrarMsjSobrePrecioModelo = [];
+
+            if (!this.lote_id) //Si la variable departamento esta vacia
+                this.errorMostrarMsjSobrePrecioEtapa.push("Seleccione el lote.");
+
+            if (!this.sobreprecioEtapaModelo_id) //Si la variable departamento esta vacia
+                this.errorMostrarMsjSobrePrecioEtapa.push("Seleccione el sobreprecio");
+
+            if (this.errorMostrarMsjSobrePrecioModelo.length) //Si el mensaje tiene almacenado algo en el array
+                this.errorSobrePrecioModelo = 1;
+
+            return this.errorSobrePrecioModelo;
+        },
         cerrarModal: function cerrarModal() {
             this.modal = 0;
             this.tituloModal = '';
             this.errorSobrePrecioEtapa = 0;
             this.errorMostrarMsjSobrePrecioEtapa = [];
+            this.errorSobrePrecioModelo = 0;
+            this.errorMostrarMsjSobrePrecioModelo = [];
         },
 
 
@@ -47331,7 +47396,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                 {
                                     this.modal = 1;
                                     this.tituloModal = 'Registrar precio para modelo';
-                                    this.ajuste = 0;
                                     this.lote_id = 0;
                                     this.sobreprecioEtapaModelo_id = 0;
                                     this.tipoAccion = 1;
@@ -47355,9 +47419,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     this.modal = 1;
                                     this.tituloModal = 'Actualizar precio para modelo';
                                     this.tipoAccion = 2;
-                                    this.id_sobrePrecioEtapa = data['id'];
-                                    this.modelo_id = data['modelo_id'];
-                                    this.precio_modelo = data['precio_modelo'];
+                                    this.id_sobrePrecioModelo = data['id'];
+                                    this.lote_id = data['lote_id'];
+                                    this.sobreprecioEtapaModelo_id = data['sobreprecio_etapa_id'];
                                     break;
                                 }
                         }
@@ -47390,7 +47454,7 @@ var render = function() {
     _vm._m(0),
     _vm._v(" "),
     _c("div", { staticClass: "container-fluid row" }, [
-      _c("div", { staticClass: "card col-sm-6" }, [
+      _c("div", { staticClass: "card col-sm-4" }, [
         _vm._m(1),
         _vm._v(" "),
         _c("div", { staticClass: "card-body" }, [
@@ -47460,6 +47524,9 @@ var render = function() {
                   ],
                   staticClass: "form-control",
                   on: {
+                    click: function($event) {
+                      _vm.selectManzanas(_vm.fraccionamiento_id, _vm.etapa_id)
+                    },
                     change: function($event) {
                       var $$selectedVal = Array.prototype.filter
                         .call($event.target.options, function(o) {
@@ -47502,7 +47569,13 @@ var render = function() {
                   attrs: { type: "button" },
                   on: {
                     click: function($event) {
-                      _vm.listarSobrePrecioEtapa(1, _vm.etapa_id)
+                      _vm.listarSobrePrecioEtapa(1, _vm.etapa_id),
+                        _vm.listarSobrePrecioModelo(
+                          1,
+                          _vm.etapa_id,
+                          _vm.num_lote,
+                          _vm.manzana
+                        )
                     }
                   }
                 },
@@ -47640,7 +47713,7 @@ var render = function() {
         ])
       ]),
       _vm._v(" "),
-      _c("div", { staticClass: "card col-sm-6" }, [
+      _c("div", { staticClass: "card col-sm-8" }, [
         _c("div", { staticClass: "card-header bg-primary" }, [
           _c("i", { staticClass: "fa fa-align-justify" }),
           _vm._v(
@@ -47668,184 +47741,252 @@ var render = function() {
         _c("div", { staticClass: "card-body" }, [
           _c("div", { staticClass: "form-group" }, [
             _c("div", { staticClass: "col-md-8" }, [
-              _c(
-                "select",
-                {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.fraccionamiento_id,
-                      expression: "fraccionamiento_id"
-                    }
-                  ],
-                  staticClass: "form-control",
-                  on: {
-                    click: function($event) {
-                      _vm.selectEtapa(_vm.fraccionamiento_id)
-                    },
-                    change: function($event) {
-                      var $$selectedVal = Array.prototype.filter
-                        .call($event.target.options, function(o) {
-                          return o.selected
-                        })
-                        .map(function(o) {
-                          var val = "_value" in o ? o._value : o.value
-                          return val
-                        })
-                      _vm.fraccionamiento_id = $event.target.multiple
-                        ? $$selectedVal
-                        : $$selectedVal[0]
-                    }
-                  }
-                },
-                [
-                  _c("option", { attrs: { value: "0" } }, [
-                    _vm._v("Seleccione proyecto")
-                  ]),
-                  _vm._v(" "),
-                  _vm._l(_vm.arrayFraccionamientos, function(fraccionamientos) {
-                    return _c("option", {
-                      key: fraccionamientos.id,
-                      domProps: {
-                        value: fraccionamientos.id,
-                        textContent: _vm._s(fraccionamientos.nombre)
-                      }
-                    })
-                  })
-                ],
-                2
-              ),
-              _vm._v(" "),
-              _c("br"),
-              _vm._v(" "),
-              _c(
-                "select",
-                {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.etapa_id,
-                      expression: "etapa_id"
-                    }
-                  ],
-                  staticClass: "form-control",
-                  on: {
-                    click: function($event) {
-                      _vm.selectManzanas(_vm.fraccionamiento_id, _vm.etapa_id)
-                    },
-                    change: function($event) {
-                      var $$selectedVal = Array.prototype.filter
-                        .call($event.target.options, function(o) {
-                          return o.selected
-                        })
-                        .map(function(o) {
-                          var val = "_value" in o ? o._value : o.value
-                          return val
-                        })
-                      _vm.etapa_id = $event.target.multiple
-                        ? $$selectedVal
-                        : $$selectedVal[0]
-                    }
-                  }
-                },
-                [
-                  _c("option", { attrs: { value: "0" } }, [
-                    _vm._v("Seleccione etapa")
-                  ]),
-                  _vm._v(" "),
-                  _vm._l(_vm.arrayEtapas, function(etapas) {
-                    return _c("option", {
-                      key: etapas.id,
-                      domProps: {
-                        value: etapas.id,
-                        textContent: _vm._s(etapas.num_etapa)
-                      }
-                    })
-                  })
-                ],
-                2
-              ),
-              _vm._v(" "),
-              _c("br"),
-              _vm._v(" "),
-              _c(
-                "select",
-                {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.manzana,
-                      expression: "manzana"
-                    }
-                  ],
-                  staticClass: "form-control",
-                  on: {
-                    click: function($event) {
-                      _vm.selectLotesManzana(
-                        _vm.fraccionamiento_id,
-                        _vm.etapa_id,
-                        _vm.manzana
-                      )
-                    },
-                    change: function($event) {
-                      var $$selectedVal = Array.prototype.filter
-                        .call($event.target.options, function(o) {
-                          return o.selected
-                        })
-                        .map(function(o) {
-                          var val = "_value" in o ? o._value : o.value
-                          return val
-                        })
-                      _vm.manzana = $event.target.multiple
-                        ? $$selectedVal
-                        : $$selectedVal[0]
-                    }
-                  }
-                },
-                [
-                  _c("option", { attrs: { value: "" } }, [
-                    _vm._v("Seleccione")
-                  ]),
-                  _vm._v(" "),
-                  _vm._l(_vm.arrayManzanas, function(manzanas) {
-                    return _c("option", {
-                      key: manzanas.id,
-                      domProps: {
-                        value: manzanas.manzana,
-                        textContent: _vm._s(manzanas.manzana)
-                      }
-                    })
-                  })
-                ],
-                2
-              ),
-              _vm._v(" "),
-              _c("br"),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
+              _c("div", { staticClass: "form-group row" }, [
+                _c(
+                  "label",
                   {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.lote_id,
-                    expression: "lote_id"
-                  }
-                ],
-                staticClass: "form-control",
-                attrs: { type: "text", placeholder: "lote" },
-                domProps: { value: _vm.lote_id },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.lote_id = $event.target.value
-                  }
-                }
-              }),
+                    staticClass: "col-md-2 form-control-label",
+                    attrs: { for: "text-input" }
+                  },
+                  [_vm._v("Proyecto")]
+                ),
+                _vm._v(" "),
+                _c("div", { staticClass: "col-md-4" }, [
+                  _c(
+                    "select",
+                    {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.fraccionamiento_id,
+                          expression: "fraccionamiento_id"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      on: {
+                        click: function($event) {
+                          _vm.selectEtapa(_vm.fraccionamiento_id)
+                        },
+                        change: function($event) {
+                          var $$selectedVal = Array.prototype.filter
+                            .call($event.target.options, function(o) {
+                              return o.selected
+                            })
+                            .map(function(o) {
+                              var val = "_value" in o ? o._value : o.value
+                              return val
+                            })
+                          _vm.fraccionamiento_id = $event.target.multiple
+                            ? $$selectedVal
+                            : $$selectedVal[0]
+                        }
+                      }
+                    },
+                    [
+                      _c("option", { attrs: { value: "0" } }, [
+                        _vm._v("Seleccione proyecto")
+                      ]),
+                      _vm._v(" "),
+                      _vm._l(_vm.arrayFraccionamientos, function(
+                        fraccionamientos
+                      ) {
+                        return _c("option", {
+                          key: fraccionamientos.id,
+                          domProps: {
+                            value: fraccionamientos.id,
+                            textContent: _vm._s(fraccionamientos.nombre)
+                          }
+                        })
+                      })
+                    ],
+                    2
+                  )
+                ]),
+                _vm._v(" "),
+                _c(
+                  "label",
+                  {
+                    staticClass: "col-md-2 form-control-label",
+                    attrs: { for: "text-input" }
+                  },
+                  [_vm._v("Num. Etapa")]
+                ),
+                _vm._v(" "),
+                _c("div", { staticClass: "col-md-3" }, [
+                  _c(
+                    "select",
+                    {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.etapa_id,
+                          expression: "etapa_id"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      on: {
+                        click: function($event) {
+                          _vm.selectManzanas(
+                            _vm.fraccionamiento_id,
+                            _vm.etapa_id
+                          )
+                        },
+                        change: function($event) {
+                          var $$selectedVal = Array.prototype.filter
+                            .call($event.target.options, function(o) {
+                              return o.selected
+                            })
+                            .map(function(o) {
+                              var val = "_value" in o ? o._value : o.value
+                              return val
+                            })
+                          _vm.etapa_id = $event.target.multiple
+                            ? $$selectedVal
+                            : $$selectedVal[0]
+                        }
+                      }
+                    },
+                    [
+                      _c("option", { attrs: { value: "0" } }, [
+                        _vm._v("Seleccione etapa")
+                      ]),
+                      _vm._v(" "),
+                      _vm._l(_vm.arrayEtapas, function(etapas) {
+                        return _c("option", {
+                          key: etapas.id,
+                          domProps: {
+                            value: etapas.id,
+                            textContent: _vm._s(etapas.num_etapa)
+                          }
+                        })
+                      })
+                    ],
+                    2
+                  )
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "col-md-1" }, [
+                  _vm.mostrar == 0
+                    ? _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-info",
+                          attrs: {
+                            type: "button",
+                            title: "Mostrar mas filtros"
+                          },
+                          on: {
+                            click: function($event) {
+                              _vm.mostrarMasFiltros()
+                            }
+                          }
+                        },
+                        [_c("i", { staticClass: "icon-plus" })]
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.mostrar == 1
+                    ? _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-danger",
+                          attrs: { type: "button" },
+                          on: {
+                            click: function($event) {
+                              _vm.mostrarMasFiltros()
+                            }
+                          }
+                        },
+                        [_c("i", { staticClass: "icon-minus" })]
+                      )
+                    : _vm._e()
+                ])
+              ]),
+              _vm._v(" "),
+              _vm.mostrar == 1
+                ? _c("div", { staticClass: "form-group row" }, [
+                    _c("div", { staticClass: "col-md-4" }, [
+                      _c(
+                        "select",
+                        {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.manzana,
+                              expression: "manzana"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          on: {
+                            click: function($event) {
+                              _vm.selectLotesManzana(
+                                _vm.fraccionamiento_id,
+                                _vm.etapa_id,
+                                _vm.manzana
+                              )
+                            },
+                            change: function($event) {
+                              var $$selectedVal = Array.prototype.filter
+                                .call($event.target.options, function(o) {
+                                  return o.selected
+                                })
+                                .map(function(o) {
+                                  var val = "_value" in o ? o._value : o.value
+                                  return val
+                                })
+                              _vm.manzana = $event.target.multiple
+                                ? $$selectedVal
+                                : $$selectedVal[0]
+                            }
+                          }
+                        },
+                        [
+                          _c("option", { attrs: { value: "" } }, [
+                            _vm._v("Seleccione manzana")
+                          ]),
+                          _vm._v(" "),
+                          _vm._l(_vm.arrayManzanas, function(manzanas) {
+                            return _c("option", {
+                              key: manzanas.id,
+                              domProps: {
+                                value: manzanas.manzana,
+                                textContent: _vm._s(manzanas.manzana)
+                              }
+                            })
+                          })
+                        ],
+                        2
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "col-md-4" }, [
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.num_lote,
+                            expression: "num_lote"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        attrs: { type: "text", placeholder: "Numero de Lote" },
+                        domProps: { value: _vm.num_lote },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.num_lote = $event.target.value
+                          }
+                        }
+                      })
+                    ])
+                  ])
+                : _vm._e(),
               _vm._v(" "),
               _c("br"),
               _vm._v(" "),
@@ -47859,16 +48000,10 @@ var render = function() {
                       _vm.listarSobrePrecioModelo(
                         1,
                         _vm.etapa_id,
-                        _vm.lote_id,
+                        _vm.num_lote,
                         _vm.manzana
                       ),
-                        _vm.listarSobrePrecioModelo(1, _vm.etapa_id, "", ""),
-                        _vm.listarSobrePrecioModelo(
-                          1,
-                          _vm.etapa_id,
-                          "",
-                          _vm.manzana
-                        )
+                        _vm.listarSobrePrecioEtapa(1, _vm.etapa_id)
                     }
                   }
                 },
@@ -47902,7 +48037,7 @@ var render = function() {
                             click: function($event) {
                               _vm.abrirModal(
                                 "precio_etapa",
-                                "actualizar",
+                                "actualizarLote",
                                 sobreprecioModelo
                               )
                             }
@@ -47933,12 +48068,6 @@ var render = function() {
                     _c("td", {
                       domProps: {
                         textContent: _vm._s(sobreprecioModelo.sobreprecioModelo)
-                      }
-                    }),
-                    _vm._v(" "),
-                    _c("td", {
-                      domProps: {
-                        textContent: _vm._s(sobreprecioModelo.ajuste)
                       }
                     })
                   ])
@@ -48455,43 +48584,6 @@ var render = function() {
                         ])
                       : _vm._e(),
                     _vm._v(" "),
-                    _vm.tipoAccion < 3
-                      ? _c("div", { staticClass: "form-group row" }, [
-                          _c(
-                            "label",
-                            {
-                              staticClass: "col-md-3 form-control-label",
-                              attrs: { for: "text-input" }
-                            },
-                            [_vm._v("Ajuste")]
-                          ),
-                          _vm._v(" "),
-                          _c("div", { staticClass: "col-md-4" }, [
-                            _c("input", {
-                              directives: [
-                                {
-                                  name: "model",
-                                  rawName: "v-model",
-                                  value: _vm.ajuste,
-                                  expression: "ajuste"
-                                }
-                              ],
-                              staticClass: "form-control",
-                              attrs: { type: "text", placeholder: "Ajuste $" },
-                              domProps: { value: _vm.ajuste },
-                              on: {
-                                input: function($event) {
-                                  if ($event.target.composing) {
-                                    return
-                                  }
-                                  _vm.ajuste = $event.target.value
-                                }
-                              }
-                            })
-                          ])
-                        ])
-                      : _vm._e(),
-                    _vm._v(" "),
                     _c(
                       "div",
                       {
@@ -48642,9 +48734,7 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Lote")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Sobreprecio etapa")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Ajuste")])
+        _c("th", [_vm._v("Sobreprecio etapa")])
       ])
     ])
   }

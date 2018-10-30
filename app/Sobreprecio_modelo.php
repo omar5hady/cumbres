@@ -8,7 +8,7 @@ class Sobreprecio_modelo extends Model
 {
     protected $table = 'sobreprecios_modelos'; // se referencia a que tabla pertenece el modelo
     protected $primaryKey = 'id'; //Referenciar la llave primaria
-    protected $fillable = ['lote_id','sobreprecio_etapa_id','ajuste'];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
+    protected $fillable = ['lote_id','sobreprecio_etapa_id'];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
     
 
 
