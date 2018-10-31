@@ -33,7 +33,7 @@
                                             <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                     </select>
                                         <br/>
-                                    <button type="button"  class="btn btn-primary" @click="listarSobrePrecioEtapa(1,etapa_id),listarSobrePrecioModelo(1,etapa_id,num_lote,manzana)">Buscar</button>
+                                    <button type="button"  class="btn btn-primary" @click="listarSobrePrecioEtapa(1,etapa_id),listarSobrePrecioModelo(1,etapa_id,'','')">Buscar</button>
                                
 
                             </div>
@@ -483,6 +483,7 @@
                 let me = this;
                 
                 me.arrayEtapas=[];
+                me.num_lote='';
                 var url = '/select_etapa_proyecto?buscar=' + buscar;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
@@ -686,6 +687,7 @@
                                 this.id_sobrePrecioModelo=data['id'];
                                 this.lote_id = data['lote_id']
                                 this.sobreprecioEtapaModelo_id = data['sobreprecio_etapa_id'];
+                                this.manzana=data["manzana"]
                                 break;
                             }
                         }

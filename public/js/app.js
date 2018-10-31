@@ -47218,6 +47218,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var me = this;
 
             me.arrayEtapas = [];
+            me.num_lote = '';
             var url = '/select_etapa_proyecto?buscar=' + buscar;
             axios.get(url).then(function (response) {
                 var respuesta = response.data;
@@ -47422,6 +47423,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     this.id_sobrePrecioModelo = data['id'];
                                     this.lote_id = data['lote_id'];
                                     this.sobreprecioEtapaModelo_id = data['sobreprecio_etapa_id'];
+                                    this.manzana = data["manzana"];
                                     break;
                                 }
                         }
@@ -47570,12 +47572,7 @@ var render = function() {
                   on: {
                     click: function($event) {
                       _vm.listarSobrePrecioEtapa(1, _vm.etapa_id),
-                        _vm.listarSobrePrecioModelo(
-                          1,
-                          _vm.etapa_id,
-                          _vm.num_lote,
-                          _vm.manzana
-                        )
+                        _vm.listarSobrePrecioModelo(1, _vm.etapa_id, "", "")
                     }
                   }
                 },
