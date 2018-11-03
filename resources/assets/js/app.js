@@ -25,6 +25,7 @@ Vue.component('lote', require('./components/Lote.vue'));
 
 Vue.component('precio-etapa', require('./components/PrecioEtapa.vue'));
 Vue.component('sobreprecios', require('./components/Sobreprecio.vue'));
+Vue.component('paquetes', require('./components/Paquete.vue'));
 
 const app = new Vue({
     el: '#app',

@@ -21,7 +21,7 @@ class CreatePaquetesTable extends Migration
             $table->date('v_ini')->nullable();
             $table->date('v_fin')->nullable();
             $table->double('costo');
-            $table->string('descripcion');
+            $table->text('descripcion');
             $table->timestamps();
             
             $table->foreign('fraccionamiento_id')->references('id')->on('fraccionamientos');
