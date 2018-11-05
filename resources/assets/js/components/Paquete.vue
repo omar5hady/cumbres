@@ -10,7 +10,7 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Paquetes
                         <!--   Boton Nuevo    -->
-                        <button type="button" @click="abrirModal('departamento','registrar')" class="btn btn-secondary">
+                        <button type="button" @click="abrirModal('paquete','registrar')" class="btn btn-secondary">
                             <i class="icon-plus"></i>&nbsp;Nuevo
                         </button>
                         <!---->
@@ -53,7 +53,7 @@
                                           <i class="icon-trash"></i>
                                         </button>
                                     </td>
-                                    <td v-text="paquete.proyecto" ></td>
+                                    <td v-text="paquete.fraccionamiento" ></td>
                                     <td v-text="paquete.etapa" ></td>
                                     <td v-text="paquete.nombre" ></td>
                                     <td v-text="paquete.descripcion" ></td>
@@ -99,14 +99,14 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Nombre del Paquete</label>
                                     <div class="col-md-4">
-                                        <input type="text" v-model="paquete" class="form-control" placeholder="Paquete">
+                                        <input type="text" v-model="nombre" class="form-control" placeholder="Paquete">
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
                                     <div class="col-md-6">
-                                       <select class="form-control" v-model="fraccionamiento_id" @click="selectEtapa(fraccionamiento_id),selectModelo(fraccionamiento_id),selectManzana(fraccionamiento_id)" >
+                                       <select class="form-control" v-model="fraccionamiento_id" @click="selectEtapa(fraccionamiento_id)" >
                                             <option value="0">Seleccione</option>
                                             <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                         </select>
@@ -151,10 +151,10 @@
                                 </div>
 
 
-                                <!-- Div para mostrar los errores que mande validerDepartamento -->
-                                <div v-show="errorDepartamento" class="form-group row div-error">
+                                <!-- Div para mostrar los errores que mande validerPaquete -->
+                                <div v-show="errorPaquete" class="form-group row div-error">
                                     <div class="text-center text-error">
-                                        <div v-for="error in errorMostrarMsjDepartamento" :key="error" v-text="error">
+                                        <div v-for="error in errorMostrarMsjPaquete" :key="error" v-text="error">
 
                                         </div>
                                     </div>
@@ -165,8 +165,8 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
                             <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarDepartamento()">Guardar</button>
-                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarDepartamento()">Actualizar</button>
+                            <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarPaquetes()">Guardar</button>
+                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarPaquetes()">Actualizar</button>
                         </div>
                     </div>
                     <!-- /.modal-content -->
@@ -187,15 +187,22 @@
     export default {
         data(){
             return{
-                departamento_id:0,
-                departamento : '',
-                user_alta : '',
+                id :0,
+                fraccionamiento_id:0,
+                etapa_id : 0,
+                nombre : '',
+                v_ini : '',
+                v_fin : '',
+                costo : '',
+                descripcion : '',
                 arrayPaquete : [],
+                arrayFraccionamientos: [],
+                arrayEtapas: [],
                 modal : 0,
                 tituloModal : '',
                 tipoAccion: 0,
-                errorDepartamento : 0,
-                errorMostrarMsjDepartamento : [],
+                errorPaquete : 0,
+                errorMostrarMsjPaquete : [],
                 pagination : {
                     'total' : 0,         
                     'current_page' : 0,
@@ -205,7 +212,7 @@
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'departamento', 
+                criterio : 'paquete', 
                 buscar : ''
             }
         },
@@ -241,10 +248,10 @@
             /**Metodo para mostrar los registros */
             listarPaquetes(page, buscar, criterio){
                 let me = this;
-                var url = '/departamento?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
+                var url = '/paquete?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
-                    me.arrayPaquete = respuesta.departamentos.data;
+                    me.arrayPaquete = respuesta.paquetes.data;
                     me.pagination = respuesta.pagination;
                 })
                 .catch(function (error) {
@@ -259,25 +266,30 @@
                 me.listarPaquetes(page,buscar,criterio);
             },
             /**Metodo para registrar  */
-            registrarDepartamento(){
-                if(this.validarDepartamento()) //Se verifica si hay un error (campo vacio)
+            registrarPaquetes(){
+                if(this.validarPaquetes()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
 
                 let me = this;
                 //Con axios se llama el metodo store de DepartamentoController
-                axios.post('/departamento/registrar',{
-                    'departamento': this.departamento,
-                    'user_alta': this.user_alta
+                axios.post('/paquete/registrar',{
+                    'fraccionamiento_id': this.fraccionamiento_id,
+                    'etapa_id': this.etapa_id,
+                    'nombre': this.nombre,
+                    'v_ini': this.v_ini,
+                    'v_fin': this.v_fin,
+                    'costo': this.costo,
+                    'descripcion': this.descripcion
                 }).then(function (response){
                     me.cerrarModal(); //al guardar el registro se cierra el modal
-                    me.listarPaquetes(1,'','departamento'); //se enlistan nuevamente los registros
+                    me.listarPaquetes(1,'','nombre'); //se enlistan nuevamente los registros
                     //Se muestra mensaje Success
                     swal({
                         position: 'top-end',
                         type: 'success',
-                        title: 'Departamento agregado correctamente',
+                        title: 'Paquete asignado correctamente',
                         showConfirmButton: false,
                         timer: 1500
                         })
@@ -285,21 +297,26 @@
                     console.log(error);
                 });
             },
-            actualizarDepartamento(){
-                if(this.validarDepartamento()) //Se verifica si hay un error (campo vacio)
+            actualizarPaquete(){
+                if(this.validarPaquete()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
 
                 let me = this;
                 //Con axios se llama el metodo update de DepartamentoController
-                axios.put('/departamento/actualizar',{
-                    'departamento': this.departamento,
-                    'user_alta': this.user_alta,
-                    'id_departamento' : this.departamento_id
+                axios.put('/paquete/actualizar',{
+                   'fraccionamiento_id': this.fraccionamiento_id,
+                    'etapa_id': this.etapa_id,
+                    'nombre': this.nombre,
+                    'v_ini': this.v_ini,
+                    'v_fin': this.v_fin,
+                    'costo': this.costo,
+                    'descripcion': this.descripcion,
+                    'id': this.id
                 }).then(function (response){
                     me.cerrarModal();
-                    me.listarPaquetes(1,'','departamento');
+                    me.listarPaquetes(1,'','nombre');
                     //window.alert("Cambios guardados correctamente");
                     swal({
                         position: 'top-end',
@@ -313,9 +330,14 @@
                 });
             },
             eliminarPaquete(data =[]){
-                this.departamento_id=data['id_departamento'];
-                this.departamento=data['departamento'];
-                this.user_alta=data['user_alta'];
+                this.id=data['id'];
+                this.fraccionamiento_id=data['fraccionamiento_id'];
+                this.etapa_id=data['etapa_id'];
+                this.nombre=data['nombre'];
+                this.v_ini=data['v_ini'];
+                this.v_fin=data['v_fin'];
+                this.costo=data['costo'];
+                this.descripcion=data['descripcion'];
                 //console.log(this.departamento_id);
                 swal({
                 title: '¿Desea eliminar?',
@@ -330,53 +352,89 @@
                 if (result.value) {
                     let me = this;
 
-                axios.delete('/departamento/eliminar', 
-                        {params: {'id_departamento': this.departamento_id}}).then(function (response){
+                axios.delete('/paquete/eliminar', 
+                        {params: {'id': this.id}}).then(function (response){
                         swal(
                         'Borrado!',
-                        'Departamento borrado correctamente.',
+                        'Paquete borrado correctamente.',
                         'success'
                         )
-                        me.listarPaquetes(1,'','departamento');
+                        me.listarPaquetes(1,'','nombre');
                     }).catch(function (error){
                         console.log(error);
                     });
                 }
                 })
             },
-            validarDepartamento(){
-                this.errorDepartamento=0;
-                this.errorMostrarMsjDepartamento=[];
+             selectFraccionamientos(){
+                let me = this;
 
-                if(!this.departamento) //Si la variable departamento esta vacia
-                    this.errorMostrarMsjDepartamento.push("El nombre del departamento no puede ir vacio.");
+                me.arrayFraccionamientos=[];
+                var url = '/select_fraccionamiento';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayFraccionamientos = respuesta.fraccionamientos;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+             selectEtapa(buscar){
+                let me = this;
+                
+                me.arrayEtapas=[];
+                var url = '/select_etapa_proyecto?buscar=' + buscar;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayEtapas = respuesta.etapas;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            validarPaquetes(){
+                this.errorPaquete=0;
+                this.errorMostrarMsjPaquete=[];
 
-                if(this.errorMostrarMsjDepartamento.length)//Si el mensaje tiene almacenado algo en el array
-                    this.errorDepartamento = 1;
+                if(!this.nombre) //Si la variable departamento esta vacia
+                    this.errorMostrarMsjPaquete.push("El nombre del Paquete no puede ir vacio.");
 
-                return this.errorDepartamento;
+                if(this.errorMostrarMsjPaquete.length)//Si el mensaje tiene almacenado algo en el array
+                    this.errorPaquete = 1;
+
+                return this.errorPaquete;
             },
             cerrarModal(){
                 this.modal = 0;
                 this.tituloModal = '';
-                this.departamento = '';
-                this.user_alta = '';
-                this.errorDepartamento = 0;
-                this.errorMostrarMsjDepartamento = [];
+                this.fraccionamiento_id = '';
+                this.etapa_id = '';
+                this.nombre = '';
+                this.v_ini = '';
+                this.v_fin = '';
+                this.costo = '';
+                this.descripcion = '';
+                this.errorPaquete = 0;
+                this.errorMostrarMsjPaquete = [];
 
             },
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
             abrirModal(modelo, accion,data =[]){
                 switch(modelo){
-                    case "departamento":
+                    case "paquete":
                     {
                         switch(accion){
                             case 'registrar':
                             {
                                 this.modal = 1;
                                 this.tituloModal = 'Registrar Departamento';
-                                this.departamento ='';
-                                this.user_alta ='1';
+                                this.fraccionamiento_id =0;
+                                this.etapa_id =0;
+                                this.nombre = '';
+                                this.v_ini ='';
+                                this.v_fin = '';
+                                this.costo = 0;
+                                this.descripcion = '';
                                 this.tipoAccion = 1;
                                 break;
                             }
@@ -386,14 +444,22 @@
                                 this.modal =1;
                                 this.tituloModal='Actualizar Departamento';
                                 this.tipoAccion=2;
-                                this.departamento_id=data['id_departamento'];
-                                this.departamento=data['departamento'];
-                                this.user_alta=data['user_alta'];
+                                this.id=data['id'];
+                                this.fraccionamiento_id=data['fraccionamiento_id'];
+                                this.etapa_id=data['etapa_id'];
+                                this.nombre=data['nombre'];
+                                this.v_ini=data['v_ini'];
+                                this.v_fin=data['v_fin'];
+                                this.costo=data['costo'];
+                                this.descripcion=data['descripcion'];
                                 break;
                             }
                         }
                     }
                 }
+
+                this.selectFraccionamientos();
+                this.selectEtapa(this.fraccionamiento_id);
             }
         },
         mounted() {

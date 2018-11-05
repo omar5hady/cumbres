@@ -95,6 +95,12 @@ Route::post('/sobreprecio_modelo/registrar','SobreprecioModeloController@store')
 Route::put('/sobreprecio_modelo/actualizar','SobreprecioModeloController@update');
 Route::delete('/sobreprecio_modelo/eliminar','SobreprecioModeloController@destroy');
 
+////////////////////        RUTAS PAQUETES    /////////////////////////////////
+Route::get('/paquete','PaqueteController@index');
+Route::post('/paquete/registrar','PaqueteController@store');
+Route::put('/paquete/actualizar','PaqueteController@update');
+Route::delete('/paquete/eliminar','PaqueteController@destroy');
+
 
 /***************************************************************************** */
 ///////////////////       RUTAS SELECT    ////////////////////////////////////
