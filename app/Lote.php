@@ -29,7 +29,11 @@ class lote extends Model
     }
 
     public function sobreprecio_modelo(){
-        return $this->belongsTo('App\Sobreprecio_modelo');
+        return $this->hasMany('App\Sobreprecio_modelo');
+    }
+
+    public function lote_promocion(){
+        return $this->hasMany('App\Lote_promocion');
     }
 
 

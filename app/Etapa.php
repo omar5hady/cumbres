@@ -28,10 +28,14 @@ class Etapa extends Model
     }
 
     public function precio_etapa(){
-        return $this->belongsTo('App\Precio_etapa');
+        return $this->hasMany('App\Precio_etapa');
     }
 
     public function sobreprecio_etapa(){
-        return $this->belongsTo('App\Sobreprecio_etapa');
+        return $this->hasMany('App\Sobreprecio_etapa');
+    }
+
+    public function promocion(){
+        return $this->hasMany('App\Promocion');
     }
 }

@@ -36,6 +36,9 @@
                     <li @click="menu=23" class="nav-item">
                         <a class="nav-link" href="#"><i class="icon-bag"></i> Paquetes</a>
                     </li>
+                    <li @click="menu=24" class="nav-item">
+                        <a class="nav-link" href="#"><i class="icon-bag"></i> Promociones</a>
+                    </li>
                 </ul>
             </li>
             <li class="nav-item nav-dropdown">

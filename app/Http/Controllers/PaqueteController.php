@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Paquete;
 use DB;
+use Carbon\Carbon;
 
 class PaqueteController extends Controller
 {
@@ -16,26 +17,34 @@ class PaqueteController extends Controller
     public function index(Request $request)
     {
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
-        if(!$request->ajax())return redirect('/');
+        //if(!$request->ajax())return redirect('/');
 
         $buscar = $request->buscar;
+        $current = Carbon::today()->format('ymd');
         $criterio = $request->criterio;
         
         if($buscar==''){
             $paquetes = Paquete::join('fraccionamientos','paquetes.fraccionamiento_id','=','fraccionamientos.id')
             ->join('etapas','paquetes.etapa_id','=','etapas.id')
             ->select('etapas.num_etapa as etapa','fraccionamientos.nombre as fraccionamiento','paquetes.id',
-            'paquetes.fraccionamiento_id','paquetes.etapa_id','paquetes.nombre','paquetes.v_ini','paquetes.v_fin','paquetes.costo','paquetes.descripcion')
-                ->orderBy('id','paquetes.nombre')->paginate(5);
+            'paquetes.fraccionamiento_id','paquetes.etapa_id','paquetes.nombre','paquetes.v_ini','paquetes.v_fin',
+            'paquetes.costo','paquetes.descripcion',
+            DB::raw('(CASE WHEN paquetes.v_fin >= ' . $current . ' THEN 1 ELSE 0 END) AS is_active'))
+                ->orderBy('id','paquetes.nombre')
+                //->where('paquetes.v_fin', '>', $current)
+                ->paginate(5);
         }
         else{
             $paquetes = Paquete::join('fraccionamientos','paquetes.fraccionamiento_id','=','fraccionamientos.id')
             ->join('etapas','paquetes.etapa_id','=','etapas.id')
             ->select('etapas.num_etapa as etapa','fraccionamientos.nombre as fraccionamiento','paquetes.id',
-            'paquetes.fraccionamiento_id','paquetes.etapa_id','paquetes.nombre','paquetes.v_ini','paquetes.v_fin','paquetes.costo','paquetes.descripcion')
+            'paquetes.fraccionamiento_id','paquetes.etapa_id','paquetes.nombre','paquetes.v_ini',
+            'paquetes.v_fin','paquetes.costo','paquetes.descripcion'
+            ,DB::raw('(CASE WHEN paquetes.v_fin > ' . $current . ' THEN 1 ELSE 0 END) AS is_active'))
                 ->orderBy('id','paquetes.nombre')
                 ->where($criterio, 'like', '%'. $buscar . '%')->paginate(5);
         }
+
 
         return [
             'pagination' => [

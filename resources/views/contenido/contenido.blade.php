@@ -70,5 +70,8 @@
     <template v-if="menu==23">
         <paquetes></paquetes>
     </template>
+    <template v-if="menu==24">
+        <promociones></promociones>
+    </template>
     
 @endsection

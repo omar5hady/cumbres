@@ -8,9 +8,9 @@
                 <!-- Ejemplo de tabla Listado -->
                 <div class="card">
                     <div class="card-header">
-                        <i class="fa fa-align-justify"></i> Paquetes
+                        <i class="fa fa-align-justify"></i> Promociones
                         <!--   Boton Nuevo    -->
-                        <button type="button" @click="abrirModal('paquete','registrar')" class="btn btn-secondary">
+                        <button type="button" @click="abrirModal('promocion','registrar')" class="btn btn-secondary">
                             <i class="icon-plus"></i>&nbsp;Nuevo
                         </button>
                         <!---->
@@ -21,12 +21,12 @@
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
                                     <select class="form-control col-md-4" v-model="criterio">
-                                        <option value="paquetes.nombre">Paquete</option>
+                                        <option value="promociones.nombre">Promocion</option>
                                         <option value="fraccionamientos.nombre">Proyecto</option>
                                         <option value="etapas.num_etapa">Etapa</option>
                                     </select>
-                                    <input type="text" v-model="buscar" @keyup.enter="listarPaquetes(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
-                                    <button type="submit" @click="listarPaquetes(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <input type="text" v-model="buscar" @keyup.enter="listarPromociones(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
+                                    <button type="submit" @click="listarPromociones(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
                         </div>
@@ -36,35 +36,35 @@
                                     <th>Opciones</th>
                                     <th>Proyecto</th>
                                     <th>Etapa</th>
-                                    <th>Paquete</th>
+                                    <th>Promocion</th>
                                     <th>Descripcion</th>
-                                    <th>Precio $</th>
+                                    <th>Descuento $</th>
                                     <th>Inicio</th>
                                     <th>Fin</th>
                                     <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="paquete in arrayPaquete" :key="paquete.id">
+                                <tr v-for="promocion in arrayPromocion" :key="promocion.id">
                                     <td style="width:10%">
-                                        <button type="button" @click="abrirModal('paquete','actualizar',paquete)" class="btn btn-warning btn-sm">
+                                        <button type="button" @click="abrirModal('promocion','actualizar',promocion)" class="btn btn-warning btn-sm">
                                           <i class="icon-pencil"></i>
                                         </button> &nbsp;
-                                        <button type="button" class="btn btn-danger btn-sm" @click="eliminarPaquete(paquete)">
+                                        <button type="button" class="btn btn-danger btn-sm" @click="eliminarPromocion(promocion)">
                                           <i class="icon-trash"></i>
                                         </button>
                                     </td>
-                                    <td v-text="paquete.fraccionamiento" ></td>
-                                    <td v-text="paquete.etapa" ></td>
-                                    <td v-text="paquete.nombre" ></td>
-                                    <td v-text="paquete.descripcion" ></td>
-                                    <td v-text="paquete.costo" ></td>
-                                    <td v-text="paquete.v_ini" ></td>
-                                    <td v-text="paquete.v_fin" ></td>
-                                    <td v-if="paquete.is_active == '1'">
+                                    <td v-text="promocion.proyecto" ></td>
+                                    <td v-text="promocion.etapas" ></td>
+                                    <td v-text="promocion.nombre" ></td>
+                                    <td v-text="promocion.descripcion" ></td>
+                                    <td v-text="promocion.descuento" ></td>
+                                    <td v-text="promocion.v_ini" ></td>
+                                    <td v-text="promocion.v_fin" ></td>
+                                    <td v-if="promocion.is_active == '1'">
                                         <span class="badge badge-success">Activo</span>
                                     </td>
-                                    <td v-if="paquete.is_active == '0'">
+                                    <td v-if="promocion.is_active == '0'">
                                         <span class="badge badge-danger">Desactivado</span>
                                     </td>
                                 </tr>                               
@@ -101,9 +101,9 @@
                         <div class="modal-body">
                             <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Nombre del Paquete</label>
+                                    <label class="col-md-3 form-control-label" for="text-input">Nombre de la promoción</label>
                                     <div class="col-md-4">
-                                        <input type="text" v-model="nombre" class="form-control" placeholder="Paquete">
+                                        <input type="text" v-model="nombre" class="form-control" placeholder="Promoción">
                                     </div>
                                 </div>
 
@@ -141,9 +141,9 @@
                                 </div>
 
                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Precio $</label>
+                                    <label class="col-md-3 form-control-label" for="text-input">Descuento $</label>
                                     <div class="col-md-4">
-                                        <input type="text" v-model="costo" class="form-control" placeholder="Precio del paquete">
+                                        <input type="text" v-model="descuento" class="form-control" placeholder="Descuento">
                                     </div>
                                 </div>
 
@@ -156,9 +156,9 @@
 
 
                                 <!-- Div para mostrar los errores que mande validerPaquete -->
-                                <div v-show="errorPaquete" class="form-group row div-error">
+                                <div v-show="errorPromocion" class="form-group row div-error">
                                     <div class="text-center text-error">
-                                        <div v-for="error in errorMostrarMsjPaquete" :key="error" v-text="error">
+                                        <div v-for="error in errorMostrarMsjPromocion" :key="error" v-text="error">
 
                                         </div>
                                     </div>
@@ -169,8 +169,8 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
                             <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarPaquetes()">Guardar</button>
-                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarPaquetes()">Actualizar</button>
+                            <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarPromociones()">Guardar</button>
+                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarPromociones()">Actualizar</button>
                         </div>
                     </div>
                     <!-- /.modal-content -->
@@ -197,16 +197,16 @@
                 nombre : '',
                 v_ini : '',
                 v_fin : '',
-                costo : '',
+                descuento : '',
                 descripcion : '',
-                arrayPaquete : [],
+                arrayPromocion : [],
                 arrayFraccionamientos: [],
                 arrayEtapas: [],
                 modal : 0,
                 tituloModal : '',
                 tipoAccion: 0,
-                errorPaquete : 0,
-                errorMostrarMsjPaquete : [],
+                errorPromocion : 0,
+                errorMostrarMsjPromocion : [],
                 pagination : {
                     'total' : 0,         
                     'current_page' : 0,
@@ -216,7 +216,7 @@
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'paquetes.nombre', 
+                criterio : 'promociones.nombre', 
                 buscar : ''
             }
         },
@@ -250,12 +250,12 @@
         },
         methods : {
             /**Metodo para mostrar los registros */
-            listarPaquetes(page, buscar, criterio){
+            listarPromociones(page, buscar, criterio){
                 let me = this;
-                var url = '/paquete?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
+                var url = '/promocion?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
-                    me.arrayPaquete = respuesta.paquetes.data;
+                    me.arrayPromocion = respuesta.promociones.data;
                     me.pagination = respuesta.pagination;
                 })
                 .catch(function (error) {
@@ -267,28 +267,28 @@
                 //Actualiza la pagina actual
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
-                me.listarPaquetes(page,buscar,criterio);
+                me.listarPromociones(page,buscar,criterio);
             },
             /**Metodo para registrar  */
-            registrarPaquetes(){
-                if(this.validarPaquetes()) //Se verifica si hay un error (campo vacio)
+            registrarPromociones(){
+                if(this.validarPromociones()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
 
                 let me = this;
                 //Con axios se llama el metodo store de DepartamentoController
-                axios.post('/paquete/registrar',{
+                axios.post('/promocion/registrar',{
                     'fraccionamiento_id': this.fraccionamiento_id,
                     'etapa_id': this.etapa_id,
                     'nombre': this.nombre,
                     'v_ini': this.v_ini,
                     'v_fin': this.v_fin,
-                    'costo': this.costo,
+                    'descuento': this.descuento,
                     'descripcion': this.descripcion
                 }).then(function (response){
                     me.cerrarModal(); //al guardar el registro se cierra el modal
-                    me.listarPaquetes(1,'','nombre'); //se enlistan nuevamente los registros
+                    me.listarPromociones(1,'','nombre'); //se enlistan nuevamente los registros
                     //Se muestra mensaje Success
                     swal({
                         position: 'top-end',
@@ -301,26 +301,26 @@
                     console.log(error);
                 });
             },
-            actualizarPaquetes(){
-                if(this.validarPaquetes()) //Se verifica si hay un error (campo vacio)
+            actualizarPromociones(){
+                if(this.validarPromociones()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
 
                 let me = this;
                 //Con axios se llama el metodo update de DepartamentoController
-                axios.put('/paquete/actualizar',{
+                axios.put('/promocion/actualizar',{
                    'fraccionamiento_id': this.fraccionamiento_id,
                     'etapa_id': this.etapa_id,
                     'nombre': this.nombre,
                     'v_ini': this.v_ini,
                     'v_fin': this.v_fin,
-                    'costo': this.costo,
+                    'descuento': this.descuento,
                     'descripcion': this.descripcion,
                     'id': this.id
                 }).then(function (response){
                     me.cerrarModal();
-                    me.listarPaquetes(1,'','nombre');
+                    me.listarPromociones(1,'','nombre');
                     //window.alert("Cambios guardados correctamente");
                     swal({
                         position: 'top-end',
@@ -333,14 +333,14 @@
                     console.log(error);
                 });
             },
-            eliminarPaquete(data =[]){
+            eliminarPromocion(data =[]){
                 this.id=data['id'];
                 this.fraccionamiento_id=data['fraccionamiento_id'];
                 this.etapa_id=data['etapa_id'];
                 this.nombre=data['nombre'];
                 this.v_ini=data['v_ini'];
                 this.v_fin=data['v_fin'];
-                this.costo=data['costo'];
+                this.descuento=data['descuento'];
                 this.descripcion=data['descripcion'];
                 //console.log(this.departamento_id);
                 swal({
@@ -356,14 +356,14 @@
                 if (result.value) {
                     let me = this;
 
-                axios.delete('/paquete/eliminar', 
+                axios.delete('/promocion/eliminar', 
                         {params: {'id': this.id}}).then(function (response){
                         swal(
                         'Borrado!',
                         'Paquete borrado correctamente.',
                         'success'
                         )
-                        me.listarPaquetes(1,'','nombre');
+                        me.listarPromociones(1,'','nombre');
                     }).catch(function (error){
                         console.log(error);
                     });
@@ -396,17 +396,23 @@
                     console.log(error);
                 });
             },
-            validarPaquetes(){
-                this.errorPaquete=0;
-                this.errorMostrarMsjPaquete=[];
+            validarPromociones(){
+                this.errorPromocion=0;
+                this.errorMostrarMsjPromocion=[];
 
                 if(!this.nombre) //Si la variable departamento esta vacia
-                    this.errorMostrarMsjPaquete.push("El nombre del Paquete no puede ir vacio.");
+                    this.errorMostrarMsjPromocion.push("El nombre de la promoción no puede ir vacio.");
+                
+                if(this.fraccionamiento_id==0) //Si la variable departamento esta vacia
+                    this.errorMostrarMsjPromocion.push("Debe seleccionar algun fraccionamiento.");
 
-                if(this.errorMostrarMsjPaquete.length)//Si el mensaje tiene almacenado algo en el array
-                    this.errorPaquete = 1;
+                if(this.etapa_id==0) //Si la variable departamento esta vacia
+                    this.errorMostrarMsjPromocion.push("Debe seleccionar la etapa.");
 
-                return this.errorPaquete;
+                if(this.errorMostrarMsjPromocion.length)//Si el mensaje tiene almacenado algo en el array
+                    this.errorPromocion = 1;
+
+                return this.errorPromocion;
             },
             cerrarModal(){
                 this.modal = 0;
@@ -416,16 +422,16 @@
                 this.nombre = '';
                 this.v_ini = '';
                 this.v_fin = '';
-                this.costo = '';
+                this.descuento = '';
                 this.descripcion = '';
-                this.errorPaquete = 0;
-                this.errorMostrarMsjPaquete = [];
+                this.errorPromocion = 0;
+                this.errorMostrarMsjPromocion = [];
 
             },
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
             abrirModal(modelo, accion,data =[]){
                 switch(modelo){
-                    case "paquete":
+                    case "promocion":
                     {
                         switch(accion){
                             case 'registrar':
@@ -437,7 +443,7 @@
                                 this.nombre = '';
                                 this.v_ini ='';
                                 this.v_fin = '';
-                                this.costo = 0;
+                                this.descuento = 0;
                                 this.descripcion = '';
                                 this.tipoAccion = 1;
                                 break;
@@ -454,7 +460,7 @@
                                 this.nombre=data['nombre'];
                                 this.v_ini=data['v_ini'];
                                 this.v_fin=data['v_fin'];
-                                this.costo=data['costo'];
+                                this.descuento=data['descuento'];
                                 this.descripcion=data['descripcion'];
                                 break;
                             }
@@ -467,7 +473,7 @@
             }
         },
         mounted() {
-            this.listarPaquetes(1,this.buscar,this.criterio);
+            this.listarPromociones(1,this.buscar,this.criterio);
         }
     }
 </script>

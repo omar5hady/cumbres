@@ -101,6 +101,18 @@ Route::post('/paquete/registrar','PaqueteController@store');
 Route::put('/paquete/actualizar','PaqueteController@update');
 Route::delete('/paquete/eliminar','PaqueteController@destroy');
 
+////////////////////        RUTAS PROMOCIONES    /////////////////////////////////
+Route::get('/promocion','PromocionController@index');
+Route::post('/promocion/registrar','PromocionController@store');
+Route::put('/promocion/actualizar','PromocionController@update');
+Route::delete('/promocion/eliminar','PromocionController@destroy');
+
+////////////////////        RUTAS LOTES en PROMOCION    /////////////////////////////////
+Route::get('/lote_promocion','LotePromocionController@index');
+Route::post('/lote_promocion/registrar','LotePromocionController@store');
+Route::put('/lote_promocion/actualizar','LotePromocionController@update');
+Route::delete('/lote_promocion/eliminar','LotePromocionController@destroy');
+
 
 /***************************************************************************** */
 ///////////////////       RUTAS SELECT    ////////////////////////////////////

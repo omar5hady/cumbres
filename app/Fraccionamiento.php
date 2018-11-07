@@ -31,6 +31,6 @@ class Fraccionamiento extends Model
     }
 
     public function precio_etapa(){
-        return $this->belongsTo('App\Precio_etapa');
+        return $this->hasMany('App\Precio_etapa');
     }
 }
