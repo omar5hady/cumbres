@@ -53,6 +53,9 @@
                                         <button type="button" class="btn btn-danger btn-sm" @click="eliminarPromocion(promocion)">
                                           <i class="icon-trash"></i>
                                         </button>
+                                        <button type="button" class="btn btn-success btn-sm" @click="abrirModal2('lote_promocion','registrar',promocion)" title="Asignar a Lote" v-if="promocion.is_active == '1'">
+                                          <i class="icon-share"></i>
+                                        </button>
                                     </td>
                                     <td v-text="promocion.proyecto" ></td>
                                     <td v-text="promocion.etapas" ></td>
@@ -172,13 +175,92 @@
                             <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarPromociones()">Guardar</button>
                             <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarPromociones()">Actualizar</button>
                         </div>
+                        
                     </div>
                     <!-- /.modal-content -->
                 </div>
                 <!-- /.modal-dialog -->
             </div>
             <!--Fin del modal-->
-            
+
+
+            <!--Inicio del modal asignar Lote-->
+            <div class="modal fade" tabindex="-1" :class="{'mostrar': modal2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" v-text="tituloModal2"></h4>
+                            <button type="button" class="close" @click="cerrarModal2()" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
+                                    <div class="col-md-6">
+                                       <select class="form-control" v-model="fraccionamiento_id" @click="selectEtapa(fraccionamiento_id)"  disabled>
+                                            <option value="0">Seleccione</option>
+                                            <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Etapa</label>
+                                    <div class="col-md-6">
+                                       <select class="form-control" v-model="etapa_id" @click="selectManzanas(fraccionamiento_id,etapa_id)" disabled>
+                                            <option value="0">Seleccione</option>
+                                            <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Manzanas</label>
+                                    <div class="col-md-6">
+                                       <select class="form-control" v-model="manzana" @click="selectLotesManzana(fraccionamiento_id,etapa_id,manzana)">
+                                            <option value="">Seleccione</option>
+                                            <option v-for="manzanas in arrayManzanas" :key="manzanas.id" :value="manzanas.manzana" v-text="manzanas.manzana"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Lote</label>
+                                    <div class="col-md-6">
+                                       <select class="form-control" v-model="lote_id">
+                                            <option value="0">Seleccione</option>
+                                            <option v-for="lotes in arrayLotes" :key="lotes.id" :value="lotes.id" v-text="lotes.num_lote"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                
+                                <!-- Div para mostrar los errores que mande validerPaquete -->
+                                <div v-show="errorLotePromocion" class="form-group row div-error">
+                                    <div class="text-center text-error">
+                                        <div v-for="error in errorMostrarMsjLotePromocion" :key="error" v-text="error">
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal2()">Cerrar</button>
+                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
+                            <button type="button" class="btn btn-primary" @click="registrarLotePromocion()">Guardar</button>
+                            
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!--Fin del modal-->
 
         </main>
 </template>
@@ -194,6 +276,8 @@
                 id :0,
                 fraccionamiento_id:0,
                 etapa_id : 0,
+                lote_id : 0,
+                lote_promocion_id : 0,
                 nombre : '',
                 v_ini : '',
                 v_fin : '',
@@ -202,11 +286,18 @@
                 arrayPromocion : [],
                 arrayFraccionamientos: [],
                 arrayEtapas: [],
+                arrayManzanas: [],
+                arrayLotes : [],
                 modal : 0,
+                manzana : '',
                 tituloModal : '',
+                modal2 : 0,
+                tituloModal2 : '',
                 tipoAccion: 0,
                 errorPromocion : 0,
+                errorLotePromocion : 0,
                 errorMostrarMsjPromocion : [],
+                errorMostrarMsjLotePromocion : [],
                 pagination : {
                     'total' : 0,         
                     'current_page' : 0,
@@ -293,7 +384,33 @@
                     swal({
                         position: 'top-end',
                         type: 'success',
-                        title: 'Paquete asignado correctamente',
+                        title: 'Promocion creada correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+            registrarLotePromocion(){
+                if(this.validarLotePromociones()) //Se verifica si hay un error (campo vacio)
+                {
+                    return;
+                }
+
+                let me = this;
+                //Con axios se llama el metodo store de DepartamentoController
+                axios.post('/lote_promocion/registrar',{
+                    'promocion_id': this.id,
+                    'lote_id': this.lote_id
+                }).then(function (response){
+                    me.cerrarModal2(); //al guardar el registro se cierra el modal
+                    me.listarPromociones(1,'','nombre'); //se enlistan nuevamente los registros
+                    //Se muestra mensaje Success
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Promocion asignada correctamente',
                         showConfirmButton: false,
                         timer: 1500
                         })
@@ -383,6 +500,19 @@
                     console.log(error);
                 });
             },
+            selectLotesManzana(buscar1, buscar2, buscar3){
+                let me = this;
+
+                me.arrayLotes=[];
+                var url = '/select_lotes_manzana?buscar=' + buscar1 + '&buscar1='+ buscar2 + '&buscar2='+ buscar3;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayLotes = respuesta.lote_manzana;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
              selectEtapa(buscar){
                 let me = this;
                 
@@ -391,6 +521,19 @@
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayEtapas = respuesta.etapas;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            selectManzanas(buscar1, buscar2){
+                let me = this;
+
+                me.arrayManzanas=[];
+                var url = '/select_manzanas_etapa?buscar=' + buscar1 + '&buscar1='+ buscar2;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayManzanas = respuesta.manzana;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -414,6 +557,18 @@
 
                 return this.errorPromocion;
             },
+            validarLotePromociones(){
+                this.errorLotePromocion=0;
+                this.errorMostrarMsjLotePromocion=[];
+
+                if(!this.lote_id) //Si la variable departamento esta vacia
+                    this.errorMostrarMsjLotePromocion.push("Selecciona el lote que tendra la promoción.");
+                
+                if(this.errorMostrarMsjLotePromocion.length)//Si el mensaje tiene almacenado algo en el array
+                    this.errorLotePromocion = 1;
+
+                return this.errorLotePromocion;
+            },
             cerrarModal(){
                 this.modal = 0;
                 this.tituloModal = '';
@@ -426,6 +581,17 @@
                 this.descripcion = '';
                 this.errorPromocion = 0;
                 this.errorMostrarMsjPromocion = [];
+
+            },
+            cerrarModal2(){
+                this.modal2 = 0;
+                this.tituloModal2 = '';
+                this.fraccionamiento_id = '';
+                this.etapa_id = '';
+                this.lote_id = '';
+                this.lote_promocion_id = '';
+                this.errorLotePromocion = 0;
+                this.errorMostrarMsjLotePromocion = [];
 
             },
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
@@ -470,6 +636,30 @@
 
                 this.selectFraccionamientos();
                 this.selectEtapa(this.fraccionamiento_id);
+            },
+            abrirModal2(modelo, accion,data =[]){
+                switch(modelo){
+                    case "lote_promocion":
+                    {
+                        switch(accion){
+                            case 'registrar':
+                            {
+                                this.modal2 = 1;
+                                this.tituloModal2 = 'Asignar Promoción:  ' + data['nombre'];;
+                                this.fraccionamiento_id=data['fraccionamiento_id'];
+                                this.etapa_id=data['etapa_id'];
+                                this.id=data['id'];
+                                this.lote_id = 0;
+                                this.manzana = '';
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                this.selectFraccionamientos();
+                this.selectEtapa(this.fraccionamiento_id);
+                this.selectManzanas(this.fraccionamiento_id,this.etapa_id)
             }
         },
         mounted() {

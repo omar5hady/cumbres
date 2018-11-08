@@ -50405,6 +50405,88 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -50412,6 +50494,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             id: 0,
             fraccionamiento_id: 0,
             etapa_id: 0,
+            lote_id: 0,
+            lote_promocion_id: 0,
             nombre: '',
             v_ini: '',
             v_fin: '',
@@ -50420,11 +50504,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             arrayPromocion: [],
             arrayFraccionamientos: [],
             arrayEtapas: [],
+            arrayManzanas: [],
+            arrayLotes: [],
             modal: 0,
+            manzana: '',
             tituloModal: '',
+            modal2: 0,
+            tituloModal2: '',
             tipoAccion: 0,
             errorPromocion: 0,
+            errorLotePromocion: 0,
             errorMostrarMsjPromocion: [],
+            errorMostrarMsjLotePromocion: [],
             pagination: {
                 'total': 0,
                 'current_page': 0,
@@ -50512,7 +50603,33 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 swal({
                     position: 'top-end',
                     type: 'success',
-                    title: 'Paquete asignado correctamente',
+                    title: 'Promocion creada correctamente',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        registrarLotePromocion: function registrarLotePromocion() {
+            if (this.validarLotePromociones()) //Se verifica si hay un error (campo vacio)
+                {
+                    return;
+                }
+
+            var me = this;
+            //Con axios se llama el metodo store de DepartamentoController
+            axios.post('/lote_promocion/registrar', {
+                'promocion_id': this.id,
+                'lote_id': this.lote_id
+            }).then(function (response) {
+                me.cerrarModal2(); //al guardar el registro se cierra el modal
+                me.listarPromociones(1, '', 'nombre'); //se enlistan nuevamente los registros
+                //Se muestra mensaje Success
+                swal({
+                    position: 'top-end',
+                    type: 'success',
+                    title: 'Promocion asignada correctamente',
                     showConfirmButton: false,
                     timer: 1500
                 });
@@ -50600,6 +50717,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 console.log(error);
             });
         },
+        selectLotesManzana: function selectLotesManzana(buscar1, buscar2, buscar3) {
+            var me = this;
+
+            me.arrayLotes = [];
+            var url = '/select_lotes_manzana?buscar=' + buscar1 + '&buscar1=' + buscar2 + '&buscar2=' + buscar3;
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayLotes = respuesta.lote_manzana;
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
         selectEtapa: function selectEtapa(buscar) {
             var me = this;
 
@@ -50608,6 +50737,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             axios.get(url).then(function (response) {
                 var respuesta = response.data;
                 me.arrayEtapas = respuesta.etapas;
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        selectManzanas: function selectManzanas(buscar1, buscar2) {
+            var me = this;
+
+            me.arrayManzanas = [];
+            var url = '/select_manzanas_etapa?buscar=' + buscar1 + '&buscar1=' + buscar2;
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayManzanas = respuesta.manzana;
             }).catch(function (error) {
                 console.log(error);
             });
@@ -50630,6 +50771,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             return this.errorPromocion;
         },
+        validarLotePromociones: function validarLotePromociones() {
+            this.errorLotePromocion = 0;
+            this.errorMostrarMsjLotePromocion = [];
+
+            if (!this.lote_id) //Si la variable departamento esta vacia
+                this.errorMostrarMsjLotePromocion.push("Selecciona el lote que tendra la promoción.");
+
+            if (this.errorMostrarMsjLotePromocion.length) //Si el mensaje tiene almacenado algo en el array
+                this.errorLotePromocion = 1;
+
+            return this.errorLotePromocion;
+        },
         cerrarModal: function cerrarModal() {
             this.modal = 0;
             this.tituloModal = '';
@@ -50642,6 +50795,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.descripcion = '';
             this.errorPromocion = 0;
             this.errorMostrarMsjPromocion = [];
+        },
+        cerrarModal2: function cerrarModal2() {
+            this.modal2 = 0;
+            this.tituloModal2 = '';
+            this.fraccionamiento_id = '';
+            this.etapa_id = '';
+            this.lote_id = '';
+            this.lote_promocion_id = '';
+            this.errorLotePromocion = 0;
+            this.errorMostrarMsjLotePromocion = [];
         },
 
         /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
@@ -50688,6 +50851,32 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             this.selectFraccionamientos();
             this.selectEtapa(this.fraccionamiento_id);
+        },
+        abrirModal2: function abrirModal2(modelo, accion) {
+            var data = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+
+            switch (modelo) {
+                case "lote_promocion":
+                    {
+                        switch (accion) {
+                            case 'registrar':
+                                {
+                                    this.modal2 = 1;
+                                    this.tituloModal2 = 'Asignar Promoción:  ' + data['nombre'];;
+                                    this.fraccionamiento_id = data['fraccionamiento_id'];
+                                    this.etapa_id = data['etapa_id'];
+                                    this.id = data['id'];
+                                    this.lote_id = 0;
+                                    this.manzana = '';
+                                    break;
+                                }
+                        }
+                    }
+            }
+
+            this.selectFraccionamientos();
+            this.selectEtapa(this.fraccionamiento_id);
+            this.selectManzanas(this.fraccionamiento_id, this.etapa_id);
         }
     },
     mounted: function mounted() {
@@ -50868,7 +51057,30 @@ var render = function() {
                           }
                         },
                         [_c("i", { staticClass: "icon-trash" })]
-                      )
+                      ),
+                      _vm._v(" "),
+                      promocion.is_active == "1"
+                        ? _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-success btn-sm",
+                              attrs: {
+                                type: "button",
+                                title: "Asignar a Lote"
+                              },
+                              on: {
+                                click: function($event) {
+                                  _vm.abrirModal2(
+                                    "lote_promocion",
+                                    "registrar",
+                                    promocion
+                                  )
+                                }
+                              }
+                            },
+                            [_c("i", { staticClass: "icon-share" })]
+                          )
+                        : _vm._e()
                     ]),
                     _vm._v(" "),
                     _c("td", {
@@ -51439,6 +51651,388 @@ var render = function() {
                       [_vm._v("Actualizar")]
                     )
                   : _vm._e()
+              ])
+            ])
+          ]
+        )
+      ]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        class: { mostrar: _vm.modal2 },
+        staticStyle: { display: "none" },
+        attrs: {
+          tabindex: "-1",
+          role: "dialog",
+          "aria-labelledby": "myModalLabel",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c(
+          "div",
+          {
+            staticClass: "modal-dialog modal-primary modal-lg",
+            attrs: { role: "document" }
+          },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _c("div", { staticClass: "modal-header" }, [
+                _c("h4", {
+                  staticClass: "modal-title",
+                  domProps: { textContent: _vm._s(_vm.tituloModal2) }
+                }),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "close",
+                    attrs: { type: "button", "aria-label": "Close" },
+                    on: {
+                      click: function($event) {
+                        _vm.cerrarModal2()
+                      }
+                    }
+                  },
+                  [
+                    _c("span", { attrs: { "aria-hidden": "true" } }, [
+                      _vm._v("×")
+                    ])
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-body" }, [
+                _c(
+                  "form",
+                  {
+                    staticClass: "form-horizontal",
+                    attrs: {
+                      action: "",
+                      method: "post",
+                      enctype: "multipart/form-data"
+                    }
+                  },
+                  [
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "text-input" }
+                        },
+                        [_vm._v("Proyecto")]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-6" }, [
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.fraccionamiento_id,
+                                expression: "fraccionamiento_id"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: { disabled: "" },
+                            on: {
+                              click: function($event) {
+                                _vm.selectEtapa(_vm.fraccionamiento_id)
+                              },
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.fraccionamiento_id = $event.target.multiple
+                                  ? $$selectedVal
+                                  : $$selectedVal[0]
+                              }
+                            }
+                          },
+                          [
+                            _c("option", { attrs: { value: "0" } }, [
+                              _vm._v("Seleccione")
+                            ]),
+                            _vm._v(" "),
+                            _vm._l(_vm.arrayFraccionamientos, function(
+                              fraccionamientos
+                            ) {
+                              return _c("option", {
+                                key: fraccionamientos.id,
+                                domProps: {
+                                  value: fraccionamientos.id,
+                                  textContent: _vm._s(fraccionamientos.nombre)
+                                }
+                              })
+                            })
+                          ],
+                          2
+                        )
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "text-input" }
+                        },
+                        [_vm._v("Etapa")]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-6" }, [
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.etapa_id,
+                                expression: "etapa_id"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: { disabled: "" },
+                            on: {
+                              click: function($event) {
+                                _vm.selectManzanas(
+                                  _vm.fraccionamiento_id,
+                                  _vm.etapa_id
+                                )
+                              },
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.etapa_id = $event.target.multiple
+                                  ? $$selectedVal
+                                  : $$selectedVal[0]
+                              }
+                            }
+                          },
+                          [
+                            _c("option", { attrs: { value: "0" } }, [
+                              _vm._v("Seleccione")
+                            ]),
+                            _vm._v(" "),
+                            _vm._l(_vm.arrayEtapas, function(etapas) {
+                              return _c("option", {
+                                key: etapas.id,
+                                domProps: {
+                                  value: etapas.id,
+                                  textContent: _vm._s(etapas.num_etapa)
+                                }
+                              })
+                            })
+                          ],
+                          2
+                        )
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "text-input" }
+                        },
+                        [_vm._v("Manzanas")]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-6" }, [
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.manzana,
+                                expression: "manzana"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            on: {
+                              click: function($event) {
+                                _vm.selectLotesManzana(
+                                  _vm.fraccionamiento_id,
+                                  _vm.etapa_id,
+                                  _vm.manzana
+                                )
+                              },
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.manzana = $event.target.multiple
+                                  ? $$selectedVal
+                                  : $$selectedVal[0]
+                              }
+                            }
+                          },
+                          [
+                            _c("option", { attrs: { value: "" } }, [
+                              _vm._v("Seleccione")
+                            ]),
+                            _vm._v(" "),
+                            _vm._l(_vm.arrayManzanas, function(manzanas) {
+                              return _c("option", {
+                                key: manzanas.id,
+                                domProps: {
+                                  value: manzanas.manzana,
+                                  textContent: _vm._s(manzanas.manzana)
+                                }
+                              })
+                            })
+                          ],
+                          2
+                        )
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "text-input" }
+                        },
+                        [_vm._v("Lote")]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-6" }, [
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.lote_id,
+                                expression: "lote_id"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            on: {
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.lote_id = $event.target.multiple
+                                  ? $$selectedVal
+                                  : $$selectedVal[0]
+                              }
+                            }
+                          },
+                          [
+                            _c("option", { attrs: { value: "0" } }, [
+                              _vm._v("Seleccione")
+                            ]),
+                            _vm._v(" "),
+                            _vm._l(_vm.arrayLotes, function(lotes) {
+                              return _c("option", {
+                                key: lotes.id,
+                                domProps: {
+                                  value: lotes.id,
+                                  textContent: _vm._s(lotes.num_lote)
+                                }
+                              })
+                            })
+                          ],
+                          2
+                        )
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      {
+                        directives: [
+                          {
+                            name: "show",
+                            rawName: "v-show",
+                            value: _vm.errorLotePromocion,
+                            expression: "errorLotePromocion"
+                          }
+                        ],
+                        staticClass: "form-group row div-error"
+                      },
+                      [
+                        _c(
+                          "div",
+                          { staticClass: "text-center text-error" },
+                          _vm._l(_vm.errorMostrarMsjLotePromocion, function(
+                            error
+                          ) {
+                            return _c("div", {
+                              key: error,
+                              domProps: { textContent: _vm._s(error) }
+                            })
+                          })
+                        )
+                      ]
+                    )
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-footer" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-secondary",
+                    attrs: { type: "button" },
+                    on: {
+                      click: function($event) {
+                        _vm.cerrarModal2()
+                      }
+                    }
+                  },
+                  [_vm._v("Cerrar")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary",
+                    attrs: { type: "button" },
+                    on: {
+                      click: function($event) {
+                        _vm.registrarLotePromocion()
+                      }
+                    }
+                  },
+                  [_vm._v("Guardar")]
+                )
               ])
             ])
           ]
