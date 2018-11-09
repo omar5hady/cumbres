@@ -50205,7 +50205,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: absolute !important;\n    background-color: #3c29297a !important;\n}\n.div-error{\n    display:flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n", ""]);
+exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: absolute !important;\n    background-color: #3c29297a !important;\n    overflow-y: auto;\n}\n.div-error{\n    display:flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n", ""]);
 
 // exports
 
@@ -50216,6 +50216,49 @@ exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    pos
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+var _methods;
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -50502,11 +50545,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             descuento: '',
             descripcion: '',
             arrayPromocion: [],
+            arrayLotePromocion: [],
             arrayFraccionamientos: [],
             arrayEtapas: [],
             arrayManzanas: [],
             arrayLotes: [],
             modal: 0,
+            mostrar: 0,
             manzana: '',
             tituloModal: '',
             modal2: 0,
@@ -50558,7 +50603,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             return pagesArray;
         }
     },
-    methods: {
+    methods: (_methods = {
         /**Metodo para mostrar los registros */
         listarPromociones: function listarPromociones(page, buscar, criterio) {
             var me = this;
@@ -50571,314 +50616,348 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 console.log(error);
             });
         },
+        listarLotePromociones: function listarLotePromociones(page, promocion_id) {
+            var me = this;
+            var url = '/lote_promocion?page=' + page + '&promocion_id=' + promocion_id;
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayLotePromocion = respuesta.lotes_promocion.data;
+                me.pagination = respuesta.pagination;
+                if (me.arrayLotePromocion.length > 0) {
+                    me.mostrar = 1;
+                }
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
         cambiarPagina: function cambiarPagina(page, buscar, criterio) {
             var me = this;
             //Actualiza la pagina actual
             me.pagination.current_page = page;
             //Envia la petición para visualizar la data de esta pagina
             me.listarPromociones(page, buscar, criterio);
-        },
-
-        /**Metodo para registrar  */
-        registrarPromociones: function registrarPromociones() {
-            if (this.validarPromociones()) //Se verifica si hay un error (campo vacio)
-                {
-                    return;
-                }
-
-            var me = this;
-            //Con axios se llama el metodo store de DepartamentoController
-            axios.post('/promocion/registrar', {
-                'fraccionamiento_id': this.fraccionamiento_id,
-                'etapa_id': this.etapa_id,
-                'nombre': this.nombre,
-                'v_ini': this.v_ini,
-                'v_fin': this.v_fin,
-                'descuento': this.descuento,
-                'descripcion': this.descripcion
-            }).then(function (response) {
-                me.cerrarModal(); //al guardar el registro se cierra el modal
-                me.listarPromociones(1, '', 'nombre'); //se enlistan nuevamente los registros
-                //Se muestra mensaje Success
-                swal({
-                    position: 'top-end',
-                    type: 'success',
-                    title: 'Promocion creada correctamente',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-            }).catch(function (error) {
-                console.log(error);
-            });
-        },
-        registrarLotePromocion: function registrarLotePromocion() {
-            if (this.validarLotePromociones()) //Se verifica si hay un error (campo vacio)
-                {
-                    return;
-                }
-
-            var me = this;
-            //Con axios se llama el metodo store de DepartamentoController
-            axios.post('/lote_promocion/registrar', {
-                'promocion_id': this.id,
-                'lote_id': this.lote_id
-            }).then(function (response) {
-                me.cerrarModal2(); //al guardar el registro se cierra el modal
-                me.listarPromociones(1, '', 'nombre'); //se enlistan nuevamente los registros
-                //Se muestra mensaje Success
-                swal({
-                    position: 'top-end',
-                    type: 'success',
-                    title: 'Promocion asignada correctamente',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-            }).catch(function (error) {
-                console.log(error);
-            });
-        },
-        actualizarPromociones: function actualizarPromociones() {
-            if (this.validarPromociones()) //Se verifica si hay un error (campo vacio)
-                {
-                    return;
-                }
-
-            var me = this;
-            //Con axios se llama el metodo update de DepartamentoController
-            axios.put('/promocion/actualizar', {
-                'fraccionamiento_id': this.fraccionamiento_id,
-                'etapa_id': this.etapa_id,
-                'nombre': this.nombre,
-                'v_ini': this.v_ini,
-                'v_fin': this.v_fin,
-                'descuento': this.descuento,
-                'descripcion': this.descripcion,
-                'id': this.id
-            }).then(function (response) {
-                me.cerrarModal();
-                me.listarPromociones(1, '', 'nombre');
-                //window.alert("Cambios guardados correctamente");
-                swal({
-                    position: 'top-end',
-                    type: 'success',
-                    title: 'Cambios guardados correctamente',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-            }).catch(function (error) {
-                console.log(error);
-            });
-        },
-        eliminarPromocion: function eliminarPromocion() {
-            var _this = this;
-
-            var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-
-            this.id = data['id'];
-            this.fraccionamiento_id = data['fraccionamiento_id'];
-            this.etapa_id = data['etapa_id'];
-            this.nombre = data['nombre'];
-            this.v_ini = data['v_ini'];
-            this.v_fin = data['v_fin'];
-            this.descuento = data['descuento'];
-            this.descripcion = data['descripcion'];
-            //console.log(this.departamento_id);
-            swal({
-                title: '¿Desea eliminar?',
-                text: "Esta acción no se puede revertir!",
-                type: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                cancelButtonText: 'Cancelar',
-                confirmButtonText: 'Si, eliminar!'
-            }).then(function (result) {
-                if (result.value) {
-                    var me = _this;
-
-                    axios.delete('/promocion/eliminar', { params: { 'id': _this.id } }).then(function (response) {
-                        swal('Borrado!', 'Paquete borrado correctamente.', 'success');
-                        me.listarPromociones(1, '', 'nombre');
-                    }).catch(function (error) {
-                        console.log(error);
-                    });
-                }
-            });
-        },
-        selectFraccionamientos: function selectFraccionamientos() {
-            var me = this;
-
-            me.arrayFraccionamientos = [];
-            var url = '/select_fraccionamiento';
-            axios.get(url).then(function (response) {
-                var respuesta = response.data;
-                me.arrayFraccionamientos = respuesta.fraccionamientos;
-            }).catch(function (error) {
-                console.log(error);
-            });
-        },
-        selectLotesManzana: function selectLotesManzana(buscar1, buscar2, buscar3) {
-            var me = this;
-
-            me.arrayLotes = [];
-            var url = '/select_lotes_manzana?buscar=' + buscar1 + '&buscar1=' + buscar2 + '&buscar2=' + buscar3;
-            axios.get(url).then(function (response) {
-                var respuesta = response.data;
-                me.arrayLotes = respuesta.lote_manzana;
-            }).catch(function (error) {
-                console.log(error);
-            });
-        },
-        selectEtapa: function selectEtapa(buscar) {
-            var me = this;
-
-            me.arrayEtapas = [];
-            var url = '/select_etapa_proyecto?buscar=' + buscar;
-            axios.get(url).then(function (response) {
-                var respuesta = response.data;
-                me.arrayEtapas = respuesta.etapas;
-            }).catch(function (error) {
-                console.log(error);
-            });
-        },
-        selectManzanas: function selectManzanas(buscar1, buscar2) {
-            var me = this;
-
-            me.arrayManzanas = [];
-            var url = '/select_manzanas_etapa?buscar=' + buscar1 + '&buscar1=' + buscar2;
-            axios.get(url).then(function (response) {
-                var respuesta = response.data;
-                me.arrayManzanas = respuesta.manzana;
-            }).catch(function (error) {
-                console.log(error);
-            });
-        },
-        validarPromociones: function validarPromociones() {
-            this.errorPromocion = 0;
-            this.errorMostrarMsjPromocion = [];
-
-            if (!this.nombre) //Si la variable departamento esta vacia
-                this.errorMostrarMsjPromocion.push("El nombre de la promoción no puede ir vacio.");
-
-            if (this.fraccionamiento_id == 0) //Si la variable departamento esta vacia
-                this.errorMostrarMsjPromocion.push("Debe seleccionar algun fraccionamiento.");
-
-            if (this.etapa_id == 0) //Si la variable departamento esta vacia
-                this.errorMostrarMsjPromocion.push("Debe seleccionar la etapa.");
-
-            if (this.errorMostrarMsjPromocion.length) //Si el mensaje tiene almacenado algo en el array
-                this.errorPromocion = 1;
-
-            return this.errorPromocion;
-        },
-        validarLotePromociones: function validarLotePromociones() {
-            this.errorLotePromocion = 0;
-            this.errorMostrarMsjLotePromocion = [];
-
-            if (!this.lote_id) //Si la variable departamento esta vacia
-                this.errorMostrarMsjLotePromocion.push("Selecciona el lote que tendra la promoción.");
-
-            if (this.errorMostrarMsjLotePromocion.length) //Si el mensaje tiene almacenado algo en el array
-                this.errorLotePromocion = 1;
-
-            return this.errorLotePromocion;
-        },
-        cerrarModal: function cerrarModal() {
-            this.modal = 0;
-            this.tituloModal = '';
-            this.fraccionamiento_id = '';
-            this.etapa_id = '';
-            this.nombre = '';
-            this.v_ini = '';
-            this.v_fin = '';
-            this.descuento = '';
-            this.descripcion = '';
-            this.errorPromocion = 0;
-            this.errorMostrarMsjPromocion = [];
-        },
-        cerrarModal2: function cerrarModal2() {
-            this.modal2 = 0;
-            this.tituloModal2 = '';
-            this.fraccionamiento_id = '';
-            this.etapa_id = '';
-            this.lote_id = '';
-            this.lote_promocion_id = '';
-            this.errorLotePromocion = 0;
-            this.errorMostrarMsjLotePromocion = [];
-        },
-
-        /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
-        abrirModal: function abrirModal(modelo, accion) {
-            var data = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
-
-            switch (modelo) {
-                case "promocion":
-                    {
-                        switch (accion) {
-                            case 'registrar':
-                                {
-                                    this.modal = 1;
-                                    this.tituloModal = 'Registrar Departamento';
-                                    this.fraccionamiento_id = 0;
-                                    this.etapa_id = 0;
-                                    this.nombre = '';
-                                    this.v_ini = '';
-                                    this.v_fin = '';
-                                    this.descuento = 0;
-                                    this.descripcion = '';
-                                    this.tipoAccion = 1;
-                                    break;
-                                }
-                            case 'actualizar':
-                                {
-                                    //console.log(data);
-                                    this.modal = 1;
-                                    this.tituloModal = 'Actualizar Departamento';
-                                    this.tipoAccion = 2;
-                                    this.id = data['id'];
-                                    this.fraccionamiento_id = data['fraccionamiento_id'];
-                                    this.etapa_id = data['etapa_id'];
-                                    this.nombre = data['nombre'];
-                                    this.v_ini = data['v_ini'];
-                                    this.v_fin = data['v_fin'];
-                                    this.descuento = data['descuento'];
-                                    this.descripcion = data['descripcion'];
-                                    break;
-                                }
-                        }
-                    }
-            }
-
-            this.selectFraccionamientos();
-            this.selectEtapa(this.fraccionamiento_id);
-        },
-        abrirModal2: function abrirModal2(modelo, accion) {
-            var data = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
-
-            switch (modelo) {
-                case "lote_promocion":
-                    {
-                        switch (accion) {
-                            case 'registrar':
-                                {
-                                    this.modal2 = 1;
-                                    this.tituloModal2 = 'Asignar Promoción:  ' + data['nombre'];;
-                                    this.fraccionamiento_id = data['fraccionamiento_id'];
-                                    this.etapa_id = data['etapa_id'];
-                                    this.id = data['id'];
-                                    this.lote_id = 0;
-                                    this.manzana = '';
-                                    break;
-                                }
-                        }
-                    }
-            }
-
-            this.selectFraccionamientos();
-            this.selectEtapa(this.fraccionamiento_id);
-            this.selectManzanas(this.fraccionamiento_id, this.etapa_id);
         }
-    },
+    }, _defineProperty(_methods, 'cambiarPagina', function cambiarPagina(page, buscar) {
+        var me = this;
+        //Actualiza la pagina actual
+        me.pagination.current_page = page;
+        //Envia la petición para visualizar la data de esta pagina
+        me.listarLotePromociones(page, buscar);
+    }), _defineProperty(_methods, 'registrarPromociones', function registrarPromociones() {
+        if (this.validarPromociones()) //Se verifica si hay un error (campo vacio)
+            {
+                return;
+            }
+
+        var me = this;
+        //Con axios se llama el metodo store de DepartamentoController
+        axios.post('/promocion/registrar', {
+            'fraccionamiento_id': this.fraccionamiento_id,
+            'etapa_id': this.etapa_id,
+            'nombre': this.nombre,
+            'v_ini': this.v_ini,
+            'v_fin': this.v_fin,
+            'descuento': this.descuento,
+            'descripcion': this.descripcion
+        }).then(function (response) {
+            me.cerrarModal(); //al guardar el registro se cierra el modal
+            me.listarPromociones(1, '', 'nombre'); //se enlistan nuevamente los registros
+            //Se muestra mensaje Success
+            swal({
+                position: 'top-end',
+                type: 'success',
+                title: 'Promocion creada correctamente',
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }).catch(function (error) {
+            console.log(error);
+        });
+    }), _defineProperty(_methods, 'registrarLotePromocion', function registrarLotePromocion() {
+        if (this.validarLotePromociones()) //Se verifica si hay un error (campo vacio)
+            {
+                return;
+            }
+
+        var me = this;
+        //Con axios se llama el metodo store de DepartamentoController
+        axios.post('/lote_promocion/registrar', {
+            'promocion_id': this.id,
+            'lote_id': this.lote_id
+        }).then(function (response) {
+            me.cerrarModal2(); //al guardar el registro se cierra el modal
+            me.listarPromociones(1, '', 'nombre'); //se enlistan nuevamente los registros
+            //Se muestra mensaje Success
+            swal({
+                position: 'top-end',
+                type: 'success',
+                title: 'Promocion asignada correctamente',
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }).catch(function (error) {
+            console.log(error);
+        });
+    }), _defineProperty(_methods, 'actualizarPromociones', function actualizarPromociones() {
+        if (this.validarPromociones()) //Se verifica si hay un error (campo vacio)
+            {
+                return;
+            }
+
+        var me = this;
+        //Con axios se llama el metodo update de DepartamentoController
+        axios.put('/promocion/actualizar', {
+            'fraccionamiento_id': this.fraccionamiento_id,
+            'etapa_id': this.etapa_id,
+            'nombre': this.nombre,
+            'v_ini': this.v_ini,
+            'v_fin': this.v_fin,
+            'descuento': this.descuento,
+            'descripcion': this.descripcion,
+            'id': this.id
+        }).then(function (response) {
+            me.cerrarModal();
+            me.listarPromociones(1, '', 'nombre');
+            //window.alert("Cambios guardados correctamente");
+            swal({
+                position: 'top-end',
+                type: 'success',
+                title: 'Cambios guardados correctamente',
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }).catch(function (error) {
+            console.log(error);
+        });
+    }), _defineProperty(_methods, 'eliminarPromocion', function eliminarPromocion() {
+        var _this = this;
+
+        var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+
+        this.id = data['id'];
+        this.fraccionamiento_id = data['fraccionamiento_id'];
+        this.etapa_id = data['etapa_id'];
+        this.nombre = data['nombre'];
+        this.v_ini = data['v_ini'];
+        this.v_fin = data['v_fin'];
+        this.descuento = data['descuento'];
+        this.descripcion = data['descripcion'];
+        //console.log(this.departamento_id);
+        swal({
+            title: '¿Desea eliminar?',
+            text: "Esta acción no se puede revertir!",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: 'Cancelar',
+            confirmButtonText: 'Si, eliminar!'
+        }).then(function (result) {
+            if (result.value) {
+                var me = _this;
+
+                axios.delete('/promocion/eliminar', { params: { 'id': _this.id } }).then(function (response) {
+                    swal('Borrado!', 'Paquete borrado correctamente.', 'success');
+                    me.listarPromociones(1, '', 'nombre');
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            }
+        });
+    }), _defineProperty(_methods, 'eliminarLotePromocion', function eliminarLotePromocion() {
+        var _this2 = this;
+
+        var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+
+        this.lote_promocion_id = data['id'];
+        this.lote_id = data['lote_id'];
+        this.promocion_id = data['promocion_id'];
+        //console.log(this.departamento_id);
+        swal({
+            title: '¿Desea eliminar?',
+            text: "Esta acción no se puede revertir!",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: 'Cancelar',
+            confirmButtonText: 'Si, eliminar!'
+        }).then(function (result) {
+            if (result.value) {
+                var me = _this2;
+
+                axios.delete('/lote_promocion/eliminar', { params: { 'id': _this2.lote_promocion_id } }).then(function (response) {
+                    swal('Borrado!', 'Paquete borrado correctamente.', 'success');
+                    me.listarLotePromociones(1, me.promocion_id);
+                    if (me.arrayLotePromocion.length == 0) me.mostrar = 0;
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            }
+        });
+    }), _defineProperty(_methods, 'selectFraccionamientos', function selectFraccionamientos() {
+        var me = this;
+
+        me.arrayFraccionamientos = [];
+        var url = '/select_fraccionamiento';
+        axios.get(url).then(function (response) {
+            var respuesta = response.data;
+            me.arrayFraccionamientos = respuesta.fraccionamientos;
+        }).catch(function (error) {
+            console.log(error);
+        });
+    }), _defineProperty(_methods, 'selectLotesManzana', function selectLotesManzana(buscar1, buscar2, buscar3) {
+        var me = this;
+
+        me.arrayLotes = [];
+        var url = '/select_lotes_manzana?buscar=' + buscar1 + '&buscar1=' + buscar2 + '&buscar2=' + buscar3;
+        axios.get(url).then(function (response) {
+            var respuesta = response.data;
+            me.arrayLotes = respuesta.lote_manzana;
+        }).catch(function (error) {
+            console.log(error);
+        });
+    }), _defineProperty(_methods, 'selectEtapa', function selectEtapa(buscar) {
+        var me = this;
+
+        me.arrayEtapas = [];
+        var url = '/select_etapa_proyecto?buscar=' + buscar;
+        axios.get(url).then(function (response) {
+            var respuesta = response.data;
+            me.arrayEtapas = respuesta.etapas;
+        }).catch(function (error) {
+            console.log(error);
+        });
+    }), _defineProperty(_methods, 'selectManzanas', function selectManzanas(buscar1, buscar2) {
+        var me = this;
+
+        me.arrayManzanas = [];
+        var url = '/select_manzanas_etapa?buscar=' + buscar1 + '&buscar1=' + buscar2;
+        axios.get(url).then(function (response) {
+            var respuesta = response.data;
+            me.arrayManzanas = respuesta.manzana;
+        }).catch(function (error) {
+            console.log(error);
+        });
+    }), _defineProperty(_methods, 'validarPromociones', function validarPromociones() {
+        this.errorPromocion = 0;
+        this.errorMostrarMsjPromocion = [];
+
+        if (!this.nombre) //Si la variable departamento esta vacia
+            this.errorMostrarMsjPromocion.push("El nombre de la promoción no puede ir vacio.");
+
+        if (this.fraccionamiento_id == 0) //Si la variable departamento esta vacia
+            this.errorMostrarMsjPromocion.push("Debe seleccionar algun fraccionamiento.");
+
+        if (this.etapa_id == 0) //Si la variable departamento esta vacia
+            this.errorMostrarMsjPromocion.push("Debe seleccionar la etapa.");
+
+        if (this.errorMostrarMsjPromocion.length) //Si el mensaje tiene almacenado algo en el array
+            this.errorPromocion = 1;
+
+        return this.errorPromocion;
+    }), _defineProperty(_methods, 'validarLotePromociones', function validarLotePromociones() {
+        this.errorLotePromocion = 0;
+        this.errorMostrarMsjLotePromocion = [];
+
+        if (!this.lote_id) //Si la variable departamento esta vacia
+            this.errorMostrarMsjLotePromocion.push("Selecciona el lote que tendra la promoción.");
+
+        if (this.errorMostrarMsjLotePromocion.length) //Si el mensaje tiene almacenado algo en el array
+            this.errorLotePromocion = 1;
+
+        return this.errorLotePromocion;
+    }), _defineProperty(_methods, 'cerrarModal', function cerrarModal() {
+        this.modal = 0;
+        this.tituloModal = '';
+        this.fraccionamiento_id = '';
+        this.etapa_id = '';
+        this.nombre = '';
+        this.v_ini = '';
+        this.v_fin = '';
+        this.descuento = '';
+        this.descripcion = '';
+        this.errorPromocion = 0;
+        this.errorMostrarMsjPromocion = [];
+    }), _defineProperty(_methods, 'cerrarModal2', function cerrarModal2() {
+        this.modal2 = 0;
+        this.tituloModal2 = '';
+        this.fraccionamiento_id = '';
+        this.etapa_id = '';
+        this.lote_id = '';
+        this.lote_promocion_id = '';
+        this.errorLotePromocion = 0;
+        this.errorMostrarMsjLotePromocion = [];
+        this.mostrar = 0;
+    }), _defineProperty(_methods, 'abrirModal', function abrirModal(modelo, accion) {
+        var data = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+
+        switch (modelo) {
+            case "promocion":
+                {
+                    switch (accion) {
+                        case 'registrar':
+                            {
+                                this.modal = 1;
+                                this.tituloModal = 'Registrar Departamento';
+                                this.fraccionamiento_id = 0;
+                                this.etapa_id = 0;
+                                this.nombre = '';
+                                this.v_ini = '';
+                                this.v_fin = '';
+                                this.descuento = 0;
+                                this.descripcion = '';
+                                this.tipoAccion = 1;
+                                break;
+                            }
+                        case 'actualizar':
+                            {
+                                //console.log(data);
+                                this.modal = 1;
+                                this.tituloModal = 'Actualizar Departamento';
+                                this.tipoAccion = 2;
+                                this.id = data['id'];
+                                this.fraccionamiento_id = data['fraccionamiento_id'];
+                                this.etapa_id = data['etapa_id'];
+                                this.nombre = data['nombre'];
+                                this.v_ini = data['v_ini'];
+                                this.v_fin = data['v_fin'];
+                                this.descuento = data['descuento'];
+                                this.descripcion = data['descripcion'];
+                                break;
+                            }
+                    }
+                }
+        }
+
+        this.selectFraccionamientos();
+        this.selectEtapa(this.fraccionamiento_id);
+    }), _defineProperty(_methods, 'abrirModal2', function abrirModal2(modelo, accion) {
+        var data = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+
+        switch (modelo) {
+            case "lote_promocion":
+                {
+                    switch (accion) {
+                        case 'registrar':
+                            {
+                                this.modal2 = 1;
+                                this.tituloModal2 = 'Asignar Promoción:  ' + data['nombre'];;
+                                this.fraccionamiento_id = data['fraccionamiento_id'];
+                                this.etapa_id = data['etapa_id'];
+                                this.id = data['id'];
+                                this.lote_id = 0;
+                                this.manzana = '';
+                                break;
+                            }
+                    }
+                }
+        }
+
+        this.selectFraccionamientos();
+        this.selectEtapa(this.fraccionamiento_id);
+        this.selectManzanas(this.fraccionamiento_id, this.etapa_id);
+    }), _methods),
     mounted: function mounted() {
         this.listarPromociones(1, this.buscar, this.criterio);
     }
@@ -51074,7 +51153,8 @@ var render = function() {
                                     "lote_promocion",
                                     "registrar",
                                     promocion
-                                  )
+                                  ),
+                                    _vm.listarLotePromociones(1, promocion.id)
                                 }
                               }
                             },
@@ -52033,6 +52113,140 @@ var render = function() {
                   },
                   [_vm._v("Guardar")]
                 )
+              ]),
+              _vm._v(" "),
+              _vm.mostrar == 1
+                ? _c("div", { staticClass: "modal-header" }, [
+                    _c("h5", { staticClass: "modal-title" }, [
+                      _vm._v(" Lotes con la promoción")
+                    ])
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.mostrar == 1
+                ? _c(
+                    "table",
+                    {
+                      staticClass: "table table-bordered table-striped table-sm"
+                    },
+                    [
+                      _vm._m(2),
+                      _vm._v(" "),
+                      _c(
+                        "tbody",
+                        _vm._l(_vm.arrayLotePromocion, function(lotePromocion) {
+                          return _c("tr", { key: lotePromocion.id }, [
+                            _c("td", { staticStyle: { width: "25%" } }, [
+                              _c(
+                                "button",
+                                {
+                                  staticClass: "btn btn-danger btn-sm",
+                                  attrs: { type: "button" },
+                                  on: {
+                                    click: function($event) {
+                                      _vm.eliminarLotePromocion(lotePromocion)
+                                    }
+                                  }
+                                },
+                                [_c("i", { staticClass: "icon-trash" })]
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _c("td", {
+                              domProps: {
+                                textContent: _vm._s(lotePromocion.manzana)
+                              }
+                            }),
+                            _vm._v(" "),
+                            _c("td", {
+                              domProps: {
+                                textContent: _vm._s(lotePromocion.lote)
+                              }
+                            })
+                          ])
+                        })
+                      )
+                    ]
+                  )
+                : _vm._e(),
+              _vm._v(" "),
+              _c("nav", [
+                _c(
+                  "ul",
+                  { staticClass: "pagination" },
+                  [
+                    _vm.pagination.current_page > 1
+                      ? _c("li", { staticClass: "page-item" }, [
+                          _c(
+                            "a",
+                            {
+                              staticClass: "page-link",
+                              attrs: { href: "#" },
+                              on: {
+                                click: function($event) {
+                                  $event.preventDefault()
+                                  _vm.cambiarPagina2(
+                                    _vm.pagination.current_page - 1,
+                                    _vm.id,
+                                    _vm.criterio
+                                  )
+                                }
+                              }
+                            },
+                            [_vm._v("Ant")]
+                          )
+                        ])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm._l(_vm.pagesNumber, function(page) {
+                      return _c(
+                        "li",
+                        {
+                          key: page,
+                          staticClass: "page-item",
+                          class: [page == _vm.isActived ? "active" : ""]
+                        },
+                        [
+                          _c("a", {
+                            staticClass: "page-link",
+                            attrs: { href: "#" },
+                            domProps: { textContent: _vm._s(page) },
+                            on: {
+                              click: function($event) {
+                                $event.preventDefault()
+                                _vm.cambiarPagina2(page, _vm.id, _vm.criterio)
+                              }
+                            }
+                          })
+                        ]
+                      )
+                    }),
+                    _vm._v(" "),
+                    _vm.pagination.current_page < _vm.pagination.last_page
+                      ? _c("li", { staticClass: "page-item" }, [
+                          _c(
+                            "a",
+                            {
+                              staticClass: "page-link",
+                              attrs: { href: "#" },
+                              on: {
+                                click: function($event) {
+                                  $event.preventDefault()
+                                  _vm.cambiarPagina2(
+                                    _vm.pagination.current_page + 1,
+                                    _vm.id,
+                                    _vm.criterio
+                                  )
+                                }
+                              }
+                            },
+                            [_vm._v("Sig")]
+                          )
+                        ])
+                      : _vm._e()
+                  ],
+                  2
+                )
               ])
             ])
           ]
@@ -52079,6 +52293,20 @@ var staticRenderFns = [
         _c("th", [_vm._v("Fin")]),
         _vm._v(" "),
         _c("th", [_vm._v("Status")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("Opciones")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Manzana")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("# Lote")])
       ])
     ])
   }

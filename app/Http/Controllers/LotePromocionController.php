@@ -12,23 +12,15 @@ class LotePromocionController extends Controller
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
        // if(!$request->ajax())return redirect('/');
 
-        $buscar = $request->buscar;
+        $promocion_id = $request->promocion_id;
                 
-        if($buscar==''){
             $lotes_promocion = Lote_promocion::join('lotes','lotes_promocion.lote_id','=','lotes.id')
             ->join('promociones','lotes_promocion.promocion_id','=','promociones.id')
-            ->select('lotes.num_lote as lote','promociones.nombre as promocion',
+            ->select('lotes.num_lote as lote','promociones.nombre as promocion', 'lotes.manzana as manzana',
                     'lotes_promocion.id','lotes_promocion.lote_id','lotes_promocion.promocion_id')
+            ->where('lotes_promocion.promocion_id', '=', $promocion_id)
             ->orderBy('lotes_promocion.id', 'promociones.nombre')->paginate(5);
-        }
-        else{
-            $lotes_promocion = Lote_promocion::join('lotes','lotes_promocion.lote_id','=','lotes.id')
-            ->join('promociones','lotes_promocion.promocion_id','=','promociones.id')
-            ->select('lotes.num_lote as lote','promociones.nombre as promocion',
-                    'lotes_promocion.id','lotes_promocion.lote_id','lotes_promocion.promocion_id')
-            ->where($criterio, 'like', '%'. $buscar . '%')
-            ->orderBy('lotes_promocion.id', 'promociones.nombre')->paginate(5);
-        }
+        
             
         return [
             'pagination' => [

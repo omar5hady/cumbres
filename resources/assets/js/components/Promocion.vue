@@ -53,7 +53,7 @@
                                         <button type="button" class="btn btn-danger btn-sm" @click="eliminarPromocion(promocion)">
                                           <i class="icon-trash"></i>
                                         </button>
-                                        <button type="button" class="btn btn-success btn-sm" @click="abrirModal2('lote_promocion','registrar',promocion)" title="Asignar a Lote" v-if="promocion.is_active == '1'">
+                                        <button type="button" class="btn btn-success btn-sm" @click="abrirModal2('lote_promocion','registrar',promocion), listarLotePromociones(1, promocion.id)" title="Asignar a Lote" v-if="promocion.is_active == '1'">
                                           <i class="icon-share"></i>
                                         </button>
                                     </td>
@@ -253,11 +253,50 @@
                             <button type="button" class="btn btn-secondary" @click="cerrarModal2()">Cerrar</button>
                             <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
                             <button type="button" class="btn btn-primary" @click="registrarLotePromocion()">Guardar</button>
+
+                            </div>
+                                <div class="modal-header" v-if="mostrar == 1">
+                                    <h5 class="modal-title"> Lotes con la promoción</h5>
+                                </div>
+                                <table class="table table-bordered table-striped table-sm" v-if="mostrar == 1">
+                                    <thead>
+                                        <tr>
+                                            <th>Opciones</th>
+                                            <th>Manzana</th>
+                                            <th># Lote</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="lotePromocion in arrayLotePromocion" :key="lotePromocion.id">
+                                            <td style="width:25%">
+                                                <button type="button" class="btn btn-danger btn-sm" @click="eliminarLotePromocion(lotePromocion)">
+                                                <i class="icon-trash"></i>
+                                                </button>
+                                            </td>
+                                            <td v-text="lotePromocion.manzana" ></td>
+                                            <td v-text="lotePromocion.lote" ></td>
+                                        </tr>                               
+                                    </tbody>
+                                </table>
+                                <nav>
+                                    <!--Botones de paginacion -->
+                                    <ul class="pagination">
+                                        <li class="page-item" v-if="pagination.current_page > 1">
+                                            <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination.current_page - 1,id,criterio)">Ant</a>
+                                        </li>
+                                        <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
+                                            <a class="page-link" href="#" @click.prevent="cambiarPagina2(page,id,criterio)" v-text="page"></a>
+                                        </li>
+                                        <li class="page-item" v-if="pagination.current_page < pagination.last_page">
+                                            <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination.current_page + 1,id,criterio)">Sig</a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
                             
                         </div>
-                    </div>
                     <!-- /.modal-content -->
-                </div>
+                
                 <!-- /.modal-dialog -->
             </div>
             <!--Fin del modal-->
@@ -284,11 +323,13 @@
                 descuento : '',
                 descripcion : '',
                 arrayPromocion : [],
+                arrayLotePromocion : [],
                 arrayFraccionamientos: [],
                 arrayEtapas: [],
                 arrayManzanas: [],
                 arrayLotes : [],
                 modal : 0,
+                mostrar : 0,
                 manzana : '',
                 tituloModal : '',
                 modal2 : 0,
@@ -353,12 +394,34 @@
                     console.log(error);
                 });
             },
+            listarLotePromociones(page, promocion_id){
+                let me = this;
+                var url = '/lote_promocion?page=' + page + '&promocion_id=' + promocion_id;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayLotePromocion = respuesta.lotes_promocion.data;
+                    me.pagination = respuesta.pagination;
+                    if(me.arrayLotePromocion.length>0){
+                        me.mostrar = 1;
+                    }
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
             cambiarPagina(page, buscar, criterio){
                 let me = this;
                 //Actualiza la pagina actual
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
                 me.listarPromociones(page,buscar,criterio);
+            },
+            cambiarPagina(page, buscar){
+                let me = this;
+                //Actualiza la pagina actual
+                me.pagination.current_page = page;
+                //Envia la petición para visualizar la data de esta pagina
+                me.listarLotePromociones(page,buscar);
             },
             /**Metodo para registrar  */
             registrarPromociones(){
@@ -487,6 +550,40 @@
                 }
                 })
             },
+            eliminarLotePromocion(data =[]){
+                this.lote_promocion_id=data['id'];
+                this.lote_id=data['lote_id'];
+                this.promocion_id=data['promocion_id'];
+                //console.log(this.departamento_id);
+                swal({
+                title: '¿Desea eliminar?',
+                text: "Esta acción no se puede revertir!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Si, eliminar!'
+                }).then((result) => {
+                if (result.value) {
+                    let me = this;
+
+                axios.delete('/lote_promocion/eliminar', 
+                        {params: {'id': this.lote_promocion_id}}).then(function (response){
+                        swal(
+                        'Borrado!',
+                        'Paquete borrado correctamente.',
+                        'success'
+                        )
+                        me.listarLotePromociones(1,me.promocion_id);
+                        if(me.arrayLotePromocion.length==0)
+                            me.mostrar = 0;
+                    }).catch(function (error){
+                        console.log(error);
+                    });
+                }
+                })
+            },
              selectFraccionamientos(){
                 let me = this;
 
@@ -592,6 +689,7 @@
                 this.lote_promocion_id = '';
                 this.errorLotePromocion = 0;
                 this.errorMostrarMsjLotePromocion = [];
+                this.mostrar = 0;
 
             },
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
@@ -677,6 +775,7 @@
         opacity: 1 !important;
         position: absolute !important;
         background-color: #3c29297a !important;
+        overflow-y: auto;
     }
     .div-error{
         display:flex;
