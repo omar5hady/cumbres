@@ -8,6 +8,20 @@
                 Mantenimiento
             </li>
             <li class="nav-item nav-dropdown">
+                <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-energy"></i> Administración </a>
+                <ul class="nav-dropdown-items">
+                    <li @click="menu=11" class="nav-item">
+                        <a class="nav-link" href="#"><i class="icon-bag"></i> Departamentos</a>
+                    </li>
+                    <li @click="menu=12" class="nav-item">
+                        <a class="nav-link" href="#"><i class="icon-bag"></i> Personas</a>
+                    </li>
+                    <li @click="menu=13" class="nav-item">
+                        <a class="nav-link" href="#"><i class="icon-bag"></i> Empresas</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item nav-dropdown">
                 <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-home"></i> Desarrollo</a>
                 <ul class="nav-dropdown-items">
                     <li @click="menu=1" class="nav-item">
@@ -42,24 +56,10 @@
                 </ul>
             </li>
             <li class="nav-item nav-dropdown">
-                <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-energy"></i> Administración </a>
-                <ul class="nav-dropdown-items">
-                    <li @click="menu=11" class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-bag"></i> Departamentos</a>
-                    </li>
-                    <li @click="menu=12" class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-bag"></i> Personas</a>
-                    </li>
-                    <li @click="menu=13" class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-bag"></i> Empresas</a>
-                    </li>
-                </ul>
-            </li>
-            <li class="nav-item nav-dropdown">
-                <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-wallet"></i> Compras</a>
+                <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-wallet"></i> Obra</a>
                 <ul class="nav-dropdown-items">
                     <li @click="menu=50" class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-wallet"></i> Ingresos</a>
+                        <a class="nav-link" href="#"><i class="icon-wallet"></i> Contratistas</a>
                     </li>
                     <li @click="menu=51 "class="nav-item">
                         <a class="nav-link" href="#"><i class="icon-notebook"></i> Proveedores</a>

@@ -28,6 +28,8 @@ Vue.component('sobreprecios', require('./components/Sobreprecio.vue'));
 Vue.component('paquetes', require('./components/Paquete.vue'));
 Vue.component('promociones', require('./components/Promocion.vue'));
 
+Vue.component('contratistas', require('./components/Contratista.vue'));
+
 const app = new Vue({
     el: '#app',
     data :{

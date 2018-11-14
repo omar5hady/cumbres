@@ -113,6 +113,12 @@ Route::post('/lote_promocion/registrar','LotePromocionController@store');
 Route::put('/lote_promocion/actualizar','LotePromocionController@update');
 Route::delete('/lote_promocion/eliminar','LotePromocionController@destroy');
 
+////////////////////        RUTAS CONTRATISTAS    /////////////////////////////////
+Route::get('/contratista','ContratistaController@index');
+Route::post('/contratista/registrar','ContratistaController@store');
+Route::put('/contratista/actualizar','ContratistaController@update');
+Route::delete('/contratista/eliminar','ContratistaController@destroy');
+
 
 /***************************************************************************** */
 ///////////////////       RUTAS SELECT    ////////////////////////////////////
