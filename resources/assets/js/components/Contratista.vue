@@ -184,6 +184,27 @@
                                         <!--<input type="text" v-model="ciudad" class="form-control" placeholder="Ciudad">-->
                                     </div>
                                 </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Representante</label>
+                                    <div class="col-md-6">
+                                        <input type="text" v-model="representante" class="form-control" placeholder="Nombre del Representante">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">IMSS</label>
+                                    <div class="col-md-6">
+                                        <input type="text" v-model="IMSS" class="form-control" placeholder="IMSS">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Telefono</label>
+                                    <div class="col-md-6">
+                                        <input type="text" v-model="telefono" class="form-control" placeholder="Telefono de contacto">
+                                    </div>
+                                </div>
                             
                                 <!-- Div para mostrar los errores que mande validerFraccionamiento -->
                                 <div v-show="errorEmpresa" class="form-group row div-error">
@@ -222,6 +243,9 @@
             return{
                 id:0,
                 nombre : '',
+                representante : '',
+                IMSS : '',
+                telefono : '',
                 tipo : 0,
                 rfc : '',
                 direccion : '',
@@ -340,7 +364,10 @@
                     'colonia': this.colonia,
                     'cp': this.cp,
                     'estado': this.estado,
-                    'ciudad': this.ciudad
+                    'ciudad': this.ciudad,
+                    'representante': this.representante,
+                    'IMSS': this.IMSS,
+                    'telefono': this.telefono
                 }).then(function (response){
                     me.cerrarModal(); //al guardar el registro se cierra el modal
                     me.listarContratista(1,'','contratista'); //se enlistan nuevamente los registros
@@ -373,7 +400,10 @@
                     'cp': this.cp,
                     'estado': this.estado,
                     'ciudad': this.ciudad,
-                    'id' : this.id
+                    'id' : this.id,
+                    'representante': this.representante,
+                    'IMSS': this.IMSS,
+                    'telefono': this.telefono
                 }).then(function (response){
                     me.cerrarModal();
                     me.listarContratista(1,'','contratista');
@@ -398,7 +428,10 @@
                 this.colonia=data['colonia'];
                 this.cp=data['cp'];
                 this.estado=data['estado'];
-                this.ciudad=data['ciudad']
+                this.ciudad=data['ciudad'];
+                this.representante=data['representante'];
+                this.IMSS=data['IMSS'];
+                this.telefono=data['telefono'];
                 swal({
                 title: '¿Desea eliminar?',
                 text: "Esta acción no se puede revertir!",
@@ -466,11 +499,14 @@
                                 this.nombre = '';
                                 this.tipo = 0;
                                 this.rfc = '';
-                                this.direcion = '';
+                                this.direccion = '';
                                 this.colonia = '';
                                 this.cp = '';
                                 this.estado = '';
                                 this.ciudad = '';
+                                this.representante = '';
+                                this.IMSS = '';
+                                this.telefono = '';
                                 this.tipoAccion = 1;
                                 break;
                             }
@@ -489,6 +525,9 @@
                                 this.cp=data['cp'];
                                 this.estado=data['estado'];
                                 this.ciudad=data['ciudad'];
+                                this.representante=data['representante'];
+                                this.IMSS=data['IMSS'];
+                                this.telefono=data['telefono'];
                                 break;
                             }
                         }

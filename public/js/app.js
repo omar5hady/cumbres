@@ -52637,12 +52637,36 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
             id: 0,
             nombre: '',
+            representante: '',
+            IMSS: '',
+            telefono: '',
             tipo: 0,
             rfc: '',
             direccion: '',
@@ -52760,7 +52784,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'colonia': this.colonia,
                 'cp': this.cp,
                 'estado': this.estado,
-                'ciudad': this.ciudad
+                'ciudad': this.ciudad,
+                'representante': this.representante,
+                'IMSS': this.IMSS,
+                'telefono': this.telefono
             }).then(function (response) {
                 me.cerrarModal(); //al guardar el registro se cierra el modal
                 me.listarContratista(1, '', 'contratista'); //se enlistan nuevamente los registros
@@ -52793,7 +52820,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'cp': this.cp,
                 'estado': this.estado,
                 'ciudad': this.ciudad,
-                'id': this.id
+                'id': this.id,
+                'representante': this.representante,
+                'IMSS': this.IMSS,
+                'telefono': this.telefono
             }).then(function (response) {
                 me.cerrarModal();
                 me.listarContratista(1, '', 'contratista');
@@ -52823,6 +52853,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.cp = data['cp'];
             this.estado = data['estado'];
             this.ciudad = data['ciudad'];
+            this.representante = data['representante'];
+            this.IMSS = data['IMSS'];
+            this.telefono = data['telefono'];
             swal({
                 title: '¿Desea eliminar?',
                 text: "Esta acción no se puede revertir!",
@@ -52887,11 +52920,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     this.nombre = '';
                                     this.tipo = 0;
                                     this.rfc = '';
-                                    this.direcion = '';
+                                    this.direccion = '';
                                     this.colonia = '';
                                     this.cp = '';
                                     this.estado = '';
                                     this.ciudad = '';
+                                    this.representante = '';
+                                    this.IMSS = '';
+                                    this.telefono = '';
                                     this.tipoAccion = 1;
                                     break;
                                 }
@@ -52910,6 +52946,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     this.cp = data['cp'];
                                     this.estado = data['estado'];
                                     this.ciudad = data['ciudad'];
+                                    this.representante = data['representante'];
+                                    this.IMSS = data['IMSS'];
+                                    this.telefono = data['telefono'];
                                     break;
                                 }
                         }
@@ -53776,6 +53815,117 @@ var render = function() {
                             })
                           })
                         )
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "text-input" }
+                        },
+                        [_vm._v("Representante")]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-6" }, [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.representante,
+                              expression: "representante"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: {
+                            type: "text",
+                            placeholder: "Nombre del Representante"
+                          },
+                          domProps: { value: _vm.representante },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.representante = $event.target.value
+                            }
+                          }
+                        })
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "text-input" }
+                        },
+                        [_vm._v("IMSS")]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-6" }, [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.IMSS,
+                              expression: "IMSS"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: { type: "text", placeholder: "IMSS" },
+                          domProps: { value: _vm.IMSS },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.IMSS = $event.target.value
+                            }
+                          }
+                        })
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "text-input" }
+                        },
+                        [_vm._v("Telefono")]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-6" }, [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.telefono,
+                              expression: "telefono"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: {
+                            type: "text",
+                            placeholder: "Telefono de contacto"
+                          },
+                          domProps: { value: _vm.telefono },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.telefono = $event.target.value
+                            }
+                          }
+                        })
                       ])
                     ]),
                     _vm._v(" "),

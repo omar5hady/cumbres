@@ -23,6 +23,9 @@ class CreateContratistasTable extends Migration
             $table->integer('cp')->nullable();
             $table->string('estado',100)->nullable();
             $table->string('ciudad',100)->nullable();
+            $table->string('representante',100)->nullable();
+            $table->string('IMSS',30)->nullable();
+            $table->string('telefono',20);
             $table->timestamps();
         });
     }

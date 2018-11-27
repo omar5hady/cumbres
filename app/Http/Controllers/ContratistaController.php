@@ -16,10 +16,10 @@ class ContratistaController extends Controller
         $criterio = $request->criterio;
         
         if($buscar==''){
-            $contratistas = Contratista::orderBy('id','nombre')->paginate(5);
+            $contratistas = Contratista::orderBy('nombre','desc')->paginate(5);
         }
         else{
-            $contratistas = Contratista::where($criterio, 'like', '%'. $buscar . '%')->orderBy('id','nombre')->paginate(5);
+            $contratistas = Contratista::where($criterio, 'like', '%'. $buscar . '%')->orderBy('nombre','desc')->paginate(5);
         }
 
         return [
@@ -64,6 +64,9 @@ class ContratistaController extends Controller
         $contratistas->cp = $request->cp;
         $contratistas->estado = $request->estado;
         $contratistas->ciudad = $request->ciudad;
+        $contratistas->representante = $request->representante;
+        $contratistas->IMSS = $request->IMSS;
+        $contratistas->telefono = $request->telefono;
         $contratistas->save();
     }
 
@@ -110,6 +113,9 @@ class ContratistaController extends Controller
         $contratistas->cp = $request->cp;
         $contratistas->estado = $request->estado;
         $contratistas->ciudad = $request->ciudad;
+        $contratistas->representante = $request->representante;
+        $contratistas->IMSS = $request->IMSS;
+        $contratistas->telefono = $request->telefono;
         $contratistas->save();
     }
 
