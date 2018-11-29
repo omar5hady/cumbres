@@ -236,7 +236,7 @@ class LoteController extends Controller
                         'calle' => $value->calle,
                         'numero' => $value->numero,
                         'interior' => $value->interior,
-                        'terreno' => $value->terreno,
+                        'terreno' => $terreno[0]->terreno,
                         'construccion' => $terreno[0]->construccion,
                         'casa_muestra' => $value->casa_muestra,
                         'lote_comercial' => $value->lote_comercial,

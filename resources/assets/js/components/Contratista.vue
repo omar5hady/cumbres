@@ -22,9 +22,18 @@
                                     <!--Criterios para el listado de busqueda -->
                                     <select class="form-control col-md-5" v-model="criterio">
                                       <option value="nombre">Contratista</option>
+                                      <option value="rfc">RFC</option>
+                                      <option value="estado">Estado</option>
+                                      <option value="ciudad">Ciudad</option>
+                                      <option value="tipo">Tipo</option>
+                                    </select>
+                                    <select class="form-control col-md-5" v-if="criterio=='tipo'" v-model="buscar" @keyup.enter="listarFraccionamiento(1,buscar,criterio)" >
+                                        <option value="0">Persona Moral</option>
+                                        <option value="1">Persona Fisica</option>
+
                                     </select>
                                     
-                                    <input type="text" v-model="buscar" @keyup.enter="listarContratista(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
+                                    <input type="text" v-else v-model="buscar" @keyup.enter="listarContratista(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
                                     <button type="submit" @click="listarContratista(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
@@ -207,7 +216,7 @@
                                 </div>
                             
                                 <!-- Div para mostrar los errores que mande validerFraccionamiento -->
-                                <div v-show="errorEmpresa" class="form-group row div-error">
+                                <div v-show="errorContratista" class="form-group row div-error">
                                     <div class="text-center text-error">
                                         <div v-for="error in errorMostrarMsjContratista" :key="error" v-text="error">
                                         </div>
@@ -325,7 +334,7 @@
                     me.arrayColonias = respuesta.colonias;
                 })
                 .catch(function (error) {
-                    console.log(error);
+                     console.log(error);
                 });
             },
             selectCiudades(buscar){
@@ -370,7 +379,7 @@
                     'telefono': this.telefono
                 }).then(function (response){
                     me.cerrarModal(); //al guardar el registro se cierra el modal
-                    me.listarContratista(1,'','contratista'); //se enlistan nuevamente los registros
+                    me.listarContratista(1,'','nombre'); //se enlistan nuevamente los registros
                     //Se muestra mensaje Success
                     swal({
                         position: 'top-end',
@@ -406,7 +415,7 @@
                     'telefono': this.telefono
                 }).then(function (response){
                     me.cerrarModal();
-                    me.listarContratista(1,'','contratista');
+                    me.listarContratista(1,'','nombre');
                     //window.alert("Cambios guardados correctamente");
                     swal({
                         position: 'top-end',
@@ -452,7 +461,7 @@
                         'Contratista eliminado correctamente.',
                         'success'
                         )
-                        me.listarContratista(1,'','contratista');
+                        me.listarContratista(1,'','nombre');
                     }).catch(function (error){
                         console.log(error);
                     });

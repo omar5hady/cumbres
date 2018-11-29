@@ -52658,6 +52658,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -52790,7 +52799,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'telefono': this.telefono
             }).then(function (response) {
                 me.cerrarModal(); //al guardar el registro se cierra el modal
-                me.listarContratista(1, '', 'contratista'); //se enlistan nuevamente los registros
+                me.listarContratista(1, '', 'nombre'); //se enlistan nuevamente los registros
                 //Se muestra mensaje Success
                 swal({
                     position: 'top-end',
@@ -52826,7 +52835,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'telefono': this.telefono
             }).then(function (response) {
                 me.cerrarModal();
-                me.listarContratista(1, '', 'contratista');
+                me.listarContratista(1, '', 'nombre');
                 //window.alert("Cambios guardados correctamente");
                 swal({
                     position: 'top-end',
@@ -52871,7 +52880,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
                     axios.delete('/contratista/eliminar', { params: { 'id': _this.id } }).then(function (response) {
                         swal('Borrado!', 'Contratista eliminado correctamente.', 'success');
-                        me.listarContratista(1, '', 'contratista');
+                        me.listarContratista(1, '', 'nombre');
                     }).catch(function (error) {
                         console.log(error);
                     });
@@ -53033,40 +53042,116 @@ var render = function() {
                   [
                     _c("option", { attrs: { value: "nombre" } }, [
                       _vm._v("Contratista")
-                    ])
+                    ]),
+                    _vm._v(" "),
+                    _c("option", { attrs: { value: "rfc" } }, [_vm._v("RFC")]),
+                    _vm._v(" "),
+                    _c("option", { attrs: { value: "estado" } }, [
+                      _vm._v("Estado")
+                    ]),
+                    _vm._v(" "),
+                    _c("option", { attrs: { value: "ciudad" } }, [
+                      _vm._v("Ciudad")
+                    ]),
+                    _vm._v(" "),
+                    _c("option", { attrs: { value: "tipo" } }, [_vm._v("Tipo")])
                   ]
                 ),
                 _vm._v(" "),
-                _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.buscar,
-                      expression: "buscar"
-                    }
-                  ],
-                  staticClass: "form-control",
-                  attrs: { type: "text", placeholder: "Texto a buscar" },
-                  domProps: { value: _vm.buscar },
-                  on: {
-                    keyup: function($event) {
-                      if (
-                        !("button" in $event) &&
-                        _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
-                      ) {
-                        return null
+                _vm.criterio == "tipo"
+                  ? _c(
+                      "select",
+                      {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.buscar,
+                            expression: "buscar"
+                          }
+                        ],
+                        staticClass: "form-control col-md-5",
+                        on: {
+                          keyup: function($event) {
+                            if (
+                              !("button" in $event) &&
+                              _vm._k(
+                                $event.keyCode,
+                                "enter",
+                                13,
+                                $event.key,
+                                "Enter"
+                              )
+                            ) {
+                              return null
+                            }
+                            _vm.listarFraccionamiento(
+                              1,
+                              _vm.buscar,
+                              _vm.criterio
+                            )
+                          },
+                          change: function($event) {
+                            var $$selectedVal = Array.prototype.filter
+                              .call($event.target.options, function(o) {
+                                return o.selected
+                              })
+                              .map(function(o) {
+                                var val = "_value" in o ? o._value : o.value
+                                return val
+                              })
+                            _vm.buscar = $event.target.multiple
+                              ? $$selectedVal
+                              : $$selectedVal[0]
+                          }
+                        }
+                      },
+                      [
+                        _c("option", { attrs: { value: "0" } }, [
+                          _vm._v("Persona Moral")
+                        ]),
+                        _vm._v(" "),
+                        _c("option", { attrs: { value: "1" } }, [
+                          _vm._v("Persona Fisica")
+                        ])
+                      ]
+                    )
+                  : _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.buscar,
+                          expression: "buscar"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { type: "text", placeholder: "Texto a buscar" },
+                      domProps: { value: _vm.buscar },
+                      on: {
+                        keyup: function($event) {
+                          if (
+                            !("button" in $event) &&
+                            _vm._k(
+                              $event.keyCode,
+                              "enter",
+                              13,
+                              $event.key,
+                              "Enter"
+                            )
+                          ) {
+                            return null
+                          }
+                          _vm.listarContratista(1, _vm.buscar, _vm.criterio)
+                        },
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.buscar = $event.target.value
+                        }
                       }
-                      _vm.listarContratista(1, _vm.buscar, _vm.criterio)
-                    },
-                    input: function($event) {
-                      if ($event.target.composing) {
-                        return
-                      }
-                      _vm.buscar = $event.target.value
-                    }
-                  }
-                }),
+                    }),
                 _vm._v(" "),
                 _c(
                   "button",
@@ -53936,8 +54021,8 @@ var render = function() {
                           {
                             name: "show",
                             rawName: "v-show",
-                            value: _vm.errorEmpresa,
-                            expression: "errorEmpresa"
+                            value: _vm.errorContratista,
+                            expression: "errorContratista"
                           }
                         ],
                         staticClass: "form-group row div-error"
