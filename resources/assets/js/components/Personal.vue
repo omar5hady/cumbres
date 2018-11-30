@@ -20,7 +20,7 @@
                             <div class="col-md-6">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-5" @click="selectDepartamento()" v-model="criterio">
+                                    <select class="form-control col-md-5" @click="selectDepartamento(),limpiarBusqueda()"  v-model="criterio">
                                       <option value="personal.nombre">Nombre</option>
                                       <option value="apellidos">Apellidos</option>
                                       <option value="rfc">RFC</option>
@@ -30,7 +30,7 @@
                                     <select class="form-control col-md-5" v-if="criterio=='id_departamento'" v-model="buscar" @keyup.enter="listarFraccionamiento(1,buscar,criterio)" >
                                         <option v-for="departamentos in arrayDepartamentos" :key="departamentos.id_departamento" :value="departamentos.id_departamento" v-text="departamentos.departamento"></option>
                                     </select>
-                                    <input type="text" v-else v-model="buscar" @keyup.enter="listarPersonal(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">                                     
+                                    <input type="text" v-else  v-model="buscar" @keyup.enter="listarPersonal(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">                                     
                                     <button type="submit" @click="listarPersonal(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
@@ -361,6 +361,10 @@
                     console.log(error);
                 });
               
+            },
+             limpiarBusqueda(){
+                let me=this;
+                me.buscar= "";
             },
             selectEmpresa(){
                 let me = this;

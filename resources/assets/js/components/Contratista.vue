@@ -10,7 +10,7 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Contratistas
                         <!--   Boton Nuevo    -->
-                        <button type="button" @click="abrirModal('contratista','registrar')" class="btn btn-secondary">
+                        <button type="button" @click="abrirModal('nombre','registrar')" class="btn btn-secondary">
                             <i class="icon-plus"></i>&nbsp;Nuevo
                         </button>
                         <!---->
@@ -20,20 +20,19 @@
                             <div class="col-md-6">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-5" v-model="criterio">
+                                    <select class="form-control col-md-5" @click="limpiarBusqueda()" v-model="criterio">
                                       <option value="nombre">Contratista</option>
                                       <option value="rfc">RFC</option>
                                       <option value="estado">Estado</option>
                                       <option value="ciudad">Ciudad</option>
                                       <option value="tipo">Tipo</option>
-                                    </select>
-                                    <select class="form-control col-md-5" v-if="criterio=='tipo'" v-model="buscar" @keyup.enter="listarFraccionamiento(1,buscar,criterio)" >
-                                        <option value="0">Persona Moral</option>
-                                        <option value="1">Persona Fisica</option>
-
+                                    </select>&nbsp;&nbsp;&nbsp;
+                                    <select class="form-control col-md-5"  v-if="criterio=='tipo'" v-model="buscar" @keyup.enter="listarContratista(1,buscar,criterio)" >
+                                        <option value="0" >Persona Moral</option>
+                                        <option value="1" >Persona Fisica</option>
                                     </select>
                                     
-                                    <input type="text" v-else v-model="buscar" @keyup.enter="listarContratista(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
+                                    <input  type="text" v-else v-model="buscar" @keyup.enter="listarContratista(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
                                     <button type="submit" @click="listarContratista(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
@@ -479,6 +478,10 @@
                     this.errorContratista = 1;
 
                 return this.errorContratista;
+            },
+            limpiarBusqueda(){
+                let me=this;
+                me.buscar= "";
             },
             cerrarModal(){
                 this.modal = 0;

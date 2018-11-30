@@ -34548,6 +34548,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -34737,6 +34738,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 }
             });
         },
+        limpiarBusqueda: function limpiarBusqueda() {
+            var me = this;
+            me.buscar = "";
+        },
         validarFraccionamiento: function validarFraccionamiento() {
             this.errorFraccionamiento = 0;
             this.errorMostrarMsjFraccionamiento = [];
@@ -34862,6 +34867,9 @@ var render = function() {
                     ],
                     staticClass: "form-control col-md-5",
                     on: {
+                      click: function($event) {
+                        _vm.limpiarBusqueda()
+                      },
                       change: function($event) {
                         var $$selectedVal = Array.prototype.filter
                           .call($event.target.options, function(o) {
@@ -34887,45 +34895,6 @@ var render = function() {
                     ])
                   ]
                 ),
-                _vm._v(" "),
-                _vm.criterio == "nombre"
-                  ? _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.buscar,
-                          expression: "buscar"
-                        }
-                      ],
-                      staticClass: "form-control",
-                      attrs: { type: "text", placeholder: "Texto a buscar" },
-                      domProps: { value: _vm.buscar },
-                      on: {
-                        keyup: function($event) {
-                          if (
-                            !("button" in $event) &&
-                            _vm._k(
-                              $event.keyCode,
-                              "enter",
-                              13,
-                              $event.key,
-                              "Enter"
-                            )
-                          ) {
-                            return null
-                          }
-                          _vm.listarFraccionamiento(1, _vm.buscar, _vm.criterio)
-                        },
-                        input: function($event) {
-                          if ($event.target.composing) {
-                            return
-                          }
-                          _vm.buscar = $event.target.value
-                        }
-                      }
-                    })
-                  : _vm._e(),
                 _vm._v(" "),
                 _vm.criterio == "tipo_proyecto"
                   ? _c(
@@ -34989,7 +34958,42 @@ var render = function() {
                         ])
                       ]
                     )
-                  : _vm._e(),
+                  : _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.buscar,
+                          expression: "buscar"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { type: "text", placeholder: "Texto a buscar" },
+                      domProps: { value: _vm.buscar },
+                      on: {
+                        keyup: function($event) {
+                          if (
+                            !("button" in $event) &&
+                            _vm._k(
+                              $event.keyCode,
+                              "enter",
+                              13,
+                              $event.key,
+                              "Enter"
+                            )
+                          ) {
+                            return null
+                          }
+                          _vm.listarFraccionamiento(1, _vm.buscar, _vm.criterio)
+                        },
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.buscar = $event.target.value
+                        }
+                      }
+                    }),
                 _vm._v(" "),
                 _c(
                   "button",
@@ -36232,6 +36236,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 console.log(error);
             });
         },
+        limpiarBusqueda: function limpiarBusqueda() {
+            var me = this;
+            me.buscar = "";
+        },
         selectEmpresa: function selectEmpresa() {
             var me = this;
             me.arrayEmpresas = [];
@@ -36632,7 +36640,7 @@ var render = function() {
                     staticClass: "form-control col-md-5",
                     on: {
                       click: function($event) {
-                        _vm.selectDepartamento()
+                        _vm.selectDepartamento(), _vm.limpiarBusqueda()
                       },
                       change: function($event) {
                         var $$selectedVal = Array.prototype.filter
@@ -39763,6 +39771,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 console.log(error);
             });
         },
+        limpiarBusqueda: function limpiarBusqueda() {
+            var me = this;
+            me.buscar = "";
+            me.buscar2 = "";
+        },
         actualizarEtapa: function actualizarEtapa() {
             if (this.validarEtapa()) //Se verifica si hay un error (campo vacio)
                 {
@@ -39961,6 +39974,9 @@ var render = function() {
                     ],
                     staticClass: "form-control col-md-4",
                     on: {
+                      click: function($event) {
+                        _vm.limpiarBusqueda()
+                      },
                       change: function($event) {
                         var $$selectedVal = Array.prototype.filter
                           .call($event.target.options, function(o) {
@@ -41299,6 +41315,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 console.log(error);
             });
         },
+        limpiarBusqueda: function limpiarBusqueda() {
+            var me = this;
+            me.buscar = "";
+        },
         actualizarModelo: function actualizarModelo() {
             if (this.validarModelo()) //Se verifica si hay un error (campo vacio)
                 {
@@ -41503,6 +41523,9 @@ var render = function() {
                     ],
                     staticClass: "form-control col-md-5",
                     on: {
+                      click: function($event) {
+                        _vm.limpiarBusqueda()
+                      },
                       change: function($event) {
                         var $$selectedVal = Array.prototype.filter
                           .call($event.target.options, function(o) {
@@ -52666,7 +52689,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -52899,6 +52921,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             return this.errorContratista;
         },
+        limpiarBusqueda: function limpiarBusqueda() {
+            var me = this;
+            me.buscar = "";
+        },
         cerrarModal: function cerrarModal() {
             this.modal = 0;
             this.tituloModal = '';
@@ -52996,7 +53022,7 @@ var render = function() {
               attrs: { type: "button" },
               on: {
                 click: function($event) {
-                  _vm.abrirModal("contratista", "registrar")
+                  _vm.abrirModal("nombre", "registrar")
                 }
               }
             },
@@ -53024,6 +53050,9 @@ var render = function() {
                     ],
                     staticClass: "form-control col-md-5",
                     on: {
+                      click: function($event) {
+                        _vm.limpiarBusqueda()
+                      },
                       change: function($event) {
                         var $$selectedVal = Array.prototype.filter
                           .call($event.target.options, function(o) {
@@ -53057,7 +53086,7 @@ var render = function() {
                     _c("option", { attrs: { value: "tipo" } }, [_vm._v("Tipo")])
                   ]
                 ),
-                _vm._v(" "),
+                _vm._v("   \n                                "),
                 _vm.criterio == "tipo"
                   ? _c(
                       "select",
@@ -53085,11 +53114,7 @@ var render = function() {
                             ) {
                               return null
                             }
-                            _vm.listarFraccionamiento(
-                              1,
-                              _vm.buscar,
-                              _vm.criterio
-                            )
+                            _vm.listarContratista(1, _vm.buscar, _vm.criterio)
                           },
                           change: function($event) {
                             var $$selectedVal = Array.prototype.filter

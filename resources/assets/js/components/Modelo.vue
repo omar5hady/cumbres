@@ -20,7 +20,7 @@
                             <div class="col-md-6">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-5" v-model="criterio">
+                                    <select class="form-control col-md-5" v-model="criterio" @click="limpiarBusqueda()">
                                       <option value="modelos.nombre">Modelos</option>
                                       <option value="tipo">Tipo de Proyecto</option>
                                       <option value="fraccionamientos.nombre">Proyecto</option>
@@ -397,6 +397,10 @@
                 }).catch(function (error){
                     console.log(error);
                 });
+            },
+             limpiarBusqueda(){
+                let me=this;
+                me.buscar= "";
             },
             actualizarModelo(){
                 if(this.validarModelo()) //Se verifica si hay un error (campo vacio)
