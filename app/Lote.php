@@ -36,5 +36,8 @@ class lote extends Model
         return $this->hasMany('App\Lote_promocion');
     }
 
+    public function ini_obra_lote(){
+        return $this->belongsTo('App\Ini_obra_lote');
+    }
 
 }

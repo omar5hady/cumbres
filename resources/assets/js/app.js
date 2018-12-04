@@ -29,6 +29,7 @@ Vue.component('paquetes', require('./components/Paquete.vue'));
 Vue.component('promociones', require('./components/Promocion.vue'));
 
 Vue.component('contratistas', require('./components/Contratista.vue'));
+Vue.component('iniobra', require('./components/IniObra.vue'));
 
 const app = new Vue({
     el: '#app',

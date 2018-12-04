@@ -131,4 +131,12 @@ class ContratistaController extends Controller
         $contratistas = Contratista::findOrFail($request->id);
         $contratistas->delete();
     }
+
+    public function selectContratista(Request $request){
+        //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
+        if(!$request->ajax())return redirect('/');
+        $contratista = Contratista::select('nombre','id')->get();
+        return['contratista' => $contratista];
+    }
+
 }

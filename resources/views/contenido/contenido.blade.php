@@ -73,8 +73,13 @@
     <template v-if="menu==24">
         <promociones></promociones>
     </template>
+
     <template v-if="menu==50">
         <contratistas></contratistas>
+    </template>
+    
+    <template v-if="menu==51">
+        <iniobra></iniobra>
     </template>
     
 @endsection

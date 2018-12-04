@@ -119,6 +119,11 @@ Route::post('/contratista/registrar','ContratistaController@store');
 Route::put('/contratista/actualizar','ContratistaController@update');
 Route::delete('/contratista/eliminar','ContratistaController@destroy');
 
+////////////////////        RUTAS INICIO DE OBRA    /////////////////////////////////
+Route::get('/iniobra','IniObraController@index');
+Route::post('/iniobra/registrar','IniObraController@store');
+Route::put('/iniobra/actualizar','IniObraController@update');
+Route::delete('/iniobra/eliminar','IniObraController@destroy');
 
 /***************************************************************************** */
 ///////////////////       RUTAS SELECT    ////////////////////////////////////
@@ -139,5 +144,6 @@ Route::get('/select_manzanas_etapa','LoteController@select_manzanas_etapa');
 Route::get('/select_lotes_manzana','LoteController@select_lote_manzana'); 
 Route::get('/select_precio_etapa','PrecioEtapaController@selectPrecioEtapa'); 
 Route::get('/select_sobreprecios_etapa','SobreprecioEtapaController@select_sobreprecios_etapa'); 
+Route::get('/select_contratistas','ContratistaController@selectContratista'); 
 
 

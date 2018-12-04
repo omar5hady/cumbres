@@ -11,4 +11,9 @@ class Contratista extends Model
     protected $fillable = ['nombre','tipo','rfc',
                             'direccion','colonia','cp','estado','ciudad','representante','IMSS','telefono'];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
     
+
+
+    public function ini_obra(){
+        return $this->belongsTo('App/Ini_obra');
+    }
 }
