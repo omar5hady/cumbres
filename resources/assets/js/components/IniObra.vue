@@ -91,36 +91,97 @@
                         </div>
                         <div class="modal-body">
                             <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-
-                               <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Fraccionamiento</label>
-                                    <div class="col-md-3">
-                                        <select class="form-control" v-model="fraccionamiento_id" @click="selectEtapa(fraccionamiento_id)" >
-                                            <option value="0">Seleccione</option>
-                                            <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
-                                        </select>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group ">
+                                        <label class=" form-control-label" for="text-input">Fraccionamiento</label>
+                                        
+                                            <select class="form-control" v-model="fraccionamiento_id" @click="selectEtapa(fraccionamiento_id)" >
+                                                <option value="0">Seleccione</option>
+                                                <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                                            </select>
+                                        
                                     </div>
+                                    <div class="form-group ">
+                                        <label class=" form-control-label" for="text-input">Etapa</label>
+                                        
+                                        <select class="form-control" v-model="etapa_id" @click="selectManzanas(fraccionamiento_id,etapa_id)" >
+                                                <option value="0">Seleccione</option>
+                                                <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
+                                            </select>
+                                        
+                                    </div>
+                                    <div class="form-group ">
+                                        <label class=" form-control-label" for="text-input">Manzanas</label>
+                                        
+                                        <select class="form-control" v-model="manzana" @click="selectLotesManzana(fraccionamiento_id,etapa_id,manzana)">
+                                                <option value="">Seleccione</option>
+                                                <option v-for="manzanas in arrayManzanas" :key="manzanas.id" :value="manzanas.manzana" v-text="manzanas.manzana"></option>
+                                            </select>
+                                        
+                                    </div>
+                                    <div class="form-group ">
+                                        <label class=" form-control-label" for="text-input">Total costo directo</label>
+                                            <input type="text" v-model="total_costo_directo" class="form-control" placeholder="total costo directo">
+                                    </div>
+                                    <div class="form-group ">
+                                        <label class=" form-control-label" for="text-input">Total costo indirecto</label>
+                                        <input type="text" v-model="total_costo_indirecto" class="form-control" placeholder="total costo indirecto">
+                                    </div>
+                                    <div class="form-group ">
+                                        <label class=" form-control-label" for="text-input">Total anticipo</label>
+                                        <input type="text" v-model="total_anticipo" class="form-control" placeholder="total anticipo">
+                                    </div>
+
+                                </div>
+                                
+                                <div class="col-lg-6">
+                                    <div class="form-group ">
+                                        <label class=" form-control-label" for="text-input">Contratista</label>
+                                        
+                                            <select class="form-control" v-model="contratista_id" >
+                                                <option value="0">Seleccione</option>
+                                                <option v-for="contratistas in arrayContratistas" :key="contratistas.id" :value="contratistas.id" v-text="contratistas.nombre"></option>
+                                            </select>
+                                        
+                                    </div>
+                                    <div class="form-group ">
+                                        <label class=" form-control-label" for="text-input">Fecha de inicio</label>
+                                        
+                                            <input type="date" v-model="f_ini"  class="form-control" placeholder="Fecha de inicio">
+                                        
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="text-input">Fecha de terminacion</label>
+                                        
+                                            <input type="date" v-model="f_fin" class="form-control" placeholder="Fecha de terminacion">
+                                        
+                                    </div>
+                                    <div class="form-group ">
+                                        <label class=" form-control-label" for="text-input">Clave</label>
+                                        
+                                            <input type="text" v-model="clave" class="form-control" placeholder="clave">
+                                        
+                                    </div>
+                                    <div class="form-group ">
+                                    <label class=" form-control-label" for="text-input">Total importe</label>
+                                     <input type="text" v-model="total_importe" class="form-control" placeholder="total importe">
+                                </div>
+                                <div class="form-group ">
+                                    <label class=" form-control-label" for="text-input">Anticipo %</label>
+                                    <input type="text" v-model="anticipo" class="form-control" placeholder="anticipo">
                                 </div>
 
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Etapa</label>
-                                    <div class="col-md-3">
-                                       <select class="form-control" v-model="etapa_id" @click="selectManzanas(fraccionamiento_id,etapa_id)" >
-                                            <option value="0">Seleccione</option>
-                                            <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
-                                        </select>
-                                    </div>
                                 </div>
+                                
 
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Manzanas</label>
-                                    <div class="col-md-3">
-                                       <select class="form-control" v-model="manzana" @click="selectLotesManzana(fraccionamiento_id,etapa_id,manzana)">
-                                            <option value="">Seleccione</option>
-                                            <option v-for="manzanas in arrayManzanas" :key="manzanas.id" :value="manzanas.manzana" v-text="manzanas.manzana"></option>
-                                        </select>
-                                    </div>
-                                </div>
+                            </div>
+
+                              
+
+                               
+
+                                
                            
                                 <li v-for="(inputs,index) in arrayLotes" :key="inputs.id" >   
                                 <div class="form-group row">
@@ -140,71 +201,19 @@
                                 </div>
                                 </li>
                                 
-                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Contratista</label>
-                                    <div class="col-md-3">
-                                        <select class="form-control" v-model="contratista_id" >
-                                            <option value="0">Seleccione</option>
-                                            <option v-for="contratistas in arrayContratistas" :key="contratistas.id" :value="contratistas.id" v-text="contratistas.nombre"></option>
-                                        </select>
-                                    </div>
-                                </div>
+                                 
 
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Fecha de inicio</label>
-                                    <div class="col-md-3">
-                                        <input type="date" v-model="f_ini"  class="form-control" placeholder="Fecha de inicio">
-                                    </div>
-                                </div>
+                                
 
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Fecha de terminacion</label>
-                                    <div class="col-md-3">
-                                        <input type="date" v-model="f_fin" class="form-control" placeholder="Fecha de terminacion">
-                                    </div>
-                                </div>
+                               
 
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Clave</label>
-                                    <div class="col-md-3">
-                                        <input type="text" v-model="clave" class="form-control" placeholder="clave">
-                                    </div>
-                                </div>
+                                
 
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Total costo directo</label>
-                                    <div class="col-md-3">
-                                        <input type="text" v-model="total_costo_directo" class="form-control" placeholder="total costo directo">
-                                    </div>
-                                </div>
+              
 
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Total costo indirecto</label>
-                                    <div class="col-md-3">
-                                        <input type="text" v-model="total_costo_indirecto" class="form-control" placeholder="total costo indirecto">
-                                    </div>
-                                </div>
+                                
 
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Total importe</label>
-                                    <div class="col-md-3">
-                                        <input type="text" v-model="total_importe" class="form-control" placeholder="total importe">
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Anticipo %</label>
-                                    <div class="col-md-3">
-                                        <input type="text" v-model="anticipo" class="form-control" placeholder="anticipo">
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Total anticipo</label>
-                                    <div class="col-md-3">
-                                        <input type="text" v-model="total_anticipo" class="form-control" placeholder="total anticipo">
-                                    </div>
-                                </div>
+                                
 
                                 <!-- Div para mostrar los errores que mande validerFraccionamiento -->
                                 <div v-show="errorIniobra" class="form-group row div-error">

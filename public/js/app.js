@@ -54516,6 +54516,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -55288,198 +55297,544 @@ var render = function() {
                     }
                   },
                   [
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "text-input" }
-                        },
-                        [_vm._v("Fraccionamiento")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-3" }, [
-                        _c(
-                          "select",
-                          {
+                    _c("div", { staticClass: "row" }, [
+                      _c("div", { staticClass: "col-lg-6" }, [
+                        _c("div", { staticClass: "form-group " }, [
+                          _c(
+                            "label",
+                            {
+                              staticClass: " form-control-label",
+                              attrs: { for: "text-input" }
+                            },
+                            [_vm._v("Fraccionamiento")]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "select",
+                            {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.fraccionamiento_id,
+                                  expression: "fraccionamiento_id"
+                                }
+                              ],
+                              staticClass: "form-control",
+                              on: {
+                                click: function($event) {
+                                  _vm.selectEtapa(_vm.fraccionamiento_id)
+                                },
+                                change: function($event) {
+                                  var $$selectedVal = Array.prototype.filter
+                                    .call($event.target.options, function(o) {
+                                      return o.selected
+                                    })
+                                    .map(function(o) {
+                                      var val =
+                                        "_value" in o ? o._value : o.value
+                                      return val
+                                    })
+                                  _vm.fraccionamiento_id = $event.target
+                                    .multiple
+                                    ? $$selectedVal
+                                    : $$selectedVal[0]
+                                }
+                              }
+                            },
+                            [
+                              _c("option", { attrs: { value: "0" } }, [
+                                _vm._v("Seleccione")
+                              ]),
+                              _vm._v(" "),
+                              _vm._l(_vm.arrayFraccionamientos, function(
+                                fraccionamientos
+                              ) {
+                                return _c("option", {
+                                  key: fraccionamientos.id,
+                                  domProps: {
+                                    value: fraccionamientos.id,
+                                    textContent: _vm._s(fraccionamientos.nombre)
+                                  }
+                                })
+                              })
+                            ],
+                            2
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "form-group " }, [
+                          _c(
+                            "label",
+                            {
+                              staticClass: " form-control-label",
+                              attrs: { for: "text-input" }
+                            },
+                            [_vm._v("Etapa")]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "select",
+                            {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.etapa_id,
+                                  expression: "etapa_id"
+                                }
+                              ],
+                              staticClass: "form-control",
+                              on: {
+                                click: function($event) {
+                                  _vm.selectManzanas(
+                                    _vm.fraccionamiento_id,
+                                    _vm.etapa_id
+                                  )
+                                },
+                                change: function($event) {
+                                  var $$selectedVal = Array.prototype.filter
+                                    .call($event.target.options, function(o) {
+                                      return o.selected
+                                    })
+                                    .map(function(o) {
+                                      var val =
+                                        "_value" in o ? o._value : o.value
+                                      return val
+                                    })
+                                  _vm.etapa_id = $event.target.multiple
+                                    ? $$selectedVal
+                                    : $$selectedVal[0]
+                                }
+                              }
+                            },
+                            [
+                              _c("option", { attrs: { value: "0" } }, [
+                                _vm._v("Seleccione")
+                              ]),
+                              _vm._v(" "),
+                              _vm._l(_vm.arrayEtapas, function(etapas) {
+                                return _c("option", {
+                                  key: etapas.id,
+                                  domProps: {
+                                    value: etapas.id,
+                                    textContent: _vm._s(etapas.num_etapa)
+                                  }
+                                })
+                              })
+                            ],
+                            2
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "form-group " }, [
+                          _c(
+                            "label",
+                            {
+                              staticClass: " form-control-label",
+                              attrs: { for: "text-input" }
+                            },
+                            [_vm._v("Manzanas")]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "select",
+                            {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.manzana,
+                                  expression: "manzana"
+                                }
+                              ],
+                              staticClass: "form-control",
+                              on: {
+                                click: function($event) {
+                                  _vm.selectLotesManzana(
+                                    _vm.fraccionamiento_id,
+                                    _vm.etapa_id,
+                                    _vm.manzana
+                                  )
+                                },
+                                change: function($event) {
+                                  var $$selectedVal = Array.prototype.filter
+                                    .call($event.target.options, function(o) {
+                                      return o.selected
+                                    })
+                                    .map(function(o) {
+                                      var val =
+                                        "_value" in o ? o._value : o.value
+                                      return val
+                                    })
+                                  _vm.manzana = $event.target.multiple
+                                    ? $$selectedVal
+                                    : $$selectedVal[0]
+                                }
+                              }
+                            },
+                            [
+                              _c("option", { attrs: { value: "" } }, [
+                                _vm._v("Seleccione")
+                              ]),
+                              _vm._v(" "),
+                              _vm._l(_vm.arrayManzanas, function(manzanas) {
+                                return _c("option", {
+                                  key: manzanas.id,
+                                  domProps: {
+                                    value: manzanas.manzana,
+                                    textContent: _vm._s(manzanas.manzana)
+                                  }
+                                })
+                              })
+                            ],
+                            2
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "form-group " }, [
+                          _c(
+                            "label",
+                            {
+                              staticClass: " form-control-label",
+                              attrs: { for: "text-input" }
+                            },
+                            [_vm._v("Total costo directo")]
+                          ),
+                          _vm._v(" "),
+                          _c("input", {
                             directives: [
                               {
                                 name: "model",
                                 rawName: "v-model",
-                                value: _vm.fraccionamiento_id,
-                                expression: "fraccionamiento_id"
+                                value: _vm.total_costo_directo,
+                                expression: "total_costo_directo"
                               }
                             ],
                             staticClass: "form-control",
+                            attrs: {
+                              type: "text",
+                              placeholder: "total costo directo"
+                            },
+                            domProps: { value: _vm.total_costo_directo },
                             on: {
-                              click: function($event) {
-                                _vm.selectEtapa(_vm.fraccionamiento_id)
-                              },
-                              change: function($event) {
-                                var $$selectedVal = Array.prototype.filter
-                                  .call($event.target.options, function(o) {
-                                    return o.selected
-                                  })
-                                  .map(function(o) {
-                                    var val = "_value" in o ? o._value : o.value
-                                    return val
-                                  })
-                                _vm.fraccionamiento_id = $event.target.multiple
-                                  ? $$selectedVal
-                                  : $$selectedVal[0]
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.total_costo_directo = $event.target.value
                               }
                             }
-                          },
-                          [
-                            _c("option", { attrs: { value: "0" } }, [
-                              _vm._v("Seleccione")
-                            ]),
-                            _vm._v(" "),
-                            _vm._l(_vm.arrayFraccionamientos, function(
-                              fraccionamientos
-                            ) {
-                              return _c("option", {
-                                key: fraccionamientos.id,
-                                domProps: {
-                                  value: fraccionamientos.id,
-                                  textContent: _vm._s(fraccionamientos.nombre)
-                                }
-                              })
-                            })
-                          ],
-                          2
-                        )
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "text-input" }
-                        },
-                        [_vm._v("Etapa")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-3" }, [
-                        _c(
-                          "select",
-                          {
+                          })
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "form-group " }, [
+                          _c(
+                            "label",
+                            {
+                              staticClass: " form-control-label",
+                              attrs: { for: "text-input" }
+                            },
+                            [_vm._v("Total costo indirecto")]
+                          ),
+                          _vm._v(" "),
+                          _c("input", {
                             directives: [
                               {
                                 name: "model",
                                 rawName: "v-model",
-                                value: _vm.etapa_id,
-                                expression: "etapa_id"
+                                value: _vm.total_costo_indirecto,
+                                expression: "total_costo_indirecto"
                               }
                             ],
                             staticClass: "form-control",
+                            attrs: {
+                              type: "text",
+                              placeholder: "total costo indirecto"
+                            },
+                            domProps: { value: _vm.total_costo_indirecto },
                             on: {
-                              click: function($event) {
-                                _vm.selectManzanas(
-                                  _vm.fraccionamiento_id,
-                                  _vm.etapa_id
-                                )
-                              },
-                              change: function($event) {
-                                var $$selectedVal = Array.prototype.filter
-                                  .call($event.target.options, function(o) {
-                                    return o.selected
-                                  })
-                                  .map(function(o) {
-                                    var val = "_value" in o ? o._value : o.value
-                                    return val
-                                  })
-                                _vm.etapa_id = $event.target.multiple
-                                  ? $$selectedVal
-                                  : $$selectedVal[0]
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.total_costo_indirecto = $event.target.value
                               }
                             }
-                          },
-                          [
-                            _c("option", { attrs: { value: "0" } }, [
-                              _vm._v("Seleccione")
-                            ]),
-                            _vm._v(" "),
-                            _vm._l(_vm.arrayEtapas, function(etapas) {
-                              return _c("option", {
-                                key: etapas.id,
-                                domProps: {
-                                  value: etapas.id,
-                                  textContent: _vm._s(etapas.num_etapa)
-                                }
-                              })
-                            })
-                          ],
-                          2
-                        )
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "text-input" }
-                        },
-                        [_vm._v("Manzanas")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-3" }, [
-                        _c(
-                          "select",
-                          {
+                          })
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "form-group " }, [
+                          _c(
+                            "label",
+                            {
+                              staticClass: " form-control-label",
+                              attrs: { for: "text-input" }
+                            },
+                            [_vm._v("Total anticipo")]
+                          ),
+                          _vm._v(" "),
+                          _c("input", {
                             directives: [
                               {
                                 name: "model",
                                 rawName: "v-model",
-                                value: _vm.manzana,
-                                expression: "manzana"
+                                value: _vm.total_anticipo,
+                                expression: "total_anticipo"
                               }
                             ],
                             staticClass: "form-control",
+                            attrs: {
+                              type: "text",
+                              placeholder: "total anticipo"
+                            },
+                            domProps: { value: _vm.total_anticipo },
                             on: {
-                              click: function($event) {
-                                _vm.selectLotesManzana(
-                                  _vm.fraccionamiento_id,
-                                  _vm.etapa_id,
-                                  _vm.manzana
-                                )
-                              },
-                              change: function($event) {
-                                var $$selectedVal = Array.prototype.filter
-                                  .call($event.target.options, function(o) {
-                                    return o.selected
-                                  })
-                                  .map(function(o) {
-                                    var val = "_value" in o ? o._value : o.value
-                                    return val
-                                  })
-                                _vm.manzana = $event.target.multiple
-                                  ? $$selectedVal
-                                  : $$selectedVal[0]
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.total_anticipo = $event.target.value
                               }
                             }
-                          },
-                          [
-                            _c("option", { attrs: { value: "" } }, [
-                              _vm._v("Seleccione")
-                            ]),
-                            _vm._v(" "),
-                            _vm._l(_vm.arrayManzanas, function(manzanas) {
-                              return _c("option", {
-                                key: manzanas.id,
-                                domProps: {
-                                  value: manzanas.manzana,
-                                  textContent: _vm._s(manzanas.manzana)
+                          })
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-lg-6" }, [
+                        _c("div", { staticClass: "form-group " }, [
+                          _c(
+                            "label",
+                            {
+                              staticClass: " form-control-label",
+                              attrs: { for: "text-input" }
+                            },
+                            [_vm._v("Contratista")]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "select",
+                            {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.contratista_id,
+                                  expression: "contratista_id"
                                 }
+                              ],
+                              staticClass: "form-control",
+                              on: {
+                                change: function($event) {
+                                  var $$selectedVal = Array.prototype.filter
+                                    .call($event.target.options, function(o) {
+                                      return o.selected
+                                    })
+                                    .map(function(o) {
+                                      var val =
+                                        "_value" in o ? o._value : o.value
+                                      return val
+                                    })
+                                  _vm.contratista_id = $event.target.multiple
+                                    ? $$selectedVal
+                                    : $$selectedVal[0]
+                                }
+                              }
+                            },
+                            [
+                              _c("option", { attrs: { value: "0" } }, [
+                                _vm._v("Seleccione")
+                              ]),
+                              _vm._v(" "),
+                              _vm._l(_vm.arrayContratistas, function(
+                                contratistas
+                              ) {
+                                return _c("option", {
+                                  key: contratistas.id,
+                                  domProps: {
+                                    value: contratistas.id,
+                                    textContent: _vm._s(contratistas.nombre)
+                                  }
+                                })
                               })
-                            })
-                          ],
-                          2
-                        )
+                            ],
+                            2
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "form-group " }, [
+                          _c(
+                            "label",
+                            {
+                              staticClass: " form-control-label",
+                              attrs: { for: "text-input" }
+                            },
+                            [_vm._v("Fecha de inicio")]
+                          ),
+                          _vm._v(" "),
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.f_ini,
+                                expression: "f_ini"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: {
+                              type: "date",
+                              placeholder: "Fecha de inicio"
+                            },
+                            domProps: { value: _vm.f_ini },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.f_ini = $event.target.value
+                              }
+                            }
+                          })
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "form-group" }, [
+                          _c(
+                            "label",
+                            {
+                              staticClass: "form-control-label",
+                              attrs: { for: "text-input" }
+                            },
+                            [_vm._v("Fecha de terminacion")]
+                          ),
+                          _vm._v(" "),
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.f_fin,
+                                expression: "f_fin"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: {
+                              type: "date",
+                              placeholder: "Fecha de terminacion"
+                            },
+                            domProps: { value: _vm.f_fin },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.f_fin = $event.target.value
+                              }
+                            }
+                          })
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "form-group " }, [
+                          _c(
+                            "label",
+                            {
+                              staticClass: " form-control-label",
+                              attrs: { for: "text-input" }
+                            },
+                            [_vm._v("Clave")]
+                          ),
+                          _vm._v(" "),
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.clave,
+                                expression: "clave"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: { type: "text", placeholder: "clave" },
+                            domProps: { value: _vm.clave },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.clave = $event.target.value
+                              }
+                            }
+                          })
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "form-group " }, [
+                          _c(
+                            "label",
+                            {
+                              staticClass: " form-control-label",
+                              attrs: { for: "text-input" }
+                            },
+                            [_vm._v("Total importe")]
+                          ),
+                          _vm._v(" "),
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.total_importe,
+                                expression: "total_importe"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: {
+                              type: "text",
+                              placeholder: "total importe"
+                            },
+                            domProps: { value: _vm.total_importe },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.total_importe = $event.target.value
+                              }
+                            }
+                          })
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "form-group " }, [
+                          _c(
+                            "label",
+                            {
+                              staticClass: " form-control-label",
+                              attrs: { for: "text-input" }
+                            },
+                            [_vm._v("Anticipo %")]
+                          ),
+                          _vm._v(" "),
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.anticipo,
+                                expression: "anticipo"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: { type: "text", placeholder: "anticipo" },
+                            domProps: { value: _vm.anticipo },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.anticipo = $event.target.value
+                              }
+                            }
+                          })
+                        ])
                       ])
                     ]),
                     _vm._v(" "),
@@ -55663,362 +56018,6 @@ var render = function() {
                         ])
                       ])
                     }),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "text-input" }
-                        },
-                        [_vm._v("Contratista")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-3" }, [
-                        _c(
-                          "select",
-                          {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.contratista_id,
-                                expression: "contratista_id"
-                              }
-                            ],
-                            staticClass: "form-control",
-                            on: {
-                              change: function($event) {
-                                var $$selectedVal = Array.prototype.filter
-                                  .call($event.target.options, function(o) {
-                                    return o.selected
-                                  })
-                                  .map(function(o) {
-                                    var val = "_value" in o ? o._value : o.value
-                                    return val
-                                  })
-                                _vm.contratista_id = $event.target.multiple
-                                  ? $$selectedVal
-                                  : $$selectedVal[0]
-                              }
-                            }
-                          },
-                          [
-                            _c("option", { attrs: { value: "0" } }, [
-                              _vm._v("Seleccione")
-                            ]),
-                            _vm._v(" "),
-                            _vm._l(_vm.arrayContratistas, function(
-                              contratistas
-                            ) {
-                              return _c("option", {
-                                key: contratistas.id,
-                                domProps: {
-                                  value: contratistas.id,
-                                  textContent: _vm._s(contratistas.nombre)
-                                }
-                              })
-                            })
-                          ],
-                          2
-                        )
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "text-input" }
-                        },
-                        [_vm._v("Fecha de inicio")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-3" }, [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.f_ini,
-                              expression: "f_ini"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: {
-                            type: "date",
-                            placeholder: "Fecha de inicio"
-                          },
-                          domProps: { value: _vm.f_ini },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.f_ini = $event.target.value
-                            }
-                          }
-                        })
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "text-input" }
-                        },
-                        [_vm._v("Fecha de terminacion")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-3" }, [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.f_fin,
-                              expression: "f_fin"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: {
-                            type: "date",
-                            placeholder: "Fecha de terminacion"
-                          },
-                          domProps: { value: _vm.f_fin },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.f_fin = $event.target.value
-                            }
-                          }
-                        })
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "text-input" }
-                        },
-                        [_vm._v("Clave")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-3" }, [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.clave,
-                              expression: "clave"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: { type: "text", placeholder: "clave" },
-                          domProps: { value: _vm.clave },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.clave = $event.target.value
-                            }
-                          }
-                        })
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "text-input" }
-                        },
-                        [_vm._v("Total costo directo")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-3" }, [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.total_costo_directo,
-                              expression: "total_costo_directo"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: {
-                            type: "text",
-                            placeholder: "total costo directo"
-                          },
-                          domProps: { value: _vm.total_costo_directo },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.total_costo_directo = $event.target.value
-                            }
-                          }
-                        })
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "text-input" }
-                        },
-                        [_vm._v("Total costo indirecto")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-3" }, [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.total_costo_indirecto,
-                              expression: "total_costo_indirecto"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: {
-                            type: "text",
-                            placeholder: "total costo indirecto"
-                          },
-                          domProps: { value: _vm.total_costo_indirecto },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.total_costo_indirecto = $event.target.value
-                            }
-                          }
-                        })
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "text-input" }
-                        },
-                        [_vm._v("Total importe")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-3" }, [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.total_importe,
-                              expression: "total_importe"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: { type: "text", placeholder: "total importe" },
-                          domProps: { value: _vm.total_importe },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.total_importe = $event.target.value
-                            }
-                          }
-                        })
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "text-input" }
-                        },
-                        [_vm._v("Anticipo %")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-3" }, [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.anticipo,
-                              expression: "anticipo"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: { type: "text", placeholder: "anticipo" },
-                          domProps: { value: _vm.anticipo },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.anticipo = $event.target.value
-                            }
-                          }
-                        })
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "text-input" }
-                        },
-                        [_vm._v("Total anticipo")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-3" }, [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.total_anticipo,
-                              expression: "total_anticipo"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: {
-                            type: "text",
-                            placeholder: "total anticipo"
-                          },
-                          domProps: { value: _vm.total_anticipo },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.total_anticipo = $event.target.value
-                            }
-                          }
-                        })
-                      ])
-                    ]),
                     _vm._v(" "),
                     _c(
                       "div",
