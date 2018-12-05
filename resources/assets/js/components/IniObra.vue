@@ -121,23 +121,21 @@
                                         </select>
                                     </div>
                                 </div>
-
-
                            
-                                <li v-for="(inputs,index) in arrayLotes" :key="inputs.id">   
+                                <li v-for="(inputs,index) in arrayLotes" :key="inputs.id" >   
                                 <div class="form-group row">
                                     <label class="col-md-2 form-control-label" for="text-input" v-text="'Lote #'+inputs.num_lote"></label>
                                     <div class="col-md-2">
-                                        <input type="checkbox" v-model="lote_id[index]" value="inputs.num_lote" class="form-control"  required>
+                                        <input type="checkbox" value="inputs.num_lote" v-model.trim="lote_id[index]" class="form-control"  required>
+                                    </div> 
+                                    <div class="col-md-2">
+                                        <input type="text" name="costo_directo[]" v-model.trim="costo_directo[index]" class="form-control" placeholder="Costo directo $" required>
                                     </div>
                                     <div class="col-md-2">
-                                        <input type="text" v-model="costo_directo[index]" class="form-control" placeholder="Costo directo $" required>
+                                        <input type="text" v-model.trim="costo_indirecto[index]" class="form-control" placeholder="Costo indirecto $" required>
                                     </div>
                                     <div class="col-md-2">
-                                        <input type="text" v-model="costo_indirecto[index]" class="form-control" placeholder="Costo indirecto $" required>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <input type="text" v-model="importe[index]" class="form-control" placeholder="Importe $" required>
+                                        <input type="text" v-model.trim="importe[index]" class="form-control" placeholder="Importe $" required>
                                     </div>
                                 </div>
                                 </li>
@@ -262,11 +260,12 @@
                 //datos tala ini_obra_lotes
                 ini_obra_id : this.id,
                 manzana: '',
-                lote_id: '',
+                lote_id: [{},{}],
                 superficie: 0.0,
-                costo_directo: 0,
-                costo_indirecto: 0,
-                importe: 0,
+                costo_directo: [{},{}],
+                costo_indirecto: [{},{}],
+                importe: [{},{}],
+                datosArray: [{},{}],
                 descripcion: '',
                 iniciado_lote: 0,
 
@@ -277,6 +276,8 @@
                 arrayManzanas: [],
                 arrayLotes: [],
                 arrayContratistas: [],
+                
+            
 
                 //datos modal y paginacion
                 modal : 0,
@@ -329,6 +330,7 @@
             }
         },
         methods : {
+
             /**Metodo para mostrar los registros */
             listarIniobra(page, buscar, criterio){
                 let me = this;
@@ -445,7 +447,7 @@
                     'anticipo': this.anticipo,
                     'total_anticipo': this.total_anticipo,
                     'iniciado': this.iniciado,
-                    'ini_obra_id': this.id,
+                    'ini_obra_id': this.ini_obra_id,
                     'manzana': this.manzana,
                     'lote_id': this.lote_id,                                        
                     'superficie': this.superficie,                    
@@ -521,7 +523,7 @@
             },
 
             /**Metodo para eliminar  */
-            eliminarEmpresa(data =[]){
+            eliminarIniobra(data =[]){
                 this.id=data['id'];
                 this.fraccionamiento_id = data['fraccionamiento_id'];
                 this.etapa_id = data['etapa_id'];
@@ -641,11 +643,11 @@
                                 this.iniciado = 0;
                                 this.ini_obra_id = 0; 
                                 this.manzana  = '';
-                                this.lote_id  = '';                                       
+                                this.lote_id  = [{},{}];                                       
                                 this.superficie  = 0;                    
-                                this.costo_directo  = 0;
-                                this.costo_indirecto = 0;
-                                this.importe = 0;
+                                this.costo_directo  = [{},{}];
+                                this.costo_indirecto = [{},{}];
+                                this.importe = [{},{}];
                                 this.descripcion = '';
                                 this.iniciado_lote = 0;
                                 this.tipoAccion = 1;
@@ -692,6 +694,7 @@
                 this.selectManzanas(this.fraccionamiento_id, this.etapa_id);
                 this.selectLotesManzana(this.fraccionamiento_id, this.etapa_id,this.manzana);
                 this.selectContratistas();
+              
             }
         },
 

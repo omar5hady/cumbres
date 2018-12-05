@@ -54516,8 +54516,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -54540,11 +54538,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             //datos tala ini_obra_lotes
             ini_obra_id: this.id,
             manzana: '',
-            lote_id: '',
+            lote_id: [{}, {}],
             superficie: 0.0,
-            costo_directo: 0,
-            costo_indirecto: 0,
-            importe: 0,
+            costo_directo: [{}, {}],
+            costo_indirecto: [{}, {}],
+            importe: [{}, {}],
+            datosArray: [{}, {}],
             descripcion: '',
             iniciado_lote: 0,
 
@@ -54608,6 +54607,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         }
     },
     methods: {
+
         /**Metodo para mostrar los registros */
         listarIniobra: function listarIniobra(page, buscar, criterio) {
             var me = this;
@@ -54718,7 +54718,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 'anticipo': this.anticipo,
                 'total_anticipo': this.total_anticipo,
                 'iniciado': this.iniciado,
-                'ini_obra_id': this.id
+                'ini_obra_id': this.ini_obra_id
             }, _defineProperty(_axios$post, 'manzana', this.manzana), _defineProperty(_axios$post, 'lote_id', this.lote_id), _defineProperty(_axios$post, 'superficie', this.superficie), _defineProperty(_axios$post, 'costo_directo', this.costo_directo), _defineProperty(_axios$post, 'costo_indirecto', this.costo_indirecto), _defineProperty(_axios$post, 'importe', this.importe), _defineProperty(_axios$post, 'descripcion', this.descripcion), _defineProperty(_axios$post, 'iniciado_lote', this.iniciado_lote), _axios$post)).then(function (response) {
                 me.cerrarModal(); //al guardar el registro se cierra el modal
                 me.listarIniobra(1, '', 'iniobra'); //se enlistan nuevamente los registros
@@ -54779,7 +54779,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
         /**Metodo para eliminar  */
-        eliminarEmpresa: function eliminarEmpresa() {
+        eliminarIniobra: function eliminarIniobra() {
             var _this = this;
 
             var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
@@ -54900,11 +54900,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                                     this.iniciado = 0;
                                     this.ini_obra_id = 0;
                                     this.manzana = '';
-                                    this.lote_id = '';
+                                    this.lote_id = [{}, {}];
                                     this.superficie = 0;
-                                    this.costo_directo = 0;
-                                    this.costo_indirecto = 0;
-                                    this.importe = 0;
+                                    this.costo_directo = [{}, {}];
+                                    this.costo_indirecto = [{}, {}];
+                                    this.importe = [{}, {}];
                                     this.descripcion = '';
                                     this.iniciado_lote = 0;
                                     this.tipoAccion = 1;
@@ -55499,9 +55499,10 @@ var render = function() {
                               directives: [
                                 {
                                   name: "model",
-                                  rawName: "v-model",
+                                  rawName: "v-model.trim",
                                   value: _vm.lote_id[index],
-                                  expression: "lote_id[index]"
+                                  expression: "lote_id[index]",
+                                  modifiers: { trim: true }
                                 }
                               ],
                               staticClass: "form-control",
@@ -55556,14 +55557,16 @@ var render = function() {
                               directives: [
                                 {
                                   name: "model",
-                                  rawName: "v-model",
+                                  rawName: "v-model.trim",
                                   value: _vm.costo_directo[index],
-                                  expression: "costo_directo[index]"
+                                  expression: "costo_directo[index]",
+                                  modifiers: { trim: true }
                                 }
                               ],
                               staticClass: "form-control",
                               attrs: {
                                 type: "text",
+                                name: "costo_directo[]",
                                 placeholder: "Costo directo $",
                                 required: ""
                               },
@@ -55576,8 +55579,11 @@ var render = function() {
                                   _vm.$set(
                                     _vm.costo_directo,
                                     index,
-                                    $event.target.value
+                                    $event.target.value.trim()
                                   )
+                                },
+                                blur: function($event) {
+                                  _vm.$forceUpdate()
                                 }
                               }
                             })
@@ -55588,9 +55594,10 @@ var render = function() {
                               directives: [
                                 {
                                   name: "model",
-                                  rawName: "v-model",
+                                  rawName: "v-model.trim",
                                   value: _vm.costo_indirecto[index],
-                                  expression: "costo_indirecto[index]"
+                                  expression: "costo_indirecto[index]",
+                                  modifiers: { trim: true }
                                 }
                               ],
                               staticClass: "form-control",
@@ -55608,8 +55615,11 @@ var render = function() {
                                   _vm.$set(
                                     _vm.costo_indirecto,
                                     index,
-                                    $event.target.value
+                                    $event.target.value.trim()
                                   )
+                                },
+                                blur: function($event) {
+                                  _vm.$forceUpdate()
                                 }
                               }
                             })
@@ -55620,9 +55630,10 @@ var render = function() {
                               directives: [
                                 {
                                   name: "model",
-                                  rawName: "v-model",
+                                  rawName: "v-model.trim",
                                   value: _vm.importe[index],
-                                  expression: "importe[index]"
+                                  expression: "importe[index]",
+                                  modifiers: { trim: true }
                                 }
                               ],
                               staticClass: "form-control",
@@ -55640,8 +55651,11 @@ var render = function() {
                                   _vm.$set(
                                     _vm.importe,
                                     index,
-                                    $event.target.value
+                                    $event.target.value.trim()
                                   )
+                                },
+                                blur: function($event) {
+                                  _vm.$forceUpdate()
                                 }
                               }
                             })

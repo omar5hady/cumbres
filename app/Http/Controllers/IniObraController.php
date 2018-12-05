@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Ini_obra;
 use App\Ini_obra_lote;
+use DB;
 
 class IniObraController extends Controller
 {
@@ -74,8 +75,20 @@ class IniObraController extends Controller
         $ini_obras->iniciado = 1; 
         $ini_obras->save();
 
+        $datos_en_array = array();
+
+        foreach ($request->costo_directo as $key => $costo_directo)
+        {
+            
+            $datos_en_array[$key]['costo_directo'] = $request->costo_directo;
+   
+        }
+        
+        Ini_obra_lote::insert($datos_en_array);
+        DB::table('ini_obra_lotes')->insert($datos_en_array);
+
         $ini_obras_lotes = new Ini_obra_lote();
-        $ini_obras_lotes->ini_obra_id = $request->id;
+        $ini_obras_lotes->ini_obra_id = $ini_obras->id;
         $ini_obras_lotes->lote_id = $request->lote_id;
         $ini_obras_lotes->manzana = $request->manzana;
         $ini_obras_lotes->superficie = 200;

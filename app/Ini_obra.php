@@ -25,7 +25,7 @@ class Ini_obra extends Model
     }
 
     public function ini_obra_lote(){
-        return $this->hasMany('App\Ini_obra_lote');
+        return $this->belongsTo('App\Ini_obra_lote');
     }
 
    

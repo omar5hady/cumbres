@@ -13,7 +13,7 @@ class Ini_obra_lote extends Model
 
 
     public function ini_obra(){
-        return $this->belongsTo('App\Ini_obra');
+        return $this->hasMany('App\Ini_obra');
     }
 
     public function lote(){
