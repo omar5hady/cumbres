@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Ini_obra;
 use App\Ini_obra_lote;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class IniObraController extends Controller
 {
@@ -77,10 +77,10 @@ class IniObraController extends Controller
 
         $datos_en_array = array();
 
-        foreach ($request->costo_directo as $key => $costo_directo)
+        foreach ($request->costo_directo as $key)
         {
             
-            $datos_en_array[$key]['costo_directo'] = $request->costo_directo;
+            $datos_en_array['costo_directo'] = $request->costo_directo;
    
         }
         
