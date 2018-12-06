@@ -92,7 +92,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Fecha de inicio</label>
                                     <div class="col-md-6">
-                                        <input type="date" v-model="f_ini"  class="form-control" placeholder="Fecha de inicio">
+                                        <input type="date" v-model="f_ini" class="form-control" placeholder="Fecha de inicio">
                                     </div>
                                 </div>
                                    <div class="form-group row">
@@ -139,7 +139,7 @@
             return{
                 allSelected: false,
                 id:0,
-                f_ini : '',
+                f_ini : new Date().toISOString().substr(0, 10),
                 f_fin : '',
                 arrayLotes : [],
                 lotes_ini : [],
@@ -261,10 +261,22 @@
                 this.errorLotesIniObra = 0;
                 this.errorMostrarMsjLotesIniObra = [];
                 this.lotes_ini = [];
+                this.allSelected = false;
 
             },
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
             abrirModal(modelo, accion,data =[]){
+                if(this.lotes_ini.length<1){
+                    Swal({
+                    title: 'No se ha seleccionado ningun lote.',
+                    animation: false,
+                    customClass: 'animated tada'
+                    })
+                    return;
+                }
+
+
+
                 switch(modelo){
                     case "lotes":
                     {
@@ -273,7 +285,7 @@
                             {
                                 this.modal = 1;
                                 this.tituloModal = 'Enviar aviso de obra';
-                                this.f_ini ='';
+                                //this.f_ini = '';
                                 this.f_fin ='';
                                 this.tipoAccion = 1;
                                 break;

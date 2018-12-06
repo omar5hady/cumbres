@@ -10,6 +10,7 @@ use Session;
 use Excel;
 use File;
 use DB;
+use Carbon\Carbon;
 
 class LoteController extends Controller
 {

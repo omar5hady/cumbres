@@ -14,7 +14,8 @@ let mix = require('laravel-mix');
 mix.styles([
     'resources/assets/plantilla/css/font-awesome.min.css',
     'resources/assets/plantilla/css/simple-line-icons.min.css',
-    'resources/assets/plantilla/css/style.css'
+    'resources/assets/plantilla/css/style.css',
+    'resources/assets/plantilla/css/animate.css'
    ], 'public/css/plantilla.css')
    .scripts([
     'resources/assets/plantilla/js/jquery.min.js',

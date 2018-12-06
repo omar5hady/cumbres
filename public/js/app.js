@@ -43530,7 +43530,7 @@ var render = function() {
         _vm._v(" "),
         _c("div", { staticClass: "card-body" }, [
           _c("div", { staticClass: "form-group row" }, [
-            _c("div", { staticClass: "col-md-6" }, [
+            _c("div", { staticClass: "col-md-8" }, [
               _c("div", { staticClass: "input-group" }, [
                 _c(
                   "select",
@@ -54415,7 +54415,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         return {
             allSelected: false,
             id: 0,
-            f_ini: '',
+            f_ini: new Date().toISOString().substr(0, 10),
             f_fin: '',
             arrayLotes: [],
             lotes_ini: [],
@@ -54534,11 +54534,21 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.errorLotesIniObra = 0;
             this.errorMostrarMsjLotesIniObra = [];
             this.lotes_ini = [];
+            this.allSelected = false;
         },
 
         /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
         abrirModal: function abrirModal(modelo, accion) {
             var data = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+
+            if (this.lotes_ini.length < 1) {
+                Swal({
+                    title: 'No se ha seleccionado ningun lote.',
+                    animation: false,
+                    customClass: 'animated tada'
+                });
+                return;
+            }
 
             switch (modelo) {
                 case "lotes":
@@ -54548,7 +54558,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                 {
                                     this.modal = 1;
                                     this.tituloModal = 'Enviar aviso de obra';
-                                    this.f_ini = '';
+                                    //this.f_ini = '';
                                     this.f_fin = '';
                                     this.tipoAccion = 1;
                                     break;
