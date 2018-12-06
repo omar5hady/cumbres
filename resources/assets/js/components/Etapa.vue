@@ -169,7 +169,7 @@
                 contador : 0,
                 fraccionamiento_id : 0,
                 num_etapa : 0,
-                f_ini : '',
+                f_ini : new Date().toISOString().substr(0, 10),
                 f_fin : '',
                 personal_id : 0,
                 arrayEtapa : [],
@@ -409,7 +409,7 @@
                 this.tituloModal = '';
                 this.fraccionamiento_id = '';
                 this.num_etapa = '';
-                this.f_ini = '';
+                this.f_ini = new Date().toISOString().substr(0, 10);
                 this.f_fin = '';
                 this.personal_id = '';
                 this.errorEtapa = 0;
@@ -429,7 +429,7 @@
                                 this.tituloModal = 'Registrar Etapa';
                                 this.fraccionamiento_id = '0';
                                 this.num_etapa = this.contador;
-                                this.f_ini = '';
+                                // this.f_ini = '';
                                 this.f_fin = '';
                                 this.personal_id = '0';
                                 this.tipoAccion = 1;

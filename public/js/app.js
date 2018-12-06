@@ -39633,7 +39633,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             contador: 0,
             fraccionamiento_id: 0,
             num_etapa: 0,
-            f_ini: '',
+            f_ini: new Date().toISOString().substr(0, 10),
             f_fin: '',
             personal_id: 0,
             arrayEtapa: [],
@@ -39869,7 +39869,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.tituloModal = '';
             this.fraccionamiento_id = '';
             this.num_etapa = '';
-            this.f_ini = '';
+            this.f_ini = new Date().toISOString().substr(0, 10);
             this.f_fin = '';
             this.personal_id = '';
             this.errorEtapa = 0;
@@ -39891,7 +39891,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     this.tituloModal = 'Registrar Etapa';
                                     this.fraccionamiento_id = '0';
                                     this.num_etapa = this.contador;
-                                    this.f_ini = '';
+                                    // this.f_ini = '';
                                     this.f_fin = '';
                                     this.personal_id = '0';
                                     this.tipoAccion = 1;
@@ -49067,7 +49067,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             fraccionamiento_id: 0,
             etapa_id: 0,
             nombre: '',
-            v_ini: '',
+            v_ini: new Date().toISOString().substr(0, 10),
             v_fin: '',
             costo: '',
             descripcion: '',
@@ -49284,7 +49284,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.fraccionamiento_id = '';
             this.etapa_id = '';
             this.nombre = '';
-            this.v_ini = '';
+            this.v_ini = new Date().toISOString().substr(0, 10);
             this.v_fin = '';
             this.costo = '';
             this.descripcion = '';
@@ -49307,7 +49307,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     this.fraccionamiento_id = 0;
                                     this.etapa_id = 0;
                                     this.nombre = '';
-                                    this.v_ini = '';
+                                    // this.v_ini ='';
                                     this.v_fin = '';
                                     this.costo = 0;
                                     this.descripcion = '';
@@ -50566,7 +50566,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             lote_id: 0,
             lote_promocion_id: 0,
             nombre: '',
-            v_ini: '',
+            v_ini: new Date().toISOString().substr(0, 10),
             v_fin: '',
             descuento: '',
             descripcion: '',
@@ -50899,7 +50899,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         this.fraccionamiento_id = '';
         this.etapa_id = '';
         this.nombre = '';
-        this.v_ini = '';
+        this.v_ini = new Date().toISOString().substr(0, 10);
         this.v_fin = '';
         this.descuento = '';
         this.descripcion = '';
@@ -50929,7 +50929,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                                 this.fraccionamiento_id = 0;
                                 this.etapa_id = 0;
                                 this.nombre = '';
-                                this.v_ini = '';
+                                // this.v_ini ='';
                                 this.v_fin = '';
                                 this.descuento = 0;
                                 this.descripcion = '';

@@ -318,7 +318,7 @@
                 lote_id : 0,
                 lote_promocion_id : 0,
                 nombre : '',
-                v_ini : '',
+                v_ini : new Date().toISOString().substr(0, 10),
                 v_fin : '',
                 descuento : '',
                 descripcion : '',
@@ -672,7 +672,7 @@
                 this.fraccionamiento_id = '';
                 this.etapa_id = '';
                 this.nombre = '';
-                this.v_ini = '';
+                this.v_ini = new Date().toISOString().substr(0, 10);
                 this.v_fin = '';
                 this.descuento = '';
                 this.descripcion = '';
@@ -705,7 +705,7 @@
                                 this.fraccionamiento_id =0;
                                 this.etapa_id =0;
                                 this.nombre = '';
-                                this.v_ini ='';
+                                // this.v_ini ='';
                                 this.v_fin = '';
                                 this.descuento = 0;
                                 this.descripcion = '';
