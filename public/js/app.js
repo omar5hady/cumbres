@@ -54413,10 +54413,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
+            allSelected: false,
             id: 0,
             f_ini: '',
             f_fin: '',
             arrayLotes: [],
+            lotes_ini: [],
             modal: 0,
             tituloModal: '',
             tipoAccion: 0,
@@ -54465,6 +54467,20 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         }
     },
     methods: {
+
+        selectAll: function selectAll() {
+            this.lotes_ini = [];
+
+            if (!this.allSelected) {
+                for (var lote in this.arrayLotes) {
+                    this.lotes_ini.push(this.arrayLotes[lote].id.toString());
+                }
+            }
+        },
+        select: function select() {
+            this.allSelected = false;
+        },
+
         /**Metodo para mostrar los registros */
         listarLotesIniObra: function listarLotesIniObra(page, buscar, criterio) {
             var me = this;
@@ -54513,10 +54529,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         cerrarModal: function cerrarModal() {
             this.modal = 0;
             this.tituloModal = '';
-            this.departamento = '';
-            this.user_alta = '';
+            this.f_fin = '';
+            this.f_ini = '';
             this.errorLotesIniObra = 0;
             this.errorMostrarMsjLotesIniObra = [];
+            this.lotes_ini = [];
         },
 
         /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
@@ -54566,7 +54583,7 @@ var render = function() {
           _c(
             "button",
             {
-              staticClass: "btn btn-secondary",
+              staticClass: "btn btn-success",
               attrs: { type: "button" },
               on: {
                 click: function($event) {
@@ -54674,31 +54691,110 @@ var render = function() {
             "table",
             { staticClass: "table table-bordered table-striped table-sm" },
             [
-              _vm._m(1),
+              _c("thead", [
+                _c("tr", [
+                  _c("th", [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.allSelected,
+                          expression: "allSelected"
+                        }
+                      ],
+                      attrs: { type: "checkbox" },
+                      domProps: {
+                        checked: Array.isArray(_vm.allSelected)
+                          ? _vm._i(_vm.allSelected, null) > -1
+                          : _vm.allSelected
+                      },
+                      on: {
+                        click: _vm.selectAll,
+                        change: function($event) {
+                          var $$a = _vm.allSelected,
+                            $$el = $event.target,
+                            $$c = $$el.checked ? true : false
+                          if (Array.isArray($$a)) {
+                            var $$v = null,
+                              $$i = _vm._i($$a, $$v)
+                            if ($$el.checked) {
+                              $$i < 0 && (_vm.allSelected = $$a.concat([$$v]))
+                            } else {
+                              $$i > -1 &&
+                                (_vm.allSelected = $$a
+                                  .slice(0, $$i)
+                                  .concat($$a.slice($$i + 1)))
+                            }
+                          } else {
+                            _vm.allSelected = $$c
+                          }
+                        }
+                      }
+                    }),
+                    _vm._v(" Todos\n                                ")
+                  ]),
+                  _vm._v(" "),
+                  _c("th", [_vm._v("Fraccionamiento")]),
+                  _vm._v(" "),
+                  _c("th", [_vm._v("Etapa")]),
+                  _vm._v(" "),
+                  _c("th", [_vm._v("Manzana")]),
+                  _vm._v(" "),
+                  _c("th", [_vm._v("# Lote")]),
+                  _vm._v(" "),
+                  _c("th", [_vm._v("Modelo")]),
+                  _vm._v(" "),
+                  _c("th", [_vm._v("Terreno mts²")]),
+                  _vm._v(" "),
+                  _c("th", [_vm._v("Construcción mts²")])
+                ])
+              ]),
               _vm._v(" "),
               _c(
                 "tbody",
                 _vm._l(_vm.arrayLotes, function(lote) {
                   return _c("tr", { key: lote.id }, [
                     _c("td", { staticStyle: { width: "8%" } }, [
-                      _c(
-                        "button",
-                        {
-                          staticClass: "btn btn-warning btn-sm",
-                          attrs: { type: "button" },
-                          on: {
-                            click: function($event) {
-                              _vm.abrirModal(
-                                "departamento",
-                                "actualizar",
-                                _vm.departamento
-                              )
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.lotes_ini,
+                            expression: "lotes_ini"
+                          }
+                        ],
+                        attrs: { type: "checkbox", id: lote.id },
+                        domProps: {
+                          value: lote.id,
+                          checked: Array.isArray(_vm.lotes_ini)
+                            ? _vm._i(_vm.lotes_ini, lote.id) > -1
+                            : _vm.lotes_ini
+                        },
+                        on: {
+                          click: _vm.select,
+                          change: function($event) {
+                            var $$a = _vm.lotes_ini,
+                              $$el = $event.target,
+                              $$c = $$el.checked ? true : false
+                            if (Array.isArray($$a)) {
+                              var $$v = lote.id,
+                                $$i = _vm._i($$a, $$v)
+                              if ($$el.checked) {
+                                $$i < 0 && (_vm.lotes_ini = $$a.concat([$$v]))
+                              } else {
+                                $$i > -1 &&
+                                  (_vm.lotes_ini = $$a
+                                    .slice(0, $$i)
+                                    .concat($$a.slice($$i + 1)))
+                              }
+                            } else {
+                              _vm.lotes_ini = $$c
                             }
                           }
-                        },
-                        [_c("i", { staticClass: "icon-pencil" })]
-                      ),
-                      _vm._v("  \n                                ")
+                        }
+                      })
                     ]),
                     _vm._v(" "),
                     _c("td", {
@@ -55033,30 +55129,6 @@ var staticRenderFns = [
             _vm._v("Home")
           ])
         ])
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("thead", [
-      _c("tr", [
-        _c("th", [_vm._v("Seleccionar")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Fraccionamiento")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Etapa")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Manzana")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("# Lote")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Modelo")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Terreno mts²")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Construcción mts²")])
       ])
     ])
   }

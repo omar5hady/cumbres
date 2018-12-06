@@ -10,7 +10,7 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Inicio de Obra
                         <!--   Boton Nuevo    -->
-                        <button type="button" @click="abrirModal('lotes','enviar')" class="btn btn-secondary">
+                        <button type="button" @click="abrirModal('lotes','enviar')" class="btn btn-success">
                             <i class="icon-envelope-letter"></i>&nbsp;Enviar inicio de obra
                         </button>
                         <!---->
@@ -31,7 +31,9 @@
                         <table class="table table-bordered table-striped table-sm">
                             <thead>
                                 <tr>
-                                    <th>Seleccionar</th>
+                                    <th>
+                                        <input type="checkbox" @click="selectAll" v-model="allSelected"> Todos
+                                    </th>
                                     <th>Fraccionamiento</th>
                                     <th>Etapa</th>
                                     <th>Manzana</th>
@@ -44,9 +46,7 @@
                             <tbody>
                                 <tr v-for="lote in arrayLotes" :key="lote.id">
                                     <td style="width:8%">
-                                        <button type="button" @click="abrirModal('departamento','actualizar',departamento)" class="btn btn-warning btn-sm">
-                                          <i class="icon-pencil"></i>
-                                        </button> &nbsp;
+                                        <input type="checkbox" @click="select" :id="lote.id" :value="lote.id" v-model="lotes_ini">
                                     </td>
                                     
                                     <td v-text="lote.proyecto"></td>
@@ -137,10 +137,12 @@
     export default {
         data(){
             return{
+                allSelected: false,
                 id:0,
                 f_ini : '',
                 f_fin : '',
                 arrayLotes : [],
+                lotes_ini : [],
                 modal : 0,
                 tituloModal : '',
                 tipoAccion: 0,
@@ -188,6 +190,22 @@
             }
         },
         methods : {
+            
+            selectAll: function() {
+            this.lotes_ini = [];
+
+            if (!this.allSelected) {
+                for (var lote in this.arrayLotes) {
+                    this.lotes_ini.push(this.arrayLotes[lote].id.toString());
+                }
+            }
+            },
+            select: function() {
+                this.allSelected = false;
+            },
+        
+
+
             /**Metodo para mostrar los registros */
             listarLotesIniObra(page, buscar, criterio){
                 let me = this;
@@ -238,10 +256,11 @@
             cerrarModal(){
                 this.modal = 0;
                 this.tituloModal = '';
-                this.departamento = '';
-                this.user_alta = '';
+                this.f_fin = '';
+                this.f_ini = '';
                 this.errorLotesIniObra = 0;
                 this.errorMostrarMsjLotesIniObra = [];
+                this.lotes_ini = [];
 
             },
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
