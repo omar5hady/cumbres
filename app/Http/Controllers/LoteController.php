@@ -329,4 +329,55 @@ class LoteController extends Controller
     }
 
 
+    public function indexIniObra(Request $request)
+    {
+        //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
+       // if(!$request->ajax())return redirect('/');
+
+        $buscar = $request->buscar;
+        $criterio = $request->criterio;
+        
+        if($buscar==''){
+            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+            ->join('etapas','lotes.etapa_id','=','etapas.id')
+            ->join('modelos','lotes.modelo_id','=','modelos.id')
+            ->join('empresas','lotes.empresa_id','=','empresas.id')
+            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
+                      'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
+                      'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
+                      'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios')
+                ->where('lotes.ini_obra', '=', '0')
+                ->orderBy('fraccionamientos.nombre','lotes.id')->paginate(12);
+                
+        }
+                
+        else{
+            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+            ->join('etapas','lotes.etapa_id','=','etapas.id')
+            ->join('modelos','lotes.modelo_id','=','modelos.id')
+            ->join('empresas','lotes.empresa_id','=','empresas.id')
+            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
+                    'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
+                    'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
+                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios')
+                ->where($criterio, 'like', '%'. $buscar . '%')
+                ->where('lotes.ini_obra', '=', '0')
+                ->orderBy('fraccionamientos.nombre','lotes.id')->paginate(12);
+        }
+        
+
+        return [
+            'pagination' => [
+                'total'         => $lotes->total(),
+                'current_page'  => $lotes->currentPage(),
+                'per_page'      => $lotes->perPage(),
+                'last_page'     => $lotes->lastPage(),
+                'from'          => $lotes->firstItem(),
+                'to'            => $lotes->lastItem(),
+            ],
+            'lotes' => $lotes
+        ];
+    }
+
+
 }

@@ -29,6 +29,7 @@ class CreateLotesTable extends Migration
             $table->float('construccion');
             $table->boolean('casa_muestra')->default(0);
             $table->boolean('lote_comercial')->default(0);
+            $table->boolean('ini_obra')->default(0);
             $table->string('comentarios')->nullable();
 
             $table->foreign('fraccionamiento_id')->references('id')->on('fraccionamientos');
