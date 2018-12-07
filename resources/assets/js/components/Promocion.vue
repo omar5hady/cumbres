@@ -281,14 +281,14 @@
                                 <nav>
                                     <!--Botones de paginacion -->
                                     <ul class="pagination">
-                                        <li class="page-item" v-if="pagination.current_page > 1">
-                                            <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination.current_page - 1,id,criterio)">Ant</a>
+                                        <li class="page-item" v-if="pagination2.current_page > 1">
+                                            <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page - 1,id,criterio)">Ant</a>
                                         </li>
-                                        <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
+                                        <li class="page-item" v-for="page in pagesNumber2" :key="page" :class="[page == isActived2 ? 'active' : '']">
                                             <a class="page-link" href="#" @click.prevent="cambiarPagina2(page,id,criterio)" v-text="page"></a>
                                         </li>
-                                        <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                            <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination.current_page + 1,id,criterio)">Sig</a>
+                                        <li class="page-item" v-if="pagination2.current_page < pagination2.last_page">
+                                            <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page + 1,id,criterio)">Sig</a>
                                         </li>
                                     </ul>
                                 </nav>
@@ -347,6 +347,14 @@
                     'from' : 0,
                     'to' : 0,
                 },
+                 pagination2 : {
+                    'total' : 0,         
+                    'current_page' : 0,
+                    'per_page' : 0,
+                    'last_page' : 0,
+                    'from' : 0,
+                    'to' : 0,
+                },
                 offset : 3,
                 criterio : 'promociones.nombre', 
                 buscar : ''
@@ -378,6 +386,33 @@
                     from++;
                 }
                 return pagesArray;
+            },
+            ////////////////////////////
+            isActived2: function(){
+                return this.pagination2.current_page;
+            },
+            //Calcula los elementos de la paginación
+            pagesNumber2:function(){
+                if(!this.pagination2.to){
+                    return [];
+                }
+
+                var from = this.pagination2.current_page - this.offset;
+                if(from < 1){
+                    from = 1;
+                }
+
+                var to = from + (this.offset * 2);
+                if(to >= this.pagination2.last_page){
+                    to = this.pagination2.last_page;
+                }
+
+                var pagesArray = [];
+                while(from <= to){
+                    pagesArray.push(from);
+                    from++;
+                }
+                return pagesArray;
             }
         },
         methods : {
@@ -400,7 +435,7 @@
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayLotePromocion = respuesta.lotes_promocion.data;
-                    me.pagination = respuesta.pagination;
+                    me.pagination2 = respuesta.pagination;
                     if(me.arrayLotePromocion.length>0){
                         me.mostrar = 1;
                     }
@@ -416,10 +451,10 @@
                 //Envia la petición para visualizar la data de esta pagina
                 me.listarPromociones(page,buscar,criterio);
             },
-            cambiarPagina(page, buscar){
+            cambiarPagina2(page, buscar){
                 let me = this;
                 //Actualiza la pagina actual
-                me.pagination.current_page = page;
+                me.pagination2.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
                 me.listarLotePromociones(page,buscar);
             },
