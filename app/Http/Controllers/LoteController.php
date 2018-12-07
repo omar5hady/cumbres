@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Lote;
 use App\Modelo;
 use App\Manzana;
+use App\Etapa;
 use Session;
 use Excel;
 use File;
@@ -119,9 +120,15 @@ class LoteController extends Controller
     public function store(Request $request)
     {
         if(!$request->ajax())return redirect('/');
+
+        $etapa= Etapa::select('id')
+                ->where('num_etapa','=', 'Sin asignar')
+                ->where('fraccionamiento_id','=',$request->fraccionamiento_id)
+                ->get();
+
         $lote = new Lote();
         $lote->fraccionamiento_id = $request->fraccionamiento_id;
-        $lote->etapa_id = $request->etapa_id;
+        $lote->etapa_id = $etapa[0]->id;
         $lote->manzana = $request->manzana;
         $lote->num_lote = $request->num_lote;
         $lote->sublote = $request->sublote;
@@ -132,11 +139,12 @@ class LoteController extends Controller
         $lote->interior = $request->interior;
         $lote->terreno = $request->terreno;
         $lote->construccion = $request->construccion;
-        $lote->casa_muestra = $request->casa_muestra;
-        $lote->lote_comercial = $request->lote_comercial;
-        $lote->comentarios = $request->comentarios;
+        $lote->clv_catastral = $request->clv_catastral;
+        $lote->etapa_servicios = $request ->etapa_servicios;
 
-        $lote->save();
+        $lote->save();   
+      
+
     }
 
     /**
@@ -186,9 +194,9 @@ class LoteController extends Controller
         $lote->interior = $request->interior;
         $lote->terreno = $request->terreno;
         $lote->construccion = $request->construccion;
-        $lote->casa_muestra = $request->casa_muestra;
-        $lote->lote_comercial = $request->lote_comercial;
-        $lote->comentarios = $request->comentarios;
+        $lote->clv_catastral = $request->clv_catastral;
+        $lote->etapa_servicios = $request ->etapa_servicios;
+        
 
         $lote->save();
     }
@@ -239,9 +247,8 @@ class LoteController extends Controller
                         'interior' => $value->interior,
                         'terreno' => $terreno[0]->terreno,
                         'construccion' => $terreno[0]->construccion,
-                        'casa_muestra' => $value->casa_muestra,
-                        'lote_comercial' => $value->lote_comercial,
-                        'comentarios' => $value->comentarios,
+                        'clv_catastral' =>$value->clv_catastral,
+                        'etapa_servicios' =>$value->etapa_servicios
                         
                         ];
                     }

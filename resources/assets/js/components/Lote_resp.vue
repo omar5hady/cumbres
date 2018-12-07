@@ -56,7 +56,7 @@
                                     <th>Etapa</th>
                                     <th>Manzana</th>
                                     <th># Lote</th>
-                                    <th>Duplex</th>
+                                    <th>Sublote</th>
                                     <th>Modelo</th>
                                     <th>Calle</th>
                                     <th>Numero</th>
@@ -64,7 +64,7 @@
                                     <th>Terreno mts&sup2;</th>
                                     <th>Construcción mts&sup2;</th>
                                     <!--<th>Casa Muestra</th>-->
-                                    
+                                    <th>Casa en venta</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -92,7 +92,10 @@
                                     <td v-text="lote.construccion"></td>
                                     <!--<td v-text="lote.casa_muestra"></td>
                                     <td v-text="lote.lote_comercial"></td>-->
-                                     
+                                    <td>
+                                        <span v-if = "lote.casa_muestra==0 && lote.lote_comercial==0" class="badge badge-success">Activo</span>
+                                        <span v-else class="badge badge-danger">Inactivo</span>
+                                    </td> 
                                 </tr>                               
                             </tbody>
                         </table>  
@@ -142,20 +145,16 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Clave catastral</label>
-                                    <div class="col-md-4">
-                                        <input type="text" v-model="clv_catastral" class="form-control" placeholder="Clave catastral">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Etapa de servicios</label>
-                                    <div class="col-md-4">
-                                        <input type="text" v-model="etapa_servicios" class="form-control" v-on:keypress="isNumber(event)" placeholder="Etapa de servicios">
-                                    </div>
-                                </div>
 
-                                  
+                                  <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Etapa</label>
+                                    <div class="col-md-6">
+                                       <select class="form-control" v-model="etapa_id">
+                                            <option value="0">Seleccione</option>
+                                            <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
+                                        </select>
+                                    </div>
+                                </div>
 
                         <!--<div class="form-group row">
                             <label class="col-md-3 form-control-label" for="text-input">Manzana</label>
@@ -217,9 +216,9 @@
                                 </div>
 
                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Duplex</label>
+                                    <label class="col-md-3 form-control-label" for="text-input">Sublote</label>
                                     <div class="col-md-4">
-                                        <input type="text" v-model="sublote" class="form-control" placeholder="Duplex">
+                                        <input type="text" v-model="sublote" class="form-control" placeholder="sublote">
                                     </div>
                                 </div>
 
@@ -261,9 +260,51 @@
                                   
                                     </div>
                                 </div>
-                                
-                                
-                                
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Comentarios </label>
+                                    <div class="col-md-7">
+                                        <input type="text" v-model="comentarios" class="form-control" placeholder="Comentarios">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Casa muestra</label>
+                                    <div class="col-md-2">
+                                        <div class="form-check">
+                                            <input class="form-check-input" v-model="casa_muestra" id="radio1" type="radio" value="1" name="radios">
+                                            <label class="form-check-label" for="radio1">Si </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-check">
+                                            <input class="form-check-input" v-model="casa_muestra" id="radio2" type="radio" value="0" name="radios">
+                                            <label class="form-check-label" for="radio2">No </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Lote comercial</label>
+                                    <div class="col-md-2">
+                                        <div class="form-check">
+                                            <input class="form-check-input" v-model="lote_comercial" id="radio3" type="radio" value="1" name="radios2">
+                                            <label class="form-check-label" for="radio3">Si </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-check">
+                                            <input class="form-check-input" v-model="lote_comercial" id="radio4" type="radio" value="0" name="radios2">
+                                            <label class="form-check-label" for="radio4">No </label>
+                                        </div>
+                                    </div>
+
+                                    <!-- Hidden para agregar el id de la empresa -->
+                                    
+                                  <div class="form-group row">
+                                    <div class="col-md-4">
+                                        <input type="hidden" value="1" v-model="empresa_id" class="form-control">
+                                    </div>
+                                </div>
+
+                                </div>
                                 <!-- Div para mostrar los errores que mande validerModelo -->
                                 <div v-show="errorLote" class="form-group row div-error">
                                     <div class="text-center text-error">
@@ -365,8 +406,6 @@
         data(){
             return{
                 id: 0,
-                clv_catastral: '',
-                etapa_servicios:0,
                 fraccionamiento_id : 0,
                 etapa_id: 0,
                 manzana: '',
@@ -516,16 +555,6 @@
                 me.listarLote(page,buscar,buscar2,buscar3,criterio);
             },
 
-            isNumber: function(evt) {
-                evt = (evt) ? evt : window.event;
-                var charCode = (evt.which) ? evt.which : evt.keyCode;
-                if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
-                    evt.preventDefault();;
-                } else {
-                    return true;
-                }
-            },
-
             selectFraccionamientos(){
                 let me = this;
                 me.buscar=""
@@ -627,8 +656,6 @@
                     'construccion': this.construccion,
                     'casa_muestra': this.casa_muestra,
                     'lote_comercial': this.lote_comercial,
-                    'clv_catastral': this.clv_catastral,
-                    'etapa_servicios':this.etapa_servicios,
                     'comentarios': this.comentarios,
                 }).then(function (response){
                     me.cerrarModal(); //al guardar el registro se cierra el modal
@@ -698,8 +725,6 @@
                     'construccion': this.construccion,
                     'casa_muestra': this.casa_muestra,
                     'lote_comercial': this.lote_comercial,
-                    'clv_catastral': this.clv_catastral,
-                    'etapa_servicios': this.etapa_servicios,
                     'comentarios': this.comentarios,
                     
                 }).then(function (response){
@@ -733,8 +758,6 @@
                 this.construccion=data['construccion'];
                 this.casa_muestra=data['casa_muestra'];
                 this.lote_comercial=data['lote_comercial'];
-                this.clv_catastral=data['clv_catastra'];
-                this.etapa_servicios=data['etapa_servicios'];
                 this.comentarios=data['comentarios'];
                 swal({
                 title: '¿Desea eliminar?',
@@ -805,8 +828,6 @@
                 this.construccion = '';
                 this.casa_muestra= '';
                 this.lote_comercial= '';
-                this.clv_catastral='';
-                this.etapa_servicios='';
                 this.comentarios= '';
                 
                 this.errorLote = 0;
@@ -847,8 +868,6 @@
                                 this.construccion = 0.0;
                                 this.casa_muestra= 0;
                                 this.lote_comercial= 0;
-                                this.clv_catastral='';
-                                this.etapa_servicios=0;
                                 this.tipoAccion = 1;
                                 break;
                             }
@@ -872,8 +891,6 @@
                                 this.construccion=data['construccion'];
                                 this.casa_muestra=data['casa_muestra'];
                                 this.lote_comercial=data['lote_comercial'];
-                                this.clv_catastral=['clv_catastral'];
-                                this.etapa_servicios=['etapa_servicios'];
                                 this.comentarios=data['comentarios'];
                                 break;
                             }

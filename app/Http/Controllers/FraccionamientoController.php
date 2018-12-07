@@ -69,6 +69,18 @@ class FraccionamientoController extends Controller
         $fraccionamiento->estado = $request->estado;
         $fraccionamiento->ciudad = $request->ciudad;
         $fraccionamiento->save();
+
+        
+        $etapa = new Etapa();
+        $etapa->fraccionamiento_id = $fraccionamiento->id;
+        $etapa->num_etapa = "Sin Asignar";
+        
+        $etapa->personal_id = 1;
+        $etapa->save();
+
+       
+
+
     }
 
     /**

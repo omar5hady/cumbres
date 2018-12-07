@@ -42933,53 +42933,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
             id: 0,
+            clv_catastral: '',
+            etapa_servicios: 0,
             fraccionamiento_id: 0,
             etapa_id: 0,
             manzana: '',
@@ -43117,6 +43078,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             //Envia la petición para visualizar la data de esta pagina
             me.listarLote(page, buscar, buscar2, buscar3, criterio);
         },
+
+
+        isNumber: function isNumber(evt) {
+            evt = evt ? evt : window.event;
+            var charCode = evt.which ? evt.which : evt.keyCode;
+            if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode !== 46) {
+                evt.preventDefault();;
+            } else {
+                return true;
+            }
+        },
+
         selectFraccionamientos: function selectFraccionamientos() {
             var me = this;
             me.buscar = "";
@@ -43209,6 +43182,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'construccion': this.construccion,
                 'casa_muestra': this.casa_muestra,
                 'lote_comercial': this.lote_comercial,
+                'clv_catastral': this.clv_catastral,
+                'etapa_servicios': this.etapa_servicios,
                 'comentarios': this.comentarios
             }).then(function (response) {
                 me.cerrarModal(); //al guardar el registro se cierra el modal
@@ -43276,6 +43251,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'construccion': this.construccion,
                 'casa_muestra': this.casa_muestra,
                 'lote_comercial': this.lote_comercial,
+                'clv_catastral': this.clv_catastral,
+                'etapa_servicios': this.etapa_servicios,
                 'comentarios': this.comentarios
 
             }).then(function (response) {
@@ -43313,6 +43290,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.construccion = data['construccion'];
             this.casa_muestra = data['casa_muestra'];
             this.lote_comercial = data['lote_comercial'];
+            this.clv_catastral = data['clv_catastra'];
+            this.etapa_servicios = data['etapa_servicios'];
             this.comentarios = data['comentarios'];
             swal({
                 title: '¿Desea eliminar?',
@@ -43376,6 +43355,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.construccion = '';
             this.casa_muestra = '';
             this.lote_comercial = '';
+            this.clv_catastral = '';
+            this.etapa_servicios = '';
             this.comentarios = '';
 
             this.errorLote = 0;
@@ -43417,6 +43398,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     this.construccion = 0.0;
                                     this.casa_muestra = 0;
                                     this.lote_comercial = 0;
+                                    this.clv_catastral = '';
+                                    this.etapa_servicios = 0;
                                     this.tipoAccion = 1;
                                     break;
                                 }
@@ -43440,6 +43423,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     this.construccion = data['construccion'];
                                     this.casa_muestra = data['casa_muestra'];
                                     this.lote_comercial = data['lote_comercial'];
+                                    this.clv_catastral = ['clv_catastral'];
+                                    this.etapa_servicios = ['etapa_servicios'];
                                     this.comentarios = data['comentarios'];
                                     break;
                                 }
@@ -43986,17 +43971,7 @@ var render = function() {
                     _vm._v(" "),
                     _c("td", {
                       domProps: { textContent: _vm._s(lote.construccion) }
-                    }),
-                    _vm._v(" "),
-                    _c("td", [
-                      lote.casa_muestra == 0 && lote.lote_comercial == 0
-                        ? _c("span", { staticClass: "badge badge-success" }, [
-                            _vm._v("Activo")
-                          ])
-                        : _c("span", { staticClass: "badge badge-danger" }, [
-                            _vm._v("Inactivo")
-                          ])
-                    ])
+                    })
                   ])
                 })
               )
@@ -44278,55 +44253,75 @@ var render = function() {
                           staticClass: "col-md-3 form-control-label",
                           attrs: { for: "text-input" }
                         },
-                        [_vm._v("Etapa")]
+                        [_vm._v("Clave catastral")]
                       ),
                       _vm._v(" "),
-                      _c("div", { staticClass: "col-md-6" }, [
-                        _c(
-                          "select",
-                          {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.etapa_id,
-                                expression: "etapa_id"
-                              }
-                            ],
-                            staticClass: "form-control",
-                            on: {
-                              change: function($event) {
-                                var $$selectedVal = Array.prototype.filter
-                                  .call($event.target.options, function(o) {
-                                    return o.selected
-                                  })
-                                  .map(function(o) {
-                                    var val = "_value" in o ? o._value : o.value
-                                    return val
-                                  })
-                                _vm.etapa_id = $event.target.multiple
-                                  ? $$selectedVal
-                                  : $$selectedVal[0]
-                              }
+                      _c("div", { staticClass: "col-md-4" }, [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.clv_catastral,
+                              expression: "clv_catastral"
                             }
-                          },
-                          [
-                            _c("option", { attrs: { value: "0" } }, [
-                              _vm._v("Seleccione")
-                            ]),
-                            _vm._v(" "),
-                            _vm._l(_vm.arrayEtapas, function(etapas) {
-                              return _c("option", {
-                                key: etapas.id,
-                                domProps: {
-                                  value: etapas.id,
-                                  textContent: _vm._s(etapas.num_etapa)
-                                }
-                              })
-                            })
                           ],
-                          2
-                        )
+                          staticClass: "form-control",
+                          attrs: {
+                            type: "text",
+                            placeholder: "Clave catastral"
+                          },
+                          domProps: { value: _vm.clv_catastral },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.clv_catastral = $event.target.value
+                            }
+                          }
+                        })
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "text-input" }
+                        },
+                        [_vm._v("Etapa de servicios")]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-4" }, [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.etapa_servicios,
+                              expression: "etapa_servicios"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: {
+                            type: "text",
+                            placeholder: "Etapa de servicios"
+                          },
+                          domProps: { value: _vm.etapa_servicios },
+                          on: {
+                            keypress: function($event) {
+                              _vm.isNumber(_vm.event)
+                            },
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.etapa_servicios = $event.target.value
+                            }
+                          }
+                        })
                       ])
                     ]),
                     _vm._v(" "),
@@ -44407,7 +44402,7 @@ var render = function() {
                           staticClass: "col-md-3 form-control-label",
                           attrs: { for: "text-input" }
                         },
-                        [_vm._v("Sublote")]
+                        [_vm._v("Duplex")]
                       ),
                       _vm._v(" "),
                       _c("div", { staticClass: "col-md-4" }, [
@@ -44421,7 +44416,7 @@ var render = function() {
                             }
                           ],
                           staticClass: "form-control",
-                          attrs: { type: "text", placeholder: "sublote" },
+                          attrs: { type: "text", placeholder: "Duplex" },
                           domProps: { value: _vm.sublote },
                           on: {
                             input: function($event) {
@@ -44651,245 +44646,6 @@ var render = function() {
                             }
                           }
                         })
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "text-input" }
-                        },
-                        [_vm._v("Comentarios ")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-7" }, [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.comentarios,
-                              expression: "comentarios"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: { type: "text", placeholder: "Comentarios" },
-                          domProps: { value: _vm.comentarios },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.comentarios = $event.target.value
-                            }
-                          }
-                        })
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "text-input" }
-                        },
-                        [_vm._v("Casa muestra")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-2" }, [
-                        _c("div", { staticClass: "form-check" }, [
-                          _c("input", {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.casa_muestra,
-                                expression: "casa_muestra"
-                              }
-                            ],
-                            staticClass: "form-check-input",
-                            attrs: {
-                              id: "radio1",
-                              type: "radio",
-                              value: "1",
-                              name: "radios"
-                            },
-                            domProps: {
-                              checked: _vm._q(_vm.casa_muestra, "1")
-                            },
-                            on: {
-                              change: function($event) {
-                                _vm.casa_muestra = "1"
-                              }
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c(
-                            "label",
-                            {
-                              staticClass: "form-check-label",
-                              attrs: { for: "radio1" }
-                            },
-                            [_vm._v("Si ")]
-                          )
-                        ])
-                      ]),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-2" }, [
-                        _c("div", { staticClass: "form-check" }, [
-                          _c("input", {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.casa_muestra,
-                                expression: "casa_muestra"
-                              }
-                            ],
-                            staticClass: "form-check-input",
-                            attrs: {
-                              id: "radio2",
-                              type: "radio",
-                              value: "0",
-                              name: "radios"
-                            },
-                            domProps: {
-                              checked: _vm._q(_vm.casa_muestra, "0")
-                            },
-                            on: {
-                              change: function($event) {
-                                _vm.casa_muestra = "0"
-                              }
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c(
-                            "label",
-                            {
-                              staticClass: "form-check-label",
-                              attrs: { for: "radio2" }
-                            },
-                            [_vm._v("No ")]
-                          )
-                        ])
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "text-input" }
-                        },
-                        [_vm._v("Lote comercial")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-2" }, [
-                        _c("div", { staticClass: "form-check" }, [
-                          _c("input", {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.lote_comercial,
-                                expression: "lote_comercial"
-                              }
-                            ],
-                            staticClass: "form-check-input",
-                            attrs: {
-                              id: "radio3",
-                              type: "radio",
-                              value: "1",
-                              name: "radios2"
-                            },
-                            domProps: {
-                              checked: _vm._q(_vm.lote_comercial, "1")
-                            },
-                            on: {
-                              change: function($event) {
-                                _vm.lote_comercial = "1"
-                              }
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c(
-                            "label",
-                            {
-                              staticClass: "form-check-label",
-                              attrs: { for: "radio3" }
-                            },
-                            [_vm._v("Si ")]
-                          )
-                        ])
-                      ]),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-2" }, [
-                        _c("div", { staticClass: "form-check" }, [
-                          _c("input", {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.lote_comercial,
-                                expression: "lote_comercial"
-                              }
-                            ],
-                            staticClass: "form-check-input",
-                            attrs: {
-                              id: "radio4",
-                              type: "radio",
-                              value: "0",
-                              name: "radios2"
-                            },
-                            domProps: {
-                              checked: _vm._q(_vm.lote_comercial, "0")
-                            },
-                            on: {
-                              change: function($event) {
-                                _vm.lote_comercial = "0"
-                              }
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c(
-                            "label",
-                            {
-                              staticClass: "form-check-label",
-                              attrs: { for: "radio4" }
-                            },
-                            [_vm._v("No ")]
-                          )
-                        ])
-                      ]),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "form-group row" }, [
-                        _c("div", { staticClass: "col-md-4" }, [
-                          _c("input", {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.empresa_id,
-                                expression: "empresa_id"
-                              }
-                            ],
-                            staticClass: "form-control",
-                            attrs: { type: "hidden", value: "1" },
-                            domProps: { value: _vm.empresa_id },
-                            on: {
-                              input: function($event) {
-                                if ($event.target.composing) {
-                                  return
-                                }
-                                _vm.empresa_id = $event.target.value
-                              }
-                            }
-                          })
-                        ])
                       ])
                     ]),
                     _vm._v(" "),
@@ -45288,7 +45044,7 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("# Lote")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Sublote")]),
+        _c("th", [_vm._v("Duplex")]),
         _vm._v(" "),
         _c("th", [_vm._v("Modelo")]),
         _vm._v(" "),
@@ -45300,9 +45056,7 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Terreno mts²")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Construcción mts²")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Casa en venta")])
+        _c("th", [_vm._v("Construcción mts²")])
       ])
     ])
   }

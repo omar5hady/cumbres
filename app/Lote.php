@@ -9,7 +9,7 @@ class lote extends Model
     protected $table = 'lotes'; // se referencia a que tabla pertenece el modelo
     protected $primaryKey = 'id'; //Referenciar la llave primaria
     protected $fillable = ['fraccionamiento_id','etapa_id','manzana','num_lote','sublote','modelo_id','empresa_id','calle','numero','interior','terreno',
-                           'construccion','casa_muestra','lote_comercial','ini_obra'];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
+                           'construccion','casa_muestra','lote_comercial','ini_obra','clv_catastral','etapa_servicios'];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
     
                            
     public function fraccionamiento(){
