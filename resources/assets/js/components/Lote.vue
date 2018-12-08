@@ -6,7 +6,7 @@
             </ol>
             <div class="container-fluid">
                 <!-- Ejemplo de tabla Listado -->
-                <div class="card">
+                <div class="card scroll-box">
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Lotes
                         <!--   Boton Nuevo    -->
@@ -29,15 +29,12 @@
                                         <option value="lotes.calle">Calle</option>
                                     </select>
                                     
-                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @click="selectEtapa(buscar)" >
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" >
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
 
-                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar2" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio)"> 
-                                        <option value="">Seleccione</option>
-                                        <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
-                                    </select>
+                                    <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar2" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio)" class="form-control" placeholder="Etapa de servicio">
                                     <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar3" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio)" class="form-control" placeholder="Manzana a buscar">
 
                                     <input type="text" v-if="criterio=='modelos.nombre'" v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio)" class="form-control" placeholder="Texto a buscar">
@@ -53,16 +50,14 @@
                                 <tr>
                                     <th>Opciones</th>
                                     <th>Proyecto</th>
-                                    <th>Etapa</th>
+                                    <th>Etapa de Servicio</th>
                                     <th>Manzana</th>
                                     <th># Lote</th>
-                                    <th>Duplex</th>
                                     <th>Modelo</th>
                                     <th>Calle</th>
-                                    <th>Numero</th>
-                                    <th>Interior</th>
-                                    <th>Terreno mts&sup2;</th>
-                                    <th>Construcción mts&sup2;</th>
+                                    <th># Oficial</th>
+                                    <th>Clave Catastral</th>
+                                    <th>Terreno/Construc. mts&sup2;</th>
                                     <!--<th>Casa Muestra</th>-->
                                     
                                 </tr>
@@ -80,16 +75,16 @@
 
                                     
                                     <td v-text="lote.proyecto"></td>
-                                    <td v-text="lote.etapas"></td>
+                                    <td v-text="lote.etapa_servicios"></td>
                                     <td v-text="lote.manzana"></td>
-                                    <td v-text="lote.num_lote"></td>
-                                    <td v-text="lote.sublote"></td>
+                                    <td v-if="!lote.sublote" v-text="lote.num_lote"></td>
+                                    <td v-else v-text="lote.num_lote + '-' + lote.sublote"></td>
                                     <td v-text="lote.modelo"></td>
                                     <td v-text="lote.calle"></td>
-                                    <td v-text="lote.numero"></td>
-                                    <td v-text="lote.interior"></td>
-                                    <td v-text="lote.terreno"></td>
-                                    <td v-text="lote.construccion"></td>
+                                    <td v-if="!lote.interior" v-text="lote.numero"></td>
+                                    <td v-else v-text="lote.numero + '-' + lote.interior" ></td>
+                                    <td v-text="lote.clv_catastral"></td>
+                                    <td v-text="lote.terreno +'/' + lote.construccion"></td>
                                     <!--<td v-text="lote.casa_muestra"></td>
                                     <td v-text="lote.lote_comercial"></td>-->
                                      
@@ -136,7 +131,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
                                     <div class="col-md-6">
-                                       <select class="form-control" v-model="fraccionamiento_id" @click="selectEtapa(fraccionamiento_id),selectModelo(fraccionamiento_id),selectManzana(fraccionamiento_id)" >
+                                       <select class="form-control" v-model="fraccionamiento_id" @click="selectEtapa(fraccionamiento_id),selectModelo(fraccionamiento_id)" >
                                             <option value="0">Seleccione</option>
                                             <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                         </select>
@@ -145,62 +140,15 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Clave catastral</label>
                                     <div class="col-md-4">
-                                        <input type="text" v-model="clv_catastral" class="form-control" placeholder="Clave catastral">
+                                        <input type="text" maxlength="13" v-model="clv_catastral" class="form-control" v-on:keypress="isNumber(event)" placeholder="Clave catastral">
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Etapa de servicios</label>
                                     <div class="col-md-4">
-                                        <input type="text" v-model="etapa_servicios" class="form-control" v-on:keypress="isNumber(event)" placeholder="Etapa de servicios">
+                                        <input type="text" maxlength="2" v-model="etapa_servicios" class="form-control" v-on:keypress="isNumber(event)" placeholder="Etapa de servicios">
                                     </div>
                                 </div>
-
-                                  
-
-                        <!--<div class="form-group row">
-                            <label class="col-md-3 form-control-label" for="text-input">Manzana</label>
-                            <div class="col-md-6">
-                                <select class="form-control" v-model="manzana">
-                                    <option value="0">Seleccione</option>
-                                    <option v-for="manzanas in arrayManzanas" :key="manzanas.id" :value="manzanas.id" v-text="manzanas.manzana"></option>
-                                </select>
-                            </div>
-                                <button title="Editar" type="button" @click="abrirModal('lote','addmanzana')" class="btn btn-warning btn-sm">
-                                    <i class="icon-pencil"></i>
-                                </button>
-                                <div class="modal fade" tabindex="-1" :class="{'mostrar': modal3}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                                <div class="modal-dialog modal-primary modal-lg" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h4 class="modal-title" v-text="tituloModal3"></h4>
-                                            <button type="button" class="close" @click="cerrarModal3()" aria-label="Close">
-                                                <span aria-hidden="true">×</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                                <div class="form-group row">
-                                                    <label class="col-md-3 form-control-label" for="text-input">Manzana</label>
-                                                    <div class="col-md-4">
-                                                        <input type="text" v-model="manzana" class="form-control" placeholder="manzana">
-                                                    </div>
-                                                </div>
-                                    </div>
-                                <div v-show="errorLote" class="form-group row div-error">
-                                        <div class="text-center text-error">
-                                    <div v-for="error in errorMostrarMsjLote" :key="error" v-text="error">
-
-                                        </div>
-                                    </div>
-                                </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" @click="cerrarModal3()">Cerrar</button>-->
-                                        <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                                        <!--<button type="button" v-if="tipoAccion==4" class="btn btn-primary" @click="registrarManzana()">Guardar</button>
-                                        </div>
-                            </div>
-                        </div>
-                        </div>
-                        </div>-->
                                 
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Manzana</label>
@@ -366,7 +314,7 @@
             return{
                 id: 0,
                 clv_catastral: '',
-                etapa_servicios:0,
+                etapa_servicios: '',
                 fraccionamiento_id : 0,
                 etapa_id: 0,
                 manzana: '',
@@ -497,7 +445,7 @@
             /**Metodo para mostrar los registros */
             listarLote(page, buscar, buscar2, buscar3, criterio){
                 let me = this;
-                var url = '/lote?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2+ '&buscar3=' + buscar3 + '&criterio=' + criterio;
+                var url = '/lote2?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2+ '&buscar3=' + buscar3 + '&criterio=' + criterio;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayLote = respuesta.lotes.data;
@@ -551,20 +499,6 @@
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayEtapas = respuesta.etapas;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            },
-
-            selectManzana(buscar){
-                let me = this;
-                
-                me.arrayManzanas=[];
-                var url = '/select_manzana_proyecto?buscar=' + buscar;
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayManzanas = respuesta.manzanas;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -733,7 +667,7 @@
                 this.construccion=data['construccion'];
                 this.casa_muestra=data['casa_muestra'];
                 this.lote_comercial=data['lote_comercial'];
-                this.clv_catastral=data['clv_catastra'];
+                this.clv_catastral=data['clv_catastral'];
                 this.etapa_servicios=data['etapa_servicios'];
                 this.comentarios=data['comentarios'];
                 swal({
@@ -758,6 +692,7 @@
                         )
                         me.listarLote(1,'','','','lote');
                     }).catch(function (error){
+                        window.alert("Este lote ya cuenta con alguna promocion o paquete.")
                         console.log(error);
                     });
                 }
@@ -848,7 +783,7 @@
                                 this.casa_muestra= 0;
                                 this.lote_comercial= 0;
                                 this.clv_catastral='';
-                                this.etapa_servicios=0;
+                                this.etapa_servicios='';
                                 this.tipoAccion = 1;
                                 break;
                             }
@@ -872,8 +807,8 @@
                                 this.construccion=data['construccion'];
                                 this.casa_muestra=data['casa_muestra'];
                                 this.lote_comercial=data['lote_comercial'];
-                                this.clv_catastral=['clv_catastral'];
-                                this.etapa_servicios=['etapa_servicios'];
+                                this.clv_catastral=data['clv_catastral'];
+                                this.etapa_servicios=data['etapa_servicios'];
                                 this.comentarios=data['comentarios'];
                                 break;
                             }
@@ -902,7 +837,6 @@
                 this.selectEtapa(this.fraccionamiento_id);
                 this.selectModelo(this.fraccionamiento_id);
                 this.selectConsYTerreno(this.modelo_id);
-                this.selectManzana(this.fraccionamiento_id);
 
             }
         },
@@ -931,4 +865,10 @@
         color: red !important;
         font-weight: bold;
     }
+
+    .scroll-box {
+            overflow-x: scroll;
+            width: auto;
+            padding: 1rem
+        }
 </style>

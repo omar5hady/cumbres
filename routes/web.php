@@ -57,6 +57,7 @@ Route::get('/download/{fileName}' , 'ModeloController@downloadFile');
 
 ////////////////////        RUTAS LOTES    /////////////////////////////////
 Route::get('/lote','LoteController@index');
+Route::get('/lote2','LoteController@index2');
 Route::post('/lote/registrar','LoteController@store');
 Route::put('/lote/actualizar','LoteController@update');
 Route::delete('/lote/eliminar','LoteController@destroy');

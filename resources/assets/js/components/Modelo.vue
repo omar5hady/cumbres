@@ -6,7 +6,7 @@
             </ol>
             <div class="container-fluid">
                 <!-- Ejemplo de tabla Listado -->
-                <div class="card">
+                <div class="card scroll-box">
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Modelos
                         <!--   Boton Nuevo    -->
@@ -573,4 +573,9 @@
         color: red !important;
         font-weight: bold;
     }
+    .scroll-box {
+            overflow-x: scroll;
+            width: auto;
+            padding: 1rem
+        }
 </style>
