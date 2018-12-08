@@ -61,7 +61,6 @@ Route::get('/lote2','LoteController@index2');
 Route::post('/lote/registrar','LoteController@store');
 Route::put('/lote/actualizar','LoteController@update');
 Route::delete('/lote/eliminar','LoteController@destroy');
-Route::post('/lote/registrar_manzana','LoteController@storeManzana');
 Route::post('/import', 'LoteController@import');
 Route::get('/lote_aviso','LoteController@indexIniObra');
 

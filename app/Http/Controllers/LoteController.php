@@ -373,15 +373,7 @@ class LoteController extends Controller
     //     return['manzanas' => $manzanas];
     // }
 
-    public function storeManzana(Request $request)
-    {
-        if(!$request->ajax())return redirect('/');
-        $manzana = new Manzana();
-        $manzana->fraccionamiento_id = $request->fraccionamiento_id;
-        $manzana->manzana = $request->manzana;
-        $manzana->save();
-    }
-
+   
     public function select_modelos_etapa(Request $request){
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
         if(!$request->ajax())return redirect('/');
