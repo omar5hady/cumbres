@@ -264,7 +264,7 @@
             selectDirectivos(){
                 let me = this;
                 me.arrayDirectivos=[];
-                var url = '/select_personal';
+                var url = '/select_personal?departamento_id=1';
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayDirectores = respuesta.personal;

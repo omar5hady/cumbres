@@ -63,6 +63,7 @@ Route::put('/lote/actualizar','LoteController@update');
 Route::delete('/lote/eliminar','LoteController@destroy');
 Route::post('/import', 'LoteController@import');
 Route::get('/lote_aviso','LoteController@indexIniObra');
+Route::put('/lotes/enviarAviObra','LoteController@enviarAviso');
 
 ////////////////////        RUTAS TERRENOS    /////////////////////////////////
 Route::get('/terreno','TerrenoController@index');

@@ -39726,7 +39726,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         selectDirectivos: function selectDirectivos() {
             var me = this;
             me.arrayDirectivos = [];
-            var url = '/select_personal';
+            var url = '/select_personal?departamento_id=1';
             axios.get(url).then(function (response) {
                 var respuesta = response.data;
                 me.arrayDirectores = respuesta.personal;
@@ -49906,7 +49906,7 @@ exports = module.exports = __webpack_require__(0)(false);
 
 
 // module
-exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: absolute !important;\n    background-color: #3c29297a !important;\n    overflow-y: auto;\n}\n.div-error{\n    display:flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n.scroll-box {\n        overflow-x: scroll;\n        width: auto;\n        padding: 1rem\n}\n", ""]);
+exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: absolute !important;\n    background-color: #3c29297a !important;\n    overflow-y: auto;\n}\n.div-error{\n    display:flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n.scroll-box {\n        overflow-x: scroll;\n        width: auto;\n        padding: 1rem\n}\n.btn-success {\n    color: #fff;\n    background-color: #2c309e;\n    border-color: #313a98;\n}\n.btn-success:active, .btn-success.active, .show > .btn-success.dropdown-toggle {\n    background-color: #2c309e;\n    background-image: none;\n    border-color: #313a98;\n}\n.btn-success:focus, .btn-success.focus {\n    box-shadow: 0 0 0 3px rgba(77, 100, 189, 0.5);\n}\n.btn-success:hover {\n    color: #fff;\n    background-color: #2c309e;\n    border-color: #313a98;\n}\n", ""]);
 
 // exports
 
@@ -50875,7 +50875,7 @@ var render = function() {
                         },
                         [_c("i", { staticClass: "icon-pencil" })]
                       ),
-                      _vm._v("  \n                                    "),
+                      _vm._v(" "),
                       _c(
                         "button",
                         {
@@ -54135,6 +54135,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -54150,6 +54159,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             tipoAccion: 0,
             errorLotesIniObra: 0,
             errorMostrarMsjLotesIniObra: [],
+            arrayArquitectos: [],
+            arquitecto_id: 0,
             pagination: {
                 'total': 0,
                 'current_page': 0,
@@ -54206,6 +54217,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         select: function select() {
             this.allSelected = false;
         },
+        selectArquitectos: function selectArquitectos() {
+            var me = this;
+            me.arrayArquitectos = [];
+            var url = '/select_personal?departamento_id=3';
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayArquitectos = respuesta.personal;
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+
 
         /**Metodo para mostrar los registros */
         listarLotesIniObra: function listarLotesIniObra(page, buscar, criterio) {
@@ -54229,10 +54252,40 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         /**Metodo para registrar  */
         registrarInicioObra: function registrarInicioObra() {
+            var _this = this;
+
             if (this.validarInicioObra()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+
+            var me = this;
+            //Con axios se llama el metodo update de DepartamentoController
+
+            me.lotes_ini.forEach(function (element) {
+
+                axios.put('/lotes/enviarAviObra', {
+                    'arquitecto_id': _this.arquitecto_id,
+                    'id': element,
+                    'fecha_ini': _this.f_ini,
+                    'fecha_fin': _this.f_fin
+                }); /*.then(function (response){
+                     me.cerrarModal();
+                     me.listarLotesIniObra(1,'','fraccionamientos.nombre');
+                     //window.alert("Cambios guardados correctamente");
+                     swal({
+                         position: 'top-end',
+                         type: 'success',
+                         title: 'Cambios guardados correctamente',
+                         showConfirmButton: false,
+                         timer: 1500
+                         })
+                    }).catch(function (error){
+                     console.log(error);
+                    });*/
+            });
+            me.cerrarModal();
+            me.listarLotesIniObra(1, '', 'fraccionamientos.nombre');
         },
         validarInicioObra: function validarInicioObra() {
             this.errorLotesIniObra = 0;
@@ -54246,6 +54299,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             if (this.f_fin < this.f_ini) //Si la variable departamento esta vacia
                 this.errorMostrarMsjLotesIniObra.push("La fecha de termino debe ser mayor a la fecha de inicio.");
+
+            if (this.arquitecto_id == 0) //Si la variable departamento esta vacia
+                this.errorMostrarMsjLotesIniObra.push("Seleccionar al Arquitecto en cargo.");
 
             if (this.errorMostrarMsjLotesIniObra.length) //Si el mensaje tiene almacenado algo en el array
                 this.errorLotesIniObra = 1;
@@ -54292,6 +54348,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                         }
                     }
             }
+            this.selectArquitectos();
         }
     },
     mounted: function mounted() {
@@ -54780,6 +54837,67 @@ var render = function() {
                             }
                           }
                         })
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "text-input" }
+                        },
+                        [_vm._v("Arquitectos")]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-6" }, [
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.arquitecto_id,
+                                expression: "arquitecto_id"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            on: {
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.arquitecto_id = $event.target.multiple
+                                  ? $$selectedVal
+                                  : $$selectedVal[0]
+                              }
+                            }
+                          },
+                          [
+                            _c("option", { attrs: { value: "0" } }, [
+                              _vm._v("Seleccione")
+                            ]),
+                            _vm._v(" "),
+                            _vm._l(_vm.arrayArquitectos, function(arquitectos) {
+                              return _c("option", {
+                                key: arquitectos.id,
+                                domProps: {
+                                  value: arquitectos.id,
+                                  textContent: _vm._s(
+                                    "Arq. " + arquitectos.name
+                                  )
+                                }
+                              })
+                            })
+                          ],
+                          2
+                        )
                       ])
                     ]),
                     _vm._v(" "),

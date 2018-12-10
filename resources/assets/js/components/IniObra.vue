@@ -101,6 +101,15 @@
                                         <input type="date" v-model="f_fin" class="form-control" placeholder="Fecha de terminacion">
                                     </div>
                                 </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Arquitectos</label>
+                                    <div class="col-md-6">
+                                        <select class="form-control" v-model="arquitecto_id">
+                                            <option value="0">Seleccione</option>
+                                            <option v-for="arquitectos in arrayArquitectos" :key="arquitectos.id" :value="arquitectos.id" v-text="'Arq. ' + arquitectos.name"></option>
+                                        </select>
+                                    </div>
+                                </div>
                                 <!-- Div para mostrar los errores que mande validerDepartamento -->
                                 <div v-show="errorLotesIniObra" class="form-group row div-error">
                                     <div class="text-center text-error">
@@ -148,6 +157,8 @@
                 tipoAccion: 0,
                 errorLotesIniObra : 0,
                 errorMostrarMsjLotesIniObra : [],
+                arrayArquitectos : [],
+                arquitecto_id : 0,
                 pagination : {
                     'total' : 0,         
                     'current_page' : 0,
@@ -203,6 +214,18 @@
             select: function() {
                 this.allSelected = false;
             },
+            selectArquitectos(){
+                let me = this;
+                me.arrayArquitectos=[];
+                var url = '/select_personal?departamento_id=3';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayArquitectos = respuesta.personal;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
         
 
 
@@ -233,8 +256,37 @@
                     return;
                 }
 
+                let me = this;
+                //Con axios se llama el metodo update de DepartamentoController
+
+                me.lotes_ini.forEach(element => {
+
+                    axios.put('/lotes/enviarAviObra',{
+                    'arquitecto_id': this.arquitecto_id,
+                    'id': element,
+                    'fecha_ini' : this.f_ini,
+                    'fecha_fin' : this.f_fin
+                });/*.then(function (response){
+                    me.cerrarModal();
+                    me.listarLotesIniObra(1,'','fraccionamientos.nombre');
+                    //window.alert("Cambios guardados correctamente");
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Cambios guardados correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });*/
+                    
+                });
+                me.cerrarModal();
+                me.listarLotesIniObra(1,'','fraccionamientos.nombre');
                 
             },
+            
             validarInicioObra(){
                 this.errorLotesIniObra=0;
                 this.errorMostrarMsjLotesIniObra=[];
@@ -247,6 +299,9 @@
                 
                 if(this.f_fin<this.f_ini) //Si la variable departamento esta vacia
                     this.errorMostrarMsjLotesIniObra.push("La fecha de termino debe ser mayor a la fecha de inicio.");
+
+                if(this.arquitecto_id==0) //Si la variable departamento esta vacia
+                    this.errorMostrarMsjLotesIniObra.push("Seleccionar al Arquitecto en cargo.");
 
                 if(this.errorMostrarMsjLotesIniObra.length)//Si el mensaje tiene almacenado algo en el array
                     this.errorLotesIniObra = 1;
@@ -293,6 +348,7 @@
                         }
                     }
                 }
+                this.selectArquitectos();
             }
         },
         mounted() {

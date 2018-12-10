@@ -290,6 +290,20 @@ class LoteController extends Controller
         $lote->save();
     }
 
+    public function enviarAviso(Request $request)
+    {
+       if(!$request->ajax())return redirect('/');
+        //FindOrFail se utiliza para buscar lo que recibe de argumento
+        $lote = Lote::findOrFail($request->id);
+        $lote->fecha_ini = $request ->fecha_ini;
+        $lote->fecha_fin = $request ->fecha_fin;
+        $lote->ini_obra = 1;
+        $lote->arquitecto_id = $request ->arquitecto_id;
+        
+
+        $lote->save();
+    }
+
     /**
      * Remove the specified resource from storage.
      *

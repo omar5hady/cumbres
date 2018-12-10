@@ -49,7 +49,7 @@
                                     <td style="width:10%">
                                         <button type="button" @click="abrirModal('promocion','actualizar',promocion)" class="btn btn-warning btn-sm">
                                           <i class="icon-pencil"></i>
-                                        </button> &nbsp;
+                                        </button>
                                         <button type="button" class="btn btn-danger btn-sm" @click="eliminarPromocion(promocion)">
                                           <i class="icon-trash"></i>
                                         </button>
@@ -825,4 +825,23 @@
             width: auto;
             padding: 1rem
         }
+    
+    .btn-success {
+        color: #fff;
+        background-color: #2c309e;
+        border-color: #313a98;
+    }
+    .btn-success:active, .btn-success.active, .show > .btn-success.dropdown-toggle {
+        background-color: #2c309e;
+        background-image: none;
+        border-color: #313a98;
+    }
+    .btn-success:focus, .btn-success.focus {
+        box-shadow: 0 0 0 3px rgba(77, 100, 189, 0.5);
+    }
+    .btn-success:hover {
+        color: #fff;
+        background-color: #2c309e;
+        border-color: #313a98;
+    }
 </style>
