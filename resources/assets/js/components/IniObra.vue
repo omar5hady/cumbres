@@ -282,6 +282,16 @@
                 });*/
                     
                 });
+                Swal({
+                title: 'Enviado!',
+                text: 'Aviso enviado correctamente.',
+                imageUrl: 'https://d2r6jp7chi630e.cloudfront.net/blog/aritic-pinpoint/wp-content/uploads/sites/3/2016/09/email-gif.gif',
+                imageWidth: 800,
+                imageHeight: 400,
+                imageAlt: 'Custom image',
+                animation: true
+                })
+
                 me.cerrarModal();
                 me.listarLotesIniObra(1,'','fraccionamientos.nombre');
                 
