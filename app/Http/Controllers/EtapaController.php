@@ -31,6 +31,7 @@ class EtapaController extends Controller
                     'etapas.f_fin','etapas.id','etapas.personal_id', 
                     DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS name"),
                     'etapas.fraccionamiento_id','fraccionamientos.nombre as fraccionamiento')
+                    ->where('etapas.num_etapa','!=','Sin Asignar')
                     ->orderBy('id','name')->paginate(5);
         }
         else{
@@ -42,7 +43,9 @@ class EtapaController extends Controller
                         'etapas.f_fin','etapas.id','etapas.personal_id', 
                         DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS name"),
                         'etapas.fraccionamiento_id','fraccionamientos.nombre as fraccionamiento')
-                        ->whereBetween($criterio, [$buscar,$buscar2])->orderBy('id','name')->paginate(5);
+                        ->whereBetween($criterio, [$buscar,$buscar2])
+                        ->where('etapas.num_etapa','!=','Sin Asignar')
+                        ->orderBy('id','name')->paginate(5);
             }
             else{
                 $etapas = Etapa::join('personal','etapas.personal_id','=','personal.id')
@@ -51,7 +54,9 @@ class EtapaController extends Controller
                         'etapas.f_fin','etapas.id','etapas.personal_id', 
                         DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS name"),
                         'etapas.fraccionamiento_id','fraccionamientos.nombre as fraccionamiento')
-                        ->where($criterio, 'like', '%'. $buscar . '%')->orderBy('id','name')->paginate(5);
+                        ->where($criterio, 'like', '%'. $buscar . '%')
+                        ->where('etapas.num_etapa','!=','Sin Asignar')
+                        ->orderBy('id','name')->paginate(5);
             }
             
         }

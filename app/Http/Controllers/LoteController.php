@@ -40,7 +40,8 @@ class LoteController extends Controller
                       'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
                       'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
                       'lotes.clv_catastral','lotes.etapa_servicios')
-                ->orderBy('fraccionamientos.nombre','lotes.id')->paginate(5);
+                      ->orderBy('fraccionamientos.nombre','DESC')
+                      ->orderBy('lotes.etapa_servicios','DESC')->paginate(5);
         }
         else{
             if($buscar2=='')
@@ -55,7 +56,8 @@ class LoteController extends Controller
                         'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
                         'lotes.clv_catastral','lotes.etapa_servicios')
                     ->where($criterio, 'like', '%'. $buscar . '%')
-                    ->orderBy('fraccionamientos.nombre','lotes.id')->paginate(5);
+                    ->orderBy('fraccionamientos.nombre','DESC')
+                    ->orderBy('lotes.etapa_servicios','DESC')->paginate(5);
             }
             else{
                 if($buscar3=='')
@@ -71,7 +73,8 @@ class LoteController extends Controller
                             'lotes.clv_catastral','lotes.etapa_servicios')
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                        ->orderBy('fraccionamientos.nombre','lotes.id')->paginate(5);
+                        ->orderBy('fraccionamientos.nombre','DESC')
+                        ->orderBy('lotes.etapa_servicios','DESC')->paginate(5);
                 }
                 else{
                     $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
@@ -86,7 +89,8 @@ class LoteController extends Controller
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                         ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                        ->orderBy('fraccionamientos.nombre','lotes.id')->paginate(5);
+                        ->orderBy('fraccionamientos.nombre','DESC')
+                        ->orderBy('lotes.etapa_servicios','DESC')->paginate(5);
                 }
             }
         }
@@ -124,7 +128,8 @@ class LoteController extends Controller
                       'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
                       'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
                       'lotes.clv_catastral','lotes.etapa_servicios')
-                ->orderBy('fraccionamientos.nombre','lotes.id')->paginate(5);
+                      ->orderBy('fraccionamientos.nombre','DESC')
+                      ->orderBy('lotes.etapa_servicios','DESC')->paginate(5);
         }
         else{
             if($buscar2=='')
@@ -139,7 +144,8 @@ class LoteController extends Controller
                         'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
                         'lotes.clv_catastral','lotes.etapa_servicios')
                     ->where($criterio, 'like', '%'. $buscar . '%')
-                    ->orderBy('fraccionamientos.nombre','lotes.id')->paginate(5);
+                    ->orderBy('fraccionamientos.nombre','DESC')
+                    ->orderBy('lotes.etapa_servicios','DESC')->paginate(5);
             }
             else{
                 if($buscar3=='')
@@ -155,7 +161,8 @@ class LoteController extends Controller
                             'lotes.clv_catastral','lotes.etapa_servicios')
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->where('lotes.etapa_servicios', 'like', '%'. $buscar2 . '%')
-                        ->orderBy('fraccionamientos.nombre','lotes.id')->paginate(5);
+                        ->orderBy('fraccionamientos.nombre','DESC')
+                    ->orderBy('lotes.etapa_servicios','DESC')->paginate(5);
                 }
                 else{
                     $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
@@ -170,7 +177,8 @@ class LoteController extends Controller
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->where('lotes.etapa_servicios', 'like', '%'. $buscar2 . '%')
                         ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                        ->orderBy('fraccionamientos.nombre','lotes.id')->paginate(5);
+                        ->orderBy('fraccionamientos.nombre','DESC')
+                    ->orderBy('lotes.etapa_servicios','DESC')->paginate(5);
                 }
             }
         }
@@ -328,6 +336,11 @@ class LoteController extends Controller
             $extension = File::extension($request->file->getClientOriginalName());
             if ($extension == "xlsx" || $extension == "xls" || $extension == "csv") {
  
+                $etapa= Etapa::select('id')
+                ->where('num_etapa','=', 'Sin asignar')
+                ->where('fraccionamiento_id','=',$request->fraccionamiento_id)
+                ->get();
+
                 $path = $request->file->getRealPath();
                 $data = Excel::load($path, function($reader) {
                 })->get();
@@ -337,12 +350,14 @@ class LoteController extends Controller
                         $terreno = Modelo::select('terreno','construccion')
                             ->where('id', '=', $request->modelo_id )->get();
 
+       
+
                         $insert[] = [
                         'fraccionamiento_id' => $request->fraccionamiento_id,
-                        'etapa_id' => $request->etapa_id,
+                        'etapa_id' => $etapa[0]->id,
                         'manzana' => $value->manzana,
                         'num_lote' => $value->num_lote,
-                        'sublote' => $value->sublote,
+                        'sublote' => $value->duplex,
                         'modelo_id' => $request->modelo_id,
                         'empresa_id' => 1,
                         'calle' => $value->calle,
@@ -350,7 +365,7 @@ class LoteController extends Controller
                         'interior' => $value->interior,
                         'terreno' => $terreno[0]->terreno,
                         'construccion' => $terreno[0]->construccion,
-                        'clv_catastral' =>$value->clv_catastral,
+                        'clv_catastral' =>$value->clave_catastral,
                         'etapa_servicios' =>$value->etapa_servicios
                         
                         ];

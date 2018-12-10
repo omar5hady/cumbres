@@ -84,7 +84,7 @@
                                     <td v-if="!lote.interior" v-text="lote.numero"></td>
                                     <td v-else v-text="lote.numero + '-' + lote.interior" ></td>
                                     <td v-text="lote.clv_catastral"></td>
-                                    <td v-text="lote.terreno +'/' + lote.construccion"></td>
+                                    <td v-text="lote.terreno +' / ' + lote.construccion"></td>
                                     <!--<td v-text="lote.casa_muestra"></td>
                                     <td v-text="lote.lote_comercial"></td>-->
                                      
@@ -259,16 +259,6 @@
                                     </div>
                                 </div>
 
-                             <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Etapa</label>
-                                    <div class="col-md-6">
-                                       <select class="form-control" v-model="etapa_id">
-                                            <option value="0">Seleccione</option>
-                                            <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
-                                        </select>
-                                    </div>
-                                </div>
-
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Modelo</label>
                                     <div class="col-md-6">
@@ -280,9 +270,9 @@
                                 </div>
 
                             <!-- {{ csrf_field() }} -->
-                            Choose your xls/csv File : <input type="file" v-on:change="onImageChange" class="form-control">
+                            Selecciona archivo excel xls/csv: <input type="file" v-on:change="onImageChange" class="form-control">
 
-                            <input type="submit" class="btn btn-primary btn-lg" style="margin-top: 3%">
+                            <input type="submit" value="Cargar" class="btn btn-primary btn-lg" style="margin-top: 3%">
                             
                          </form>
                         </div>
@@ -417,7 +407,6 @@
                let formData = new FormData();
                 formData.append('file', this.file);
                 formData.append('fraccionamiento_id', this.fraccionamiento_id);
-                formData.append('etapa_id', this.etapa_id);
                 formData.append('modelo_id', this.modelo_id);
                 let me = this;
                 axios.post('/import',formData)

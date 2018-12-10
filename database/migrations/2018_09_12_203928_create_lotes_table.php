@@ -33,12 +33,18 @@ class CreateLotesTable extends Migration
             $table->string('comentarios')->nullable();
             $table->string('clv_catastral',13)->nullable();
             $table->integer('etapa_servicios')->nullable();
+            $table->date('fecha_ini')->nullable();
+            $table->date('fecha_fin')->nullable();
+            $table->unsignedInteger('arquitecto_id')->nullable();
+            
+            
 
 
             $table->foreign('fraccionamiento_id')->references('id')->on('fraccionamientos');
             $table->foreign('etapa_id')->references('id')->on('etapas'); 
             $table->foreign('modelo_id')->references('id')->on('modelos');
             $table->foreign('empresa_id')->references('id')->on('empresas');
+            $table->foreign('arquitecto_id')->references('id')->on('personal');
 
             $table->timestamps();
         });

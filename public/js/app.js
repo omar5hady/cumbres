@@ -42871,16 +42871,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -42987,7 +42977,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var formData = new FormData();
             formData.append('file', this.file);
             formData.append('fraccionamiento_id', this.fraccionamiento_id);
-            formData.append('etapa_id', this.etapa_id);
             formData.append('modelo_id', this.modelo_id);
             var me = this;
             axios.post('/import', formData).then(function (response) {
@@ -43889,7 +43878,7 @@ var render = function() {
                     _c("td", {
                       domProps: {
                         textContent: _vm._s(
-                          lote.terreno + "/" + lote.construccion
+                          lote.terreno + " / " + lote.construccion
                         )
                       }
                     })
@@ -44784,65 +44773,6 @@ var render = function() {
                           staticClass: "col-md-3 form-control-label",
                           attrs: { for: "text-input" }
                         },
-                        [_vm._v("Etapa")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-6" }, [
-                        _c(
-                          "select",
-                          {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.etapa_id,
-                                expression: "etapa_id"
-                              }
-                            ],
-                            staticClass: "form-control",
-                            on: {
-                              change: function($event) {
-                                var $$selectedVal = Array.prototype.filter
-                                  .call($event.target.options, function(o) {
-                                    return o.selected
-                                  })
-                                  .map(function(o) {
-                                    var val = "_value" in o ? o._value : o.value
-                                    return val
-                                  })
-                                _vm.etapa_id = $event.target.multiple
-                                  ? $$selectedVal
-                                  : $$selectedVal[0]
-                              }
-                            }
-                          },
-                          [
-                            _c("option", { attrs: { value: "0" } }, [
-                              _vm._v("Seleccione")
-                            ]),
-                            _vm._v(" "),
-                            _vm._l(_vm.arrayEtapas, function(etapas) {
-                              return _c("option", {
-                                key: etapas.id,
-                                domProps: {
-                                  value: etapas.id,
-                                  textContent: _vm._s(etapas.num_etapa)
-                                }
-                              })
-                            })
-                          ],
-                          2
-                        )
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "text-input" }
-                        },
                         [_vm._v("Modelo")]
                       ),
                       _vm._v(" "),
@@ -44899,7 +44829,7 @@ var render = function() {
                     ]),
                     _vm._v(" "),
                     _vm._v(
-                      "\n                        Choose your xls/csv File : "
+                      "\n                        Selecciona archivo excel xls/csv: "
                     ),
                     _c("input", {
                       staticClass: "form-control",
@@ -44910,7 +44840,7 @@ var render = function() {
                     _c("input", {
                       staticClass: "btn btn-primary btn-lg",
                       staticStyle: { "margin-top": "3%" },
-                      attrs: { type: "submit" }
+                      attrs: { type: "submit", value: "Cargar" }
                     })
                   ]
                 )
