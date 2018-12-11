@@ -36,6 +36,9 @@
                     <li @click="menu=4" class="nav-item">
                         <a class="nav-link" href="#"><i class="icon-bag"></i> Lotes</a>
                     </li>
+                    <li @click="menu=5" class="nav-item">
+                        <a class="nav-link" href="#"><i class="icon-bag"></i> Asignar Modelo</a>
+                    </li>
                 </ul>
             </li>
             <li class="nav-item nav-dropdown">

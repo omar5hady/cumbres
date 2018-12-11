@@ -21,7 +21,7 @@
     </template>
 
     <template v-if="menu==5">
-        <h1>Contenido del menu 5</h1>
+    <lote_resp></lote_resp>
     </template>
 
     <template v-if="menu==6">

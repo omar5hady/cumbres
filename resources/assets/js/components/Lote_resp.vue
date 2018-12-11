@@ -10,12 +10,8 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Lotes
                         <!--   Boton Nuevo    -->
-                        <button type="button" @click="abrirModal('lote','registrar')" class="btn btn-secondary">
-                            <i class="icon-plus"></i>&nbsp;Nuevo
-                        </button>
-                        <button type="button" @click="abrirModal('lote','excel')" class="btn btn-secondary">
-                            <i class="icon-plus"></i>&nbsp;Cargar Excel
-                        </button>
+                        
+                        
                         <!---->
                     </div>
                     <div class="card-body">
@@ -64,6 +60,7 @@
                                     <th>Terreno mts&sup2;</th>
                                     <th>Construcción mts&sup2;</th>
                                     <!--<th>Casa Muestra</th>-->
+                                    <th>Credito puente</th>
                                     <th>Casa en venta</th>
                                 </tr>
                             </thead>
@@ -92,6 +89,7 @@
                                     <td v-text="lote.construccion"></td>
                                     <!--<td v-text="lote.casa_muestra"></td>
                                     <td v-text="lote.lote_comercial"></td>-->
+                                    <td v-text="lote.credito_puente"></td>
                                     <td>
                                         <span v-if = "lote.casa_muestra==0 && lote.lote_comercial==0" class="badge badge-success">Activo</span>
                                         <span v-else class="badge badge-danger">Inactivo</span>
@@ -261,6 +259,14 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Credito puente</label>
+                                    <div class="col-md-7">
+
+                                        <input type="text" v-model="credito_puente"  class="form-control" placeholder="Credito puente">
+                                  
+                                    </div>
+                                </div>
+                                <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Comentarios </label>
                                     <div class="col-md-7">
                                         <input type="text" v-model="comentarios" class="form-control" placeholder="Comentarios">
@@ -420,6 +426,7 @@
                 construccion : 0,
                 casa_muestra: 0,
                 lote_comercial: 0,
+                credito_puente:'',
                 comentarios: '',
                 
                 file: '',
@@ -709,7 +716,7 @@
 
                 let me = this;
                 //Con axios se llama el metodo update de LoteController
-                axios.put('/lote/actualizar',{
+                axios.put('/lote/actualizar2',{
                     'id' : this.id,
                     'fraccionamiento_id': this.fraccionamiento_id,
                     'etapa_id': this.etapa_id,
@@ -725,6 +732,7 @@
                     'construccion': this.construccion,
                     'casa_muestra': this.casa_muestra,
                     'lote_comercial': this.lote_comercial,
+                    'credito_puente':this.credito_puente,
                     'comentarios': this.comentarios,
                     
                 }).then(function (response){
@@ -758,6 +766,7 @@
                 this.construccion=data['construccion'];
                 this.casa_muestra=data['casa_muestra'];
                 this.lote_comercial=data['lote_comercial'];
+                this.credito_puente=data['credito_puente'];
                 this.comentarios=data['comentarios'];
                 swal({
                 title: '¿Desea eliminar?',
@@ -828,6 +837,7 @@
                 this.construccion = '';
                 this.casa_muestra= '';
                 this.lote_comercial= '';
+                this.credito_puente='';
                 this.comentarios= '';
                 
                 this.errorLote = 0;
@@ -868,6 +878,7 @@
                                 this.construccion = 0.0;
                                 this.casa_muestra= 0;
                                 this.lote_comercial= 0;
+                                this.credito_puente='';
                                 this.tipoAccion = 1;
                                 break;
                             }
@@ -891,6 +902,7 @@
                                 this.construccion=data['construccion'];
                                 this.casa_muestra=data['casa_muestra'];
                                 this.lote_comercial=data['lote_comercial'];
+                                this.credito_puente=data['credito_puente'];
                                 this.comentarios=data['comentarios'];
                                 break;
                             }

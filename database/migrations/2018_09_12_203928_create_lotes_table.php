@@ -37,7 +37,7 @@ class CreateLotesTable extends Migration
             $table->date('fecha_fin')->nullable();
             $table->unsignedInteger('arquitecto_id')->nullable();
             $table->string('credito_puente',50)->nullable();
-            $table->boolean('siembra')->default(0);         
+            $table->date('siembra')->nullable();         
 
 
             $table->foreign('fraccionamiento_id')->references('id')->on('fraccionamientos');

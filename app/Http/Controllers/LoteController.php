@@ -39,7 +39,7 @@ class LoteController extends Controller
                       'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
                       'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
                       'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                      'lotes.clv_catastral','lotes.etapa_servicios')
+                      'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente')
                       ->orderBy('fraccionamientos.nombre','DESC')
                       ->orderBy('lotes.etapa_servicios','DESC')->paginate(5);
         }
@@ -54,7 +54,7 @@ class LoteController extends Controller
                         'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
                         'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
                         'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                        'lotes.clv_catastral','lotes.etapa_servicios')
+                        'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente')
                     ->where($criterio, 'like', '%'. $buscar . '%')
                     ->orderBy('fraccionamientos.nombre','DESC')
                     ->orderBy('lotes.etapa_servicios','DESC')->paginate(5);
@@ -70,7 +70,7 @@ class LoteController extends Controller
                             'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
                             'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
                             'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                            'lotes.clv_catastral','lotes.etapa_servicios')
+                            'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente')
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                         ->orderBy('fraccionamientos.nombre','DESC')
@@ -85,7 +85,7 @@ class LoteController extends Controller
                             'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
                             'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
                             'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                            'lotes.clv_catastral','lotes.etapa_servicios')
+                            'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente')
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                         ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
@@ -219,7 +219,7 @@ class LoteController extends Controller
         if(!$request->ajax())return redirect('/');
 
         $etapa= Etapa::select('id')
-                ->where('num_etapa','=', 'Sin asignar')
+                ->where('num_etapa','=', 'Sin Asignar')
                 ->where('fraccionamiento_id','=',$request->fraccionamiento_id)
                 ->get();
 
@@ -297,6 +297,43 @@ class LoteController extends Controller
 
         $lote->save();
     }
+    public function update2(Request $request)
+    {
+        $siembra = '';
+       if(!$request->ajax())return redirect('/');
+
+       $etapa= Etapa::select('num_etapa')
+       ->where('id','=', $request->etapa_id)
+       ->get();
+
+       
+            
+        
+
+
+        //FindOrFail se utiliza para buscar lo que recibe de argumento
+        $lote = Lote::findOrFail($request->id);
+        $lote->fraccionamiento_id = $request->fraccionamiento_id;
+        $lote->etapa_id = $request->etapa_id;
+        $lote->manzana = $request->manzana;
+        $lote->num_lote = $request->num_lote;
+        $lote->sublote = $request->sublote;
+        $lote->modelo_id = $request->modelo_id;
+        $lote->empresa_id = 1;
+        $lote->calle = $request->calle;
+        $lote->numero = $request->numero;
+        $lote->interior = $request->interior;
+        $lote->terreno = $request->terreno;
+        $lote->construccion = $request->construccion;
+        $lote->credito_puente = $request->credito_puente;
+        if($etapa[0]->num_etapa!='Sin Asignar'){
+            $siembra = Carbon::today()->format('ymd');
+            $lote->siembra=$siembra;
+         }
+        
+
+        $lote->save();
+    }
 
     public function enviarAviso(Request $request)
     {
@@ -337,7 +374,7 @@ class LoteController extends Controller
             if ($extension == "xlsx" || $extension == "xls" || $extension == "csv") {
  
                 $etapa= Etapa::select('id')
-                ->where('num_etapa','=', 'Sin asignar')
+                ->where('num_etapa','=', 'Sin Asignar')
                 ->where('fraccionamiento_id','=',$request->fraccionamiento_id)
                 ->get();
 
