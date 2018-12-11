@@ -14,7 +14,7 @@ class CreateLicenciasTable extends Migration
     public function up()
     {
         Schema::create('licencias', function (Blueprint $table) {
-            $table->integer('id')->unsigned();
+            $table->unsignedInteger('id');
             $table->date('f_planos')->nullable();
             $table->date('f_ingreso')->nullable(); 
             $table->date('f_salida')->nullable(); 
