@@ -334,6 +334,15 @@ class LoteController extends Controller
 
         $lote->save();
     }
+    public function asignarMod(Request $request)
+    {
+       if(!$request->ajax())return redirect('/');
+        //FindOrFail se utiliza para buscar lo que recibe de argumento
+        $lote = Lote::findOrFail($request->id);
+        $lote->etapa_id = $request->etapa_id;
+        $lote->modelo_id = $request->modelo_id;
+        $lote->save();
+    }
 
     public function enviarAviso(Request $request)
     {

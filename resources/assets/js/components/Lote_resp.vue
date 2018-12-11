@@ -9,8 +9,10 @@
                 <div class="card scroll-box">
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Lotes
-                        <!--   Boton Nuevo    -->
-                        
+                        <!--   Boton   -->
+                        <button type="button" class="btn btn-success" @click="abrirModal('lote','asignar')" >
+                            <i class="icon-pencil"></i>&nbsp;Asignar Modelos
+                        </button>
                         
                         <!---->
                     </div>
@@ -47,6 +49,9 @@
                         <table class="table table-bordered table-striped table-sm">
                             <thead>
                                 <tr>
+                                    <th>
+                                        <center><input type="checkbox" @click="selectAll" v-model="allSelected"></center> 
+                                    </th>
                                     <th>Opciones</th>
                                     <th>Proyecto</th>
                                     <th>Etapa</th>
@@ -66,6 +71,9 @@
                             </thead>
                             <tbody>
                                 <tr v-for="lote in arrayLote" :key="lote.id">
+                                    <td style="width:3%; text-aling:center;">
+                                        <center><input type="checkbox"  @click="select" :id="lote.id" :value="lote.id" v-model="lotes_ini" ></center>
+                                    </td>
                                     <td style="width:12%">
                                         <button title="Editar" type="button" @click="abrirModal('lote','actualizar',lote)" class="btn btn-warning btn-sm">
                                           <i class="icon-pencil"></i>
@@ -335,7 +343,7 @@
             </div>
             <!--Fin del modal-->
 
-            <!-- Modal para el archivo excel -->
+            <!-- Modal para asignar modelo -->
              <div class="modal fade" tabindex="-1" :class="{'mostrar': modal2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
                 <div class="modal-dialog modal-primary modal-lg" role="document">
                     <div class="modal-content">
@@ -348,7 +356,7 @@
                         <div class="modal-body">
                          <form method="post" @submit="formSubmit"  enctype="multipart/form-data">
 
-                             <div class="form-group row">
+                         <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
                                     <div class="col-md-6">
                                        <select class="form-control" v-model="fraccionamiento_id" @click="selectEtapa(fraccionamiento_id),selectModelo(fraccionamiento_id)" >
@@ -378,16 +386,15 @@
                                     </div>
                                 </div>
 
-                            <!-- {{ csrf_field() }} -->
-                            Choose your xls/csv File : <input type="file" v-on:change="onImageChange" class="form-control">
+                           
 
-                            <input type="submit" class="btn btn-primary btn-lg" style="margin-top: 3%">
                             
                          </form>
                         </div>
                         <!-- Botones del modal -->
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal2()">Cerrar</button>
+                            <button type="button"  class="btn btn-primary" @click="asignarModelos()">Actualizar</button>
                             <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
                         </div>
                     </div>
@@ -396,6 +403,7 @@
                 <!-- /.modal-dialog -->
             </div>
             <!--Fin del modal-->
+            
 
 
                     
@@ -411,6 +419,8 @@
     export default {
         data(){
             return{
+                allSelected: false,
+                lotes_ini : [],
                 id: 0,
                 fraccionamiento_id : 0,
                 etapa_id: 0,
@@ -507,7 +517,21 @@
                 this.file = e.target.files[0];
 
             },
-           
+            selectAll: function() {
+            this.lotes_ini = [];
+
+            if (!this.allSelected) {
+                for (var lote in this.arrayLote
+                ) {
+                    this.lotes_ini.push(this.arrayLote[lote].id.toString());
+                }
+            }
+            },
+
+             select: function() {
+                this.allSelected = false;
+            },
+
             formSubmit(e) {
 
                 e.preventDefault();
@@ -538,6 +562,35 @@
 
                 });
 
+            },
+            asignarModelos(){
+                
+
+                let me = this;
+                //Con axios se llama el metodo update de DepartamentoController
+
+                me.lotes_ini.forEach(element => {
+
+                    axios.put('/lote/actualizar3',{
+                    
+                    'id': element,
+                    'modelo_id' : this.modelo_id,
+                    'etapa_id' : this.etapa_id
+                    }); 
+                });
+                Swal({
+                title: 'Enviado!',
+                text: 'Aviso enviado correctamente.',
+                imageUrl: 'https://d2r6jp7chi630e.cloudfront.net/blog/aritic-pinpoint/wp-content/uploads/sites/3/2016/09/email-gif.gif',
+                imageWidth: 800,
+                imageHeight: 400,
+                imageAlt: 'Custom image',
+                animation: true
+                })
+
+                me.cerrarModal2();
+                me.listarLote(1,'','','','lote');
+                
             },
 
             /**Metodo para mostrar los registros */
@@ -593,19 +646,7 @@
                 });
             },
 
-            selectManzana(buscar){
-                let me = this;
-                
-                me.arrayManzanas=[];
-                var url = '/select_manzana_proyecto?buscar=' + buscar;
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayManzanas = respuesta.manzanas;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            },
+            
 
             selectModelo(buscar){
                 let me = this;
@@ -680,33 +721,8 @@
                 });
             },
 
-            registrarManzana(){
-
-               if(this.validarManzana()) //Se verifica si se selecciono un fraccionamiento
-                {
-                    return;
-                }
-
-                let me = this;
-                //Con axios se llama el metodo store de FraccionaminetoController
-                axios.post('/lote/registrar_manzana',{
-                    'fraccionamiento_id': this.fraccionamiento_id,         
-                    'manzana': this.manzana
-                }).then(function (response){
-                    me.cerrarModal3(); //al guardar el registro se cierra el modal
-                   
-                    //Se muestra mensaje Success
-                    swal({
-                        position: 'top-end',
-                        type: 'success',
-                        title: 'Manzana agregada correctamente',
-                        showConfirmButton: false,
-                        timer: 1500
-                        })
-                }).catch(function (error){
-                    console.log(error);
-                });
-            },
+           
+            
 
             actualizarLote(){
                 if(this.validarLote()) //Se verifica si hay un error (campo vacio)
@@ -859,6 +875,14 @@
                 switch(lote){
                     case "lote":
                     {
+                         if(this.lotes_ini.length<1){
+                    Swal({
+                    title: 'No se ha seleccionado ningun lote.',
+                    animation: false,
+                    customClass: 'animated tada'
+                    })
+                    return;
+                }
                         switch(accion){
                             case 'registrar':
                             {
@@ -907,23 +931,18 @@
                                 break;
                             }
 
-                            case 'excel':
+                            case 'asignar':
                             {
                                 this.modal2 =1;
-                                this.tituloModal2= 'Cargar desde Excel';
+                                this.tituloModal2= 'Asignar Modelo';
                                 this.tipoAccion=3;
+                                this.etapa_id=data['etapa_id'];
+                               this.modelo_id=data['modelo_id'];
                                 break;
                             }
 
-                            case 'addmanzana':
-                            {
-                                
-                                this.modal3 =1;
-                                this.manzana= '';
-                                this.tituloModal3 = 'Agregar una manzana';
-                                this.tipoAccion = 4;
-                                break;
-                            }
+                            
+                            
                         }
                     }
                 }
@@ -931,7 +950,7 @@
                 this.selectEtapa(this.fraccionamiento_id);
                 this.selectModelo(this.fraccionamiento_id);
                 this.selectConsYTerreno(this.modelo_id);
-                this.selectManzana(this.fraccionamiento_id);
+                
 
             }
         },
@@ -948,9 +967,10 @@
     .mostrar{
         display: list-item !important;
         opacity: 1 !important;
-        position: absolute !important;
+        position: center !important;
         background-color: #3c29297a !important;
-        overflow-y: auto;
+         overflow-y: auto;
+        
     }
     .div-error{
         display:flex;

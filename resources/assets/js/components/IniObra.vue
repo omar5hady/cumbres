@@ -45,7 +45,7 @@
                             </thead>
                             <tbody>
                                 <tr v-for="lote in arrayLotes" :key="lote.id">
-                                    <td style="width:8%">
+                                    <td style="width:8%; ">
                                         <input type="checkbox" @click="select" :id="lote.id" :value="lote.id" v-model="lotes_ini">
                                     </td>
                                     
