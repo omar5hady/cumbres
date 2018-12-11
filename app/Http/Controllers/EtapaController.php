@@ -188,7 +188,8 @@ class EtapaController extends Controller
 
         $buscar = $request->buscar;
         $etapas = Etapa::select('num_etapa','id')
-        ->where('fraccionamiento_id', '=', $buscar )->get();
+        ->where('fraccionamiento_id', '=', $buscar )
+        ->where('num_etapa', '!=', 'Sin Asignar' )->get();
         return['etapas' => $etapas];
     }
 }

@@ -266,21 +266,7 @@
                     'id': element,
                     'fecha_ini' : this.f_ini,
                     'fecha_fin' : this.f_fin
-                });/*.then(function (response){
-                    me.cerrarModal();
-                    me.listarLotesIniObra(1,'','fraccionamientos.nombre');
-                    //window.alert("Cambios guardados correctamente");
-                    swal({
-                        position: 'top-end',
-                        type: 'success',
-                        title: 'Cambios guardados correctamente',
-                        showConfirmButton: false,
-                        timer: 1500
-                        })
-                }).catch(function (error){
-                    console.log(error);
-                });*/
-                    
+                    }); 
                 });
                 Swal({
                 title: 'Enviado!',
