@@ -564,12 +564,25 @@
 
             },
             asignarModelos(){
-                
-
                 let me = this;
                 //Con axios se llama el metodo update de DepartamentoController
 
-                me.lotes_ini.forEach(element => {
+               Swal({
+                    title: 'Estas seguro?',
+                    animation: false,
+                    customClass: 'animated bounceInDown',
+                    text: "Etapa y modelo se asignaran a los lotes seleccionados",
+                    type: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'Cancelar',
+                    
+                    confirmButtonText: 'Si, asignar!'
+                    }).then((result) => {
+
+                    if (result.value) {
+                        me.lotes_ini.forEach(element => {
 
                     axios.put('/lote/actualizar3',{
                     
@@ -578,19 +591,17 @@
                     'etapa_id' : this.etapa_id
                     }); 
                 });
-                Swal({
-                title: 'Enviado!',
-                text: 'Aviso enviado correctamente.',
-                imageUrl: 'https://d2r6jp7chi630e.cloudfront.net/blog/aritic-pinpoint/wp-content/uploads/sites/3/2016/09/email-gif.gif',
-                imageWidth: 800,
-                imageHeight: 400,
-                imageAlt: 'Custom image',
-                animation: true
-                })
-
-                me.cerrarModal2();
-                me.listarLote(1,'','','','lote');
-                
+                    me.listarLote(1,'','','','lote');   
+                    me.cerrarModal2();
+                    Swal({
+                        title: 'Hecho!',
+                        text: 'Los modelos se han asignado',
+                        type: 'success',
+                        animation: false,
+                        customClass: 'animated bounceInRight'
+                    })
+                    }})
+ 
             },
 
             /**Metodo para mostrar los registros */
@@ -875,7 +886,7 @@
                 switch(lote){
                     case "lote":
                     {
-                         if(this.lotes_ini.length<1){
+                   if(this.lotes_ini.length<1 && accion=='asignar'){
                     Swal({
                     title: 'No se ha seleccionado ningun lote.',
                     animation: false,

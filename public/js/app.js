@@ -45583,27 +45583,41 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var me = this;
             //Con axios se llama el metodo update de DepartamentoController
 
-            me.lotes_ini.forEach(function (element) {
-
-                axios.put('/lote/actualizar3', {
-
-                    'id': element,
-                    'modelo_id': _this.modelo_id,
-                    'etapa_id': _this.etapa_id
-                });
-            });
             Swal({
-                title: 'Enviado!',
-                text: 'Aviso enviado correctamente.',
-                imageUrl: 'https://d2r6jp7chi630e.cloudfront.net/blog/aritic-pinpoint/wp-content/uploads/sites/3/2016/09/email-gif.gif',
-                imageWidth: 800,
-                imageHeight: 400,
-                imageAlt: 'Custom image',
-                animation: true
-            });
+                title: 'Estas seguro?',
+                animation: false,
+                customClass: 'animated bounceInDown',
+                text: "Etapa y modelo se asignaran a los lotes seleccionados",
+                type: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Cancelar',
 
-            me.cerrarModal2();
-            me.listarLote(1, '', '', '', 'lote');
+                confirmButtonText: 'Si, asignar!'
+            }).then(function (result) {
+
+                if (result.value) {
+                    me.lotes_ini.forEach(function (element) {
+
+                        axios.put('/lote/actualizar3', {
+
+                            'id': element,
+                            'modelo_id': _this.modelo_id,
+                            'etapa_id': _this.etapa_id
+                        });
+                    });
+                    me.listarLote(1, '', '', '', 'lote');
+                    me.cerrarModal2();
+                    Swal({
+                        title: 'Hecho!',
+                        text: 'Los modelos se han asignado',
+                        type: 'success',
+                        animation: false,
+                        customClass: 'animated bounceInRight'
+                    });
+                }
+            });
         },
 
 
@@ -45871,7 +45885,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             switch (lote) {
                 case "lote":
                     {
-                        if (this.lotes_ini.length < 1) {
+                        if (this.lotes_ini.length < 1 && accion == 'asignar') {
                             Swal({
                                 title: 'No se ha seleccionado ningun lote.',
                                 animation: false,
