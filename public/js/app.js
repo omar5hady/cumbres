@@ -45871,6 +45871,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         cerrarModal2: function cerrarModal2() {
             this.modal2 = 0;
             this.tituloModal2 = '';
+            this.lotes_ini = [];
+            this.allSelected = false;
         },
         cerrarModal3: function cerrarModal3() {
             this.modal3 = 0;

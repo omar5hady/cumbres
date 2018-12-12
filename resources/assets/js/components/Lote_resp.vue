@@ -874,6 +874,8 @@
             cerrarModal2(){
                 this.modal2 = 0;
                 this.tituloModal2 = '';
+                this.lotes_ini=[];
+                this.allSelected = false;
             },
 
             cerrarModal3(){
