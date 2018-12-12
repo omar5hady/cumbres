@@ -43364,15 +43364,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     break;
                                 }
 
-                            case 'addmanzana':
-                                {
-
-                                    this.modal3 = 1;
-                                    this.manzana = '';
-                                    this.tituloModal3 = 'Agregar una manzana';
-                                    this.tipoAccion = 4;
-                                    break;
-                                }
                         }
                     }
             }

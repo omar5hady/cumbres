@@ -810,15 +810,7 @@
                                 break;
                             }
 
-                            case 'addmanzana':
-                            {
-                                
-                                this.modal3 =1;
-                                this.manzana= '';
-                                this.tituloModal3 = 'Agregar una manzana';
-                                this.tipoAccion = 4;
-                                break;
-                            }
+                        
                         }
                     }
                 }

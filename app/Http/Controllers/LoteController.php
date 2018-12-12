@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Lote;
 use App\Modelo;
-use App\Manzana;
 use App\Etapa;
+use App\Licencia;
 use Session;
 use Excel;
 use File;
@@ -222,25 +222,36 @@ class LoteController extends Controller
                 ->where('num_etapa','=', 'Sin Asignar')
                 ->where('fraccionamiento_id','=',$request->fraccionamiento_id)
                 ->get();
+            try {
+                DB::beginTransaction();
+                $lote = new Lote();
+                $lote->fraccionamiento_id = $request->fraccionamiento_id;
+                $lote->etapa_id = $etapa[0]->id;
+                $lote->manzana = $request->manzana;
+                $lote->num_lote = $request->num_lote;
+                $lote->sublote = $request->sublote;
+                $lote->modelo_id = $request->modelo_id;
+                $lote->empresa_id = $request->empresa_id;
+                $lote->calle = $request->calle;
+                $lote->numero = $request->numero;
+                $lote->interior = $request->interior;
+                $lote->terreno = $request->terreno;
+                $lote->construccion = $request->construccion;
+                $lote->clv_catastral = $request->clv_catastral;
+                $lote->etapa_servicios = $request ->etapa_servicios;
+                $lote->save();   
 
-        $lote = new Lote();
-        $lote->fraccionamiento_id = $request->fraccionamiento_id;
-        $lote->etapa_id = $etapa[0]->id;
-        $lote->manzana = $request->manzana;
-        $lote->num_lote = $request->num_lote;
-        $lote->sublote = $request->sublote;
-        $lote->modelo_id = $request->modelo_id;
-        $lote->empresa_id = $request->empresa_id;
-        $lote->calle = $request->calle;
-        $lote->numero = $request->numero;
-        $lote->interior = $request->interior;
-        $lote->terreno = $request->terreno;
-        $lote->construccion = $request->construccion;
-        $lote->clv_catastral = $request->clv_catastral;
-        $lote->etapa_servicios = $request ->etapa_servicios;
+                $licencia = new Licencia();
+                $licencia->id = $lote->id;
+                $licencia->save();
 
-        $lote->save();   
-      
+                DB::commit();
+
+
+            } catch (Exception $e) { 
+                DB::rollBack();
+            }
+        
 
     }
 
@@ -387,6 +398,9 @@ class LoteController extends Controller
                 ->where('fraccionamiento_id','=',$request->fraccionamiento_id)
                 ->get();
 
+                $lotes = Lote::select('id')->get();
+                $id = $lotes->last()->id + 1;
+
                 $path = $request->file->getRealPath();
                 $data = Excel::load($path, function($reader) {
                 })->get();
@@ -396,7 +410,6 @@ class LoteController extends Controller
                         $terreno = Modelo::select('terreno','construccion')
                             ->where('id', '=', $request->modelo_id )->get();
 
-       
 
                         $insert[] = [
                         'fraccionamiento_id' => $request->fraccionamiento_id,
@@ -415,11 +428,18 @@ class LoteController extends Controller
                         'etapa_servicios' =>$value->etapa_servicios
                         
                         ];
+
+                        $insert2[]  = [
+                            'id' => $id++
+                        ];
+
+
                     }
  
                     if(!empty($insert)){
  
                         $insertData = DB::table('lotes')->insert($insert);
+                        $insertData2 = DB::table('licencias')->insert($insert2);
                         if ($insertData) {
                             Session::flash('success', 'Your Data has successfully imported');
                         }else {                        
