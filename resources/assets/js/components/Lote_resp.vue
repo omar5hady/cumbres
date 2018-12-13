@@ -277,7 +277,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Comentarios </label>
                                     <div class="col-md-7">
-                                        <input type="text" v-model="comentarios" class="form-control" placeholder="Comentarios">
+                                        <textarea rows="3" cols="30" v-model="comentarios" class="form-control" placeholder="Comentarios"></textarea>
                                     </div>
                                 </div>
                                 <div class="form-group row">

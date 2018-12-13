@@ -39,6 +39,9 @@
                     <li @click="menu=5" class="nav-item">
                         <a class="nav-link" href="#"><i class="icon-bag"></i> Asignar Modelo</a>
                     </li>
+                    <li @click="menu=6" class="nav-item">
+                        <a class="nav-link" href="#"><i class="icon-bag"></i> Licencias</a>
+                    </li>
                 </ul>
             </li>
             <li class="nav-item nav-dropdown">

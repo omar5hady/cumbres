@@ -149,5 +149,8 @@ Route::get('/select_lotes_manzana','LoteController@select_lote_manzana');
 Route::get('/select_precio_etapa','PrecioEtapaController@selectPrecioEtapa'); 
 Route::get('/select_sobreprecios_etapa','SobreprecioEtapaController@select_sobreprecios_etapa'); 
 Route::get('/select_contratistas','ContratistaController@selectContratista'); 
-
+/***************************************************************************** */
+///////////////////       RUTAS LICENCIA   ////////////////////////////////////
+Route::get('/licencias','LicenciasController@index');
+Route::put('/licencias/actualizar','LicenciasController@update');
 

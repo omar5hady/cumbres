@@ -347,11 +347,21 @@ class LoteController extends Controller
     }
     public function asignarMod(Request $request)
     {
+        $siembra = '';
        if(!$request->ajax())return redirect('/');
+
+       $etapa= Etapa::select('num_etapa')
+       ->where('id','=', $request->etapa_id)
+       ->get();
+       
         //FindOrFail se utiliza para buscar lo que recibe de argumento
         $lote = Lote::findOrFail($request->id);
         $lote->etapa_id = $request->etapa_id;
         $lote->modelo_id = $request->modelo_id;
+        if($etapa[0]->num_etapa!='Sin Asignar'){
+            $siembra = Carbon::today()->format('ymd');
+            $lote->siembra=$siembra;
+         }
         $lote->save();
     }
 
@@ -398,8 +408,15 @@ class LoteController extends Controller
                 ->where('fraccionamiento_id','=',$request->fraccionamiento_id)
                 ->get();
 
-                $lotes = Lote::select('id')->get();
-                $id = $lotes->last()->id + 1;
+                if(Lote::count() > 0){
+                    $lotes = Lote::select('id')->get();
+                    $id = $lotes->last()->id + 1;
+                }
+                else
+                    $id = 1;
+
+                
+                
 
                 $path = $request->file->getRealPath();
                 $data = Excel::load($path, function($reader) {
