@@ -20,7 +20,7 @@ class LoteController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(Request $request) //Index para modulo asignar modelo
     {
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
        // if(!$request->ajax())return redirect('/');
@@ -44,7 +44,7 @@ class LoteController extends Controller
                       ->orderBy('lotes.etapa_servicios','DESC')->paginate(5);
         }
         else{
-            if($buscar2=='')
+            if($buscar2=='' && $buscar3=='')
             {
                 $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
                 ->join('etapas','lotes.etapa_id','=','etapas.id')
@@ -132,7 +132,7 @@ class LoteController extends Controller
                       ->orderBy('lotes.etapa_servicios','DESC')->paginate(5);
         }
         else{
-            if($buscar2=='')
+            if($buscar2=='' &&$buscar3=='')
             {
                 $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
                 ->join('etapas','lotes.etapa_id','=','etapas.id')
@@ -176,7 +176,7 @@ class LoteController extends Controller
                             'lotes.clv_catastral','lotes.etapa_servicios')
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->where('lotes.etapa_servicios', 'like', '%'. $buscar2 . '%')
-                        ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
+                        ->where('lotes.manzana', '=', $buscar3)
                         ->orderBy('fraccionamientos.nombre','DESC')
                     ->orderBy('lotes.etapa_servicios','DESC')->paginate(5);
                 }
@@ -239,6 +239,7 @@ class LoteController extends Controller
                 $lote->construccion = $request->construccion;
                 $lote->clv_catastral = $request->clv_catastral;
                 $lote->etapa_servicios = $request ->etapa_servicios;
+                $lote->arquitecto_id = 1;
                 $lote->save();   
 
                 $licencia = new Licencia();
@@ -442,7 +443,8 @@ class LoteController extends Controller
                         'terreno' => $terreno[0]->terreno,
                         'construccion' => $terreno[0]->construccion,
                         'clv_catastral' =>$value->clave_catastral,
-                        'etapa_servicios' =>$value->etapa_servicios
+                        'etapa_servicios' =>$value->etapa_servicios,
+                        'arquitecto_id' =>1
                         
                         ];
 
