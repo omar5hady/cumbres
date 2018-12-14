@@ -28,7 +28,8 @@ class LicenciasController extends Controller
                       'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
                       'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
                       'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.siembra',
-                      DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS arquitecto"),'licencias.f_planos','licencias.f_ingreso','licencias.num_licencia','licencias.f_salida')
+                      DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS arquitecto"),'licencias.f_planos',
+                      'licencias.f_ingreso','licencias.num_licencia','licencias.f_salida','lotes.arquitecto_id','fraccionamientos.nombre as fraccionamiento')
                       ->orderBy('fraccionamientos.nombre','DESC')
                       ->orderBy('lotes.etapa_servicios','DESC')->paginate(5);
         }
@@ -47,7 +48,7 @@ class LicenciasController extends Controller
                         'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
                         'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.siembra',
                         DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS arquitecto"),'licencias.f_planos',
-                        'licencias.f_ingreso','licencias.num_licencia','licencias.f_salida')
+                        'licencias.f_ingreso','licencias.num_licencia','licencias.f_salida','lotes.arquitecto_id','fraccionamientos.nombre as fraccionamiento')
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->orderBy('fraccionamientos.nombre','DESC')
                         ->orderBy('lotes.etapa_servicios','DESC')->paginate(5);
@@ -65,7 +66,7 @@ class LicenciasController extends Controller
                             'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
                             'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.siembra',
                             DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS arquitecto"),'licencias.f_planos',
-                            'licencias.f_ingreso','licencias.num_licencia','licencias.f_salida')
+                            'licencias.f_ingreso','licencias.num_licencia','licencias.f_salida','lotes.arquitecto_id','fraccionamientos.nombre as fraccionamiento')
                             ->where('personal.nombre', 'like', '%'. $buscar . '%')
                             ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
                             ->orderBy('fraccionamientos.nombre','DESC')
@@ -73,6 +74,11 @@ class LicenciasController extends Controller
             }
         }
             
+        //for( $i=0; $i<$licencias.length() ;$i++){
+       //     $licencias[$i]->siembra->isoFormat('MMM Do YY');
+      //  }
+        
+        
         
 
         return [
@@ -85,6 +91,7 @@ class LicenciasController extends Controller
                 'to'            => $licencias->lastItem(),
             ],
             'licencias' => $licencias
+            
         ];    
     }
     public function update(Request $request)
@@ -99,5 +106,12 @@ class LicenciasController extends Controller
         
 
         $licencia->save();
+
+        $lote = Lote::findOrFail($request->id);
+        $lote->arquitecto_id=$request->arquitecto_id;
+
+        
+
+        $lote->save();
     }
 }

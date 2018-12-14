@@ -55,9 +55,12 @@
                                 <tr v-for="licencias in arrayLicencias" :key="licencias.id">
                                     
                                     <td >
-                                        <center><button title="Editar" type="button" @click="abrirModal('lote','actualizar',licencias)" class="btn btn-warning btn-sm">
+                                        <button title="Editar" type="button" @click="abrirModal('lote','actualizar',licencias)" class="btn btn-warning btn-sm">
                                           <i class="icon-pencil"></i>
-                                        </button></center> &nbsp;
+                                        </button> &nbsp;
+                                        <button type="button" @click="abrirModal2('lote','ver',licencias)" class="btn btn-info btn-sm">
+                                          <i class="icon-magnifier"></i>
+                                        </button>
                                     </td>
                                     <td v-text="licencias.proyecto"></td>
                                     <td v-text="licencias.manzana"></td>
@@ -115,6 +118,16 @@
                             <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
 
                                 <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Arquitectos</label>
+                                    <div class="col-md-6">
+                                        <select class="form-control" v-model="arquitecto_id">
+                                            <option value="0">Seleccione</option>
+                                            <option v-for="arquitectos in arrayArquitectos" :key="arquitectos.id" :value="arquitectos.id" v-text="'Arq. ' + arquitectos.name"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <br><br>
+                                <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Planos</label>
                                     <div class="col-md-6">
                                        <input type="date" v-model="f_planos" class="form-control" >
@@ -140,6 +153,7 @@
                                        <input type="number" v-model="num_licencia" class="form-control" >
                                     </div>
                                 </div>
+                                
                             </form>
                         </div>
                         <!-- Botones del modal -->
@@ -154,6 +168,157 @@
                 <!-- /.modal-dialog -->
             </div>
             <!--Fin del modal-->
+
+            <!--Inicio del modal consulta-->
+            <div class="modal fade" tabindex="-1" :class="{'mostrar': modal2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" v-text="tituloModal2"></h4>
+                            <button type="button" class="close" @click="cerrarModal2()" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
+                                    <div class="col-md-6">
+                                       <input type="text" disabled v-model="fraccionamiento"  class="form-control"  placeholder="Proyecto">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Clave catastral</label>
+                                    <div class="col-md-4">
+                                        <input type="text" disabled v-model="clv_catastral" class="form-control"  placeholder="Clave catastral">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Etapa de servicios</label>
+                                    <div class="col-md-4">
+                                        <input type="text" disabled v-model="etapa_servicios" class="form-control"  placeholder="Etapa de servicios">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Manzana</label>
+                                    <div class="col-md-4">
+                                        <input type="text" disabled v-model="manzana" class="form-control" placeholder="Manzana">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input"># Lote</label>
+                                    <div class="col-md-4">
+                                        <input type="text" disabled v-model="num_lote" class="form-control" placeholder="Numero de Lote">
+                                    </div>
+                                    <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Duplex</label>
+                                    <div class="col-md-4" >
+                                        <input type="text" disabled v-model="sublote" style="width:200px;"  class="form-control" placeholder="Duplex">
+                                    </div>
+                                </div>
+                                </div>
+                                  <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Prototipo</label>
+                                    <div class="col-md-6">
+                                       <input type="text" disabled v-model="modelo" class="form-control" placeholder="Prototipo">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Dirección</label>
+                                    <div class="col-md-4">
+                                        <input type="text" disabled v-model="calle " class="form-control" placeholder="Calle">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input type="text" disabled v-model="numero" class="form-control" placeholder="Numero">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input type="text" disabled v-model="interior" class="form-control" placeholder="Interior">
+                                    </div>
+                                </div>
+                                
+                                
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Construcción (mts&sup2;)</label>
+                                    <div class="col-md-4">
+
+                                        <input type="text" style="width:200px;" disabled v-model="construccion" class="form-control" placeholder="Construccion">
+                                  
+                                    </div>
+                                    <div class="form-group row">
+                                    <label class="col-md-4 form-control-label" for="text-input">Terreno(mts&sup2;)</label>
+                                    <div class="col-md-3" >
+                                     
+                                        <input type="text" style="width:150px;" disabled v-model="terreno" class="form-control" placeholder="Terreno">
+                                
+                                    </div>
+                                </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Arquitecto</label>
+                                    <div class="col-md-4">
+
+                                        <input type="text"  disabled v-model="arquitecto" class="form-control" placeholder="Arquitecto">
+                                  
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Siembra</label>
+                                    <div class="col-md-4">
+
+                                        <input type="text" style="width:200px;" disabled v-model="siembra" class="form-control" placeholder="Siembra">
+                                  
+                                    </div>
+                                    <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Planos</label>
+                                    <div class="col-md-4">
+
+                                        <input type="text" style="width:200px;" disabled v-model="f_planos" class="form-control" placeholder="Planos">
+                                  
+                                    </div>
+                                </div>
+                                </div>
+                                
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Ingreso</label>
+                                    <div class="col-md-4">
+
+                                        <input type="text" style="width:200px;" disabled v-model="f_ingreso" class="form-control" placeholder="Ingreso">
+                                  
+                                    </div>
+                                    <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Salida</label>
+                                    <div class="col-md-4">
+
+                                        <input type="text" style="width:200px;" disabled v-model="f_salida" class="form-control" placeholder="Salida">
+                                  
+                                    </div>
+                                </div>
+                                </div>
+                                
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Num. Licencia</label>
+                                    <div class="col-md-4">
+
+                                        <input type="text"  disabled v-model="num_licencia" class="form-control" placeholder="Num. Licencia">
+                                  
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal2()">Cerrar</button>
+                           
+                        </div>
+                    </div>
+                      <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!--Fin del modal consulta-->
             
 
 
@@ -171,13 +336,34 @@
             return{
                
                 id: 0,
+                siembra:'',
                 f_planos:'',
                 f_ingreso:'',
                 f_salida:'',
+                arquitecto_id:0,
+                arquitecto:'',
+                fraccionamiento:'',
                 num_licencia:0,
+                etapa_servicios: '',
+                clv_catastral: '',
+                fraccionamiento_id : 0,
+                etapa_id: 0,
+                manzana: '',
+                num_lote: 0,
+                sublote: '',
+                modelo: 0,
+                empresa_id: 0,
+                calle: '',
+                numero: '',
+                interior: '',
+                terreno : 0,
+                construccion : 0,
                 arrayLicencias : [],
+                arrayArquitectos:[],
                 modal : 0,
+                modal2 : 0,
                 tituloModal : '',
+                tituloModal2 : '',
                 tipoAccion: 0,
                 errorLote : 0,
                 errorMostrarMsjLote : [],
@@ -250,6 +436,18 @@
                     console.log(error);
                 });
             },
+             selectArquitectos(){
+                let me = this;
+                me.arrayArquitectos=[];
+                var url = '/select_personal?departamento_id=3';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayArquitectos = respuesta.personal;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
 
             cambiarPagina(page, buscar, criterio){
                 let me = this;
@@ -268,6 +466,7 @@
                     'f_ingreso' : this.f_ingreso,
                     'f_salida' : this.f_salida,
                     'num_licencia' : this.num_licencia,
+                    'arquitecto_id':this.arquitecto_id
                     
                     
                 }).then(function (response){
@@ -314,15 +513,30 @@
             cerrarModal2(){
                 this.modal2 = 0;
                 this.tituloModal2 = '';
-                this.lotes_ini=[];
-                this.allSelected = false;
+                this.f_planos='';
+                this.f_ingreso='';
+                this.f_salida='';
+                this.num_licencia='';
+                this.arquitecto='';
+                this.fraccionamiento='';
+                this.etapa_id=0;
+                this.manzana='';
+                this.num_lote='';
+                this.sublote='';
+                this.modelo='';
+                this.calle='';
+                this.numero=''
+                this.interior=''
+                this.terreno='';
+                this.construccion='';
+                this.clv_catastral='';
+                this.etapa_servicios='';
+                this.siembra='';
+                this.id=0;
+                
             },
 
-            cerrarModal3(){
-                this.modal3 = 0;
-                this.tituloModal3 = '';
-                this.tipoAccion = 1;
-            },
+           
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
             abrirModal(licencias, accion,data =[]){
                 switch(licencias){
@@ -338,20 +552,61 @@
                                 this.f_ingreso=data['f_ingreso'];
                                 this.f_salida=data['f_salida'];
                                 this.num_licencia=data['num_licencia'];
+                                this.arquitecto_id=data['arquitecto_id']
                                 this.id=data['id'];
                                 break;
                             }
+                            case 'ver':
+                            {
 
+                            }
+                        }
+                    }
+                }this.selectArquitectos();
+
+            },
+            abrirModal2(licencias, accion,data =[]){
+                switch(licencias){
+                    case "lote":
+                    {
+                        switch(accion){
                            
-
-                            
+                            case 'ver':
+                            {
+                                this.modal2 =1;
+                                this.tituloModal2='Consulta ';
+                                this.f_planos=data['f_planos'];
+                                this.f_ingreso=data['f_ingreso'];
+                                this.f_salida=data['f_salida'];
+                                this.num_licencia=data['num_licencia'];
+                                this.arquitecto=data['arquitecto'];
+                                this.fraccionamiento=data['fraccionamiento'];
+                                this.etapa_id=data['etapa_id'];
+                                this.manzana=data['manzana'];
+                                this.num_lote=data['num_lote'];
+                                this.sublote=data['sublote'];
+                                this.modelo=data['modelo'];
+                                this.calle=data['calle'];
+                                this.numero=data['numero'];
+                                this.interior=data['interior'];
+                                this.terreno=data['terreno'];
+                                this.construccion=data['construccion'];
+                                this.clv_catastral=data['clv_catastral'];
+                                this.etapa_servicios=data['etapa_servicios'];
+                                this.siembra=data['siembra'];
+                                this.id=data['id'];
+                                break;
+                            }
                             
                         }
                     }
-                }
+                }this.selectArquitectos();
 
             }
+        
         },
+        
+        
         mounted() {
             this.listarLicencias(1,this.buscar,this.criterio);
         }
