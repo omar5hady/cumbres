@@ -69,10 +69,19 @@
                                     <td v-text="licencias.construccion"></td>
                                     <td v-text="licencias.modelo"></td>
                                     <td v-text="'Arq. '+licencias.arquitecto"></td>
-                                    <td v-text="licencias.siembra"></td>
-                                    <td v-text="licencias.f_planos"></td>
-                                    <td v-text="licencias.f_ingreso"></td>
-                                    <td v-text="licencias.f_salida"></td>
+                                    <!-- SIEMBRA -->
+                                        <td v-if="licencias.siembra==NULL" v-text="''"></td>
+                                        <td v-else v-text="this.moment(licencias.siembra).locale('es').format('DD/MMM/YYYY')"></td>
+                                    <!-- Fecha planos -->    
+                                        <td v-if="licencias.f_planos==NULL" v-text="''"></td>
+                                        <td v-else v-text="this.moment(licencias.f_planos).locale('es').format('DD/MMM/YYYY')"></td>
+                                    <!-- Fecha Ingreso -->
+                                        <td v-if="licencias.f_ingreso==NULL" v-text="''"></td>
+                                        <td v-else v-text="this.moment(licencias.f_ingreso).locale('es').format('DD/MMM/YYYY')"></td>
+                                    <!-- Fecha Salida -->
+                                        <td v-if="licencias.f_salida==NULL" v-text="''"></td>
+                                        <td v-else v-text="this.moment(licencias.f_salida).locale('es').format('DD/MMM/YYYY')"></td>
+                                    
                                     <td v-text="licencias.num_licencia"></td>
                                     
                                     
@@ -435,6 +444,7 @@
                 .catch(function (error) {
                     console.log(error);
                 });
+                
             },
              selectArquitectos(){
                 let me = this;

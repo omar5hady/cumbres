@@ -20,6 +20,7 @@
         "vue": "^2.5.7"
     },
     "dependencies": {
+        "moment": "^2.23.0",
         "npm": "^6.4.1",
         "vue-lodash": "^2.0.0"
     }
