@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Fraccionamiento; //Importar el modelo
 use App\Etapa;
+use App\Modelo;
 
 class FraccionamientoController extends Controller
 {
@@ -77,6 +78,11 @@ class FraccionamientoController extends Controller
         
         $etapa->personal_id = 1;
         $etapa->save();
+
+       /* $modelo = new Modelo();
+        $modelo->fraccionamiento_id = $fraccionamiento->id;
+        $modelo->tipo = $fraccionamiento->tipo_proyecto;
+        $*/
 
        
 

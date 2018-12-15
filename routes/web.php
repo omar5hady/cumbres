@@ -153,4 +153,5 @@ Route::get('/select_contratistas','ContratistaController@selectContratista');
 ///////////////////       RUTAS LICENCIA   ////////////////////////////////////
 Route::get('/licencias','LicenciasController@index');
 Route::put('/licencias/actualizar','LicenciasController@update');
+Route::get('/licencias/resume','LicenciasController@resumeLicencias');
 

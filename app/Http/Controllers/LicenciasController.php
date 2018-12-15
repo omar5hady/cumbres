@@ -114,4 +114,29 @@ class LicenciasController extends Controller
 
         $lote->save();
     }
+
+    public function resumeLicencias(Request $request)
+    {
+        $licencias = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+            ->join('licencias','lotes.id','=','licencias.id')
+            ->join('personal','lotes.arquitecto_id','=','personal.id')
+            ->join('modelos','lotes.modelo_id','=','modelos.id')
+            ->select('lotes.fraccionamiento_id',DB::raw('COUNT(lotes.fraccionamiento_id) as num_viviendas'),
+            'fraccionamientos.nombre','lotes.credito_puente','lotes.siembra','licencias.f_planos',
+            'licencias.f_ingreso','licencias.f_salida','licencias.avance')
+            ->where('lotes.siembra','!=','NULL')
+            ->groupBy('lotes.fraccionamiento_id')
+            ->groupBy('lotes.siembra')
+            ->groupBy('licencias.f_planos')
+            ->groupBy('licencias.f_ingreso')
+            ->groupBy('licencias.f_salida')
+            ->groupBy('licencias.avance')
+            ->groupBy('lotes.credito_puente')->distinct()->get();
+        
+        
+
+        return [
+            'licencias' => $licencias
+        ];    
+    }
 }
