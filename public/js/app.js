@@ -52626,7 +52626,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n.modal-content{\n        width: 100% !important;\n        position: absolute !important;\n}\n.mostrar{\n        display: list-item !important;\n        opacity: 1 !important;\n        position: absolute !important;\n        background-color: #3c29297a !important;\n        overflow-y: auto;\n}\n.div-error{\n        display:flex;\n        justify-content: center;\n}\n.text-error{\n        color: red !important;\n        font-weight: bold;\n}\n.scroll-box {\n            overflow-x: scroll;\n            width: auto;\n            padding: 1rem\n}\ninput[type=number]::-webkit-inner-spin-button, \ninput[type=number]::-webkit-outer-spin-button { \n  -webkit-appearance: none; \n   margin: 0;\n} \n\n\n", ""]);
+exports.push([module.i, "\n.form-control:disabled, .form-control[readonly] {\n        background-color: rgba(0, 0, 0, 0.06);\n        opacity: 1;\n        font-size: 0.85rem;\n        color: #27417b;\n}\n.modal-content{\n        width: 100% !important;\n        position: absolute !important;\n}\n.mostrar{\n        display: list-item !important;\n        opacity: 1 !important;\n        position: absolute !important;\n        background-color: #3c29297a !important;\n        overflow-y: auto;\n}\n.div-error{\n        display:flex;\n        justify-content: center;\n}\n.text-error{\n        color: red !important;\n        font-weight: bold;\n}\n.scroll-box {\n            overflow-x: scroll;\n            width: auto;\n            padding: 1rem\n}\ninput[type=number]::-webkit-inner-spin-button, \ninput[type=number]::-webkit-outer-spin-button { \n  -webkit-appearance: none; \n   margin: 0;\n} \n\n\n", ""]);
 
 // exports
 
@@ -64766,7 +64766,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: center !important;\n    background-color: #3c29297a !important;\n     overflow-y: auto;\n}\n.div-error{\n    display:flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n.scroll-box {\n        overflow-x: scroll;\n        width: auto;\n        padding: 1rem\n}\n", ""]);
+exports.push([module.i, "\n.form-control:disabled, .form-control[readonly] {\nbackground-color: rgba(0, 0, 0, 0.06);\nopacity: 1;\nfont-size: 1rem;\ncolor: #27417b;\n}\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: center !important;\n    background-color: #3c29297a !important;\n     overflow-y: auto;\n}\n.div-error{\n    display:flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n.scroll-box {\n        overflow-x: scroll;\n        width: auto;\n        padding: 1rem\n}\n", ""]);
 
 // exports
 
@@ -67180,6 +67180,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -67573,7 +67574,7 @@ var render = function() {
         _vm._v(" "),
         _c("div", { staticClass: "card-body" }, [
           _c("div", { staticClass: "form-group row" }, [
-            _c("div", { staticClass: "col-md-8" }, [
+            _c("div", { staticClass: "col-md-9" }, [
               _c("div", { staticClass: "input-group" }, [
                 _c(
                   "select",
@@ -67677,6 +67678,15 @@ var render = function() {
                   ],
                   2
                 ),
+                _vm._v(" "),
+                _c("input", {
+                  staticClass: "form-control",
+                  attrs: {
+                    type: "text",
+                    disabled: "",
+                    placeholder: "Precio mt2 excedente:"
+                  }
+                }),
                 _vm._v(" "),
                 _c("input", {
                   directives: [

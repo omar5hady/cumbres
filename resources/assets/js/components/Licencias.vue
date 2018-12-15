@@ -623,6 +623,12 @@
     }
 </script>
 <style>
+    .form-control:disabled, .form-control[readonly] {
+    background-color: rgba(0, 0, 0, 0.06);
+    opacity: 1;
+    font-size: 1rem;
+    color: #27417b;
+    }
     .modal-content{
         width: 100% !important;
         position: absolute !important;

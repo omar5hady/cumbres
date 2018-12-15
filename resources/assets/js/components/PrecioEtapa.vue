@@ -17,7 +17,7 @@
                     </div>
                     <div class="card-body">
                         <div class="form-group row">
-                            <div class="col-md-8">
+                            <div class="col-md-9">
                                 <div class="input-group">
 
                                     <select class="form-control" v-model="fraccionamiento_id" @click="selectEtapa(fraccionamiento_id)" >
@@ -29,8 +29,9 @@
                                             <option value="0">Seleccione etapa</option>
                                             <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                     </select>
-
-                                    <input type="number"  v-model="precio_excedente" class="form-control" placeholder="Precio excedente">
+                                    
+                                    <input type="text"  class="form-control" disabled placeholder='Precio mt2 excedente:'>
+                                    <input type="number" v-model="precio_excedente" class="form-control" placeholder="Precio excedente">
                                     <button type="button"  class="btn btn-primary" @click="actualizarPrecioEtapa(),listarPrecioModelo(1,id)">Guardar</button>
                                 </div>
 
