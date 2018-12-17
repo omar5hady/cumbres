@@ -50,16 +50,15 @@
                                 <tr>
                                     <th>Opciones</th>
                                     <th>Proyecto</th>
-                                    <th>Etapa de Servicio</th>
                                     <th>Manzana</th>
                                     <th># Lote</th>
-                                    <th>Modelo</th>
                                     <th>Calle</th>
                                     <th># Oficial</th>
+                                    <th style="width:8%">Terreno m&sup2;</th>
                                     <th>Clave Catastral</th>
-                                    <th>Terreno/Construc. mts&sup2;</th>
-                                    <!--<th>Casa Muestra</th>-->
-                                    
+                                    <th>Modelo</th>
+                                    <th>Construc. m&sup2;</th>
+                                    <th style="width:8%">Etapa de Servicio</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -72,22 +71,19 @@
                                           <i class="icon-trash"></i>
                                         </button> &nbsp;
                                     </td>
-
                                     
                                     <td v-text="lote.proyecto"></td>
-                                    <td v-text="lote.etapa_servicios"></td>
                                     <td v-text="lote.manzana"></td>
                                     <td v-if="!lote.sublote" v-text="lote.num_lote"></td>
                                     <td v-else v-text="lote.num_lote + '-' + lote.sublote"></td>
-                                    <td v-text="lote.modelo"></td>
                                     <td v-text="lote.calle"></td>
                                     <td v-if="!lote.interior" v-text="lote.numero"></td>
                                     <td v-else v-text="lote.numero + '-' + lote.interior" ></td>
+                                    <td v-text="lote.terreno"></td>
                                     <td v-text="lote.clv_catastral"></td>
-                                    <td v-text="lote.terreno +' / ' + lote.construccion"></td>
-                                    <!--<td v-text="lote.casa_muestra"></td>
-                                    <td v-text="lote.lote_comercial"></td>-->
-                                     
+                                    <td v-text="lote.modelo"></td>
+                                    <td v-text="lote.construccion"></td>
+                                    <td style="width:8%" v-text="lote.etapa_servicios"></td>
                                 </tr>                               
                             </tbody>
                         </table>  
@@ -171,7 +167,7 @@
                                     </div>
                                 </div>
 
-                                  <div class="form-group row">
+                               <!-- <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Modelo</label>
                                     <div class="col-md-6">
                                        <select class="form-control" @click="selectConsYTerreno(modelo_id)" v-model="modelo_id">
@@ -179,7 +175,7 @@
                                             <option v-for="modelos in arrayModelos" :key="modelos.id" :value="modelos.id" v-text="modelos.nombre"></option>
                                         </select>
                                     </div>
-                                </div>
+                                </div>-->
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Dirección</label>
                                     <div class="col-md-4">
@@ -252,22 +248,13 @@
                              <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
                                     <div class="col-md-6">
-                                       <select class="form-control" v-model="fraccionamiento_id" @click="selectEtapa(fraccionamiento_id),selectModelo(fraccionamiento_id)" >
+                                       <select class="form-control" v-model="fraccionamiento_id" >
                                             <option value="0">Seleccione</option>
                                             <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                         </select>
                                     </div>
                                 </div>
 
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Modelo</label>
-                                    <div class="col-md-6">
-                                       <select class="form-control" @click="selectConsYTerreno(modelo_id)" v-model="modelo_id">
-                                            <option value="0">Seleccione</option>
-                                            <option v-for="modelos in arrayModelos" :key="modelos.id" :value="modelos.id" v-text="modelos.nombre"></option>
-                                        </select>
-                                    </div>
-                                </div>
 
                             <!-- {{ csrf_field() }} -->
                             Selecciona archivo excel xls/csv: <input type="file" v-on:change="onImageChange" class="form-control">
@@ -407,7 +394,6 @@
                let formData = new FormData();
                 formData.append('file', this.file);
                 formData.append('fraccionamiento_id', this.fraccionamiento_id);
-                formData.append('modelo_id', this.modelo_id);
                 let me = this;
                 axios.post('/import',formData)
                 .then(function (response) {
@@ -517,7 +503,8 @@
                     var respuesta = response.data;
                     me.arrayModelosTC = respuesta.modelosTc;
 
-                    me.terreno = me.arrayModelosTC[0].terreno;
+                    if(me.terreno==0)
+                        me.terreno = me.arrayModelosTC[0].terreno;
                     me.construccion = me.arrayModelosTC[0].construccion;
 
 
@@ -541,7 +528,6 @@
                     'manzana': this.manzana,
                     'num_lote': this.num_lote,
                     'sublote': this.sublote,
-                    'modelo_id': this.modelo_id,
                     'empresa_id': this.empresa_id,
                     'calle': this.calle,
                     'numero': this.numero,
@@ -612,7 +598,6 @@
                     'manzana': this.manzana,
                     'num_lote': this.num_lote,
                     'sublote': this.sublote,
-                    'modelo_id': this.modelo_id,
                     'empresa_id': this.empresa_id,
                     'calle': this.calle,
                     'numero': this.numero,

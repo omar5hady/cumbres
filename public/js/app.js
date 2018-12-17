@@ -59619,19 +59619,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -59738,7 +59725,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var formData = new FormData();
             formData.append('file', this.file);
             formData.append('fraccionamiento_id', this.fraccionamiento_id);
-            formData.append('modelo_id', this.modelo_id);
             var me = this;
             axios.post('/import', formData).then(function (response) {
                 swal({
@@ -59837,7 +59823,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 var respuesta = response.data;
                 me.arrayModelosTC = respuesta.modelosTc;
 
-                me.terreno = me.arrayModelosTC[0].terreno;
+                if (me.terreno == 0) me.terreno = me.arrayModelosTC[0].terreno;
                 me.construccion = me.arrayModelosTC[0].construccion;
             }).catch(function (error) {
                 console.log(error);
@@ -59859,7 +59845,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'manzana': this.manzana,
                 'num_lote': this.num_lote,
                 'sublote': this.sublote,
-                'modelo_id': this.modelo_id,
                 'empresa_id': this.empresa_id,
                 'calle': this.calle,
                 'numero': this.numero,
@@ -59928,7 +59913,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'manzana': this.manzana,
                 'num_lote': this.num_lote,
                 'sublote': this.sublote,
-                'modelo_id': this.modelo_id,
                 'empresa_id': this.empresa_id,
                 'calle': this.calle,
                 'numero': this.numero,
@@ -60586,10 +60570,6 @@ var render = function() {
                     }),
                     _vm._v(" "),
                     _c("td", {
-                      domProps: { textContent: _vm._s(lote.etapa_servicios) }
-                    }),
-                    _vm._v(" "),
-                    _c("td", {
                       domProps: { textContent: _vm._s(lote.manzana) }
                     }),
                     _vm._v(" "),
@@ -60604,10 +60584,6 @@ var render = function() {
                             )
                           }
                         }),
-                    _vm._v(" "),
-                    _c("td", {
-                      domProps: { textContent: _vm._s(lote.modelo) }
-                    }),
                     _vm._v(" "),
                     _c("td", { domProps: { textContent: _vm._s(lote.calle) } }),
                     _vm._v(" "),
@@ -60624,15 +60600,24 @@ var render = function() {
                         }),
                     _vm._v(" "),
                     _c("td", {
+                      domProps: { textContent: _vm._s(lote.terreno) }
+                    }),
+                    _vm._v(" "),
+                    _c("td", {
                       domProps: { textContent: _vm._s(lote.clv_catastral) }
                     }),
                     _vm._v(" "),
                     _c("td", {
-                      domProps: {
-                        textContent: _vm._s(
-                          lote.terreno + " / " + lote.construccion
-                        )
-                      }
+                      domProps: { textContent: _vm._s(lote.modelo) }
+                    }),
+                    _vm._v(" "),
+                    _c("td", {
+                      domProps: { textContent: _vm._s(lote.construccion) }
+                    }),
+                    _vm._v(" "),
+                    _c("td", {
+                      staticStyle: { width: "8%" },
+                      domProps: { textContent: _vm._s(lote.etapa_servicios) }
                     })
                   ])
                 })
@@ -61103,68 +61088,6 @@ var render = function() {
                           staticClass: "col-md-3 form-control-label",
                           attrs: { for: "text-input" }
                         },
-                        [_vm._v("Modelo")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-6" }, [
-                        _c(
-                          "select",
-                          {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.modelo_id,
-                                expression: "modelo_id"
-                              }
-                            ],
-                            staticClass: "form-control",
-                            on: {
-                              click: function($event) {
-                                _vm.selectConsYTerreno(_vm.modelo_id)
-                              },
-                              change: function($event) {
-                                var $$selectedVal = Array.prototype.filter
-                                  .call($event.target.options, function(o) {
-                                    return o.selected
-                                  })
-                                  .map(function(o) {
-                                    var val = "_value" in o ? o._value : o.value
-                                    return val
-                                  })
-                                _vm.modelo_id = $event.target.multiple
-                                  ? $$selectedVal
-                                  : $$selectedVal[0]
-                              }
-                            }
-                          },
-                          [
-                            _c("option", { attrs: { value: "0" } }, [
-                              _vm._v("Seleccione")
-                            ]),
-                            _vm._v(" "),
-                            _vm._l(_vm.arrayModelos, function(modelos) {
-                              return _c("option", {
-                                key: modelos.id,
-                                domProps: {
-                                  value: modelos.id,
-                                  textContent: _vm._s(modelos.nombre)
-                                }
-                              })
-                            })
-                          ],
-                          2
-                        )
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "text-input" }
-                        },
                         [_vm._v("Dirección")]
                       ),
                       _vm._v(" "),
@@ -61477,10 +61400,6 @@ var render = function() {
                             ],
                             staticClass: "form-control",
                             on: {
-                              click: function($event) {
-                                _vm.selectEtapa(_vm.fraccionamiento_id),
-                                  _vm.selectModelo(_vm.fraccionamiento_id)
-                              },
                               change: function($event) {
                                 var $$selectedVal = Array.prototype.filter
                                   .call($event.target.options, function(o) {
@@ -61509,68 +61428,6 @@ var render = function() {
                                 domProps: {
                                   value: fraccionamientos.id,
                                   textContent: _vm._s(fraccionamientos.nombre)
-                                }
-                              })
-                            })
-                          ],
-                          2
-                        )
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "text-input" }
-                        },
-                        [_vm._v("Modelo")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-6" }, [
-                        _c(
-                          "select",
-                          {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.modelo_id,
-                                expression: "modelo_id"
-                              }
-                            ],
-                            staticClass: "form-control",
-                            on: {
-                              click: function($event) {
-                                _vm.selectConsYTerreno(_vm.modelo_id)
-                              },
-                              change: function($event) {
-                                var $$selectedVal = Array.prototype.filter
-                                  .call($event.target.options, function(o) {
-                                    return o.selected
-                                  })
-                                  .map(function(o) {
-                                    var val = "_value" in o ? o._value : o.value
-                                    return val
-                                  })
-                                _vm.modelo_id = $event.target.multiple
-                                  ? $$selectedVal
-                                  : $$selectedVal[0]
-                              }
-                            }
-                          },
-                          [
-                            _c("option", { attrs: { value: "0" } }, [
-                              _vm._v("Seleccione")
-                            ]),
-                            _vm._v(" "),
-                            _vm._l(_vm.arrayModelos, function(modelos) {
-                              return _c("option", {
-                                key: modelos.id,
-                                domProps: {
-                                  value: modelos.id,
-                                  textContent: _vm._s(modelos.nombre)
                                 }
                               })
                             })
@@ -61645,21 +61502,25 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Proyecto")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Etapa de Servicio")]),
-        _vm._v(" "),
         _c("th", [_vm._v("Manzana")]),
         _vm._v(" "),
         _c("th", [_vm._v("# Lote")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Modelo")]),
         _vm._v(" "),
         _c("th", [_vm._v("Calle")]),
         _vm._v(" "),
         _c("th", [_vm._v("# Oficial")]),
         _vm._v(" "),
+        _c("th", { staticStyle: { width: "8%" } }, [_vm._v("Terreno m²")]),
+        _vm._v(" "),
         _c("th", [_vm._v("Clave Catastral")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Terreno/Construc. mts²")])
+        _c("th", [_vm._v("Modelo")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Construc. m²")]),
+        _vm._v(" "),
+        _c("th", { staticStyle: { width: "8%" } }, [
+          _vm._v("Etapa de Servicio")
+        ])
       ])
     ])
   }
@@ -62440,7 +62301,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 var respuesta = response.data;
                 me.arrayModelosTC = respuesta.modelosTc;
 
-                me.terreno = me.arrayModelosTC[0].terreno;
+                if (me.terreno == 0) me.terreno = me.arrayModelosTC[0].terreno;
                 me.construccion = me.arrayModelosTC[0].construccion;
             }).catch(function (error) {
                 console.log(error);
@@ -65575,7 +65436,7 @@ var render = function() {
                       }
                     }),
                     _vm._v(" "),
-                    licencias.siembra == _vm.NULL
+                    !licencias.siembra
                       ? _c("td", { domProps: { textContent: _vm._s("") } })
                       : _c("td", {
                           domProps: {
@@ -65587,7 +65448,7 @@ var render = function() {
                           }
                         }),
                     _vm._v(" "),
-                    licencias.f_planos == _vm.NULL
+                    !licencias.f_planos
                       ? _c("td", { domProps: { textContent: _vm._s("") } })
                       : _c("td", {
                           domProps: {
@@ -65599,7 +65460,7 @@ var render = function() {
                           }
                         }),
                     _vm._v(" "),
-                    licencias.f_ingreso == _vm.NULL
+                    !licencias.f_ingreso
                       ? _c("td", { domProps: { textContent: _vm._s("") } })
                       : _c("td", {
                           domProps: {
@@ -65611,7 +65472,7 @@ var render = function() {
                           }
                         }),
                     _vm._v(" "),
-                    licencias.f_salida == _vm.NULL
+                    !licencias.f_salida
                       ? _c("td", { domProps: { textContent: _vm._s("") } })
                       : _c("td", {
                           domProps: {

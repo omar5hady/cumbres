@@ -222,6 +222,12 @@ class LoteController extends Controller
                 ->where('num_etapa','=', 'Sin Asignar')
                 ->where('fraccionamiento_id','=',$request->fraccionamiento_id)
                 ->get();
+        
+        $modelo= Modelo::select('id')
+                ->where('nombre','=', 'Por Asignar')
+                ->where('fraccionamiento_id','=',$request->fraccionamiento_id)
+                ->get();
+
             try {
                 DB::beginTransaction();
                 $lote = new Lote();
@@ -230,7 +236,7 @@ class LoteController extends Controller
                 $lote->manzana = $request->manzana;
                 $lote->num_lote = $request->num_lote;
                 $lote->sublote = $request->sublote;
-                $lote->modelo_id = $request->modelo_id;
+                $lote->modelo_id = $modelo[0]->id;
                 $lote->empresa_id = $request->empresa_id;
                 $lote->calle = $request->calle;
                 $lote->numero = $request->numero;
@@ -296,7 +302,6 @@ class LoteController extends Controller
         $lote->manzana = $request->manzana;
         $lote->num_lote = $request->num_lote;
         $lote->sublote = $request->sublote;
-        $lote->modelo_id = $request->modelo_id;
         $lote->empresa_id = 1;
         $lote->calle = $request->calle;
         $lote->numero = $request->numero;
@@ -409,6 +414,11 @@ class LoteController extends Controller
                 ->where('fraccionamiento_id','=',$request->fraccionamiento_id)
                 ->get();
 
+                $modelo= Modelo::select('id')
+                ->where('nombre','=', 'Por Asignar')
+                ->where('fraccionamiento_id','=',$request->fraccionamiento_id)
+                ->get();
+
                 if(Lote::count() > 0){
                     $lotes = Lote::select('id')->get();
                     $id = $lotes->last()->id + 1;
@@ -435,12 +445,12 @@ class LoteController extends Controller
                         'manzana' => $value->manzana,
                         'num_lote' => $value->num_lote,
                         'sublote' => $value->duplex,
-                        'modelo_id' => $request->modelo_id,
+                        'modelo_id' => $modelo[0]->id,
                         'empresa_id' => 1,
                         'calle' => $value->calle,
                         'numero' => $value->numero,
                         'interior' => $value->interior,
-                        'terreno' => $terreno[0]->terreno,
+                        'terreno' => $value->terreno,
                         'construccion' => $terreno[0]->construccion,
                         'clv_catastral' =>$value->clave_catastral,
                         'etapa_servicios' =>$value->etapa_servicios,

@@ -70,16 +70,16 @@
                                     <td v-text="licencias.modelo"></td>
                                     <td v-text="'Arq. '+licencias.arquitecto"></td>
                                     <!-- SIEMBRA -->
-                                        <td v-if="licencias.siembra==NULL" v-text="''"></td>
+                                        <td v-if="!licencias.siembra" v-text="''"></td>
                                         <td v-else v-text="this.moment(licencias.siembra).locale('es').format('DD/MMM/YYYY')"></td>
                                     <!-- Fecha planos -->    
-                                        <td v-if="licencias.f_planos==NULL" v-text="''"></td>
+                                        <td v-if="!licencias.f_planos" v-text="''"></td>
                                         <td v-else v-text="this.moment(licencias.f_planos).locale('es').format('DD/MMM/YYYY')"></td>
                                     <!-- Fecha Ingreso -->
-                                        <td v-if="licencias.f_ingreso==NULL" v-text="''"></td>
+                                        <td v-if="!licencias.f_ingreso" v-text="''"></td>
                                         <td v-else v-text="this.moment(licencias.f_ingreso).locale('es').format('DD/MMM/YYYY')"></td>
                                     <!-- Fecha Salida -->
-                                        <td v-if="licencias.f_salida==NULL" v-text="''"></td>
+                                        <td v-if="!licencias.f_salida" v-text="''"></td>
                                         <td v-else v-text="this.moment(licencias.f_salida).locale('es').format('DD/MMM/YYYY')"></td>
                                     
                                     <td v-text="licencias.num_licencia"></td>

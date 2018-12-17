@@ -79,6 +79,14 @@ class FraccionamientoController extends Controller
         $etapa->personal_id = 1;
         $etapa->save();
 
+        $modelo = new Modelo();
+        $modelo->nombre = "Por Asignar";
+        $modelo->fraccionamiento_id = $fraccionamiento->id;
+        $modelo->tipo = $fraccionamiento->tipo_proyecto;
+        $modelo->terreno = 0;
+        $modelo->construccion = 0;
+        $modelo->save();
+
        /* $modelo = new Modelo();
         $modelo->fraccionamiento_id = $fraccionamiento->id;
         $modelo->tipo = $fraccionamiento->tipo_proyecto;

@@ -682,7 +682,8 @@
                     var respuesta = response.data;
                     me.arrayModelosTC = respuesta.modelosTc;
 
-                    me.terreno = me.arrayModelosTC[0].terreno;
+                    if(me.terreno==0)
+                        me.terreno = me.arrayModelosTC[0].terreno;
                     me.construccion = me.arrayModelosTC[0].construccion;
 
 
