@@ -14,6 +14,11 @@ class LicenciasController extends Controller
     public function index(Request $request)
     {
         $buscar = $request->buscar;
+        $buscar2 = $request->buscar2;
+        $b_arquitecto = $request->b_arquitecto;
+        $b_lote = $request->b_lote;
+        $b_manzana = $request->b_manzana;
+        $b_modelo = $request->b_modelo;
         $criterio = $request->criterio;
         if($buscar=='')
         {
@@ -31,13 +36,14 @@ class LicenciasController extends Controller
                       'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.siembra',
                       DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS arquitecto"),
                       DB::raw("CONCAT(p.nombre,' ',p.apellidos) AS perito"),'licencias.f_planos',
-                      'licencias.f_ingreso','licencias.num_licencia','licencias.f_salida','lotes.arquitecto_id','licencias.perito_dro','fraccionamientos.nombre as fraccionamiento')
+                      'licencias.f_ingreso','licencias.num_licencia','licencias.f_salida','lotes.arquitecto_id',
+                      'licencias.perito_dro','fraccionamientos.nombre as fraccionamiento','licencias.cambios')
                       ->orderBy('fraccionamientos.nombre','DESC')
                       ->orderBy('lotes.etapa_servicios','DESC')->paginate(5);
         }
        else
         {
-            if($criterio != 'arquitecto'){
+            if($criterio != 'arquitecto' && $criterio != 'lotes.fraccionamiento_id' ){
                 $licencias = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
                 ->join('licencias','lotes.id','=','licencias.id')
                 ->join('personal','lotes.arquitecto_id','=','personal.id')
@@ -50,12 +56,33 @@ class LicenciasController extends Controller
                         'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
                         'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.siembra',
                         DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS arquitecto"),'licencias.f_planos',
-                        'licencias.f_ingreso','licencias.num_licencia','licencias.f_salida','lotes.arquitecto_id','licencias.perito_dro','fraccionamientos.nombre as fraccionamiento')
+                        'licencias.f_ingreso','licencias.num_licencia','licencias.f_salida','lotes.arquitecto_id',
+                        'licencias.perito_dro','fraccionamientos.nombre as fraccionamiento','licencias.cambios')
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->orderBy('fraccionamientos.nombre','DESC')
                         ->orderBy('lotes.etapa_servicios','DESC')->paginate(5);
             }
+            if($criterio == 'licencias.f_planos'){
+                $licencias = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                ->join('licencias','lotes.id','=','licencias.id')
+                ->join('personal','lotes.arquitecto_id','=','personal.id')
+                ->join('etapas','lotes.etapa_id','=','etapas.id')
+                ->join('modelos','lotes.modelo_id','=','modelos.id')
+                ->join('empresas','lotes.empresa_id','=','empresas.id')
+                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
+                        'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
+                        'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
+                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
+                        'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.siembra',
+                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS arquitecto"),'licencias.f_planos',
+                        'licencias.f_ingreso','licencias.num_licencia','licencias.f_salida','lotes.arquitecto_id',
+                        'licencias.perito_dro','fraccionamientos.nombre as fraccionamiento','licencias.cambios')
+                        ->whereBetween($criterio, [$buscar,$buscar2])
+                        ->orderBy('fraccionamientos.nombre','DESC')
+                        ->orderBy('lotes.etapa_servicios','DESC')->paginate(5);
+            }
             else{
+            if($criterio == 'lotes.fraccionamiento_id' ){
                     $licencias = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
                     ->join('licencias','lotes.id','=','licencias.id')
                     ->join('personal','lotes.arquitecto_id','=','personal.id')
@@ -68,11 +95,37 @@ class LicenciasController extends Controller
                             'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
                             'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.siembra',
                             DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS arquitecto"),'licencias.f_planos',
-                            'licencias.f_ingreso','licencias.num_licencia','licencias.f_salida','lotes.arquitecto_id','licencias.perito_dro','fraccionamientos.nombre as fraccionamiento')
-                            ->where('personal.nombre', 'like', '%'. $buscar . '%')
-                            ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
+                            'licencias.f_ingreso','licencias.num_licencia','licencias.f_salida','lotes.arquitecto_id',
+                            'licencias.perito_dro','fraccionamientos.nombre as fraccionamiento','licencias.cambios')
+                        ->where('lotes.fraccionamiento_id', '=',  $buscar)
+                        ->where('lotes.manzana', '=', $b_manzana)
+                            ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
+                            ->where('modelos.nombre', 'like', '%'. $b_modelo . '%')
+                            ->where('personal.nombre', 'like', '%'. $b_arquitecto . '%')
                             ->orderBy('fraccionamientos.nombre','DESC')
                             ->orderBy('lotes.etapa_servicios','DESC')->paginate(5);
+                    }
+                    else{
+                        $licencias = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                        ->join('licencias','lotes.id','=','licencias.id')
+                        ->join('personal','lotes.arquitecto_id','=','personal.id')
+                        ->join('etapas','lotes.etapa_id','=','etapas.id')
+                        ->join('modelos','lotes.modelo_id','=','modelos.id')
+                        ->join('empresas','lotes.empresa_id','=','empresas.id')
+                        ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
+                                'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
+                                'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
+                                'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
+                                'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.siembra',
+                                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS arquitecto"),'licencias.f_planos',
+                                'licencias.f_ingreso','licencias.num_licencia','licencias.f_salida','lotes.arquitecto_id',
+                                'licencias.perito_dro','fraccionamientos.nombre as fraccionamiento','licencias.cambios')
+                                ->where('personal.nombre', 'like', '%'. $buscar . '%')
+                                ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
+                                ->orderBy('fraccionamientos.nombre','DESC')
+                                ->orderBy('lotes.etapa_servicios','DESC')->paginate(5);
+                }
+            
             }
         }
  

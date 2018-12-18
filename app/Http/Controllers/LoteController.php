@@ -250,6 +250,7 @@ class LoteController extends Controller
 
                 $licencia = new Licencia();
                 $licencia->id = $lote->id;
+                $licencia->perito_dro = $lote->arquitecto_id;
                 $licencia->save();
 
                 DB::commit();
@@ -325,6 +326,10 @@ class LoteController extends Controller
        ->where('id','=', $request->etapa_id)
        ->get();
 
+       $modeloOld = Lote::select('modelo_id')
+       ->where('id','=',$request->id)
+       ->get();
+
         //FindOrFail se utiliza para buscar lo que recibe de argumento
         $lote = Lote::findOrFail($request->id);
         $lote->fraccionamiento_id = $request->fraccionamiento_id;
@@ -333,6 +338,14 @@ class LoteController extends Controller
         $lote->num_lote = $request->num_lote;
         $lote->sublote = $request->sublote;
         $lote->modelo_id = $request->modelo_id;
+        if($request->modelo_id != $modeloOld[0]->modelo_id){
+            $siembra = Carbon::today()->format('ymd');
+            $lote->siembra=$siembra;
+
+            $licencia = Licencia::findOrFail($request->id);
+            $licencia->cambios = 1;
+            $licencia->save();
+        }
         $lote->empresa_id = 1;
         $lote->calle = $request->calle;
         $lote->numero = $request->numero;
@@ -340,10 +353,10 @@ class LoteController extends Controller
         $lote->terreno = $request->terreno;
         $lote->construccion = $request->construccion;
         $lote->credito_puente = $request->credito_puente;
-        if($etapa[0]->num_etapa!='Sin Asignar'){
+        /*if($etapa[0]->num_etapa!='Sin Asignar'){
             $siembra = Carbon::today()->format('ymd');
             $lote->siembra=$siembra;
-         }
+         }*/
         
 
         $lote->save();
@@ -360,6 +373,10 @@ class LoteController extends Controller
        ->where('id','=', $request->etapa_id)
        ->get();
 
+       $modeloOld = Lote::select('modelo_id')
+       ->where('id','=',$request->id)
+       ->get();
+
        $modelo= Modelo::select('construccion')
        ->where('id','=', $request->modelo_id)
        ->get();
@@ -368,11 +385,20 @@ class LoteController extends Controller
         $lote = Lote::findOrFail($request->id);
         $lote->etapa_id = $request->etapa_id;
         $lote->modelo_id = $request->modelo_id;
-        $lote->construccion = $modelo[0]->construccion;
-        if($etapa[0]->num_etapa!='Sin Asignar'){
+
+        if($request->modelo_id != $modeloOld[0]->modelo_id){
             $siembra = Carbon::today()->format('ymd');
             $lote->siembra=$siembra;
-         }
+
+            $licencia = Licencia::findOrFail($request->id);
+            $licencia->cambios = 1;
+            $licencia->save();
+        }
+        $lote->construccion = $modelo[0]->construccion;
+        /*if($etapa[0]->num_etapa!='Sin Asignar'){
+            $siembra = Carbon::today()->format('ymd');
+            $lote->siembra=$siembra;
+         }*/
         $lote->save();
     }
 
@@ -461,7 +487,8 @@ class LoteController extends Controller
                         ];
 
                         $insert2[]  = [
-                            'id' => $id++
+                            'id' => $id++,
+                            'perito_dro' => 1
                         ];
 
 

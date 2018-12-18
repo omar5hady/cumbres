@@ -20,14 +20,28 @@
                             <div class="col-md-8">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-5" v-model="criterio" >
-                                        <option value="fraccionamientos.nombre">Proyecto</option>
+                                    <select class="form-control col-md-5" v-model="criterio" @click="selectFraccionamientos()">
+                                        <option value="lotes.fraccionamiento_id">Proyecto</option>
                                         <option value="modelos.nombre">Modelo</option>
                                         <option value="arquitecto">Arquitecto</option>
                                         <option value="licencias.num_licencia">Num.Licencia</option>
-                                    </select>                       
-                                    <input type="text"  v-model="buscar" @keyup.enter="listarLicencias(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
-                                    <button type="submit" @click="listarLicencias(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                        <option value="licencias.f_planos">Planos</option>
+                                    </select>
+
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" >
+                                        <option value="">Seleccione</option>
+                                        <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                                    </select>
+                                    <input v-if="criterio=='lotes.fraccionamiento_id'" type="text"  v-model="b_manzana" @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)" class="form-control" placeholder="Manzana">
+                                    <input v-if="criterio=='lotes.fraccionamiento_id'" type="text"  v-model="b_lote" @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)" class="form-control" placeholder="# Lote">
+                                    <input v-if="criterio=='lotes.fraccionamiento_id'" type="text"  v-model="b_modelo" @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)" class="form-control" placeholder="Modelo">
+                                    <input v-if="criterio=='lotes.fraccionamiento_id'" type="text"  v-model="b_arquitecto" @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)" class="form-control" placeholder="Arquitecto">
+
+                                    <input type="date" v-if="criterio=='licencias.f_planos'" v-model="buscar" @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)" class="form-control col-md-6" placeholder="Desde" >
+                                    <input type="date" v-if="criterio=='licencias.f_planos'" v-model="buscar2"  @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)" class="form-control col-md-6" placeholder="Hasta" >
+
+                                    <input v-if="criterio!='lotes.fraccionamiento_id' && criterio!='licencias.f_planos' " type="text"  v-model="buscar" @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)" class="form-control" placeholder="Texto a buscar">
+                                    <button type="submit" @click="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
                         </div>
@@ -69,23 +83,35 @@
                                     <td v-text="licencias.num_lote"></td>
                                     <td v-text="licencias.terreno"></td>
                                     <td v-text="licencias.construccion"></td>
-                                    <td v-text="licencias.modelo"></td>
-                                    <td v-text="'Arq. '+licencias.arquitecto"></td>
+                                    <!--Modelo-->
+                                    <td>
+                                        <span v-if = "licencias.modelo!='Por Asignar' && licencias.cambios==0" class="badge badge-success" v-text="licencias.modelo"></span>
+                                        <span v-if = "licencias.modelo=='Por Asignar'" class="badge badge-danger">Por Asignar</span>
+                                        <span v-if = "licencias.cambios==1" class="badge badge-warning" v-text="licencias.modelo"></span>
+                                    </td>
+                                    <!--Arquitecto -->
+                                    <td>
+                                        <span v-if = "licencias.arquitecto!='Sin Asignar  '" class="badge badge-success" v-text="'Arq. '+licencias.arquitecto"></span>
+                                        <span v-else class="badge badge-danger"> Por Asignar </span>
+                                    </td>
                                     <!-- SIEMBRA -->
-                                        <td v-if="!licencias.siembra" v-text="''"></td>
-                                        <td v-else v-text="this.moment(licencias.siembra).locale('es').format('DD/MMM/YYYY')"></td>
+                                    <td v-if="!licencias.siembra" v-text="''"></td>
+                                    <td v-else v-text="this.moment(licencias.siembra).locale('es').format('DD/MMM/YYYY')"></td>
                                     <!-- Fecha planos -->    
-                                        <td v-if="!licencias.f_planos" v-text="''"></td>
-                                        <td v-else v-text="this.moment(licencias.f_planos).locale('es').format('DD/MMM/YYYY')"></td>
-
-                                    <td v-text="licencias.perito"></td> <!-- td para mostrar el perito -->
+                                    <td v-if="!licencias.f_planos" v-text="''"></td>
+                                    <td v-else v-text="this.moment(licencias.f_planos).locale('es').format('DD/MMM/YYYY')"></td>
+                                    <!-- Fecha planos -->
+                                    <td>
+                                        <span v-if = "licencias.perito!='Sin Asignar  '" class="badge badge-success" v-text="'Arq. '+licencias.perito"></span>
+                                        <span v-else class="badge badge-danger"> Por Asignar </span>
+                                    </td>
 
                                     <!-- Fecha Ingreso -->
-                                        <td v-if="!licencias.f_ingreso" v-text="''"></td>
-                                        <td v-else v-text="this.moment(licencias.f_ingreso).locale('es').format('DD/MMM/YYYY')"></td>
+                                    <td v-if="!licencias.f_ingreso" v-text="''"></td>
+                                    <td v-else v-text="this.moment(licencias.f_ingreso).locale('es').format('DD/MMM/YYYY')"></td>
                                     <!-- Fecha Salida -->
-                                        <td v-if="!licencias.f_salida" v-text="''"></td>
-                                        <td v-else v-text="this.moment(licencias.f_salida).locale('es').format('DD/MMM/YYYY')"></td>
+                                    <td v-if="!licencias.f_salida" v-text="''"></td>
+                                    <td v-else v-text="this.moment(licencias.f_salida).locale('es').format('DD/MMM/YYYY')"></td>
                                     
                                     <td v-text="licencias.num_licencia"></td>
                                     <td v-text="licencias.credito_puente"></td>
@@ -386,6 +412,7 @@
                 construccion : 0,
                 arrayLicencias : [],
                 arrayArquitectos:[],
+                arrayFraccionamientos:[],
                 modal : 0,
                 modal2 : 0,
                 tituloModal : '',
@@ -403,7 +430,12 @@
                 },
                 offset : 3,
                 criterio : 'modelos.nombre', 
-                buscar : ''
+                buscar : '',
+                buscar2 : '',
+                b_manzana : '',
+                b_lote : '',
+                b_modelo : '',
+                b_arquitecto : '',
             }
         },
         computed:{
@@ -450,13 +482,14 @@
            
 
             /**Metodo para mostrar los registros */
-            listarLicencias(page, buscar, criterio){
+            listarLicencias(page, buscar,b_manzana,b_lote,b_modelo,b_arquitecto, criterio,buscar2){
                 let me = this;
-                var url = '/licencias?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
+                var url = '/licencias?page=' + page + '&buscar=' + buscar + '&b_manzana=' + b_manzana + '&b_lote='+ b_lote + '&b_modelo='+ b_modelo + '&b_arquitecto='+ b_arquitecto + '&criterio=' + criterio + '&buscar2=' + buscar2;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayLicencias = respuesta.licencias.data;
                     me.pagination = respuesta.pagination;
+                    console.log(url);
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -475,13 +508,31 @@
                     console.log(error);
                 });
             },
+            selectFraccionamientos(){
+                let me = this;
+                me.buscar="";
+                me.b_arquitecto="";
+                me.b_manzana="";
+                me.b_lote="";
+                me.b_modelo="";
+                me.buscar2="";
+                me.arrayFraccionamientos=[];
+                var url = '/select_fraccionamiento';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayFraccionamientos = respuesta.fraccionamientos;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
 
             cambiarPagina(page, buscar, criterio){
                 let me = this;
                 //Actualiza la pagina actual
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
-                me.listarLicencias(page,buscar,criterio);
+                me.listarLicencias(page,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2);
             },
             
             actualizarLicencia(){
@@ -499,7 +550,7 @@
                     
                 }).then(function (response){
                     me.cerrarModal();
-                    me.listarLicencias(1,'','fraccionamientos.nombre');
+                    me.listarLicencias(1,'','','','','','fraccionamientos.nombre','');
                     //window.alert("Cambios guardados correctamente");
                     swal({
                         position: 'top-end',
@@ -604,9 +655,9 @@
                             {
                                 this.modal2 =1;
                                 this.tituloModal2='Consulta ';
-                                this.f_planos=data['f_planos'];
-                                this.f_ingreso=data['f_ingreso'];
-                                this.f_salida=data['f_salida'];
+                                this.f_planos=moment(data['f_planos']).locale('es').format('DD/MMM/YYYY');
+                                this.f_ingreso=moment(data['f_ingreso']).locale('es').format('DD/MMM/YYYY');
+                                this.f_salida=moment(data['f_salida']).locale('es').format('DD/MMM/YYYY');
                                 this.num_licencia=data['num_licencia'];
                                 this.arquitecto=data['arquitecto'];
                                 this.fraccionamiento=data['fraccionamiento'];
@@ -622,7 +673,7 @@
                                 this.construccion=data['construccion'];
                                 this.clv_catastral=data['clv_catastral'];
                                 this.etapa_servicios=data['etapa_servicios'];
-                                this.siembra=data['siembra'];
+                                this.siembra=moment(data['siembra']).locale('es').format('DD/MMM/YYYY');
                                 this.id=data['id'];
                                 break;
                             }
@@ -637,7 +688,8 @@
         
         
         mounted() {
-            this.listarLicencias(1,this.buscar,this.criterio);
+            this.listarLicencias(1,this.buscar,this.b_manzana,this.b_lote,this.b_modelo,this.b_arquitecto,this.criterio,this.buscar2);
+            this.selectFraccionamientos();
         }
     }
 </script>

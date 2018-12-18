@@ -62746,7 +62746,7 @@ var render = function() {
                       },
                       [
                         _c("option", { attrs: { value: "" } }, [
-                          _vm._v("Seleccione")
+                          _vm._v("Etapa")
                         ]),
                         _vm._v(" "),
                         _vm._l(_vm.arrayEtapas, function(etapas) {
@@ -64983,6 +64983,32 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -65015,6 +65041,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             construccion: 0,
             arrayLicencias: [],
             arrayArquitectos: [],
+            arrayFraccionamientos: [],
             modal: 0,
             modal2: 0,
             tituloModal: '',
@@ -65032,7 +65059,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             },
             offset: 3,
             criterio: 'modelos.nombre',
-            buscar: ''
+            buscar: '',
+            buscar2: '',
+            b_manzana: '',
+            b_lote: '',
+            b_modelo: '',
+            b_arquitecto: ''
         };
     },
 
@@ -65077,13 +65109,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
         /**Metodo para mostrar los registros */
-        listarLicencias: function listarLicencias(page, buscar, criterio) {
+        listarLicencias: function listarLicencias(page, buscar, b_manzana, b_lote, b_modelo, b_arquitecto, criterio, buscar2) {
             var me = this;
-            var url = '/licencias?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
+            var url = '/licencias?page=' + page + '&buscar=' + buscar + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote + '&b_modelo=' + b_modelo + '&b_arquitecto=' + b_arquitecto + '&criterio=' + criterio + '&buscar2=' + buscar2;
             axios.get(url).then(function (response) {
                 var respuesta = response.data;
                 me.arrayLicencias = respuesta.licencias.data;
                 me.pagination = respuesta.pagination;
+                console.log(url);
             }).catch(function (error) {
                 console.log(error);
             });
@@ -65099,12 +65132,29 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 console.log(error);
             });
         },
+        selectFraccionamientos: function selectFraccionamientos() {
+            var me = this;
+            me.buscar = "";
+            me.b_arquitecto = "";
+            me.b_manzana = "";
+            me.b_lote = "";
+            me.b_modelo = "";
+            me.buscar2 = "";
+            me.arrayFraccionamientos = [];
+            var url = '/select_fraccionamiento';
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayFraccionamientos = respuesta.fraccionamientos;
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
         cambiarPagina: function cambiarPagina(page, buscar, criterio) {
             var me = this;
             //Actualiza la pagina actual
             me.pagination.current_page = page;
             //Envia la petición para visualizar la data de esta pagina
-            me.listarLicencias(page, buscar, criterio);
+            me.listarLicencias(page, buscar, b_manzana, b_lote, b_modelo, b_arquitecto, criterio, buscar2);
         },
         actualizarLicencia: function actualizarLicencia() {
             var me = this;
@@ -65120,7 +65170,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             }).then(function (response) {
                 me.cerrarModal();
-                me.listarLicencias(1, '', 'fraccionamientos.nombre');
+                me.listarLicencias(1, '', '', '', '', '', 'fraccionamientos.nombre', '');
                 //window.alert("Cambios guardados correctamente");
                 swal({
                     position: 'top-end',
@@ -65222,9 +65272,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                 {
                                     this.modal2 = 1;
                                     this.tituloModal2 = 'Consulta ';
-                                    this.f_planos = data['f_planos'];
-                                    this.f_ingreso = data['f_ingreso'];
-                                    this.f_salida = data['f_salida'];
+                                    this.f_planos = moment(data['f_planos']).locale('es').format('DD/MMM/YYYY');
+                                    this.f_ingreso = moment(data['f_ingreso']).locale('es').format('DD/MMM/YYYY');
+                                    this.f_salida = moment(data['f_salida']).locale('es').format('DD/MMM/YYYY');
                                     this.num_licencia = data['num_licencia'];
                                     this.arquitecto = data['arquitecto'];
                                     this.fraccionamiento = data['fraccionamiento'];
@@ -65240,7 +65290,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     this.construccion = data['construccion'];
                                     this.clv_catastral = data['clv_catastral'];
                                     this.etapa_servicios = data['etapa_servicios'];
-                                    this.siembra = data['siembra'];
+                                    this.siembra = moment(data['siembra']).locale('es').format('DD/MMM/YYYY');
                                     this.id = data['id'];
                                     break;
                                 }
@@ -65252,7 +65302,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
 
     mounted: function mounted() {
-        this.listarLicencias(1, this.buscar, this.criterio);
+        this.listarLicencias(1, this.buscar, this.b_manzana, this.b_lote, this.b_modelo, this.b_arquitecto, this.criterio, this.buscar2);
+        this.selectFraccionamientos();
     }
 });
 
@@ -65288,6 +65339,9 @@ var render = function() {
                     ],
                     staticClass: "form-control col-md-5",
                     on: {
+                      click: function($event) {
+                        _vm.selectFraccionamientos()
+                      },
                       change: function($event) {
                         var $$selectedVal = Array.prototype.filter
                           .call($event.target.options, function(o) {
@@ -65306,7 +65360,7 @@ var render = function() {
                   [
                     _c(
                       "option",
-                      { attrs: { value: "fraccionamientos.nombre" } },
+                      { attrs: { value: "lotes.fraccionamiento_id" } },
                       [_vm._v("Proyecto")]
                     ),
                     _vm._v(" "),
@@ -65322,40 +65376,400 @@ var render = function() {
                       "option",
                       { attrs: { value: "licencias.num_licencia" } },
                       [_vm._v("Num.Licencia")]
-                    )
+                    ),
+                    _vm._v(" "),
+                    _c("option", { attrs: { value: "licencias.f_planos" } }, [
+                      _vm._v("Planos")
+                    ])
                   ]
                 ),
                 _vm._v(" "),
-                _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.buscar,
-                      expression: "buscar"
-                    }
-                  ],
-                  staticClass: "form-control",
-                  attrs: { type: "text", placeholder: "Texto a buscar" },
-                  domProps: { value: _vm.buscar },
-                  on: {
-                    keyup: function($event) {
-                      if (
-                        !("button" in $event) &&
-                        _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
-                      ) {
-                        return null
+                _vm.criterio == "lotes.fraccionamiento_id"
+                  ? _c(
+                      "select",
+                      {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.buscar,
+                            expression: "buscar"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        on: {
+                          change: function($event) {
+                            var $$selectedVal = Array.prototype.filter
+                              .call($event.target.options, function(o) {
+                                return o.selected
+                              })
+                              .map(function(o) {
+                                var val = "_value" in o ? o._value : o.value
+                                return val
+                              })
+                            _vm.buscar = $event.target.multiple
+                              ? $$selectedVal
+                              : $$selectedVal[0]
+                          }
+                        }
+                      },
+                      [
+                        _c("option", { attrs: { value: "" } }, [
+                          _vm._v("Seleccione")
+                        ]),
+                        _vm._v(" "),
+                        _vm._l(_vm.arrayFraccionamientos, function(
+                          fraccionamientos
+                        ) {
+                          return _c("option", {
+                            key: fraccionamientos.id,
+                            domProps: {
+                              value: fraccionamientos.id,
+                              textContent: _vm._s(fraccionamientos.nombre)
+                            }
+                          })
+                        })
+                      ],
+                      2
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.criterio == "lotes.fraccionamiento_id"
+                  ? _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.b_manzana,
+                          expression: "b_manzana"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { type: "text", placeholder: "Manzana" },
+                      domProps: { value: _vm.b_manzana },
+                      on: {
+                        keyup: function($event) {
+                          if (
+                            !("button" in $event) &&
+                            _vm._k(
+                              $event.keyCode,
+                              "enter",
+                              13,
+                              $event.key,
+                              "Enter"
+                            )
+                          ) {
+                            return null
+                          }
+                          _vm.listarLicencias(
+                            1,
+                            _vm.buscar,
+                            _vm.b_manzana,
+                            _vm.b_lote,
+                            _vm.b_modelo,
+                            _vm.b_arquitecto,
+                            _vm.criterio,
+                            _vm.buscar2
+                          )
+                        },
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.b_manzana = $event.target.value
+                        }
                       }
-                      _vm.listarLicencias(1, _vm.buscar, _vm.criterio)
-                    },
-                    input: function($event) {
-                      if ($event.target.composing) {
-                        return
+                    })
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.criterio == "lotes.fraccionamiento_id"
+                  ? _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.b_lote,
+                          expression: "b_lote"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { type: "text", placeholder: "# Lote" },
+                      domProps: { value: _vm.b_lote },
+                      on: {
+                        keyup: function($event) {
+                          if (
+                            !("button" in $event) &&
+                            _vm._k(
+                              $event.keyCode,
+                              "enter",
+                              13,
+                              $event.key,
+                              "Enter"
+                            )
+                          ) {
+                            return null
+                          }
+                          _vm.listarLicencias(
+                            1,
+                            _vm.buscar,
+                            _vm.b_manzana,
+                            _vm.b_lote,
+                            _vm.b_modelo,
+                            _vm.b_arquitecto,
+                            _vm.criterio,
+                            _vm.buscar2
+                          )
+                        },
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.b_lote = $event.target.value
+                        }
                       }
-                      _vm.buscar = $event.target.value
-                    }
-                  }
-                }),
+                    })
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.criterio == "lotes.fraccionamiento_id"
+                  ? _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.b_modelo,
+                          expression: "b_modelo"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { type: "text", placeholder: "Modelo" },
+                      domProps: { value: _vm.b_modelo },
+                      on: {
+                        keyup: function($event) {
+                          if (
+                            !("button" in $event) &&
+                            _vm._k(
+                              $event.keyCode,
+                              "enter",
+                              13,
+                              $event.key,
+                              "Enter"
+                            )
+                          ) {
+                            return null
+                          }
+                          _vm.listarLicencias(
+                            1,
+                            _vm.buscar,
+                            _vm.b_manzana,
+                            _vm.b_lote,
+                            _vm.b_modelo,
+                            _vm.b_arquitecto,
+                            _vm.criterio,
+                            _vm.buscar2
+                          )
+                        },
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.b_modelo = $event.target.value
+                        }
+                      }
+                    })
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.criterio == "lotes.fraccionamiento_id"
+                  ? _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.b_arquitecto,
+                          expression: "b_arquitecto"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { type: "text", placeholder: "Arquitecto" },
+                      domProps: { value: _vm.b_arquitecto },
+                      on: {
+                        keyup: function($event) {
+                          if (
+                            !("button" in $event) &&
+                            _vm._k(
+                              $event.keyCode,
+                              "enter",
+                              13,
+                              $event.key,
+                              "Enter"
+                            )
+                          ) {
+                            return null
+                          }
+                          _vm.listarLicencias(
+                            1,
+                            _vm.buscar,
+                            _vm.b_manzana,
+                            _vm.b_lote,
+                            _vm.b_modelo,
+                            _vm.b_arquitecto,
+                            _vm.criterio,
+                            _vm.buscar2
+                          )
+                        },
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.b_arquitecto = $event.target.value
+                        }
+                      }
+                    })
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.criterio == "licencias.f_planos"
+                  ? _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.buscar,
+                          expression: "buscar"
+                        }
+                      ],
+                      staticClass: "form-control col-md-6",
+                      attrs: { type: "date", placeholder: "Desde" },
+                      domProps: { value: _vm.buscar },
+                      on: {
+                        keyup: function($event) {
+                          if (
+                            !("button" in $event) &&
+                            _vm._k(
+                              $event.keyCode,
+                              "enter",
+                              13,
+                              $event.key,
+                              "Enter"
+                            )
+                          ) {
+                            return null
+                          }
+                          _vm.listarLicencias(
+                            1,
+                            _vm.buscar,
+                            _vm.b_manzana,
+                            _vm.b_lote,
+                            _vm.b_modelo,
+                            _vm.b_arquitecto,
+                            _vm.criterio,
+                            _vm.buscar2
+                          )
+                        },
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.buscar = $event.target.value
+                        }
+                      }
+                    })
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.criterio == "licencias.f_planos"
+                  ? _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.buscar2,
+                          expression: "buscar2"
+                        }
+                      ],
+                      staticClass: "form-control col-md-6",
+                      attrs: { type: "date", placeholder: "Hasta" },
+                      domProps: { value: _vm.buscar2 },
+                      on: {
+                        keyup: function($event) {
+                          if (
+                            !("button" in $event) &&
+                            _vm._k(
+                              $event.keyCode,
+                              "enter",
+                              13,
+                              $event.key,
+                              "Enter"
+                            )
+                          ) {
+                            return null
+                          }
+                          _vm.listarLicencias(
+                            1,
+                            _vm.buscar,
+                            _vm.b_manzana,
+                            _vm.b_lote,
+                            _vm.b_modelo,
+                            _vm.b_arquitecto,
+                            _vm.criterio,
+                            _vm.buscar2
+                          )
+                        },
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.buscar2 = $event.target.value
+                        }
+                      }
+                    })
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.criterio != "lotes.fraccionamiento_id" &&
+                _vm.criterio != "licencias.f_planos"
+                  ? _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.buscar,
+                          expression: "buscar"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { type: "text", placeholder: "Texto a buscar" },
+                      domProps: { value: _vm.buscar },
+                      on: {
+                        keyup: function($event) {
+                          if (
+                            !("button" in $event) &&
+                            _vm._k(
+                              $event.keyCode,
+                              "enter",
+                              13,
+                              $event.key,
+                              "Enter"
+                            )
+                          ) {
+                            return null
+                          }
+                          _vm.listarLicencias(
+                            1,
+                            _vm.buscar,
+                            _vm.b_manzana,
+                            _vm.b_lote,
+                            _vm.b_modelo,
+                            _vm.b_arquitecto,
+                            _vm.criterio,
+                            _vm.buscar2
+                          )
+                        },
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.buscar = $event.target.value
+                        }
+                      }
+                    })
+                  : _vm._e(),
                 _vm._v(" "),
                 _c(
                   "button",
@@ -65364,7 +65778,16 @@ var render = function() {
                     attrs: { type: "submit" },
                     on: {
                       click: function($event) {
-                        _vm.listarLicencias(1, _vm.buscar, _vm.criterio)
+                        _vm.listarLicencias(
+                          1,
+                          _vm.buscar,
+                          _vm.b_manzana,
+                          _vm.b_lote,
+                          _vm.b_modelo,
+                          _vm.b_arquitecto,
+                          _vm.criterio,
+                          _vm.buscar2
+                        )
                       }
                     }
                   },
@@ -65434,15 +65857,43 @@ var render = function() {
                       domProps: { textContent: _vm._s(licencias.construccion) }
                     }),
                     _vm._v(" "),
-                    _c("td", {
-                      domProps: { textContent: _vm._s(licencias.modelo) }
-                    }),
+                    _c("td", [
+                      licencias.modelo != "Por Asignar" &&
+                      licencias.cambios == 0
+                        ? _c("span", {
+                            staticClass: "badge badge-success",
+                            domProps: { textContent: _vm._s(licencias.modelo) }
+                          })
+                        : _vm._e(),
+                      _vm._v(" "),
+                      licencias.modelo == "Por Asignar"
+                        ? _c("span", { staticClass: "badge badge-danger" }, [
+                            _vm._v("Por Asignar")
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      licencias.cambios == 1
+                        ? _c("span", {
+                            staticClass: "badge badge-warning",
+                            domProps: { textContent: _vm._s(licencias.modelo) }
+                          })
+                        : _vm._e()
+                    ]),
                     _vm._v(" "),
-                    _c("td", {
-                      domProps: {
-                        textContent: _vm._s("Arq. " + licencias.arquitecto)
-                      }
-                    }),
+                    _c("td", [
+                      licencias.arquitecto != "Sin Asignar  "
+                        ? _c("span", {
+                            staticClass: "badge badge-success",
+                            domProps: {
+                              textContent: _vm._s(
+                                "Arq. " + licencias.arquitecto
+                              )
+                            }
+                          })
+                        : _c("span", { staticClass: "badge badge-danger" }, [
+                            _vm._v(" Por Asignar ")
+                          ])
+                    ]),
                     _vm._v(" "),
                     !licencias.siembra
                       ? _c("td", { domProps: { textContent: _vm._s("") } })
@@ -65468,9 +65919,18 @@ var render = function() {
                           }
                         }),
                     _vm._v(" "),
-                    _c("td", {
-                      domProps: { textContent: _vm._s(licencias.perito) }
-                    }),
+                    _c("td", [
+                      licencias.perito != "Sin Asignar  "
+                        ? _c("span", {
+                            staticClass: "badge badge-success",
+                            domProps: {
+                              textContent: _vm._s("Arq. " + licencias.perito)
+                            }
+                          })
+                        : _c("span", { staticClass: "badge badge-danger" }, [
+                            _vm._v(" Por Asignar ")
+                          ])
+                    ]),
                     _vm._v(" "),
                     !licencias.f_ingreso
                       ? _c("td", { domProps: { textContent: _vm._s("") } })
