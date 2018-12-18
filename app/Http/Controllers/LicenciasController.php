@@ -20,6 +20,7 @@ class LicenciasController extends Controller
             $licencias = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
             ->join('licencias','lotes.id','=','licencias.id')
             ->join('personal','lotes.arquitecto_id','=','personal.id')
+            ->join('personal as p','licencias.perito_dro','=','p.id')
             ->join('etapas','lotes.etapa_id','=','etapas.id')
             ->join('modelos','lotes.modelo_id','=','modelos.id')
             ->join('empresas','lotes.empresa_id','=','empresas.id')
@@ -28,8 +29,9 @@ class LicenciasController extends Controller
                       'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
                       'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
                       'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.siembra',
-                      DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS arquitecto"),'licencias.f_planos',
-                      'licencias.f_ingreso','licencias.num_licencia','licencias.f_salida','lotes.arquitecto_id','fraccionamientos.nombre as fraccionamiento')
+                      DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS arquitecto"),
+                      DB::raw("CONCAT(p.nombre,' ',p.apellidos) AS perito"),'licencias.f_planos',
+                      'licencias.f_ingreso','licencias.num_licencia','licencias.f_salida','lotes.arquitecto_id','licencias.perito_dro','fraccionamientos.nombre as fraccionamiento')
                       ->orderBy('fraccionamientos.nombre','DESC')
                       ->orderBy('lotes.etapa_servicios','DESC')->paginate(5);
         }
@@ -48,7 +50,7 @@ class LicenciasController extends Controller
                         'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
                         'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.siembra',
                         DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS arquitecto"),'licencias.f_planos',
-                        'licencias.f_ingreso','licencias.num_licencia','licencias.f_salida','lotes.arquitecto_id','fraccionamientos.nombre as fraccionamiento')
+                        'licencias.f_ingreso','licencias.num_licencia','licencias.f_salida','lotes.arquitecto_id','licencias.perito_dro','fraccionamientos.nombre as fraccionamiento')
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->orderBy('fraccionamientos.nombre','DESC')
                         ->orderBy('lotes.etapa_servicios','DESC')->paginate(5);
@@ -66,20 +68,14 @@ class LicenciasController extends Controller
                             'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
                             'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.siembra',
                             DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS arquitecto"),'licencias.f_planos',
-                            'licencias.f_ingreso','licencias.num_licencia','licencias.f_salida','lotes.arquitecto_id','fraccionamientos.nombre as fraccionamiento')
+                            'licencias.f_ingreso','licencias.num_licencia','licencias.f_salida','lotes.arquitecto_id','licencias.perito_dro','fraccionamientos.nombre as fraccionamiento')
                             ->where('personal.nombre', 'like', '%'. $buscar . '%')
                             ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
                             ->orderBy('fraccionamientos.nombre','DESC')
                             ->orderBy('lotes.etapa_servicios','DESC')->paginate(5);
             }
         }
-            
-        //for( $i=0; $i<$licencias.length() ;$i++){
-       //     $licencias[$i]->siembra->isoFormat('MMM Do YY');
-      //  }
-        
-        
-        
+ 
 
         return [
             'pagination' => [
@@ -103,6 +99,7 @@ class LicenciasController extends Controller
         $licencia->f_ingreso=$request->f_ingreso;
         $licencia->f_salida=$request->f_salida;
         $licencia->num_licencia=$request->num_licencia;
+        $licencia->perito_dro=$request->perito_dro;
         
 
         $licencia->save();

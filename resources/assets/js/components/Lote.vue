@@ -81,7 +81,10 @@
                                     <td v-else v-text="lote.numero + '-' + lote.interior" ></td>
                                     <td v-text="lote.terreno"></td>
                                     <td v-text="lote.clv_catastral"></td>
-                                    <td v-text="lote.modelo"></td>
+                                      <td>
+                                        <span v-if = "lote.modelo!='Por Asignar'" class="badge badge-success" v-text="lote.modelo"></span>
+                                        <span v-else class="badge badge-danger"> Por Asignar </span>
+                                    </td> 
                                     <td v-text="lote.construccion"></td>
                                     <td style="width:8%" v-text="lote.etapa_servicios"></td>
                                 </tr>                               

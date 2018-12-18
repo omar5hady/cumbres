@@ -59619,6 +59619,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -60607,9 +60610,16 @@ var render = function() {
                       domProps: { textContent: _vm._s(lote.clv_catastral) }
                     }),
                     _vm._v(" "),
-                    _c("td", {
-                      domProps: { textContent: _vm._s(lote.modelo) }
-                    }),
+                    _c("td", [
+                      lote.modelo != "Por Asignar"
+                        ? _c("span", {
+                            staticClass: "badge badge-success",
+                            domProps: { textContent: _vm._s(lote.modelo) }
+                          })
+                        : _c("span", { staticClass: "badge badge-danger" }, [
+                            _vm._v(" Por Asignar ")
+                          ])
+                    ]),
                     _vm._v(" "),
                     _c("td", {
                       domProps: { textContent: _vm._s(lote.construccion) }
@@ -61633,41 +61643,6 @@ exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    pos
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lodash__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 //
 //
 //
@@ -63164,9 +63139,16 @@ var render = function() {
                       domProps: { textContent: _vm._s(lote.proyecto) }
                     }),
                     _vm._v(" "),
-                    _c("td", {
-                      domProps: { textContent: _vm._s(lote.etapas) }
-                    }),
+                    _c("td", [
+                      lote.etapas != "Sin Asignar"
+                        ? _c("span", {
+                            staticClass: "badge badge-success",
+                            domProps: { textContent: _vm._s(lote.etapas) }
+                          })
+                        : _c("span", { staticClass: "badge badge-danger" }, [
+                            _vm._v(" Por Asignar ")
+                          ])
+                    ]),
                     _vm._v(" "),
                     _c("td", {
                       domProps: { textContent: _vm._s(lote.manzana) }
@@ -63180,9 +63162,16 @@ var render = function() {
                       domProps: { textContent: _vm._s(lote.sublote) }
                     }),
                     _vm._v(" "),
-                    _c("td", {
-                      domProps: { textContent: _vm._s(lote.modelo) }
-                    }),
+                    _c("td", [
+                      lote.modelo != "Por Asignar"
+                        ? _c("span", {
+                            staticClass: "badge badge-success",
+                            domProps: { textContent: _vm._s(lote.modelo) }
+                          })
+                        : _c("span", { staticClass: "badge badge-danger" }, [
+                            _vm._v(" Por Asignar ")
+                          ])
+                    ]),
                     _vm._v(" "),
                     _c("td", { domProps: { textContent: _vm._s(lote.calle) } }),
                     _vm._v(" "),
@@ -64979,6 +64968,21 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -64990,9 +64994,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             f_ingreso: '',
             f_salida: '',
             arquitecto_id: 0,
+            perito_dro: 0,
             arquitecto: '',
             fraccionamiento: '',
             num_licencia: 0,
+            credito_puente: '',
             etapa_servicios: '',
             clv_catastral: '',
             fraccionamiento_id: 0,
@@ -65109,7 +65115,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'f_ingreso': this.f_ingreso,
                 'f_salida': this.f_salida,
                 'num_licencia': this.num_licencia,
-                'arquitecto_id': this.arquitecto_id
+                'arquitecto_id': this.arquitecto_id,
+                'perito_dro': this.perito_dro
 
             }).then(function (response) {
                 me.cerrarModal();
@@ -65193,6 +65200,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     this.f_salida = data['f_salida'];
                                     this.num_licencia = data['num_licencia'];
                                     this.arquitecto_id = data['arquitecto_id'];
+                                    this.perito_dro = data['perito_dro'];
                                     this.id = data['id'];
                                     break;
                                 }
@@ -65460,6 +65468,10 @@ var render = function() {
                           }
                         }),
                     _vm._v(" "),
+                    _c("td", {
+                      domProps: { textContent: _vm._s(licencias.perito) }
+                    }),
+                    _vm._v(" "),
                     !licencias.f_ingreso
                       ? _c("td", { domProps: { textContent: _vm._s("") } })
                       : _c("td", {
@@ -65486,6 +65498,12 @@ var render = function() {
                     _vm._v(" "),
                     _c("td", {
                       domProps: { textContent: _vm._s(licencias.num_licencia) }
+                    }),
+                    _vm._v(" "),
+                    _c("td", {
+                      domProps: {
+                        textContent: _vm._s(licencias.credito_puente)
+                      }
                     })
                   ])
                 })
@@ -65729,6 +65747,67 @@ var render = function() {
                                     return val
                                   })
                                 _vm.arquitecto_id = $event.target.multiple
+                                  ? $$selectedVal
+                                  : $$selectedVal[0]
+                              }
+                            }
+                          },
+                          [
+                            _c("option", { attrs: { value: "0" } }, [
+                              _vm._v("Seleccione")
+                            ]),
+                            _vm._v(" "),
+                            _vm._l(_vm.arrayArquitectos, function(arquitectos) {
+                              return _c("option", {
+                                key: arquitectos.id,
+                                domProps: {
+                                  value: arquitectos.id,
+                                  textContent: _vm._s(
+                                    "Arq. " + arquitectos.name
+                                  )
+                                }
+                              })
+                            })
+                          ],
+                          2
+                        )
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "text-input" }
+                        },
+                        [_vm._v("DRO")]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-6" }, [
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.perito_dro,
+                                expression: "perito_dro"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            on: {
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.perito_dro = $event.target.multiple
                                   ? $$selectedVal
                                   : $$selectedVal[0]
                               }
@@ -66758,11 +66837,15 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Planos")]),
         _vm._v(" "),
+        _c("th", [_vm._v("DRO")]),
+        _vm._v(" "),
         _c("th", [_vm._v("Ingreso")]),
         _vm._v(" "),
         _c("th", [_vm._v("Salida")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Num. Licencia")])
+        _c("th", [_vm._v("Num. Licencia")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Credito puente")])
       ])
     ])
   }

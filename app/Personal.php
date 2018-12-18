@@ -24,4 +24,8 @@ class Personal extends Model
     public function etapa(){
         return $this->hasMany('App\Etapa');
     }
+
+    public function lote(){
+        return $this->hasMany('App\Lote');
+    }
 }

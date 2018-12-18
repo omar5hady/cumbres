@@ -85,11 +85,19 @@
 
                                     
                                     <td v-text="lote.proyecto"></td>
-                                    <td v-text="lote.etapas"></td>
+                                     <td>
+                                        <span v-if = "lote.etapas!='Sin Asignar'" class="badge badge-success" v-text="lote.etapas"></span>
+                                        <span v-else class="badge badge-danger"> Por Asignar </span>
+                                    </td> 
+                                    
                                     <td v-text="lote.manzana"></td>
                                     <td v-text="lote.num_lote"></td>
                                     <td v-text="lote.sublote"></td>
-                                    <td v-text="lote.modelo"></td>
+                                    <td>
+                                        <span v-if = "lote.modelo!='Por Asignar'" class="badge badge-success" v-text="lote.modelo"></span>
+                                        <span v-else class="badge badge-danger"> Por Asignar </span>
+                                    </td> 
+                                    
                                     <td v-text="lote.calle"></td>
                                     <td v-text="lote.numero"></td>
                                     <td v-text="lote.interior"></td>
@@ -162,50 +170,7 @@
                                     </div>
                                 </div>
 
-                        <!--<div class="form-group row">
-                            <label class="col-md-3 form-control-label" for="text-input">Manzana</label>
-                            <div class="col-md-6">
-                                <select class="form-control" v-model="manzana">
-                                    <option value="0">Seleccione</option>
-                                    <option v-for="manzanas in arrayManzanas" :key="manzanas.id" :value="manzanas.id" v-text="manzanas.manzana"></option>
-                                </select>
-                            </div>
-                                <button title="Editar" type="button" @click="abrirModal('lote','addmanzana')" class="btn btn-warning btn-sm">
-                                    <i class="icon-pencil"></i>
-                                </button>
-                                <div class="modal fade" tabindex="-1" :class="{'mostrar': modal3}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                                <div class="modal-dialog modal-primary modal-lg" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h4 class="modal-title" v-text="tituloModal3"></h4>
-                                            <button type="button" class="close" @click="cerrarModal3()" aria-label="Close">
-                                                <span aria-hidden="true">×</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                                <div class="form-group row">
-                                                    <label class="col-md-3 form-control-label" for="text-input">Manzana</label>
-                                                    <div class="col-md-4">
-                                                        <input type="text" v-model="manzana" class="form-control" placeholder="manzana">
-                                                    </div>
-                                                </div>
-                                    </div>
-                                <div v-show="errorLote" class="form-group row div-error">
-                                        <div class="text-center text-error">
-                                    <div v-for="error in errorMostrarMsjLote" :key="error" v-text="error">
-
-                                        </div>
-                                    </div>
-                                </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" @click="cerrarModal3()">Cerrar</button>-->
-                                        <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                                        <!--<button type="button" v-if="tipoAccion==4" class="btn btn-primary" @click="registrarManzana()">Guardar</button>
-                                        </div>
-                            </div>
-                        </div>
-                        </div>
-                        </div>-->
+                      
                                 
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Manzana</label>

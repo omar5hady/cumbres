@@ -45,9 +45,11 @@
                                     <th>Arquitecto</th>
                                     <th>Siembra</th>
                                     <th>Planos</th>
+                                    <th>DRO</th>
                                     <th>Ingreso</th>
                                     <th>Salida</th>
                                     <th>Num. Licencia</th>
+                                    <th>Credito puente</th>
                             
                                 </tr>
                             </thead>
@@ -75,6 +77,9 @@
                                     <!-- Fecha planos -->    
                                         <td v-if="!licencias.f_planos" v-text="''"></td>
                                         <td v-else v-text="this.moment(licencias.f_planos).locale('es').format('DD/MMM/YYYY')"></td>
+
+                                    <td v-text="licencias.perito"></td> <!-- td para mostrar el perito -->
+
                                     <!-- Fecha Ingreso -->
                                         <td v-if="!licencias.f_ingreso" v-text="''"></td>
                                         <td v-else v-text="this.moment(licencias.f_ingreso).locale('es').format('DD/MMM/YYYY')"></td>
@@ -83,6 +88,7 @@
                                         <td v-else v-text="this.moment(licencias.f_salida).locale('es').format('DD/MMM/YYYY')"></td>
                                     
                                     <td v-text="licencias.num_licencia"></td>
+                                    <td v-text="licencias.credito_puente"></td>
                                     
                                     
                                     
@@ -130,6 +136,15 @@
                                     <label class="col-md-3 form-control-label" for="text-input">Arquitectos</label>
                                     <div class="col-md-6">
                                         <select class="form-control" v-model="arquitecto_id">
+                                            <option value="0">Seleccione</option>
+                                            <option v-for="arquitectos in arrayArquitectos" :key="arquitectos.id" :value="arquitectos.id" v-text="'Arq. ' + arquitectos.name"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">DRO</label>
+                                    <div class="col-md-6">
+                                        <select class="form-control" v-model="perito_dro">
                                             <option value="0">Seleccione</option>
                                             <option v-for="arquitectos in arrayArquitectos" :key="arquitectos.id" :value="arquitectos.id" v-text="'Arq. ' + arquitectos.name"></option>
                                         </select>
@@ -350,9 +365,11 @@
                 f_ingreso:'',
                 f_salida:'',
                 arquitecto_id:0,
+                perito_dro:0,
                 arquitecto:'',
                 fraccionamiento:'',
                 num_licencia:0,
+                credito_puente: '',
                 etapa_servicios: '',
                 clv_catastral: '',
                 fraccionamiento_id : 0,
@@ -476,7 +493,8 @@
                     'f_ingreso' : this.f_ingreso,
                     'f_salida' : this.f_salida,
                     'num_licencia' : this.num_licencia,
-                    'arquitecto_id':this.arquitecto_id
+                    'arquitecto_id':this.arquitecto_id,
+                    'perito_dro' : this.perito_dro
                     
                     
                 }).then(function (response){
@@ -562,7 +580,8 @@
                                 this.f_ingreso=data['f_ingreso'];
                                 this.f_salida=data['f_salida'];
                                 this.num_licencia=data['num_licencia'];
-                                this.arquitecto_id=data['arquitecto_id']
+                                this.arquitecto_id=data['arquitecto_id'];
+                                this.perito_dro=data['perito_dro']
                                 this.id=data['id'];
                                 break;
                             }

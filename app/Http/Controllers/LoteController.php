@@ -314,6 +314,8 @@ class LoteController extends Controller
 
         $lote->save();
     }
+
+
     public function update2(Request $request)
     {
         $siembra = '';
@@ -322,11 +324,6 @@ class LoteController extends Controller
        $etapa= Etapa::select('num_etapa')
        ->where('id','=', $request->etapa_id)
        ->get();
-
-       
-            
-        
-
 
         //FindOrFail se utiliza para buscar lo que recibe de argumento
         $lote = Lote::findOrFail($request->id);
@@ -351,6 +348,9 @@ class LoteController extends Controller
 
         $lote->save();
     }
+
+
+
     public function asignarMod(Request $request)
     {
         $siembra = '';
@@ -359,11 +359,16 @@ class LoteController extends Controller
        $etapa= Etapa::select('num_etapa')
        ->where('id','=', $request->etapa_id)
        ->get();
+
+       $modelo= Modelo::select('construccion')
+       ->where('id','=', $request->modelo_id)
+       ->get();
        
         //FindOrFail se utiliza para buscar lo que recibe de argumento
         $lote = Lote::findOrFail($request->id);
         $lote->etapa_id = $request->etapa_id;
         $lote->modelo_id = $request->modelo_id;
+        $lote->construccion = $modelo[0]->construccion;
         if($etapa[0]->num_etapa!='Sin Asignar'){
             $siembra = Carbon::today()->format('ymd');
             $lote->siembra=$siembra;
@@ -399,6 +404,7 @@ class LoteController extends Controller
     }
 
 
+
     public function import(Request $request){
         //validate the xls file
         $this->validate($request, array(
@@ -414,7 +420,7 @@ class LoteController extends Controller
                 ->where('fraccionamiento_id','=',$request->fraccionamiento_id)
                 ->get();
 
-                $modelo= Modelo::select('id')
+                $modelo= Modelo::select('id','construccion')
                 ->where('nombre','=', 'Por Asignar')
                 ->where('fraccionamiento_id','=',$request->fraccionamiento_id)
                 ->get();
@@ -425,8 +431,6 @@ class LoteController extends Controller
                 }
                 else
                     $id = 1;
-
-                
                 
 
                 $path = $request->file->getRealPath();
@@ -435,9 +439,7 @@ class LoteController extends Controller
                 if(!empty($data) && $data->count()){
  
                     foreach ($data as $key => $value) {
-                        $terreno = Modelo::select('terreno','construccion')
-                            ->where('id', '=', $request->modelo_id )->get();
-
+                            
 
                         $insert[] = [
                         'fraccionamiento_id' => $request->fraccionamiento_id,
@@ -448,10 +450,10 @@ class LoteController extends Controller
                         'modelo_id' => $modelo[0]->id,
                         'empresa_id' => 1,
                         'calle' => $value->calle,
-                        'numero' => $value->numero,
+                        'numero' => $value->numero_oficial,
                         'interior' => $value->interior,
-                        'terreno' => $value->terreno,
-                        'construccion' => $terreno[0]->construccion,
+                        'terreno' => $value->superficie_terreno,
+                        'construccion' => $modelo[0]->construccion,
                         'clv_catastral' =>$value->clave_catastral,
                         'etapa_servicios' =>$value->etapa_servicios,
                         'arquitecto_id' =>1
