@@ -23,6 +23,7 @@ class CreateLicenciasTable extends Migration
             $table->integer('avance')->nullable(); 
             $table->date('term_ingreso')->nullable(); 
             $table->date('term_salida')->nullable(); 
+            $table->boolean('cambios')->nullable()->default(0);
              
             $table->foreign('id')->references('id')->on('lotes'); 
             $table->foreign('perito_dro')->references('id')->on('personal');

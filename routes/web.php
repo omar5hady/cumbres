@@ -67,6 +67,16 @@ Route::post('/import', 'LoteController@import');
 Route::get('/lote_aviso','LoteController@indexIniObra');
 Route::put('/lotes/enviarAviObra','LoteController@enviarAviso');
 
+///////////////////       RUTAS LICENCIA   ////////////////////////////////////
+Route::get('/licencias','LicenciasController@index');
+Route::put('/licencias/actualizar','LicenciasController@update');
+Route::get('/licencias/resume','LicenciasController@resumeLicencias');
+
+///////////////////       RUTAS LICENCIA   ////////////////////////////////////
+Route::get('/acta_terminacion','LicenciasController@indexActa');
+Route::put('/acta_terminacion/actualizar','LicenciasController@updateActas');
+Route::get('/licencias/resume','LicenciasController@resumeLicencias');
+
 ////////////////////        RUTAS TERRENOS    /////////////////////////////////
 Route::get('/terreno','TerrenoController@index');
 Route::post('/terreno/registrar','TerrenoController@store');
@@ -150,8 +160,5 @@ Route::get('/select_precio_etapa','PrecioEtapaController@selectPrecioEtapa');
 Route::get('/select_sobreprecios_etapa','SobreprecioEtapaController@select_sobreprecios_etapa'); 
 Route::get('/select_contratistas','ContratistaController@selectContratista'); 
 /***************************************************************************** */
-///////////////////       RUTAS LICENCIA   ////////////////////////////////////
-Route::get('/licencias','LicenciasController@index');
-Route::put('/licencias/actualizar','LicenciasController@update');
-Route::get('/licencias/resume','LicenciasController@resumeLicencias');
+
 

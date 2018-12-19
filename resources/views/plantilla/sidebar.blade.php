@@ -42,6 +42,9 @@
                     <li @click="menu=6" class="nav-item">
                         <a class="nav-link" href="#"><i class="icon-bag"></i> Licencias</a>
                     </li>
+                    <li @click="menu=7" class="nav-item">
+                        <a class="nav-link" href="#"><i class="icon-bag"></i> Acta de terminacion</a>
+                    </li>
                 </ul>
             </li>
             <li class="nav-item nav-dropdown">

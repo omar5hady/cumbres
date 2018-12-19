@@ -8,7 +8,7 @@
                 <!-- Ejemplo de tabla Listado -->
                 <div class="card scroll-box">
                     <div class="card-header">
-                        <i class="fa fa-align-justify"></i>Licencias
+                        <i class="fa fa-align-justify"></i>Acta de terminacion
 
                         <!--   Boton   -->
                         
@@ -22,26 +22,23 @@
                                     <!--Criterios para el listado de busqueda -->
                                     <select class="form-control col-md-5" v-model="criterio" @click="selectFraccionamientos()">
                                         <option value="lotes.fraccionamiento_id">Proyecto</option>
-                                        <option value="modelos.nombre">Modelo</option>
-                                        <option value="arquitecto">Arquitecto</option>
-                                        <option value="licencias.num_licencia">Num.Licencia</option>
-                                        <option value="licencias.f_planos">Planos</option>
+                                        <option value="licencias.term_ingreso">Fecha ingreso</option>
+                                        <option value="licencias.term_salida">Fecha salida</option>
+                                        <option value="licencias.avance">Porcentaje de avance</option>
                                     </select>
 
                                     <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" >
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
-                                    <input v-if="criterio=='lotes.fraccionamiento_id'" type="text"  v-model="b_manzana" @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)" class="form-control" placeholder="Manzana">
-                                    <input v-if="criterio=='lotes.fraccionamiento_id'" type="text"  v-model="b_lote" @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)" class="form-control" placeholder="# Lote">
-                                    <input v-if="criterio=='lotes.fraccionamiento_id'" type="text"  v-model="b_modelo" @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)" class="form-control" placeholder="Modelo">
-                                    <input v-if="criterio=='lotes.fraccionamiento_id'" type="text"  v-model="b_arquitecto" @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)" class="form-control" placeholder="Arquitecto">
+                                    <input v-if="criterio=='lotes.fraccionamiento_id'" type="text"  v-model="b_manzana" @keyup.enter="listarActa(1,buscar,b_manzana,b_lote,criterio,buscar2)" class="form-control" placeholder="Manzana">
+                                    <input v-if="criterio=='lotes.fraccionamiento_id'" type="text"  v-model="b_lote" @keyup.enter="listarActa(1,buscar,b_manzana,b_lote,criterio,buscar2)" class="form-control" placeholder="# Lote">
+                                   
+                                    <input type="date" v-if="criterio=='licencias.term_ingreso' || criterio== 'licencias.term_salida'" v-model="buscar" @keyup.enter="listarActa(1,buscar,b_manzana,b_lote,criterio,buscar2)" class="form-control col-md-6" placeholder="Desde" >
+                                    <input type="date" v-if="criterio=='licencias.term_ingreso' || criterio== 'licencias.term_salida'" v-model="buscar2"  @keyup.enter="listarActa(1,buscar,b_manzana,b_lote,criterio,buscar2)" class="form-control col-md-6" placeholder="Hasta" >
 
-                                    <input type="date" v-if="criterio=='licencias.f_planos'" v-model="buscar" @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)" class="form-control col-md-6" placeholder="Desde" >
-                                    <input type="date" v-if="criterio=='licencias.f_planos'" v-model="buscar2"  @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)" class="form-control col-md-6" placeholder="Hasta" >
-
-                                    <input v-if="criterio!='lotes.fraccionamiento_id' && criterio!='licencias.f_planos' " type="text"  v-model="buscar" @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)" class="form-control" placeholder="Texto a buscar">
-                                    <button type="submit" @click="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <input v-if="criterio!='lotes.fraccionamiento_id' && criterio!='licencias.term_ingreso' && criterio!='licencias.term_salida'" type="text"  v-model="buscar" @keyup.enter="listarActa(1,buscar,b_manzana,b_lote,criterio,buscar2)" class="form-control" placeholder="Texto a buscar">
+                                    <button type="submit" @click="listarActa(1,buscar,b_manzana,b_lote,criterio,buscar2)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
                         </div>
@@ -56,67 +53,44 @@
                                     <th>Terreno mts&sup2;</th>
                                     <th>Construcción mts&sup2;</th>
                                     <th>Modelo</th>
-                                    <th>Arquitecto</th>
-                                    <th>Siembra</th>
-                                    <th>Planos</th>
-                                    <th>DRO</th>
-                                    <th>Ingreso</th>
-                                    <th>Salida</th>
-                                    <th>Num. Licencia</th>
-                                    <th>Credito puente</th>
-                            
+                                    <th>Avance</th>
+                                    <th>Ingreso Act. terminacion</th>
+                                    <th>Salida Act. terminacion</th>                                    
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="licencias in arrayLicencias" :key="licencias.id">
+                                <tr v-for="act_terminacion in arrayActaDeTerminacion" :key="act_terminacion.id">
                                     
                                     <td >
-                                        <button title="Editar" type="button" @click="abrirModal('lote','actualizar',licencias)" class="btn btn-warning btn-sm">
+                                        <button title="Editar" type="button" @click="abrirModal('lote','actualizar',act_terminacion)" class="btn btn-warning btn-sm">
                                           <i class="icon-pencil"></i>
                                         </button> &nbsp;
-                                        <button type="button" @click="abrirModal2('lote','ver',licencias)" class="btn btn-info btn-sm">
+                                        <button type="button" @click="abrirModal2('lote','ver',act_terminacion)" class="btn btn-info btn-sm">
                                           <i class="icon-magnifier"></i>
                                         </button>
                                     </td>
-                                    <td v-text="licencias.proyecto"></td>
-                                    <td v-text="licencias.manzana"></td>
-                                    <td v-text="licencias.num_lote"></td>
-                                    <td v-text="licencias.terreno"></td>
-                                    <td v-text="licencias.construccion"></td>
+                                    <td v-text="act_terminacion.proyecto"></td>
+                                    <td v-text="act_terminacion.manzana"></td>
+                                    <td v-text="act_terminacion.num_lote"></td>
+                                    <td v-text="act_terminacion.terreno"></td>
+                                    <td v-text="act_terminacion.construccion"></td>
+                                    
                                     <!--Modelo-->
                                     <td>
-                                        <span v-if = "licencias.modelo!='Por Asignar' && licencias.cambios==0" class="badge badge-success" v-text="licencias.modelo"></span>
-                                        <span v-if = "licencias.modelo=='Por Asignar'" class="badge badge-danger">Por Asignar</span>
-                                        <span v-if = "licencias.cambios==1" class="badge badge-warning" v-text="licencias.modelo"></span>
-                                    </td>
-                                    <!--Arquitecto -->
-                                    <td>
-                                        <span v-if = "licencias.arquitecto!='Sin Asignar  '" class="badge badge-success" v-text="'Arq. '+licencias.arquitecto"></span>
-                                        <span v-else class="badge badge-danger"> Por Asignar </span>
-                                    </td>
-                                    <!-- SIEMBRA -->
-                                    <td v-if="!licencias.siembra" v-text="''"></td>
-                                    <td v-else v-text="this.moment(licencias.siembra).locale('es').format('DD/MMM/YYYY')"></td>
-                                    <!-- Fecha planos -->    
-                                    <td v-if="!licencias.f_planos" v-text="''"></td>
-                                    <td v-else v-text="this.moment(licencias.f_planos).locale('es').format('DD/MMM/YYYY')"></td>
-                                    <!-- Fecha planos -->
-                                    <td>
-                                        <span v-if = "licencias.perito!='Sin Asignar  '" class="badge badge-success" v-text="'Arq. '+licencias.perito"></span>
-                                        <span v-else class="badge badge-danger"> Por Asignar </span>
+                                        <span v-if = "act_terminacion.modelo!='Por Asignar' && act_terminacion.cambios==0" class="badge badge-success" v-text="act_terminacion.modelo"></span>
+                                        <span v-if = "act_terminacion.modelo=='Por Asignar'" class="badge badge-danger">Por Asignar</span>
+                                        <span v-if = "act_terminacion.cambios==1" class="badge badge-warning" v-text="act_terminacion.modelo"></span>
                                     </td>
 
+                                    <!--Avance-->
+                                     <td v-text="act_terminacion.avance"></td>
+
                                     <!-- Fecha Ingreso -->
-                                    <td v-if="!licencias.f_ingreso" v-text="''"></td>
-                                    <td v-else v-text="this.moment(licencias.f_ingreso).locale('es').format('DD/MMM/YYYY')"></td>
+                                    <td v-if="!act_terminacion.term_ingreso" v-text="''"></td>
+                                    <td v-else v-text="this.moment(act_terminacion.term_ingreso).locale('es').format('DD/MMM/YYYY')"></td>
                                     <!-- Fecha Salida -->
-                                    <td v-if="!licencias.f_salida" v-text="''"></td>
-                                    <td v-else v-text="this.moment(licencias.f_salida).locale('es').format('DD/MMM/YYYY')"></td>
-                                    
-                                    <td v-text="licencias.num_licencia"></td>
-                                    <td v-text="licencias.credito_puente"></td>
-                                    
-                                    
+                                    <td v-if="!act_terminacion.term_salida" v-text="''"></td>
+                                    <td v-else v-text="this.moment(act_terminacion.term_salida).locale('es').format('DD/MMM/YYYY')"></td>
                                     
                                 </tr>                               
                             </tbody>
@@ -125,19 +99,19 @@
                             <!--Botones de paginacion -->
                             <ul class="pagination">
                                 <li class="page-item" v-if="pagination.last_page > 7 && pagination.current_page > 7">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)">Inicio</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(1,buscar,b_manzana,b_lote,criterio,buscar2)">Inicio</a>
                                 </li>
                                 <li class="page-item" v-if="pagination.current_page > 1">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)">Ant</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,b_manzana,b_lote,criterio,buscar2)">Ant</a>
                                 </li>
                                 <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)" v-text="page"></a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,b_manzana,b_lote,criterio,buscar2)" v-text="page"></a>
                                 </li>
                                 <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)">Sig</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,b_manzana,b_lote,criterio,buscar2)">Sig</a>
                                 </li>
                                 <li class="page-item" v-if="pagination.last_page > 7 && pagination.current_page<pagination.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.last_page,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)">Ultimo</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.last_page,buscar,b_manzana,b_lote,criterio,buscar2)">Ultimo</a>
                                 </li>
                             </ul>
                         </nav>
@@ -158,51 +132,27 @@
                         <div class="modal-body">
                             <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
 
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Arquitectos</label>
+                             <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Avance</label>
                                     <div class="col-md-6">
-                                        <select class="form-control" v-model="arquitecto_id">
-                                            <option value="0">Seleccione</option>
-                                            <option v-for="arquitectos in arrayArquitectos" :key="arquitectos.id" :value="arquitectos.id" v-text="'Arq. ' + arquitectos.name"></option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">DRO</label>
-                                    <div class="col-md-6">
-                                        <select class="form-control" v-model="perito_dro">
-                                            <option value="0">Seleccione</option>
-                                            <option v-for="arquitectos in arrayArquitectos" :key="arquitectos.id" :value="arquitectos.id" v-text="'Arq. ' + arquitectos.name"></option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <br><br>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Planos</label>
-                                    <div class="col-md-6">
-                                       <input type="date" v-model="f_planos" class="form-control" >
+                                       <input type="number" v-model="avance" class="form-control" >
                                     </div>
                                 </div>
 
                                   <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Ingreso de licencia</label>
+                                    <label class="col-md-3 form-control-label" for="text-input">Ingreso de acta</label>
                                     <div class="col-md-6">
-                                       <input type="date" v-model="f_ingreso" class="form-control" >
+                                       <input type="date" v-model="term_ingreso" class="form-control" >
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Salida</label>
+                                    <label class="col-md-3 form-control-label" for="text-input">Salida de acta</label>
                                     <div class="col-md-6">
-                                       <input type="date" v-model="f_salida" class="form-control" >
+                                       <input type="date" v-model="term_salida" class="form-control" >
                                     </div>
                                 </div>
 
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Numero de licencia</label>
-                                    <div class="col-md-6">
-                                       <input type="number" v-model="num_licencia" class="form-control" >
-                                    </div>
-                                </div>
+                              
                                 
                             </form>
                         </div>
@@ -210,7 +160,7 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
                             <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button"  class="btn btn-primary" @click="actualizarLicencia()">Actualizar</button>
+                            <button type="button"  class="btn btn-primary" @click="actualizarActa()">Actualizar</button>
                         </div>
                     </div>
                       <!-- /.modal-content -->
@@ -390,6 +340,8 @@
                 f_planos:'',
                 f_ingreso:'',
                 f_salida:'',
+                term_ingreso:'',
+                term_salida:'',
                 arquitecto_id:0,
                 perito_dro:0,
                 arquitecto:'',
@@ -404,13 +356,14 @@
                 num_lote: 0,
                 sublote: '',
                 modelo: 0,
+                avance: 0,
                 empresa_id: 0,
                 calle: '',
                 numero: '',
                 interior: '',
                 terreno : 0,
                 construccion : 0,
-                arrayLicencias : [],
+                arrayActaDeTerminacion : [],
                 arrayArquitectos:[],
                 arrayFraccionamientos:[],
                 modal : 0,
@@ -429,13 +382,12 @@
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'modelos.nombre', 
+                criterio : 'lotes.fraccionanmiento_id', 
                 buscar : '',
                 buscar2 : '',
                 b_manzana : '',
-                b_lote : '',
-                b_modelo : '',
-                b_arquitecto : '',
+                b_lote : ''
+                
             }
         },
         computed:{
@@ -482,12 +434,12 @@
            
 
             /**Metodo para mostrar los registros */
-            listarLicencias(page, buscar,b_manzana,b_lote,b_modelo,b_arquitecto, criterio,buscar2){
+            listarActa(page, buscar,b_manzana,b_lote,criterio,buscar2){
                 let me = this;
-                var url = '/licencias?page=' + page + '&buscar=' + buscar + '&b_manzana=' + b_manzana + '&b_lote='+ b_lote + '&b_modelo='+ b_modelo + '&b_arquitecto='+ b_arquitecto + '&criterio=' + criterio + '&buscar2=' + buscar2;
+                var url = '/acta_terminacion?page=' + page + '&buscar=' + buscar + '&b_manzana=' + b_manzana + '&b_lote='+ b_lote  + '&criterio=' + criterio + '&buscar2=' + buscar2;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
-                    me.arrayLicencias = respuesta.licencias.data;
+                    me.arrayActaDeTerminacion = respuesta.actas.data;
                     me.pagination = respuesta.pagination;
                     console.log(url);
                 })
@@ -532,25 +484,22 @@
                 //Actualiza la pagina actual
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
-                me.listarLicencias(page,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2);
+                me.listarActa(page,buscar,b_manzana,b_lote,criterio,buscar2);
             },
             
-            actualizarLicencia(){
+            actualizarActa(){
                 let me = this;
                 //Con axios se llama el metodo update de LoteController
-                axios.put('/licencias/actualizar',{
+                axios.put('/acta_terminacion/actualizar',{
                     'id':this.id,
-                    'f_planos' : this.f_planos,
-                    'f_ingreso' : this.f_ingreso,
-                    'f_salida' : this.f_salida,
-                    'num_licencia' : this.num_licencia,
-                    'arquitecto_id':this.arquitecto_id,
-                    'perito_dro' : this.perito_dro
+                    'term_ingreso' : this.term_ingreso,
+                    'term_salida' : this.term_salida,
+                    'avance' : this.avance
                     
                     
                 }).then(function (response){
                     me.cerrarModal();
-                    me.listarLicencias(1,'','','','','','fraccionamientos.nombre','');
+                    me.listarActa(1,'','','','fraccionamientos.nombre','');
                     //window.alert("Cambios guardados correctamente");
                     swal({
                         position: 'top-end',
@@ -579,10 +528,10 @@
             cerrarModal(){
                 this.modal = 0;
                 this.tituloModal = '';
-                this.f_planos = '';
-                this.f_ingreso = '';
-                this.f_salida = '';
-                this.num_licencia = '';
+                this.avance = '';
+                this.term_ingreso = '';
+                this.term_salida = '';
+                
                 
                 
                 this.errorLote = 0;
@@ -626,13 +575,11 @@
                             case 'actualizar':
                             {
                                 this.modal =1;
-                                this.tituloModal='Actualizar Licencia';
-                                this.f_planos=data['f_planos'];
-                                this.f_ingreso=data['f_ingreso'];
-                                this.f_salida=data['f_salida'];
-                                this.num_licencia=data['num_licencia'];
-                                this.arquitecto_id=data['arquitecto_id'];
-                                this.perito_dro=data['perito_dro']
+                                this.tituloModal='Actualizar Acta de terminación';
+                             
+                                this.term_ingreso=data['term_ingreso'];
+                                this.term_salida=data['term_salida'];
+                                this.avance=data['avance'];
                                 this.id=data['id'];
                                 break;
                             }
@@ -688,7 +635,7 @@
         
         
         mounted() {
-            this.listarLicencias(1,this.buscar,this.b_manzana,this.b_lote,this.b_modelo,this.b_arquitecto,this.criterio,this.buscar2);
+            this.listarActa(1,this.buscar,this.b_manzana,this.b_lote,this.criterio,this.buscar2);
             this.selectFraccionamientos();
         }
     }
