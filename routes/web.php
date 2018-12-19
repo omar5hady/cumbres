@@ -161,4 +161,10 @@ Route::get('/select_sobreprecios_etapa','SobreprecioEtapaController@select_sobre
 Route::get('/select_contratistas','ContratistaController@selectContratista'); 
 /***************************************************************************** */
 
+/**********************************RUTAS OBSERVACION*************************** */
+Route::post('/observacion/registrar','ObservacionController@store');
+Route::get('/observacion/select_ultima','ObservacionController@select_ultima'); 
+Route::get('/observacion','ObservacionController@index');
+
+
 
