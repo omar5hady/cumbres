@@ -759,6 +759,7 @@
                 this.etapa_servicios='';
                 this.siembra='';
                 this.id=0;
+                this.observacion_completa='';
                 
             },
             cerrarModal3(){
@@ -766,8 +767,6 @@
                 this.tituloModal3 = '';
                 this.usuario = '';
                 this.observacion = '';
-                
-
             },
 
 

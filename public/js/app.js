@@ -65383,6 +65383,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.etapa_servicios = '';
             this.siembra = '';
             this.id = 0;
+            this.observacion_completa = '';
         },
         cerrarModal3: function cerrarModal3() {
             this.modal3 = 0;
@@ -68314,6 +68315,79 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -68344,6 +68418,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             modelo: 0,
             avance: 0,
             empresa_id: 0,
+            observacion: '',
+            observacion_completa: '',
+            usuario: '',
             calle: '',
             numero: '',
             interior: '',
@@ -68352,10 +68429,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             arrayActaDeTerminacion: [],
             arrayArquitectos: [],
             arrayFraccionamientos: [],
+            arrayObservacion: [],
             modal: 0,
             modal2: 0,
+            modal3: 0,
             tituloModal: '',
             tituloModal2: '',
+            tituloModal3: '',
             tipoAccion: 0,
             errorActa: 0,
             errorMostrarMsjActa: [],
@@ -68458,6 +68538,57 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 console.log(error);
             });
         },
+        agregarComentario: function agregarComentario() {
+            var me = this;
+            //Con axios se llama el metodo store de DepartamentoController
+            axios.post('/observacion/registrar', {
+                'lote_id': this.lote_id,
+                'comentario': this.observacion,
+                'usuario': this.usuario
+            }).then(function (response) {
+                me.cerrarModal3(); //al guardar el registro se cierra el modal
+
+                var toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+
+                toast({
+                    type: 'success',
+                    title: 'Observación Agregada Correctamente'
+                });
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        listarObservacion: function listarObservacion(page, buscar) {
+            var me = this;
+            var url = '/observacion?page=' + page + '&buscar=' + buscar;
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayObservacion = respuesta.observacion.data;
+                me.pagination = respuesta.pagination;
+                console.log(url);
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        selectUltimoComentario: function selectUltimoComentario(lote) {
+            var me = this;
+            var url = '/observacion/select_ultima?buscar=' + lote;
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.observacion = respuesta.observacion.comentario;
+                me.usuario = respuesta.observacion.usuario;
+                me.fecha_comentario = moment(respuesta.observacion.created_at, "YYYY-MM-DD hh:mm:ss").locale('es').fromNow();
+
+                me.observacion_completa = me.observacion + ' ' + '(' + me.usuario + ' - ' + me.fecha_comentario + ')';
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
         cambiarPagina: function cambiarPagina(page, buscar, b_manzana, b_lote, b_modelo, b_arquitecto, criterio, buscar2) {
             var me = this;
             //Actualiza la pagina actual
@@ -68541,6 +68672,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.etapa_servicios = '';
             this.siembra = '';
             this.id = 0;
+            this.observacion_completa = '';
+        },
+        cerrarModal3: function cerrarModal3() {
+            this.modal3 = 0;
+            this.tituloModal3 = '';
+            this.usuario = '';
+            this.observacion = '';
         },
 
 
@@ -68569,6 +68707,35 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                         }
                     }
             }this.selectArquitectos();
+        },
+        abrirModal3: function abrirModal3(licencias, accion, lote) {
+            switch (licencias) {
+                case "lote":
+                    {
+                        switch (accion) {
+
+                            case 'observacion':
+                                {
+                                    this.modal3 = 1;
+                                    this.tituloModal3 = 'Agregar Observación';
+                                    this.observacion = '';
+                                    this.usuario = '';
+                                    this.lote_id = lote;
+                                    this.tipoAccion = 3;
+                                    break;
+                                }
+                            case 'ver_todo':
+                                {
+                                    this.modal3 = 1;
+                                    this.tituloModal3 = 'Consulta Observaciones';
+                                    this.tipoAccion = 4;
+                                    break;
+                                }
+
+                        }
+                    }
+
+            }
         },
         abrirModal2: function abrirModal2(licencias, accion) {
             var data = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
@@ -68610,6 +68777,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                         }
                     }
             }this.selectArquitectos();
+            this.listarObservacion(1, data['id']);
+            this.selectUltimoComentario(data['id']);
         }
     },
 
@@ -69441,6 +69610,33 @@ var render = function() {
                             }
                           }
                         })
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "text-input" }
+                        },
+                        [_vm._v("Agregar Observación")]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-6" }, [
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-danger",
+                            attrs: { type: "button" },
+                            on: {
+                              click: function($event) {
+                                _vm.abrirModal3("lote", "observacion", _vm.id)
+                              }
+                            }
+                          },
+                          [_vm._v("Nueva Observación")]
+                        )
                       ])
                     ]),
                     _vm._v(" "),
@@ -70357,6 +70553,60 @@ var render = function() {
                           })
                         ])
                       ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "text-input" }
+                        },
+                        [_vm._v("Observación ")]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-6" }, [
+                        _c("textarea", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.observacion_completa,
+                              expression: "observacion_completa"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: {
+                            rows: "5",
+                            cols: "30",
+                            disabled: "",
+                            placeholder: "Observacion"
+                          },
+                          domProps: { value: _vm.observacion_completa },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.observacion_completa = $event.target.value
+                            }
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-info pull-right",
+                            attrs: { type: "button" },
+                            on: {
+                              click: function($event) {
+                                _vm.abrirModal3("lote", "ver_todo", _vm.id)
+                              }
+                            }
+                          },
+                          [_vm._v("Ver todos")]
+                        )
+                      ])
                     ])
                   ]
                 )
@@ -70376,6 +70626,227 @@ var render = function() {
                   },
                   [_vm._v("Cerrar")]
                 )
+              ])
+            ])
+          ]
+        )
+      ]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        class: { mostrar: _vm.modal3 },
+        staticStyle: { display: "none" },
+        attrs: {
+          tabindex: "-1",
+          role: "dialog",
+          "aria-labelledby": "myModalLabel",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c(
+          "div",
+          {
+            staticClass: "modal-dialog modal-primary modal-lg",
+            attrs: { role: "document" }
+          },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _c("div", { staticClass: "modal-header" }, [
+                _c("h4", {
+                  staticClass: "modal-title",
+                  domProps: { textContent: _vm._s(_vm.tituloModal3) }
+                }),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "close",
+                    attrs: { type: "button", "aria-label": "Close" },
+                    on: {
+                      click: function($event) {
+                        _vm.cerrarModal3()
+                      }
+                    }
+                  },
+                  [
+                    _c("span", { attrs: { "aria-hidden": "true" } }, [
+                      _vm._v("×")
+                    ])
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-body" }, [
+                _c(
+                  "form",
+                  {
+                    staticClass: "form-horizontal",
+                    attrs: {
+                      action: "",
+                      method: "post",
+                      enctype: "multipart/form-data"
+                    }
+                  },
+                  [
+                    _vm.tipoAccion == 3
+                      ? _c("div", { staticClass: "form-group row" }, [
+                          _c(
+                            "label",
+                            {
+                              staticClass: "col-md-3 form-control-label",
+                              attrs: { for: "text-input" }
+                            },
+                            [_vm._v("Observacion")]
+                          ),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col-md-6" }, [
+                            _c("textarea", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.observacion,
+                                  expression: "observacion"
+                                }
+                              ],
+                              staticClass: "form-control",
+                              attrs: {
+                                rows: "5",
+                                cols: "30",
+                                placeholder: "Observacion"
+                              },
+                              domProps: { value: _vm.observacion },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.observacion = $event.target.value
+                                }
+                              }
+                            })
+                          ])
+                        ])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.tipoAccion == 3
+                      ? _c("div", { staticClass: "form-group row" }, [
+                          _c(
+                            "label",
+                            {
+                              staticClass: "col-md-3 form-control-label",
+                              attrs: { for: "text-input" }
+                            },
+                            [_vm._v("Usuario")]
+                          ),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col-md-6" }, [
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.usuario,
+                                  expression: "usuario"
+                                }
+                              ],
+                              staticClass: "form-control",
+                              attrs: { type: "text", placeholder: "Usuario" },
+                              domProps: { value: _vm.usuario },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.usuario = $event.target.value
+                                }
+                              }
+                            })
+                          ])
+                        ])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.tipoAccion == 4
+                      ? _c(
+                          "table",
+                          {
+                            staticClass:
+                              "table table-bordered table-striped table-sm"
+                          },
+                          [
+                            _vm._m(3),
+                            _vm._v(" "),
+                            _c(
+                              "tbody",
+                              _vm._l(_vm.arrayObservacion, function(
+                                observacion
+                              ) {
+                                return _c("tr", { key: observacion.id }, [
+                                  _c("td", {
+                                    domProps: {
+                                      textContent: _vm._s(observacion.usuario)
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c("td", {
+                                    domProps: {
+                                      textContent: _vm._s(
+                                        observacion.comentario
+                                      )
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _c("td", {
+                                    domProps: {
+                                      textContent: _vm._s(
+                                        observacion.created_at
+                                      )
+                                    }
+                                  })
+                                ])
+                              })
+                            )
+                          ]
+                        )
+                      : _vm._e()
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-footer" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-secondary",
+                    attrs: { type: "button" },
+                    on: {
+                      click: function($event) {
+                        _vm.cerrarModal3()
+                      }
+                    }
+                  },
+                  [_vm._v("Cerrar")]
+                ),
+                _vm._v(" "),
+                _vm.tipoAccion == 3
+                  ? _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-primary",
+                        attrs: { type: "button" },
+                        on: {
+                          click: function($event) {
+                            _vm.agregarComentario()
+                          }
+                        }
+                      },
+                      [_vm._v("Guardar")]
+                    )
+                  : _vm._e()
               ])
             ])
           ]
@@ -70433,6 +70904,20 @@ var staticRenderFns = [
         _c("th", [_vm._v("Ingreso Act. terminacion")]),
         _vm._v(" "),
         _c("th", [_vm._v("Salida Act. terminacion")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("Usuario")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Observacion")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Fecha")])
       ])
     ])
   }

@@ -151,6 +151,12 @@
                                        <input type="date" v-model="term_salida" class="form-control" >
                                     </div>
                                 </div>
+                                 <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Agregar Observación</label>
+                                    <div class="col-md-6">
+                                       <button type="button" class="btn btn-danger" @click="abrirModal3('lote','observacion',id)">Nueva Observación</button>
+                                    </div>
+                                </div>
 
                                 <div v-show="errorActa" class="form-group row div-error">
                                     <div class="text-center text-error">
@@ -339,6 +345,14 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Observación </label>
+                                    <div class="col-md-6">
+
+                                         <textarea rows="5" cols="30"  disabled v-model="observacion_completa" class="form-control" placeholder="Observacion"></textarea>
+                                        <button type="button" class="btn btn-info pull-right" @click="abrirModal3('lote','ver_todo',id)">Ver todos</button>
+                                    </div>
+                                </div>
                             </form>
                         </div>
                         <!-- Botones del modal -->
@@ -352,7 +366,66 @@
                 <!-- /.modal-dialog -->
             </div>
             <!--Fin del modal consulta-->
-            
+
+            <!--Inicio del modal observaciones-->
+            <div class="modal fade" tabindex="-1" :class="{'mostrar': modal3}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" v-text="tituloModal3"></h4>
+                            <button type="button" class="close" @click="cerrarModal3()" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+
+                                <div class="form-group row" v-if="tipoAccion==3">
+                                    <label class="col-md-3 form-control-label" for="text-input">Observacion</label>
+                                    <div class="col-md-6">
+                                         <textarea rows="5" cols="30" v-model="observacion" class="form-control" placeholder="Observacion"></textarea>
+
+                                    </div>
+                                </div>
+                                <div class="form-group row"  v-if="tipoAccion==3">
+                                    <label class="col-md-3 form-control-label" for="text-input">Usuario</label>
+                                    <div class="col-md-6">
+                                        <input type="text" v-model="usuario" class="form-control" placeholder="Usuario">
+                                    </div>
+                                </div>
+                                <!--//////////tabla de consulta de observaciones//////////////-->
+                                <table class="table table-bordered table-striped table-sm" v-if="tipoAccion == 4">
+                                    <thead>
+                                        <tr>
+                                            <th>Usuario</th>
+                                            <th>Observacion</th>
+                                            <th>Fecha</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="observacion in arrayObservacion" :key="observacion.id">
+                                            
+                                            <td v-text="observacion.usuario" ></td>
+                                            <td v-text="observacion.comentario" ></td>
+                                            <td v-text="observacion.created_at"></td>
+                                        </tr>                               
+                                    </tbody>
+                                </table>
+                                
+                            </form>
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal3()">Cerrar</button>
+                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
+                            <button type="button"  v-if="tipoAccion==3"  class="btn btn-primary" @click="agregarComentario()">Guardar</button>
+                        </div>
+                    </div>
+                      <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!--Fin del modal observaciones-->
 
 
                     
@@ -393,6 +466,9 @@
                 modelo: 0,
                 avance: 0,
                 empresa_id: 0,
+                observacion:'',
+                observacion_completa:'',
+                usuario:'',
                 calle: '',
                 numero: '',
                 interior: '',
@@ -401,10 +477,13 @@
                 arrayActaDeTerminacion : [],
                 arrayArquitectos:[],
                 arrayFraccionamientos:[],
+                arrayObservacion:[],
                 modal : 0,
                 modal2 : 0,
+                modal3 : 0,
                 tituloModal : '',
                 tituloModal2 : '',
+                tituloModal3: '',
                 tipoAccion: 0,
                 errorActa : 0,
                 errorMostrarMsjActa : [],
@@ -513,6 +592,63 @@
                     console.log(error);
                 });
             },
+            
+            agregarComentario(){
+                let me = this;
+                //Con axios se llama el metodo store de DepartamentoController
+                axios.post('/observacion/registrar',{
+                    'lote_id': this.lote_id,
+                    'comentario': this.observacion,
+                    'usuario': this.usuario
+                }).then(function (response){
+                    me.cerrarModal3(); //al guardar el registro se cierra el modal
+                    
+                    const toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+                    });
+
+                    toast({
+                    type: 'success',
+                    title: 'Observación Agregada Correctamente'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
+            listarObservacion(page, buscar){
+                let me = this;
+                var url = '/observacion?page=' + page + '&buscar=' + buscar ;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayObservacion = respuesta.observacion.data;
+                    me.pagination = respuesta.pagination;
+                    console.log(url);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+                
+            },
+             selectUltimoComentario(lote){
+                let me = this;
+                var url = '/observacion/select_ultima?buscar=' + lote;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.observacion = respuesta.observacion.comentario;
+                    me.usuario = respuesta.observacion.usuario;
+                    me.fecha_comentario = moment(respuesta.observacion.created_at,"YYYY-MM-DD hh:mm:ss").locale('es').fromNow();
+
+                    me.observacion_completa= me.observacion + ' ' + '(' + me.usuario + ' - ' + me.fecha_comentario + ')';
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+                
+            },
 
             cambiarPagina(page,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2){
                 let me = this;
@@ -603,7 +739,14 @@
                 this.etapa_servicios='';
                 this.siembra='';
                 this.id=0;
+                this.observacion_completa='';
                 
+            },
+            cerrarModal3(){
+                this.modal3 = 0;
+                this.tituloModal3 = '';
+                this.usuario = '';
+                this.observacion = '';
             },
 
            
@@ -634,6 +777,36 @@
                 }this.selectArquitectos();
 
             },
+              abrirModal3(licencias,accion,lote){
+             switch(licencias){
+                    case "lote":
+                    {
+                        switch(accion){
+                            
+                            case 'observacion':
+                            {
+                                this.modal3 =1;
+                                this.tituloModal3='Agregar Observación';
+                                this.observacion='';
+                                this.usuario='';
+                                this.lote_id=lote;
+                                this.tipoAccion= 3;
+                                break;
+                            }
+                             case 'ver_todo':
+                            {
+                                this.modal3 =1;
+                                this.tituloModal3='Consulta Observaciones';
+                                this.tipoAccion= 4;
+                                break;  
+                            }
+                            
+                        }
+                    }
+                 
+             }
+                
+         },
             abrirModal2(licencias, accion,data =[]){
                 switch(licencias){
                     case "lote":
@@ -677,6 +850,8 @@
                         }
                     }
                 }this.selectArquitectos();
+                this.listarObservacion(1, data['id']);
+                this.selectUltimoComentario(data['id']);
 
             }
         

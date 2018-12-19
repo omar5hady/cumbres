@@ -38,7 +38,7 @@ class ObservacionController extends Controller
     public function index(Request $request){
         $buscar = $request->buscar;;
         $observacion = Observacion::select('comentario','usuario','created_at')
-                    ->where('lote_id','=', $buscar)->orderBy('created_at','desc')->paginate(5);
+                    ->where('lote_id','=', $buscar)->orderBy('created_at','desc')->paginate(20);
 
         return [
             'pagination' => [
