@@ -39,7 +39,7 @@ class LoteController extends Controller
                       'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
                       'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
                       'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                      'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente')
+                      'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios')
                       ->orderBy('fraccionamientos.nombre','DESC')
                       ->orderBy('lotes.etapa_servicios','DESC')->paginate(5);
         }
@@ -54,7 +54,7 @@ class LoteController extends Controller
                         'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
                         'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
                         'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                        'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente')
+                        'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios')
                     ->where($criterio, 'like', '%'. $buscar . '%')
                     ->orderBy('fraccionamientos.nombre','DESC')
                     ->orderBy('lotes.etapa_servicios','DESC')->paginate(5);
@@ -70,7 +70,7 @@ class LoteController extends Controller
                             'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
                             'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
                             'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                            'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente')
+                            'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios')
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                         ->orderBy('fraccionamientos.nombre','DESC')
@@ -85,7 +85,7 @@ class LoteController extends Controller
                             'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
                             'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
                             'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                            'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente')
+                            'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios')
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                         ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')

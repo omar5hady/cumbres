@@ -135,7 +135,7 @@
                              <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Avance</label>
                                     <div class="col-md-6">
-                                       <input type="number" v-model="avance" class="form-control" >
+                                       <input type="number" min="0" max="100" v-model="avance" class="form-control" >
                                     </div>
                                 </div>
 
@@ -149,6 +149,13 @@
                                     <label class="col-md-3 form-control-label" for="text-input">Salida de acta</label>
                                     <div class="col-md-6">
                                        <input type="date" v-model="term_salida" class="form-control" >
+                                    </div>
+                                </div>
+
+                                <div v-show="errorActa" class="form-group row div-error">
+                                    <div class="text-center text-error">
+                                        <div v-for="error in errorMostrarMsjActa" :key="error" v-text="error">
+                                        </div>
                                     </div>
                                 </div>
 
@@ -264,6 +271,11 @@
                                   
                                     </div>
                                 </div>
+                                
+                                <hr style="border-top: 2px solid rgba(100,155,255,0.5);" />
+                                <h5 style="text-align:center">Licencia</h5>
+                                <br>
+
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Siembra</label>
                                     <div class="col-md-4">
@@ -285,17 +297,17 @@
                                     <label class="col-md-3 form-control-label" for="text-input">Ingreso</label>
                                     <div class="col-md-4">
 
-                                        <input type="text" style="width:200px;" disabled v-model="f_ingreso" class="form-control" placeholder="Ingreso">
+                                        <input type="text" style="width:200px;" disabled v-model="lic_ingreso" class="form-control" placeholder="Ingreso">
                                   
                                     </div>
                                     <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Salida</label>
-                                    <div class="col-md-4">
+                                        <label class="col-md-3 form-control-label" for="text-input">Salida</label>
+                                        <div class="col-md-4">
 
-                                        <input type="text" style="width:200px;" disabled v-model="f_salida" class="form-control" placeholder="Salida">
-                                  
+                                            <input type="text" style="width:200px;" disabled v-model="lic_salida" class="form-control" placeholder="Salida">
+                                    
+                                        </div>
                                     </div>
-                                </div>
                                 </div>
                                 
                                 <div class="form-group row">
@@ -304,6 +316,27 @@
 
                                         <input type="text"  disabled v-model="num_licencia" class="form-control" placeholder="Num. Licencia">
                                   
+                                    </div>
+                                </div>
+
+                                <hr style="border-top: 2px solid rgba(100,155,255,0.5);" />
+                                <h5 style="text-align:center">Acta de Terminación</h5>
+                                <br>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Ingreso</label>
+                                    <div class="col-md-4">
+
+                                        <input type="text" style="width:200px;" disabled v-model="f_ingreso" class="form-control" placeholder="Ingreso">
+                                  
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Salida</label>
+                                        <div class="col-md-4">
+
+                                            <input type="text" style="width:200px;" disabled v-model="f_salida" class="form-control" placeholder="Salida">
+                                    
+                                        </div>
                                     </div>
                                 </div>
                             </form>
@@ -340,6 +373,8 @@
                 f_planos:'',
                 f_ingreso:'',
                 f_salida:'',
+                lic_ingreso:'',
+                lic_salida:'',
                 term_ingreso:'',
                 term_salida:'',
                 arquitecto_id:0,
@@ -371,8 +406,8 @@
                 tituloModal : '',
                 tituloModal2 : '',
                 tipoAccion: 0,
-                errorLote : 0,
-                errorMostrarMsjLote : [],
+                errorActa : 0,
+                errorMostrarMsjActa : [],
                 pagination : {
                     'total' : 0,         
                     'current_page' : 0,
@@ -488,6 +523,11 @@
             },
             
             actualizarActa(){
+                if(this.validarActa()) //Se verifica si hay un error (campo vacio)
+                {
+                    return;
+                }
+
                 let me = this;
                 //Con axios se llama el metodo update de LoteController
                 axios.put('/acta_terminacion/actualizar',{
@@ -512,17 +552,17 @@
                     console.log(error);
                 });
             },
-            validarLote(){
-                this.errorLote=0;
-                this.errorMostrarMsjLote=[];
+            validarActa(){
+                this.errorActa=0;
+                this.errorMostrarMsjActa=[];
 
-                if(!this.fraccionamiento_id) //Si la variable Lote esta vacia
-                    this.errorMostrarMsjLote.push("El nombre del proyecto para el Lote no puede ir vacio.");
+                if(this.avance<0 || this.avance>100) //Si la variable Lote esta vacia
+                    this.errorMostrarMsjActa.push("Avance invalido");
 
-                if(this.errorMostrarMsjLote.length)//Si el mensaje tiene almacenado algo en el array
-                    this.errorLote = 1;
+                if(this.errorMostrarMsjActa.length)//Si el mensaje tiene almacenado algo en el array
+                    this.errorActa = 1;
 
-                return this.errorLote;
+                return this.errorActa;
             },
 
             cerrarModal(){
@@ -534,8 +574,8 @@
                 
                 
                 
-                this.errorLote = 0;
-                this.errorMostrarMsjLote = [];
+                this.errorActa = 0;
+                this.errorMostrarMsjActa = [];
 
             },
             cerrarModal2(){
@@ -544,6 +584,8 @@
                 this.f_planos='';
                 this.f_ingreso='';
                 this.f_salida='';
+                this.lic_ingreso='';
+                this.lic_salida='';
                 this.num_licencia='';
                 this.arquitecto='';
                 this.fraccionamiento='';
@@ -602,9 +644,16 @@
                             {
                                 this.modal2 =1;
                                 this.tituloModal2='Consulta ';
-                                this.f_planos=moment(data['f_planos']).locale('es').format('DD/MMM/YYYY');
-                                this.f_ingreso=moment(data['f_ingreso']).locale('es').format('DD/MMM/YYYY');
-                                this.f_salida=moment(data['f_salida']).locale('es').format('DD/MMM/YYYY');
+                                if(data['f_planos'])
+                                    this.f_planos=moment(data['f_planos']).locale('es').format('DD/MMM/YYYY');
+                                if(data['f_ingreso'])
+                                    this.lic_ingreso=moment(data['f_ingreso']).locale('es').format('DD/MMM/YYYY');
+                                if(data['f_salida'])                                    
+                                    this.lic_salida=moment(data['f_salida']).locale('es').format('DD/MMM/YYYY');
+                                if(data['term_ingreso'])
+                                    this.f_ingreso=moment(data['term_ingreso']).locale('es').format('DD/MMM/YYYY');
+                                if(data['term_salida'])
+                                    this.f_salida=moment(data['term_salida']).locale('es').format('DD/MMM/YYYY');
                                 this.num_licencia=data['num_licencia'];
                                 this.arquitecto=data['arquitecto'];
                                 this.fraccionamiento=data['fraccionamiento'];

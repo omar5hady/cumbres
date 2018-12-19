@@ -314,6 +314,11 @@
                                   
                                     </div>
                                 </div>
+
+                                <hr style="border-top: 2px solid rgba(100,155,255,0.5);" />
+                                <h5 style="text-align:center">Licencia</h5>
+                                <br>
+
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Siembra</label>
                                     <div class="col-md-4">
@@ -655,9 +660,12 @@
                             {
                                 this.modal2 =1;
                                 this.tituloModal2='Consulta ';
-                                this.f_planos=moment(data['f_planos']).locale('es').format('DD/MMM/YYYY');
-                                this.f_ingreso=moment(data['f_ingreso']).locale('es').format('DD/MMM/YYYY');
-                                this.f_salida=moment(data['f_salida']).locale('es').format('DD/MMM/YYYY');
+                                if(data['f_planos'])
+                                    this.f_planos=moment(data['f_planos']).locale('es').format('DD/MMM/YYYY');
+                                if(data['f_ingreso'])
+                                    this.lic_ingreso=moment(data['f_ingreso']).locale('es').format('DD/MMM/YYYY');
+                                if(data['f_salida'])                                    
+                                    this.lic_salida=moment(data['f_salida']).locale('es').format('DD/MMM/YYYY');
                                 this.num_licencia=data['num_licencia'];
                                 this.arquitecto=data['arquitecto'];
                                 this.fraccionamiento=data['fraccionamiento'];

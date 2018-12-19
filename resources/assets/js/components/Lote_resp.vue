@@ -25,6 +25,7 @@
                                         <option value="lotes.fraccionamiento_id">Proyecto</option>
                                         <option value="modelos.nombre">Modelo</option>
                                         <option value="lotes.calle">Calle</option>
+                                        <option value="lotes.credito_puente">Credito Puente</option>
                                     </select>
                                     
                                     <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @click="selectEtapa(buscar)" >
@@ -41,7 +42,7 @@
                                     <input type="text" v-if="criterio=='modelos.nombre'" v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio)" class="form-control" placeholder="Texto a buscar">
                                     <input type="text" v-if="criterio=='lotes.calle'" v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio)" class="form-control" placeholder="Texto a buscar">
                                                                         
-                                    <input type="text" v-if="criterio=='fraccionamientos.nombre'" v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio)" class="form-control" placeholder="Texto a buscar">
+                                    <input type="text" v-if="criterio=='lotes.credito_puente'" v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio)" class="form-control" placeholder="Texto a buscar">
                                     <button type="submit" @click="listarLote(1,buscar,buscar2,buscar3,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
@@ -54,7 +55,8 @@
                                     </th>
                                     <th>Opciones</th>
                                     <th>Proyecto</th>
-                                    <th>Etapa</th>
+                                    <th>Etapa comercial</th>
+                                    <th>Etapa de servicio</th>
                                     <th>Manzana</th>
                                     <th># Lote</th>
                                     <th>Sublote</th>
@@ -85,11 +87,11 @@
 
                                     
                                     <td v-text="lote.proyecto"></td>
-                                     <td>
+                                    <td>
                                         <span v-if = "lote.etapas!='Sin Asignar'" class="badge badge-success" v-text="lote.etapas"></span>
                                         <span v-else class="badge badge-danger"> Por Asignar </span>
                                     </td> 
-                                    
+                                    <td v-text="lote.etapa_servicios" style="width:8%;"></td>
                                     <td v-text="lote.manzana"></td>
                                     <td v-text="lote.num_lote"></td>
                                     <td v-text="lote.sublote"></td>
@@ -97,7 +99,6 @@
                                         <span v-if = "lote.modelo!='Por Asignar'" class="badge badge-success" v-text="lote.modelo"></span>
                                         <span v-else class="badge badge-danger"> Por Asignar </span>
                                     </td> 
-                                    
                                     <td v-text="lote.calle"></td>
                                     <td v-text="lote.numero"></td>
                                     <td v-text="lote.interior"></td>
