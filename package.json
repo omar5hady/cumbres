@@ -21,7 +21,7 @@
     },
     "dependencies": {
         "moment": "^2.23.0",
-        "npm": "^6.4.1",
+        "npm": "^6.5.0",
         "vue-lodash": "^2.0.0"
     }
 }
