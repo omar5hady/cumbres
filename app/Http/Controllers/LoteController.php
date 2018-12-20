@@ -411,6 +411,7 @@ class LoteController extends Controller
         $lote->fecha_fin = $request ->fecha_fin;
         $lote->ini_obra = 1;
         $lote->arquitecto_id = $request ->arquitecto_id;
+        $lote->ehl_solicitado = Carbon::today()->format('ymd');
         
 
         $lote->save();

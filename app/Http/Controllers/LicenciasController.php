@@ -8,6 +8,7 @@ use App\Licencia;
 use DB;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Excel;
 
 class LicenciasController extends Controller
 {
@@ -37,7 +38,8 @@ class LicenciasController extends Controller
                       DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS arquitecto"),
                       DB::raw("CONCAT(p.nombre,' ',p.apellidos) AS perito"),'licencias.f_planos',
                       'licencias.f_ingreso','licencias.num_licencia','licencias.f_salida','lotes.arquitecto_id',
-                      'licencias.perito_dro','fraccionamientos.nombre as fraccionamiento','licencias.cambios','licencias.foto_lic')
+                      'licencias.perito_dro','fraccionamientos.nombre as fraccionamiento','licencias.cambios',
+                      'licencias.foto_lic')
                       ->orderBy('licencias.cambios','DESC')
                       ->orderBy('fraccionamientos.nombre','DESC')
                       ->orderBy('lotes.etapa_servicios','DESC')->paginate(5);
@@ -58,7 +60,8 @@ class LicenciasController extends Controller
                         'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.siembra',
                         DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS arquitecto"),'licencias.f_planos',
                         'licencias.f_ingreso','licencias.num_licencia','licencias.f_salida','lotes.arquitecto_id',
-                        'licencias.perito_dro','fraccionamientos.nombre as fraccionamiento','licencias.cambios','licencias.foto_lic')
+                        'licencias.perito_dro','fraccionamientos.nombre as fraccionamiento','licencias.cambios',
+                        'licencias.foto_lic')
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->orderBy('licencias.cambios','DESC')
                         ->orderBy('fraccionamientos.nombre','DESC')
@@ -78,7 +81,8 @@ class LicenciasController extends Controller
                         'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.siembra',
                         DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS arquitecto"),'licencias.f_planos',
                         'licencias.f_ingreso','licencias.num_licencia','licencias.f_salida','lotes.arquitecto_id',
-                        'licencias.perito_dro','fraccionamientos.nombre as fraccionamiento','licencias.cambios','licencias.foto_lic')
+                        'licencias.perito_dro','fraccionamientos.nombre as fraccionamiento','licencias.cambios',
+                        'licencias.foto_lic')
                         ->whereBetween($criterio, [$buscar,$buscar2])
                         ->orderBy('licencias.cambios','DESC')
                         ->orderBy('fraccionamientos.nombre','DESC')
@@ -86,6 +90,7 @@ class LicenciasController extends Controller
             }
             else{
             if($criterio == 'lotes.fraccionamiento_id' ){
+                if($b_manzana != ''){
                     $licencias = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
                     ->join('licencias','lotes.id','=','licencias.id')
                     ->join('personal','lotes.arquitecto_id','=','personal.id')
@@ -99,7 +104,8 @@ class LicenciasController extends Controller
                             'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.siembra',
                             DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS arquitecto"),'licencias.f_planos',
                             'licencias.f_ingreso','licencias.num_licencia','licencias.f_salida','lotes.arquitecto_id',
-                            'licencias.perito_dro','fraccionamientos.nombre as fraccionamiento','licencias.cambios','licencias.foto_lic')
+                            'licencias.perito_dro','fraccionamientos.nombre as fraccionamiento','licencias.cambios',
+                            'licencias.foto_lic')
                         ->where('lotes.fraccionamiento_id', '=',  $buscar)
                         ->where('lotes.manzana', '=', $b_manzana)
                             ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
@@ -108,6 +114,32 @@ class LicenciasController extends Controller
                             ->orderBy('licencias.cambios','DESC')
                             ->orderBy('fraccionamientos.nombre','DESC')
                             ->orderBy('lotes.etapa_servicios','DESC')->paginate(5);
+                        }
+                        else{
+                            $licencias = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                ->join('licencias','lotes.id','=','licencias.id')
+                                ->join('personal','lotes.arquitecto_id','=','personal.id')
+                                ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                ->join('modelos','lotes.modelo_id','=','modelos.id')
+                                ->join('empresas','lotes.empresa_id','=','empresas.id')
+                                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
+                                        'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
+                                        'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
+                                        'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
+                                        'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.siembra',
+                                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS arquitecto"),'licencias.f_planos',
+                                        'licencias.f_ingreso','licencias.num_licencia','licencias.f_salida','lotes.arquitecto_id',
+                                        'licencias.perito_dro','fraccionamientos.nombre as fraccionamiento','licencias.cambios',
+                                        'licencias.foto_lic')
+                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
+                                        ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
+                                        ->where('modelos.nombre', 'like', '%'. $b_modelo . '%')
+                                        ->where('personal.nombre', 'like', '%'. $b_arquitecto . '%')
+                                        ->orderBy('licencias.cambios','DESC')
+                                        ->orderBy('fraccionamientos.nombre','DESC')
+                                        ->orderBy('lotes.etapa_servicios','DESC')->paginate(5);
+
+                        }
                     }
                     else{
                         $licencias = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
@@ -123,7 +155,8 @@ class LicenciasController extends Controller
                                 'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.siembra',
                                 DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS arquitecto"),'licencias.f_planos',
                                 'licencias.f_ingreso','licencias.num_licencia','licencias.f_salida','lotes.arquitecto_id',
-                                'licencias.perito_dro','fraccionamientos.nombre as fraccionamiento','licencias.cambios','licencias.foto_lic')
+                                'licencias.perito_dro','fraccionamientos.nombre as fraccionamiento','licencias.cambios',
+                                'licencias.foto_lic')
                                 ->where('personal.nombre', 'like', '%'. $buscar . '%')
                                 ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
                                 ->orderBy('licencias.cambios','DESC')
@@ -242,9 +275,6 @@ class LicenciasController extends Controller
                             ->orderBy('licencias.cambios','DESC')
                             ->orderBy('fraccionamientos.nombre','DESC')->paginate(5);
                     }
-            
-            
-            
             }
         }
  
@@ -302,29 +332,122 @@ class LicenciasController extends Controller
     }
 
 
-    public function resumeLicencias(Request $request)
+    public function exportExcel(Request $request)
     {
         $licencias = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
             ->join('licencias','lotes.id','=','licencias.id')
             ->join('personal','lotes.arquitecto_id','=','personal.id')
             ->join('modelos','lotes.modelo_id','=','modelos.id')
             ->select('lotes.fraccionamiento_id',DB::raw('COUNT(lotes.fraccionamiento_id) as num_viviendas'),
-            'fraccionamientos.nombre','lotes.credito_puente','lotes.siembra','licencias.f_planos',
-            'licencias.f_ingreso','licencias.f_salida','licencias.avance')
+            'fraccionamientos.nombre as proyecto','lotes.credito_puente','lotes.siembra','licencias.f_planos',
+            'licencias.f_ingreso','licencias.f_salida',DB::raw("SUM(licencias.avance) as prom_avance"),
+             DB::raw('MONTH(lotes.fecha_ini) month'),'lotes.ehl_solicitado','personal.nombre as arquitecto')
             ->where('lotes.siembra','!=','NULL')
             ->groupBy('lotes.fraccionamiento_id')
             ->groupBy('lotes.siembra')
             ->groupBy('licencias.f_planos')
             ->groupBy('licencias.f_ingreso')
+            ->groupBy('personal.nombre')
             ->groupBy('licencias.f_salida')
-            ->groupBy('licencias.avance')
-            ->groupBy('lotes.credito_puente')->distinct()->get();
-        
-        
+            ->groupBy('lotes.credito_puente')
+            ->groupBy('lotes.ehl_solicitado')
+            ->groupby('month')->distinct()->get();
 
-        return [
-            'licencias' => $licencias
-        ];    
+            return Excel::create('resumen_licencias', function($excel) use ($licencias){
+                $excel->sheet('licencias', function($sheet) use ($licencias){
+                    //$sheet->fromArray($licencias);
+                    $sheet->row(1, [
+                        'Fracc.', 'No. Viviendas', 'Credito Puente', 'EHL Solicitado', 'Mes para iniciar', 'Arquitecto',
+                        'Siembra', 'Planos', 'Ingreso','Salida','Avance'
+                    ]);
+
+
+                    $sheet->cells('A1:K1', function ($cells) {
+                        $cells->setBackground('#052154');
+                        $cells->setFontColor('#ffffff');
+                        // Set font family
+                        $cells->setFontFamily('Calibri');
+
+                        // Set font size
+                        $cells->setFontSize(13);
+
+                        // Set font weight to bold
+                        $cells->setFontWeight('bold');
+                        $cells->setAlignment('center');
+                    });
+
+                    
+                    $cont=1;
+
+                    foreach($licencias as $index => $licencia) {
+                        $cont++;
+                        if($licencia->prom_avance>0)
+                                $avance=$licencia->prom_avance / $licencia->num_viviendas;
+                            else
+                                $avance=0;
+
+                        switch($licencia->month){
+                            case '1':
+                                $mes = "Enero";
+                            break;
+                            case '2':
+                                $mes = "Febrero";
+                            break;
+                            case '3':
+                                $mes = "Marzo";
+                            break;
+                            case '4':
+                                $mes = "Abril";
+                            break;
+                            case '5':
+                                $mes = "Mayo";
+                            break;
+                            case '6':
+                                $mes = "Junio";
+                            break;
+                            case '7':
+                                $mes = "Julio";
+                            break;
+                            case '8':
+                                $mes = "Agosto";
+                            break;
+                            case '9':
+                                $mes = "Septiembre";
+                            break;
+                            case '10':
+                                $mes = "Octubre";
+                            break;
+                            case '11':
+                                $mes = "Noviembre";
+                            break;
+                            case '12':
+                                $mes = "Diciembre";
+                            break;
+                            default:
+                                $mes = "";
+                        }
+                        $sheet->row($index+2, [
+                            $licencia->proyecto, 
+                            $licencia->num_viviendas, 
+                            $licencia->credito_puente, 
+                            $licencia->ehl_solicitado, 
+                            $mes,
+                            $licencia->arquitecto,
+                            $licencia->siembra,
+                            $licencia->f_planos,
+                            $licencia->f_ingreso,
+                            $licencia->f_salida,
+                            $avance
+                        ]);	
+                    }
+                    $num='A1:K' . $cont;
+                    $sheet->setBorder($num, 'thin');
+                });
+            }
+            
+            )->download('xls');
+        
+      
     }
 
 
@@ -350,7 +473,8 @@ class LicenciasController extends Controller
         
         $pathtoFile = public_path().'/files/licencias/'.$fileName;
         return response()->download($pathtoFile);
-      }
+    }
+
 
   
 

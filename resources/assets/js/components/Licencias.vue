@@ -11,8 +11,9 @@
                         <i class="fa fa-align-justify"></i>Licencias
 
                         <!--   Boton   -->
-                        
-                        
+                        <a class="btn btn-success" v-bind:href="'/licencias/resume_excel'" >
+                            <i class="icon-pencil"></i>&nbsp;Descargar resumen
+                        </a>
                         <!---->
                     </div>
                     <div class="card-body">

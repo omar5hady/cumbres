@@ -78,6 +78,7 @@ Route::get('/download/{fileName}' , 'LicenciasController@downloadFile');
 Route::get('/acta_terminacion','LicenciasController@indexActa');
 Route::put('/acta_terminacion/actualizar','LicenciasController@updateActas');
 Route::get('/licencias/resume','LicenciasController@resumeLicencias');
+Route::get('/licencias/resume_excel','LicenciasController@exportExcel');
 
 ////////////////////        RUTAS TERRENOS    /////////////////////////////////
 Route::get('/terreno','TerrenoController@index');
