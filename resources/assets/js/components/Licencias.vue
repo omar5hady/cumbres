@@ -73,9 +73,12 @@
                                     <td >
                                         <button title="Editar" type="button" @click="abrirModal('lote','actualizar',licencias)" class="btn btn-warning btn-sm">
                                           <i class="icon-pencil"></i>
-                                        </button> &nbsp;
+                                        </button> 
                                         <button type="button" @click="abrirModal2('lote','ver',licencias)" class="btn btn-info btn-sm">
                                           <i class="icon-magnifier"></i>
+                                        </button>
+                                        <button title="Subir foto" type="button" @click="abrirModal('lote','subirArchivo',licencias)" class="btn btn-default btn-sm">
+                                          <i class="icon-cloud-upload"></i>
                                         </button>
                                     </td>
                                     <td v-text="licencias.proyecto"></td>
@@ -113,8 +116,9 @@
                                     <td v-if="!licencias.f_salida" v-text="''"></td>
                                     <td v-else v-text="this.moment(licencias.f_salida).locale('es').format('DD/MMM/YYYY')"></td>
                                     
-                                    <td v-text="licencias.num_licencia"></td>
-                                    <td v-text="licencias.credito_puente"></td>
+                                    <td  v-if="!licencias.foto_lic" v-text="licencias.num_licencia"></td>
+                                    <td v-else style="width:7%"><a class="btn btn-default btn-sm"  v-text="licencias.num_licencia" v-bind:href="'/download/'+licencias.foto_lic"></a></td>
+                                    <td  v-text="licencias.credito_puente"></td>
                                     
                                     
                                     
@@ -453,6 +457,46 @@
             </div>
             
 
+<!-- Modal para la carga de foto de licencia -->
+<div class="modal fade" tabindex="-1" :class="{'mostrar': modal4}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" v-text="tituloModal4"></h4>
+                            <button type="button" class="close" @click="cerrarModal4()" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                        <!-- <div v-if="success != ''" class="alert alert-success" role="alert">
+
+                          {{success}}
+                        </div> -->
+                            <form  method="post" @submit="formSubmit" enctype="multipart/form-data">
+
+                                    <strong>Licencia:</strong>
+
+                                    <input disabled type="text" class="form-control" v-model="num_licencia" >
+
+                                    <strong>Sube aqui foto de licencia</strong>
+
+                                    <input type="file" class="form-control" v-on:change="onImageChange">
+                                    <br/>
+                                    <button type="submit" class="btn btn-success">Cargar</button>
+                            </form>
+
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal4()">Cerrar</button>
+                         </div>
+                    </div> 
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!--Fin del modal-->
+
 
 
                     
@@ -479,6 +523,7 @@
                 arquitecto:'',
                 fraccionamiento:'',
                 num_licencia:0,
+                foto_lic: '',
                 credito_puente: '',
                 etapa_servicios: '',
                 clv_catastral: '',
@@ -504,9 +549,11 @@
                 modal : 0,
                 modal2 : 0,
                 modal3 : 0,
+                modal4 : 0,
                 tituloModal : '',
                 tituloModal2 : '',
                 tituloModal3: '',
+                tituloModal4: '',
                 tipoAccion: 0,
                 errorLote : 0,
                 errorMostrarMsjLote : [],
@@ -562,14 +609,46 @@
         
         methods : {
 
-            onImageChange(e){
+ onImageChange(e){
 
                 console.log(e.target.files[0]);
 
-                this.file = e.target.files[0];
+                this.foto_lic = e.target.files[0];
 
             },
+
+            formSubmit(e) {
+
+                e.preventDefault();
+
+                let currentObj = this;
+            
+                let formData = new FormData();
            
+                formData.append('foto_lic', this.foto_lic);
+                let me = this;
+                axios.post('/formSubmit/'+this.id, formData)
+                .then(function (response) {
+                    currentObj.success = response.data.success;
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Archivo guardado correctamente',
+                        showConfirmButton: false,
+                        timer: 2000
+                        })
+                    me.cerrarModal4();
+                   me.listarLicencias(1,'','','','','','fraccionamientos.nombre','');
+
+                })
+
+                .catch(function (error) {
+
+                    currentObj.output = error;
+
+                });
+
+            },
 
             /**Metodo para mostrar los registros */
             listarLicencias(page, buscar,b_manzana,b_lote,b_modelo,b_arquitecto, criterio,buscar2){
@@ -768,6 +847,15 @@
                 this.usuario = '';
                 this.observacion = '';
             },
+           cerrarModal4(){
+                this.modal4 = 0;
+                this.tituloModal4 = '';
+                this.num_licencia = '';
+                this.foto_lic = '';
+                this.errorModelo = 0;
+                this.errorMostrarMsjModelo = [];
+
+            },
 
 
            
@@ -789,6 +877,17 @@
                                 this.arquitecto_id=data['arquitecto_id'];
                                 this.perito_dro=data['perito_dro'];
                                 this.id=data['id'];
+                                break;
+                            }
+
+                            case 'subirArchivo':
+                            {
+                                this.modal4 =1;
+                                this.tituloModal4='Subir Archivo';
+                                this.tipoAccion=5;
+                                this.id=data['id'];
+                                this.num_licencia=data['num_licencia'];
+                                this.foto_lic=data['foto_lic'];
                                 break;
                             }
                            

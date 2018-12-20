@@ -71,6 +71,8 @@ Route::put('/lotes/enviarAviObra','LoteController@enviarAviso');
 Route::get('/licencias','LicenciasController@index');
 Route::put('/licencias/actualizar','LicenciasController@update');
 Route::get('/licencias/resume','LicenciasController@resumeLicencias');
+Route::post('/formSubmit/{id}','LicenciasController@formSubmit');
+Route::get('/download/{fileName}' , 'LicenciasController@downloadFile');
 
 ///////////////////       RUTAS LICENCIA   ////////////////////////////////////
 Route::get('/acta_terminacion','LicenciasController@indexActa');
