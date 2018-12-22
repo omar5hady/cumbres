@@ -108,7 +108,7 @@ class LoteController extends Controller
         ];
     }
 
-    public function index2(Request $request)
+    public function index2(Request $request) // index para modulo de lotes
     {
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
        // if(!$request->ajax())return redirect('/');
@@ -129,7 +129,8 @@ class LoteController extends Controller
                       'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
                       'lotes.clv_catastral','lotes.etapa_servicios')
                       ->orderBy('fraccionamientos.nombre','DESC')
-                      ->orderBy('lotes.etapa_servicios','DESC')->paginate(5);
+                      ->orderBy('lotes.manzana','ASC')
+                      ->orderBy('lotes.num_lote','ASC')->paginate(5);
         }
         else{
             if($buscar2=='' &&$buscar3=='')
@@ -145,7 +146,8 @@ class LoteController extends Controller
                         'lotes.clv_catastral','lotes.etapa_servicios')
                     ->where($criterio, 'like', '%'. $buscar . '%')
                     ->orderBy('fraccionamientos.nombre','DESC')
-                    ->orderBy('lotes.etapa_servicios','DESC')->paginate(5);
+                    ->orderBy('lotes.manzana','ASC')
+                    ->orderBy('lotes.num_lote','ASC')->paginate(5);
             }
             else{
                 if($buscar3=='')
@@ -162,7 +164,8 @@ class LoteController extends Controller
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->where('lotes.etapa_servicios', 'like', '%'. $buscar2 . '%')
                         ->orderBy('fraccionamientos.nombre','DESC')
-                    ->orderBy('lotes.etapa_servicios','DESC')->paginate(5);
+                        ->orderBy('lotes.manzana','ASC')
+                        ->orderBy('lotes.num_lote','ASC')->paginate(5);
                 }
                 else{
                     $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
@@ -178,7 +181,8 @@ class LoteController extends Controller
                         ->where('lotes.etapa_servicios', 'like', '%'. $buscar2 . '%')
                         ->where('lotes.manzana', '=', $buscar3)
                         ->orderBy('fraccionamientos.nombre','DESC')
-                    ->orderBy('lotes.etapa_servicios','DESC')->paginate(5);
+                        ->orderBy('lotes.manzana','ASC')
+                        ->orderBy('lotes.num_lote','ASC')->paginate(5);
                 }
             }
         }

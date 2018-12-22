@@ -593,40 +593,73 @@
                 }
 
                 let me = this;
-                //Con axios se llama el metodo update de LoteController
-                axios.put('/lote/actualizar',{
-                    'id' : this.id,
-                    'fraccionamiento_id': this.fraccionamiento_id,
-                    'etapa_id': this.etapa_id,
-                    'manzana': this.manzana,
-                    'num_lote': this.num_lote,
-                    'sublote': this.sublote,
-                    'empresa_id': this.empresa_id,
-                    'calle': this.calle,
-                    'numero': this.numero,
-                    'interior': this.interior,
-                    'terreno': this.terreno,
-                    'construccion': this.construccion,
-                    'casa_muestra': this.casa_muestra,
-                    'lote_comercial': this.lote_comercial,
-                    'clv_catastral': this.clv_catastral,
-                    'etapa_servicios': this.etapa_servicios,
-                    'comentarios': this.comentarios,
-                    
-                }).then(function (response){
-                    me.cerrarModal();
-                    me.listarLote(1,'','','','lote');
-                    //window.alert("Cambios guardados correctamente");
-                    swal({
-                        position: 'top-end',
-                        type: 'success',
-                        title: 'Cambios guardados correctamente',
-                        showConfirmButton: false,
-                        timer: 1500
+
+
+                (async function getFruit () {
+                    const {value: comentario} = await Swal({
+                    title: 'Observación',
+                    input: 'textarea',
+                    inputPlaceholder: 'Agregue una observación aqui...',
+                    showCancelButton: true,
+                    inputValidator: (value) => {
+                        return new Promise((resolve) => {
+                        if (value != '') {
+                            resolve()
+                        } else {
+                            resolve('Es necesario escribir una observación :)')
+                        }
                         })
-                }).catch(function (error){
-                    console.log(error);
-                });
+                    }
+                    })
+
+                    if (comentario) {
+
+                         axios.post('/observacion/registrar',{
+                            'lote_id': me.id,
+                            'comentario': comentario,
+                            'usuario': 'lotes pruebas'
+                        })
+                        //Con axios se llama el metodo update de LoteController
+                        axios.put('/lote/actualizar',{
+                            'id' : me.id,
+                            'fraccionamiento_id': me.fraccionamiento_id,
+                            'etapa_id': me.etapa_id,
+                            'manzana': me.manzana,
+                            'num_lote': me.num_lote,
+                            'sublote': me.sublote,
+                            'empresa_id': me.empresa_id,
+                            'calle': me.calle,
+                            'numero': me.numero,
+                            'interior': me.interior,
+                            'terreno': me.terreno,
+                            'construccion': me.construccion,
+                            'casa_muestra': me.casa_muestra,
+                            'lote_comercial': me.lote_comercial,
+                            'clv_catastral': me.clv_catastral,
+                            'etapa_servicios': me.etapa_servicios,
+                            'comentarios': me.comentarios,
+                            
+                        }).then(function (response){
+                            me.cerrarModal();
+                            me.listarLote(1,'','','','lote');
+                            //window.alert("Cambios guardados correctamente");
+                            swal({
+                                position: 'top-end',
+                                type: 'success',
+                                title: 'Cambios guardados correctamente',
+                                showConfirmButton: false,
+                                timer: 1500
+                                })
+                        }).catch(function (error){
+                            console.log(error);
+                        });
+                    }
+
+                    })()
+
+
+
+                
             },
             eliminarLote(data =[]){
                 this.id=data['id'];

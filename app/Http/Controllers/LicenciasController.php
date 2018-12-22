@@ -42,7 +42,8 @@ class LicenciasController extends Controller
                       'licencias.foto_lic')
                       ->orderBy('licencias.cambios','DESC')
                       ->orderBy('fraccionamientos.nombre','DESC')
-                      ->orderBy('lotes.etapa_servicios','DESC')->paginate(5);
+                      ->orderBy('lotes.manzana','ASC')
+                      ->orderBy('lotes.num_lote','ASC')->paginate(5);
         }
        else
         {
@@ -65,7 +66,8 @@ class LicenciasController extends Controller
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->orderBy('licencias.cambios','DESC')
                         ->orderBy('fraccionamientos.nombre','DESC')
-                        ->orderBy('lotes.etapa_servicios','DESC')->paginate(5);
+                        ->orderBy('lotes.manzana','ASC')
+                        ->orderBy('lotes.num_lote','ASC')->paginate(5);
             }
             if($criterio == 'licencias.f_planos'){
                 $licencias = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
@@ -86,7 +88,8 @@ class LicenciasController extends Controller
                         ->whereBetween($criterio, [$buscar,$buscar2])
                         ->orderBy('licencias.cambios','DESC')
                         ->orderBy('fraccionamientos.nombre','DESC')
-                        ->orderBy('lotes.etapa_servicios','DESC')->paginate(5);
+                        ->orderBy('lotes.manzana','ASC')
+                        ->orderBy('lotes.num_lote','ASC')->paginate(5);
             }
             else{
             if($criterio == 'lotes.fraccionamiento_id' ){
@@ -113,7 +116,8 @@ class LicenciasController extends Controller
                             ->where('personal.nombre', 'like', '%'. $b_arquitecto . '%')
                             ->orderBy('licencias.cambios','DESC')
                             ->orderBy('fraccionamientos.nombre','DESC')
-                            ->orderBy('lotes.etapa_servicios','DESC')->paginate(5);
+                            ->orderBy('lotes.manzana','ASC')
+                            ->orderBy('lotes.num_lote','ASC')->paginate(5);
                         }
                         else{
                             $licencias = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
@@ -137,7 +141,8 @@ class LicenciasController extends Controller
                                         ->where('personal.nombre', 'like', '%'. $b_arquitecto . '%')
                                         ->orderBy('licencias.cambios','DESC')
                                         ->orderBy('fraccionamientos.nombre','DESC')
-                                        ->orderBy('lotes.etapa_servicios','DESC')->paginate(5);
+                                        ->orderBy('lotes.manzana','ASC')
+                                        ->orderBy('lotes.num_lote','ASC')->paginate(5);
 
                         }
                     }
@@ -161,7 +166,8 @@ class LicenciasController extends Controller
                                 ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
                                 ->orderBy('licencias.cambios','DESC')
                                 ->orderBy('fraccionamientos.nombre','DESC')
-                                ->orderBy('lotes.etapa_servicios','DESC')->paginate(5);
+                                ->orderBy('lotes.manzana','ASC')
+                                ->orderBy('lotes.num_lote','ASC')->paginate(5);
                 }
             
             }
@@ -210,7 +216,9 @@ class LicenciasController extends Controller
                       'licencias.perito_dro','fraccionamientos.nombre as fraccionamiento','licencias.cambios',
                       'licencias.avance','licencias.term_ingreso','licencias.term_salida')
                       ->orderBy('licencias.cambios','DESC')
-                      ->orderBy('fraccionamientos.nombre','DESC')->paginate(5);
+                      ->orderBy('fraccionamientos.nombre','DESC')
+                      ->orderBy('lotes.manzana','ASC')
+                      ->orderBy('lotes.num_lote','ASC')->paginate(5);
         }
        else
         {
@@ -232,7 +240,9 @@ class LicenciasController extends Controller
                         'licencias.avance','licencias.term_ingreso','licencias.term_salida')
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->orderBy('licencias.cambios','DESC')
-                        ->orderBy('fraccionamientos.nombre','DESC')->paginate(5);
+                        ->orderBy('fraccionamientos.nombre','DESC')
+                        ->orderBy('lotes.manzana','ASC')
+                        ->orderBy('lotes.num_lote','ASC')->paginate(5);
             }
             if($criterio == 'licencias.term_ingreso' || $criterio == 'licencias.term_salida'){
                 $actas = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
@@ -252,7 +262,9 @@ class LicenciasController extends Controller
                         'licencias.avance','licencias.term_ingreso','licencias.term_salida')
                         ->whereBetween($criterio, [$buscar,$buscar2])
                         ->orderBy('licencias.cambios','DESC')
-                        ->orderBy('fraccionamientos.nombre','DESC')->paginate(5);
+                        ->orderBy('fraccionamientos.nombre','DESC')
+                        ->orderBy('lotes.manzana','ASC')
+                        ->orderBy('lotes.num_lote','ASC')->paginate(5);
             }else{
                 if($criterio == 'lotes.fraccionamiento_id' ){
                     $actas = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
@@ -273,7 +285,9 @@ class LicenciasController extends Controller
                             ->where('lotes.manzana', '=', $b_manzana)
                             ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
                             ->orderBy('licencias.cambios','DESC')
-                            ->orderBy('fraccionamientos.nombre','DESC')->paginate(5);
+                            ->orderBy('fraccionamientos.nombre','DESC')
+                            ->orderBy('lotes.manzana','ASC')
+                            ->orderBy('lotes.num_lote','ASC')->paginate(5);
                     }
             }
         }
