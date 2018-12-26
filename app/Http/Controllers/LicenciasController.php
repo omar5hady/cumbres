@@ -12,7 +12,7 @@ use Excel;
 
 class LicenciasController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request) //Index para modulo de licencias
     {
         $buscar = $request->buscar;
         $buscar2 = $request->buscar2;
@@ -189,7 +189,7 @@ class LicenciasController extends Controller
     }
 
 
-    public function indexActa(Request $request)
+    public function indexActa(Request $request) //Index para modulo de licencias
     {
         $buscar = $request->buscar;
         $buscar2 = $request->buscar2;
@@ -214,7 +214,8 @@ class LicenciasController extends Controller
                       DB::raw("CONCAT(p.nombre,' ',p.apellidos) AS perito"),'licencias.f_planos',
                       'licencias.f_ingreso','licencias.num_licencia','licencias.f_salida','lotes.arquitecto_id',
                       'licencias.perito_dro','fraccionamientos.nombre as fraccionamiento','licencias.cambios',
-                      'licencias.avance','licencias.term_ingreso','licencias.term_salida')
+                      'licencias.avance','licencias.term_ingreso','licencias.term_salida','licencias.num_acta',
+                      'licencias.foto_acta')
                       ->orderBy('licencias.cambios','DESC')
                       ->orderBy('fraccionamientos.nombre','DESC')
                       ->orderBy('lotes.manzana','ASC')
@@ -234,10 +235,12 @@ class LicenciasController extends Controller
                         'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
                         'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
                         'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.siembra',
-                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS arquitecto"),'licencias.f_planos',
+                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS arquitecto"),
+                        DB::raw("CONCAT(p.nombre,' ',p.apellidos) AS perito"),'licencias.f_planos',
                         'licencias.f_ingreso','licencias.num_licencia','licencias.f_salida','lotes.arquitecto_id',
                         'licencias.perito_dro','fraccionamientos.nombre as fraccionamiento','licencias.cambios',
-                        'licencias.avance','licencias.term_ingreso','licencias.term_salida')
+                        'licencias.avance','licencias.term_ingreso','licencias.term_salida','licencias.num_acta',
+                        'licencias.foto_acta')
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->orderBy('licencias.cambios','DESC')
                         ->orderBy('fraccionamientos.nombre','DESC')
@@ -256,10 +259,12 @@ class LicenciasController extends Controller
                         'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
                         'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
                         'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.siembra',
-                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS arquitecto"),'licencias.f_planos',
+                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS arquitecto"),
+                        DB::raw("CONCAT(p.nombre,' ',p.apellidos) AS perito"),'licencias.f_planos',
                         'licencias.f_ingreso','licencias.num_licencia','licencias.f_salida','lotes.arquitecto_id',
                         'licencias.perito_dro','fraccionamientos.nombre as fraccionamiento','licencias.cambios',
-                        'licencias.avance','licencias.term_ingreso','licencias.term_salida')
+                        'licencias.avance','licencias.term_ingreso','licencias.term_salida','licencias.num_acta',
+                        'licencias.foto_acta')
                         ->whereBetween($criterio, [$buscar,$buscar2])
                         ->orderBy('licencias.cambios','DESC')
                         ->orderBy('fraccionamientos.nombre','DESC')
@@ -278,9 +283,11 @@ class LicenciasController extends Controller
                             'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
                             'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
                             'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.siembra',
-                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS arquitecto"),'licencias.f_planos',
+                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS arquitecto"),
+                            DB::raw("CONCAT(p.nombre,' ',p.apellidos) AS perito"),'licencias.f_planos',
                             'licencias.f_ingreso','licencias.num_licencia','licencias.f_salida','lotes.arquitecto_id',
-                            'licencias.perito_dro','fraccionamientos.nombre as fraccionamiento','licencias.cambios')
+                            'licencias.perito_dro','fraccionamientos.nombre as fraccionamiento','licencias.cambios','licencias.num_acta',
+                            'licencias.foto_acta')
                             ->where('lotes.fraccionamiento_id', '=',  $buscar)
                             ->where('lotes.manzana', '=', $b_manzana)
                             ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
@@ -340,6 +347,7 @@ class LicenciasController extends Controller
         $acta->term_ingreso=$request->term_ingreso;
         $acta->term_salida=$request->term_salida;
         $acta->avance=$request->avance;
+        $acta->num_acta=$request->num_acta;
        
 
         $acta->save();

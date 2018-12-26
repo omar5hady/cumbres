@@ -52,10 +52,13 @@
                                     <th># Lote</th>
                                     <th>Terreno mts&sup2;</th>
                                     <th>Construcción mts&sup2;</th>
+                                    <th>DRO</th>
                                     <th>Modelo</th>
                                     <th>Avance</th>
                                     <th>Ingreso Act. terminacion</th>
-                                    <th>Salida Act. terminacion</th>                                    
+                                    <th>Salida Act. terminacion</th>  
+                                    <th>No. Acta</th>
+
                                 </tr>
                             </thead>
                             <tbody>
@@ -74,6 +77,10 @@
                                     <td v-text="act_terminacion.num_lote"></td>
                                     <td v-text="act_terminacion.terreno"></td>
                                     <td v-text="act_terminacion.construccion"></td>
+                                    <td>
+                                        <span v-if = "act_terminacion.perito!='Sin Asignar  '" class="badge badge-success" v-text="'Arq. '+act_terminacion.perito"></span>
+                                        <span v-else class="badge badge-danger"> Por Asignar </span>
+                                    </td>
                                     
                                     <!--Modelo-->
                                     <td>
@@ -92,6 +99,8 @@
                                     <td v-if="!act_terminacion.term_salida" v-text="''"></td>
                                     <td v-else v-text="this.moment(act_terminacion.term_salida).locale('es').format('DD/MMM/YYYY')"></td>
                                     
+                                    <td  v-if="!act_terminacion.foto_acta" v-text="act_terminacion.num_acta"></td>
+                                    <td v-else style="width:7%"><a class="btn btn-default btn-sm"  v-text="act_terminacion.num_acta" v-bind:href="'/download/'+act_terminacion.foto_acta"></a></td>
                                 </tr>                               
                             </tbody>
                         </table>  
@@ -132,7 +141,7 @@
                         <div class="modal-body">
                             <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
 
-                             <div class="form-group row">
+                                <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Avance</label>
                                     <div class="col-md-6">
                                        <input type="number" min="0" max="100" v-model="avance" class="form-control" >
@@ -151,7 +160,15 @@
                                        <input type="date" v-model="term_salida" class="form-control" >
                                     </div>
                                 </div>
-                                 <div class="form-group row">
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">No. Acta</label>
+                                    <div class="col-md-4">
+                                        <input type="text" maxlength="13" v-on:keypress="isNumber(event)" v-model="num_acta" class="form-control" placeholder="Numero de Acta">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Agregar Observación</label>
                                     <div class="col-md-6">
                                        <button type="button" class="btn btn-danger" @click="abrirModal3('lote','observacion',id)">Nueva Observación</button>
@@ -455,6 +472,7 @@
                 arquitecto:'',
                 fraccionamiento:'',
                 num_licencia:0,
+                num_acta:'',
                 credito_puente: '',
                 etapa_servicios: '',
                 clv_catastral: '',
@@ -496,7 +514,7 @@
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'lotes.fraccionanmiento_id', 
+                criterio : 'lotes.fraccionamiento_id', 
                 buscar : '',
                 buscar2 : '',
                 b_manzana : '',
@@ -670,7 +688,8 @@
                     'id':this.id,
                     'term_ingreso' : this.term_ingreso,
                     'term_salida' : this.term_salida,
-                    'avance' : this.avance
+                    'avance' : this.avance,
+                    'num_acta':this.num_acta
                     
                     
                 }).then(function (response){
@@ -707,6 +726,7 @@
                 this.avance = '';
                 this.term_ingreso = '';
                 this.term_salida = '';
+                this.num_acta='';
                 
                 
                 
@@ -766,6 +786,7 @@
                                 this.term_salida=data['term_salida'];
                                 this.avance=data['avance'];
                                 this.id=data['id'];
+                                this.num_acta=data['num_acta'];
                                 break;
                             }
                             case 'ver':
@@ -896,4 +917,10 @@
             width: auto;
             padding: 1rem
         }
+    
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none; 
+    margin: 0;  
+    }
 </style>
