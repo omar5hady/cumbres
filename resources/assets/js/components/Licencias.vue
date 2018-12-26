@@ -95,7 +95,8 @@
                                     <td>
                                         <span v-if = "licencias.modelo!='Por Asignar' && licencias.cambios==0" class="badge badge-success" v-text="licencias.modelo"></span>
                                         <span v-if = "licencias.modelo=='Por Asignar'" class="badge badge-danger">Por Asignar</span>
-                                        <span v-if = "licencias.cambios==1" class="badge badge-warning" v-text="licencias.modelo"></span>
+                                        <span v-if = "licencias.cambios==1 && licencias.modelo_ant !== 'N/A'" class="badge badge-warning" v-text="licencias.modelo_ant + '->' + licencias.modelo"></span>
+                                        <span v-if = "licencias.cambios==1 && licencias.modelo_ant == 'N/A'" class="badge badge-warning" v-text="licencias.modelo"></span>
                                     </td>
                                     <!--Arquitecto -->
                                     <td>

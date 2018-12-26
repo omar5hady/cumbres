@@ -66338,6 +66338,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -67436,7 +67437,18 @@ var render = function() {
                           ])
                         : _vm._e(),
                       _vm._v(" "),
-                      licencias.cambios == 1
+                      licencias.cambios == 1 && licencias.modelo_ant !== "N/A"
+                        ? _c("span", {
+                            staticClass: "badge badge-warning",
+                            domProps: {
+                              textContent: _vm._s(
+                                licencias.modelo_ant + "->" + licencias.modelo
+                              )
+                            }
+                          })
+                        : _vm._e(),
+                      _vm._v(" "),
+                      licencias.cambios == 1 && licencias.modelo_ant == "N/A"
                         ? _c("span", {
                             staticClass: "badge badge-warning",
                             domProps: { textContent: _vm._s(licencias.modelo) }

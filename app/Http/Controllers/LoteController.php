@@ -334,6 +334,10 @@ class LoteController extends Controller
        ->where('id','=',$request->id)
        ->get();
 
+       $nombreModelo = Modelo::select('nombre')
+       ->where('id','=',$modeloOld[0]->modelo_id)
+       ->get();
+
         //FindOrFail se utiliza para buscar lo que recibe de argumento
         $lote = Lote::findOrFail($request->id);
         $lote->fraccionamiento_id = $request->fraccionamiento_id;
@@ -348,6 +352,8 @@ class LoteController extends Controller
 
             $licencia = Licencia::findOrFail($request->id);
             $licencia->cambios = 1;
+            if($nombreModelo[0]->nombre != "Por Asignar")
+                $licencia->modelo_ant = $nombreModelo[0]->nombre;
             $licencia->save();
         }
         $lote->empresa_id = 1;
@@ -368,7 +374,7 @@ class LoteController extends Controller
 
 
 
-    public function asignarMod(Request $request)
+    public function asignarMod(Request $request) // EN MASA
     {
         $siembra = '';
        if(!$request->ajax())return redirect('/');
@@ -379,6 +385,10 @@ class LoteController extends Controller
 
        $modeloOld = Lote::select('modelo_id')
        ->where('id','=',$request->id)
+       ->get();
+
+       $nombreModelo = Modelo::select('nombre')
+       ->where('id','=',$modeloOld[0]->modelo_id)
        ->get();
 
        $modelo= Modelo::select('construccion')
@@ -396,6 +406,8 @@ class LoteController extends Controller
 
             $licencia = Licencia::findOrFail($request->id);
             $licencia->cambios = 1;
+            if($nombreModelo[0]->nombre != "Por Asignar")
+                $licencia->modelo_ant = $nombreModelo[0]->nombre;
             $licencia->save();
         }
         $lote->construccion = $modelo[0]->construccion;
