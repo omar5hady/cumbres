@@ -81,7 +81,7 @@
                                         <button title="Subir foto y predial" type="button" @click="abrirModal('lote','subirArchivo',licencias)" class="btn btn-default btn-sm">
                                           <i class="icon-cloud-upload"></i>
                                         </button>
-                                        <a  title="Descargar predial" v-if ="licencias.foto_predial" class="btn btn-success btn-sm" v-bind:href="'/download/'+licencias.foto_predial">
+                                        <a  title="Descargar predial" v-if ="licencias.foto_predial" class="btn btn-success btn-sm" v-bind:href="'/downloadPredial/'+licencias.foto_predial">
                                         <i class="fa fa-arrow-circle-down fa-lg"></i>
                                         </a>
                                        
@@ -122,7 +122,7 @@
                                     <td v-else v-text="this.moment(licencias.f_salida).locale('es').format('DD/MMM/YYYY')"></td>
                                     
                                     <td  v-if="!licencias.foto_lic" v-text="licencias.num_licencia"></td>
-                                    <td v-else style="width:7%"><a class="btn btn-default btn-sm"  v-text="licencias.num_licencia" v-bind:href="'/download/'+licencias.foto_lic"></a></td>
+                                    <td v-else style="width:7%"><a class="btn btn-default btn-sm"  v-text="licencias.num_licencia" v-bind:href="'/downloadLicencias/'+licencias.foto_lic"></a></td>
                                     <td  v-text="licencias.credito_puente"></td>
                                     
                                     
@@ -686,7 +686,7 @@
            
                 formData.append('foto_lic', this.foto_lic);
                 let me = this;
-                axios.post('/formSubmit/'+this.id, formData)
+                axios.post('/formSubmitLicencias/'+this.id, formData)
                 .then(function (response) {
                     currentObj.success = response.data.success;
                     swal({

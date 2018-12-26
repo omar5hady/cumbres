@@ -51312,6 +51312,61 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -51323,9 +51378,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             colonia: '',
             estado: 'San Luis Potosí',
             ciudad: '',
+            archivo_planos: '',
+            archivo_escrituras: '',
             arrayFraccionamiento: [],
             modal: 0,
+            modal4: 0,
             tituloModal: '',
+            tituloModal4: '',
             tipoAccion: 0,
             errorFraccionamiento: 0,
             errorMostrarMsjFraccionamiento: [],
@@ -51373,6 +51432,72 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         }
     },
     methods: {
+
+        //funciones para carga de los planos del fraccionamiento 
+
+        onImageChangePlanos: function onImageChangePlanos(e) {
+            console.log(e.target.files[0]);
+            this.archivo_planos = e.target.files[0];
+        },
+        formSubmitPlanos: function formSubmitPlanos(e) {
+            e.preventDefault();
+            var currentObj = this;
+
+            var formData = new FormData();
+            formData.append('archivo_planos', this.archivo_planos);
+            var me = this;
+            axios.post('/formSubmitPlanos/' + this.id, formData).then(function (response) {
+                currentObj.success = response.data.success;
+                swal({
+                    position: 'top-end',
+                    type: 'success',
+                    title: 'Archivo guardado correctamente',
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+                me.cerrarModal4();
+                me.listarFraccionamiento(1, '', 'fraccionamiento');
+            }).catch(function (error) {
+                currentObj.output = error;
+            });
+        },
+
+
+        //funciones para carga de las escrituras de los fraccionamientos
+
+        onImageChangeEscrituras: function onImageChangeEscrituras(e) {
+
+            console.log(e.target.files[0]);
+
+            this.archivo_escrituras = e.target.files[0];
+        },
+        formSubmitEscrituras: function formSubmitEscrituras(e) {
+
+            e.preventDefault();
+
+            var currentObj = this;
+
+            var formData = new FormData();
+
+            formData.append('archivo_escrituras', this.archivo_escrituras);
+            var me = this;
+            axios.post('/formSubmitEscrituras/' + this.id, formData).then(function (response) {
+                currentObj.success = response.data.success;
+                swal({
+                    position: 'top-end',
+                    type: 'success',
+                    title: 'Archivo guardado correctamente',
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+                me.cerrarModal4();
+                me.listarFraccionamiento(1, '', 'fraccionamiento');
+            }).catch(function (error) {
+                currentObj.output = error;
+            });
+        },
+
+
         /**Metodo para mostrar los registros */
         listarFraccionamiento: function listarFraccionamiento(page, buscar, criterio) {
             var me = this;
@@ -51530,6 +51655,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.errorFraccionamiento = 0;
             this.errorMostrarMsjFraccionamiento = [];
         },
+        cerrarModal4: function cerrarModal4() {
+            this.modal4 = 0;
+            this.tituloModal4 = '';
+            this.archivo_planos = '';
+            this.archivo_escrituras = '';
+            this.errorFraccionamiento = 0;
+            this.errorMostrarMsjFraccionamiento = [];
+        },
 
         /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
         abrirModal: function abrirModal(modelo, accion) {
@@ -51567,6 +51700,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     this.ciudad = data['ciudad'];
                                     break;
                                 }
+
+                            case 'subirArchivo':
+                                {
+                                    this.modal4 = 1;
+                                    this.tituloModal4 = 'Subir Archivos';
+                                    this.id = data['id'];
+                                    this.archivo_planos = data['archivo_planos'];
+                                    this.archivo_escrituras = data['archivo_escrituras'];
+                                    break;
+                                }
                         }
                     }
             }
@@ -51593,7 +51736,7 @@ var render = function() {
       _c("div", { staticClass: "card scroll-box" }, [
         _c("div", { staticClass: "card-header" }, [
           _c("i", { staticClass: "fa fa-align-justify" }),
-          _vm._v(" Fraccionamientos\n                    "),
+          _vm._v(" Fraccionamientos\n                        "),
           _vm._v(" "),
           _c(
             "button",
@@ -51608,7 +51751,7 @@ var render = function() {
             },
             [
               _c("i", { staticClass: "icon-plus" }),
-              _vm._v(" Nuevo\n                    ")
+              _vm._v(" Nuevo\n                        ")
             ]
           )
         ]),
@@ -51803,7 +51946,7 @@ var render = function() {
                         },
                         [_c("i", { staticClass: "icon-pencil" })]
                       ),
-                      _vm._v("  \n                                    "),
+                      _vm._v("  \n                                        "),
                       _c(
                         "button",
                         {
@@ -51816,7 +51959,65 @@ var render = function() {
                           }
                         },
                         [_c("i", { staticClass: "icon-trash" })]
-                      )
+                      ),
+                      _vm._v(" \n                                        "),
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-default btn-sm",
+                          attrs: {
+                            title: "Subir planos y escrituras",
+                            type: "button"
+                          },
+                          on: {
+                            click: function($event) {
+                              _vm.abrirModal(
+                                "fraccionamiento",
+                                "subirArchivo",
+                                fraccionamiento
+                              )
+                            }
+                          }
+                        },
+                        [_c("i", { staticClass: "icon-cloud-upload" })]
+                      ),
+                      _vm._v(" \n                                        "),
+                      fraccionamiento.archivo_planos
+                        ? _c(
+                            "a",
+                            {
+                              staticClass: "btn btn-success btn-sm",
+                              attrs: {
+                                title: "Descargar planos",
+                                href:
+                                  "/downloadPlanos/" +
+                                  fraccionamiento.archivo_planos
+                              }
+                            },
+                            [_c("i", { staticClass: "fa fa-map fa-lg" })]
+                          )
+                        : _vm._e(),
+                      _vm._v(" \n                                         "),
+                      fraccionamiento.archivo_escrituras
+                        ? _c(
+                            "a",
+                            {
+                              staticClass: "btn btn-warning btn-sm",
+                              attrs: {
+                                title: "Descargar escrituras",
+                                href:
+                                  "/downloadEscrituras/" +
+                                  fraccionamiento.archivo_escrituras
+                              }
+                            },
+                            [
+                              _c("i", {
+                                staticClass: "fa fa-file-archive-o fa-lg"
+                              })
+                            ]
+                          )
+                        : _vm._e(),
+                      _vm._v(" \n                                    ")
                     ]),
                     _vm._v(" "),
                     _c("td", {
@@ -52480,6 +52681,142 @@ var render = function() {
                       [_vm._v("Actualizar")]
                     )
                   : _vm._e()
+              ])
+            ])
+          ]
+        )
+      ]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        class: { mostrar: _vm.modal4 },
+        staticStyle: { display: "none" },
+        attrs: {
+          tabindex: "-1",
+          role: "dialog",
+          "aria-labelledby": "myModalLabel",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c(
+          "div",
+          {
+            staticClass: "modal-dialog modal-primary modal-lg",
+            attrs: { role: "document" }
+          },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _c("div", { staticClass: "modal-header" }, [
+                _c("h4", {
+                  staticClass: "modal-title",
+                  domProps: { textContent: _vm._s(_vm.tituloModal4) }
+                }),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "close",
+                    attrs: { type: "button", "aria-label": "Close" },
+                    on: {
+                      click: function($event) {
+                        _vm.cerrarModal4()
+                      }
+                    }
+                  },
+                  [
+                    _c("span", { attrs: { "aria-hidden": "true" } }, [
+                      _vm._v("×")
+                    ])
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-body" }, [
+                _c("div", { staticStyle: { float: "left" } }, [
+                  _c(
+                    "form",
+                    {
+                      attrs: { method: "post", enctype: "multipart/form-data" },
+                      on: { submit: _vm.formSubmitPlanos }
+                    },
+                    [
+                      _c("strong", [
+                        _vm._v("Sube aqui los planos del fraccionamiento")
+                      ]),
+                      _vm._v(" "),
+                      _c("input", {
+                        staticClass: "form-control",
+                        attrs: { type: "file" },
+                        on: { change: _vm.onImageChangePlanos }
+                      }),
+                      _vm._v(" "),
+                      _c("br"),
+                      _vm._v(" "),
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-success",
+                          attrs: { type: "submit" }
+                        },
+                        [_vm._v("Cargar")]
+                      )
+                    ]
+                  )
+                ]),
+                _vm._v(" "),
+                _c("div", { staticStyle: { float: "right" } }, [
+                  _c(
+                    "form",
+                    {
+                      attrs: { method: "post", enctype: "multipart/form-data" },
+                      on: { submit: _vm.formSubmitEscrituras }
+                    },
+                    [
+                      _c("strong", [
+                        _vm._v(
+                          "Sube aqui los archivos de escrituras del fraccionamiento"
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c("input", {
+                        staticClass: "form-control",
+                        attrs: { type: "file" },
+                        on: { change: _vm.onImageChangeEscrituras }
+                      }),
+                      _vm._v(" "),
+                      _c("br"),
+                      _vm._v(" "),
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-success",
+                          attrs: { type: "submit" }
+                        },
+                        [_vm._v("Cargar")]
+                      )
+                    ]
+                  )
+                ])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-footer" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-secondary",
+                    attrs: { type: "button" },
+                    on: {
+                      click: function($event) {
+                        _vm.cerrarModal4()
+                      }
+                    }
+                  },
+                  [_vm._v("Cerrar")]
+                )
               ])
             ])
           ]
@@ -57993,7 +58330,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             // formData.append('id', this.id);
             formData.append('archivo', this.archivo);
             var me = this;
-            axios.post('/formSubmit/' + this.id, formData).then(function (response) {
+            axios.post('/formSubmitModelo/' + this.id, formData).then(function (response) {
                 currentObj.success = response.data.success;
                 swal({
                     position: 'top-end',
@@ -58565,7 +58902,9 @@ var render = function() {
                             "a",
                             {
                               staticClass: "btn btn-default btn-sm",
-                              attrs: { href: "/download/" + modelo.archivo }
+                              attrs: {
+                                href: "/downloadModelo/" + modelo.archivo
+                              }
                             },
                             [_c("i", { staticClass: "icon-cloud-download" })]
                           )
@@ -66155,7 +66494,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             formData.append('foto_lic', this.foto_lic);
             var me = this;
-            axios.post('/formSubmit/' + this.id, formData).then(function (response) {
+            axios.post('/formSubmitLicencias/' + this.id, formData).then(function (response) {
                 currentObj.success = response.data.success;
                 swal({
                     position: 'top-end',
@@ -67049,7 +67388,8 @@ var render = function() {
                               staticClass: "btn btn-success btn-sm",
                               attrs: {
                                 title: "Descargar predial",
-                                href: "/download/" + licencias.foto_predial
+                                href:
+                                  "/downloadPredial/" + licencias.foto_predial
                               }
                             },
                             [
@@ -67189,7 +67529,9 @@ var render = function() {
                       : _c("td", { staticStyle: { width: "7%" } }, [
                           _c("a", {
                             staticClass: "btn btn-default btn-sm",
-                            attrs: { href: "/download/" + licencias.foto_lic },
+                            attrs: {
+                              href: "/downloadLicencias/" + licencias.foto_lic
+                            },
                             domProps: {
                               textContent: _vm._s(licencias.num_licencia)
                             }
@@ -70638,7 +70980,7 @@ var render = function() {
                           _c("a", {
                             staticClass: "btn btn-default btn-sm",
                             attrs: {
-                              href: "/download/" + act_terminacion.foto_acta
+                              href: "/downloadActa/" + act_terminacion.foto_acta
                             },
                             domProps: {
                               textContent: _vm._s(act_terminacion.num_acta)

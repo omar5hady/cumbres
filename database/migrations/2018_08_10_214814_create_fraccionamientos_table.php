@@ -21,6 +21,8 @@ class CreateFraccionamientosTable extends Migration
             $table->string('colonia',50)->nullable();
             $table->string('estado',100)->nullable();
             $table->string('ciudad',100)->nullable();
+            $table->string('archivo_planos')->nullable();
+            $table->string('archivo_escrituras')->nullable();
 
             $table->timestamps();
         });

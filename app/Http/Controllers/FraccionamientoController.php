@@ -171,4 +171,60 @@ class FraccionamientoController extends Controller
         ->where('tipo_proyecto', '=', $buscar)->get();
         return['fraccionamientos' => $fraccionamiento];
     }
+
+
+
+     //funciones para carga y descarga de planos
+
+     public function formSubmitPlanos(Request $request, $id)
+     {
+ 
+         $fileName = time().'.'.$request->archivo_planos->getClientOriginalExtension();
+         $moved =  $request->archivo_planos->move(public_path('/files/fraccionamientos/planos'), $fileName);
+ 
+         if($moved){
+             if(!$request->ajax())return redirect('/');
+             $planos = Fraccionamiento::findOrFail($request->id);
+             $planos->archivo_planos = $fileName;
+             $planos->id = $id;
+             $planos->save(); //Insert
+     
+             }
+         
+         return response()->json(['success'=>'You have successfully upload file.']);
+     }
+ 
+     public function downloadFilePlanos($fileName){
+         
+         $pathtoFile = public_path().'/files/fraccionamientos/planos/'.$fileName;
+         return response()->download($pathtoFile);
+     }
+
+
+      //funciones para carga y descarga de archivos de escrituras
+
+      public function formSubmitEscrituras(Request $request, $id)
+      {
+  
+          $fileName = time().'.'.$request->archivo_escrituras->getClientOriginalExtension();
+          $moved =  $request->archivo_escrituras->move(public_path('/files/fraccionamientos/escrituras'), $fileName);
+  
+          if($moved){
+              if(!$request->ajax())return redirect('/');
+              $escrituras = Fraccionamiento::findOrFail($request->id);
+              $escrituras->archivo_escrituras = $fileName;
+              $escrituras->id = $id;
+              $escrituras->save(); //Insert
+      
+              }
+          
+          return response()->json(['success'=>'You have successfully upload file.']);
+      }
+  
+      public function downloadFileEscrituras($fileName){
+          
+          $pathtoFile = public_path().'/files/fraccionamientos/escrituras/'.$fileName;
+          return response()->download($pathtoFile);
+      }
+
 }

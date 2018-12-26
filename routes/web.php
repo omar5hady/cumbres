@@ -26,6 +26,10 @@ Route::get('/fraccionamiento','FraccionamientoController@index');
 Route::post('/fraccionamiento/registrar','FraccionamientoController@store');
 Route::put('/fraccionamiento/actualizar','FraccionamientoController@update');
 Route::delete('/fraccionamiento/eliminar','FraccionamientoController@destroy');
+Route::post('/formSubmitPlanos/{id}','FraccionamientoController@formSubmitPlanos'); //carga de planos
+Route::get('/downloadPlanos/{fileName}' , 'FraccionamientoController@downloadFilePlanos'); //descarga de planos
+Route::post('/formSubmitEscrituras/{id}','FraccionamientoController@formSubmitEscrituras'); //carga de escrituras
+Route::get('/downloadEscrituras/{fileName}' , 'FraccionamientoController@downloadFileEscrituras'); //descarga de escrituras
 
 /////////////////////   RUTAS ETAPAS        //////////////////////////////////////
 Route::get('/etapa','EtapaController@index');
@@ -52,8 +56,8 @@ Route::get('/modelo','ModeloController@index');
 Route::post('/modelo/registrar','ModeloController@store');
 Route::put('/modelo/actualizar','ModeloController@update');
 Route::delete('/modelo/eliminar','ModeloController@destroy');
-Route::post('/formSubmit/{id}','ModeloController@formSubmit');
-Route::get('/download/{fileName}' , 'ModeloController@downloadFile');
+Route::post('/formSubmitModelo/{id}','ModeloController@formSubmit');
+Route::get('/downloadModelo/{fileName}' , 'ModeloController@downloadFile');
 
 ////////////////////        RUTAS LOTES    /////////////////////////////////
 Route::get('/lote','LoteController@index');
@@ -71,8 +75,8 @@ Route::put('/lotes/enviarAviObra','LoteController@enviarAviso');
 Route::get('/licencias','LicenciasController@index');
 Route::put('/licencias/actualizar','LicenciasController@update');
 Route::get('/licencias/resume','LicenciasController@resumeLicencias');
-Route::post('/formSubmit/{id}','LicenciasController@formSubmit'); //carga de licencias
-Route::get('/download/{fileName}' , 'LicenciasController@downloadFile'); //descarga de licencias
+Route::post('/formSubmitLicencias/{id}','LicenciasController@formSubmit'); //carga de licencias
+Route::get('/downloadLicencias/{fileName}' , 'LicenciasController@downloadFile'); //descarga de licencias
 
 ///////////////////       RUTAS LICENCIA-ACTA  ////////////////////////////////////
 Route::get('/acta_terminacion','LicenciasController@indexActa');
@@ -80,9 +84,9 @@ Route::put('/acta_terminacion/actualizar','LicenciasController@updateActas');
 Route::get('/licencias/resume','LicenciasController@resumeLicencias');
 Route::get('/licencias/resume_excel','LicenciasController@exportExcel');
 Route::post('/formSubmitActa/{id}','LicenciasController@formSubmitActa'); //carga de acta
-Route::get('/download/{fileName}' , 'LicenciasController@downloadFileActa'); //descarga de acta
+Route::get('/downloadActa/{fileName}' , 'LicenciasController@downloadFileActa'); //descarga de acta
 Route::post('/formSubmitPredial/{id}','LicenciasController@formSubmitPredial'); //carga de predial
-Route::get('/download/{fileName}' , 'LicenciasController@downloadFilePredial'); //descarga de predial
+Route::get('/downloadPredial/{fileName}' , 'LicenciasController@downloadFilePredial'); //descarga de predial
 
 ////////////////////        RUTAS TERRENOS    /////////////////////////////////
 Route::get('/terreno','TerrenoController@index');

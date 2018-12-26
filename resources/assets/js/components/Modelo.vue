@@ -69,7 +69,7 @@
                                     <td v-text="modelo.fraccionamiento"></td>
                                     <td v-text="modelo.terreno"></td>
                                     <td v-text="modelo.construccion"></td>
-                                    <td style="width:7%" v-if = "modelo.archivo"><a class="btn btn-default btn-sm" v-bind:href="'/download/'+modelo.archivo"><i class="icon-cloud-download"></i></a></td>
+                                    <td style="width:7%" v-if = "modelo.archivo"><a class="btn btn-default btn-sm" v-bind:href="'/downloadModelo/'+modelo.archivo"><i class="icon-cloud-download"></i></a></td>
                                 </tr>                               
                             </tbody>
                         </table>  
@@ -307,7 +307,7 @@
                // formData.append('id', this.id);
                 formData.append('archivo', this.archivo);
                 let me = this;
-                axios.post('/formSubmit/'+this.id, formData)
+                axios.post('/formSubmitModelo/'+this.id, formData)
                 .then(function (response) {
                     currentObj.success = response.data.success;
                     swal({

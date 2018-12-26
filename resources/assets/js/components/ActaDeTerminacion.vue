@@ -103,7 +103,7 @@
                                     <td v-else v-text="this.moment(act_terminacion.term_salida).locale('es').format('DD/MMM/YYYY')"></td>
                                     
                                     <td  v-if="!act_terminacion.foto_acta" v-text="act_terminacion.num_acta"></td>
-                                    <td v-else style="width:7%"><a class="btn btn-default btn-sm"  v-text="act_terminacion.num_acta" v-bind:href="'/download/'+act_terminacion.foto_acta"></a></td>
+                                    <td v-else style="width:7%"><a class="btn btn-default btn-sm"  v-text="act_terminacion.num_acta" v-bind:href="'/downloadActa/'+act_terminacion.foto_acta"></a></td>
                                 </tr>                               
                             </tbody>
                         </table>  

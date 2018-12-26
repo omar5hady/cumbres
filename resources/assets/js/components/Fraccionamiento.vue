@@ -55,7 +55,16 @@
                                         </button> &nbsp;
                                         <button type="button" class="btn btn-danger btn-sm" @click="eliminarFraccionamiento(fraccionamiento)">
                                           <i class="icon-trash"></i>
-                                        </button>
+                                        </button>&nbsp;
+                                        <button title="Subir planos y escrituras" type="button" @click="abrirModal('fraccionamiento','subirArchivo',fraccionamiento)" class="btn btn-default btn-sm">
+                                          <i class="icon-cloud-upload"></i>
+                                        </button>&nbsp;
+                                        <a  title="Descargar planos" v-if ="fraccionamiento.archivo_planos" class="btn btn-success btn-sm" v-bind:href="'/downloadPlanos/'+fraccionamiento.archivo_planos">
+                                        <i class="fa fa-map fa-lg"></i>
+                                        </a>&nbsp;
+                                         <a  title="Descargar escrituras" v-if ="fraccionamiento.archivo_escrituras" class="btn btn-warning btn-sm" v-bind:href="'/downloadEscrituras/'+fraccionamiento.archivo_escrituras">
+                                        <i class="fa fa-file-archive-o fa-lg"></i>
+                                        </a>&nbsp;
                                     </td>
                                     <td v-text="fraccionamiento.nombre"></td>
                                     <td v-if="fraccionamiento.tipo_proyecto==1" v-text="'Lotificación'"></td>
@@ -200,6 +209,52 @@
             </div>
             <!--Fin del modal-->
             
+            <!-- Modal para la carga de los archivos-->
+<div class="modal fade" tabindex="-1" :class="{'mostrar': modal4}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" v-text="tituloModal4"></h4>
+                            <button type="button" class="close" @click="cerrarModal4()" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                     <div style="float:left;">
+                            <form  method="post" @submit="formSubmitPlanos" enctype="multipart/form-data">
+
+                                    <strong>Sube aqui los planos del fraccionamiento</strong>
+
+                                    <input type="file" class="form-control" v-on:change="onImageChangePlanos">
+                                    <br/>
+                                    <button type="submit" class="btn btn-success">Cargar</button>
+                            </form>
+                     </div>
+
+                     <div style="float:right;">
+                             <form  method="post" @submit="formSubmitEscrituras" enctype="multipart/form-data">
+
+                                    <strong>Sube aqui los archivos de escrituras del fraccionamiento</strong>
+
+                                    <input type="file" class="form-control" v-on:change="onImageChangeEscrituras">
+                                    <br/>
+                                    <button type="submit" class="btn btn-success">Cargar</button>
+                            </form>
+                     </div>
+
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal4()">Cerrar</button>
+                         </div>
+                    </div> 
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!--Fin del modal-->
+
+
 
         </main>
 </template>
@@ -219,9 +274,13 @@
                 colonia : '',
                 estado : 'San Luis Potosí',
                 ciudad : '',
+                archivo_planos: '',
+                archivo_escrituras: '',
                 arrayFraccionamiento : [],
                 modal : 0,
+                modal4: 0,
                 tituloModal : '',
+                tituloModal4: '',
                 tipoAccion: 0,
                 errorFraccionamiento : 0,
                 errorMostrarMsjFraccionamiento : [],
@@ -268,6 +327,83 @@
             }
         },
         methods : {
+
+            //funciones para carga de los planos del fraccionamiento 
+
+            onImageChangePlanos(e){
+                console.log(e.target.files[0]);
+                this.archivo_planos = e.target.files[0];
+            },
+
+            formSubmitPlanos(e) {
+                e.preventDefault();
+                let currentObj = this;
+            
+                let formData = new FormData();
+                formData.append('archivo_planos', this.archivo_planos);
+                let me = this;
+                axios.post('/formSubmitPlanos/'+this.id, formData)
+                .then(function (response) {
+                    currentObj.success = response.data.success;
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Archivo guardado correctamente',
+                        showConfirmButton: false,
+                        timer: 2000
+                        })
+                    me.cerrarModal4();
+                   me.listarFraccionamiento(1,'','fraccionamiento');
+
+                }).catch(function (error) {
+                    currentObj.output = error;
+
+                });
+
+            },
+
+//funciones para carga de las escrituras de los fraccionamientos
+
+            onImageChangeEscrituras(e){
+
+                console.log(e.target.files[0]);
+
+                this.archivo_escrituras = e.target.files[0];
+
+            },
+
+            formSubmitEscrituras(e) {
+
+                e.preventDefault();
+
+                let currentObj = this;
+            
+                let formData = new FormData();
+           
+                formData.append('archivo_escrituras', this.archivo_escrituras);
+                let me = this;
+                axios.post('/formSubmitEscrituras/'+this.id, formData)
+                .then(function (response) {
+                    currentObj.success = response.data.success;
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Archivo guardado correctamente',
+                        showConfirmButton: false,
+                        timer: 2000
+                        })
+                    me.cerrarModal4();
+                   me.listarFraccionamiento(1,'','fraccionamiento');
+
+                }).catch(function (error) {
+                    currentObj.output = error;
+                });
+
+            },
+
+
+
+
             /**Metodo para mostrar los registros */
             listarFraccionamiento(page, buscar, criterio){
                 let me = this;
@@ -428,6 +564,15 @@
                 this.errorMostrarMsjFraccionamiento = [];
 
             },
+            cerrarModal4(){
+                this.modal4 = 0;
+                this.tituloModal4 = '';
+                this.archivo_planos = '';
+                this.archivo_escrituras = '';
+                this.errorFraccionamiento = 0;
+                this.errorMostrarMsjFraccionamiento = [];
+
+            },
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
             abrirModal(modelo, accion,data =[]){
                 switch(modelo){
@@ -460,6 +605,17 @@
                                 this.colonia=data['colonia'];
                                 this.estado=data['estado'];
                                 this.ciudad=data['ciudad'];
+                                break;
+                            }
+
+                            
+                            case 'subirArchivo':
+                            {
+                                this.modal4 =1;
+                                this.tituloModal4='Subir Archivos';
+                                this.id=data['id'];
+                                this.archivo_planos=data['archivo_planos'];
+                                this.archivo_escrituras=data['archivo_escrituras'];
                                 break;
                             }
                         }
