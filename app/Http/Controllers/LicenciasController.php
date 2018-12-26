@@ -473,6 +473,8 @@ class LicenciasController extends Controller
     }
 
 
+    //funciones para carga y descarga de la licencia
+
     public function formSubmit(Request $request, $id)
     {
 
@@ -498,7 +500,32 @@ class LicenciasController extends Controller
     }
 
 
-  
+    //funciones para carga y descarga de la acta
+
+    public function formSubmitActa(Request $request, $id)
+    {
+
+        $fileName = time().'.'.$request->foto_acta->getClientOriginalExtension();
+        $moved =  $request->foto_acta->move(public_path('/files/actas'), $fileName);
+
+        if($moved){
+            if(!$request->ajax())return redirect('/');
+            $actas = Licencia::findOrFail($request->id);
+            $actas->foto_acta = $fileName;
+            $actas->id = $id;
+            $actas->save(); //Insert
+    
+            }
+        
+    	return response()->json(['success'=>'You have successfully upload file.']);
+    }
+
+    public function downloadFileActa($fileName){
+        
+        $pathtoFile = public_path().'/files/actas/'.$fileName;
+        return response()->download($pathtoFile);
+    }
+
 
 
 

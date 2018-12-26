@@ -66311,8 +66311,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.tituloModal4 = '';
             this.num_licencia = '';
             this.foto_lic = '';
-            this.errorModelo = 0;
-            this.errorMostrarMsjModelo = [];
+            this.errorLote = 0;
+            this.errorMostrarMsjLote = [];
         },
 
 
@@ -69493,6 +69493,49 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -69513,6 +69556,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             fraccionamiento: '',
             num_licencia: 0,
             num_acta: '',
+            foto_acta: '',
             credito_puente: '',
             etapa_servicios: '',
             clv_catastral: '',
@@ -69539,9 +69583,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             modal: 0,
             modal2: 0,
             modal3: 0,
+            modal4: 0,
             tituloModal: '',
             tituloModal2: '',
             tituloModal3: '',
+            tituloModal4: '',
             tipoAccion: 0,
             errorActa: 0,
             errorMostrarMsjActa: [],
@@ -69599,7 +69645,33 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             console.log(e.target.files[0]);
 
-            this.file = e.target.files[0];
+            this.foto_acta = e.target.files[0];
+        },
+        formSubmit: function formSubmit(e) {
+
+            e.preventDefault();
+
+            var currentObj = this;
+
+            var formData = new FormData();
+
+            formData.append('foto_acta', this.foto_acta);
+            var me = this;
+            axios.post('/formSubmitActa/' + this.id, formData).then(function (response) {
+                currentObj.success = response.data.success;
+                swal({
+                    position: 'top-end',
+                    type: 'success',
+                    title: 'Archivo guardado correctamente',
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+                me.cerrarModal4();
+                me.listarActa(1, '', '', '', 'fraccionamientos.nombre', '');
+            }).catch(function (error) {
+
+                currentObj.output = error;
+            });
         },
 
 
@@ -69788,6 +69860,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.usuario = '';
             this.observacion = '';
         },
+        cerrarModal4: function cerrarModal4() {
+            this.modal4 = 0;
+            this.tituloModal4 = '';
+            this.num_acta = '';
+            this.foto_acta = '';
+            this.errorActa = 0;
+            this.errorMostrarMsjActa = [];
+        },
 
 
         /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
@@ -69811,8 +69891,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     this.num_acta = data['num_acta'];
                                     break;
                                 }
-                            case 'ver':
-                                {}
+                            case 'subirArchivo':
+                                {
+                                    this.modal4 = 1;
+                                    this.tituloModal4 = 'Subir Archivo';
+                                    this.tipoAccion = 5;
+                                    this.id = data['id'];
+                                    this.num_acta = data['num_acta'];
+                                    this.foto_acta = data['foto_acta'];
+                                    break;
+                                }
                         }
                     }
             }this.selectArquitectos();
@@ -70308,7 +70396,7 @@ var render = function() {
                         },
                         [_c("i", { staticClass: "icon-pencil" })]
                       ),
-                      _vm._v("  \n                                    "),
+                      _vm._v("  \n                                        "),
                       _c(
                         "button",
                         {
@@ -70321,6 +70409,24 @@ var render = function() {
                           }
                         },
                         [_c("i", { staticClass: "icon-magnifier" })]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-default btn-sm",
+                          attrs: { title: "Subir foto acta", type: "button" },
+                          on: {
+                            click: function($event) {
+                              _vm.abrirModal(
+                                "lote",
+                                "subirArchivo",
+                                act_terminacion
+                              )
+                            }
+                          }
+                        },
+                        [_c("i", { staticClass: "icon-cloud-upload" })]
                       )
                     ]),
                     _vm._v(" "),
@@ -72036,6 +72142,128 @@ var render = function() {
           ]
         )
       ]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        class: { mostrar: _vm.modal4 },
+        staticStyle: { display: "none" },
+        attrs: {
+          tabindex: "-1",
+          role: "dialog",
+          "aria-labelledby": "myModalLabel",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c(
+          "div",
+          {
+            staticClass: "modal-dialog modal-primary modal-lg",
+            attrs: { role: "document" }
+          },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _c("div", { staticClass: "modal-header" }, [
+                _c("h4", {
+                  staticClass: "modal-title",
+                  domProps: { textContent: _vm._s(_vm.tituloModal4) }
+                }),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "close",
+                    attrs: { type: "button", "aria-label": "Close" },
+                    on: {
+                      click: function($event) {
+                        _vm.cerrarModal4()
+                      }
+                    }
+                  },
+                  [
+                    _c("span", { attrs: { "aria-hidden": "true" } }, [
+                      _vm._v("×")
+                    ])
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-body" }, [
+                _c(
+                  "form",
+                  {
+                    attrs: { method: "post", enctype: "multipart/form-data" },
+                    on: { submit: _vm.formSubmit }
+                  },
+                  [
+                    _c("strong", [_vm._v("Acta:")]),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.num_acta,
+                          expression: "num_acta"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { disabled: "", type: "text" },
+                      domProps: { value: _vm.num_acta },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.num_acta = $event.target.value
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("strong", [_vm._v("Sube aqui el acta de terminacion")]),
+                    _vm._v(" "),
+                    _c("input", {
+                      staticClass: "form-control",
+                      attrs: { type: "file" },
+                      on: { change: _vm.onImageChange }
+                    }),
+                    _vm._v(" "),
+                    _c("br"),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-success",
+                        attrs: { type: "submit" }
+                      },
+                      [_vm._v("Cargar")]
+                    )
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-footer" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-secondary",
+                    attrs: { type: "button" },
+                    on: {
+                      click: function($event) {
+                        _vm.cerrarModal4()
+                      }
+                    }
+                  },
+                  [_vm._v("Cerrar")]
+                )
+              ])
+            ])
+          ]
+        )
+      ]
     )
   ])
 }
@@ -72060,7 +72288,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "card-header" }, [
       _c("i", { staticClass: "fa fa-align-justify" }),
-      _vm._v("Acta de terminacion\n\n                    ")
+      _vm._v("Acta de terminacion\n\n                        ")
     ])
   },
   function() {

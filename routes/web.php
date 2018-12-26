@@ -74,11 +74,13 @@ Route::get('/licencias/resume','LicenciasController@resumeLicencias');
 Route::post('/formSubmit/{id}','LicenciasController@formSubmit');
 Route::get('/download/{fileName}' , 'LicenciasController@downloadFile');
 
-///////////////////       RUTAS LICENCIA   ////////////////////////////////////
+///////////////////       RUTAS LICENCIA-ACTA  ////////////////////////////////////
 Route::get('/acta_terminacion','LicenciasController@indexActa');
 Route::put('/acta_terminacion/actualizar','LicenciasController@updateActas');
 Route::get('/licencias/resume','LicenciasController@resumeLicencias');
 Route::get('/licencias/resume_excel','LicenciasController@exportExcel');
+Route::post('/formSubmitActa/{id}','LicenciasController@formSubmitActa');
+Route::get('/download/{fileName}' , 'LicenciasController@downloadFileActa');
 
 ////////////////////        RUTAS TERRENOS    /////////////////////////////////
 Route::get('/terreno','TerrenoController@index');

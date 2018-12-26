@@ -853,8 +853,8 @@
                 this.tituloModal4 = '';
                 this.num_licencia = '';
                 this.foto_lic = '';
-                this.errorModelo = 0;
-                this.errorMostrarMsjModelo = [];
+                this.errorLote = 0;
+                this.errorMostrarMsjLote = [];
 
             },
 

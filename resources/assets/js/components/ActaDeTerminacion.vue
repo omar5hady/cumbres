@@ -71,6 +71,9 @@
                                         <button type="button" @click="abrirModal2('lote','ver',act_terminacion)" class="btn btn-info btn-sm">
                                           <i class="icon-magnifier"></i>
                                         </button>
+                                        <button title="Subir foto acta" type="button" @click="abrirModal('lote','subirArchivo',act_terminacion)" class="btn btn-default btn-sm">
+                                         <i class="icon-cloud-upload"></i>
+                                        </button>
                                     </td>
                                     <td v-text="act_terminacion.proyecto"></td>
                                     <td v-text="act_terminacion.manzana"></td>
@@ -444,6 +447,46 @@
             </div>
             <!--Fin del modal observaciones-->
 
+            <!-- Modal para la carga de foto de acta -->
+<div class="modal fade" tabindex="-1" :class="{'mostrar': modal4}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" v-text="tituloModal4"></h4>
+                            <button type="button" class="close" @click="cerrarModal4()" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                        <!-- <div v-if="success != ''" class="alert alert-success" role="alert">
+
+                          {{success}}
+                        </div> -->
+                            <form  method="post" @submit="formSubmit" enctype="multipart/form-data">
+
+                                    <strong>Acta:</strong>
+
+                                    <input disabled type="text" class="form-control" v-model="num_acta" >
+
+                                    <strong>Sube aqui el acta de terminacion</strong>
+
+                                    <input type="file" class="form-control" v-on:change="onImageChange">
+                                    <br/>
+                                    <button type="submit" class="btn btn-success">Cargar</button>
+                            </form>
+
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal4()">Cerrar</button>
+                         </div>
+                    </div> 
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!--Fin del modal-->
+
 
                     
         </main>
@@ -473,6 +516,7 @@
                 fraccionamiento:'',
                 num_licencia:0,
                 num_acta:'',
+                foto_acta: '',
                 credito_puente: '',
                 etapa_servicios: '',
                 clv_catastral: '',
@@ -499,9 +543,11 @@
                 modal : 0,
                 modal2 : 0,
                 modal3 : 0,
+                modal4: 0,
                 tituloModal : '',
                 tituloModal2 : '',
                 tituloModal3: '',
+                tituloModal4: '',
                 tipoAccion: 0,
                 errorActa : 0,
                 errorMostrarMsjActa : [],
@@ -556,13 +602,47 @@
         
         methods : {
 
-            onImageChange(e){
+        onImageChange(e){
 
                 console.log(e.target.files[0]);
 
-                this.file = e.target.files[0];
+                this.foto_acta = e.target.files[0];
 
             },
+
+            formSubmit(e) {
+
+                e.preventDefault();
+
+                let currentObj = this;
+            
+                let formData = new FormData();
+           
+                formData.append('foto_acta', this.foto_acta);
+                let me = this;
+                axios.post('/formSubmitActa/'+this.id, formData)
+                .then(function (response) {
+                    currentObj.success = response.data.success;
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Archivo guardado correctamente',
+                        showConfirmButton: false,
+                        timer: 2000
+                        })
+                    me.cerrarModal4();
+                  me.listarActa(1,'','','','fraccionamientos.nombre','');
+
+                })
+
+                .catch(function (error) {
+
+                    currentObj.output = error;
+
+                });
+
+            },
+
            
 
             /**Metodo para mostrar los registros */
@@ -769,7 +849,16 @@
                 this.observacion = '';
             },
 
-           
+            cerrarModal4(){
+                this.modal4 = 0;
+                this.tituloModal4 = '';
+                this.num_acta = '';
+                this.foto_acta = '';
+                this.errorActa = 0;
+                this.errorMostrarMsjActa = [];
+
+            },
+
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
             abrirModal(licencias, accion,data =[]){
                 switch(licencias){
@@ -789,9 +878,15 @@
                                 this.num_acta=data['num_acta'];
                                 break;
                             }
-                            case 'ver':
+                            case 'subirArchivo':
                             {
-
+                                this.modal4 =1;
+                                this.tituloModal4='Subir Archivo';
+                                this.tipoAccion=5;
+                                this.id=data['id'];
+                                this.num_acta=data['num_acta'];
+                                this.foto_acta=data['foto_acta'];
+                                break;
                             }
                         }
                     }
