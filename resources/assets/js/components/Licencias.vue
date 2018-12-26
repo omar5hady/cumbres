@@ -78,9 +78,13 @@
                                         <button type="button" @click="abrirModal2('lote','ver',licencias)" class="btn btn-info btn-sm">
                                           <i class="icon-magnifier"></i>
                                         </button>
-                                        <button title="Subir foto" type="button" @click="abrirModal('lote','subirArchivo',licencias)" class="btn btn-default btn-sm">
+                                        <button title="Subir foto y predial" type="button" @click="abrirModal('lote','subirArchivo',licencias)" class="btn btn-default btn-sm">
                                           <i class="icon-cloud-upload"></i>
                                         </button>
+                                        <a  title="Descargar predial" v-if ="licencias.foto_predial" class="btn btn-success btn-sm" v-bind:href="'/download/'+licencias.foto_predial">
+                                        <i class="fa fa-arrow-circle-down fa-lg"></i>
+                                        </a>
+                                       
                                     </td>
                                     <td v-text="licencias.proyecto"></td>
                                     <td v-text="licencias.manzana"></td>
@@ -469,10 +473,7 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                        <!-- <div v-if="success != ''" class="alert alert-success" role="alert">
-
-                          {{success}}
-                        </div> -->
+                     <div style="float:left;">
                             <form  method="post" @submit="formSubmit" enctype="multipart/form-data">
 
                                     <strong>Licencia:</strong>
@@ -485,6 +486,18 @@
                                     <br/>
                                     <button type="submit" class="btn btn-success">Cargar</button>
                             </form>
+                     </div>
+
+                     <div style="float:right;">
+                             <form  method="post" @submit="formSubmitPredial" enctype="multipart/form-data">
+
+                                    <strong>Sube aqui foto del predial</strong>
+
+                                    <input type="file" class="form-control" v-on:change="onImageChangePredial">
+                                    <br/>
+                                    <button type="submit" class="btn btn-success">Cargar</button>
+                            </form>
+                     </div>
 
                         </div>
                         <!-- Botones del modal -->
@@ -525,6 +538,7 @@
                 fraccionamiento:'',
                 num_licencia:0,
                 foto_lic: '',
+                foto_predial: '',
                 credito_puente: '',
                 etapa_servicios: '',
                 clv_catastral: '',
@@ -610,6 +624,50 @@
         
         methods : {
 
+//funciones para carga de los prediales     
+
+            onImageChangePredial(e){
+
+                console.log(e.target.files[0]);
+
+                this.foto_predial = e.target.files[0];
+
+            },
+
+            formSubmitPredial(e) {
+
+                e.preventDefault();
+
+                let currentObj = this;
+            
+                let formData = new FormData();
+           
+                formData.append('foto_predial', this.foto_predial);
+                let me = this;
+                axios.post('/formSubmitPredial/'+this.id, formData)
+                .then(function (response) {
+                    currentObj.success = response.data.success;
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Archivo guardado correctamente',
+                        showConfirmButton: false,
+                        timer: 2000
+                        })
+                    me.cerrarModal4();
+                   me.listarLicencias(1,'','','','','','fraccionamientos.nombre','');
+
+                })
+
+                .catch(function (error) {
+
+                    currentObj.output = error;
+
+                });
+
+            },
+
+//funciones para carga de las licencias
  onImageChange(e){
 
                 console.log(e.target.files[0]);
@@ -853,6 +911,7 @@
                 this.tituloModal4 = '';
                 this.num_licencia = '';
                 this.foto_lic = '';
+                this.foto_predial = '';
                 this.errorLote = 0;
                 this.errorMostrarMsjLote = [];
 
@@ -889,6 +948,7 @@
                                 this.id=data['id'];
                                 this.num_licencia=data['num_licencia'];
                                 this.foto_lic=data['foto_lic'];
+                                this.foto_predial=data['foto_predial'];
                                 break;
                             }
                            

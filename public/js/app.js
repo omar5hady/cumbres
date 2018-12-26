@@ -57992,11 +57992,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var formData = new FormData();
             // formData.append('id', this.id);
             formData.append('archivo', this.archivo);
-            // formData.append('nombre', this.nombre);
-            // formData.append('tipo', this.tipo);
-            // formData.append('fraccionamiento_id', this.fraccionamiento_id);
-            // formData.append('terreno', this.terreno);
-            // formData.append('construccion', this.construccion);
             var me = this;
             axios.post('/formSubmit/' + this.id, formData).then(function (response) {
                 currentObj.success = response.data.success;
@@ -65991,6 +65986,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -66008,6 +66016,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             fraccionamiento: '',
             num_licencia: 0,
             foto_lic: '',
+            foto_predial: '',
             credito_puente: '',
             etapa_servicios: '',
             clv_catastral: '',
@@ -66092,6 +66101,44 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
 
     methods: {
+
+        //funciones para carga de los prediales     
+
+        onImageChangePredial: function onImageChangePredial(e) {
+
+            console.log(e.target.files[0]);
+
+            this.foto_predial = e.target.files[0];
+        },
+        formSubmitPredial: function formSubmitPredial(e) {
+
+            e.preventDefault();
+
+            var currentObj = this;
+
+            var formData = new FormData();
+
+            formData.append('foto_predial', this.foto_predial);
+            var me = this;
+            axios.post('/formSubmitPredial/' + this.id, formData).then(function (response) {
+                currentObj.success = response.data.success;
+                swal({
+                    position: 'top-end',
+                    type: 'success',
+                    title: 'Archivo guardado correctamente',
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+                me.cerrarModal4();
+                me.listarLicencias(1, '', '', '', '', '', 'fraccionamientos.nombre', '');
+            }).catch(function (error) {
+
+                currentObj.output = error;
+            });
+        },
+
+
+        //funciones para carga de las licencias
         onImageChange: function onImageChange(e) {
 
             console.log(e.target.files[0]);
@@ -66311,6 +66358,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.tituloModal4 = '';
             this.num_licencia = '';
             this.foto_lic = '';
+            this.foto_predial = '';
             this.errorLote = 0;
             this.errorMostrarMsjLote = [];
         },
@@ -66347,6 +66395,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     this.id = data['id'];
                                     this.num_licencia = data['num_licencia'];
                                     this.foto_lic = data['foto_lic'];
+                                    this.foto_predial = data['foto_predial'];
                                     break;
                                 }
 
@@ -66980,7 +67029,10 @@ var render = function() {
                         "button",
                         {
                           staticClass: "btn btn-default btn-sm",
-                          attrs: { title: "Subir foto", type: "button" },
+                          attrs: {
+                            title: "Subir foto y predial",
+                            type: "button"
+                          },
                           on: {
                             click: function($event) {
                               _vm.abrirModal("lote", "subirArchivo", licencias)
@@ -66988,7 +67040,25 @@ var render = function() {
                           }
                         },
                         [_c("i", { staticClass: "icon-cloud-upload" })]
-                      )
+                      ),
+                      _vm._v(" "),
+                      licencias.foto_predial
+                        ? _c(
+                            "a",
+                            {
+                              staticClass: "btn btn-success btn-sm",
+                              attrs: {
+                                title: "Descargar predial",
+                                href: "/download/" + licencias.foto_predial
+                              }
+                            },
+                            [
+                              _c("i", {
+                                staticClass: "fa fa-arrow-circle-down fa-lg"
+                              })
+                            ]
+                          )
+                        : _vm._e()
                     ]),
                     _vm._v(" "),
                     _c("td", {
@@ -68789,57 +68859,89 @@ var render = function() {
               ]),
               _vm._v(" "),
               _c("div", { staticClass: "modal-body" }, [
-                _c(
-                  "form",
-                  {
-                    attrs: { method: "post", enctype: "multipart/form-data" },
-                    on: { submit: _vm.formSubmit }
-                  },
-                  [
-                    _c("strong", [_vm._v("Licencia:")]),
-                    _vm._v(" "),
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.num_licencia,
-                          expression: "num_licencia"
-                        }
-                      ],
-                      staticClass: "form-control",
-                      attrs: { disabled: "", type: "text" },
-                      domProps: { value: _vm.num_licencia },
-                      on: {
-                        input: function($event) {
-                          if ($event.target.composing) {
-                            return
+                _c("div", { staticStyle: { float: "left" } }, [
+                  _c(
+                    "form",
+                    {
+                      attrs: { method: "post", enctype: "multipart/form-data" },
+                      on: { submit: _vm.formSubmit }
+                    },
+                    [
+                      _c("strong", [_vm._v("Licencia:")]),
+                      _vm._v(" "),
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.num_licencia,
+                            expression: "num_licencia"
                           }
-                          _vm.num_licencia = $event.target.value
+                        ],
+                        staticClass: "form-control",
+                        attrs: { disabled: "", type: "text" },
+                        domProps: { value: _vm.num_licencia },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.num_licencia = $event.target.value
+                          }
                         }
-                      }
-                    }),
-                    _vm._v(" "),
-                    _c("strong", [_vm._v("Sube aqui foto de licencia")]),
-                    _vm._v(" "),
-                    _c("input", {
-                      staticClass: "form-control",
-                      attrs: { type: "file" },
-                      on: { change: _vm.onImageChange }
-                    }),
-                    _vm._v(" "),
-                    _c("br"),
-                    _vm._v(" "),
-                    _c(
-                      "button",
-                      {
-                        staticClass: "btn btn-success",
-                        attrs: { type: "submit" }
-                      },
-                      [_vm._v("Cargar")]
-                    )
-                  ]
-                )
+                      }),
+                      _vm._v(" "),
+                      _c("strong", [_vm._v("Sube aqui foto de licencia")]),
+                      _vm._v(" "),
+                      _c("input", {
+                        staticClass: "form-control",
+                        attrs: { type: "file" },
+                        on: { change: _vm.onImageChange }
+                      }),
+                      _vm._v(" "),
+                      _c("br"),
+                      _vm._v(" "),
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-success",
+                          attrs: { type: "submit" }
+                        },
+                        [_vm._v("Cargar")]
+                      )
+                    ]
+                  )
+                ]),
+                _vm._v(" "),
+                _c("div", { staticStyle: { float: "right" } }, [
+                  _c(
+                    "form",
+                    {
+                      attrs: { method: "post", enctype: "multipart/form-data" },
+                      on: { submit: _vm.formSubmitPredial }
+                    },
+                    [
+                      _c("strong", [_vm._v("Sube aqui foto del predial")]),
+                      _vm._v(" "),
+                      _c("input", {
+                        staticClass: "form-control",
+                        attrs: { type: "file" },
+                        on: { change: _vm.onImageChangePredial }
+                      }),
+                      _vm._v(" "),
+                      _c("br"),
+                      _vm._v(" "),
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-success",
+                          attrs: { type: "submit" }
+                        },
+                        [_vm._v("Cargar")]
+                      )
+                    ]
+                  )
+                ])
               ]),
               _vm._v(" "),
               _c("div", { staticClass: "modal-footer" }, [

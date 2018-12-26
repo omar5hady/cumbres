@@ -27,6 +27,7 @@ class CreateLicenciasTable extends Migration
             $table->string('foto_lic')->nullable();
             $table->string('num_acta')->nullable();
             $table->string('foto_acta')->nullable();
+            $table->string('foto_predial')->nullable();
              
             $table->foreign('id')->references('id')->on('lotes'); 
             $table->foreign('perito_dro')->references('id')->on('personal');

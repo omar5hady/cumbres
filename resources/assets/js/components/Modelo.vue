@@ -306,11 +306,6 @@
                 let formData = new FormData();
                // formData.append('id', this.id);
                 formData.append('archivo', this.archivo);
-                // formData.append('nombre', this.nombre);
-                // formData.append('tipo', this.tipo);
-                // formData.append('fraccionamiento_id', this.fraccionamiento_id);
-                // formData.append('terreno', this.terreno);
-                // formData.append('construccion', this.construccion);
                 let me = this;
                 axios.post('/formSubmit/'+this.id, formData)
                 .then(function (response) {
