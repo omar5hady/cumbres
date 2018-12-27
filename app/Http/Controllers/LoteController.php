@@ -23,7 +23,7 @@ class LoteController extends Controller
     public function index(Request $request) //Index para modulo asignar modelo
     {
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
-       // if(!$request->ajax())return redirect('/');
+        if(!$request->ajax())return redirect('/');
 
         $buscar = $request->buscar;
         $buscar2 = $request->buscar2;
@@ -111,7 +111,7 @@ class LoteController extends Controller
     public function index2(Request $request) // index para modulo de lotes
     {
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
-       // if(!$request->ajax())return redirect('/');
+        if(!$request->ajax())return redirect('/');
 
         $buscar = $request->buscar;
         $buscar2 = $request->buscar2;
@@ -591,7 +591,7 @@ class LoteController extends Controller
     public function indexIniObra(Request $request)
     {
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
-       // if(!$request->ajax())return redirect('/');
+        if(!$request->ajax())return redirect('/');
 
         $buscar = $request->buscar;
         $criterio = $request->criterio;

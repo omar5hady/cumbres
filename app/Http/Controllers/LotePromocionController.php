@@ -10,7 +10,7 @@ class LotePromocionController extends Controller
     public function index(Request $request)
     {
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
-       // if(!$request->ajax())return redirect('/');
+        if(!$request->ajax())return redirect('/');
 
         $promocion_id = $request->promocion_id;
                 

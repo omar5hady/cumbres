@@ -14,6 +14,8 @@ class LicenciasController extends Controller
 {
     public function index(Request $request) //Index para modulo de licencias
     {
+        if(!$request->ajax())return redirect('/');
+
         $buscar = $request->buscar;
         $buscar2 = $request->buscar2;
         $b_arquitecto = $request->b_arquitecto;
@@ -191,6 +193,8 @@ class LicenciasController extends Controller
 
     public function indexActa(Request $request) //Index para modulo de licencias
     {
+        if(!$request->ajax())return redirect('/');
+
         $buscar = $request->buscar;
         $buscar2 = $request->buscar2;
         $b_lote = $request->b_lote;
@@ -424,6 +428,34 @@ class LicenciasController extends Controller
                                 $avance=$licencia->prom_avance / $licencia->num_viviendas;
                             else
                                 $avance=0;
+                        
+                        if($licencia->siembra){
+                            setlocale(LC_TIME, 'es');
+                            $tiempo = new Carbon($licencia->siembra);
+                            $licencia->siembra = $tiempo->formatLocalized('%d de %B de %Y');
+                            
+                        }
+
+                        if($licencia->f_planos){
+                            setlocale(LC_TIME, 'es');
+                            $tiempo2 = new Carbon($licencia->f_planos);
+                            $licencia->f_planos = $tiempo2->formatLocalized('%d de %B de %Y');
+                            
+                        }
+
+                        if($licencia->f_ingreso){
+                            setlocale(LC_TIME, 'es');
+                            $tiempo = new Carbon($licencia->f_ingreso);
+                            $licencia->f_ingreso = $tiempo->formatLocalized('%d de %B de %Y');
+                            
+                        }
+
+                        if($licencia->f_salida){
+                            setlocale(LC_TIME, 'es');
+                            $tiempo = new Carbon($licencia->f_salida);
+                            $licencia->f_salida = $tiempo->formatLocalized('%d de %B de %Y');
+                            
+                        }
 
                         switch($licencia->month){
                             case '1':

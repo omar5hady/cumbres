@@ -17,7 +17,7 @@ class PaqueteController extends Controller
     public function index(Request $request)
     {
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
-        //if(!$request->ajax())return redirect('/');
+        if(!$request->ajax())return redirect('/');
 
         $buscar = $request->buscar;
         $current = Carbon::today()->format('ymd');
