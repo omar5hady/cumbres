@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\PartidaController;
 use App\Lote;
 use App\Modelo;
 use App\Etapa;
@@ -429,8 +430,210 @@ class LoteController extends Controller
         $lote->arquitecto_id = $request ->arquitecto_id;
         $lote->ehl_solicitado = Carbon::today()->format('ymd');
         
-
         $lote->save();
+
+        for($i =1;$i<=49;$i++){
+            $partida = new PartidaController();
+            switch($i){
+                case 1:
+                    $nombre='Preliminares y drenaje';
+                    $partida->store($request->id, $nombre);
+                    break;
+                case 2:
+                    $nombre='Cimentación (Incluye dentellones)';
+                    $partida->store($request->id, $nombre);
+                    break;
+                case 3:
+                    $nombre='Firmes';
+                    $partida->store($request->id, $nombre);
+                    break;
+                case 4:
+                    $nombre='Muros planta baja';
+                    $partida->store($request->id, $nombre);
+                    break;
+                case 5:
+                    $nombre='Cimbras planta baja';
+                    $partida->store($request->id, $nombre);
+                    break;
+                case 6:
+                    $nombre='Acero en losa de entrepiso';
+                    $partida->store($request->id, $nombre);
+                    break;
+                case 7:
+                    $nombre='Concreto en losa de entrepiso';
+                    $partida->store($request->id, $nombre);
+                    break;
+                case 8:
+                    $nombre='Muros planta alta';
+                    $partida->store($request->id, $nombre);
+                    break;
+                case 9:
+                    $nombre='Cimbras planta alta';
+                    $partida->store($request->id, $nombre);
+                    break;
+                case 10:
+                    $nombre='Acero en losa de azotea';
+                    $partida->store($request->id, $nombre);
+                    break;
+                case 11:
+                    $nombre='Concreto en losa de azotea';
+                    $partida->store($request->id, $nombre);
+                    break;
+                case 12:
+                    $nombre='Pergolas en azotea y/o losa inclinada';
+                    $partida->store($request->id, $nombre);
+                    break;
+                case 13:
+                    $nombre='Escalera';
+                    $partida->store($request->id, $nombre);
+                    break;
+                case 14:
+                    $nombre='Barra en cocina';
+                    $partida->store($request->id, $nombre);
+                    break;
+                case 15:
+                    $nombre='Pretiles';
+                    $partida->store($request->id, $nombre);
+                    break;
+                case 16:
+                    $nombre='Aplanados en azotea';
+                    $partida->store($request->id, $nombre);
+                    break;
+                case 17:
+                    $nombre='Impermeabilizaciones';
+                    $partida->store($request->id, $nombre);
+                    break;
+                case 18:
+                    $nombre='Instalacione hidraúlica';
+                    $partida->store($request->id, $nombre);
+                    break;
+                case 19:
+                    $nombre='Instalaciòn eléctrica';
+                    $partida->store($request->id, $nombre);
+                    break;
+                case 20:
+                    $nombre='Suministro de herreria';
+                    $partida->store($request->id, $nombre);
+                    break;
+                case 21:
+                    $nombre='Colocaciones herreria';
+                    $partida->store($request->id, $nombre);
+                    break;
+                case 22:
+                    $nombre='Aluminio';
+                    $partida->store($request->id, $nombre);
+                    break;
+                case 23:
+                    $nombre='Aplanados interiores planta baja';
+                    $partida->store($request->id, $nombre);
+                    break;
+                case 24:
+                    $nombre='Aplanados interiores planta alta';
+                    $partida->store($request->id, $nombre);
+                    break;
+                case 25:
+                    $nombre='Aplanados exteriores';
+                    $partida->store($request->id, $nombre);
+                    break;
+                case 26:
+                    $nombre='Pisos interiores planta baja';
+                    $partida->store($request->id, $nombre);
+                    break;
+                case 27:
+                    $nombre='Pisos interiores planta alta';
+                    $partida->store($request->id, $nombre);
+                    break;
+                case 28:
+                    $nombre='Piso en escalera';
+                    $partida->store($request->id, $nombre);
+                    break;
+                case 29:
+                    $nombre='Antiderrapante';
+                    $partida->store($request->id, $nombre);
+                    break;
+                case 30:
+                    $nombre='Azulejos';
+                    $partida->store($request->id, $nombre);
+                    break;
+                case 31:
+                    $nombre='Fachada';
+                    $partida->store($request->id, $nombre);
+                    break;
+                case 32:
+                    $nombre='Patio';
+                    $partida->store($request->id, $nombre);
+                    break;
+                case 33:
+                    $nombre='Acceso';
+                    $partida->store($request->id, $nombre);
+                    break;
+                case 34:
+                    $nombre='Lavadero';
+                    $partida->store($request->id, $nombre);
+                    break;
+                case 35:
+                    $nombre='Acometida';
+                    $partida->store($request->id, $nombre);
+                    break;
+                case 36:
+                    $nombre='Cimentacion en bardas';
+                    $partida->store($request->id, $nombre);
+                    break;
+                case 37:
+                    $nombre='Bardas';
+                    $partida->store($request->id, $nombre);
+                    break;
+                case 38:
+                    $nombre='Yeso planta baja';
+                    $partida->store($request->id, $nombre);
+                    break;
+                case 39:
+                    $nombre='Yeso planta alta';
+                    $partida->store($request->id, $nombre);
+                    break;
+                case 40:
+                    $nombre='Barra en baños';
+                    $partida->store($request->id, $nombre);
+                    break;
+                case 41:
+                    $nombre='Pintura en interior (en muros y plafones)';
+                    $partida->store($request->id, $nombre);
+                    break;
+                case 42:
+                    $nombre='Pintura en exterior';
+                    $partida->store($request->id, $nombre);
+                    break;
+                case 43:
+                    $nombre='Barra en patio';
+                    $partida->store($request->id, $nombre);
+                    break;
+                case 44:
+                    $nombre='Muebles';
+                    $partida->store($request->id, $nombre);
+                    break;
+                case 45:
+                    $nombre='Chapas y puertas';
+                    $partida->store($request->id, $nombre);
+                    break;
+                case 46:
+                    $nombre='Acarreos';
+                    $partida->store($request->id, $nombre);
+                    break;
+                case 47:
+                    $nombre='Jardineria (tierra en patio y jardin)';
+                    $partida->store($request->id, $nombre);
+                    break;
+                case 48:
+                    $nombre='Limpiezas';
+                    $partida->store($request->id, $nombre);
+                    break;
+                case 49:
+                    $nombre='Limpieza extra fina en vivienda al entregar la vivienda';
+                    $partida->store($request->id, $nombre);
+                    break;
+            }            
+            
+        }
     }
 
     /**
