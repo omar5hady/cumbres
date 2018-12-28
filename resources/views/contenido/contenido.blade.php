@@ -81,5 +81,8 @@
     <template v-if="menu==51">
         <iniobra></iniobra>
     </template>
+    <template v-if="menu==52">
+        <partidas></partidas>
+    </template>
     
 @endsection

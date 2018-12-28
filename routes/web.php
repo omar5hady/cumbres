@@ -150,6 +150,12 @@ Route::post('/iniobra/registrar','IniObraController@store');
 Route::put('/iniobra/actualizar','IniObraController@update');
 Route::delete('/iniobra/eliminar','IniObraController@destroy');
 
+////////////////////        RUTAS PARTIDAS   /////////////////////////////////
+Route::get('/partidas','PartidaController@index');
+Route::post('/partidas/registrar','PartidaController@registrar');
+//Route::get('/partidas/total','PartidaController@actualizarPorcentaje');
+Route::put('/partidas/actualizar','PartidaController@update');
+Route::delete('/partidas/eliminar','PartidaController@destroy');
 /***************************************************************************** */
 ///////////////////       RUTAS SELECT    ////////////////////////////////////
 Route::get('/select_departamentos','DepartamentoController@selectDepartamento');

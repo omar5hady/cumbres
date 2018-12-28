@@ -18,6 +18,10 @@ class Modelo extends Model
         return $this->hasMany('App\Lote');
     }
 
+    public function partida(){
+        return $this->hasMany('App\Partida');
+    }
+
     public function precio_modelo(){
         return $this->belongsTo('App\precio_modelo');
     }

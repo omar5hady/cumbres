@@ -16,13 +16,11 @@ class CreatePartidasTable extends Migration
         Schema::create('partidas', function (Blueprint $table) {
             $table->increments('id');
             $table->string('partida',70);
-            $table->unsignedInteger('lote_id');
+            $table->unsignedInteger('modelo_id');
             $table->double('costo')->default(0);
             $table->float('porcentaje')->default(0);
-            $table->float('avance')->default(0);
-            $table->float('porcentaje_avance')->default(0);
 
-            $table->foreign('lote_id')->references('id')->on('lotes'); 
+            $table->foreign('modelo_id')->references('id')->on('modelos'); 
         });
     }
 
