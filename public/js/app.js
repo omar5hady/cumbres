@@ -83178,6 +83178,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 console.log(error);
             });
         },
+
+        isNumber: function isNumber(evt) {
+            evt = evt ? evt : window.event;
+            var charCode = evt.which ? evt.which : evt.keyCode;
+            if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode !== 46) {
+                evt.preventDefault();;
+            } else {
+                return true;
+            }
+        },
         actualizarPartida: function actualizarPartida() {
             if (this.validarPartida()) //Se verifica si hay un error (campo vacio)
                 {
@@ -83853,10 +83863,14 @@ var render = function() {
                           staticClass: "form-control",
                           attrs: {
                             type: "text",
+                            maxlength: "9",
                             placeholder: "Costo de la Partida"
                           },
                           domProps: { value: _vm.costo },
                           on: {
+                            keypress: function($event) {
+                              _vm.isNumber(_vm.event)
+                            },
                             input: function($event) {
                               if ($event.target.composing) {
                                 return

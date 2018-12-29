@@ -118,7 +118,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Costo</label>
                                     <div class="col-md-9">
-                                        <input type="text" v-model="costo" class="form-control" placeholder="Costo de la Partida">
+                                        <input type="text" v-model="costo" maxlength="9" v-on:keypress="isNumber(event)" class="form-control" placeholder="Costo de la Partida">
                                     </div>
                                 </div>
 
@@ -261,6 +261,15 @@
                 }).catch(function (error){
                     console.log(error);
                 });
+            },
+            isNumber: function(evt) {
+                evt = (evt) ? evt : window.event;
+                var charCode = (evt.which) ? evt.which : evt.keyCode;
+                if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
+                    evt.preventDefault();;
+                } else {
+                    return true;
+                }
             },
             actualizarPartida(){
                 if(this.validarPartida()) //Se verifica si hay un error (campo vacio)
