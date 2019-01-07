@@ -8,7 +8,7 @@
                 <!-- Ejemplo de tabla Listado -->
                 <div class="card scroll-box">
                     <div class="card-header">
-                        <i class="fa fa-align-justify"></i> Lotes
+                        <i class="fa fa-align-justify"></i>Lotes
                         <!--   Boton   -->
                         <button type="button" class="btn btn-success" @click="abrirModal('lote','asignar')" >
                             <i class="icon-pencil"></i>&nbsp;Asignar Modelos
@@ -79,10 +79,10 @@
                                     <td style="width:12%">
                                         <button title="Editar" type="button" @click="abrirModal('lote','actualizar',lote)" class="btn btn-warning btn-sm">
                                           <i class="icon-pencil"></i>
-                                        </button> &nbsp;
+                                        </button>
                                         <button title="Borrar" type="button" class="btn btn-danger btn-sm" @click="eliminarLote(lote)">
                                           <i class="icon-trash"></i>
-                                        </button> &nbsp;
+                                        </button>
                                     </td>
 
                                     
@@ -857,7 +857,7 @@
                     {
                    if(this.lotes_ini.length<1 && accion=='asignar'){
                     Swal({
-                    title: 'No se ha seleccionado ningun lote.',
+                    title: 'No se ha seleccionado ningun lote',
                     animation: false,
                     customClass: 'animated tada'
                     })
@@ -947,7 +947,7 @@
     .mostrar{
         display: list-item !important;
         opacity: 1 !important;
-        position: center !important;
+        position: fixed !important;
         background-color: #3c29297a !important;
          overflow-y: auto;
         

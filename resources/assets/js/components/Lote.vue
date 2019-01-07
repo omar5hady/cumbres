@@ -66,10 +66,10 @@
                                     <td style="width:12%">
                                         <button title="Editar" type="button" @click="abrirModal('lote','actualizar',lote)" class="btn btn-warning btn-sm">
                                           <i class="icon-pencil"></i>
-                                        </button> &nbsp;
+                                        </button>
                                         <button title="Borrar" type="button" class="btn btn-danger btn-sm" @click="eliminarLote(lote)">
                                           <i class="icon-trash"></i>
-                                        </button> &nbsp;
+                                        </button>
                                     </td>
                                     
                                     <td v-text="lote.proyecto"></td>
@@ -855,7 +855,7 @@
     .mostrar{
         display: list-item !important;
         opacity: 1 !important;
-        position: absolute !important;
+        position: fixed !important;
         background-color: #3c29297a !important;
         overflow-y: auto;
     }

@@ -1054,7 +1054,7 @@
     .mostrar{
         display: list-item !important;
         opacity: 1 !important;
-        position: center !important;
+        position: fixed !important;
         background-color: #3c29297a !important;
          overflow-y: auto;
         

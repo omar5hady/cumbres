@@ -426,12 +426,14 @@
     .modal-content{
         width: 100% !important;
         position: absolute !important;
+        
     }
     .mostrar{
         display: list-item !important;
         opacity: 1 !important;
-        position: absolute !important;
+        position: fixed !important;
         background-color: #3c29297a !important;
+        
     }
     .div-error{
         display:flex;
@@ -444,6 +446,7 @@
     .scroll-box {
             overflow-x: scroll;
             width: auto;
-            padding: 1rem
+            padding: 1rem;
+            
         }
 </style>

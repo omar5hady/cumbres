@@ -51092,7 +51092,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: absolute !important;\n    background-color: #3c29297a !important;\n}\n.div-error{\n    display:flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n.scroll-box {\n        overflow-x: scroll;\n        width: auto;\n        padding: 1rem\n}\n", ""]);
+exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: fixed !important;\n    background-color: #3c29297a !important;\n}\n.div-error{\n    display:flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n.scroll-box {\n        overflow-x: scroll;\n        width: auto;\n        padding: 1rem\n}\n", ""]);
 
 // exports
 
@@ -59656,7 +59656,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: absolute !important;\n    background-color: #3c29297a !important;\n    overflow-y: auto;\n}\n.div-error{\n    display:flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n.scroll-box {\n        overflow-x: scroll;\n        width: auto;\n        padding: 1rem\n}\n", ""]);
+exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: fixed !important;\n    background-color: #3c29297a !important;\n    overflow-y: auto;\n}\n.div-error{\n    display:flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n.scroll-box {\n        overflow-x: scroll;\n        width: auto;\n        padding: 1rem\n}\n", ""]);
 
 // exports
 
@@ -61728,7 +61728,7 @@ var render = function() {
                         },
                         [_c("i", { staticClass: "icon-pencil" })]
                       ),
-                      _vm._v("  \n                                    "),
+                      _vm._v(" "),
                       _c(
                         "button",
                         {
@@ -61741,8 +61741,7 @@ var render = function() {
                           }
                         },
                         [_c("i", { staticClass: "icon-trash" })]
-                      ),
-                      _vm._v("  \n                                ")
+                      )
                     ]),
                     _vm._v(" "),
                     _c("td", {
@@ -62807,7 +62806,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: center !important;\n    background-color: #3c29297a !important;\n     overflow-y: auto;\n}\n.div-error{\n    display:flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n.scroll-box {\n        overflow-x: scroll;\n        width: auto;\n        padding: 1rem\n}\n", ""]);
+exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: fixed !important;\n    background-color: #3c29297a !important;\n     overflow-y: auto;\n}\n.div-error{\n    display:flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n.scroll-box {\n        overflow-x: scroll;\n        width: auto;\n        padding: 1rem\n}\n", ""]);
 
 // exports
 
@@ -63654,7 +63653,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     {
                         if (this.lotes_ini.length < 1 && accion == 'asignar') {
                             Swal({
-                                title: 'No se ha seleccionado ningun lote.',
+                                title: 'No se ha seleccionado ningun lote',
                                 animation: false,
                                 customClass: 'animated tada'
                             });
@@ -63747,7 +63746,7 @@ var render = function() {
       _c("div", { staticClass: "card scroll-box" }, [
         _c("div", { staticClass: "card-header" }, [
           _c("i", { staticClass: "fa fa-align-justify" }),
-          _vm._v(" Lotes\n                    "),
+          _vm._v("Lotes\n                    "),
           _vm._v(" "),
           _c(
             "button",
@@ -64302,7 +64301,7 @@ var render = function() {
                         },
                         [_c("i", { staticClass: "icon-pencil" })]
                       ),
-                      _vm._v("  \n                                    "),
+                      _vm._v(" "),
                       _c(
                         "button",
                         {
@@ -64315,8 +64314,7 @@ var render = function() {
                           }
                         },
                         [_c("i", { staticClass: "icon-trash" })]
-                      ),
-                      _vm._v("  \n                                ")
+                      )
                     ]),
                     _vm._v(" "),
                     _c("td", {
@@ -65805,7 +65803,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n.form-control:disabled, .form-control[readonly] {\nbackground-color: rgba(0, 0, 0, 0.06);\nopacity: 1;\nfont-size: 1rem;\ncolor: #27417b;\n}\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: center !important;\n    background-color: #3c29297a !important;\n     overflow-y: auto;\n}\n.div-error{\n    display:flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n.scroll-box {\n        overflow-x: scroll;\n        width: auto;\n        padding: 1rem\n}\n", ""]);
+exports.push([module.i, "\n.form-control:disabled, .form-control[readonly] {\nbackground-color: rgba(0, 0, 0, 0.06);\nopacity: 1;\nfont-size: 1rem;\ncolor: #27417b;\n}\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: fixed !important;\n    background-color: #3c29297a !important;\n     overflow-y: auto;\n}\n.div-error{\n    display:flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n.scroll-box {\n        overflow-x: scroll;\n        width: auto;\n        padding: 1rem\n}\n", ""]);
 
 // exports
 
@@ -72890,7 +72888,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\ninput[type=number]::-webkit-inner-spin-button, \ninput[type=number]::-webkit-outer-spin-button { \n    -webkit-appearance: none; \n    margin: 0;\n}\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: absolute !important;\n    background-color: #3c29297a !important;\n}\n.div-error{\n    display:flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n", ""]);
+exports.push([module.i, "\ninput[type=number]::-webkit-inner-spin-button, \ninput[type=number]::-webkit-outer-spin-button { \n    -webkit-appearance: none; \n    margin: 0;\n}\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: fixed !important;\n    background-color: #3c29297a !important;\n}\n.div-error{\n    display:flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n", ""]);
 
 // exports
 
@@ -74257,7 +74255,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\ninput[type=number]::-webkit-inner-spin-button, \ninput[type=number]::-webkit-outer-spin-button { \n    -webkit-appearance: none; \n    margin: 0;\n}\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: absolute !important;\n    background-color: #3c29297a !important;\n}\n.div-error{\n    display:flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n.scroll-box {\n        overflow-x: scroll;\n        width: auto;\n        padding: 1rem\n}\n", ""]);
+exports.push([module.i, "\ninput[type=number]::-webkit-inner-spin-button, \ninput[type=number]::-webkit-outer-spin-button { \n    -webkit-appearance: none; \n    margin: 0;\n}\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: fixed !important;\n    background-color: #3c29297a !important;\n}\n.div-error{\n    display:flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n.scroll-box {\n        overflow-x: scroll;\n        width: auto;\n        padding: 1rem\n}\n", ""]);
 
 // exports
 
@@ -76357,7 +76355,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: absolute !important;\n    background-color: #3c29297a !important;\n}\n.div-error{\n    display:flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n.scroll-box {\n        overflow-x: scroll;\n        width: auto;\n        padding: 1rem\n}\n", ""]);
+exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: fixed !important;\n    background-color: #3c29297a !important;\n}\n.div-error{\n    display:flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n.scroll-box {\n        overflow-x: scroll;\n        width: auto;\n        padding: 1rem\n}\n", ""]);
 
 // exports
 
@@ -82902,7 +82900,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: absolute !important;\n    background-color: #3c29297a !important;\n}\n.div-error{\n    display:flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n.scroll-box {\n        overflow-x: scroll;\n        width: auto;\n        padding: 1rem\n}\n", ""]);
+exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: fixed !important;\n    background-color: #3c29297a !important;\n}\n.div-error{\n    display:flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n.scroll-box {\n        overflow-x: scroll;\n        width: auto;\n        padding: 1rem;\n}\n", ""]);
 
 // exports
 
