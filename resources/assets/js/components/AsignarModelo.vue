@@ -51,7 +51,7 @@
                             <thead>
                                 <tr>
                                     <th>
-                                        <center><input type="checkbox" @click="selectAll" v-model="allSelected"></center> 
+                                        <input type="checkbox" @click="selectAll" v-model="allSelected">
                                     </th>
                                     <th>Opciones</th>
                                     <th>Proyecto</th>
@@ -66,32 +66,31 @@
                                     <th>Interior</th>
                                     <th>Terreno mts&sup2;</th>
                                     <th>Construcción mts&sup2;</th>
-                                    <!--<th>Casa Muestra</th>-->
                                     <th>Credito puente</th>
                                     <th>Casa en venta</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr v-for="lote in arrayLote" :key="lote.id">
-                                    <td style="width:3%; text-aling:center;">
-                                        <center><input type="checkbox"  @click="select" :id="lote.id" :value="lote.id" v-model="lotes_ini" ></center>
+                                    <td>
+                                       <input type="checkbox"  @click="select" :id="lote.id" :value="lote.id" v-model="lotes_ini" >
                                     </td>
-                                    <td style="width:12%">
-                                        <button title="Editar" type="button" @click="abrirModal('lote','actualizar',lote)" class="btn btn-warning btn-sm">
+
+                                    <td>
+                                        <button type="button" @click="abrirModal('lote','actualizar',lote)" class="btn btn-warning btn-sm">
                                           <i class="icon-pencil"></i>
                                         </button>
-                                        <button title="Borrar" type="button" class="btn btn-danger btn-sm" @click="eliminarLote(lote)">
+                                        <button type="button" class="btn btn-danger btn-sm" @click="eliminarLote(lote)">
                                           <i class="icon-trash"></i>
                                         </button>
                                     </td>
 
-                                    
                                     <td v-text="lote.proyecto"></td>
                                     <td>
                                         <span v-if = "lote.etapas!='Sin Asignar'" class="badge badge-success" v-text="lote.etapas"></span>
                                         <span v-else class="badge badge-danger"> Por Asignar </span>
                                     </td> 
-                                    <td v-text="lote.etapa_servicios" style="width:8%;"></td>
+                                    <td v-text="lote.etapa_servicios"></td>
                                     <td v-text="lote.manzana"></td>
                                     <td v-text="lote.num_lote"></td>
                                     <td v-text="lote.sublote"></td>
@@ -104,8 +103,6 @@
                                     <td v-text="lote.interior"></td>
                                     <td v-text="lote.terreno"></td>
                                     <td v-text="lote.construccion"></td>
-                                    <!--<td v-text="lote.casa_muestra"></td>
-                                    <td v-text="lote.lote_comercial"></td>-->
                                     <td v-text="lote.credito_puente"></td>
                                     <td>
                                         <span v-if = "lote.casa_muestra==0 && lote.lote_comercial==0" class="badge badge-success">Activo</span>

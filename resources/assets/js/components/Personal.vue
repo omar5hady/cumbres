@@ -53,7 +53,7 @@
                                     <td>
                                         <button type="button" @click="abrirModal('Personal','actualizar',Personal)" class="btn btn-warning btn-sm">
                                           <i class="icon-pencil"></i>
-                                        </button> &nbsp;
+                                        </button>
                                         <template v-if="Personal.activo">
                                             <button type="button" @click="desactivarPersonal(Personal.id)" class="btn btn-danger btn-sm">
                                             <i class="icon-trash"></i>
@@ -531,7 +531,7 @@
                     }).then(function (response) {
                         me.listarPersonal(1,'','Personal');
                         swal(
-                        'Desactivado!',
+                        'Activado!',
                         'El registro ha sido activado con éxito.',
                         'success'
                         )

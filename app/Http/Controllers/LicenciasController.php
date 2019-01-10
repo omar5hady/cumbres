@@ -374,7 +374,7 @@ class LicenciasController extends Controller
         $acta->save();
     }
 
-
+//funcion para exportar el resumen de licencias en excel
     public function exportExcel(Request $request)
     {
         $licencias = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
@@ -394,7 +394,7 @@ class LicenciasController extends Controller
             ->groupBy('licencias.f_salida')
             ->groupBy('lotes.credito_puente')
             ->groupBy('lotes.ehl_solicitado')
-            ->groupby('month')->distinct()->get();
+            ->groupBy('month')->distinct()->get();
 
             return Excel::create('resumen_licencias', function($excel) use ($licencias){
                 $excel->sheet('licencias', function($sheet) use ($licencias){

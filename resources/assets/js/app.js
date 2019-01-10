@@ -22,7 +22,7 @@ Vue.component('empresa', require('./components/Empresa.vue'));
 Vue.component('etapa', require('./components/Etapa.vue'));
 Vue.component('modelo', require('./components/Modelo.vue'));
 Vue.component('lote', require('./components/Lote.vue'));
-Vue.component('lote_resp', require('./components/Lote_resp.vue'));
+Vue.component('asignar-modelo', require('./components/AsignarModelo.vue'));
 Vue.component('licencias', require('./components/Licencias.vue'));
 Vue.component('actadeterminacion', require('./components/ActaDeTerminacion.vue'));
 

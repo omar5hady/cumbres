@@ -54,10 +54,10 @@
                                     <td style="width:12%">
                                         <button title="Editar" type="button" @click="abrirModal('modelo','actualizar',modelo)" class="btn btn-warning btn-sm">
                                           <i class="icon-pencil"></i>
-                                        </button> &nbsp;
+                                        </button>
                                         <button title="Borrar" type="button" class="btn btn-danger btn-sm" @click="eliminarModelo(modelo)">
                                           <i class="icon-trash"></i>
-                                        </button> &nbsp;
+                                        </button>
                                         <button title="Subir archivo" type="button" @click="abrirModal('modelo','subirArchivo',modelo)" class="btn btn-default btn-sm">
                                           <i class="icon-cloud-upload"></i>
                                         </button>

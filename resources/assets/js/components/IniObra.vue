@@ -319,7 +319,7 @@
             abrirModal(modelo, accion,data =[]){
                 if(this.lotes_ini.length<1){
                     Swal({
-                    title: 'No se ha seleccionado ningun lote.',
+                    title: 'No se ha seleccionado ningun lote',
                     animation: false,
                     customClass: 'animated tada'
                     })

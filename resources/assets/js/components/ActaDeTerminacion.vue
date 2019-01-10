@@ -67,7 +67,7 @@
                                     <td >
                                         <button title="Editar" type="button" @click="abrirModal('lote','actualizar',act_terminacion)" class="btn btn-warning btn-sm">
                                           <i class="icon-pencil"></i>
-                                        </button> &nbsp;
+                                        </button>
                                         <button type="button" @click="abrirModal2('lote','ver',act_terminacion)" class="btn btn-info btn-sm">
                                           <i class="icon-magnifier"></i>
                                         </button>

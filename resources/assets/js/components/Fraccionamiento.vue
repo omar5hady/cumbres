@@ -52,19 +52,19 @@
                                     <td>
                                         <button type="button" @click="abrirModal('fraccionamiento','actualizar',fraccionamiento)" class="btn btn-warning btn-sm">
                                           <i class="icon-pencil"></i>
-                                        </button> &nbsp;
+                                        </button>
                                         <button type="button" class="btn btn-danger btn-sm" @click="eliminarFraccionamiento(fraccionamiento)">
                                           <i class="icon-trash"></i>
-                                        </button>&nbsp;
+                                        </button>
                                         <button title="Subir planos y escrituras" type="button" @click="abrirModal('fraccionamiento','subirArchivo',fraccionamiento)" class="btn btn-default btn-sm">
                                           <i class="icon-cloud-upload"></i>
-                                        </button>&nbsp;
+                                        </button>
                                         <a  title="Descargar planos" v-if ="fraccionamiento.archivo_planos" class="btn btn-success btn-sm" v-bind:href="'/downloadPlanos/'+fraccionamiento.archivo_planos">
                                         <i class="fa fa-map fa-lg"></i>
-                                        </a>&nbsp;
+                                        </a>
                                          <a  title="Descargar escrituras" v-if ="fraccionamiento.archivo_escrituras" class="btn btn-warning btn-sm" v-bind:href="'/downloadEscrituras/'+fraccionamiento.archivo_escrituras">
                                         <i class="fa fa-file-archive-o fa-lg"></i>
-                                        </a>&nbsp;
+                                        </a>
                                     </td>
                                     <td v-text="fraccionamiento.nombre"></td>
                                     <td v-if="fraccionamiento.tipo_proyecto==1" v-text="'Lotificación'"></td>
