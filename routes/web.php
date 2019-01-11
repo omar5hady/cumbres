@@ -70,6 +70,7 @@ Route::delete('/lote/eliminar','LoteController@destroy');
 Route::post('/import', 'LoteController@import');
 Route::get('/lote_aviso','LoteController@indexIniObra');
 Route::put('/lotes/enviarAviObra','LoteController@enviarAviso');
+Route::get('/lotes/export_excel/{fraccionamiento_id}','LoteController@excelLotes');
 
 ///////////////////       RUTAS LICENCIA   ////////////////////////////////////
 Route::get('/licencias','LicenciasController@index');
@@ -176,6 +177,7 @@ Route::get('/select_lotes_manzana','LoteController@select_lote_manzana');
 Route::get('/select_precio_etapa','PrecioEtapaController@selectPrecioEtapa'); 
 Route::get('/select_sobreprecios_etapa','SobreprecioEtapaController@select_sobreprecios_etapa'); 
 Route::get('/select_contratistas','ContratistaController@selectContratista'); 
+Route::get('/select_fraccionamientoLote','FraccionamientoController@selectFraccionamientoConLotes'); 
 /***************************************************************************** */
 
 /**********************************RUTAS OBSERVACION*************************** */

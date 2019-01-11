@@ -16,6 +16,9 @@
                         <button type="button" @click="abrirModal('lote','excel')" class="btn btn-secondary">
                             <i class="icon-plus"></i>&nbsp;Cargar Excel
                         </button>
+                        <button type="button" @click="abrirModal('lote','descargarExcel')" class="btn btn-success">
+                            <i class="icon-plus"></i>&nbsp;Descargar Excel
+                        </button>
                         <!---->
                     </div>
                     <div class="card-body">
@@ -130,7 +133,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
                                     <div class="col-md-6">
-                                       <select class="form-control" v-model="fraccionamiento_id" @click="selectEtapa(fraccionamiento_id),selectModelo(fraccionamiento_id)" >
+                                       <select id="myselect" class="form-control" v-model="fraccionamiento_id" @click="selectEtapa(fraccionamiento_id),selectModelo(fraccionamiento_id)" >
                                             <option value="0">Seleccione</option>
                                             <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                         </select>
@@ -170,15 +173,6 @@
                                     </div>
                                 </div>
 
-                               <!-- <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Modelo</label>
-                                    <div class="col-md-6">
-                                       <select class="form-control" @click="selectConsYTerreno(modelo_id)" v-model="modelo_id">
-                                            <option value="0">Seleccione</option>
-                                            <option v-for="modelos in arrayModelos" :key="modelos.id" :value="modelos.id" v-text="modelos.nombre"></option>
-                                        </select>
-                                    </div>
-                                </div>-->
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Dirección</label>
                                     <div class="col-md-4">
@@ -278,6 +272,45 @@
             </div>
             <!--Fin del modal-->
 
+        <!-- Modal para descargar el excel-->
+             <div class="modal fade " tabindex="-1" :class="{'mostrar': modal4}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-LG" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" v-text="tituloModal4"></h4>
+                            <button type="button" class="close" @click="cerrarModal4()" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                         <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+
+                             <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
+                                    <div class="col-md-6">
+                                       <select class="form-control" v-model="buscar_fraccionamientoExcel" >
+                                            <option value="0">Seleccione</option>
+                                            <option v-for="fraccionamientos in arrayFraccionamientosLote" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                         </form>
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <a class="btn btn-success" v-bind:href="'/lotes/export_excel/'+buscar_fraccionamientoExcel" >
+                            <i class="icon-pencil"></i>&nbsp;Descargar
+                            </a>
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal4()">Cerrar</button>
+                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
+                        </div>
+                    </div>
+                      <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!--Fin del modal-->
+
 
                     
         </main>
@@ -317,6 +350,8 @@
                 modal : 0,
                 tituloModal : '',
                 modal2: 0,
+                modal4 : 0,
+                tituloModal4: '',
                 tituloModal2: '',
                 modal3: 0,
                 tituloModal3: '',
@@ -336,7 +371,9 @@
                 buscar2 : '',
                 buscar3 : '',
                 buscar : '',
+                buscar_fraccionamientoExcel: 0,
                 arrayFraccionamientos : [],
+                arrayFraccionamientosLote : [],
                 arrayEtapas : [],
                 arrayModelos : [],
                 arrayModelosTC: [],
@@ -467,11 +504,24 @@
                     console.log(error);
                 });
             },
+
+        selectFraccionamientosConLote(){
+                let me = this;
+                me.arrayFraccionamientosLote=[];
+                var url = '/select_fraccionamientoLote';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayFraccionamientosLote = respuesta.fraccionamientos;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
             selectEtapa(buscar){
                 let me = this;
                 me.buscar2=""
                 me.buscar3=""
-                
                 me.arrayEtapas=[];
                 var url = '/select_etapa_proyecto?buscar=' + buscar;
                 axios.get(url).then(function (response) {
@@ -558,33 +608,6 @@
                 });
             },
 
-            registrarManzana(){
-
-               if(this.validarManzana()) //Se verifica si se selecciono un fraccionamiento
-                {
-                    return;
-                }
-
-                let me = this;
-                //Con axios se llama el metodo store de FraccionaminetoController
-                axios.post('/lote/registrar_manzana',{
-                    'fraccionamiento_id': this.fraccionamiento_id,         
-                    'manzana': this.manzana
-                }).then(function (response){
-                    me.cerrarModal3(); //al guardar el registro se cierra el modal
-                   
-                    //Se muestra mensaje Success
-                    swal({
-                        position: 'top-end',
-                        type: 'success',
-                        title: 'Manzana agregada correctamente',
-                        showConfirmButton: false,
-                        timer: 1500
-                        })
-                }).catch(function (error){
-                    console.log(error);
-                });
-            },
 
             actualizarLote(){
                 if(this.validarLote()) //Se verifica si hay un error (campo vacio)
@@ -657,9 +680,6 @@
 
                     })()
 
-
-
-                
             },
             eliminarLote(data =[]){
                 this.id=data['id'];
@@ -768,6 +788,11 @@
                 this.tituloModal3 = '';
                 this.tipoAccion = 1;
             },
+                cerrarModal4(){
+                this.modal4 = 0;
+                this.tituloModal4 = '';
+                this.buscar_fraccionamientoExcel = 0;
+            },
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
             abrirModal(lote, accion,data =[]){
                 switch(lote){
@@ -831,11 +856,21 @@
                                 break;
                             }
 
+                            case 'descargarExcel':
+                            {
+                                this.modal4 =1;
+                                this.tituloModal4= 'Descarga listado de lotes';
+                                this.buscar_fraccionamientoExcel = 0;
+                                break;
+                            }
+
+
                         
                         }
                     }
                 }
                 this.selectFraccionamientos();
+                this.selectFraccionamientosConLote();
                 this.selectEtapa(this.fraccionamiento_id);
                 this.selectModelo(this.fraccionamiento_id);
                 this.selectConsYTerreno(this.modelo_id);
@@ -844,6 +879,7 @@
         },
         mounted() {
             this.listarLote(1,this.buscar,this.buscar2,this.buscar3,this.criterio);
+            this.selectFraccionamientos();
         }
     }
 </script>

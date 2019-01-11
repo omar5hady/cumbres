@@ -534,15 +534,6 @@ class LoteController extends Controller
         }
     }
 
-    // public function selectManzana_proyecto(Request $request){
-    //     //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
-    //     if(!$request->ajax())return redirect('/');
-
-    //     $buscar = $request->buscar;
-    //     $manzanas = Manzana::select('manzana','id')
-    //     ->where('fraccionamiento_id', '=', $buscar )->get();
-    //     return['manzanas' => $manzanas];
-    // }
 
    
     public function select_modelos_etapa(Request $request){
@@ -637,6 +628,76 @@ class LoteController extends Controller
             ],
             'lotes' => $lotes
         ];
+    }
+
+
+    public function excelLotes (Request $request, $fraccionamiento_id)
+    {
+
+
+        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+        ->join('etapas','lotes.etapa_id','=','etapas.id')
+        ->join('modelos','lotes.modelo_id','=','modelos.id')
+        ->join('empresas','lotes.empresa_id','=','empresas.id')
+        ->select('fraccionamientos.nombre as proyecto','lotes.etapa_servicios','lotes.manzana','lotes.num_lote',
+        'lotes.sublote','lotes.calle','lotes.numero as numero_oficial','lotes.interior','lotes.terreno',
+        'lotes.clv_catastral','lotes.id')
+        ->where('lotes.fraccionamiento_id', 'like', '%'. $fraccionamiento_id. '%')
+        ->get();
+
+        return Excel::create('Lotes de '. $lotes[0]->proyecto , function($excel) use ($lotes){
+            $excel->sheet('lotes', function($sheet) use ($lotes){
+                
+                $sheet->row(1, [
+                    'Etapa de servicios', 'Fraccionamiento', 'Manzana', 'Num. Lote', 'Duplex', 'Calle',
+                    'Num. Oficial', 'Interior', 'Superficie de terreno','Clave catastral'
+                ]);
+
+
+                $sheet->cells('A1:J1', function ($cells) {
+                    $cells->setBackground('#052154');
+                    $cells->setFontColor('#ffffff');
+                    // Set font family
+                    $cells->setFontFamily('Calibri');
+
+                    // Set font size
+                    $cells->setFontSize(13);
+
+                    // Set font weight to bold
+                    $cells->setFontWeight('bold');
+                    $cells->setAlignment('center');
+                });
+
+                
+                $cont=1;
+
+                $sheet->setColumnFormat(array(
+                    'J' => '0'
+                ));
+
+                foreach($lotes as $index => $lote) {
+                    $cont++;       
+
+                    $sheet->row($index+2, [
+                        $lote->etapa_servicios, 
+                        $lote->proyecto, 
+                        $lote->manzana, 
+                        $lote->num_lote, 
+                        $lote->sublote,
+                        $lote->calle,
+                        $lote->numero_oficial,
+                        $lote->interior,
+                        $lote->terreno,
+                        $lote->clv_catastral,
+                    ]);	
+                }
+                $num='A1:J' . $cont;
+                $sheet->setBorder($num, 'thin');
+            });
+        }
+        
+        )->download('xls');
+
     }
 
 

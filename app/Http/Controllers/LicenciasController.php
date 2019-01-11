@@ -398,7 +398,7 @@ class LicenciasController extends Controller
 
             return Excel::create('resumen_licencias', function($excel) use ($licencias){
                 $excel->sheet('licencias', function($sheet) use ($licencias){
-                    //$sheet->fromArray($licencias);
+                    
                     $sheet->row(1, [
                         'Fracc.', 'No. Viviendas', 'Credito Puente', 'EHL Solicitado', 'Mes para iniciar', 'Arquitecto',
                         'Siembra', 'Planos', 'Ingreso','Salida','Avance'

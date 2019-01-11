@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Fraccionamiento; //Importar el modelo
 use App\Etapa;
 use App\Modelo;
+use App\Lote;
 
 class FraccionamientoController extends Controller
 {
@@ -157,6 +158,16 @@ class FraccionamientoController extends Controller
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
         if(!$request->ajax())return redirect('/');
         $fraccionamientos = Fraccionamiento::select('nombre','id')->get();
+        return['fraccionamientos' => $fraccionamientos];
+    }
+
+
+    public function selectFraccionamientoConLotes(Request $request){
+        //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
+        if(!$request->ajax())return redirect('/');
+        $fraccionamientos = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')->
+        select('fraccionamientos.nombre','fraccionamientos.id')
+        ->groupBy('fraccionamientos.id')->get();
         return['fraccionamientos' => $fraccionamientos];
     }
 
