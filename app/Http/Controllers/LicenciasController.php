@@ -377,6 +377,7 @@ class LicenciasController extends Controller
 //funcion para exportar el resumen de licencias en excel
     public function exportExcel(Request $request)
     {
+       
         $licencias = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
             ->join('licencias','lotes.id','=','licencias.id')
             ->join('personal','lotes.arquitecto_id','=','personal.id')
@@ -384,7 +385,11 @@ class LicenciasController extends Controller
             ->select('lotes.fraccionamiento_id',DB::raw('COUNT(lotes.fraccionamiento_id) as num_viviendas'),
             'fraccionamientos.nombre as proyecto','lotes.credito_puente','lotes.siembra','licencias.f_planos',
             'licencias.f_ingreso','licencias.f_salida',DB::raw("SUM(licencias.avance) as prom_avance"),
-             DB::raw('MONTH(lotes.fecha_ini) month'),'lotes.ehl_solicitado','personal.nombre as arquitecto')
+             DB::raw('MONTH(lotes.fecha_ini) month'),
+             DB::raw('DATEDIFF(licencias.f_planos,lotes.ehl_solicitado) as diasPlanos'),
+             DB::raw('DATEDIFF(licencias.f_salida,lotes.ehl_solicitado) as diasSalida'),
+             DB::raw('(CASE WHEN licencias.num_acta IS NULL THEN 0 ELSE 1 END) as acta'),'lotes.ehl_solicitado',
+             'personal.nombre as arquitecto')
             ->where('lotes.siembra','!=','NULL')
             ->groupBy('lotes.fraccionamiento_id')
             ->groupBy('lotes.siembra')
@@ -394,18 +399,25 @@ class LicenciasController extends Controller
             ->groupBy('licencias.f_salida')
             ->groupBy('lotes.credito_puente')
             ->groupBy('lotes.ehl_solicitado')
-            ->groupBy('month')->distinct()->get();
-
+            ->groupBy('month')
+            ->groupBy('acta')
+            ->distinct()->get();
+            // return [
+               
+            //     'licencias' => $licencias
+                
+            // ];    
+        
             return Excel::create('resumen_licencias', function($excel) use ($licencias){
                 $excel->sheet('licencias', function($sheet) use ($licencias){
                     
                     $sheet->row(1, [
                         'Fracc.', 'No. Viviendas', 'Credito Puente', 'EHL Solicitado', 'Mes para iniciar', 'Arquitecto',
-                        'Siembra', 'Planos', 'Ingreso','Salida','Avance'
+                        'Siembra', 'Planos', 'Ingreso','Salida','Avance','Acta de terminacion'
                     ]);
 
 
-                    $sheet->cells('A1:K1', function ($cells) {
+                    $sheet->cells('A1:L1', function ($cells) {
                         $cells->setBackground('#052154');
                         $cells->setFontColor('#ffffff');
                         // Set font family
@@ -455,6 +467,49 @@ class LicenciasController extends Controller
                             $tiempo = new Carbon($licencia->f_salida);
                             $licencia->f_salida = $tiempo->formatLocalized('%d de %B de %Y');
                             
+                        }
+                        
+
+                        if($licencia->diasPlanos > 15 ){
+                            $sheet->cell('H' . $cont, function ($cell) {
+                                $cell->setBackground('#ff0000');
+                                $cell->setFontColor('#ffffff');
+                                // Set font family
+                                $cell->setFontFamily('Calibri');
+        
+                                // Set font size
+                                $cell->setFontSize(11);
+        
+                                // Set font weight to bold
+                                $cell->setFontWeight('bold');
+                                
+                            });
+                            
+                        }
+
+                        
+                        if($licencia->diasSalida > 60 ){
+                            $sheet->cell('J' . $cont, function ($cell) {
+                                $cell->setBackground('#ff0000');
+                                $cell->setFontColor('#ffffff');
+                                // Set font family
+                                $cell->setFontFamily('Calibri');
+        
+                                // Set font size
+                                $cell->setFontSize(11);
+        
+                                // Set font weight to bold
+                                $cell->setFontWeight('bold');
+                                
+                            });
+                            
+                        }
+
+                        if($licencia->acta == 1 ){
+
+                            $completado = "Completado";
+                        }else{
+                            $completado = "";
                         }
 
                         switch($licencia->month){
@@ -508,10 +563,11 @@ class LicenciasController extends Controller
                             $licencia->f_planos,
                             $licencia->f_ingreso,
                             $licencia->f_salida,
-                            $avance
+                            $avance,
+                            $completado
                         ]);	
                     }
-                    $num='A1:K' . $cont;
+                    $num='A1:L' . $cont;
                     $sheet->setBorder($num, 'thin');
                 });
             }
