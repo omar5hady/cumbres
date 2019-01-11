@@ -41,9 +41,9 @@
                             <thead>
                                 <tr>
                                     <th>Opciones</th>
-                                    <th>Modelo</th>
                                     <th>Tipo</th>
                                     <th>Proyecto</th>
+                                     <th>Modelo</th>
                                     <th>Terreno mts&sup2;</th>
                                     <th>Construcción mts&sup2;</th>
                                     <th>Descarga</th>
@@ -62,11 +62,11 @@
                                           <i class="icon-cloud-upload"></i>
                                         </button>
                                     </td>
-                                    <td v-text="modelo.nombre"></td>
                                     <td v-if="modelo.tipo==1" v-text="'Lotificación'"></td>
                                     <td v-if="modelo.tipo==2" v-text="'Departamento'"></td>
                                     <td v-if="modelo.tipo==3" v-text="'Terreno'"></td>
                                     <td v-text="modelo.fraccionamiento"></td>
+                                    <td v-text="modelo.nombre"></td>
                                     <td v-text="modelo.terreno"></td>
                                     <td v-text="modelo.construccion"></td>
                                     <td style="width:7%" v-if = "modelo.archivo"><a class="btn btn-default btn-sm" v-bind:href="'/downloadModelo/'+modelo.archivo"><i class="icon-cloud-download"></i></a></td>

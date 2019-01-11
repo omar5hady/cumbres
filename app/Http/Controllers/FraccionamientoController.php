@@ -69,6 +69,8 @@ class FraccionamientoController extends Controller
         $fraccionamiento->colonia = $request->colonia;
         $fraccionamiento->estado = $request->estado;
         $fraccionamiento->ciudad = $request->ciudad;
+        $fraccionamiento->delegacion = $request->delegacion;
+        $fraccionamiento->cp = $request->cp;
         $fraccionamiento->save();
 
         
@@ -86,14 +88,6 @@ class FraccionamientoController extends Controller
         $modelo->terreno = 0;
         $modelo->construccion = 0;
         $modelo->save();
-
-       /* $modelo = new Modelo();
-        $modelo->fraccionamiento_id = $fraccionamiento->id;
-        $modelo->tipo = $fraccionamiento->tipo_proyecto;
-        $*/
-
-       
-
 
     }
 
@@ -138,6 +132,8 @@ class FraccionamientoController extends Controller
         $fraccionamiento->colonia = $request->colonia;
         $fraccionamiento->estado = $request->estado;
         $fraccionamiento->ciudad = $request->ciudad;
+        $fraccionamiento->delegacion = $request->delegacion;
+        $fraccionamiento->cp = $request->cp;
         $fraccionamiento->save();
     }
 
@@ -151,8 +147,10 @@ class FraccionamientoController extends Controller
     {
         if(!$request->ajax())return redirect('/');
         $fraccionamiento = Fraccionamiento::findOrFail($request->id);
-
-        $fraccionamiento->delete();
+     
+            $fraccionamiento->delete();
+           
+  
     }
 
     public function selectFraccionamiento(Request $request){

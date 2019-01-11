@@ -45,6 +45,7 @@
                                     <th>Direccion</th>
                                     <th>Colonia</th>
                                     <th>Estado</th>
+                                    <th>Delegacion</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -72,9 +73,8 @@
                                     <td v-if="fraccionamiento.tipo_proyecto==3" v-text="'Terreno'"></td>
                                     <td v-text="fraccionamiento.calle"></td>
                                     <td v-text="fraccionamiento.colonia"></td>
-                                    <td>
-                                        <span class="badge badge-success">Activo</span>
-                                    </td>
+                                    <td v-text="fraccionamiento.estado"></td>
+                                    <td v-text="fraccionamiento.delegacion"></td>
                                 </tr>                               
                             </tbody>
                         </table>
@@ -182,7 +182,18 @@
                                         <select class="form-control" v-model="ciudad">
                                             <option v-for="ciudades in arrayCiudades" :key="ciudades.municipio" :value="ciudades.municipio" v-text="ciudades.municipio"></option>
                                         </select>
-                                        <!--<input type="text" v-model="ciudad" class="form-control" placeholder="Ciudad">-->
+                                    </div>
+                                </div>
+                                 <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Delegacion</label>
+                                    <div class="col-md-9">
+                                        <input type="text" v-model="delegacion" class="form-control" placeholder="Delegacion">
+                                    </div>
+                                </div>
+                                 <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Codigo postal</label>
+                                    <div class="col-md-9">
+                                        <input type="text" maxlength="5" v-model="cp" class="form-control" placeholder="Codigo postal">
                                     </div>
                                 </div>
                                 <!-- Div para mostrar los errores que mande validerFraccionamiento -->
@@ -274,6 +285,8 @@
                 colonia : '',
                 estado : 'San Luis Potosí',
                 ciudad : '',
+                delegacion: '',
+                cp: 0,
                 archivo_planos: '',
                 archivo_escrituras: '',
                 arrayFraccionamiento : [],
@@ -451,7 +464,9 @@
                     'calle': this.calle,
                     'colonia': this.colonia,
                     'estado': this.estado,
-                    'ciudad': this.ciudad
+                    'ciudad': this.ciudad,
+                    'delegacion' : this.delegacion,
+                    'cp' : this.cp
                 }).then(function (response){
                     me.cerrarModal(); //al guardar el registro se cierra el modal
                     me.listarFraccionamiento(1,'','fraccionamiento'); //se enlistan nuevamente los registros
@@ -482,6 +497,8 @@
                     'colonia': this.colonia,
                     'estado': this.estado,
                     'ciudad': this.ciudad,
+                    'delegacion' : this.delegacion,
+                    'cp' : this.cp,
                     'id' : this.id
                 }).then(function (response){
                     me.cerrarModal();
@@ -506,6 +523,8 @@
                 this.colonia=data['colonia'];
                 this.estado=data['estado'];
                 this.ciudad=data['ciudad'];
+                this.delegacion=data['delegacion'];
+                this.cp=data['cp'];
                 //console.log(this.fraccionamiento_id);
                 swal({
                 title: '¿Desea eliminar?',
@@ -559,6 +578,8 @@
                 this.colonia = '';
                 this.estado = '';
                 this.ciudad = '';
+                this.delegacion = '';
+                this.cp = 0;
                 this.user_alta = '';
                 this.errorFraccionamiento = 0;
                 this.errorMostrarMsjFraccionamiento = [];
@@ -589,6 +610,8 @@
                                 this.colonia ='';
                                 this.estado ='San Luis Potosí';
                                 this.ciudad ='';
+                                this.delegacion = '';
+                                this.cp = 0;
                                 this.tipoAccion = 1;
                                 break;
                             }
@@ -605,6 +628,8 @@
                                 this.colonia=data['colonia'];
                                 this.estado=data['estado'];
                                 this.ciudad=data['ciudad'];
+                                this.delegacion=data['delegacion'];
+                                this.cp=data['cp'];
                                 break;
                             }
 
