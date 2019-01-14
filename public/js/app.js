@@ -83361,6 +83361,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -83368,6 +83370,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             id: 0,
             partida: '',
             costo: 0,
+            costos: [],
             porcentaje: 0,
             modelo_id: 0,
             fraccionamiento_id: 0,
@@ -83503,6 +83506,35 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     title: 'Cambios guardados correctamente',
                     showConfirmButton: false,
                     timer: 1500
+                });
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        actualizarCosto: function actualizarCosto(id, costo, modelo) {
+
+            var me = this;
+            //Con axios se llama el metodo update de PartidaController
+            axios.put('/partidas/actualizar', {
+                'partida': this.partida,
+                'modelo_id': modelo,
+                'costo': costo,
+                'id': id
+            }).then(function (response) {
+
+                me.listarPartidas(1, '', 'partida');
+                //window.alert("Cambios guardados correctamente");
+                var toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+
+                });
+
+                toast({
+                    type: 'success',
+                    title: 'Cambios guardados'
                 });
             }).catch(function (error) {
                 console.log(error);
@@ -83815,9 +83847,37 @@ var render = function() {
                       domProps: { textContent: _vm._s(partida.partida) }
                     }),
                     _vm._v(" "),
-                    _c("td", {
-                      domProps: { textContent: _vm._s(partida.costo) }
-                    }),
+                    _c("td", { staticStyle: { width: "15%" } }, [
+                      _c("input", {
+                        staticClass: "form-control",
+                        attrs: { type: "text", id: partida.id, maxlength: "9" },
+                        domProps: { value: partida.costo },
+                        on: {
+                          keyup: function($event) {
+                            if (
+                              !("button" in $event) &&
+                              _vm._k(
+                                $event.keyCode,
+                                "enter",
+                                13,
+                                $event.key,
+                                "Enter"
+                              )
+                            ) {
+                              return null
+                            }
+                            _vm.actualizarCosto(
+                              partida.id,
+                              $event.target.value,
+                              partida.modelo_id
+                            )
+                          },
+                          keypress: function($event) {
+                            _vm.isNumber($event)
+                          }
+                        }
+                      })
+                    ]),
                     _vm._v(" "),
                     _c("td", {
                       domProps: {

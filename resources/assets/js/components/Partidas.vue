@@ -54,7 +54,9 @@
                                     <td v-text="partida.proyecto"></td>
                                     <td v-text="partida.modelo"></td>
                                     <td v-text="partida.partida" style="width:30%"></td>
-                                    <td v-text="partida.costo"></td>
+                                    <td style="width:15%">
+                                        <input type="text" @keyup.enter="actualizarCosto(partida.id,$event.target.value,partida.modelo_id)" :id="partida.id" :value="partida.costo" maxlength="9" v-on:keypress="isNumber($event)" class="form-control" >
+                                    </td>
                                     <td v-text="partida.porcentaje + '%'"></td>
                                     
                                 </tr>                               
@@ -161,6 +163,7 @@
                 id:0,
                 partida : '',
                 costo : 0,
+                costos : [],
                 porcentaje : 0,
                 modelo_id : 0,
                 fraccionamiento_id:0,
@@ -299,6 +302,36 @@
                     console.log(error);
                 });
             },
+            actualizarCosto(id,costo,modelo){
+            
+
+                let me = this;
+                //Con axios se llama el metodo update de PartidaController
+                axios.put('/partidas/actualizar',{
+                    'partida': this.partida,
+                    'modelo_id': modelo,
+                    'costo':costo,
+                    'id' : id
+                }).then(function (response){
+                    
+                    me.listarPartidas(1,'','partida');
+                    //window.alert("Cambios guardados correctamente");
+                const toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+
+                    });
+
+                    toast({
+                    type: 'success',
+                    title: 'Cambios guardados'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
             eliminarPartida(data =[]){
                 this.id=data['id'];
                 this.partida=data['partida'];
@@ -415,10 +448,12 @@
                 }
                 this.selectFraccionamientos();
                 this.selectModelo(this.fraccionamiento_id);
+               
             }
         },
         mounted() {
-            this.listarPartidas(1,this.buscar,this.criterio);
+            this.listarPartidas(1,this.buscar,this.criterio);      
+            
         }
     }
 </script>
