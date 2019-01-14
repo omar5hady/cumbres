@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\AvanceController;
 use Illuminate\Http\Request;
 use App\Lote;
 use App\Modelo;
 use App\Etapa;
 use App\Licencia;
+use App\Partida;
+use App\Avance;
 use Session;
 use Excel;
 use File;
@@ -321,7 +324,7 @@ class LoteController extends Controller
     }
 
 
-    public function update2(Request $request)
+    public function update2(Request $request) //Update asignar modelo
     {
         $siembra = '';
        if(!$request->ajax())return redirect('/');
@@ -355,6 +358,9 @@ class LoteController extends Controller
             if($nombreModelo[0]->nombre != "Por Asignar")
                 $licencia->modelo_ant = $nombreModelo[0]->nombre;
             $licencia->save();
+
+            
+            
         }
         $lote->empresa_id = 1;
         $lote->calle = $request->calle;
@@ -362,12 +368,7 @@ class LoteController extends Controller
         $lote->interior = $request->interior;
         $lote->terreno = $request->terreno;
         $lote->construccion = $request->construccion;
-        $lote->credito_puente = $request->credito_puente;
-        /*if($etapa[0]->num_etapa!='Sin Asignar'){
-            $siembra = Carbon::today()->format('ymd');
-            $lote->siembra=$siembra;
-         }*/
-        
+        $lote->credito_puente = $request->credito_puente;     
 
         $lote->save();
     }
@@ -420,7 +421,7 @@ class LoteController extends Controller
 
     public function enviarAviso(Request $request)
     {
-       if(!$request->ajax())return redirect('/');
+       //if(!$request->ajax())return redirect('/');
         //FindOrFail se utiliza para buscar lo que recibe de argumento
         $lote = Lote::findOrFail($request->id);
         $lote->fecha_ini = $request ->fecha_ini;
@@ -431,7 +432,15 @@ class LoteController extends Controller
         
         $lote->save();
 
+        //Aqui se deberia hacer toda la asignacion para la tabla avances
+        $partidas = Partida::select('id','partida')
+            ->where('modelo_id','=',$lote->modelo_id)->get();
         
+            foreach($partidas as $index => $partida) {
+                $n_avance = new AvanceController();
+                $n_avance->store($lote->id, $partida->id);
+            }
+
     }
 
     /**

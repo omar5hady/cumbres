@@ -157,6 +157,7 @@ Route::post('/partidas/registrar','PartidaController@registrar');
 //Route::get('/partidas/total','PartidaController@actualizarPorcentaje');
 Route::put('/partidas/actualizar','PartidaController@update');
 Route::delete('/partidas/eliminar','PartidaController@destroy');
+//Route::get('/partidas/select','PartidaController@selectPartidas');
 /***************************************************************************** */
 ///////////////////       RUTAS SELECT    ////////////////////////////////////
 Route::get('/select_departamentos','DepartamentoController@selectDepartamento');

@@ -49,4 +49,8 @@ class lote extends Model
         return $this->belongsTo('App\Personal');
     }
 
+    public function avance(){
+        return $this->hasMany('App\Avance');
+    }
+
 }

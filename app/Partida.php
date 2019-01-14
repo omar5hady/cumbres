@@ -17,5 +17,9 @@ class Partida extends Model
         return $this->belongsTo('App\Modelo');
     }
 
+    public function avance(){
+        return $this->hasMany('App\Avance');
+    }
+
     
 }

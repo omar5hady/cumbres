@@ -10,6 +10,13 @@ use DB;
 class PartidaController extends Controller
 {
 
+    /*public function selectPartidas($modelo_id){
+        $partidas = Partida::select('id','partida')
+            ->where('modelo_id','=',$modelo_id)->get();
+        
+            return $partidas;
+    }*/
+
     public function index(Request $request)
     {
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
