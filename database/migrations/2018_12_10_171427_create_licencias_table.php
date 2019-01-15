@@ -20,7 +20,7 @@ class CreateLicenciasTable extends Migration
             $table->date('f_salida')->nullable(); 
             $table->string('num_licencia')->nullable();
             $table->unsignedInteger('perito_dro')->nullable(); 
-            $table->integer('avance')->nullable(); 
+            $table->integer('avance')->nullable()->default(0); 
             $table->date('term_ingreso')->nullable(); 
             $table->date('term_salida')->nullable(); 
             $table->boolean('cambios')->nullable()->default(0);

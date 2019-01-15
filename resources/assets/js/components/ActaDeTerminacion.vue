@@ -93,7 +93,7 @@
                                     </td>
 
                                     <!--Avance-->
-                                     <td v-text="act_terminacion.avance"></td>
+                                     <td v-text="act_terminacion.avance + '%'"></td>
 
                                     <!-- Fecha Ingreso -->
                                     <td v-if="!act_terminacion.term_ingreso" v-text="''"></td>
@@ -143,13 +143,6 @@
                         </div>
                         <div class="modal-body">
                             <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Avance</label>
-                                    <div class="col-md-6">
-                                       <input type="number" min="0" max="100" v-model="avance" class="form-control" >
-                                    </div>
-                                </div>
 
                                   <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Ingreso de acta</label>

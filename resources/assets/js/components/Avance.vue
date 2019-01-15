@@ -57,7 +57,7 @@
                                     <td v-text="avance.lote"></td>
                                     <td v-text="avance.partida" style="width:30%"></td>
                                      <td style="width:8%">
-                                        <input type="text" @keyup.enter="actualizarPorcentaje(avance.id,$event.target.value,avance.partida_id)" :id="avance.id" :value="avance.avance" maxlength="9" v-on:keypress="isNumber($event)" class="form-control" >
+                                        <input type="number" @keyup.enter="actualizarPorcentaje(avance.id,$event.target.value,avance.partida_id)" :id="avance.id" :value="avance.avance" step=".1" min="0" max="1" v-on:keypress="isNumber($event)" class="form-control" >
                                     </td>
                                     <td v-text="avance.avance_porcentaje + '%'"></td>
 
@@ -116,8 +116,8 @@
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Avance</label>
-                                    <div class="col-md-9">
-                                        <input type="text" v-model="avance" maxlength="3" v-on:keypress="isNumber(event)" class="form-control" placeholder="Costo de la Partida">
+                                    <div class="col-md-2">
+                                        <input type="number" step="0.1" min="0" max="1" onkeydown="return false" v-model="avance" maxlength="3" v-on:keypress="isNumber($event)" class="form-control" placeholder="Costo de la Partida">
                                     </div>
                                 </div>
 

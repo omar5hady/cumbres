@@ -367,7 +367,6 @@ class LicenciasController extends Controller
        
         $acta->term_ingreso=$request->term_ingreso;
         $acta->term_salida=$request->term_salida;
-        $acta->avance=$request->avance;
         $acta->num_acta=$request->num_acta;
        
 
@@ -656,7 +655,6 @@ class LicenciasController extends Controller
             $pathtoFile = public_path().'/files/prediales/'.$fileName;
             return response()->download($pathtoFile);
         }
-    
 
 
 

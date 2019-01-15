@@ -70279,13 +70279,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -71249,7 +71242,9 @@ var render = function() {
                     ]),
                     _vm._v(" "),
                     _c("td", {
-                      domProps: { textContent: _vm._s(act_terminacion.avance) }
+                      domProps: {
+                        textContent: _vm._s(act_terminacion.avance + "%")
+                      }
                     }),
                     _vm._v(" "),
                     !act_terminacion.term_ingreso
@@ -71506,41 +71501,6 @@ var render = function() {
                     }
                   },
                   [
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "text-input" }
-                        },
-                        [_vm._v("Avance")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-6" }, [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.avance,
-                              expression: "avance"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: { type: "number", min: "0", max: "100" },
-                          domProps: { value: _vm.avance },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.avance = $event.target.value
-                            }
-                          }
-                        })
-                      ])
-                    ]),
-                    _vm._v(" "),
                     _c("div", { staticClass: "form-group row" }, [
                       _c(
                         "label",
@@ -85039,7 +84999,13 @@ var render = function() {
                     _c("td", { staticStyle: { width: "8%" } }, [
                       _c("input", {
                         staticClass: "form-control",
-                        attrs: { type: "text", id: avance.id, maxlength: "9" },
+                        attrs: {
+                          type: "number",
+                          id: avance.id,
+                          step: ".1",
+                          min: "0",
+                          max: "1"
+                        },
                         domProps: { value: avance.avance },
                         on: {
                           keyup: function($event) {
@@ -85335,7 +85301,7 @@ var render = function() {
                         [_vm._v("Avance")]
                       ),
                       _vm._v(" "),
-                      _c("div", { staticClass: "col-md-9" }, [
+                      _c("div", { staticClass: "col-md-2" }, [
                         _c("input", {
                           directives: [
                             {
@@ -85347,14 +85313,18 @@ var render = function() {
                           ],
                           staticClass: "form-control",
                           attrs: {
-                            type: "text",
+                            type: "number",
+                            step: "0.1",
+                            min: "0",
+                            max: "1",
+                            onkeydown: "return false",
                             maxlength: "3",
                             placeholder: "Costo de la Partida"
                           },
                           domProps: { value: _vm.avance },
                           on: {
                             keypress: function($event) {
-                              _vm.isNumber(_vm.event)
+                              _vm.isNumber($event)
                             },
                             input: function($event) {
                               if ($event.target.composing) {
