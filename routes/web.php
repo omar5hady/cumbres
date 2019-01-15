@@ -185,6 +185,11 @@ Route::get('/select_fraccionamientoLote','FraccionamientoController@selectFracci
 Route::post('/observacion/registrar','ObservacionController@store');
 Route::get('/observacion/select_ultima','ObservacionController@select_ultima'); 
 Route::get('/observacion','ObservacionController@index');
+/***************************************************************************** */
+
+/**********************************RUTAS AVANCE*************************** */
+Route::get('/avance','AvanceController@index');
+Route::put('/avance/actualizar','AvanceController@update');
 
 
 

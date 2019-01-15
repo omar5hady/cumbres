@@ -34,6 +34,7 @@ Vue.component('promociones', require('./components/Promocion.vue'));
 Vue.component('contratistas', require('./components/Contratista.vue'));
 Vue.component('iniobra', require('./components/IniObra.vue'));
 Vue.component('partidas', require('./components/Partidas.vue'));
+Vue.component('avance', require('./components/Avance.vue'));
 
 const app = new Vue({
     el: '#app',

@@ -33,7 +33,8 @@
     </template>
 
     <template v-if="menu==8">
-        <h1>Contenido del menu 8</h1>
+    <h1>Contenido del menu 8</h1>
+        
     </template>
 
     <template v-if="menu==9">
@@ -84,5 +85,10 @@
     <template v-if="menu==52">
         <partidas></partidas>
     </template>
+    
+    <template v-if="menu==53">
+    <avance></avance>
+    </template>
+   
     
 @endsection
