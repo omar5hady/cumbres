@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Partida;
+use App\Avance;
 use App\Lote;
 use DB;
 
@@ -92,15 +93,20 @@ class PartidaController extends Controller
         $partidas=Partida::where('partidas.modelo_id','=',$modelo)->get();
         
         foreach($partidas as $index => $partida) {
-            if($partida->costo>0)
+            if($partida->costo>0){
                 $partida->porcentaje = ($partida->costo/$sumaTotal[0]->costoTotal)*100;
+                $avances = Avance::where('partida_id','=',$partida->id)->get();
+                foreach($avances as $key => $avance){
+                    $avance->avance_porcentaje = $partida->porcentaje * $avance->avance;
+                    $avance->save();
+                }
+            }
             else
                 $partida->porcentaje = 0;
             $partida->save();
         }
 
             return ['partidas' => $partidas];
-            //return $sumaTotal[0]->costoTotal;
     }
 
     public function destroy(Request $request)

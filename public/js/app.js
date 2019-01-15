@@ -84614,6 +84614,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -84646,7 +84648,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'to': 0
             },
             offset: 3,
-            criterio: 'partida',
+            criterio: 'fraccionamientos.nombre',
             buscar: ''
         };
     },
@@ -84722,12 +84724,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             axios.put('/avance/actualizar', {
                 'avance': this.avance,
                 'partida': this.partida,
-                'modelo_id': this.modelo_id,
-
                 'id': this.id
             }).then(function (response) {
                 me.cerrarModal();
-                me.listarAvance(1, '', 'avance');
+                me.listarAvance(1, '', 'fraccionamientos.nombre');
                 //window.alert("Cambios guardados correctamente");
                 swal({
                     position: 'top-end',
@@ -84740,19 +84740,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 console.log(error);
             });
         },
-        actualizarCosto: function actualizarCosto(id, costo, modelos) {
+        actualizarPorcentaje: function actualizarPorcentaje(id, avance, partida) {
 
             var me = this;
             //Con axios se llama el metodo update de PartidaController
             axios.put('/avance/actualizar', {
-                'avance': this.avance,
-                'partida': this.partida,
-                'modelo_id': modelos,
+                'avance': avance,
+                'partida_id': partida,
 
                 'id': id
             }).then(function (response) {
 
-                me.listarAvance(1, '', 'avance');
+                me.listarAvance(1, '', 'fraccionamientos.nombre');
                 //window.alert("Cambios guardados correctamente");
                 var toast = Swal.mixin({
                     toast: true,
@@ -84795,7 +84794,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
                     axios.delete('/avance/eliminar', { params: { 'id': _this.id, 'modelo_id': _this.modelo_id } }).then(function (response) {
                         swal('Borrado!', 'Partida borrada correctamente.', 'success');
-                        me.listarAvance(1, '', 'avance');
+                        me.listarAvance(1, '', 'fraccionamientos.nombre');
                     }).catch(function (error) {
                         console.log(error);
                     });
@@ -84912,8 +84911,8 @@ var render = function() {
                     }
                   },
                   [
-                    _c("option", { attrs: { value: "avance" } }, [
-                      _vm._v("Avance")
+                    _c("option", { attrs: { value: "partidas.partida" } }, [
+                      _vm._v("Partida")
                     ]),
                     _vm._v(" "),
                     _c(
@@ -85037,13 +85036,41 @@ var render = function() {
                       domProps: { textContent: _vm._s(avance.partida) }
                     }),
                     _vm._v(" "),
-                    _c("td", {
-                      domProps: { textContent: _vm._s(avance.avance) }
-                    }),
+                    _c("td", { staticStyle: { width: "8%" } }, [
+                      _c("input", {
+                        staticClass: "form-control",
+                        attrs: { type: "text", id: avance.id, maxlength: "9" },
+                        domProps: { value: avance.avance },
+                        on: {
+                          keyup: function($event) {
+                            if (
+                              !("button" in $event) &&
+                              _vm._k(
+                                $event.keyCode,
+                                "enter",
+                                13,
+                                $event.key,
+                                "Enter"
+                              )
+                            ) {
+                              return null
+                            }
+                            _vm.actualizarPorcentaje(
+                              avance.id,
+                              $event.target.value,
+                              avance.partida_id
+                            )
+                          },
+                          keypress: function($event) {
+                            _vm.isNumber($event)
+                          }
+                        }
+                      })
+                    ]),
                     _vm._v(" "),
                     _c("td", {
                       domProps: {
-                        textContent: _vm._s(avance.avance_porcentaje)
+                        textContent: _vm._s(avance.avance_porcentaje + "%")
                       }
                     })
                   ])

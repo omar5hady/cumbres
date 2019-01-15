@@ -412,11 +412,9 @@ class LoteController extends Controller
             $licencia->save();
         }
         $lote->construccion = $modelo[0]->construccion;
-        /*if($etapa[0]->num_etapa!='Sin Asignar'){
-            $siembra = Carbon::today()->format('ymd');
-            $lote->siembra=$siembra;
-         }*/
         $lote->save();
+
+        
     }
 
     public function enviarAviso(Request $request)

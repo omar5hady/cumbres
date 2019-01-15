@@ -19,7 +19,7 @@
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
                                     <select class="form-control col-md-4" v-model="criterio">
-                                      <option value="avance">Avance</option>
+                                      <option value="partidas.partida">Partida</option>
                                       <option value="fraccionamientos.nombre">Proyecto</option>
                                       <option value="modelos.nombre">Modelo</option>
                                     </select>
@@ -56,8 +56,10 @@
                                     <td v-text="avance.manzana"></td>
                                     <td v-text="avance.lote"></td>
                                     <td v-text="avance.partida" style="width:30%"></td>
-                                    <td v-text="avance.avance"></td>
-                                    <td v-text="avance.avance_porcentaje"></td>
+                                     <td style="width:8%">
+                                        <input type="text" @keyup.enter="actualizarPorcentaje(avance.id,$event.target.value,avance.partida_id)" :id="avance.id" :value="avance.avance" maxlength="9" v-on:keypress="isNumber($event)" class="form-control" >
+                                    </td>
+                                    <td v-text="avance.avance_porcentaje + '%'"></td>
 
                                     
                                 </tr>                               
@@ -183,7 +185,7 @@
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'partida', 
+                criterio : 'fraccionamientos.nombre', 
                 buscar : ''
             }
         },
@@ -258,12 +260,10 @@
                 axios.put('/avance/actualizar',{
                     'avance': this.avance,
                     'partida': this.partida,
-                    'modelo_id': this.modelo_id,
-                    
                     'id' : this.id
                 }).then(function (response){
                     me.cerrarModal();
-                    me.listarAvance(1,'','avance');
+                    me.listarAvance(1,'','fraccionamientos.nombre');
                     //window.alert("Cambios guardados correctamente");
                     swal({
                         position: 'top-end',
@@ -276,20 +276,19 @@
                     console.log(error);
                 });
             },
-            actualizarCosto(id,costo,modelos){
+            actualizarPorcentaje(id,avance,partida){
             
 
                 let me = this;
                 //Con axios se llama el metodo update de PartidaController
                 axios.put('/avance/actualizar',{
-                    'avance':this.avance,
-                    'partida': this.partida,
-                    'modelo_id': modelos,
+                    'avance':avance,
+                    'partida_id': partida,
                     
                     'id' : id
                 }).then(function (response){
                     
-                    me.listarAvance(1,'','avance');
+                    me.listarAvance(1,'','fraccionamientos.nombre');
                     //window.alert("Cambios guardados correctamente");
                 const toast = Swal.mixin({
                     toast: true,
@@ -333,7 +332,7 @@
                         'Partida borrada correctamente.',
                         'success'
                         )
-                        me.listarAvance(1,'','avance');
+                        me.listarAvance(1,'','fraccionamientos.nombre');
                     }).catch(function (error){
                         console.log(error);
                     });

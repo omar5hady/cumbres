@@ -28,7 +28,8 @@ class AvanceController extends Controller
             $avance = Avance::join('lotes','avances.lote_id','=','lotes.id')
             ->join('partidas','avances.partida_id','=','partidas.id')
             ->select('lotes.num_lote as lote','avances.avance', 'avances.avance_porcentaje', 
-            'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id','avances.id','partidas.partida')
+            'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id','avances.id'
+            ,'partidas.partida','avances.partida_id')
             ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
             ->addSelect('fraccionamientos.nombre as proyecto')
             ->join('modelos','lotes.modelo_id','=','modelos.id')
@@ -39,14 +40,15 @@ class AvanceController extends Controller
             $avance = Avance::join('lotes','avances.lote_id','=','lotes.id')
             ->join('partidas','avances.partida_id','=','partidas.id')
             ->select('lotes.num_lote as lote','avances.avance', 'avances.avance_porcentaje', 
-            'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id','avances.id','partidas.partida')
+            'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id','avances.id',
+            'partidas.partida','avances.partida_id')
             ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
             ->addSelect('fraccionamientos.nombre as proyecto')
             ->join('modelos','lotes.modelo_id','=','modelos.id')
             ->addSelect('modelos.nombre as modelos')
             
                 ->where($criterio, 'like', '%'. $buscar . '%')
-                ->orderBy('avance.id','ASC')->paginate(49);
+                ->orderBy('avances.id','ASC')->paginate(49);
        }
 
         return [
@@ -66,8 +68,14 @@ class AvanceController extends Controller
         if(!$request->ajax())return redirect('/');
         $avance = Avance::findOrFail($request->id);
         $avance->avance = $request->avance;
-        $avance->save();
 
-        
+        $partida = Partida::select('porcentaje')
+            ->where('id','=',$avance->partida_id)->get();
+        if($partida[0]->porcentaje == 0)
+            $avance->avance_porcentaje = 0;
+        else
+            $avance->avance_porcentaje = $partida[0]->porcentaje * $avance->avance;
+
+        $avance->save();
     }
 }
