@@ -55,7 +55,7 @@
                                     <td v-text="partida.modelo"></td>
                                     <td v-text="partida.partida" style="width:30%"></td>
                                     <td style="width:15%">
-                                        <input type="text" @keyup.enter="actualizarCosto(partida.id,$event.target.value,partida.modelo_id)" :id="partida.id" :value="partida.costo" maxlength="9" v-on:keypress="isNumber($event)" class="form-control" >
+                                        <input type="text" @keyup.enter="actualizarCosto(partida.id,$event.target.value,partida.modelo_id)" :id="partida.id" :value="partida.costo|currency" maxlength="9" v-on:keypress="isNumber($event)" class="form-control" >
                                     </td>
                                     <td v-text="formatNumber(partida.porcentaje )+ '%'"></td>
                                     

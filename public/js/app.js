@@ -35013,8 +35013,12 @@ module.exports = __webpack_require__(140);
 
 /***/ }),
 /* 140 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_currency_filter__ = __webpack_require__(260);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_currency_filter___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue_currency_filter__);
 
 /**
  * First we will load all of this project's JavaScript dependencies which
@@ -35025,6 +35029,17 @@ module.exports = __webpack_require__(140);
 __webpack_require__(141);
 
 window.Vue = __webpack_require__(163);
+
+
+
+Vue.use(__WEBPACK_IMPORTED_MODULE_0_vue_currency_filter___default.a, {
+  symbol: '$', // El símbolo, por ejemplo €
+  thousandsSeparator: ',', // Separador de miles
+  fractionCount: 2, // ¿Cuántos decimales mostrar?
+  fractionSeparator: '.', // Separador de decimales
+  symbolPosition: 'front', // Posición del símbolo. Puede ser al inicio ('front') o al final ('') es decir, si queremos que sea al final, en lugar de front ponemos una cadena vacía ''
+  symbolSpacing: true // Indica si debe poner un espacio entre el símbolo y la cantidad
+});
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -83817,7 +83832,7 @@ var render = function() {
                       _c("input", {
                         staticClass: "form-control",
                         attrs: { type: "text", id: partida.id, maxlength: "9" },
-                        domProps: { value: partida.costo },
+                        domProps: { value: _vm._f("currency")(partida.costo) },
                         on: {
                           keyup: function($event) {
                             if (
@@ -85490,6 +85505,12 @@ if (false) {
     require("vue-hot-reload-api")      .rerender("data-v-53271b3b", module.exports)
   }
 }
+
+/***/ }),
+/* 260 */
+/***/ (function(module, exports) {
+
+module.exports=function(r){var t={};function n(e){if(t[e])return t[e].exports;var o=t[e]={i:e,l:!1,exports:{}};return r[e].call(o.exports,o,o.exports,n),o.l=!0,o.exports}return n.m=r,n.c=t,n.d=function(r,t,e){n.o(r,t)||Object.defineProperty(r,t,{enumerable:!0,get:e})},n.r=function(r){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(r,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(r,"__esModule",{value:!0})},n.t=function(r,t){if(1&t&&(r=n(r)),8&t)return r;if(4&t&&"object"==typeof r&&r&&r.__esModule)return r;var e=Object.create(null);if(n.r(e),Object.defineProperty(e,"default",{enumerable:!0,value:r}),2&t&&"string"!=typeof r)for(var o in r)n.d(e,o,function(t){return r[t]}.bind(null,o));return e},n.n=function(r){var t=r&&r.__esModule?function(){return r.default}:function(){return r};return n.d(t,"a",t),t},n.o=function(r,t){return Object.prototype.hasOwnProperty.call(r,t)},n.p="",n(n.s=0)}([function(r,t,n){"use strict";n.r(t);var e=Array.prototype.map,o=Array.isArray,a=Object.prototype.toString,i={__isNull:function(r){return void 0===r||null===r},__isString:function(r){return!!(""===r||r&&r.charCodeAt&&r.substr)},__isArray:function(r){return o?o(r):"[object Array]"===a.call(r)},__isObject:function(r){return r&&"[object Object]"===a.call(r)},__defaults:function(r,t){var n;for(n in r=r||{},t=t||{})t.hasOwnProperty(n)&&null==r[n]&&(r[n]=t[n]);return r},__map:function(r,t,n){var o,a,i=[];if(!r)return i;if(e&&r.map===e)return r.map(t,n);for(o=0,a=r.length;o<a;o++)i[o]=t.call(n,r[o],o,r);return i}},u={};function s(r,t){return r=Math.round(Math.abs(r)),isNaN(r)?t:r}u.settings={currency:{symbol:"$",format:"%s%v",decimal:".",thousand:",",precision:2,grouping:3},number:{precision:0,grouping:3,thousand:",",decimal:"."}};var c=u.unformat=u.parse=function(r,t){if(i.__isArray(r))return i.__map(r,function(r){return c(r,t)});if("number"==typeof(r=r||0))return r;t=t||u.settings.number.decimal;var n=new RegExp("[^0-9-"+t+"]",["g"]),e=parseFloat((""+r).replace(/\((?=\d+)(.*)\)/,"-$1").replace(n,"").replace(t,"."));return isNaN(e)?0:e},f=u.toFixed=function(r,t){t=s(t,u.settings.number.precision);var n=Number(u.unformat(r)+"e"+t),e=Math.round(n);return Number(e+"e-"+t).toFixed(t)},l=u.formatNumber=u.format=function(r,t,n,e){if(i.__isArray(r))return i.__map(r,function(r){return l(r,t,n,e)});r=c(r);var o=i.__defaults(i.__isObject(t)?t:{precision:t,thousand:n,decimal:e},u.settings.number),a=s(o.precision),p=r<0?"-":"",m=parseInt(f(Math.abs(r||0),a),10)+"",y=m.length>3?m.length%3:0;return p+(y?m.substr(0,y)+o.thousand:"")+m.substr(y).replace(/(\d{3})(?=\d)/g,"$1"+o.thousand)+(a?o.decimal+f(Math.abs(r),a).split(".")[1]:"")},p=u.formatMoney=function(r,t,n,e,o,a){if(i.__isArray(r))return i.__map(r,function(r){return p(r,t,n,e,o,a)});r=c(r);var f=i.__defaults(i.__isObject(t)?t:{symbol:t,precision:n,thousand:e,decimal:o,format:a},u.settings.currency),m=function(r){var t=u.settings.currency.format;return"function"==typeof r&&(r=r()),i.__isString(r)&&r.match("%v")?{pos:r,neg:r.replace("-","").replace("%v","-%v"),zero:r}:r&&r.pos&&r.pos.match("%v")?r:i.__isString(t)?u.settings.currency.format={pos:t,neg:t.replace("%v","-%v"),zero:t}:t}(f.format);return(r>0?m.pos:r<0?m.neg:m.zero).replace("%s",f.symbol).replace("%v",l(Math.abs(r),s(f.precision),f.thousand,f.decimal))},m=u;function y(r){return(y="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(r){return typeof r}:function(r){return r&&"function"==typeof Symbol&&r.constructor===Symbol&&r!==Symbol.prototype?"symbol":typeof r})(r)}var b={install:function(r,t){var n={symbol:"",thousandsSeparator:".",fractionCount:0,fractionSeparator:",",symbolPosition:"front",symbolSpacing:!0};i.__isNull(t)&&(t={});var e=i.__defaults(t,n);r.filter("currency",function(r,t,n,o,a,u,s){var c=i.__defaults({symbol:t,thousandsSeparator:n,fractionCount:o,fractionSeparator:a,symbolPosition:u,symbolSpacing:s},e);"object"===y(t)&&(c=i.__defaults(t,e));var f=0,l="-"===String(r).charAt(0);l&&(r=String(r).slice(1));var p=parseFloat(r);isNaN(p)||(f=p);var b="%s%v";return b="front"===c.symbolPosition?c.symbolSpacing?"%s %v":"%s%v":c.symbolSpacing?"%v %s":"%v%s",c.fractionCount>0&&(r=m.toFixed(r,c.fractionCount)),f=m.formatMoney(r,{format:b,symbol:c.symbol,precision:c.fractionCount,thousand:c.thousandsSeparator,decimal:c.fractionSeparator}),l&&(f="-"+f),f}),r.prototype.$CurrencyFilter={setConfig:function(r){e=i.__defaults(r,n)},getConfig:function(){return e}}}};t.default=b}]);
 
 /***/ })
 /******/ ]);
