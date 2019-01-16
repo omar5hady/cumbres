@@ -59,7 +59,7 @@
                                      <td style="width:8%">
                                         <input type="number" @keyup.enter="actualizarPorcentaje(avance.id,$event.target.value,avance.partida_id)" :id="avance.id" :value="avance.avance" step=".1" min="0" max="1" v-on:keypress="isNumber($event)" class="form-control" >
                                     </td>
-                                    <td v-text="avance.avance_porcentaje + '%'"></td>
+                                    <td v-text="formatNumber(avance.avance_porcentaje) + '%'"></td>
 
                                     
                                 </tr>                               
@@ -238,7 +238,10 @@
                 //Envia la petición para visualizar la data de esta pagina
                 me.listarAvance(page,buscar,criterio);
             },
-            /**Metodo para registrar  */
+            formatNumber(value) {
+                let val = (value/1).toFixed(2)
+                return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+            },
             
             isNumber: function(evt) {
                 evt = (evt) ? evt : window.event;
@@ -277,10 +280,10 @@
                 });
             },
             actualizarPorcentaje(id,avance,partida){
-            
-
                 let me = this;
                 //Con axios se llama el metodo update de PartidaController
+                if(avance>1)
+                    avance=1;
                 axios.put('/avance/actualizar',{
                     'avance':avance,
                     'partida_id': partida,

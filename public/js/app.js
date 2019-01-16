@@ -75584,9 +75584,10 @@ var render = function() {
                   "label",
                   {
                     staticClass: "col-md-2 form-control-label",
+                    staticStyle: { align: "right" },
                     attrs: { for: "text-input" }
                   },
-                  [_vm._v("Num. Etapa")]
+                  [_vm._v("Etapa")]
                 ),
                 _vm._v(" "),
                 _c("div", { staticClass: "col-md-3" }, [
@@ -83398,6 +83399,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 console.log(error);
             });
         },
+        formatNumber: function formatNumber(value) {
+            var val = (value / 1).toFixed(2);
+            return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        },
         cambiarPagina: function cambiarPagina(page, buscar, criterio) {
             var me = this;
             //Actualiza la pagina actual
@@ -83842,7 +83847,9 @@ var render = function() {
                     _vm._v(" "),
                     _c("td", {
                       domProps: {
-                        textContent: _vm._s(partida.porcentaje + "%")
+                        textContent: _vm._s(
+                          _vm.formatNumber(partida.porcentaje) + "%"
+                        )
                       }
                     })
                   ])
@@ -84661,8 +84668,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             //Envia la petición para visualizar la data de esta pagina
             me.listarAvance(page, buscar, criterio);
         },
+        formatNumber: function formatNumber(value) {
+            var val = (value / 1).toFixed(2);
+            return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        },
 
-        /**Metodo para registrar  */
 
         isNumber: function isNumber(evt) {
             evt = evt ? evt : window.event;
@@ -84701,9 +84711,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             });
         },
         actualizarPorcentaje: function actualizarPorcentaje(id, avance, partida) {
-
             var me = this;
             //Con axios se llama el metodo update de PartidaController
+            if (avance > 1) avance = 1;
             axios.put('/avance/actualizar', {
                 'avance': avance,
                 'partida_id': partida,
@@ -85036,7 +85046,9 @@ var render = function() {
                     _vm._v(" "),
                     _c("td", {
                       domProps: {
-                        textContent: _vm._s(avance.avance_porcentaje + "%")
+                        textContent: _vm._s(
+                          _vm.formatNumber(avance.avance_porcentaje) + "%"
+                        )
                       }
                     })
                   ])

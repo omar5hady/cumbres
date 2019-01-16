@@ -98,7 +98,7 @@
                                                 <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                             </select>
                                         </div>
-                                        <label class="col-md-2 form-control-label" for="text-input">Num. Etapa</label>
+                                        <label class="col-md-2 form-control-label" style="align:right" for="text-input">Etapa</label>
                                         <div class="col-md-3">
                                              <select class="form-control" v-model="etapa_id" @click="selectManzanas(fraccionamiento_id,etapa_id)">
                                                 <option value="0">Seleccione etapa</option>

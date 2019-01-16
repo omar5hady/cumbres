@@ -57,7 +57,7 @@
                                     <td style="width:15%">
                                         <input type="text" @keyup.enter="actualizarCosto(partida.id,$event.target.value,partida.modelo_id)" :id="partida.id" :value="partida.costo" maxlength="9" v-on:keypress="isNumber($event)" class="form-control" >
                                     </td>
-                                    <td v-text="partida.porcentaje + '%'"></td>
+                                    <td v-text="formatNumber(partida.porcentaje )+ '%'"></td>
                                     
                                 </tr>                               
                             </tbody>
@@ -229,6 +229,10 @@
                 .catch(function (error) {
                     console.log(error);
                 });
+            },
+            formatNumber(value) {
+                let val = (value/1).toFixed(2)
+                return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
             },
             cambiarPagina(page, buscar, criterio){
                 let me = this;
