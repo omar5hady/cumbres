@@ -83488,7 +83488,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'id': id
             }).then(function (response) {
 
-                me.listarPartidas(1, '', 'partida');
+                me.listarPartidas(1, modelo, 'partidas.modelo_id');
                 //window.alert("Cambios guardados correctamente");
                 var toast = Swal.mixin({
                     toast: true,
@@ -84710,18 +84710,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 console.log(error);
             });
         },
-        actualizarPorcentaje: function actualizarPorcentaje(id, avance, partida) {
+        actualizarPorcentaje: function actualizarPorcentaje(id, avance, partida, lote) {
             var me = this;
             //Con axios se llama el metodo update de PartidaController
             if (avance > 1) avance = 1;
             axios.put('/avance/actualizar', {
                 'avance': avance,
                 'partida_id': partida,
-
                 'id': id
             }).then(function (response) {
 
-                me.listarAvance(1, '', 'fraccionamientos.nombre');
+                me.listarAvance(1, lote, 'lotes.num_lote');
                 //window.alert("Cambios guardados correctamente");
                 var toast = Swal.mixin({
                     toast: true,
@@ -85034,7 +85033,8 @@ var render = function() {
                             _vm.actualizarPorcentaje(
                               avance.id,
                               $event.target.value,
-                              avance.partida_id
+                              avance.partida_id,
+                              avance.lote
                             )
                           },
                           keypress: function($event) {

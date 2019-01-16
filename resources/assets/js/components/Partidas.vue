@@ -318,7 +318,7 @@
                     'id' : id
                 }).then(function (response){
                     
-                    me.listarPartidas(1,'','partida');
+                    me.listarPartidas(1,modelo,'partidas.modelo_id');
                     //window.alert("Cambios guardados correctamente");
                 const toast = Swal.mixin({
                     toast: true,

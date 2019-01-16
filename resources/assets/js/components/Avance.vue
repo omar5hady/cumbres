@@ -57,7 +57,7 @@
                                     <td v-text="avance.lote"></td>
                                     <td v-text="avance.partida" style="width:30%"></td>
                                      <td style="width:8%">
-                                        <input type="number" @keyup.enter="actualizarPorcentaje(avance.id,$event.target.value,avance.partida_id)" :id="avance.id" :value="avance.avance" step=".1" min="0" max="1" v-on:keypress="isNumber($event)" class="form-control" >
+                                        <input type="number" @keyup.enter="actualizarPorcentaje(avance.id,$event.target.value,avance.partida_id,avance.lote)" :id="avance.id" :value="avance.avance" step=".1" min="0" max="1" v-on:keypress="isNumber($event)" class="form-control" >
                                     </td>
                                     <td v-text="formatNumber(avance.avance_porcentaje) + '%'"></td>
 
@@ -279,7 +279,7 @@
                     console.log(error);
                 });
             },
-            actualizarPorcentaje(id,avance,partida){
+            actualizarPorcentaje(id,avance,partida,lote){
                 let me = this;
                 //Con axios se llama el metodo update de PartidaController
                 if(avance>1)
@@ -287,11 +287,10 @@
                 axios.put('/avance/actualizar',{
                     'avance':avance,
                     'partida_id': partida,
-                    
                     'id' : id
                 }).then(function (response){
                     
-                    me.listarAvance(1,'','fraccionamientos.nombre');
+                    me.listarAvance(1,lote,'lotes.num_lote');
                     //window.alert("Cambios guardados correctamente");
                 const toast = Swal.mixin({
                     toast: true,
