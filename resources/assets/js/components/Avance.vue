@@ -10,26 +10,13 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Avance
                         <!--   Boton Nuevo    -->
-                        <button v-if="resumen==0" type="button" @click="MostrarPromedio()" class="btn btn-secondary">
-                            <i class="icon-external-link"></i> Resumen de avances
+                        <button v-if="resumen==0" type="button" @click="MostrarPromedio()" class="btn btn-success">
+                            <i class="icon-arrow-left"></i> Resumen de avances
                         </button>
                         <!---->
                     </div>
                     <div class="card-body" v-if="resumen==0">
-                        <div class="form-group row">
-                            <div class="col-md-6">
-                                <div class="input-group">
-                                    <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-4" v-model="criterio">
-                                      <option value="partidas.partida">Partida</option>
-                                      <option value="fraccionamientos.nombre">Proyecto</option>
-                                      <option value="modelos.nombre">Modelo</option>
-                                    </select>
-                                    <input type="text" v-model="buscar" @keyup.enter="listarAvance(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
-                                    <button type="submit" @click="listarAvance(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                </div>
-                            </div>
-                        </div>
+                        
                         <table class="table table-bordered table-striped table-sm">
                             <thead>
                                 <tr>
@@ -59,7 +46,8 @@
                                     <td v-text="avance.lote"></td>
                                     <td v-text="avance.partida" style="width:30%"></td>
                                      <td style="width:8%">
-                                        <input type="number" @keyup.enter="actualizarPorcentaje(avance.id,$event.target.value,avance.partida_id,avance.lote)" :id="avance.id" :value="avance.avance" step=".1" min="0" max="1" v-on:keypress="isNumber($event)" class="form-control" >
+                                     <input v-if="avance.cambio_avance == 1"  type="number" @keyup.enter="actualizarPorcentaje(avance.id,$event.target.value,avance.partida_id,avance.lote)" :id="avance.id" :value="avance.avance" step=".1" min="0" max="1" v-on:keypress="isNumber($event)" class="form-control Fields" > 
+                                        <input v-else type="number" @keyup.enter="actualizarPorcentaje(avance.id,$event.target.value,avance.partida_id,avance.lote)" :id="avance.id" :value="avance.avance" step=".1" min="0" max="1" v-on:keypress="isNumber($event)" class="form-control" >
                                     </td>
                                     <td v-text="formatNumber(avance.avance_porcentaje) + '%'"></td>
 
@@ -88,13 +76,18 @@
                             <div class="col-md-6">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-4" v-model="criterio">
-                                      <option value="lotes.num_lote">Lote</option>
-                                      <option value="fraccionamientos.nombre">Proyecto</option>
+                                    <select class="form-control col-md-4" v-model="criterio" @click="selectFraccionamientosConLote()">
+                                      <option value="lotes.fraccionamiento_id">Fraccionamiento</option>
                                       <option value="modelos.nombre">Modelo</option>
                                     </select>
-                                    <input type="text" v-model="buscar" @keyup.enter="listarAvancePromedio(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
-                                    <button type="submit" @click="listarAvancePromedio(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                     <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" >
+                                        <option value="">Seleccione</option>
+                                        <option v-for="fraccionamientos in arrayFraccionamientosLote" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                                    </select>
+                                    <input v-if="criterio=='lotes.fraccionamiento_id'" type="text" v-model="buscar1" @keyup.enter="listarAvancePromedio(1,buscar,buscar1,buscar2,criterio)" class="form-control" placeholder="Manzana">
+                                    <input v-if="criterio=='lotes.fraccionamiento_id'" type="text" v-model="buscar2" @keyup.enter="listarAvancePromedio(1,buscar,buscar1,buscar2,criterio)" class="form-control" placeholder="Lote">
+                                    <input v-else type="text" v-model="buscar" @keyup.enter="listarAvancePromedio(1,buscar,buscar1,buscar2,criterio)" class="form-control" placeholder="Texto a buscar">
+                                    <button type="submit" @click="listarAvancePromedio(1,buscar,buscar1,buscar2,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
                         </div>
@@ -233,6 +226,7 @@
                 modelos:'',
                 arrayAvance : [],
                 arrayAvanceProm : [],
+                arrayFraccionamientosLote: [],
                 modal : 0,
                 tituloModal : '',
                 tipoAccion: 0,
@@ -255,8 +249,11 @@
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'fraccionamientos.nombre', 
-                buscar : ''
+                criterio : 'lotes.fraccionamiento_id', 
+                buscar : '',
+                buscar1: '',
+                buscar2: '',
+                buscar3: ''
             }
         },
         computed:{
@@ -335,9 +332,9 @@
                 me.listarAvance(page,buscar,criterio);
             },
             /**Metodo para mostrar los registros */
-            listarAvancePromedio(page, buscar, criterio){
+            listarAvancePromedio(page, buscar, buscar1, buscar2 ,criterio){
                 let me = this;
-                var url = '/avanceProm?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
+                var url = '/avanceProm?page=' + page + '&buscar=' + buscar +  '&buscar1=' + buscar1 + '&buscar2=' + buscar2 + '&criterio=' + criterio;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayAvanceProm = respuesta.avance.data;
@@ -358,7 +355,21 @@
                 let val = (value/1).toFixed(2)
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
             },
-            
+            selectFraccionamientosConLote(){
+                let me = this;
+                me.buscar1="";
+                me.buscar2="";
+                me.buscar="";
+                me.arrayFraccionamientosLote=[];
+                var url = '/select_fraccionamientoLote';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayFraccionamientosLote = respuesta.fraccionamientos;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
             isNumber: function(evt) {
                 evt = (evt) ? evt : window.event;
                 var charCode = (evt.which) ? evt.which : evt.keyCode;
@@ -370,13 +381,14 @@
             },
             mostrarPartidas(lote){
                 let me = this;
+                console.log(lote)
+                me.listarAvance(1,lote,'avances.lote_id');
                 me.resumen=0;
-                me.listarAvance(1,lote,'lotes.id');
             },
             MostrarPromedio(){
                 let me = this;
                 me.resumen=1;
-                me.listarAvancePromedio(1,'','lotes.num_lote');
+                me.listarAvancePromedio(1,'','','','lotes.num_lote');
             },
             actualizarAvance(){
                 if(this.validarAvance()) //Se verifica si hay un error (campo vacio)
@@ -416,7 +428,7 @@
                     'id' : id
                 }).then(function (response){
                     
-                    me.listarAvance(1,lote,'lotes.num_lote');
+                    me.listarAvance(1,'','lotes.num_lote');
                     //window.alert("Cambios guardados correctamente");
                 const toast = Swal.mixin({
                     toast: true,
@@ -522,14 +534,15 @@
                         }
                     }
                 }
-                
+                this.selectFraccionamientosConLote();
                 
                
             }
         },
         mounted() {
             this.listarAvance(1,this.buscar,this.criterio);      
-            this.listarAvancePromedio(1,this.buscar,this.criterio);
+            this.listarAvancePromedio(1,this.buscar,this.buscar1,this.buscar2,this.criterio);
+            this.selectFraccionamientosConLote();
             
         }
     }
@@ -561,4 +574,9 @@
             padding: 1rem;
             
         }
+        .Fields {
+	/*background-color: #f44242;*/
+	border: 2px solid #f40404;
+
+}
 </style>
