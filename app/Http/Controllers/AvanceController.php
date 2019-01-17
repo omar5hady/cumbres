@@ -17,6 +17,32 @@ class AvanceController extends Controller
         $avance->partida_id = $partida_id;
         $avance->save();
     }
+
+    public function indexProm(Request $request){
+        $avance = Avance::join('lotes','avances.lote_id','=','lotes.id')
+            ->select('lotes.num_lote as lote', 
+                DB::raw("SUM(avances.avance_porcentaje) as porcentajeTotal"), 
+                'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id')
+            ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+            ->addSelect('fraccionamientos.nombre as proyecto')
+            ->join('modelos','lotes.modelo_id','=','modelos.id')
+            ->addSelect('modelos.nombre as modelos')
+            ->groupBy('avances.lote_id')
+            ->paginate(8);
+
+            return [
+                'pagination' => [
+                    'total'         => $avance->total(),
+                    'current_page'  => $avance->currentPage(),
+                    'per_page'      => $avance->perPage(),
+                    'last_page'     => $avance->lastPage(),
+                    'from'          => $avance->firstItem(),
+                    'to'            => $avance->lastItem(),
+                ],
+                'avance' => $avance
+            ];
+    }
+
     public function index(Request $request)
     {
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu

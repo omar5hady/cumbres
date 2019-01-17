@@ -10,10 +10,12 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Avance
                         <!--   Boton Nuevo    -->
-                       
+                        <button v-if="resumen==0" type="button" @click="MostrarPromedio()" class="btn btn-secondary">
+                            <i class="icon-external-link"></i> Resumen de avances
+                        </button>
                         <!---->
                     </div>
-                    <div class="card-body">
+                    <div class="card-body" v-if="resumen==0">
                         <div class="form-group row">
                             <div class="col-md-6">
                                 <div class="input-group">
@@ -76,6 +78,65 @@
                                 </li>
                                 <li class="page-item" v-if="pagination.current_page < pagination.last_page">
                                     <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,criterio)">Sig</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+
+                    <div class="card-body" v-if="resumen==1">
+                        <div class="form-group row">
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <!--Criterios para el listado de busqueda -->
+                                    <select class="form-control col-md-4" v-model="criterio">
+                                      <option value="lotes.num_lote">Lote</option>
+                                      <option value="fraccionamientos.nombre">Proyecto</option>
+                                      <option value="modelos.nombre">Modelo</option>
+                                    </select>
+                                    <input type="text" v-model="buscar" @keyup.enter="listarAvancePromedio(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
+                                    <button type="submit" @click="listarAvancePromedio(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                </div>
+                            </div>
+                        </div>
+                        <table class="table table-bordered table-striped table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Opciones</th>
+                                    <th>Fraccionamiento</th>
+                                    <th>Modelo</th>
+                                    <th>Manzana</th>
+                                    <th>Lote</th>
+                                    <th>Porcentaje de avance</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="avancepro in arrayAvanceProm" :key="avancepro.lote_id">
+                                    <td style="width:9%">
+                                        <button type="button" class="btn btn-primary btn-sm" @click="mostrarPartidas(avancepro.lote_id)">
+                                          <i class="icon-eye"></i>
+                                        </button>
+                                    </td>
+                                    <td v-text="avancepro.proyecto"></td>
+                                    <td v-text="avancepro.modelos"></td>
+                                    <td v-text="avancepro.manzana"></td>
+                                    <td v-text="avancepro.lote"></td>
+                                    <td v-text="formatNumber(avancepro.porcentajeTotal) + '%'"></td>
+
+                                    
+                                </tr>                               
+                            </tbody>
+                        </table>
+                        <nav>
+                            <!--Botones de paginacion -->
+                            <ul class="pagination">
+                                <li class="page-item" v-if="paginationResume.current_page > 1">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(paginationResume.current_page - 1,buscar,criterio)">Ant</a>
+                                </li>
+                                <li class="page-item" v-for="page in pagesNumber2" :key="page" :class="[page == isActived ? 'active' : '']">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(page,buscar,criterio)" v-text="page"></a>
+                                </li>
+                                <li class="page-item" v-if="paginationResume.current_page < paginationResume.last_page">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(paginationResume.current_page + 1,buscar,criterio)">Sig</a>
                                 </li>
                             </ul>
                         </nav>
@@ -158,6 +219,7 @@
         data(){
             return{
                 id:0,
+                resumen:1,
                 avance: '',
                 avance_porcentaje:'',
                 lote_id:'',
@@ -170,13 +232,21 @@
                 fraccionamiento:'',
                 modelos:'',
                 arrayAvance : [],
-                
+                arrayAvanceProm : [],
                 modal : 0,
                 tituloModal : '',
                 tipoAccion: 0,
                 erroPartida : 0,
                 errorMostrarMsjAvance : [],
                 pagination : {
+                    'total' : 0,         
+                    'current_page' : 0,
+                    'per_page' : 0,
+                    'last_page' : 0,
+                    'from' : 0,
+                    'to' : 0,
+                },
+                paginationResume : {
                     'total' : 0,         
                     'current_page' : 0,
                     'per_page' : 0,
@@ -215,6 +285,32 @@
                     from++;
                 }
                 return pagesArray;
+            },
+            isActived2: function(){
+                return this.paginationResume.current_page;
+            },
+            //Calcula los elementos de la paginación
+            pagesNumber2:function(){
+                if(!this.paginationResume.to){
+                    return [];
+                }
+
+                var from = this.paginationResume.current_page - this.offset;
+                if(from < 1){
+                    from = 1;
+                }
+
+                var to = from + (this.offset * 2);
+                if(to >= this.paginationResume.last_page){
+                    to = this.paginationResume.last_page;
+                }
+
+                var pagesArray2 = [];
+                while(from <= to){
+                    pagesArray2.push(from);
+                    from++;
+                }
+                return pagesArray2;
             }
         },
         methods : {
@@ -238,6 +334,26 @@
                 //Envia la petición para visualizar la data de esta pagina
                 me.listarAvance(page,buscar,criterio);
             },
+            /**Metodo para mostrar los registros */
+            listarAvancePromedio(page, buscar, criterio){
+                let me = this;
+                var url = '/avanceProm?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayAvanceProm = respuesta.avance.data;
+                    me.paginationResume = respuesta.pagination;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            cambiarPagina2(page, buscar, criterio){
+                let me = this;
+                //Actualiza la pagina actual
+                me.paginationResume.current_page = page;
+                //Envia la petición para visualizar la data de esta pagina
+                me.listarAvance(page,buscar,criterio);
+            },
             formatNumber(value) {
                 let val = (value/1).toFixed(2)
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
@@ -251,6 +367,16 @@
                 } else {
                     return true;
                 }
+            },
+            mostrarPartidas(lote){
+                let me = this;
+                me.resumen=0;
+                me.listarAvance(1,lote,'lotes.id');
+            },
+            MostrarPromedio(){
+                let me = this;
+                me.resumen=1;
+                me.listarAvancePromedio(1,'','lotes.num_lote');
             },
             actualizarAvance(){
                 if(this.validarAvance()) //Se verifica si hay un error (campo vacio)
@@ -403,6 +529,7 @@
         },
         mounted() {
             this.listarAvance(1,this.buscar,this.criterio);      
+            this.listarAvancePromedio(1,this.buscar,this.criterio);
             
         }
     }

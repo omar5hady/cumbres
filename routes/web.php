@@ -189,6 +189,7 @@ Route::get('/observacion','ObservacionController@index');
 
 /**********************************RUTAS AVANCE*************************** */
 Route::get('/avance','AvanceController@index');
+Route::get('/avanceProm','AvanceController@indexProm');
 Route::put('/avance/actualizar','AvanceController@update');
 
 
