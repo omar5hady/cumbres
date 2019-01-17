@@ -64,51 +64,54 @@ class AvanceController extends Controller
                         ->groupBy('avances.lote_id')
                         ->paginate(8);
                     }
-                if($buscar1==''){
-                    $avance = Avance::join('lotes','avances.lote_id','=','lotes.id')
-                        ->select('lotes.num_lote as lote', 
-                            DB::raw("SUM(avances.avance_porcentaje) as porcentajeTotal"), 
-                            'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id')
-                        ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                        ->addSelect('fraccionamientos.nombre as proyecto')
-                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                        ->addSelect('modelos.nombre as modelos')
-                        ->groupBy('avances.lote_id')
-                        ->where('lotes.fraccionamiento_id', '=', $buscar)
-                        ->where('lotes.num_lote', '=', $buscar2)
-                        ->paginate(8);
-                }
-                if($buscar2==''){
-                    $avance = Avance::join('lotes','avances.lote_id','=','lotes.id')
-                        ->select('lotes.num_lote as lote', 
-                            DB::raw("SUM(avances.avance_porcentaje) as porcentajeTotal"), 
-                            'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id')
-                        ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                        ->addSelect('fraccionamientos.nombre as proyecto')
-                        ->join('modelos','lotes.modelo_id','=','modelos.id')
-                        ->addSelect('modelos.nombre as modelos')
-                        ->groupBy('avances.lote_id')
-                        ->where('lotes.fraccionamiento_id', '=', $buscar)
-                        ->where('lotes.manzana', '=', $buscar1)
-                        ->paginate(8);
-                }
-                else
-                {
-                    $avance = Avance::join('lotes','avances.lote_id','=','lotes.id')
-                    ->select('lotes.num_lote as lote', 
-                        DB::raw("SUM(avances.avance_porcentaje) as porcentajeTotal"), 
-                        'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id')
-                    ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                    ->addSelect('fraccionamientos.nombre as proyecto')
-                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                    ->addSelect('modelos.nombre as modelos')
-                    ->groupBy('avances.lote_id')
-                    ->where('lotes.fraccionamiento_id', '=', $buscar)
-                    ->where('lotes.manzana', '=', $buscar1)
-                    ->where('lotes.num_lote', '=', $buscar2)
-                    ->paginate(8);
-    
-                }
+                    else{
+                        if($buscar1==''){
+                            $avance = Avance::join('lotes','avances.lote_id','=','lotes.id')
+                                ->select('lotes.num_lote as lote', 
+                                    DB::raw("SUM(avances.avance_porcentaje) as porcentajeTotal"), 
+                                    'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id')
+                                ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                ->addSelect('fraccionamientos.nombre as proyecto')
+                                ->join('modelos','lotes.modelo_id','=','modelos.id')
+                                ->addSelect('modelos.nombre as modelos')
+                                ->groupBy('avances.lote_id')
+                                ->where('lotes.fraccionamiento_id', '=', $buscar)
+                                ->where('lotes.num_lote', '=', $buscar2)
+                                ->paginate(8);
+                        }
+                        else{
+                            if($buscar2==''){
+                                $avance = Avance::join('lotes','avances.lote_id','=','lotes.id')
+                                    ->select('lotes.num_lote as lote', 
+                                        DB::raw("SUM(avances.avance_porcentaje) as porcentajeTotal"), 
+                                        'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id')
+                                    ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                    ->addSelect('fraccionamientos.nombre as proyecto')
+                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
+                                    ->addSelect('modelos.nombre as modelos')
+                                    ->groupBy('avances.lote_id')
+                                    ->where('lotes.fraccionamiento_id', '=', $buscar)
+                                    ->where('lotes.manzana', '=', $buscar1)
+                                    ->paginate(8);
+                            }
+                            else{
+                                $avance = Avance::join('lotes','avances.lote_id','=','lotes.id')
+                                    ->select('lotes.num_lote as lote', 
+                                        DB::raw("SUM(avances.avance_porcentaje) as porcentajeTotal"), 
+                                        'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id')
+                                    ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                    ->addSelect('fraccionamientos.nombre as proyecto')
+                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
+                                    ->addSelect('modelos.nombre as modelos')
+                                    ->groupBy('avances.lote_id')
+                                    ->where('lotes.fraccionamiento_id', '=', $buscar)
+                                    ->where('lotes.manzana', '=', $buscar1)
+                                    ->where('lotes.num_lote', '=', $buscar2)
+                                    ->paginate(8);
+                            }
+                        }
+                        
+                    }
     
             }
             
