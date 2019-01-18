@@ -26,7 +26,6 @@ class CreateIniObrasTable extends Migration
             $table->double('total_importe');
             $table->float('anticipo');
             $table->double('total_anticipo');
-            $table->boolean('iniciado')->default(0);
             $table->timestamps();
 
             $table->foreign('fraccionamiento_id')->references('id')->on('fraccionamientos');

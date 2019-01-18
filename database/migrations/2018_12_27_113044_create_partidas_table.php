@@ -20,7 +20,7 @@ class CreatePartidasTable extends Migration
             $table->double('costo')->default(0);
             $table->float('porcentaje')->default(0);
 
-            $table->foreign('modelo_id')->references('id')->on('modelos'); 
+            $table->foreign('modelo_id')->references('id')->on('modelos')->onDelete('cascade'); 
         });
     }
 

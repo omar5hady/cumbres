@@ -73,6 +73,9 @@
                     <li @click="menu=51 "class="nav-item">
                         <a class="nav-link" href="#"><i class="icon-notebook"></i> Inicio de obra</a>
                     </li>
+                    <li @click="menu=54 "class="nav-item">
+                        <a class="nav-link" href="#"><i class="icon-notebook"></i> Aviso de obra</a>
+                    </li>
                     <li @click="menu=52 "class="nav-item">
                         <a class="nav-link" href="#"><i class="icon-notebook"></i> Partidas</a>
                     </li>

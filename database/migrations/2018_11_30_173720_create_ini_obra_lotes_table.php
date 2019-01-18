@@ -16,20 +16,17 @@ class CreateIniObraLotesTable extends Migration
         Schema::create('ini_obra_lotes', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('ini_obra_id');
-            $table->unsignedInteger('lote_id')->nullable();
-            $table->string('manzana')->nullable();
-            $table->float('superficie')->nullable();
+            $table->string('lote')->nullable();
+            $table->string('manzanan')->nullable();
+            $table->string('modelo')->nullable();
+            $table->string('construccion')->nullable();
             $table->double('costo_directo');
             $table->double('costo_indirecto');
             $table->double('importe');
             $table->text('descripcion');
-            $table->boolean('iniciado')->default(0);
             $table->timestamps();
 
-            $table->foreign('ini_obra_id')->references('id')->on('ini_obras');
-            $table->foreign('lote_id')->references('id')->on('lotes');
-
-
+            $table->foreign('ini_obra_id')->references('id')->on('ini_obras')->onDelete('cascade');
         });
     }
 

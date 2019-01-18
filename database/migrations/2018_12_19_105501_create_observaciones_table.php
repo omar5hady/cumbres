@@ -21,7 +21,7 @@ class CreateObservacionesTable extends Migration
 
             $table->timestamps();
 
-            $table->foreign('lote_id')->references('id')->on('lotes');
+            $table->foreign('lote_id')->references('id')->on('lotes')->onDelete('cascade');
         });
     }
 

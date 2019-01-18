@@ -148,8 +148,8 @@ Route::delete('/contratista/eliminar','ContratistaController@destroy');
 ////////////////////        RUTAS INICIO DE OBRA    /////////////////////////////////
 Route::get('/iniobra','IniObraController@index');
 Route::post('/iniobra/registrar','IniObraController@store');
-Route::put('/iniobra/actualizar','IniObraController@update');
-Route::delete('/iniobra/eliminar','IniObraController@destroy');
+Route::put('/iniobra/obtenerCabecera','IniObraController@obtenerCabecera');
+Route::delete('/iniobra/obtenerDetalles','IniObraController@obtenerDetalles');
 
 ////////////////////        RUTAS PARTIDAS   /////////////////////////////////
 Route::get('/partidas','PartidaController@index');

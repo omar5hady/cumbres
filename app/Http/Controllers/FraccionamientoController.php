@@ -148,8 +148,25 @@ class FraccionamientoController extends Controller
     {
         if(!$request->ajax())return redirect('/');
         $fraccionamiento = Fraccionamiento::findOrFail($request->id);
-     
-            $fraccionamiento->delete();
+
+        $contadorModelo=Modelo::where('fraccionamiento_id','=',$fraccionamiento->id)->get()->count();
+        $contadorEtapa=Etapa::where('fraccionamiento_id','=',$fraccionamiento->id)->get()->count();
+
+        if($contadorEtapa == 1 && $contadorModelo == 1){
+            $modelo=Modelo::select('id')
+                ->where('nombre','=','Por Asignar')
+                ->where('fraccionamiento_id','=',$fraccionamiento->id)->get();
+            $modeloDelete = Modelo::findOrFail($modelo[0]->id);
+            $modeloDelete->delete();
+
+            $etapa=Etapa::select('id')
+                ->where('num_etapa','=','Sin Asignar')
+                ->where('fraccionamiento_id','=',$fraccionamiento->id)->get();
+            $etapaDelete = Etapa::findOrFail($etapa[0]->id);
+            $etapaDelete->delete();
+        }
+
+        $fraccionamiento->delete();
            
   
     }

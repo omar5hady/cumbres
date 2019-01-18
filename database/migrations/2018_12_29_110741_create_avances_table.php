@@ -21,8 +21,8 @@ class CreateAvancesTable extends Migration
             $table->float('avance_porcentaje')->default(0);
             $table->boolean('cambio_avance')->default(0); //campo bandera para validar si el avance es menor al que ya estaba
 
-            $table->foreign('lote_id')->references('id')->on('lotes');
-            $table->foreign('partida_id')->references('id')->on('partidas');
+            $table->foreign('lote_id')->references('id')->on('lotes')->onDelete('cascade');
+            $table->foreign('partida_id')->references('id')->on('partidas')->onDelete('cascade');
         });
     }
 

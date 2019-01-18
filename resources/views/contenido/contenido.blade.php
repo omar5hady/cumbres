@@ -87,7 +87,11 @@
     </template>
     
     <template v-if="menu==53">
-    <avance></avance>
+        <avance></avance>
+    </template>
+
+    <template v-if="menu==54">
+        <aviso-obra></aviso-obra>
     </template>
    
     

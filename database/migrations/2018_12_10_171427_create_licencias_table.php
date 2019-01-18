@@ -30,7 +30,7 @@ class CreateLicenciasTable extends Migration
             $table->string('foto_predial')->nullable();
             $table->string('modelo_ant')->default('N/A');
              
-            $table->foreign('id')->references('id')->on('lotes'); 
+            $table->foreign('id')->references('id')->on('lotes')->onDelete('cascade'); 
             $table->foreign('perito_dro')->references('id')->on('personal');
         });
     }
