@@ -46,91 +46,93 @@
                                 </div>
                             </div>
                         </div>
-                        <table class="table table-bordered table-striped table-sm">
-                            <thead>
-                                <tr>
-                                    
-                                    <th>Opciones</th>
-                                    <th>Proyecto</th>
-                                    <th>Manzana</th>
-                                    <th># Lote</th>
-                                    <th>Terreno mts&sup2;</th>
-                                    <th>Construcción mts&sup2;</th>
-                                    <th>Modelo</th>
-                                    <th>Arquitecto</th>
-                                    <th>Siembra</th>
-                                    <th>Planos</th>
-                                    <th>DRO</th>
-                                    <th>Ingreso</th>
-                                    <th>Salida</th>
-                                    <th>Num. Licencia</th>
-                                    <th>Credito puente</th>
-                            
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="licencias in arrayLicencias" :key="licencias.id">
-                                    
-                                    <td >
-                                        <button title="Editar" type="button" @click="abrirModal('lote','actualizar',licencias)" class="btn btn-warning btn-sm">
-                                          <i class="icon-pencil"></i>
-                                        </button> 
-                                        <button type="button" @click="abrirModal2('lote','ver',licencias)" class="btn btn-info btn-sm">
-                                          <i class="icon-magnifier"></i>
-                                        </button>
-                                        <button title="Subir foto y predial" type="button" @click="abrirModal('lote','subirArchivo',licencias)" class="btn btn-default btn-sm">
-                                          <i class="icon-cloud-upload"></i>
-                                        </button>
-                                        <a  title="Descargar predial" v-if ="licencias.foto_predial" class="btn btn-success btn-sm" v-bind:href="'/downloadPredial/'+licencias.foto_predial">
-                                        <i class="fa fa-arrow-circle-down fa-lg"></i>
-                                        </a>
-                                       
-                                    </td>
-                                    <td v-text="licencias.proyecto"></td>
-                                    <td v-text="licencias.manzana"></td>
-                                    <td v-text="licencias.num_lote"></td>
-                                    <td v-text="licencias.terreno"></td>
-                                    <td v-text="licencias.construccion"></td>
-                                    <!--Modelo-->
-                                    <td>
-                                        <span v-if = "licencias.modelo!='Por Asignar' && licencias.cambios==0" class="badge badge-success" v-text="licencias.modelo"></span>
-                                        <span v-if = "licencias.modelo=='Por Asignar'" class="badge badge-danger">Por Asignar</span>
-                                        <span v-if = "licencias.cambios==1 && licencias.modelo_ant !== 'N/A'" class="badge badge-warning" v-text="licencias.modelo_ant + '->' + licencias.modelo"></span>
-                                        <span v-if = "licencias.cambios==1 && licencias.modelo_ant == 'N/A'" class="badge badge-warning" v-text="licencias.modelo"></span>
-                                    </td>
-                                    <!--Arquitecto -->
-                                    <td>
-                                        <span v-if = "licencias.arquitecto!='Sin Asignar  '" class="badge badge-success" v-text="'Arq. '+licencias.arquitecto"></span>
-                                        <span v-else class="badge badge-danger"> Por Asignar </span>
-                                    </td>
-                                    <!-- SIEMBRA -->
-                                    <td v-if="!licencias.siembra" v-text="''"></td>
-                                    <td v-else v-text="this.moment(licencias.siembra).locale('es').format('DD/MMM/YYYY')"></td>
-                                    <!-- Fecha planos -->    
-                                    <td v-if="!licencias.f_planos" v-text="''"></td>
-                                    <td v-else v-text="this.moment(licencias.f_planos).locale('es').format('DD/MMM/YYYY')"></td>
-                                    <!-- Fecha planos -->
-                                    <td>
-                                        <span v-if = "licencias.perito!='Sin Asignar  '" class="badge badge-success" v-text="'Arq. '+licencias.perito"></span>
-                                        <span v-else class="badge badge-danger"> Por Asignar </span>
-                                    </td>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped table-sm">
+                                <thead>
+                                    <tr>
+                                        
+                                        <th>Opciones</th>
+                                        <th>Proyecto</th>
+                                        <th>Manzana</th>
+                                        <th># Lote</th>
+                                        <th>Terreno mts&sup2;</th>
+                                        <th>Construcción mts&sup2;</th>
+                                        <th>Modelo</th>
+                                        <th>Arquitecto</th>
+                                        <th>Siembra</th>
+                                        <th>Planos</th>
+                                        <th>DRO</th>
+                                        <th>Ingreso</th>
+                                        <th>Salida</th>
+                                        <th>Num. Licencia</th>
+                                        <th>Credito puente</th>
+                                
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="licencias in arrayLicencias" :key="licencias.id">
+                                        
+                                        <td >
+                                            <button title="Editar" type="button" @click="abrirModal('lote','actualizar',licencias)" class="btn btn-warning btn-sm">
+                                            <i class="icon-pencil"></i>
+                                            </button> 
+                                            <button type="button" @click="abrirModal2('lote','ver',licencias)" class="btn btn-info btn-sm">
+                                            <i class="icon-magnifier"></i>
+                                            </button>
+                                            <button title="Subir foto y predial" type="button" @click="abrirModal('lote','subirArchivo',licencias)" class="btn btn-default btn-sm">
+                                            <i class="icon-cloud-upload"></i>
+                                            </button>
+                                            <a  title="Descargar predial" v-if ="licencias.foto_predial" class="btn btn-success btn-sm" v-bind:href="'/downloadPredial/'+licencias.foto_predial">
+                                            <i class="fa fa-arrow-circle-down fa-lg"></i>
+                                            </a>
+                                        
+                                        </td>
+                                        <td v-text="licencias.proyecto"></td>
+                                        <td v-text="licencias.manzana"></td>
+                                        <td v-text="licencias.num_lote"></td>
+                                        <td v-text="licencias.terreno"></td>
+                                        <td v-text="licencias.construccion"></td>
+                                        <!--Modelo-->
+                                        <td>
+                                            <span v-if = "licencias.modelo!='Por Asignar' && licencias.cambios==0" class="badge badge-success" v-text="licencias.modelo"></span>
+                                            <span v-if = "licencias.modelo=='Por Asignar'" class="badge badge-danger">Por Asignar</span>
+                                            <span v-if = "licencias.cambios==1 && licencias.modelo_ant !== 'N/A'" class="badge badge-warning" v-text="licencias.modelo_ant + '->' + licencias.modelo"></span>
+                                            <span v-if = "licencias.cambios==1 && licencias.modelo_ant == 'N/A'" class="badge badge-warning" v-text="licencias.modelo"></span>
+                                        </td>
+                                        <!--Arquitecto -->
+                                        <td>
+                                            <span v-if = "licencias.arquitecto!='Sin Asignar  '" class="badge badge-success" v-text="'Arq. '+licencias.arquitecto"></span>
+                                            <span v-else class="badge badge-danger"> Por Asignar </span>
+                                        </td>
+                                        <!-- SIEMBRA -->
+                                        <td v-if="!licencias.siembra" v-text="''"></td>
+                                        <td v-else v-text="this.moment(licencias.siembra).locale('es').format('DD/MMM/YYYY')"></td>
+                                        <!-- Fecha planos -->    
+                                        <td v-if="!licencias.f_planos" v-text="''"></td>
+                                        <td v-else v-text="this.moment(licencias.f_planos).locale('es').format('DD/MMM/YYYY')"></td>
+                                        <!-- Fecha planos -->
+                                        <td>
+                                            <span v-if = "licencias.perito!='Sin Asignar  '" class="badge badge-success" v-text="'Arq. '+licencias.perito"></span>
+                                            <span v-else class="badge badge-danger"> Por Asignar </span>
+                                        </td>
 
-                                    <!-- Fecha Ingreso -->
-                                    <td v-if="!licencias.f_ingreso" v-text="''"></td>
-                                    <td v-else v-text="this.moment(licencias.f_ingreso).locale('es').format('DD/MMM/YYYY')"></td>
-                                    <!-- Fecha Salida -->
-                                    <td v-if="!licencias.f_salida" v-text="''"></td>
-                                    <td v-else v-text="this.moment(licencias.f_salida).locale('es').format('DD/MMM/YYYY')"></td>
-                                    
-                                    <td  v-if="!licencias.foto_lic" v-text="licencias.num_licencia"></td>
-                                    <td v-else style="width:7%"><a class="btn btn-default btn-sm"  v-text="licencias.num_licencia" v-bind:href="'/downloadLicencias/'+licencias.foto_lic"></a></td>
-                                    <td  v-text="licencias.credito_puente"></td>
-                                    
-                                    
-                                    
-                                </tr>                               
-                            </tbody>
-                        </table>  
+                                        <!-- Fecha Ingreso -->
+                                        <td v-if="!licencias.f_ingreso" v-text="''"></td>
+                                        <td v-else v-text="this.moment(licencias.f_ingreso).locale('es').format('DD/MMM/YYYY')"></td>
+                                        <!-- Fecha Salida -->
+                                        <td v-if="!licencias.f_salida" v-text="''"></td>
+                                        <td v-else v-text="this.moment(licencias.f_salida).locale('es').format('DD/MMM/YYYY')"></td>
+                                        
+                                        <td  v-if="!licencias.foto_lic" v-text="licencias.num_licencia"></td>
+                                        <td v-else style="width:7%"><a class="btn btn-default btn-sm"  v-text="licencias.num_licencia" v-bind:href="'/downloadLicencias/'+licencias.foto_lic"></a></td>
+                                        <td  v-text="licencias.credito_puente"></td>
+                                        
+                                        
+                                        
+                                    </tr>                               
+                                </tbody>
+                            </table>  
+                        </div>
                         <nav>
                             <!--Botones de paginacion -->
                             <ul class="pagination">

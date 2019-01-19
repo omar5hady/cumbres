@@ -48,51 +48,53 @@
                                 </div>
                             </div>
                         </div>
-                        <table class="table table-bordered table-striped table-sm">
-                            <thead>
-                                <tr>
-                                    <th>Opciones</th>
-                                    <th>Proyecto</th>
-                                    <th>Manzana</th>
-                                    <th># Lote</th>
-                                    <th>Calle</th>
-                                    <th># Oficial</th>
-                                    <th style="width:8%">Terreno m&sup2;</th>
-                                    <th>Clave Catastral</th>
-                                    <th>Modelo</th>
-                                    <th>Construc. m&sup2;</th>
-                                    <th style="width:8%">Etapa de Servicio</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="lote in arrayLote" :key="lote.id">
-                                    <td style="width:12%">
-                                        <button title="Editar" type="button" @click="abrirModal('lote','actualizar',lote)" class="btn btn-warning btn-sm">
-                                          <i class="icon-pencil"></i>
-                                        </button>
-                                        <button title="Borrar" type="button" class="btn btn-danger btn-sm" @click="eliminarLote(lote)">
-                                          <i class="icon-trash"></i>
-                                        </button>
-                                    </td>
-                                    
-                                    <td v-text="lote.proyecto"></td>
-                                    <td v-text="lote.manzana"></td>
-                                    <td v-if="!lote.sublote" v-text="lote.num_lote"></td>
-                                    <td v-else v-text="lote.num_lote + '-' + lote.sublote"></td>
-                                    <td v-text="lote.calle"></td>
-                                    <td v-if="!lote.interior" v-text="lote.numero"></td>
-                                    <td v-else v-text="lote.numero + '-' + lote.interior" ></td>
-                                    <td v-text="lote.terreno"></td>
-                                    <td v-text="lote.clv_catastral"></td>
-                                    <td>
-                                        <span v-if = "lote.modelo!='Por Asignar'" class="badge badge-success" v-text="lote.modelo"></span>
-                                        <span v-else class="badge badge-danger"> Por Asignar </span>
-                                    </td> 
-                                    <td v-text="lote.construccion"></td>
-                                    <td style="width:8%" v-text="lote.etapa_servicios"></td>
-                                </tr>                               
-                            </tbody>
-                        </table>  
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Opciones</th>
+                                        <th>Proyecto</th>
+                                        <th>Manzana</th>
+                                        <th># Lote</th>
+                                        <th>Calle</th>
+                                        <th># Oficial</th>
+                                        <th style="width:8%">Terreno m&sup2;</th>
+                                        <th>Clave Catastral</th>
+                                        <th>Modelo</th>
+                                        <th>Construc. m&sup2;</th>
+                                        <th style="width:8%">Etapa de Servicio</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="lote in arrayLote" :key="lote.id">
+                                        <td style="width:12%">
+                                            <button title="Editar" type="button" @click="abrirModal('lote','actualizar',lote)" class="btn btn-warning btn-sm">
+                                            <i class="icon-pencil"></i>
+                                            </button>
+                                            <button title="Borrar" type="button" class="btn btn-danger btn-sm" @click="eliminarLote(lote)">
+                                            <i class="icon-trash"></i>
+                                            </button>
+                                        </td>
+                                        
+                                        <td v-text="lote.proyecto"></td>
+                                        <td v-text="lote.manzana"></td>
+                                        <td v-if="!lote.sublote" v-text="lote.num_lote"></td>
+                                        <td v-else v-text="lote.num_lote + '-' + lote.sublote"></td>
+                                        <td v-text="lote.calle"></td>
+                                        <td v-if="!lote.interior" v-text="lote.numero"></td>
+                                        <td v-else v-text="lote.numero + '-' + lote.interior" ></td>
+                                        <td v-text="lote.terreno"></td>
+                                        <td v-text="lote.clv_catastral"></td>
+                                        <td>
+                                            <span v-if = "lote.modelo!='Por Asignar'" class="badge badge-success" v-text="lote.modelo"></span>
+                                            <span v-else class="badge badge-danger"> Por Asignar </span>
+                                        </td> 
+                                        <td v-text="lote.construccion"></td>
+                                        <td style="width:8%" v-text="lote.etapa_servicios"></td>
+                                    </tr>                               
+                                </tbody>
+                            </table>  
+                        </div>
                         <nav>
                             <!--Botones de paginacion -->
                             <ul class="pagination">

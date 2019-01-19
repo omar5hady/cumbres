@@ -34,36 +34,38 @@
                                 </div>
                             </div>
                         </div>
-                        <table class="table table-bordered table-striped table-sm">
-                            <thead>
-                                <tr>
-                                    <th>Opciones</th>
-                                    <th>Fraccionamiento</th>
-                                    <th>Numero de etapa</th>
-                                    <th>Fecha de inicio </th>
-                                    <th>Fecha de termino</th>
-                                    <th>Encargado</th>
-                                    
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="etapa in arrayEtapa" :key="etapa.id">
-                                    <td>
-                                        <button type="button" @click="abrirModal('etapa','actualizar',etapa)" class="btn btn-warning btn-sm">
-                                          <i class="icon-pencil"></i>
-                                        </button> &nbsp;
-                                        <button type="button" class="btn btn-danger btn-sm" @click="eliminarEtapa(etapa)">
-                                          <i class="icon-trash"></i>
-                                        </button>
-                                    </td>
-                                    <td v-text="etapa.fraccionamiento"></td>
-                                    <td v-text="etapa.num_etapa"></td>
-                                    <td v-text="etapa.f_ini"></td>
-                                    <td v-text="etapa.f_fin"></td>
-                                    <td v-text="etapa.name"></td>
-                                </tr>                               
-                            </tbody>
-                        </table>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Opciones</th>
+                                        <th>Fraccionamiento</th>
+                                        <th>Numero de etapa</th>
+                                        <th>Fecha de inicio </th>
+                                        <th>Fecha de termino</th>
+                                        <th>Encargado</th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="etapa in arrayEtapa" :key="etapa.id">
+                                        <td>
+                                            <button type="button" @click="abrirModal('etapa','actualizar',etapa)" class="btn btn-warning btn-sm">
+                                            <i class="icon-pencil"></i>
+                                            </button> &nbsp;
+                                            <button type="button" class="btn btn-danger btn-sm" @click="eliminarEtapa(etapa)">
+                                            <i class="icon-trash"></i>
+                                            </button>
+                                        </td>
+                                        <td v-text="etapa.fraccionamiento"></td>
+                                        <td v-text="etapa.num_etapa"></td>
+                                        <td v-text="etapa.f_ini"></td>
+                                        <td v-text="etapa.f_fin"></td>
+                                        <td v-text="etapa.name"></td>
+                                    </tr>                               
+                                </tbody>
+                            </table>
+                        </div>
                         <nav>
                             <!--Botones de paginacion -->
                             <ul class="pagination">

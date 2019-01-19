@@ -21,22 +21,18 @@ class IniObraController extends Controller
         if ($buscar==''){
             $ini_obra = Ini_obra::join('contratistas','ini_obras.contratista_id','=','contratistas.id')
             ->join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
-            ->join('etapas','ini_obras.etapa_id','=','etapas.id')
             ->select('ini_obras.id','ini_obras.clave','ini_obras.f_ini','ini_obras.f_fin',
             'ini_obras.total_costo_directo','ini_obras.total_costo_indirecto','ini_obras.total_importe',
-            'ini_obras.estado','contratistas.nombre as contratista','fraccionamientos.nombre as proyecto',
-            'etapas.num_etapa as proyecto')
+            'contratistas.nombre as contratista','fraccionamientos.nombre as proyecto')
             ->orderBy('ini_obras.id', 'desc')->paginate(8);
         }
         else{
             $ini_obra = Ini_obra::join('contratistas','ini_obras.contratista_id','=','contratistas.id')
             ->join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
-            ->join('etapas','ini_obras.etapa_id','=','etapas.id')
             ->select('ini_obras.id','ini_obras.clave','ini_obras.f_ini','ini_obras.f_fin',
             'ini_obras.total_costo_directo','ini_obras.total_costo_indirecto','ini_obras.total_importe',
-            'ini_obras.estado','contratistas.nombre as contratista','fraccionamientos.nombre as proyecto',
-            'etapas.num_etapa as proyecto')
-            ->where('ini_obras.'.$criterio, 'like', '%'. $buscar . '%')
+            'contratistas.nombre as contratista','fraccionamientos.nombre as proyecto')
+            ->where($criterio, 'like', '%'. $buscar . '%')
             ->orderBy('ini_obras.id', 'desc')->paginate(8);
         }
          
@@ -58,11 +54,9 @@ class IniObraController extends Controller
         $id = $request->id;
         $ini_obra = Ini_obra::join('contratistas','ini_obras.contratista_id','=','contratistas.id')
         ->join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
-        ->join('etapas','ini_obras.etapa_id','=','etapas.id')
         ->select('ini_obras.id','ini_obras.clave','ini_obras.f_ini','ini_obras.f_fin',
             'ini_obras.total_costo_directo','ini_obras.total_costo_indirecto','ini_obras.total_importe',
-            'ini_obras.estado','contratistas.nombre as contratista','fraccionamientos.nombre as proyecto',
-            'etapas.num_etapa as proyecto')
+            'contratistas.nombre as contratista','fraccionamientos.nombre as proyecto')
         ->where('ini_obra.id','=',$id)
         ->orderBy('ini_obra.id', 'desc')->take(1)->get();
          
@@ -89,7 +83,6 @@ class IniObraController extends Controller
             DB::beginTransaction(); 
             $ini_obra = new Ini_obra();
             $ini_obra->fraccionamiento_id = $request->fraccionamiento_id;
-            $ini_obra->etapa_id = $request->etapa_id;
             $ini_obra->contratista_id = $request->contratista_id;
             $ini_obra->clave = $request->clave;
             $ini_obra->f_ini = $request->f_ini;

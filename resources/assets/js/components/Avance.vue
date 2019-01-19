@@ -91,34 +91,36 @@
                                 </div>
                             </div>
                         </div>
-                        <table class="table table-bordered table-striped table-sm">
-                            <thead>
-                                <tr>
-                                    <th>Opciones</th>
-                                    <th>Fraccionamiento</th>
-                                    <th>Modelo</th>
-                                    <th>Manzana</th>
-                                    <th>Lote</th>
-                                    <th>Porcentaje de avance</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="avancepro in arrayAvanceProm" :key="avancepro.lote_id">
-                                    <td style="width:9%">
-                                        <button type="button" class="btn btn-primary btn-sm" @click="mostrarPartidas(avancepro.lote_id)">
-                                          <i class="icon-eye"></i>
-                                        </button>
-                                    </td>
-                                    <td v-text="avancepro.proyecto"></td>
-                                    <td v-text="avancepro.modelos"></td>
-                                    <td v-text="avancepro.manzana"></td>
-                                    <td v-text="avancepro.lote"></td>
-                                    <td v-text="formatNumber(avancepro.porcentajeTotal) + '%'"></td>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Opciones</th>
+                                        <th>Fraccionamiento</th>
+                                        <th>Modelo</th>
+                                        <th>Manzana</th>
+                                        <th>Lote</th>
+                                        <th>Porcentaje de avance</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="avancepro in arrayAvanceProm" :key="avancepro.lote_id">
+                                        <td style="width:9%">
+                                            <button type="button" class="btn btn-primary btn-sm" @click="mostrarPartidas(avancepro.lote_id)">
+                                            <i class="icon-eye"></i>
+                                            </button>
+                                        </td>
+                                        <td v-text="avancepro.proyecto"></td>
+                                        <td v-text="avancepro.modelos"></td>
+                                        <td v-text="avancepro.manzana"></td>
+                                        <td v-text="avancepro.lote"></td>
+                                        <td v-text="formatNumber(avancepro.porcentajeTotal) + '%'"></td>
 
-                                    
-                                </tr>                               
-                            </tbody>
-                        </table>
+                                        
+                                    </tr>                               
+                                </tbody>
+                            </table>
+                        </div>
                         <nav>
                             <!--Botones de paginacion -->
                             <ul class="pagination">

@@ -35,54 +35,56 @@
                                 </div>
                             </div>
                         </div>
-                        <table class="table table-bordered table-striped table-sm">
-                            <thead>
-                                <tr>
-                                    <th>Opciones</th>
-                                    <th>Nombre</th>
-                                    <th>Apellidos</th>
-                                    <th>Departamento</th>
-                                    <th>RFC</th>
-                                    <th>Celular</th>
-                                    <th>Email</th>
-                                    <th>Activo/Inactivo</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="Personal in arrayPersonal" :key="Personal.id">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Opciones</th>
+                                        <th>Nombre</th>
+                                        <th>Apellidos</th>
+                                        <th>Departamento</th>
+                                        <th>RFC</th>
+                                        <th>Celular</th>
+                                        <th>Email</th>
+                                        <th>Activo/Inactivo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="Personal in arrayPersonal" :key="Personal.id">
+                                        <td>
+                                            <button type="button" @click="abrirModal('Personal','actualizar',Personal)" class="btn btn-warning btn-sm">
+                                            <i class="icon-pencil"></i>
+                                            </button>
+                                            <template v-if="Personal.activo">
+                                                <button type="button" @click="desactivarPersonal(Personal.id)" class="btn btn-danger btn-sm">
+                                                <i class="icon-trash"></i>
+                                                </button>
+                                            </template>
+                                            <template v-else>
+                                                <button type="button" @click="activarPersonal(Personal.id)" class="btn btn-success btn-sm">
+                                                    <i class="icon-check"></i>
+                                                </button>
+                                            </template>
+                                            <button type="button" @click="abrirModal('Personal','ver',Personal)" class="btn btn-info btn-sm">
+                                            <i class="icon-magnifier"></i>
+                                            </button>
+                                        </td>
+                                        <td v-text="Personal.nombre"></td>
+                                        
+                                        <td v-text="Personal.apellidos"></td>
+                                        <td v-text="Personal.departamento"></td>
+                                        <td v-text="Personal.rfc"></td>
+                                        <td v-text="Personal.celular"></td>
+                                        <td v-text="Personal.email"></td>
                                     <td>
-                                        <button type="button" @click="abrirModal('Personal','actualizar',Personal)" class="btn btn-warning btn-sm">
-                                          <i class="icon-pencil"></i>
-                                        </button>
-                                        <template v-if="Personal.activo">
-                                            <button type="button" @click="desactivarPersonal(Personal.id)" class="btn btn-danger btn-sm">
-                                            <i class="icon-trash"></i>
-                                            </button>
-                                        </template>
-                                        <template v-else>
-                                            <button type="button" @click="activarPersonal(Personal.id)" class="btn btn-success btn-sm">
-                                                <i class="icon-check"></i>
-                                            </button>
-                                        </template>
-                                        <button type="button" @click="abrirModal('Personal','ver',Personal)" class="btn btn-info btn-sm">
-                                          <i class="icon-magnifier"></i>
-                                        </button>
-                                    </td>
-                                    <td v-text="Personal.nombre"></td>
+                                            <span v-if = "Personal.activo==1" class="badge badge-success">Activo</span>
+                                            <span v-if = "Personal.activo==0" class="badge badge-danger">Inactivo</span>
+                                        </td>                          
                                     
-                                    <td v-text="Personal.apellidos"></td>
-                                    <td v-text="Personal.departamento"></td>
-                                    <td v-text="Personal.rfc"></td>
-                                    <td v-text="Personal.celular"></td>
-                                    <td v-text="Personal.email"></td>
-                                   <td>
-                                        <span v-if = "Personal.activo==1" class="badge badge-success">Activo</span>
-                                        <span v-if = "Personal.activo==0" class="badge badge-danger">Inactivo</span>
-                                    </td>                          
-                                   
-                                </tr>                               
-                            </tbody>
-                        </table>
+                                    </tr>                               
+                                </tbody>
+                            </table>
+                        </div>
                         <nav>
                             <!--Botones de paginacion -->
                             <ul class="pagination">

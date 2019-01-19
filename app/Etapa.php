@@ -39,7 +39,4 @@ class Etapa extends Model
         return $this->hasMany('App\Promocion');
     }
 
-    public function ini_obra(){
-        return $this->hasMany('App\Ini_obra');
-    }
 }

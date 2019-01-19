@@ -28,31 +28,33 @@
                                 </div>
                             </div>
                         </div>
-                        <table class="table table-bordered table-striped table-sm">
-                            <thead>
-                                <tr>
-                                    <th>Opciones</th>
-                                    <th>Departamento</th>
-                                    <th>Estado</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="departamento in arrayDepartamento" :key="departamento.id_departamento">
-                                    <td style="width:20%">
-                                        <button type="button" @click="abrirModal('departamento','actualizar',departamento)" class="btn btn-warning btn-sm">
-                                          <i class="icon-pencil"></i>
-                                        </button> &nbsp;
-                                        <button type="button" class="btn btn-danger btn-sm" @click="eliminarDepartamento(departamento)">
-                                          <i class="icon-trash"></i>
-                                        </button>
-                                    </td>
-                                    <td v-text="departamento.departamento" style="width:60%"></td>
-                                    <td>
-                                        <span class="badge badge-success">Activo</span>
-                                    </td>
-                                </tr>                               
-                            </tbody>
-                        </table>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Opciones</th>
+                                        <th>Departamento</th>
+                                        <th>Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="departamento in arrayDepartamento" :key="departamento.id_departamento">
+                                        <td style="width:20%">
+                                            <button type="button" @click="abrirModal('departamento','actualizar',departamento)" class="btn btn-warning btn-sm">
+                                            <i class="icon-pencil"></i>
+                                            </button> &nbsp;
+                                            <button type="button" class="btn btn-danger btn-sm" @click="eliminarDepartamento(departamento)">
+                                            <i class="icon-trash"></i>
+                                            </button>
+                                        </td>
+                                        <td v-text="departamento.departamento" style="width:60%"></td>
+                                        <td>
+                                            <span class="badge badge-success">Activo</span>
+                                        </td>
+                                    </tr>                               
+                                </tbody>
+                            </table>
+                        </div>
                         <nav>
                             <!--Botones de paginacion -->
                             <ul class="pagination">

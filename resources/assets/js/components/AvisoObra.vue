@@ -10,71 +10,241 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Aviso de obra
                         <!--   Boton Nuevo    -->
-                        <button type="button" @click="abrirModal('avisoObra','registrar')" class="btn btn-secondary">
+                        <button type="button" @click="mostrarDetalle()" class="btn btn-secondary">
                             <i class="icon-plus"></i>&nbsp;Nuevo
                         </button>
                         <!---->
                     </div>
-                    <div class="card-body">
-                        <div class="form-group row">
-                            <div class="col-md-8">
-                                <div class="input-group">
-                                    <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-4" v-model="criterio" @click="limpiarBusqueda()">
-                                        <option value="ini_obras.clave">Clave</option>
-                                        <option value="contratistas.nombre">Contratista</option>
-                                        <option value="ini_obras.f_ini">Fecha de inicio</option>
-                                        <option value="ini_obras.f_fin">Fecha de termino</option>
-                                    </select>
-                                    <input type="text" v-model="buscar" @keyup.enter="listarAvisos(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
-                                    <button type="submit" @click="listarAvisos(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                    <!-- Div Card Body para listar -->
+                    <template v-if="listado == 1">
+                        <div class="card-body"> 
+                            <div class="form-group row">
+                                <div class="col-md-8">
+                                    <div class="input-group">
+                                        <!--Criterios para el listado de busqueda -->
+                                        <select class="form-control col-md-4" v-model="criterio" @click="limpiarBusqueda()">
+                                            <option value="ini_obras.clave">Clave</option>
+                                            <option value="contratistas.nombre">Contratista</option>
+                                            <option value="ini_obras.f_ini">Fecha de inicio</option>
+                                            <option value="ini_obras.f_fin">Fecha de termino</option>
+                                        </select>
+                                        <input type="text" v-model="buscar" @keyup.enter="listarAvisos(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
+                                        <button type="submit" @click="listarAvisos(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Opciones</th>
+                                            <th>Clave</th>
+                                            <th>Contratista</th>
+                                            <th>Fraccionamiento</th>
+                                            <th>Etapa</th>
+                                            <th>Fecha de inicio </th>
+                                            <th>Fecha de termino</th>
+                                            
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="avisoObra in arrayAvisoObra" :key="avisoObra.id">
+                                            <td>
+                                                <button type="button" @click="abrirModal('avisoObra','actualizar',avisoObra)" class="btn btn-success btn-sm">
+                                                <i class="icon-eye"></i>
+                                                </button> &nbsp;
+                                            </td>
+                                            <td v-text="avisoObra.clave"></td>
+                                            <td v-text="avisoObra.contratista"></td>
+                                            <td v-text="avisoObra.proyecto"></td>
+                                            <td v-text="avisoObra.etapa"></td>
+                                            <td v-text="avisoObra.f_ini"></td>
+                                            <td v-text="avisoObra.f_fin"></td>
+                                        </tr>                               
+                                    </tbody>
+                                </table>
+                            </div>
+                            <nav>
+                                <!--Botones de paginacion -->
+                                <ul class="pagination">
+                                    <li class="page-item" v-if="pagination.current_page > 1">
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,criterio)">Ant</a>
+                                    </li>
+                                    <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,criterio)" v-text="page"></a>
+                                    </li>
+                                    <li class="page-item" v-if="pagination.current_page < pagination.last_page">
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,criterio)">Sig</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </template>
+                    
+                    <!-- Div Card Body para nuevo registro -->
+                    <template v-else>
+                        <div class="card-body"> 
+                            <div class="form-group row border">
+                                <div class="col-md-9">
+                                    <div class="form-group">
+                                        <label for="">Contratista </label>
+                                        <v-select 
+                                            :on-search="selectContratista"
+                                            label="nombre"
+                                            :options="arrayContratista"
+                                            placeholder="Buscar contratista..."
+                                            :onChange="getDatosContratista"
+                                        >
+                                        </v-select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="">Clave </label>
+                                    <input type="text" class="form-control" v-model="impuesto" placeholder="CLV-00-00">
+                                </div> 
+                                <div class="col-md-4">
+                                    <label for="">Fecha de inicio </label>
+                                    <input type="date" class="form-control" v-model="f_ini">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="">Fecha de termino </label>
+                                    <input type="date" class="form-control" v-model="f_ini">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="">Porcentaje de Anticipo </label>
+                                    <input type="text" class="form-control" v-model="anticipo" v-on:keypress="isNumber($event)">
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="">Fraccionamiento </label>
+                                        <select class="form-control">
+
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            <div class="form-group row border">
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <label>Lote</label>
+                                        <div class="form-inline">
+                                            <input type="text" class="form-control" v-model="lote_id" placeholder="Ingrese Lote">
+                                            <button class="btn btn-primary">...</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Costo directo</label>
+                                        <input type="text" class="form-control" v-model="costo_directo" v-on:keypress="isNumber($event)" placeholder="Costo directo">
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Costo indirecto</label>
+                                        <input type="text" class="form-control" v-model="costo_indirecto" v-on:keypress="isNumber($event)" placeholder="Costo indirecto">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Importe</label>
+                                        <input type="text" class="form-control" v-model="importe" placeholder="Importe">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-1">
+                                    <div class="form-group">
+                                        <button class="btn btn-success form-control btnagregar"><i class="icon-plus"></i></button>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            <div class="form-group row">
+                                <div class="table-responsive col-md-12">
+                                    <table class="table table-bordered table-striped table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Opciones</th>
+                                                <th>Descripcion</th>
+                                                <th>Lote</th>
+                                                <th>M&sup2;</th>
+                                                <th>Costo Directo</th>
+                                                <th>Costo Indirecto</th>
+                                                <th>Importe</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <button type="button" class="btn btn-danger btn-sm">
+                                                        <i class="icon-close"></i>
+                                                    </button>
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control">
+                                                </td>
+                                                <td>
+                                                    Lote n
+                                                </td>
+                                                <td>
+                                                    Mts n
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control">
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control">
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <button type="button" class="btn btn-danger btn-sm">
+                                                        <i class="icon-close"></i>
+                                                    </button>
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control">
+                                                </td>
+                                                <td>
+                                                    Lote n
+                                                </td>
+                                                <td>
+                                                    Mts n
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control">
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control">
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control">
+                                                </td>
+                                            </tr>
+                                            <tr style="background-color: #CEECF5;">
+                                                <td colspan="5" align="right"><strong>Total C Directo</strong></td>
+                                                <td align="right"><strong>Total C Indirecto</strong></td>
+                                                <td align="right"><strong>Total C Importe</strong></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <button type="button" class="btn btn-secondary" @click="ocultarDetalle()"> Cerrar </button>
+                                    <button type="button" class="btn btn-primary" @click="registrarAvisoObra()"> Guardar </button>
                                 </div>
                             </div>
                         </div>
-                        <table class="table table-bordered table-striped table-sm">
-                            <thead>
-                                <tr>
-                                    <th>Opciones</th>
-                                    <th>Clave</th>
-                                    <th>Contratista</th>
-                                    <th>Fraccionamiento</th>
-                                    <th>Etapa</th>
-                                    <th>Fecha de inicio </th>
-                                    <th>Fecha de termino</th>
-                                    
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="avisoObra in arrayAvisoObra" :key="avisoObra.id">
-                                    <td>
-                                        <button type="button" @click="abrirModal('avisoObra','actualizar',avisoObra)" class="btn btn-warning btn-sm">
-                                          <i class="icon-pencil"></i>
-                                        </button> &nbsp;
-                                    </td>
-                                    <td v-text="avisoObra.clave"></td>
-                                    <td v-text="avisoObra.contratista"></td>
-                                    <td v-text="avisoObra.proyecto"></td>
-                                    <td v-text="avisoObra.etapa"></td>
-                                    <td v-text="avisoObra.f_ini"></td>
-                                    <td v-text="avisoObra.f_fin"></td>
-                                </tr>                               
-                            </tbody>
-                        </table>
-                        <nav>
-                            <!--Botones de paginacion -->
-                            <ul class="pagination">
-                                <li class="page-item" v-if="pagination.current_page > 1">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,criterio)">Ant</a>
-                                </li>
-                                <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,criterio)" v-text="page"></a>
-                                </li>
-                                <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,criterio)">Sig</a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
+                    </template>
+                    
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
@@ -89,51 +259,7 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Fraccionamientos</label>
-                                    <div class="col-md-6">
-                                       <select class="form-control" @click="selectContador(fraccionamiento_id)" v-model="fraccionamiento_id">
-                                            <option value="0">Seleccione</option>
-                                            <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Numero de etapa</label>
-                                    <div class="col-md-4">
-                                        <input type="text" v-model="num_etapa" class="form-control" placeholder="# de etapa">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Fecha de inicio</label>
-                                    <div class="col-md-6">
-                                        <input type="date" v-model="f_ini"  class="form-control" placeholder="Fecha de inicio">
-                                    </div>
-                                </div>
-                                   <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Fecha de terminacion</label>
-                                    <div class="col-md-6">
-                                        <input type="date" v-model="f_fin" class="form-control" placeholder="Fecha de terminacion">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Directivo</label>
-                                    <div class="col-md-6">
-                                        <select class="form-control" v-model="personal_id">
-                                            <option value="0">Seleccione</option>
-                                            <option v-for="directivos in arrayDirectores" :key="directivos.id" :value="directivos.id" v-text="directivos.name"></option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <!-- Div para mostrar los errores que mande validerFraccionamiento -->
-                                <div v-show="errorAvisoObra" class="form-group row div-error">
-                                    <div class="text-center text-error">
-                                        <div v-for="error in errorMostrarMsjAvisoObra" :key="error" v-text="error">
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
+                            
                         </div>
                         <!-- Botones del modal -->
                         <div class="modal-footer">
@@ -158,6 +284,7 @@
 <!-- ************************************************************************************************************************************  -->
 
 <script>
+    import vSelect from 'vue-select';
     export default {
         data(){
             return{
@@ -176,7 +303,9 @@
                 f_fin : '',
                 arrayAvisoObra : [],
                 arrayAvisoObraLotes : [],
+                arrayContratista : [],
                 modal : 0,
+                listado:1,
                 tituloModal : '',
                 tipoAccion: 0,
                 errorAvisoObra : 0,
@@ -195,6 +324,9 @@
                 arrayFraccionamientos : [],
                 arrayEtapas : []
             }
+        },
+        components:{
+            vSelect
         },
         computed:{
             isActived: function(){
@@ -250,32 +382,27 @@
                     console.log(error);
                 });
             },
-            selectContador(fraccionamiento_id){
+            selectContratista(search, loading){
                 let me = this;
-                me.contador=0;
-                var url = '/contador_etapa?fraccionamiento_id='+fraccionamiento_id;
+                loading(true)
+
+                var url = '/select_contratistas2?filtro='+search;
                 axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.contador = respuesta;
-                    me.num_etapa = me.contador;
+                    let respuesta = response.data;
+                    q: search
+                    me.arrayContratista = respuesta.contratistas;
+                    loading(false)
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
             },
-            selectDirectivos(){
+            getDatosContratista(val1){
                 let me = this;
-                me.arrayDirectivos=[];
-                var url = '/select_personal?departamento_id=1';
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayDirectores = respuesta.personal;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
+                me.loading = true;
+                me.contratista_id = val1.id;
             },
-            cambiarPagina(page, buscar,  criterio){
+            cambiarPagina(page, buscar, criterio){
                 let me = this;
                 //Actualiza la pagina actual
                 me.pagination.current_page = page;
@@ -295,8 +422,7 @@
                     'fraccionamiento_id': this.fraccionamiento_id,
                     'num_etapa': this.num_etapa,
                     'f_ini': this.f_ini,
-                    'f_fin': this.f_fin,
-                    'personal_id': this.personal_id
+                    'f_fin': this.f_fin
                 }).then(function (response){
                     me.cerrarModal(); //al guardar el registro se cierra el modal
                     me.listarAvisos(1,'','','etapa'); //se enlistan nuevamente los registros
@@ -315,7 +441,6 @@
              limpiarBusqueda(){
                 let me=this;
                 me.buscar= "";
-                me.buscar2="";
             },
             actualizarEtapa(){
                 if(this.validarEtapa()) //Se verifica si hay un error (campo vacio)
@@ -330,8 +455,7 @@
                     'fraccionamiento_id': this.fraccionamiento_id,
                     'num_etapa': this.num_etapa,
                     'f_ini': this.f_ini,
-                    'f_fin': this.f_fin,
-                    'personal_id': this.personal_id
+                    'f_fin': this.f_fin
                 }).then(function (response){
                     me.cerrarModal();
                     me.listarAvisos(1,'','','etapa');
@@ -353,7 +477,6 @@
                 this.num_etapa=data['num_etapa'];
                 this.f_ini=data['f_ini'];
                 this.f_fin=data['f_fin'];
-                this.personal_id=data['personal_id']
                 swal({
                 title: '¿Desea eliminar?',
                 text: "Esta acción no se puede revertir!",
@@ -396,16 +519,21 @@
                 return this.errorAvisoObra;
             },
 
-            // isNumber: function(evt) {
-            //     evt = (evt) ? evt : window.event;
-            //     var charCode = (evt.which) ? evt.which : evt.keyCode;
-            //     if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
-            //         evt.preventDefault();;
-            //     } else {
-            //         return true;
-            //     }
-            // },
-
+            isNumber: function(evt) {
+                evt = (evt) ? evt : window.event;
+                var charCode = (evt.which) ? evt.which : evt.keyCode;
+                if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
+                    evt.preventDefault();;
+                } else {
+                    return true;
+                }
+            },
+            mostrarDetalle(){
+                this.listado=0;
+            },
+            ocultarDetalle(){
+                this.listado=1;
+            },
             cerrarModal(){
                 this.modal = 0;
                 this.tituloModal = '';
@@ -413,7 +541,6 @@
                 this.num_etapa = '';
                 this.f_ini = new Date().toISOString().substr(0, 10);
                 this.f_fin = '';
-                this.personal_id = '';
                 this.errorAvisoObra = 0;
                 this.errorMostrarMsjAvisoObra = [];
                 this.contador=0;
@@ -433,7 +560,6 @@
                                 this.num_etapa = this.contador;
                                 // this.f_ini = '';
                                 this.f_fin = '';
-                                this.personal_id = '0';
                                 this.tipoAccion = 1;
                                 break;
                             }
@@ -448,18 +574,16 @@
                                 this.num_etapa=data['num_etapa'];
                                 this.f_ini=data['f_ini'];
                                 this.f_fin=data['f_fin'];
-                                this.personal_id=data['personal_id'];
                                 break;
                             }
                         }
                     }
                 }
                 this.selectFraccionamientos();
-                this.selectDirectivos();
             }
         },
         mounted() {
-            this.listarAvisos(1,this.buscar,this.this.criterio);
+            this.listarAvisos(1,this.buscar,this.criterio);
         }
     }
 </script>
@@ -486,5 +610,10 @@
             overflow-x: scroll;
             width: auto;
             padding: 1rem
+    }
+    @media (min-width: 600px){
+        .btnagregar{
+        margin-top: 2rem;
         }
+    }
 </style>

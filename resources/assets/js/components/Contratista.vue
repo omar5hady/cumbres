@@ -37,42 +37,44 @@
                                 </div>
                             </div>
                         </div>
-                        <table class="table table-bordered table-striped table-sm">
-                            <thead>
-                                <tr>
-                                    <th>Opciones</th>
-                                    <th>Nombre</th>
-                                    <th>Tipo</th>
-                                    <th>RFC</th>
-                                    <th>Direccion</th>
-                                    <th>Colonia</th>
-                                    <th>CP</th>
-                                    <th>Estado</th>
-                                    <th>Ciudad</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="contratista in arrayContratista" :key="contratista.id">
-                                    <td>
-                                        <button type="button" @click="abrirModal('contratista','actualizar',contratista)" class="btn btn-warning btn-sm">
-                                          <i class="icon-pencil"></i>
-                                        </button> &nbsp;
-                                        <button type="button" class="btn btn-danger btn-sm" @click="eliminarContratista(contratista)">
-                                          <i class="icon-trash"></i>
-                                        </button>
-                                    </td>
-                                    <td v-text="contratista.nombre"></td>
-                                    <td v-if="contratista.tipo==1" v-text="'Persona Fisica'"></td>
-                                    <td v-if="contratista.tipo==0" v-text="'Persona Moral'"></td>
-                                    <td v-text="contratista.rfc"></td>
-                                    <td v-text="contratista.direccion"></td>
-                                    <td v-text="contratista.colonia"></td>
-                                    <td v-text="contratista.cp"></td>
-                                    <td v-text="contratista.estado"></td>
-                                    <td v-text="contratista.ciudad"></td>
-                                </tr>                               
-                            </tbody>
-                        </table>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Opciones</th>
+                                        <th>Nombre</th>
+                                        <th>Tipo</th>
+                                        <th>RFC</th>
+                                        <th>Direccion</th>
+                                        <th>Colonia</th>
+                                        <th>CP</th>
+                                        <th>Estado</th>
+                                        <th>Ciudad</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="contratista in arrayContratista" :key="contratista.id">
+                                        <td>
+                                            <button type="button" @click="abrirModal('contratista','actualizar',contratista)" class="btn btn-warning btn-sm">
+                                            <i class="icon-pencil"></i>
+                                            </button> &nbsp;
+                                            <button type="button" class="btn btn-danger btn-sm" @click="eliminarContratista(contratista)">
+                                            <i class="icon-trash"></i>
+                                            </button>
+                                        </td>
+                                        <td v-text="contratista.nombre"></td>
+                                        <td v-if="contratista.tipo==1" v-text="'Persona Fisica'"></td>
+                                        <td v-if="contratista.tipo==0" v-text="'Persona Moral'"></td>
+                                        <td v-text="contratista.rfc"></td>
+                                        <td v-text="contratista.direccion"></td>
+                                        <td v-text="contratista.colonia"></td>
+                                        <td v-text="contratista.cp"></td>
+                                        <td v-text="contratista.estado"></td>
+                                        <td v-text="contratista.ciudad"></td>
+                                    </tr>                               
+                                </tbody>
+                            </table>
+                        </div>
                         <nav>
                             <!--Botones de paginacion -->
                             <ul class="pagination">

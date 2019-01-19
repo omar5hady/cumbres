@@ -35,6 +35,19 @@ class ContratistaController extends Controller
         ];
     }
 
+    public function selectContratistaVue(Request $request){
+        if(!$request->ajax())return redirect('/');
+        $filtro = $request->filtro;
+
+        $contratistas = Contratista::where('nombre','like','%'.$filtro.'%')
+            ->orWhere('rfc','like','%'.$filtro.'%')
+            ->select('nombre','rfc','id')
+            ->orderBy('nombre','asc')->get();
+        
+        return ['contratistas'=>$contratistas];
+
+    }
+
     /**
      * Show the form for creating a new resource.
      *

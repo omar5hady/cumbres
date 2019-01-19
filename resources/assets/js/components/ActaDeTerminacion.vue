@@ -42,71 +42,73 @@
                                 </div>
                             </div>
                         </div>
-                        <table class="table table-bordered table-striped table-sm">
-                            <thead>
-                                <tr>
-                                    
-                                    <th>Opciones</th>
-                                    <th>Proyecto</th>
-                                    <th>Manzana</th>
-                                    <th># Lote</th>
-                                    <th>Terreno mts&sup2;</th>
-                                    <th>Construcción mts&sup2;</th>
-                                    <th>DRO</th>
-                                    <th>Modelo</th>
-                                    <th>Avance</th>
-                                    <th>Ingreso Act. terminacion</th>
-                                    <th>Salida Act. terminacion</th>  
-                                    <th>No. Acta</th>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped table-sm">
+                                <thead>
+                                    <tr>
+                                        
+                                        <th>Opciones</th>
+                                        <th>Proyecto</th>
+                                        <th>Manzana</th>
+                                        <th># Lote</th>
+                                        <th>Terreno mts&sup2;</th>
+                                        <th>Construcción mts&sup2;</th>
+                                        <th>DRO</th>
+                                        <th>Modelo</th>
+                                        <th>Avance</th>
+                                        <th>Ingreso Act. terminacion</th>
+                                        <th>Salida Act. terminacion</th>  
+                                        <th>No. Acta</th>
 
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="act_terminacion in arrayActaDeTerminacion" :key="act_terminacion.id">
-                                    
-                                    <td >
-                                        <button title="Editar" type="button" @click="abrirModal('lote','actualizar',act_terminacion)" class="btn btn-warning btn-sm">
-                                          <i class="icon-pencil"></i>
-                                        </button>
-                                        <button type="button" @click="abrirModal2('lote','ver',act_terminacion)" class="btn btn-info btn-sm">
-                                          <i class="icon-magnifier"></i>
-                                        </button>
-                                        <button title="Subir foto acta" type="button" @click="abrirModal('lote','subirArchivo',act_terminacion)" class="btn btn-default btn-sm">
-                                         <i class="icon-cloud-upload"></i>
-                                        </button>
-                                    </td>
-                                    <td v-text="act_terminacion.proyecto"></td>
-                                    <td v-text="act_terminacion.manzana"></td>
-                                    <td v-text="act_terminacion.num_lote"></td>
-                                    <td v-text="act_terminacion.terreno"></td>
-                                    <td v-text="act_terminacion.construccion"></td>
-                                    <td>
-                                        <span v-if = "act_terminacion.perito!='Sin Asignar  '" class="badge badge-success" v-text="'Arq. '+act_terminacion.perito"></span>
-                                        <span v-else class="badge badge-danger"> Por Asignar </span>
-                                    </td>
-                                    
-                                    <!--Modelo-->
-                                    <td>
-                                        <span v-if = "act_terminacion.modelo!='Por Asignar' && act_terminacion.cambios==0" class="badge badge-success" v-text="act_terminacion.modelo"></span>
-                                        <span v-if = "act_terminacion.modelo=='Por Asignar'" class="badge badge-danger">Por Asignar</span>
-                                        <span v-if = "act_terminacion.cambios==1" class="badge badge-warning" v-text="act_terminacion.modelo"></span>
-                                    </td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="act_terminacion in arrayActaDeTerminacion" :key="act_terminacion.id">
+                                        
+                                        <td >
+                                            <button title="Editar" type="button" @click="abrirModal('lote','actualizar',act_terminacion)" class="btn btn-warning btn-sm">
+                                            <i class="icon-pencil"></i>
+                                            </button>
+                                            <button type="button" @click="abrirModal2('lote','ver',act_terminacion)" class="btn btn-info btn-sm">
+                                            <i class="icon-magnifier"></i>
+                                            </button>
+                                            <button title="Subir foto acta" type="button" @click="abrirModal('lote','subirArchivo',act_terminacion)" class="btn btn-default btn-sm">
+                                            <i class="icon-cloud-upload"></i>
+                                            </button>
+                                        </td>
+                                        <td v-text="act_terminacion.proyecto"></td>
+                                        <td v-text="act_terminacion.manzana"></td>
+                                        <td v-text="act_terminacion.num_lote"></td>
+                                        <td v-text="act_terminacion.terreno"></td>
+                                        <td v-text="act_terminacion.construccion"></td>
+                                        <td>
+                                            <span v-if = "act_terminacion.perito!='Sin Asignar  '" class="badge badge-success" v-text="'Arq. '+act_terminacion.perito"></span>
+                                            <span v-else class="badge badge-danger"> Por Asignar </span>
+                                        </td>
+                                        
+                                        <!--Modelo-->
+                                        <td>
+                                            <span v-if = "act_terminacion.modelo!='Por Asignar' && act_terminacion.cambios==0" class="badge badge-success" v-text="act_terminacion.modelo"></span>
+                                            <span v-if = "act_terminacion.modelo=='Por Asignar'" class="badge badge-danger">Por Asignar</span>
+                                            <span v-if = "act_terminacion.cambios==1" class="badge badge-warning" v-text="act_terminacion.modelo"></span>
+                                        </td>
 
-                                    <!--Avance-->
-                                     <td v-text="act_terminacion.avance + '%'"></td>
+                                        <!--Avance-->
+                                        <td v-text="act_terminacion.avance + '%'"></td>
 
-                                    <!-- Fecha Ingreso -->
-                                    <td v-if="!act_terminacion.term_ingreso" v-text="''"></td>
-                                    <td v-else v-text="this.moment(act_terminacion.term_ingreso).locale('es').format('DD/MMM/YYYY')"></td>
-                                    <!-- Fecha Salida -->
-                                    <td v-if="!act_terminacion.term_salida" v-text="''"></td>
-                                    <td v-else v-text="this.moment(act_terminacion.term_salida).locale('es').format('DD/MMM/YYYY')"></td>
-                                    
-                                    <td  v-if="!act_terminacion.foto_acta" v-text="act_terminacion.num_acta"></td>
-                                    <td v-else style="width:7%"><a class="btn btn-default btn-sm"  v-text="act_terminacion.num_acta" v-bind:href="'/downloadActa/'+act_terminacion.foto_acta"></a></td>
-                                </tr>                               
-                            </tbody>
-                        </table>  
+                                        <!-- Fecha Ingreso -->
+                                        <td v-if="!act_terminacion.term_ingreso" v-text="''"></td>
+                                        <td v-else v-text="this.moment(act_terminacion.term_ingreso).locale('es').format('DD/MMM/YYYY')"></td>
+                                        <!-- Fecha Salida -->
+                                        <td v-if="!act_terminacion.term_salida" v-text="''"></td>
+                                        <td v-else v-text="this.moment(act_terminacion.term_salida).locale('es').format('DD/MMM/YYYY')"></td>
+                                        
+                                        <td  v-if="!act_terminacion.foto_acta" v-text="act_terminacion.num_acta"></td>
+                                        <td v-else style="width:7%"><a class="btn btn-default btn-sm"  v-text="act_terminacion.num_acta" v-bind:href="'/downloadActa/'+act_terminacion.foto_acta"></a></td>
+                                    </tr>                               
+                                </tbody>
+                            </table>
+                        </div>  
                         <nav>
                             <!--Botones de paginacion -->
                             <ul class="pagination">

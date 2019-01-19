@@ -29,35 +29,37 @@
                                 </div>
                             </div>
                         </div>
-                        <table class="table table-bordered table-striped table-sm">
-                            <thead>
-                                <tr>
-                                    <th>Opciones</th>
-                                    <th>Empresa</th>
-                                    <th>Direccion</th>
-                                    <th>Colonia</th>
-                                    <th>CP</th>
-                                    <th>Telefono</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="empresa in arrayEmpresa" :key="empresa.id">
-                                    <td>
-                                        <button type="button" @click="abrirModal('empresa','actualizar',empresa)" class="btn btn-warning btn-sm">
-                                          <i class="icon-pencil"></i>
-                                        </button> &nbsp;
-                                        <button type="button" class="btn btn-danger btn-sm" @click="eliminarEmpresa(empresa)">
-                                          <i class="icon-trash"></i>
-                                        </button>
-                                    </td>
-                                    <td v-text="empresa.nombre"></td>
-                                    <td v-text="empresa.direccion"></td>
-                                    <td v-text="empresa.colonia"></td>
-                                    <td v-text="empresa.cp"></td>
-                                    <td v-text="empresa.telefono"></td>
-                                </tr>                               
-                            </tbody>
-                        </table>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Opciones</th>
+                                        <th>Empresa</th>
+                                        <th>Direccion</th>
+                                        <th>Colonia</th>
+                                        <th>CP</th>
+                                        <th>Telefono</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="empresa in arrayEmpresa" :key="empresa.id">
+                                        <td>
+                                            <button type="button" @click="abrirModal('empresa','actualizar',empresa)" class="btn btn-warning btn-sm">
+                                            <i class="icon-pencil"></i>
+                                            </button> &nbsp;
+                                            <button type="button" class="btn btn-danger btn-sm" @click="eliminarEmpresa(empresa)">
+                                            <i class="icon-trash"></i>
+                                            </button>
+                                        </td>
+                                        <td v-text="empresa.nombre"></td>
+                                        <td v-text="empresa.direccion"></td>
+                                        <td v-text="empresa.colonia"></td>
+                                        <td v-text="empresa.cp"></td>
+                                        <td v-text="empresa.telefono"></td>
+                                    </tr>                               
+                                </tbody>
+                            </table>
+                        </div>
                         <nav>
                             <!--Botones de paginacion -->
                             <ul class="pagination">

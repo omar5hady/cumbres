@@ -36,48 +36,50 @@
                                 </div>
                             </div>
                         </div>
-                        <table class="table table-bordered table-striped table-sm">
-                            <thead>
-                                <tr>
-                                    <th>Opciones</th>
-                                    <th>Fraccionamiento</th>
-                                    <th>Tipo de proyecto</th>
-                                    <th>Direccion</th>
-                                    <th>Colonia</th>
-                                    <th>Estado</th>
-                                    <th>Delegacion</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="fraccionamiento in arrayFraccionamiento" :key="fraccionamiento.id">
-                                    <td>
-                                        <button type="button" @click="abrirModal('fraccionamiento','actualizar',fraccionamiento)" class="btn btn-warning btn-sm">
-                                          <i class="icon-pencil"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-danger btn-sm" @click="eliminarFraccionamiento(fraccionamiento)">
-                                          <i class="icon-trash"></i>
-                                        </button>
-                                        <button title="Subir planos y escrituras" type="button" @click="abrirModal('fraccionamiento','subirArchivo',fraccionamiento)" class="btn btn-default btn-sm">
-                                          <i class="icon-cloud-upload"></i>
-                                        </button>
-                                        <a  title="Descargar planos" v-if ="fraccionamiento.archivo_planos" class="btn btn-success btn-sm" v-bind:href="'/downloadPlanos/'+fraccionamiento.archivo_planos">
-                                        <i class="fa fa-map fa-lg"></i>
-                                        </a>
-                                         <a  title="Descargar escrituras" v-if ="fraccionamiento.archivo_escrituras" class="btn btn-warning btn-sm" v-bind:href="'/downloadEscrituras/'+fraccionamiento.archivo_escrituras">
-                                        <i class="fa fa-file-archive-o fa-lg"></i>
-                                        </a>
-                                    </td>
-                                    <td v-text="fraccionamiento.nombre"></td>
-                                    <td v-if="fraccionamiento.tipo_proyecto==1" v-text="'Lotificación'"></td>
-                                    <td v-if="fraccionamiento.tipo_proyecto==2" v-text="'Departamento'"></td>
-                                    <td v-if="fraccionamiento.tipo_proyecto==3" v-text="'Terreno'"></td>
-                                    <td v-text="fraccionamiento.calle"></td>
-                                    <td v-text="fraccionamiento.colonia"></td>
-                                    <td v-text="fraccionamiento.estado"></td>
-                                    <td v-text="fraccionamiento.delegacion"></td>
-                                </tr>                               
-                            </tbody>
-                        </table>
+                        <div class="table-responsive"> 
+                            <table class="table table-bordered table-striped table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Opciones</th>
+                                        <th>Fraccionamiento</th>
+                                        <th>Tipo de proyecto</th>
+                                        <th>Direccion</th>
+                                        <th>Colonia</th>
+                                        <th>Estado</th>
+                                        <th>Delegacion</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="fraccionamiento in arrayFraccionamiento" :key="fraccionamiento.id">
+                                        <td>
+                                            <button type="button" @click="abrirModal('fraccionamiento','actualizar',fraccionamiento)" class="btn btn-warning btn-sm">
+                                            <i class="icon-pencil"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-sm" @click="eliminarFraccionamiento(fraccionamiento)">
+                                            <i class="icon-trash"></i>
+                                            </button>
+                                            <button title="Subir planos y escrituras" type="button" @click="abrirModal('fraccionamiento','subirArchivo',fraccionamiento)" class="btn btn-default btn-sm">
+                                            <i class="icon-cloud-upload"></i>
+                                            </button>
+                                            <a  title="Descargar planos" v-if ="fraccionamiento.archivo_planos" class="btn btn-success btn-sm" v-bind:href="'/downloadPlanos/'+fraccionamiento.archivo_planos">
+                                            <i class="fa fa-map fa-lg"></i>
+                                            </a>
+                                            <a  title="Descargar escrituras" v-if ="fraccionamiento.archivo_escrituras" class="btn btn-warning btn-sm" v-bind:href="'/downloadEscrituras/'+fraccionamiento.archivo_escrituras">
+                                            <i class="fa fa-file-archive-o fa-lg"></i>
+                                            </a>
+                                        </td>
+                                        <td v-text="fraccionamiento.nombre"></td>
+                                        <td v-if="fraccionamiento.tipo_proyecto==1" v-text="'Lotificación'"></td>
+                                        <td v-if="fraccionamiento.tipo_proyecto==2" v-text="'Departamento'"></td>
+                                        <td v-if="fraccionamiento.tipo_proyecto==3" v-text="'Terreno'"></td>
+                                        <td v-text="fraccionamiento.calle"></td>
+                                        <td v-text="fraccionamiento.colonia"></td>
+                                        <td v-text="fraccionamiento.estado"></td>
+                                        <td v-text="fraccionamiento.delegacion"></td>
+                                    </tr>                               
+                                </tbody>
+                            </table>
+                        </div>
                         <nav>
                             <!--Botones de paginacion -->
                             <ul class="pagination">

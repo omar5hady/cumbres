@@ -30,38 +30,40 @@
                                 </div>
                             </div>
                         </div>
-                        <table class="table table-bordered table-striped table-sm">
-                            <thead>
-                                <tr>
-                                    <th>Opciones</th>
-                                    <th>Fraccionamiento</th>
-                                    <th>Modelo</th>
-                                    <th>Partida</th>
-                                    <th>Costo</th>
-                                    <th>Porcentaje</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="partida in arrayPartidas" :key="partida.id">
-                                    <td style="width:9%">
-                                        <button type="button" @click="abrirModal('partida','actualizar',partida)" class="btn btn-warning btn-sm">
-                                          <i class="icon-pencil"></i>
-                                        </button> &nbsp;
-                                        <button type="button" class="btn btn-danger btn-sm" @click="eliminarPartida(partida)">
-                                          <i class="icon-trash"></i>
-                                        </button>
-                                    </td>
-                                    <td v-text="partida.proyecto"></td>
-                                    <td v-text="partida.modelo"></td>
-                                    <td v-text="partida.partida" style="width:30%"></td>
-                                    <td style="width:15%">
-                                        <input type="text" @keyup.enter="actualizarCosto(partida.id,$event.target.value,partida.modelo_id)" :id="partida.id" :value="partida.costo|currency" maxlength="9" v-on:keypress="isNumber($event)" class="form-control" >
-                                    </td>
-                                    <td v-text="formatNumber(partida.porcentaje )+ '%'"></td>
-                                    
-                                </tr>                               
-                            </tbody>
-                        </table>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Opciones</th>
+                                        <th>Fraccionamiento</th>
+                                        <th>Modelo</th>
+                                        <th>Partida</th>
+                                        <th>Costo</th>
+                                        <th>Porcentaje</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="partida in arrayPartidas" :key="partida.id">
+                                        <td style="width:9%">
+                                            <button type="button" @click="abrirModal('partida','actualizar',partida)" class="btn btn-warning btn-sm">
+                                            <i class="icon-pencil"></i>
+                                            </button> &nbsp;
+                                            <button type="button" class="btn btn-danger btn-sm" @click="eliminarPartida(partida)">
+                                            <i class="icon-trash"></i>
+                                            </button>
+                                        </td>
+                                        <td v-text="partida.proyecto"></td>
+                                        <td v-text="partida.modelo"></td>
+                                        <td v-text="partida.partida" style="width:30%"></td>
+                                        <td style="width:15%">
+                                            <input type="text" @keyup.enter="actualizarCosto(partida.id,$event.target.value,partida.modelo_id)" :id="partida.id" :value="partida.costo|currency" maxlength="9" v-on:keypress="isNumber($event)" class="form-control" >
+                                        </td>
+                                        <td v-text="formatNumber(partida.porcentaje )+ '%'"></td>
+                                        
+                                    </tr>                               
+                                </tbody>
+                            </table>
+                        </div>
                         <nav>
                             <!--Botones de paginacion -->
                             <ul class="pagination">

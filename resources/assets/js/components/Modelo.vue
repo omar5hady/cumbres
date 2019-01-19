@@ -37,42 +37,44 @@
                                 </div>
                             </div>
                         </div>
-                        <table class="table table-bordered table-striped table-sm">
-                            <thead>
-                                <tr>
-                                    <th>Opciones</th>
-                                    <th>Tipo</th>
-                                    <th>Proyecto</th>
-                                     <th>Modelo</th>
-                                    <th>Terreno mts&sup2;</th>
-                                    <th>Construcción mts&sup2;</th>
-                                    <th>Descarga</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="modelo in arrayModelo" :key="modelo.id">
-                                    <td style="width:12%">
-                                        <button title="Editar" type="button" @click="abrirModal('modelo','actualizar',modelo)" class="btn btn-warning btn-sm">
-                                          <i class="icon-pencil"></i>
-                                        </button>
-                                        <button title="Borrar" type="button" class="btn btn-danger btn-sm" @click="eliminarModelo(modelo)">
-                                          <i class="icon-trash"></i>
-                                        </button>
-                                        <button title="Subir archivo" type="button" @click="abrirModal('modelo','subirArchivo',modelo)" class="btn btn-default btn-sm">
-                                          <i class="icon-cloud-upload"></i>
-                                        </button>
-                                    </td>
-                                    <td v-if="modelo.tipo==1" v-text="'Lotificación'"></td>
-                                    <td v-if="modelo.tipo==2" v-text="'Departamento'"></td>
-                                    <td v-if="modelo.tipo==3" v-text="'Terreno'"></td>
-                                    <td v-text="modelo.fraccionamiento"></td>
-                                    <td v-text="modelo.nombre"></td>
-                                    <td v-text="modelo.terreno"></td>
-                                    <td v-text="modelo.construccion"></td>
-                                    <td style="width:7%" v-if = "modelo.archivo"><a class="btn btn-default btn-sm" v-bind:href="'/downloadModelo/'+modelo.archivo"><i class="icon-cloud-download"></i></a></td>
-                                </tr>                               
-                            </tbody>
-                        </table>  
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Opciones</th>
+                                        <th>Tipo</th>
+                                        <th>Proyecto</th>
+                                        <th>Modelo</th>
+                                        <th>Terreno mts&sup2;</th>
+                                        <th>Construcción mts&sup2;</th>
+                                        <th>Descarga</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="modelo in arrayModelo" :key="modelo.id">
+                                        <td style="width:12%">
+                                            <button title="Editar" type="button" @click="abrirModal('modelo','actualizar',modelo)" class="btn btn-warning btn-sm">
+                                            <i class="icon-pencil"></i>
+                                            </button>
+                                            <button title="Borrar" type="button" class="btn btn-danger btn-sm" @click="eliminarModelo(modelo)">
+                                            <i class="icon-trash"></i>
+                                            </button>
+                                            <button title="Subir archivo" type="button" @click="abrirModal('modelo','subirArchivo',modelo)" class="btn btn-default btn-sm">
+                                            <i class="icon-cloud-upload"></i>
+                                            </button>
+                                        </td>
+                                        <td v-if="modelo.tipo==1" v-text="'Lotificación'"></td>
+                                        <td v-if="modelo.tipo==2" v-text="'Departamento'"></td>
+                                        <td v-if="modelo.tipo==3" v-text="'Terreno'"></td>
+                                        <td v-text="modelo.fraccionamiento"></td>
+                                        <td v-text="modelo.nombre"></td>
+                                        <td v-text="modelo.terreno"></td>
+                                        <td v-text="modelo.construccion"></td>
+                                        <td style="width:7%" v-if = "modelo.archivo"><a class="btn btn-default btn-sm" v-bind:href="'/downloadModelo/'+modelo.archivo"><i class="icon-cloud-download"></i></a></td>
+                                    </tr>                               
+                                </tbody>
+                            </table>  
+                        </div>
                         <nav>
                             <!--Botones de paginacion -->
                             <ul class="pagination">

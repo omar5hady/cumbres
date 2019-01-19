@@ -40,29 +40,31 @@
                                 </div>
                             </div>
                         </div>
-                        <table class="table bg-light text-dark table-bordered table-striped table-sm">
-                            <thead>
-                                <tr>
-                                    <th>Opciones</th>
-                                    <th>Modelo</th>
-                                    <th>Precio Modelo</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="precioModelo in arrayPrecioModelos" :key="precioModelo.id">
-                                    <td style="width:10%">
-                                        <button type="button" @click="abrirModal('precio_etapa','actualizar',precioModelo)" class="btn btn-warning btn-sm">
-                                          <i class="icon-pencil"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-danger btn-sm" @click="eliminarPrecioModelo(precioModelo)">
-                                          <i class="icon-trash"></i>
-                                        </button>
-                                    </td>
-                                    <td v-text="precioModelo.modelo"></td>
-                                    <td v-text="'$ '+precioModelo.precio_modelo"></td>
-                                </tr>                               
-                            </tbody>
-                        </table>
+                        <div class="table-responsive">
+                            <table class="table bg-light text-dark table-bordered table-striped table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Opciones</th>
+                                        <th>Modelo</th>
+                                        <th>Precio Modelo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="precioModelo in arrayPrecioModelos" :key="precioModelo.id">
+                                        <td style="width:10%">
+                                            <button type="button" @click="abrirModal('precio_etapa','actualizar',precioModelo)" class="btn btn-warning btn-sm">
+                                            <i class="icon-pencil"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-sm" @click="eliminarPrecioModelo(precioModelo)">
+                                            <i class="icon-trash"></i>
+                                            </button>
+                                        </td>
+                                        <td v-text="precioModelo.modelo"></td>
+                                        <td v-text="'$ '+precioModelo.precio_modelo"></td>
+                                    </tr>                               
+                                </tbody>
+                            </table>
+                        </div>
                         <nav>
                             <!--Botones de paginacion -->
                             <ul class="pagination">

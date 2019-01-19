@@ -30,49 +30,51 @@
                                 </div>
                             </div>
                         </div>
-                        <table class="table table-bordered table-striped table-sm">
-                            <thead>
-                                <tr>
-                                    <th>Opciones</th>
-                                    <th>Proyecto</th>
-                                    <th>Etapa</th>
-                                    <th>Promocion</th>
-                                    <th>Descripcion</th>
-                                    <th>Descuento $</th>
-                                    <th>Inicio</th>
-                                    <th>Fin</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="promocion in arrayPromocion" :key="promocion.id">
-                                    <td style="width:10%">
-                                        <button type="button" @click="abrirModal('promocion','actualizar',promocion)" class="btn btn-warning btn-sm">
-                                          <i class="icon-pencil"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-danger btn-sm" @click="eliminarPromocion(promocion)">
-                                          <i class="icon-trash"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-success btn-sm" @click="abrirModal2('lote_promocion','registrar',promocion), listarLotePromociones(1, promocion.id)" title="Asignar a Lote" v-if="promocion.is_active == '1'">
-                                          <i class="icon-share"></i>
-                                        </button>
-                                    </td>
-                                    <td v-text="promocion.proyecto" ></td>
-                                    <td v-text="promocion.etapas" ></td>
-                                    <td v-text="promocion.nombre" ></td>
-                                    <td v-text="promocion.descripcion" ></td>
-                                    <td v-text="promocion.descuento" ></td>
-                                    <td v-text="promocion.v_ini" ></td>
-                                    <td v-text="promocion.v_fin" ></td>
-                                    <td v-if="promocion.is_active == '1'">
-                                        <span class="badge badge-success">Activo</span>
-                                    </td>
-                                    <td v-if="promocion.is_active == '0'">
-                                        <span class="badge badge-danger">Desactivado</span>
-                                    </td>
-                                </tr>                               
-                            </tbody>
-                        </table>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Opciones</th>
+                                        <th>Proyecto</th>
+                                        <th>Etapa</th>
+                                        <th>Promocion</th>
+                                        <th>Descripcion</th>
+                                        <th>Descuento $</th>
+                                        <th>Inicio</th>
+                                        <th>Fin</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="promocion in arrayPromocion" :key="promocion.id">
+                                        <td style="width:10%">
+                                            <button type="button" @click="abrirModal('promocion','actualizar',promocion)" class="btn btn-warning btn-sm">
+                                            <i class="icon-pencil"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-sm" @click="eliminarPromocion(promocion)">
+                                            <i class="icon-trash"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-success btn-sm" @click="abrirModal2('lote_promocion','registrar',promocion), listarLotePromociones(1, promocion.id)" title="Asignar a Lote" v-if="promocion.is_active == '1'">
+                                            <i class="icon-share"></i>
+                                            </button>
+                                        </td>
+                                        <td v-text="promocion.proyecto" ></td>
+                                        <td v-text="promocion.etapas" ></td>
+                                        <td v-text="promocion.nombre" ></td>
+                                        <td v-text="promocion.descripcion" ></td>
+                                        <td v-text="promocion.descuento" ></td>
+                                        <td v-text="promocion.v_ini" ></td>
+                                        <td v-text="promocion.v_fin" ></td>
+                                        <td v-if="promocion.is_active == '1'">
+                                            <span class="badge badge-success">Activo</span>
+                                        </td>
+                                        <td v-if="promocion.is_active == '0'">
+                                            <span class="badge badge-danger">Desactivado</span>
+                                        </td>
+                                    </tr>                               
+                                </tbody>
+                            </table>
+                        </div>
                         <nav>
                             <!--Botones de paginacion -->
                             <ul class="pagination">

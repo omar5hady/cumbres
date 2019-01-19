@@ -30,46 +30,48 @@
                                 </div>
                             </div>
                         </div>
-                        <table class="table table-bordered table-striped table-sm">
-                            <thead>
-                                <tr>
-                                    <th>Opciones</th>
-                                    <th>Proyecto</th>
-                                    <th>Etapa</th>
-                                    <th>Paquete</th>
-                                    <th>Descripcion</th>
-                                    <th>Precio $</th>
-                                    <th>Inicio</th>
-                                    <th>Fin</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="paquete in arrayPaquete" :key="paquete.id">
-                                    <td style="width:10%">
-                                        <button type="button" @click="abrirModal('paquete','actualizar',paquete)" class="btn btn-warning btn-sm">
-                                          <i class="icon-pencil"></i>
-                                        </button> &nbsp;
-                                        <button type="button" class="btn btn-danger btn-sm" @click="eliminarPaquete(paquete)">
-                                          <i class="icon-trash"></i>
-                                        </button>
-                                    </td>
-                                    <td v-text="paquete.fraccionamiento" ></td>
-                                    <td v-text="paquete.etapa" ></td>
-                                    <td v-text="paquete.nombre" ></td>
-                                    <td v-text="paquete.descripcion" ></td>
-                                    <td v-text="paquete.costo" ></td>
-                                    <td v-text="paquete.v_ini" ></td>
-                                    <td v-text="paquete.v_fin" ></td>
-                                    <td v-if="paquete.is_active == '1'">
-                                        <span class="badge badge-success">Activo</span>
-                                    </td>
-                                    <td v-if="paquete.is_active == '0'">
-                                        <span class="badge badge-danger">Desactivado</span>
-                                    </td>
-                                </tr>                               
-                            </tbody>
-                        </table>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Opciones</th>
+                                        <th>Proyecto</th>
+                                        <th>Etapa</th>
+                                        <th>Paquete</th>
+                                        <th>Descripcion</th>
+                                        <th>Precio $</th>
+                                        <th>Inicio</th>
+                                        <th>Fin</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="paquete in arrayPaquete" :key="paquete.id">
+                                        <td style="width:10%">
+                                            <button type="button" @click="abrirModal('paquete','actualizar',paquete)" class="btn btn-warning btn-sm">
+                                            <i class="icon-pencil"></i>
+                                            </button> &nbsp;
+                                            <button type="button" class="btn btn-danger btn-sm" @click="eliminarPaquete(paquete)">
+                                            <i class="icon-trash"></i>
+                                            </button>
+                                        </td>
+                                        <td v-text="paquete.fraccionamiento" ></td>
+                                        <td v-text="paquete.etapa" ></td>
+                                        <td v-text="paquete.nombre" ></td>
+                                        <td v-text="paquete.descripcion" ></td>
+                                        <td v-text="paquete.costo" ></td>
+                                        <td v-text="paquete.v_ini" ></td>
+                                        <td v-text="paquete.v_fin" ></td>
+                                        <td v-if="paquete.is_active == '1'">
+                                            <span class="badge badge-success">Activo</span>
+                                        </td>
+                                        <td v-if="paquete.is_active == '0'">
+                                            <span class="badge badge-danger">Desactivado</span>
+                                        </td>
+                                    </tr>                               
+                                </tbody>
+                            </table>
+                        </div>
                         <nav>
                             <!--Botones de paginacion -->
                             <ul class="pagination">

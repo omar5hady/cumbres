@@ -28,37 +28,39 @@
                                 </div>
                             </div>
                         </div>
-                        <table class="table table-bordered table-striped table-sm">
-                            <thead>
-                                <tr>
-                                    <th>
-                                        <input type="checkbox" @click="selectAll" v-model="allSelected"> Todos
-                                    </th>
-                                    <th>Fraccionamiento</th>
-                                    <th>Etapa</th>
-                                    <th>Manzana</th>
-                                    <th># Lote</th>
-                                    <th>Modelo</th>
-                                    <th>Terreno mts&sup2;</th>
-                                    <th>Construcción mts&sup2;</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="lote in arrayLotes" :key="lote.id">
-                                    <td style="width:8%; ">
-                                        <input type="checkbox" @click="select" :id="lote.id" :value="lote.id" v-model="lotes_ini">
-                                    </td>
-                                    
-                                    <td v-text="lote.proyecto"></td>
-                                    <td v-text="lote.etapas"></td>
-                                    <td v-text="lote.manzana"></td>
-                                    <td v-text="lote.num_lote"></td>
-                                    <td v-text="lote.modelo"></td>
-                                    <td v-text="lote.terreno"></td>
-                                    <td v-text="lote.construccion"></td>
-                                </tr>                               
-                            </tbody>
-                        </table>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            <input type="checkbox" @click="selectAll" v-model="allSelected"> Todos
+                                        </th>
+                                        <th>Fraccionamiento</th>
+                                        <th>Etapa</th>
+                                        <th>Manzana</th>
+                                        <th># Lote</th>
+                                        <th>Modelo</th>
+                                        <th>Terreno mts&sup2;</th>
+                                        <th>Construcción mts&sup2;</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="lote in arrayLotes" :key="lote.id">
+                                        <td style="width:8%; ">
+                                            <input type="checkbox" @click="select" :id="lote.id" :value="lote.id" v-model="lotes_ini">
+                                        </td>
+                                        
+                                        <td v-text="lote.proyecto"></td>
+                                        <td v-text="lote.etapas"></td>
+                                        <td v-text="lote.manzana"></td>
+                                        <td v-text="lote.num_lote"></td>
+                                        <td v-text="lote.modelo"></td>
+                                        <td v-text="lote.terreno"></td>
+                                        <td v-text="lote.construccion"></td>
+                                    </tr>                               
+                                </tbody>
+                            </table>
+                        </div>
                         <nav>
                             <!--Botones de paginacion -->
                             <ul class="pagination">

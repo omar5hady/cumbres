@@ -16,7 +16,6 @@ class CreateIniObrasTable extends Migration
         Schema::create('ini_obras', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('fraccionamiento_id');
-            $table->unsignedInteger('etapa_id');
             $table->unsignedInteger('contratista_id');
             $table->date('f_ini')->nullable();
             $table->date('f_fin')->nullable();
@@ -29,7 +28,6 @@ class CreateIniObrasTable extends Migration
             $table->timestamps();
 
             $table->foreign('fraccionamiento_id')->references('id')->on('fraccionamientos');
-            $table->foreign('etapa_id')->references('id')->on('etapas');
             $table->foreign('contratista_id')->references('id')->on('contratistas');
         });
     }
