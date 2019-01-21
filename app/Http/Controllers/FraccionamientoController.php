@@ -174,10 +174,20 @@ class FraccionamientoController extends Controller
     public function selectFraccionamiento(Request $request){
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
         if(!$request->ajax())return redirect('/');
+        
         $fraccionamientos = Fraccionamiento::select('nombre','id')->get();
         return['fraccionamientos' => $fraccionamientos];
     }
 
+    public function selectFraccionamientoVue(Request $request){
+        //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
+        if(!$request->ajax())return redirect('/');
+        $filtro = $request->filtro;
+
+        $fraccionamientos = Fraccionamiento::select('nombre','id')
+        ->where('nombre','like','%'.$filtro.'%')->get();
+        return['fraccionamientos' => $fraccionamientos];
+    }
 
     public function selectFraccionamientoConLotes(Request $request){
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu

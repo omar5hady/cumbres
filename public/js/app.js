@@ -83569,6 +83569,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -83608,7 +83613,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             criterio: 'ini_obras.clave',
             buscar: '',
             arrayFraccionamientos: [],
-            arrayEtapas: []
+            arrayLotes: [],
+            lote_id: 0,
+            lote: '',
+            manzana: '',
+            construccion: '',
+            costo_directo: 0,
+            costo_indirecto: 0,
+            importe: 0,
+            impuesto: 0
         };
     },
 
@@ -83656,17 +83669,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 console.log(error);
             });
         },
-        selectFraccionamientos: function selectFraccionamientos() {
-            var me = this;
-            me.arrayFraccionamientos = [];
-            var url = '/select_fraccionamiento';
-            axios.get(url).then(function (response) {
-                var respuesta = response.data;
-                me.arrayFraccionamientos = respuesta.fraccionamientos;
-            }).catch(function (error) {
-                console.log(error);
-            });
-        },
         selectContratista: function selectContratista(search, loading) {
             var me = this;
             loading(true);
@@ -83685,6 +83687,25 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var me = this;
             me.loading = true;
             me.contratista_id = val1.id;
+        },
+        selectFraccionamiento: function selectFraccionamiento(search, loading) {
+            var me = this;
+            loading(true);
+
+            var url = '/select_fraccionamiento2?filtro=' + search;
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                q: search;
+                me.arrayFraccionamientos = respuesta.fraccionamientos;
+                loading(false);
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        getDatosFraccionamiento: function getDatosFraccionamiento(val1) {
+            var me = this;
+            me.loading = true;
+            me.fraccionamiento_id = val1.id;
         },
         cambiarPagina: function cambiarPagina(page, buscar, criterio) {
             var me = this;
@@ -83864,7 +83885,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                         }
                     }
             }
-            this.selectFraccionamientos();
         }
     },
     mounted: function mounted() {
@@ -84344,7 +84364,28 @@ var render = function() {
                       })
                     ]),
                     _vm._v(" "),
-                    _vm._m(2)
+                    _c("div", { staticClass: "col-md-6" }, [
+                      _c(
+                        "div",
+                        { staticClass: "form-group" },
+                        [
+                          _c("label", { attrs: { for: "" } }, [
+                            _vm._v("Fraccionamiento ")
+                          ]),
+                          _vm._v(" "),
+                          _c("v-select", {
+                            attrs: {
+                              "on-search": _vm.selectFraccionamiento,
+                              label: "nombre",
+                              options: _vm.arrayFraccionamientos,
+                              placeholder: "Buscar proyecto...",
+                              onChange: _vm.getDatosFraccionamiento
+                            }
+                          })
+                        ],
+                        1
+                      )
+                    ])
                   ]),
                   _vm._v(" "),
                   _c("div", { staticClass: "form-group row border" }, [
@@ -84478,10 +84519,10 @@ var render = function() {
                       ])
                     ]),
                     _vm._v(" "),
-                    _vm._m(3)
+                    _vm._m(2)
                   ]),
                   _vm._v(" "),
-                  _vm._m(4),
+                  _vm._m(3),
                   _vm._v(" "),
                   _c("div", { staticClass: "form-group row" }, [
                     _c("div", { staticClass: "col-md-12" }, [
@@ -84658,18 +84699,6 @@ var staticRenderFns = [
         _c("th", [_vm._v("Fecha de inicio ")]),
         _vm._v(" "),
         _c("th", [_vm._v("Fecha de termino")])
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-md-6" }, [
-      _c("div", { staticClass: "form-group" }, [
-        _c("label", { attrs: { for: "" } }, [_vm._v("Fraccionamiento ")]),
-        _vm._v(" "),
-        _c("select", { staticClass: "form-control" })
       ])
     ])
   },

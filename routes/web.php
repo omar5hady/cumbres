@@ -166,6 +166,7 @@ Route::get('/select_empresas','EmpresaController@selectEmpresa');
 Route::get('/select_ciudades','CiudadController@selectCiudades');
 Route::get('/select_personal','PersonalController@selectNombre'); //Nombre completo de persona (Directivos activos)
 Route::get('/select_fraccionamiento','FraccionamientoController@selectFraccionamiento'); 
+Route::get('/select_fraccionamiento2','FraccionamientoController@selectFraccionamientoVue'); 
 Route::get('/select_Frac_Tipo','FraccionamientoController@selectFrac_Tipo');
 Route::get('/contador_etapa','EtapaController@contEtapa'); 
 Route::get('/select_etapa_proyecto','EtapaController@selectEtapa_proyecto'); 

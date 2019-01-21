@@ -118,9 +118,14 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="">Fraccionamiento </label>
-                                        <select class="form-control">
-
-                                        </select>
+                                        <v-select 
+                                            :on-search="selectFraccionamiento"
+                                            label="nombre"
+                                            :options="arrayFraccionamientos"
+                                            placeholder="Buscar proyecto..."
+                                            :onChange="getDatosFraccionamiento"
+                                        >
+                                        </v-select>
                                     </div>
                                 </div>
                                 
@@ -322,7 +327,15 @@
                 criterio : 'ini_obras.clave', 
                 buscar : '',
                 arrayFraccionamientos : [],
-                arrayEtapas : []
+                arrayLotes:[],
+                lote_id:0,
+                lote:'',
+                manzana:'',
+                construccion:'',
+                costo_directo:0,
+                costo_indirecto:0,
+                importe:0,
+                impuesto:0,
             }
         },
         components:{
@@ -370,18 +383,6 @@
                     console.log(error);
                 });
             },
-             selectFraccionamientos(){
-                let me = this;
-                me.arrayFraccionamientos=[];
-                var url = '/select_fraccionamiento';
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayFraccionamientos = respuesta.fraccionamientos;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            },
             selectContratista(search, loading){
                 let me = this;
                 loading(true)
@@ -401,6 +402,26 @@
                 let me = this;
                 me.loading = true;
                 me.contratista_id = val1.id;
+            },
+             selectFraccionamiento(search, loading){
+                let me = this;
+                loading(true)
+
+                var url = '/select_fraccionamiento2?filtro='+search;
+                axios.get(url).then(function (response) {
+                    let respuesta = response.data;
+                    q: search
+                    me.arrayFraccionamientos = respuesta.fraccionamientos;
+                    loading(false)
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            getDatosFraccionamiento(val1){
+                let me = this;
+                me.loading = true;
+                me.fraccionamiento_id = val1.id;
             },
             cambiarPagina(page, buscar, criterio){
                 let me = this;
@@ -579,7 +600,6 @@
                         }
                     }
                 }
-                this.selectFraccionamientos();
             }
         },
         mounted() {
