@@ -226,12 +226,10 @@
                                             </tr>
                                   
                                             <tr style="background-color: #CEECF5;">
-                                                <td colspan="2" align="right"><strong>Total C Directo</strong></td>
-                                                <td>${{ total_costo_directo=totalCostoDirecto}}</td>
-                                                <td align="right"><strong>Total C Indirecto</strong></td>
-                                                 <td>${{ total_costo_indirecto=totalCostoIndirecto}}</td>
-                                                <td align="right"><strong>Total C Importe</strong></td>
-                                                 <td>${{ total_importe=totalImporte}}</td>
+                                               
+                                                <td align="right" colspan="5"> <strong>${{ total_costo_directo=totalCostoDirecto}}</strong> </td>
+                                                 <td align="right"> <strong>${{ total_costo_indirecto=totalCostoIndirecto}}</strong> </td>
+                                                 <td align="right"> <strong>${{ total_importe=totalImporte}}</strong> </td>
                                             </tr>
                                         </tbody>
 

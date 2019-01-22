@@ -83578,8 +83578,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -84962,47 +84960,56 @@ var render = function() {
                                       }
                                     },
                                     [
-                                      _vm._m(3),
-                                      _vm._v(" "),
-                                      _c("td", [
-                                        _vm._v(
-                                          "$" +
-                                            _vm._s(
-                                              (_vm.total_costo_directo =
-                                                _vm.totalCostoDirecto)
+                                      _c(
+                                        "td",
+                                        {
+                                          attrs: {
+                                            align: "right",
+                                            colspan: "5"
+                                          }
+                                        },
+                                        [
+                                          _c("strong", [
+                                            _vm._v(
+                                              "$" +
+                                                _vm._s(
+                                                  (_vm.total_costo_directo =
+                                                    _vm.totalCostoDirecto)
+                                                )
                                             )
-                                        )
+                                          ])
+                                        ]
+                                      ),
+                                      _vm._v(" "),
+                                      _c("td", { attrs: { align: "right" } }, [
+                                        _c("strong", [
+                                          _vm._v(
+                                            "$" +
+                                              _vm._s(
+                                                (_vm.total_costo_indirecto =
+                                                  _vm.totalCostoIndirecto)
+                                              )
+                                          )
+                                        ])
                                       ]),
                                       _vm._v(" "),
-                                      _vm._m(4),
-                                      _vm._v(" "),
-                                      _c("td", [
-                                        _vm._v(
-                                          "$" +
-                                            _vm._s(
-                                              (_vm.total_costo_indirecto =
-                                                _vm.totalCostoIndirecto)
-                                            )
-                                        )
-                                      ]),
-                                      _vm._v(" "),
-                                      _vm._m(5),
-                                      _vm._v(" "),
-                                      _c("td", [
-                                        _vm._v(
-                                          "$" +
-                                            _vm._s(
-                                              (_vm.total_importe =
-                                                _vm.totalImporte)
-                                            )
-                                        )
+                                      _c("td", { attrs: { align: "right" } }, [
+                                        _c("strong", [
+                                          _vm._v(
+                                            "$" +
+                                              _vm._s(
+                                                (_vm.total_importe =
+                                                  _vm.totalImporte)
+                                              )
+                                          )
+                                        ])
                                       ])
                                     ]
                                   )
                                 ],
                                 2
                               )
-                            : _c("tbody", [_vm._m(6)])
+                            : _c("tbody", [_vm._m(3)])
                         ]
                       )
                     ])
@@ -85206,30 +85213,6 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Importe")])
       ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("td", { attrs: { colspan: "2", align: "right" } }, [
-      _c("strong", [_vm._v("Total C Directo")])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("td", { attrs: { align: "right" } }, [
-      _c("strong", [_vm._v("Total C Indirecto")])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("td", { attrs: { align: "right" } }, [
-      _c("strong", [_vm._v("Total C Importe")])
     ])
   },
   function() {
