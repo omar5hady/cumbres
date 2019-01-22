@@ -56967,7 +56967,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             axios.get(url).then(function (response) {
                 var respuesta = response.data;
                 me.contador = respuesta;
-                me.num_etapa = me.contador;
+                me.num_etapa = me.contador - 1;
             }).catch(function (error) {
                 console.log(error);
             });

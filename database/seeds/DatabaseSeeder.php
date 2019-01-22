@@ -15,6 +15,6 @@ class DatabaseSeeder extends Seeder
          $this->call(SobrepreciosSeeder::class);
          $this->call(EmpresaSeeder::class);
          $this->call(PersonalSeed::class);
-        
+         $this->call(ContratistaSeeder::class);
     }
 }
