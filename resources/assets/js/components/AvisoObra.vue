@@ -100,7 +100,7 @@
                                 </div>
                                 <div class="col-md-3">
                                     <label for="">Clave </label>
-                                    <input type="text" class="form-control" v-model="impuesto" placeholder="CLV-00-00">
+                                    <input type="text" class="form-control" v-model="clave" placeholder="CLV-00-00">
                                 </div> 
                                 <div class="col-md-4">
                                     <label for="">Fecha de inicio </label>
@@ -124,45 +124,61 @@
                                             :options="arrayFraccionamientos"
                                             placeholder="Buscar proyecto..."
                                             :onChange="getDatosFraccionamiento"
+                                            
                                         >
                                         </v-select>
+                                    </div>
+                                </div>
+
+                                    <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Manzana</label>
+                                        <div class="form-inline">
+                                        <select class="form-control" v-model="manzana" @click="selectLotes(manzana)">
+                                            <option value="0">Seleccione</option>
+                                            <option v-for="manzana in arrayManzanaLotes" :key="manzana.id" :value="manzana.manzana" v-text="manzana.manzana"></option>
+                                        </select>
+                                           
+                                        </div>
                                     </div>
                                 </div>
                                 
                             </div>
                             <div class="form-group row border">
-                                <div class="col-md-5">
+                                <div class="col-md-3">
                                     <div class="form-group">
-                                        <label>Lote</label>
+                                        <label>Lote</label> 
                                         <div class="form-inline">
-                                            <input type="text" class="form-control" v-model="lote_id" placeholder="Ingrese Lote">
-                                            <button class="btn btn-primary">...</button>
+                                        <select class="form-control" v-model="lote_id" @click="selectDatosLotes(lote_id)">
+                                            <option value="0">Seleccione</option>
+                                            <option v-for="lotes in arrayLotes" :key="lotes.id" :value="lotes.id" v-text="lotes.num_lote"></option>
+                                        </select>
+                                           
                                         </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Descripcion <span style="color:red;" v-show="descripcion==''">(*Ingrese)</span> </label>
+                                        <input type="text" class="form-control" v-model="descripcion"  placeholder="Descripcion">
                                     </div>
                                 </div>
                                 <div class="col-md-2">
                                     <div class="form-group">
-                                        <label>Costo directo</label>
+                                        <label>Costo directo<span style="color:red;" v-show="costo_directo==0">(*Ingrese)</span></label>
                                         <input type="text" class="form-control" v-model="costo_directo" v-on:keypress="isNumber($event)" placeholder="Costo directo">
                                     </div>
                                 </div>
                                 <div class="col-md-2">
                                     <div class="form-group">
-                                        <label>Costo indirecto</label>
+                                        <label>Costo indirecto <span style="color:red;" v-show="costo_indirecto==0">(*Ingrese)</span></label>
                                         <input type="text" class="form-control" v-model="costo_indirecto" v-on:keypress="isNumber($event)" placeholder="Costo indirecto">
-                                    </div>
-                                </div>
-
-                                <div class="col-md-2">
-                                    <div class="form-group">
-                                        <label>Importe</label>
-                                        <input type="text" class="form-control" v-model="importe" placeholder="Importe">
                                     </div>
                                 </div>
 
                                 <div class="col-md-1">
                                     <div class="form-group">
-                                        <button class="btn btn-success form-control btnagregar"><i class="icon-plus"></i></button>
+                                        <button @click="agregarLote()" class="btn btn-success form-control btnagregar"><i class="icon-plus"></i></button>
                                     </div>
                                 </div>
                                 
@@ -181,61 +197,49 @@
                                                 <th>Importe</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
-                                            <tr>
+                                        <tbody v-if="arrayAvisoObraLotes.length">
+                                            <tr v-for="(detalle,index) in arrayAvisoObraLotes" :key="detalle.id">
                                                 <td>
-                                                    <button type="button" class="btn btn-danger btn-sm">
+                                                    <button @click="eliminarDetalle(index)" type="button" class="btn btn-danger btn-sm">
                                                         <i class="icon-close"></i>
                                                     </button>
                                                 </td>
                                                 <td>
-                                                    <input type="text" class="form-control">
+                                                    <input v-model="detalle.descripcion" type="text" class="form-control">
+                                                </td>
+                                                <td v-text="detalle.lote">
+                                                    
+                                                </td>
+                                                <td v-text="detalle.superficie">
+                                                   
                                                 </td>
                                                 <td>
-                                                    Lote n
+                                                    <input v-model="detalle.costo_directo" type="text" class="form-control">
                                                 </td>
                                                 <td>
-                                                    Mts n
+                                                    <input v-model="detalle.costo_indirecto" type="text" class="form-control">
                                                 </td>
                                                 <td>
-                                                    <input type="text" class="form-control">
-                                                </td>
-                                                <td>
-                                                    <input type="text" class="form-control">
-                                                </td>
-                                                <td>
-                                                    <input type="text" class="form-control">
+                                                    {{parseFloat(detalle.costo_directo) + parseFloat(detalle.costo_indirecto)}}
+                                                  <!-- <input readonly v-model="detalle.importe" type="text" class="form-control">  -->
                                                 </td>
                                             </tr>
-                                            <tr>
-                                                <td>
-                                                    <button type="button" class="btn btn-danger btn-sm">
-                                                        <i class="icon-close"></i>
-                                                    </button>
-                                                </td>
-                                                <td>
-                                                    <input type="text" class="form-control">
-                                                </td>
-                                                <td>
-                                                    Lote n
-                                                </td>
-                                                <td>
-                                                    Mts n
-                                                </td>
-                                                <td>
-                                                    <input type="text" class="form-control">
-                                                </td>
-                                                <td>
-                                                    <input type="text" class="form-control">
-                                                </td>
-                                                <td>
-                                                    <input type="text" class="form-control">
-                                                </td>
-                                            </tr>
+                                  
                                             <tr style="background-color: #CEECF5;">
-                                                <td colspan="5" align="right"><strong>Total C Directo</strong></td>
+                                                <td colspan="2" align="right"><strong>Total C Directo</strong></td>
+                                                <td>${{ total_costo_directo=totalCostoDirecto}}</td>
                                                 <td align="right"><strong>Total C Indirecto</strong></td>
+                                                 <td>${{ total_costo_indirecto=totalCostoIndirecto}}</td>
                                                 <td align="right"><strong>Total C Importe</strong></td>
+                                                 <td>${{ total_importe=totalImporte}}</td>
+                                            </tr>
+                                        </tbody>
+
+                                        <tbody v-else>
+                                            <tr>
+                                                <td colspan="7">
+                                                    No hay lotes seleccionados
+                                                </td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -299,9 +303,9 @@
                 fraccionamiento_id : 0,
                 num_etapa : 0,
                 clave:'',
-                total_importe:0,
-                total_costo_directo:0,
-                total_costo_indirecto:0,
+                total_importe:0.0,
+                total_costo_directo:0.0,
+                total_costo_indirecto:0.0,
                 anticipo:0,
                 total_anticipo:0,
                 f_ini : new Date().toISOString().substr(0, 10),
@@ -328,14 +332,18 @@
                 buscar : '',
                 arrayFraccionamientos : [],
                 arrayLotes:[],
+                arrayManzanaLotes: [],
+                arrayDatosLotes: [],
                 lote_id:0,
                 lote:'',
                 manzana:'',
                 construccion:'',
                 costo_directo:0,
                 costo_indirecto:0,
-                importe:0,
-                impuesto:0,
+                descripcion: '',
+                manzana: 0,
+                importe: 0.0
+                
             }
         },
         components:{
@@ -345,6 +353,7 @@
             isActived: function(){
                 return this.pagination.current_page;
             },
+
             //Calcula los elementos de la paginación
             pagesNumber:function(){
                 if(!this.pagination.to){
@@ -367,8 +376,34 @@
                     from++;
                 }
                 return pagesArray;
+            },
+        totalCostoDirecto: function(){
+            var resultado_costo_directo =0.0;
+            for(var i=0;i<this.arrayAvisoObraLotes.length;i++){
+                resultado_costo_directo = parseFloat(resultado_costo_directo) + parseFloat(this.arrayAvisoObraLotes[i].costo_directo)
             }
+            return resultado_costo_directo;
         },
+        totalCostoIndirecto: function(){
+            var resultado_costo_indirecto =0.0;
+            for(var i=0;i<this.arrayAvisoObraLotes.length;i++){
+                resultado_costo_indirecto = parseFloat(resultado_costo_indirecto) + parseFloat(this.arrayAvisoObraLotes[i].costo_indirecto) 
+            }
+            return resultado_costo_indirecto;
+        },
+
+
+        totalImporte: function(){
+            var resultado_importe_total =0.0;
+            for(var i=0;i<this.arrayAvisoObraLotes.length;i++){
+                resultado_importe_total = parseFloat(resultado_importe_total) + parseFloat(this.arrayAvisoObraLotes[i].costo_directo) + parseFloat(this.arrayAvisoObraLotes[i].costo_indirecto)
+            }
+            return resultado_importe_total;
+        },
+
+
+        },
+       
         methods : {
             /**Metodo para mostrar los registros */
             listarAvisos(page, buscar, criterio){
@@ -422,6 +457,52 @@
                 let me = this;
                 me.loading = true;
                 me.fraccionamiento_id = val1.id;
+                me.selectManzanaLotes(me.fraccionamiento_id);
+            },
+            selectManzanaLotes(buscar){
+                let me = this;
+              
+                me.arrayManzanaLotes=[];
+                var url = '/select_manzana_lotes?buscar='+buscar;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayManzanaLotes = respuesta.lotesManzana;
+                    
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            selectLotes(buscar){
+                let me = this;
+              
+                me.arrayLotes=[];
+                var url = '/select_lotes_obra?buscar='+buscar;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayLotes = respuesta.lotes;
+                    
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            selectDatosLotes(buscar){
+                let me = this;
+              
+                me.arrayDatosLotes = [];
+                var url = '/select_datos_lotes?buscar='+buscar;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayDatosLotes = respuesta.lotesDatos;
+                    me.lote = me.arrayDatosLotes[0].num_lote;
+                    me.construccion = me.arrayDatosLotes[0].construccion;
+                    me.manzana = me.arrayDatosLotes[0].manzana;
+                    
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
             },
             cambiarPagina(page, buscar, criterio){
                 let me = this;
@@ -429,6 +510,59 @@
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
                 me.listarAvisos(page,buscar,criterio);
+            },
+            encuentra(id){
+                var sw=0;
+                for(var i=0;i<this.arrayAvisoObraLotes.length;i++)
+                {
+                    if(this.arrayAvisoObraLotes[i].lote_id == id)
+                    {
+                        sw=true;
+                    }
+                }
+
+                return sw;
+            },
+            agregarLote(){
+                let me = this;
+                if(me.descripcion == '' || me.costo_directo==0 || me.costo_indirecto==0){
+
+                }else{
+                    if(me.encuentra(me.lote_id)){
+                         swal({
+                        type: 'error',
+                        title: 'Error',
+                        text: 'Este lote ya se encuentra agregado',
+                        })
+                    }else{
+                   me.importe = parseFloat(me.costo_directo) + parseFloat(me.costo_indirecto);
+                    me.arrayAvisoObraLotes.push({
+                    lote_id: me.lote_id,
+                    lote: me.lote,
+                    superficie: me.construccion,
+                    manzana: me.manzana,
+                    descripcion: me.descripcion,
+                    importe: me.importe,
+                    costo_directo: parseFloat(me.costo_directo),
+                    costo_indirecto: parseFloat(me.costo_indirecto)
+                    });
+                    me.lote = '';
+                    me.lote_id =0;
+                    me.construccion = 0;
+                    me.manzana='';
+                    me.descripcion='';
+                    me.costo_directo = 0;
+                    me.costo_indirecto = 0;
+                   
+                
+                    }
+                    
+                }
+
+            },
+            eliminarDetalle(index){
+                let me = this;
+                me.arrayAvisoObraLotes.splice(index,1);
             },
             /**Metodo para registrar  */
             registrarEtapa(){
@@ -604,6 +738,9 @@
         },
         mounted() {
             this.listarAvisos(1,this.buscar,this.criterio);
+            this.selectManzanaLotes(this.fraccionamiento_id);
+            this.selectLotes(this.manzana);
+            this.selectDatosLotes(this.lote_id)
         }
     }
 </script>

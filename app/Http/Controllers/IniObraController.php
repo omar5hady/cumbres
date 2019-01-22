@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Ini_obra;
 use App\Ini_obra_lote;
+use App\Lote;
 use Illuminate\Support\Facades\DB;
 
 class IniObraController extends Controller
@@ -116,6 +117,47 @@ class IniObraController extends Controller
         } catch (Exception $e){
             DB::rollBack();
         }
+    }
+
+   
+
+    public function select_manzana_lotes (Request $request)
+
+    {
+        $buscar = $request->buscar;
+        $lotesManzana = Lote::select('manzana')
+                        ->where('fraccionamiento_id','=',$buscar)
+                        ->where('ini_obra', '=', '1')
+                        ->where('aviso','=','0')->distinct()
+                        ->get();
+
+                        return ['lotesManzana' => $lotesManzana];
+    }
+
+    public function select_lotes (Request $request)
+
+    {
+        $buscar = $request->buscar;
+        $lotes = Lote::select('num_lote','id')
+                        ->where('manzana','=',$buscar)
+                        ->where('ini_obra', '=', '1')
+                        ->where('aviso','=','0')
+                        ->get();
+
+                        return ['lotes' => $lotes];
+    }
+
+    public function select_datos_lotes (Request $request)
+
+    {
+        $buscar = $request->buscar;
+        $lotesDatos = Lote::select('num_lote','construccion','manzana')
+                        ->where('id','=',$buscar)
+                        ->where('ini_obra', '=', '1')
+                        ->where('aviso','=','0')
+                        ->get();
+
+                        return ['lotesDatos' => $lotesDatos];
     }
 
 }

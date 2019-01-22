@@ -181,6 +181,11 @@ Route::get('/select_sobreprecios_etapa','SobreprecioEtapaController@select_sobre
 Route::get('/select_contratistas','ContratistaController@selectContratista'); 
 Route::get('/select_contratistas2','ContratistaController@selectContratistaVue'); 
 Route::get('/select_fraccionamientoLote','FraccionamientoController@selectFraccionamientoConLotes'); 
+Route::get('/select_manzana_lotes','IniObraController@select_manzana_lotes');
+Route::get('/select_lotes_obra','IniObraController@select_lotes'); 
+Route::get('/select_datos_lotes','IniObraController@select_datos_lotes'); 
+
+
 /***************************************************************************** */
 
 /**********************************RUTAS OBSERVACION*************************** */

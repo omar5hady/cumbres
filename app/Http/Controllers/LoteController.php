@@ -605,6 +605,7 @@ class LoteController extends Controller
                       'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
                       'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios')
                 ->where('lotes.ini_obra', '=', '0')
+                ->where('modelos.nombre','!=','Por Asignar')
                 ->orderBy('fraccionamientos.nombre','lotes.id')->paginate(12);
                 
         }
@@ -620,6 +621,7 @@ class LoteController extends Controller
                     'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios')
                 ->where($criterio, 'like', '%'. $buscar . '%')
                 ->where('lotes.ini_obra', '=', '0')
+                ->where('modelos.nombre','!=','Por Asignar')
                 ->orderBy('fraccionamientos.nombre','lotes.id')->paginate(12);
         }
         
@@ -706,6 +708,8 @@ class LoteController extends Controller
         )->download('xls');
 
     }
+
+
 
 
 }
