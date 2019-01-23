@@ -150,6 +150,7 @@ Route::get('/iniobra','IniObraController@index');
 Route::post('/iniobra/registrar','IniObraController@store');
 Route::get('/iniobra/obtenerCabecera','IniObraController@obtenerCabecera');
 Route::get('/iniobra/obtenerDetalles','IniObraController@obtenerDetalles');
+Route::delete('/iniobra/contrato/eliminar','IniObraController@eliminarContrato');
 
 ////////////////////        RUTAS PARTIDAS   /////////////////////////////////
 Route::get('/partidas','PartidaController@index');

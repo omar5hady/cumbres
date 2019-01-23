@@ -83693,6 +83693,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -83868,11 +83871,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 console.log(error);
             });
         },
-        selectLotes: function selectLotes(buscar) {
+        selectLotes: function selectLotes(buscar, buscar2) {
             var me = this;
 
             me.arrayLotes = [];
-            var url = '/select_lotes_obra?buscar=' + buscar;
+            var url = '/select_lotes_obra?buscar=' + buscar + '&buscar2=' + buscar2;
             axios.get(url).then(function (response) {
                 var respuesta = response.data;
                 me.arrayLotes = respuesta.lotes;
@@ -83892,6 +83895,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 me.construccion = me.arrayDatosLotes[0].construccion;
                 me.manzana = me.arrayDatosLotes[0].manzana;
                 me.modelo = me.arrayDatosLotes[0].modelo;
+                me.descripcion = me.arrayDatosLotes[0].modelo;
             }).catch(function (error) {
                 console.log(error);
             });
@@ -84044,16 +84048,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             this.arrayDatosLotes = [];
             this.arrayManzanaLotes = [];
         },
-        eliminarEtapa: function eliminarEtapa() {
+        eliminarContrato: function eliminarContrato() {
             var _this = this;
 
             var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
 
             this.id = data['id'];
-            this.fraccionamiento_id = data['fraccionamiento_id'];
-            this.num_etapa = data['num_etapa'];
-            this.f_ini = data['f_ini'];
-            this.f_fin = data['f_fin'];
             swal({
                 title: '¿Desea eliminar?',
                 text: "Esta acción no se puede revertir!",
@@ -84067,9 +84067,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 if (result.value) {
                     var me = _this;
 
-                    axios.delete('/etapa/eliminar', { params: { 'id': _this.id } }).then(function (response) {
-                        swal('Borrado!', 'Etapa borrada correctamente.', 'success');
-                        me.listarAvisos(1, '', '', 'etapa');
+                    axios.delete('/iniobra/contrato/eliminar', { params: { 'id': _this.id } }).then(function (response) {
+                        swal('Borrado!', 'Contrato borrada correctamente.', 'success');
+                        me.listarAvisos(1, '', 'ini_obras.clave');
                     }).catch(function (error) {
                         console.log(error);
                     });
@@ -84200,7 +84200,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     mounted: function mounted() {
         this.listarAvisos(1, this.buscar, this.criterio);
         this.selectManzanaLotes(this.fraccionamiento_id);
-        this.selectLotes(this.manzana);
+        this.selectLotes(this.manzana, this.fraccionamiento_id);
         this.selectDatosLotes(this.lote_id);
     }
 });
@@ -84404,7 +84404,20 @@ var render = function() {
                                   [_c("i", { staticClass: "icon-eye" })]
                                 ),
                                 _vm._v(
-                                  "  \n                                        "
+                                  "  \n                                            "
+                                ),
+                                _c(
+                                  "button",
+                                  {
+                                    staticClass: "btn btn-danger btn-sm",
+                                    attrs: { type: "button" },
+                                    on: {
+                                      click: function($event) {
+                                        _vm.eliminarContrato(avisoObra)
+                                      }
+                                    }
+                                  },
+                                  [_c("i", { staticClass: "icon-trash" })]
                                 )
                               ]),
                               _vm._v(" "),
@@ -84742,7 +84755,10 @@ var render = function() {
                                 staticClass: "form-control",
                                 on: {
                                   click: function($event) {
-                                    _vm.selectLotes(_vm.manzana)
+                                    _vm.selectLotes(
+                                      _vm.manzana,
+                                      _vm.fraccionamiento_id
+                                    )
                                   },
                                   change: function($event) {
                                     var $$selectedVal = Array.prototype.filter

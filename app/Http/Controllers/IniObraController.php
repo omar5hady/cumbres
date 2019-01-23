@@ -113,6 +113,7 @@ class IniObraController extends Controller
                 $lotes->costo_indirecto = $det['costo_indirecto'];
                 $lotes->importe = $det['importe'];       
                 $lotes->descripcion = $det['descripcion'];
+                $lotes->lote_id= $det['lote_id'];
                 $lotes->save();
 
                 if($det['lote_id']>0){
@@ -147,7 +148,9 @@ class IniObraController extends Controller
 
     {
         $buscar = $request->buscar;
+        $buscar2 = $request->buscar2;
         $lotes = Lote::select('num_lote','id')
+                        ->where('fraccionamiento_id','=',$buscar2)
                         ->where('manzana','=',$buscar)
                         ->where('ini_obra', '=', '1')
                         ->where('aviso','=','0')
@@ -161,7 +164,7 @@ class IniObraController extends Controller
     {
         $buscar = $request->buscar;
         $lotesDatos = Lote::join('modelos','lotes.modelo_id','=','modelos.id')
-        ->select('lotes.num_lote as num_lote','lotes.construccion as construccion','lotes.manzana as manzana','modelos.nombre as modelo')
+        ->select('lotes.num_lote as num_lote','lotes.construccion as construccion','lotes.manzana as manzana','modelos.nombre as modelo','lotes.id as lote_id')
                         ->where('lotes.id','=',$buscar)
                         ->where('lotes.ini_obra', '=', '1')
                         ->where('lotes.aviso','=','0')
@@ -169,5 +172,21 @@ class IniObraController extends Controller
 
                         return ['lotesDatos' => $lotesDatos];
     }
+
+     public function eliminarContrato(Request $request){
+        if(!$request->ajax())return redirect('/');
+        $lotes = Ini_obra_lote::select('lote_id')
+                                ->where('ini_obra_id','=',$request->id)->get();
+        foreach($lotes as $ep=>$det){
+            if($det->lote_id > 0){
+                $lote = Lote::findOrFail($det->lote_id);
+                $lote->aviso = '0';
+                $lote->save();
+            }
+        }
+
+        $ini_obra = Ini_obra::findOrFail($request->id);
+        $ini_obra->delete();
+     }
 
 }

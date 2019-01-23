@@ -52,6 +52,9 @@
                                                 <button type="button" @click="verAviso(avisoObra.id)" class="btn btn-success btn-sm">
                                                 <i class="icon-eye"></i>
                                                 </button> &nbsp;
+                                                <button type="button" class="btn btn-danger btn-sm" @click="eliminarContrato(avisoObra)">
+                                                    <i class="icon-trash"></i>
+                                                </button>
                                             </td>
                                             <td v-text="avisoObra.clave"></td>
                                             <td v-text="avisoObra.contratista"></td>
@@ -136,7 +139,7 @@
                                     <div class="form-group">
                                         <label>Manzana</label>
                                         <div class="form-inline">
-                                        <select class="form-control" v-model="manzana" @click="selectLotes(manzana)">
+                                        <select class="form-control" v-model="manzana" @click="selectLotes(manzana,fraccionamiento_id)">
                                             <option value="">Seleccione</option>
                                             <option v-for="manzana in arrayManzanaLotes" :key="manzana.id" :value="manzana.manzana" v-text="manzana.manzana"></option>
                                         </select>
@@ -589,11 +592,11 @@
                     console.log(error);
                 });
             },
-            selectLotes(buscar){
+            selectLotes(buscar , buscar2){
                 let me = this;
               
                 me.arrayLotes=[];
-                var url = '/select_lotes_obra?buscar='+buscar;
+                var url = '/select_lotes_obra?buscar='+buscar + '&buscar2=' + buscar2;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayLotes = respuesta.lotes;
@@ -615,7 +618,7 @@
                     me.construccion = me.arrayDatosLotes[0].construccion;
                     me.manzana = me.arrayDatosLotes[0].manzana;
                     me.modelo=me.arrayDatosLotes[0].modelo;
-                    
+                    me.descripcion=me.arrayDatosLotes[0].modelo;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -720,6 +723,7 @@
                     console.log(error);
                 });
             },
+            
              limpiarBusqueda(){
                 let me=this;
                 me.buscar= "";
@@ -773,12 +777,8 @@
                 this.arrayDatosLotes=[];
                 this.arrayManzanaLotes=[];
             },
-            eliminarEtapa(data =[]){
+            eliminarContrato(data =[]){
                 this.id=data['id'];
-                this.fraccionamiento_id=data['fraccionamiento_id'];
-                this.num_etapa=data['num_etapa'];
-                this.f_ini=data['f_ini'];
-                this.f_fin=data['f_fin'];
                 swal({
                 title: '¿Desea eliminar?',
                 text: "Esta acción no se puede revertir!",
@@ -792,14 +792,14 @@
                 if (result.value) {
                     let me = this;
 
-                axios.delete('/etapa/eliminar', 
+                axios.delete('/iniobra/contrato/eliminar', 
                         {params: {'id': this.id}}).then(function (response){
                         swal(
                         'Borrado!',
-                        'Etapa borrada correctamente.',
+                        'Contrato borrada correctamente.',
                         'success'
                         )
-                        me.listarAvisos(1,'','','etapa');
+                         me.listarAvisos(1,'','ini_obras.clave'); 
                     }).catch(function (error){
                         console.log(error);
                     });
@@ -930,7 +930,7 @@
         mounted() {
             this.listarAvisos(1,this.buscar,this.criterio);
             this.selectManzanaLotes(this.fraccionamiento_id);
-            this.selectLotes(this.manzana);
+            this.selectLotes(this.manzana,this.fraccionamiento_id);
             this.selectDatosLotes(this.lote_id)
         }
     }
