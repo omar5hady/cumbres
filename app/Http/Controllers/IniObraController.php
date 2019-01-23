@@ -57,9 +57,10 @@ class IniObraController extends Controller
         ->join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
         ->select('ini_obras.id','ini_obras.clave','ini_obras.f_ini','ini_obras.f_fin',
             'ini_obras.total_costo_directo','ini_obras.total_costo_indirecto','ini_obras.total_importe',
-            'contratistas.nombre as contratista','fraccionamientos.nombre as proyecto')
-        ->where('ini_obra.id','=',$id)
-        ->orderBy('ini_obra.id', 'desc')->take(1)->get();
+            'contratistas.nombre as contratista','fraccionamientos.nombre as proyecto','ini_obras.anticipo',
+            'ini_obras.total_anticipo','ini_obras.costo_indirecto_porcentaje')
+        ->where('ini_obras.id','=',$id)
+        ->orderBy('ini_obras.id', 'desc')->take(1)->get();
          
         return ['ini_obra' => $ini_obra];
     }
@@ -69,7 +70,8 @@ class IniObraController extends Controller
         $id = $request->id;
         $detalles = Ini_obra_lote::select('ini_obra_lotes.costo_directo',
         'ini_obra_lotes.costo_indirecto','ini_obra_lotes.importe','ini_obra_lotes.lote',
-        'ini_obra_lotes.manzana','ini_obra_lotes.modelo','ini_obra_lotes.construccion')
+        'ini_obra_lotes.manzana','ini_obra_lotes.modelo','ini_obra_lotes.construccion',
+        'ini_obra_lotes.descripcion')
         ->where('ini_obra_lotes.ini_obra_id','=',$id)
         ->orderBy('ini_obra_lotes.id', 'desc')->get();
          
@@ -93,6 +95,7 @@ class IniObraController extends Controller
             $ini_obra->total_costo_indirecto =  $request->total_costo_indirecto;
             $ini_obra->anticipo = $request->anticipo;
             $ini_obra->total_anticipo = $request->total_anticipo;
+            $ini_obra->costo_indirecto_porcentaje = $request->costo_indirecto_porcentaje;
             $ini_obra->save();
  
             $lotes = $request->data;//Array de detalles
@@ -105,12 +108,18 @@ class IniObraController extends Controller
                 $lotes->lote = $det['lote'];
                 $lotes->manzana = $det['manzana'];
                 $lotes->modelo = $det['modelo'];
-                $lotes->construccion = $det['construccion'];
+                $lotes->construccion = $det['superficie'];
                 $lotes->costo_directo = $det['costo_directo'];
                 $lotes->costo_indirecto = $det['costo_indirecto'];
                 $lotes->importe = $det['importe'];       
                 $lotes->descripcion = $det['descripcion'];
                 $lotes->save();
+
+                if($det['lote_id']>0){
+                    $lote = Lote::findOrFail($det['lote_id']);
+                    $lote->aviso=$ini_obra->clave;
+                    $lote->save();
+                }
             }          
  
             DB::commit();
@@ -151,10 +160,11 @@ class IniObraController extends Controller
 
     {
         $buscar = $request->buscar;
-        $lotesDatos = Lote::select('num_lote','construccion','manzana')
-                        ->where('id','=',$buscar)
-                        ->where('ini_obra', '=', '1')
-                        ->where('aviso','=','0')
+        $lotesDatos = Lote::join('modelos','lotes.modelo_id','=','modelos.id')
+        ->select('lotes.num_lote as num_lote','lotes.construccion as construccion','lotes.manzana as manzana','modelos.nombre as modelo')
+                        ->where('lotes.id','=',$buscar)
+                        ->where('lotes.ini_obra', '=', '1')
+                        ->where('lotes.aviso','=','0')
                         ->get();
 
                         return ['lotesDatos' => $lotesDatos];

@@ -41,7 +41,6 @@
                                             <th>Clave</th>
                                             <th>Contratista</th>
                                             <th>Fraccionamiento</th>
-                                            <th>Etapa</th>
                                             <th>Fecha de inicio </th>
                                             <th>Fecha de termino</th>
                                             
@@ -50,14 +49,13 @@
                                     <tbody>
                                         <tr v-for="avisoObra in arrayAvisoObra" :key="avisoObra.id">
                                             <td>
-                                                <button type="button" @click="abrirModal('avisoObra','actualizar',avisoObra)" class="btn btn-success btn-sm">
+                                                <button type="button" @click="verAviso(avisoObra.id)" class="btn btn-success btn-sm">
                                                 <i class="icon-eye"></i>
                                                 </button> &nbsp;
                                             </td>
                                             <td v-text="avisoObra.clave"></td>
                                             <td v-text="avisoObra.contratista"></td>
                                             <td v-text="avisoObra.proyecto"></td>
-                                            <td v-text="avisoObra.etapa"></td>
                                             <td v-text="avisoObra.f_ini"></td>
                                             <td v-text="avisoObra.f_fin"></td>
                                         </tr>                               
@@ -82,7 +80,7 @@
                     </template>
                     
                     <!-- Div Card Body para nuevo registro -->
-                    <template v-else>
+                    <template v-else-if="listado == 0">
                         <div class="card-body"> 
                             <div class="form-group row border">
                                 <div class="col-md-9">
@@ -102,17 +100,21 @@
                                     <label for="">Clave </label>
                                     <input type="text" class="form-control" v-model="clave" placeholder="CLV-00-00">
                                 </div> 
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <label for="">Fecha de inicio </label>
                                     <input type="date" class="form-control" v-model="f_ini">
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <label for="">Fecha de termino </label>
-                                    <input type="date" class="form-control" v-model="f_ini">
+                                    <input type="date" class="form-control" v-model="f_fin">
                                 </div>
-                                <div class="col-md-4">
-                                    <label for="">Porcentaje de Anticipo </label>
-                                    <input type="text" class="form-control" v-model="anticipo" v-on:keypress="isNumber($event)">
+                                <div class="col-md-3">
+                                    <label for="">% Anticipo </label>
+                                    <input type="number" class="form-control" min="0" max="100" v-model="anticipo" v-on:keypress="isNumber($event)">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="">% Costo Indirecto </label>
+                                    <input type="number" class="form-control" min="0" max="100" v-model="costo_indirecto_porcentaje" v-on:keypress="isNumber($event)">
                                 </div>
 
                                 <div class="col-md-6">
@@ -130,15 +132,24 @@
                                     </div>
                                 </div>
 
-                                    <div class="col-md-2">
+                                <div class="col-md-2">
                                     <div class="form-group">
                                         <label>Manzana</label>
                                         <div class="form-inline">
                                         <select class="form-control" v-model="manzana" @click="selectLotes(manzana)">
-                                            <option value="0">Seleccione</option>
+                                            <option value="">Seleccione</option>
                                             <option v-for="manzana in arrayManzanaLotes" :key="manzana.id" :value="manzana.manzana" v-text="manzana.manzana"></option>
                                         </select>
-                                           
+                                        </div>
+                                    </div>
+                                </div>
+
+                                 <div class="col-md-12">
+                                    <!-- Div para mostrar los errores que mande validerFraccionamiento -->
+                                    <div v-show="errorAvisoObra" class="form-group row div-error">
+                                        <div class="text-center text-error">
+                                            <div v-for="error in errorMostrarMsjAvisoObra" :key="error" v-text="error">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -172,7 +183,8 @@
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label>Costo indirecto <span style="color:red;" v-show="costo_indirecto==0">(*Ingrese)</span></label>
-                                        <input type="text" class="form-control" v-model="costo_indirecto" v-on:keypress="isNumber($event)" placeholder="Costo indirecto">
+                                        <p>{{ costo_indirecto=costo_directo*costo_indirecto_porcentaje/100}}</p>
+                                        <!--<input type="text" class="form-control" readonly v-model="costo_indirecto" v-on:keypress="isNumber($event)" placeholder="Costo indirecto">-->
                                     </div>
                                 </div>
 
@@ -217,7 +229,7 @@
                                                     <input v-model="detalle.costo_directo" type="text" class="form-control">
                                                 </td>
                                                 <td>
-                                                    <input v-model="detalle.costo_indirecto" type="text" class="form-control">
+                                                    {{ detalle.costo_indirecto=detalle.costo_directo*costo_indirecto_porcentaje/100}}
                                                 </td>
                                                 <td>
                                                     {{parseFloat(detalle.costo_directo) + parseFloat(detalle.costo_indirecto)}}
@@ -247,6 +259,109 @@
                                 <div class="col-md-12">
                                     <button type="button" class="btn btn-secondary" @click="ocultarDetalle()"> Cerrar </button>
                                     <button type="button" class="btn btn-primary" @click="registrarAvisoObra()"> Guardar </button>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+
+                    <!--Div para ver detalle del aviso -->
+                    <template v-else-if="listado == 2">
+                        <div class="card-body"> 
+                            <div class="form-group row border">
+                                <div class="col-md-10">
+                                    <div class="form-group">
+                                        <label style="color:#2271b3;" for=""><strong> Contratista </strong></label>
+                                        <p v-text="contratista"></p>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <label style="color:#2271b3;" for=""><strong>Clave</strong> </label>
+                                    <p v-text="clave"></p>
+                                </div> 
+                                <div class="col-md-3">
+                                    <label style="color:#2271b3;" for=""><strong>Fecha de inicio</strong></label>
+                                    <p v-text="f_ini"></p>
+                                </div>
+                                <div class="col-md-3">
+                                    <label style="color:#2271b3;" for=""><strong>Fecha de termino </strong></label>
+                                    <p v-text="f_fin"></p>
+                                </div>
+                                <div class="col-md-3">
+                                    <label style="color:#2271b3;" for=""><strong>% Anticipo </strong></label>
+                                    <p v-text="anticipo+'%'"></p>
+                                </div>
+                                <div class="col-md-3">
+                                    <label style="color:#2271b3;" for=""><strong>% Costo Indirecto </strong></label>
+                                    <p v-text="costo_indirecto_porcentaje+'%'"></p>
+                                </div>
+
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <label style="color:#2271b3;" for=""><strong>Fraccionamiento </strong></label>
+                                        <p v-text="fraccionamiento"></p>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label style="color:#2271b3;"><strong>Total de Anticipo</strong></label>
+                                        <div class="form-inline">
+                                        <p v-text="'$'+formatNumber(total_anticipo)"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="table-responsive col-md-12">
+                                    <table class="table table-bordered table-striped table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Descripcion</th>
+                                                <th>Lote</th>
+                                                <th>Manzana</th>
+                                                <th>M&sup2;</th>
+                                                <th>Costo Directo</th>
+                                                <th>Costo Indirecto</th>
+                                                <th>Importe</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody v-if="arrayAvisoObraLotes.length">
+                                            <tr v-for="detalle in arrayAvisoObraLotes" :key="detalle.id">
+                                                <td v-text="detalle.descripcion"></td>
+                                                <td v-text="detalle.lote"></td>
+                                                <td v-text="detalle.manzana"></td>
+                                                <td v-text="detalle.construccion"></td>
+                                                <td v-text="'$'+formatNumber(detalle.costo_directo)"></td>
+                                                <td v-text="'$'+formatNumber(detalle.costo_indirecto)"></td>
+                                                <td>
+                                                    {{'$'+formatNumber(parseFloat(detalle.costo_directo) + parseFloat(detalle.costo_indirecto))}}
+                                                  <!-- <input readonly v-model="detalle.importe" type="text" class="form-control">  -->
+                                                </td>
+                                            </tr>
+                                  
+                                            <tr style="background-color: #CEECF5;">
+                                               
+                                                <td align="right" colspan="5"> <strong>${{ formatNumber(total_costo_directo=totalCostoDirecto)}}</strong> </td>
+                                                <td align="right"> <strong>${{ formatNumber(total_costo_indirecto=totalCostoIndirecto)}}</strong> </td>
+                                                <td align="right"> <strong>${{ formatNumber(total_importe=totalImporte)}}</strong> </td>
+                                            </tr>
+                                        </tbody>
+
+                                        <tbody v-else>
+                                            <tr>
+                                                <td colspan="7">
+                                                    No hay lotes seleccionados
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <button type="button" class="btn btn-secondary" @click="ocultarDetalle()"> Cerrar </button>
                                 </div>
                             </div>
                         </div>
@@ -305,6 +420,7 @@
                 total_costo_directo:0.0,
                 total_costo_indirecto:0.0,
                 anticipo:0,
+                costo_indirecto_porcentaje:0,
                 total_anticipo:0,
                 f_ini : new Date().toISOString().substr(0, 10),
                 f_fin : '',
@@ -339,8 +455,11 @@
                 costo_directo:0,
                 costo_indirecto:0,
                 descripcion: '',
-                manzana: 0,
-                importe: 0.0
+                manzana: '',
+                modelo:'',
+                importe: 0.0,
+                contratista:'',
+                fraccionamiento:''
                 
             }
         },
@@ -390,14 +509,13 @@
             return resultado_costo_indirecto;
         },
 
-
         totalImporte: function(){
             var resultado_importe_total =0.0;
             for(var i=0;i<this.arrayAvisoObraLotes.length;i++){
                 resultado_importe_total = parseFloat(resultado_importe_total) + parseFloat(this.arrayAvisoObraLotes[i].costo_directo) + parseFloat(this.arrayAvisoObraLotes[i].costo_indirecto)
             }
             return resultado_importe_total;
-        },
+        }
 
 
         },
@@ -496,6 +614,7 @@
                     me.lote = me.arrayDatosLotes[0].num_lote;
                     me.construccion = me.arrayDatosLotes[0].construccion;
                     me.manzana = me.arrayDatosLotes[0].manzana;
+                    me.modelo=me.arrayDatosLotes[0].modelo;
                     
                 })
                 .catch(function (error) {
@@ -533,7 +652,8 @@
                         text: 'Este lote ya se encuentra agregado',
                         })
                     }else{
-                   me.importe = parseFloat(me.costo_directo) + parseFloat(me.costo_indirecto);
+                    me.costo_indirecto = parseFloat(me.costo_directo) * parseFloat(me.costo_indirecto_porcentaje)/100;
+                    me.importe = parseFloat(me.costo_directo) + parseFloat(me.costo_indirecto);
                     me.arrayAvisoObraLotes.push({
                     lote_id: me.lote_id,
                     lote: me.lote,
@@ -541,6 +661,7 @@
                     manzana: me.manzana,
                     descripcion: me.descripcion,
                     importe: me.importe,
+                    modelo:me.modelo,
                     costo_directo: parseFloat(me.costo_directo),
                     costo_indirecto: parseFloat(me.costo_indirecto)
                     });
@@ -551,10 +672,8 @@
                     me.descripcion='';
                     me.costo_directo = 0;
                     me.costo_indirecto = 0;
-                   
-                
+                    me.modelo='';
                     }
-                    
                 }
 
             },
@@ -563,22 +682,32 @@
                 me.arrayAvisoObraLotes.splice(index,1);
             },
             /**Metodo para registrar  */
-            registrarEtapa(){
-                if(this.validarEtapa()) //Se verifica si hay un error (campo vacio)
+            registrarAvisoObra(){
+                if(this.validarAviso()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
 
                 let me = this;
+                me.total_anticipo=(me.anticipo/100)*me.total_importe;
                 //Con axios se llama el metodo store de FraccionaminetoController
-                axios.post('/etapa/registrar',{
+                axios.post('/iniobra/registrar',{
                     'fraccionamiento_id': this.fraccionamiento_id,
-                    'num_etapa': this.num_etapa,
+                    'contratista_id': this.contratista_id,
+                    'clave': this.clave,
                     'f_ini': this.f_ini,
-                    'f_fin': this.f_fin
+                    'f_fin': this.f_fin,
+                    'total_importe' :this.total_importe,
+                    'total_costo_directo':this.total_costo_directo,
+                    'total_costo_indirecto':this.total_costo_indirecto,
+                    'anticipo':this.anticipo,
+                    'total_anticipo':this.total_anticipo,
+                    'data':this.arrayAvisoObraLotes,
+                    'costo_indirecto_porcentaje':this.costo_indirecto_porcentaje
                 }).then(function (response){
-                    me.cerrarModal(); //al guardar el registro se cierra el modal
-                    me.listarAvisos(1,'','','etapa'); //se enlistan nuevamente los registros
+                    me.listado=1;
+                    me.limpiarDatos();
+                    me.listarAvisos(1,'','ini_obras.clave'); //se enlistan nuevamente los registros
                     //Se muestra mensaje Success
                     swal({
                         position: 'top-end',
@@ -624,6 +753,26 @@
                     console.log(error);
                 });
             },
+            limpiarDatos(){
+                this.contratista_id=0;
+                this.f_fin='';
+                this.clave='';
+                this.fraccionamiento_id=0;
+                this.anticipo=0;
+                this.total_anticipo=0;
+                this.total_importe=0;
+                this.total_costo_directo=0;
+                this.total_costo_indirecto=0;
+                this.manzana='';
+                this.lote='';
+                this.modelo='';
+                this.construccion=0;
+                this.descripcion='';
+                this.arrayAvisoObraLotes=[];
+                this.arrayLotes=[];
+                this.arrayDatosLotes=[];
+                this.arrayManzanaLotes=[];
+            },
             eliminarEtapa(data =[]){
                 this.id=data['id'];
                 this.fraccionamiento_id=data['fraccionamiento_id'];
@@ -657,14 +806,18 @@
                 }
                 })
             },
-            validarEtapa(){
+            validarAviso(){
                 this.errorAvisoObra=0;
                 this.errorMostrarMsjAvisoObra=[];
 
-                if(!this.num_etapa) //Si la variable Fraccionamiento esta vacia
-                    this.errorMostrarMsjAvisoObra.push("El numero de etapa no puede ir vacio.");
-
-                
+                if(this.contratista_id==0) //Si la variable Fraccionamiento esta vacia
+                    this.errorMostrarMsjAvisoObra.push("Seleccionar un contratista.");
+                    if(this.fraccionamiento_id==0) //Si la variable Fraccionamiento esta vacia
+                    this.errorMostrarMsjAvisoObra.push("Seleccionar un fraccionamiento.");
+                if(this.clave=='') //Si la variable Fraccionamiento esta vacia
+                    this.errorMostrarMsjAvisoObra.push("Ingresar clave.");
+                if(this.arrayAvisoObraLotes.length<=0) //Si la variable Fraccionamiento esta vacia
+                    this.errorMostrarMsjAvisoObra.push("No se ha ingresado ningun lote");
 
                 if(this.errorMostrarMsjAvisoObra.length)//Si el mensaje tiene almacenado algo en el array
                     this.errorAvisoObra = 1;
@@ -681,11 +834,51 @@
                     return true;
                 }
             },
+            formatNumber(value) {
+                let val = (value/1).toFixed(2)
+                return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+            },
             mostrarDetalle(){
+                this.limpiarDatos();
                 this.listado=0;
             },
             ocultarDetalle(){
                 this.listado=1;
+            },
+            verAviso(id){
+                let me= this;
+                this.listado=2;
+
+                //Obtener datos de cabecera
+                var arrayAvisoT=[];
+                var url = '/iniobra/obtenerCabecera?id=' + id;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayAvisoT = respuesta.ini_obra;
+
+                    me.contratista= me.arrayAvisoT[0]['contratista'];
+                    me.clave= me.arrayAvisoT[0]['clave'];
+                    me.f_ini= me.arrayAvisoT[0]['f_ini'];
+                    me.f_fin= me.arrayAvisoT[0]['f_fin'];
+                    me.anticipo= me.arrayAvisoT[0]['anticipo'];
+                    me.fraccionamiento= me.arrayAvisoT[0]['proyecto'];
+                    me.total_anticipo = me.arrayAvisoT[0]['total_anticipo'];
+                    me.costo_indirecto_porcentaje=me.arrayAvisoT[0]['costo_indirecto_porcentaje'];
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+                //Obtener detalle
+                var arrayAvisoT=[];
+                var urld = '/iniobra/obtenerDetalles?id=' + id;
+                axios.get(urld).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayAvisoObraLotes = respuesta.detalles;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+
             },
             cerrarModal(){
                 this.modal = 0;

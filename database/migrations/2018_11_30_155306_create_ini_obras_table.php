@@ -24,6 +24,7 @@ class CreateIniObrasTable extends Migration
             $table->double('total_costo_indirecto');
             $table->double('total_importe');
             $table->float('anticipo');
+            $table->float('costo_indirecto_porcentaje')->default(0);
             $table->double('total_anticipo');
             $table->timestamps();
 

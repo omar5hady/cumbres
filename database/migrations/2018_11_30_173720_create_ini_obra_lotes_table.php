@@ -17,7 +17,7 @@ class CreateIniObraLotesTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('ini_obra_id');
             $table->string('lote')->nullable();
-            $table->string('manzanan')->nullable();
+            $table->string('manzana')->nullable();
             $table->string('modelo')->nullable();
             $table->string('construccion')->nullable();
             $table->double('costo_directo');
