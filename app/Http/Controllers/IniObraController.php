@@ -58,7 +58,8 @@ class IniObraController extends Controller
         ->select('ini_obras.id','ini_obras.clave','ini_obras.f_ini','ini_obras.f_fin',
             'ini_obras.total_costo_directo','ini_obras.total_costo_indirecto','ini_obras.total_importe',
             'contratistas.nombre as contratista','fraccionamientos.nombre as proyecto','ini_obras.anticipo',
-            'ini_obras.total_anticipo','ini_obras.costo_indirecto_porcentaje')
+            'ini_obras.total_anticipo','ini_obras.costo_indirecto_porcentaje','ini_obras.fraccionamiento_id',
+            'ini_obras.contratista_id')
         ->where('ini_obras.id','=',$id)
         ->orderBy('ini_obras.id', 'desc')->take(1)->get();
          
@@ -71,7 +72,7 @@ class IniObraController extends Controller
         $detalles = Ini_obra_lote::select('ini_obra_lotes.costo_directo',
         'ini_obra_lotes.costo_indirecto','ini_obra_lotes.importe','ini_obra_lotes.lote',
         'ini_obra_lotes.manzana','ini_obra_lotes.modelo','ini_obra_lotes.construccion',
-        'ini_obra_lotes.descripcion')
+        'ini_obra_lotes.descripcion','ini_obra_lotes.id','ini_obra_lotes.ini_obra_id','ini_obra_lotes.lote_id')
         ->where('ini_obra_lotes.ini_obra_id','=',$id)
         ->orderBy('ini_obra_lotes.id', 'desc')->get();
          
@@ -187,6 +188,91 @@ class IniObraController extends Controller
 
         $ini_obra = Ini_obra::findOrFail($request->id);
         $ini_obra->delete();
+     }
+
+
+     public function ActualizarIniObra(Request $request)
+     {
+        if (!$request->ajax()) return redirect('/');
+ 
+        try{
+            DB::beginTransaction(); 
+            $ini_obra = Ini_obra::findOrFail($request->id);
+            $ini_obra->fraccionamiento_id = $request->fraccionamiento_id;
+            $ini_obra->contratista_id = $request->contratista_id;
+            $ini_obra->clave = $request->clave;
+            $ini_obra->f_ini = $request->f_ini;
+            $ini_obra->f_fin = $request->f_fin;
+            $ini_obra->total_importe = $request->total_importe;
+            $ini_obra->total_costo_directo = $request->total_costo_directo;
+            $ini_obra->total_costo_indirecto =  $request->total_costo_indirecto;
+            $ini_obra->anticipo = $request->anticipo;
+            $ini_obra->total_anticipo = $request->total_anticipo;
+            $ini_obra->costo_indirecto_porcentaje = $request->costo_indirecto_porcentaje;
+            $ini_obra->save();
+ 
+            $lotes = $request->data;//Array de detalles
+            //Recorro todos los elementos
+ 
+            foreach($lotes as $ep=>$det)
+            {
+                $lotes = Ini_obra_lote::findOrFail($det['id']);
+                $lotes->ini_obra_id = $ini_obra->id;
+                $lotes->lote = $det['lote'];
+                $lotes->manzana = $det['manzana'];
+                $lotes->modelo = $det['modelo'];
+                $lotes->construccion = $det['construccion'];
+                $lotes->costo_directo = $det['costo_directo'];
+                $lotes->costo_indirecto = $det['costo_indirecto'];
+                $lotes->importe = $det['importe'];       
+                $lotes->descripcion = $det['descripcion'];
+                $lotes->lote_id= $det['lote_id'];
+                $lotes->save();
+
+                if($det['lote_id']>0){
+                    $lote = Lote::findOrFail($det['lote_id']);
+                    $lote->aviso=$ini_obra->clave;
+                    $lote->save();
+                }
+            }          
+ 
+            DB::commit();
+        } catch (Exception $e){
+            DB::rollBack();
+        }
+
+     }
+
+     public function eliminarIniObraLotes(Request $request)
+     {
+        if (!$request->ajax()) return redirect('/');
+
+        $loteIni = Ini_obra_lote::findOrFail($request->id);
+        $lote = Lote::findOrFail($loteIni->lote_id);
+                $lote->aviso = '0';
+                $lote->save();
+        $loteIni->delete();
+
+     }
+     public function agregarIniObraLotes(Request $request)
+     {
+       
+           if (!$request->ajax()) return redirect('/');
+            $lotes = new Ini_obra_lote();
+            $lotes->ini_obra_id = $request->id;
+            $lotes->lote = $request->lote;
+            $lotes->manzana = $request->manzana;
+            $lotes->modelo = $request->modelo;
+            $lotes->construccion = $request->superficie;
+            $lotes->costo_directo = $request->costo_directo;
+            $lotes->costo_indirecto = $request->costo_indirecto;
+            $lotes->importe = $request->importe;       
+            $lotes->descripcion = $request->descripcion;
+            $lotes->lote_id= $request->lote_id;
+            $lotes->save();
+
+        
+
      }
 
 }

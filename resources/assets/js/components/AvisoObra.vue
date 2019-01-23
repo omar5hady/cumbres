@@ -55,6 +55,9 @@
                                                 <button type="button" class="btn btn-danger btn-sm" @click="eliminarContrato(avisoObra)">
                                                     <i class="icon-trash"></i>
                                                 </button>
+                                                <button type="button" class="btn btn-danger btn-sm" @click="actualizarContrato(avisoObra.id)">
+                                                    <i class="icon-pencil"></i>
+                                                </button>
                                             </td>
                                             <td v-text="avisoObra.clave"></td>
                                             <td v-text="avisoObra.contratista"></td>
@@ -267,6 +270,185 @@
                         </div>
                     </template>
 
+                    <!-- Div Card Body para actualizar registros -->
+                    <template v-else-if="listado == 3">
+                        <div class="card-body"> 
+                            <div class="form-group row border">
+                                <div class="col-md-9">
+                                    <div class="form-group">
+                                        <label for="">Contratista </label>
+                                        <v-select 
+                                            :on-search="selectContratista"
+                                            label="nombre"
+                                            :options="arrayContratista"
+                                            placeholder="Buscar contratista..."
+                                            :onChange="getDatosContratista"
+                                        >
+                                        </v-select>
+                                         <input type="text" class="form-control" readonly  v-model="contratista">
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-3">
+                                    <label for="">Clave </label>
+                                    <input type="text" class="form-control" v-model="clave" placeholder="CLV-00-00">
+                                </div> 
+                                <div class="col-md-3">
+                                    <label for="">Fecha de inicio </label>
+                                    <input type="date" class="form-control" v-model="f_ini">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="">Fecha de termino </label>
+                                    <input type="date" class="form-control" v-model="f_fin">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="">% Anticipo </label>
+                                    <input type="number" class="form-control" min="0" max="100" v-model="anticipo" v-on:keypress="isNumber($event)">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="">% Costo Indirecto </label>
+                                    <input type="number" class="form-control" min="0" max="100" v-model="costo_indirecto_porcentaje" v-on:keypress="isNumber($event)">
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                       <label for="">Fraccionamiento </label>
+                                        <input type="text" class="form-control" readonly  v-model="fraccionamiento">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Manzana</label>
+                                        <div class="form-inline">
+                                        <select class="form-control" v-model="manzana" @click="selectLotes(manzana,fraccionamiento_id)">
+                                            <option value="">Seleccione</option>
+                                            <option v-for="manzana in arrayManzanaLotes" :key="manzana.id" :value="manzana.manzana" v-text="manzana.manzana"></option>
+                                        </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                 <div class="col-md-12">
+                                    <!-- Div para mostrar los errores que mande validerFraccionamiento -->
+                                    <div v-show="errorAvisoObra" class="form-group row div-error">
+                                        <div class="text-center text-error">
+                                            <div v-for="error in errorMostrarMsjAvisoObra" :key="error" v-text="error">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            <div class="form-group row border">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Lote</label> 
+                                        <div class="form-inline">
+                                        <select class="form-control" v-model="lote_id" @click="selectDatosLotes(lote_id)">
+                                            <option value="0">Seleccione</option>
+                                            <option v-for="lotes in arrayLotes" :key="lotes.id" :value="lotes.id" v-text="lotes.num_lote"></option>
+                                        </select>
+                                           
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Descripcion <span style="color:red;" v-show="descripcion==''">(*Ingrese)</span> </label>
+                                        <input type="text" class="form-control" v-model="descripcion"  placeholder="Descripcion">
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Costo directo<span style="color:red;" v-show="costo_directo==0">(*Ingrese)</span></label>
+                                        <input type="text" class="form-control" v-model="costo_directo" v-on:keypress="isNumber($event)" placeholder="Costo directo">
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Costo indirecto <span style="color:red;" v-show="costo_indirecto==0">(*Ingrese)</span></label>
+                                        <p>{{ costo_indirecto=costo_directo*costo_indirecto_porcentaje/100}}</p>
+                                        <!--<input type="text" class="form-control" readonly v-model="costo_indirecto" v-on:keypress="isNumber($event)" placeholder="Costo indirecto">-->
+                                    </div>
+                                </div>
+
+                                <div class="col-md-1">
+                                    <div class="form-group">
+                                        <button @click="registrarLote()" class="btn btn-success form-control btnagregar"><i class="icon-plus"></i></button>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            <div class="form-group row">
+                                <div class="table-responsive col-md-12">
+                                    <table class="table table-bordered table-striped table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Opciones</th>
+                                                <th>Descripcion</th>
+                                                <th>Lote</th>
+                                                <th>M&sup2;</th>
+                                                <th>Costo Directo</th>
+                                                <th>Costo Indirecto</th>
+                                                <th>Importe</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody v-if="arrayAvisoObraLotes.length">
+                                            <tr v-for="detalle in arrayAvisoObraLotes" :key="detalle.id">
+                                                <td>
+                                                    <button @click="eliminarLote(detalle)" type="button" class="btn btn-danger btn-sm">
+                                                        <i class="icon-close"></i>
+                                                    </button>
+                                                </td>
+                                                <td>
+                                                    <input v-model="detalle.descripcion" type="text" class="form-control">
+                                                </td>
+                                                <td v-text="detalle.lote">
+                                                    
+                                                </td>
+                                                <td v-text="detalle.superficie">
+                                                   
+                                                </td>
+                                                <td>
+                                                    <input v-model="detalle.costo_directo" type="text" class="form-control">
+                                                </td>
+                                                <td>
+                                                    {{ detalle.costo_indirecto=detalle.costo_directo*costo_indirecto_porcentaje/100}}
+                                                </td>
+                                                <td>
+                                                    {{parseFloat(detalle.costo_directo) + parseFloat(detalle.costo_indirecto)}}
+                                                  <!-- <input readonly v-model="detalle.importe" type="text" class="form-control">  -->
+                                                </td>
+                                            </tr>
+                                  
+                                            <tr style="background-color: #CEECF5;">
+                                               
+                                                <td align="right" colspan="5"> <strong>${{ total_costo_directo=totalCostoDirecto}}</strong> </td>
+                                                 <td align="right"> <strong>${{ total_costo_indirecto=totalCostoIndirecto}}</strong> </td>
+                                                 <td align="right"> <strong>${{ total_importe=totalImporte}}</strong> </td>
+                                            </tr>
+                                        </tbody>
+
+                                        <tbody v-else>
+                                            <tr>
+                                                <td colspan="7">
+                                                    No hay lotes seleccionados
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <button type="button" class="btn btn-secondary" @click="ocultarDetalle()"> Cerrar </button>
+                                    <button type="button" class="btn btn-primary" @click="actualizarAvisoObra()"> Actualizar </button>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+
                     <!--Div para ver detalle del aviso -->
                     <template v-else-if="listado == 2">
                         <div class="card-body"> 
@@ -373,32 +555,7 @@
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
-            <!--Inicio del modal agregar/actualizar-->
-            <div class="modal fade" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal"></h4>
-                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            
-                        </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarEtapa()">Guardar</button>
-                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarEtapa()">Actualizar</button>
-                        </div>
-                    </div>
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
-            <!--Fin del modal-->
+           
             
 
         </main>
@@ -413,6 +570,7 @@
     export default {
         data(){
             return{
+                id:0,
                 aviso_id:0,
                 contratista_id:0,
                 etapa_id:0,
@@ -556,6 +714,7 @@
                 let me = this;
                 me.loading = true;
                 me.contratista_id = val1.id;
+                me.contratista = val1.nombre;
             },
              selectFraccionamiento(search, loading){
                 let me = this;
@@ -680,6 +839,94 @@
                 }
 
             },
+            registrarLote(){
+                let me = this;
+                if(me.descripcion == '' || me.costo_directo==0 || me.costo_indirecto==0){
+
+                }else{
+                    if(me.encuentra(me.lote_id)){
+                         swal({
+                        type: 'error',
+                        title: 'Error',
+                        text: 'Este lote ya se encuentra agregado',
+                        })
+                    }else{
+                    me.costo_indirecto = parseFloat(me.costo_directo) * parseFloat(me.costo_indirecto_porcentaje)/100;
+                    me.importe = parseFloat(me.costo_directo) + parseFloat(me.costo_indirecto);
+                   
+                    axios.post('/iniobra/lote/registrar',{
+                        'id': this.id,
+                        'lote': this.lote,
+                        'manzana' : this.manzana,
+                        'modelo' : this.modelo,
+                        'superficie' : this.construccion,
+                        'costo_directo' : this.costo_directo,
+                        'costo_indirecto' : this.costo_indirecto,
+                        'importe' : this.importe,
+                        'descripcion' : this.descripcion,
+                        'lote_id' : this.lote_id
+                    }).then(function (response){
+                        //Obtener detalle
+                            me.arrayAvisoObraLotes=[];
+                            var urld = '/iniobra/obtenerDetalles?id=' + me.id;
+                            axios.get(urld).then(function (response) {
+                                var respuesta = response.data;
+                                me.arrayAvisoObraLotes = respuesta.detalles;
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                            });
+                      
+                    }).catch(function (error){
+                        console.log(error);
+                    });
+
+                    me.lote = '';
+                    me.lote_id =0;
+                    me.construccion = 0;
+                    me.manzana='';
+                    me.descripcion='';
+                    me.costo_directo = 0;
+                    me.costo_indirecto = 0;
+                    me.modelo='';
+                    }
+                }
+
+            },
+             eliminarLote(data =[]){
+                //this.lote_id=data['id'];
+                swal({
+                title: '¿Desea remover este lote?',
+                text: "Esta acción no se puede revertir!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Si, eliminar!'
+                }).then((result) => {
+                if (result.value) {
+                    let me = this;
+
+                axios.delete('/iniobra/lote/eliminar', 
+                        {params: {'id': data['id']}}).then(function (response){
+                        
+                         //Obtener detalle
+                            me.arrayAvisoObraLotes=[];
+                            var urld = '/iniobra/obtenerDetalles?id=' + me.id;
+                            axios.get(urld).then(function (response) {
+                                var respuesta = response.data;
+                                me.arrayAvisoObraLotes = respuesta.detalles;
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                            });
+                    }).catch(function (error){
+                        console.log(error);
+                    });
+                }
+                })
+            },
             eliminarDetalle(index){
                 let me = this;
                 me.arrayAvisoObraLotes.splice(index,1);
@@ -723,33 +970,40 @@
                     console.log(error);
                 });
             },
-            
-             limpiarBusqueda(){
-                let me=this;
-                me.buscar= "";
-            },
-            actualizarEtapa(){
-                if(this.validarEtapa()) //Se verifica si hay un error (campo vacio)
+
+             /**Metodo para actualizar  */
+            actualizarAvisoObra(){
+                if(this.validarAviso()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
 
                 let me = this;
-                //Con axios se llama el metodo update de FraccionaminetoController
-                axios.put('/etapa/actualizar',{
-                    'id' : this.id,
+                me.total_anticipo=(me.anticipo/100)*me.total_importe;
+                //Con axios se llama el metodo store de FraccionaminetoController
+                axios.put('/iniobra/actualizar',{
+                    'id':this.id,
                     'fraccionamiento_id': this.fraccionamiento_id,
-                    'num_etapa': this.num_etapa,
+                    'contratista_id': this.contratista_id,
+                    'clave': this.clave,
                     'f_ini': this.f_ini,
-                    'f_fin': this.f_fin
+                    'f_fin': this.f_fin,
+                    'total_importe' :this.total_importe,
+                    'total_costo_directo':this.total_costo_directo,
+                    'total_costo_indirecto':this.total_costo_indirecto,
+                    'anticipo':this.anticipo,
+                    'total_anticipo':this.total_anticipo,
+                    'data':this.arrayAvisoObraLotes,
+                    'costo_indirecto_porcentaje':this.costo_indirecto_porcentaje
                 }).then(function (response){
-                    me.cerrarModal();
-                    me.listarAvisos(1,'','','etapa');
-                    //window.alert("Cambios guardados correctamente");
+                    me.listado=1;
+                    me.limpiarDatos();
+                    me.listarAvisos(1,'','ini_obras.clave'); //se enlistan nuevamente los registros
+                    //Se muestra mensaje Success
                     swal({
                         position: 'top-end',
                         type: 'success',
-                        title: 'Cambios guardados correctamente',
+                        title: 'Contrato actualizado correctamente',
                         showConfirmButton: false,
                         timer: 1500
                         })
@@ -757,6 +1011,13 @@
                     console.log(error);
                 });
             },
+            
+             limpiarBusqueda(){
+                let me=this;
+                me.buscar= "";
+            },
+  
+
             limpiarDatos(){
                 this.contratista_id=0;
                 this.f_fin='';
@@ -880,58 +1141,55 @@
                 });
 
             },
-            cerrarModal(){
-                this.modal = 0;
-                this.tituloModal = '';
-                this.fraccionamiento_id = '';
-                this.num_etapa = '';
-                this.f_ini = new Date().toISOString().substr(0, 10);
-                this.f_fin = '';
-                this.errorAvisoObra = 0;
-                this.errorMostrarMsjAvisoObra = [];
-                this.contador=0;
+
+            actualizarContrato(id){
+                let me= this;
+                this.listado=3;
+
+                //Obtener datos de cabecera
+                var arrayAvisoT=[];
+                var url = '/iniobra/obtenerCabecera?id=' + id;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayAvisoT = respuesta.ini_obra;
+
+                    me.contratista_id= me.arrayAvisoT[0]['contratista_id'];
+                    me.clave= me.arrayAvisoT[0]['clave'];
+                    me.f_ini= me.arrayAvisoT[0]['f_ini'];
+                    me.f_fin= me.arrayAvisoT[0]['f_fin'];
+                    me.anticipo= me.arrayAvisoT[0]['anticipo'];
+                    me.fraccionamiento_id= me.arrayAvisoT[0]['fraccionamiento_id'];
+                    me.fraccionamiento= me.arrayAvisoT[0]['proyecto'];
+                    me.total_anticipo = me.arrayAvisoT[0]['total_anticipo'];
+                    me.costo_indirecto_porcentaje=me.arrayAvisoT[0]['costo_indirecto_porcentaje'];
+                    me.contratista= me.arrayAvisoT[0]['contratista'];
+                    me.selectManzanaLotes(me.fraccionamiento_id);
+                    me.id=id;
+                  
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+                //Obtener detalle
+                var arrayAvisoT=[];
+                var urld = '/iniobra/obtenerDetalles?id=' + id;
+                axios.get(urld).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayAvisoObraLotes = respuesta.detalles;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
 
             },
-            /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
-            abrirModal(modelo, accion,data =[]){
-                switch(modelo){
-                    case "etapa":
-                    {
-                        switch(accion){
-                            case 'registrar':
-                            {
-                                this.modal = 1;
-                                this.tituloModal = 'Registrar Etapa';
-                                this.fraccionamiento_id = '0';
-                                this.num_etapa = this.contador;
-                                // this.f_ini = '';
-                                this.f_fin = '';
-                                this.tipoAccion = 1;
-                                break;
-                            }
-                            case 'actualizar':
-                            {
-                                //console.log(data);
-                                this.modal =1;
-                                this.tituloModal='Actualizar Etapa';
-                                this.tipoAccion=2;
-                                this.id=data['id'];
-                                this.fraccionamiento_id=data['fraccionamiento_id'];
-                                this.num_etapa=data['num_etapa'];
-                                this.f_ini=data['f_ini'];
-                                this.f_fin=data['f_fin'];
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
+           
         },
         mounted() {
             this.listarAvisos(1,this.buscar,this.criterio);
             this.selectManzanaLotes(this.fraccionamiento_id);
             this.selectLotes(this.manzana,this.fraccionamiento_id);
-            this.selectDatosLotes(this.lote_id)
+            this.selectDatosLotes(this.lote_id);
+          
         }
     }
 </script>
