@@ -88544,6 +88544,54 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -88565,6 +88613,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             arrayAvanceProm: [],
             arrayFraccionamientosLote: [],
             modal: 0,
+            modal2: 0,
             tituloModal: '',
             tipoAccion: 0,
             erroPartida: 0,
@@ -88835,6 +88884,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.fraccionamiento_id = 0;
             this.erroAvance = 0;
             this.errorMostrarMsjAvance = [];
+            this.modal2 = 0;
         },
 
         /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
@@ -88864,6 +88914,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     this.fraccionamiento = data['fraccionamiento_id'];
                                     this.partida = data['partida'];
                                     this.avance = data['avance'];
+                                    break;
+                                }
+                            case 'excel':
+                                {
+                                    //console.log(data);
+                                    this.modal2 = 1;
+                                    this.tituloModal = 'Descargar excel';
+                                    this.fraccionamiento_id = "";
+
                                     break;
                                 }
                         }
@@ -88911,6 +88970,25 @@ var render = function() {
                 [
                   _c("i", { staticClass: "icon-arrow-left" }),
                   _vm._v(" Resumen de avances\n                    ")
+                ]
+              )
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.resumen == 1
+            ? _c(
+                "button",
+                {
+                  staticClass: "btn btn-success",
+                  attrs: { type: "button" },
+                  on: {
+                    click: function($event) {
+                      _vm.abrirModal("avance", "excel")
+                    }
+                  }
+                },
+                [
+                  _c("i", { staticClass: "icon-share-alt" }),
+                  _vm._v(" Descargar avance\n                    ")
                 ]
               )
             : _vm._e()
@@ -89198,6 +89276,10 @@ var render = function() {
                         _vm._v(" "),
                         _c("option", { attrs: { value: "modelos.nombre" } }, [
                           _vm._v("Modelo")
+                        ]),
+                        _vm._v(" "),
+                        _c("option", { attrs: { value: "lotes.aviso" } }, [
+                          _vm._v("Clave")
                         ])
                       ]
                     ),
@@ -89440,6 +89522,10 @@ var render = function() {
                               [_c("i", { staticClass: "icon-eye" })]
                             )
                           ]),
+                          _vm._v(" "),
+                          _c("td", {
+                            domProps: { textContent: _vm._s(avancepro.aviso) }
+                          }),
                           _vm._v(" "),
                           _c("td", {
                             domProps: {
@@ -89853,6 +89939,164 @@ var render = function() {
           ]
         )
       ]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        class: { mostrar: _vm.modal2 },
+        staticStyle: { display: "none" },
+        attrs: {
+          tabindex: "-1",
+          role: "dialog",
+          "aria-labelledby": "myModalLabel",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c(
+          "div",
+          {
+            staticClass: "modal-dialog modal-primary modal-lg",
+            attrs: { role: "document" }
+          },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _c("div", { staticClass: "modal-header" }, [
+                _c("h4", {
+                  staticClass: "modal-title",
+                  domProps: { textContent: _vm._s(_vm.tituloModal) }
+                }),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "close",
+                    attrs: { type: "button", "aria-label": "Close" },
+                    on: {
+                      click: function($event) {
+                        _vm.cerrarModal()
+                      }
+                    }
+                  },
+                  [
+                    _c("span", { attrs: { "aria-hidden": "true" } }, [
+                      _vm._v("×")
+                    ])
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-body" }, [
+                _c(
+                  "form",
+                  {
+                    staticClass: "form-horizontal",
+                    attrs: {
+                      action: "",
+                      method: "post",
+                      enctype: "multipart/form-data"
+                    }
+                  },
+                  [
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "text-input" }
+                        },
+                        [_vm._v("Proyecto")]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-6" }, [
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.fraccionamiento_id,
+                                expression: "fraccionamiento_id"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            on: {
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.fraccionamiento_id = $event.target.multiple
+                                  ? $$selectedVal
+                                  : $$selectedVal[0]
+                              }
+                            }
+                          },
+                          [
+                            _c("option", { attrs: { value: "" } }, [
+                              _vm._v("Seleccione")
+                            ]),
+                            _vm._v(" "),
+                            _vm._l(_vm.arrayFraccionamientosLote, function(
+                              fraccionamientos
+                            ) {
+                              return _c("option", {
+                                key: fraccionamientos.id,
+                                domProps: {
+                                  value: fraccionamientos.id,
+                                  textContent: _vm._s(fraccionamientos.nombre)
+                                }
+                              })
+                            })
+                          ],
+                          2
+                        )
+                      ])
+                    ])
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-footer" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-secondary",
+                    attrs: { type: "button" },
+                    on: {
+                      click: function($event) {
+                        _vm.cerrarModal()
+                      }
+                    }
+                  },
+                  [_vm._v("Cerrar")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "a",
+                  {
+                    staticClass: "btn btn-success",
+                    attrs: {
+                      href: "/avances/resume_excel/" + _vm.fraccionamiento_id
+                    }
+                  },
+                  [
+                    _c("i", { staticClass: "icon-share-alt" }),
+                    _vm._v(" Descargar\n                        ")
+                  ]
+                )
+              ])
+            ])
+          ]
+        )
+      ]
     )
   ])
 }
@@ -89902,6 +90146,8 @@ var staticRenderFns = [
     return _c("thead", [
       _c("tr", [
         _c("th", [_vm._v("Opciones")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Clave")]),
         _vm._v(" "),
         _c("th", [_vm._v("Fraccionamiento")]),
         _vm._v(" "),

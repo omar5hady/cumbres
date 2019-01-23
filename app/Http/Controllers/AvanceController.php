@@ -8,6 +8,7 @@ use App\Partida;
 use App\Licencia;
 use App\Lote;
 use DB;
+use Excel;
 
 class AvanceController extends Controller
 {
@@ -27,12 +28,13 @@ class AvanceController extends Controller
         $avance = Avance::join('lotes','avances.lote_id','=','lotes.id')
             ->select('lotes.num_lote as lote', 
                 DB::raw("SUM(avances.avance_porcentaje) as porcentajeTotal"), 
-                'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id')
+                'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id','lotes.aviso')
             ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
             ->addSelect('fraccionamientos.nombre as proyecto')
             ->join('modelos','lotes.modelo_id','=','modelos.id')
             ->addSelect('modelos.nombre as modelos')
             ->groupBy('avances.lote_id')
+            ->where('lotes.aviso', '!=', '0')
             ->paginate(8);
         }
         else
@@ -41,12 +43,13 @@ class AvanceController extends Controller
                 $avance = Avance::join('lotes','avances.lote_id','=','lotes.id')
                 ->select('lotes.num_lote as lote', 
                     DB::raw("SUM(avances.avance_porcentaje) as porcentajeTotal"), 
-                    'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id')
+                    'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id','lotes.aviso')
                 ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
                 ->addSelect('fraccionamientos.nombre as proyecto')
                 ->join('modelos','lotes.modelo_id','=','modelos.id')
                 ->addSelect('modelos.nombre as modelos')
                 ->groupBy('avances.lote_id')
+                ->where('lotes.aviso', '!=', '0')
                 ->where($criterio, 'like', '%'. $buscar . '%')
                 ->paginate(8);
             }
@@ -55,12 +58,13 @@ class AvanceController extends Controller
                     $avance = Avance::join('lotes','avances.lote_id','=','lotes.id')
                         ->select('lotes.num_lote as lote', 
                             DB::raw("SUM(avances.avance_porcentaje) as porcentajeTotal"), 
-                            'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id')
+                            'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id','lotes.aviso')
                         ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
                         ->addSelect('fraccionamientos.nombre as proyecto')
                         ->join('modelos','lotes.modelo_id','=','modelos.id')
                         ->addSelect('modelos.nombre as modelos')
                         ->where('lotes.fraccionamiento_id', '=', $buscar)
+                        ->where('lotes.aviso', '!=', '0')
                         ->groupBy('avances.lote_id')
                         ->paginate(8);
                     }
@@ -69,7 +73,7 @@ class AvanceController extends Controller
                             $avance = Avance::join('lotes','avances.lote_id','=','lotes.id')
                                 ->select('lotes.num_lote as lote', 
                                     DB::raw("SUM(avances.avance_porcentaje) as porcentajeTotal"), 
-                                    'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id')
+                                    'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id','lotes.aviso')
                                 ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
                                 ->addSelect('fraccionamientos.nombre as proyecto')
                                 ->join('modelos','lotes.modelo_id','=','modelos.id')
@@ -77,6 +81,7 @@ class AvanceController extends Controller
                                 ->groupBy('avances.lote_id')
                                 ->where('lotes.fraccionamiento_id', '=', $buscar)
                                 ->where('lotes.num_lote', '=', $buscar2)
+                                ->where('lotes.aviso', '!=', '0')
                                 ->paginate(8);
                         }
                         else{
@@ -84,7 +89,7 @@ class AvanceController extends Controller
                                 $avance = Avance::join('lotes','avances.lote_id','=','lotes.id')
                                     ->select('lotes.num_lote as lote', 
                                         DB::raw("SUM(avances.avance_porcentaje) as porcentajeTotal"), 
-                                        'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id')
+                                        'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id','lotes.aviso')
                                     ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
                                     ->addSelect('fraccionamientos.nombre as proyecto')
                                     ->join('modelos','lotes.modelo_id','=','modelos.id')
@@ -92,13 +97,14 @@ class AvanceController extends Controller
                                     ->groupBy('avances.lote_id')
                                     ->where('lotes.fraccionamiento_id', '=', $buscar)
                                     ->where('lotes.manzana', '=', $buscar1)
+                                    ->where('lotes.aviso', '!=', '0')
                                     ->paginate(8);
                             }
                             else{
                                 $avance = Avance::join('lotes','avances.lote_id','=','lotes.id')
                                     ->select('lotes.num_lote as lote', 
                                         DB::raw("SUM(avances.avance_porcentaje) as porcentajeTotal"), 
-                                        'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id')
+                                        'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id','lotes.aviso')
                                     ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
                                     ->addSelect('fraccionamientos.nombre as proyecto')
                                     ->join('modelos','lotes.modelo_id','=','modelos.id')
@@ -107,6 +113,7 @@ class AvanceController extends Controller
                                     ->where('lotes.fraccionamiento_id', '=', $buscar)
                                     ->where('lotes.manzana', '=', $buscar1)
                                     ->where('lotes.num_lote', '=', $buscar2)
+                                    ->where('lotes.aviso', '!=', '0')
                                     ->paginate(8);
                             }
                         }
@@ -142,11 +149,12 @@ class AvanceController extends Controller
             ->join('partidas','avances.partida_id','=','partidas.id')
             ->select('lotes.num_lote as lote','avances.avance', 'avances.avance_porcentaje', 
             'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id','avances.id'
-            ,'partidas.partida','avances.partida_id','avances.cambio_avance')
+            ,'partidas.partida','avances.partida_id','avances.cambio_avance','lotes.aviso')
             ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
             ->addSelect('fraccionamientos.nombre as proyecto')
             ->join('modelos','lotes.modelo_id','=','modelos.id')
             ->addSelect('modelos.nombre as modelos')
+                ->where('lotes.aviso', '!=', '0')
                 ->orderBy('avances.id','ASC')->paginate(49);
         }
        else{
@@ -162,6 +170,7 @@ class AvanceController extends Controller
             ->addSelect('modelos.nombre as modelos')
             
                 ->where($criterio, '=', $buscar)
+                ->where('lotes.aviso', '!=', '0')
                 ->orderBy('avances.id','ASC')->paginate(49);
            }
            else{
@@ -176,6 +185,7 @@ class AvanceController extends Controller
             ->addSelect('modelos.nombre as modelos')
             
                 ->where($criterio, 'like', '%'. $buscar . '%')
+                ->where('lotes.aviso', '!=', '0')
                 ->orderBy('avances.id','ASC')->paginate(49);
            }
             
@@ -219,9 +229,73 @@ class AvanceController extends Controller
         $licencia = Licencia::findOrFail($avance->lote_id);
         $licencia->avance = $suma[0]->porcentajeTotal;
         $licencia->save();
+    }
 
+
+    public function exportExcel(Request $request, $fraccionamiento)
+    {
+        $buscar = $request->buscar;
+        $avances = Avance::join('lotes','avances.lote_id','=','lotes.id')
+                        ->select('lotes.num_lote as lote', 
+                            DB::raw("SUM(avances.avance_porcentaje) as porcentajeTotal"), 
+                            'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id','lotes.aviso')
+                        ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                        ->addSelect('fraccionamientos.nombre as proyecto')
+                        ->join('modelos','lotes.modelo_id','=','modelos.id')
+                        ->addSelect('modelos.nombre as modelo')
+                        ->where('lotes.fraccionamiento_id', '=', $fraccionamiento)
+                        ->where('lotes.aviso', '!=', '0')
+                        ->groupBy('avances.lote_id')
+                        ->paginate(8);
+            // return [
+               
+            //     'licencias' => $licencias
+                
+            // ];    
         
+            return Excel::create('Avance_general', function($excel) use ($avances){
+                $excel->sheet('avances', function($sheet) use ($avances){
+                    
+                    $sheet->row(1, [
+                        'Clave.', 'Proyecto', 'Modelo', 'Manzana', 'Lote', 'Porcentaje de avance'
+                    ]);
 
 
+                    $sheet->cells('A1:F1', function ($cells) {
+                        $cells->setBackground('#052154');
+                        $cells->setFontColor('#ffffff');
+                        // Set font family
+                        $cells->setFontFamily('Calibri');
+
+                        // Set font size
+                        $cells->setFontSize(13);
+
+                        // Set font weight to bold
+                        $cells->setFontWeight('bold');
+                        $cells->setAlignment('center');
+                    });
+
+                    
+                    $cont=1;
+
+                    foreach($avances as $index => $avance) {
+                        $cont++;
+
+                        $sheet->row($index+2, [
+                            $avance->aviso, 
+                            $avance->proyecto, 
+                            $avance->modelo, 
+                            $avance->manzana, 
+                            $avance->lote,
+                            $avance->porcentajeTotal.'%'
+                        ]);	
+                    }
+                    $num='A1:F' . $cont;
+                    $sheet->setBorder($num, 'thin');
+                });
+            }
+            
+            )->download('xls');
+      
     }
 }

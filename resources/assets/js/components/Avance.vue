@@ -13,6 +13,9 @@
                         <button v-if="resumen==0" type="button" @click="MostrarPromedio()" class="btn btn-success">
                             <i class="icon-arrow-left"></i> Resumen de avances
                         </button>
+                        <button v-if="resumen==1" type="button" @click="abrirModal('avance','excel')" class="btn btn-success">
+                            <i class="icon-share-alt"></i> Descargar avance
+                        </button>
                         <!---->
                     </div>
                     <div class="card-body" v-if="resumen==0">
@@ -79,6 +82,7 @@
                                     <select class="form-control col-md-4" v-model="criterio" @click="selectFraccionamientosConLote()">
                                       <option value="lotes.fraccionamiento_id">Fraccionamiento</option>
                                       <option value="modelos.nombre">Modelo</option>
+                                      <option value="lotes.aviso">Clave</option>
                                     </select>
                                      <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" >
                                         <option value="">Seleccione</option>
@@ -96,6 +100,7 @@
                                 <thead>
                                     <tr>
                                         <th>Opciones</th>
+                                        <th>Clave</th>
                                         <th>Fraccionamiento</th>
                                         <th>Modelo</th>
                                         <th>Manzana</th>
@@ -110,6 +115,7 @@
                                             <i class="icon-eye"></i>
                                             </button>
                                         </td>
+                                        <td v-text="avancepro.aviso"></td>
                                         <td v-text="avancepro.proyecto"></td>
                                         <td v-text="avancepro.modelos"></td>
                                         <td v-text="avancepro.manzana"></td>
@@ -200,6 +206,48 @@
                 <!-- /.modal-dialog -->
             </div>
             <!--Fin del modal-->
+
+            <!--Inicio del modal Excel-->
+            <div class="modal fade" tabindex="-1" :class="{'mostrar': modal2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" v-text="tituloModal"></h4>
+                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
+                                    <div class="col-md-6">
+                                        <select class="form-control" v-model="fraccionamiento_id" >
+                                            <option value="">Seleccione</option>
+                                            <option v-for="fraccionamientos in arrayFraccionamientosLote" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
+                             <!--   Boton   -->
+                            <a class="btn btn-success" v-bind:href="'/avances/resume_excel/'+fraccionamiento_id" >
+                                <i class="icon-share-alt"></i>&nbsp;Descargar
+                            </a>
+                            <!---->
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!--Fin del modal-->
             
 
         </main>
@@ -230,6 +278,7 @@
                 arrayAvanceProm : [],
                 arrayFraccionamientosLote: [],
                 modal : 0,
+                modal2 : 0,
                 tituloModal : '',
                 tipoAccion: 0,
                 erroPartida : 0,
@@ -493,8 +542,7 @@
 
                 return this.erroAvance;
             },
-           
-         
+                   
             cerrarModal(){
                 this.modal = 0;
                 this.tituloModal = '';
@@ -504,6 +552,7 @@
                 this.fraccionamiento_id=0;
                 this.erroAvance = 0;
                 this.errorMostrarMsjAvance = [];
+                this.modal2 = 0;
 
             },
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
@@ -531,6 +580,15 @@
                                 this.fraccionamiento=data['fraccionamiento_id'];
                                 this.partida=data['partida'];
                                 this.avance = data['avance'];
+                                break;
+                            }
+                            case 'excel':
+                            {
+                                //console.log(data);
+                                this.modal2 =1;
+                                this.tituloModal='Descargar excel';
+                                this.fraccionamiento_id="";
+                                
                                 break;
                             }
                         }

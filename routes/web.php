@@ -202,6 +202,7 @@ Route::get('/observacion','ObservacionController@index');
 Route::get('/avance','AvanceController@index');
 Route::get('/avanceProm','AvanceController@indexProm');
 Route::put('/avance/actualizar','AvanceController@update');
+Route::get('/avances/resume_excel/{fraccionamiento}','AvanceController@exportExcel');
 
 
 
