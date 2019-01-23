@@ -10,7 +10,7 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Aviso de obra
                         <!--   Boton Nuevo    -->
-                        <button type="button" @click="mostrarDetalle()" class="btn btn-secondary">
+                        <button type="button" @click="mostrarDetalle()" class="btn btn-secondary" v-if="listado==1">
                             <i class="icon-plus"></i>&nbsp;Nuevo
                         </button>
                         <!---->
@@ -28,7 +28,9 @@
                                             <option value="ini_obras.f_ini">Fecha de inicio</option>
                                             <option value="ini_obras.f_fin">Fecha de termino</option>
                                         </select>
-                                        <input type="text" v-model="buscar" @keyup.enter="listarAvisos(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
+                                         <input v-if="criterio=='ini_obras.f_ini'" type="date" v-model="buscar" @keyup.enter="listarAvisos(1,buscar,criterio)" class="form-control">
+                                         <input v-else-if="criterio=='ini_obras.f_fin'" type="date" v-model="buscar" @keyup.enter="listarAvisos(1,buscar,criterio)" class="form-control">
+                                        <input v-else type="text" v-model="buscar" @keyup.enter="listarAvisos(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
                                         <button type="submit" @click="listarAvisos(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                     </div>
                                 </div>
@@ -51,11 +53,11 @@
                                             <td>
                                                 <button type="button" @click="verAviso(avisoObra.id)" class="btn btn-success btn-sm">
                                                 <i class="icon-eye"></i>
-                                                </button> &nbsp;
+                                                </button>
                                                 <button type="button" class="btn btn-danger btn-sm" @click="eliminarContrato(avisoObra)">
                                                     <i class="icon-trash"></i>
                                                 </button>
-                                                <button type="button" class="btn btn-danger btn-sm" @click="actualizarContrato(avisoObra.id)">
+                                                <button type="button" class="btn btn-warning btn-sm" @click="actualizarContrato(avisoObra.id)">
                                                     <i class="icon-pencil"></i>
                                                 </button>
                                             </td>
