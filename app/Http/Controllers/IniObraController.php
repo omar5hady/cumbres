@@ -7,6 +7,8 @@ use App\Ini_obra;
 use App\Ini_obra_lote;
 use App\Lote;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+use NumerosEnLetras;
 
 class IniObraController extends Controller
 {
@@ -296,9 +298,9 @@ class IniObraController extends Controller
     ->join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
     ->select('ini_obras.id','ini_obras.clave','ini_obras.f_ini','ini_obras.f_fin',
         'ini_obras.total_costo_directo','ini_obras.total_costo_indirecto','ini_obras.total_importe',
-        'contratistas.nombre as contratista','contratistas.rfc as rfc',
+        'contratistas.nombre as contratista','contratistas.rfc as rfc','contratistas.telefono as telefono',
         'contratistas.direccion as direccion','contratistas.colonia as colonia',
-        'contratistas.cp as codigoPostal','contratistas.IMSS as imss',
+        'contratistas.cp as codigoPostal','contratistas.IMSS as imss','contratistas.estado as estado',
         'contratistas.representante as representante','fraccionamientos.nombre as proyecto',
         'fraccionamientos.calle as calleFracc','fraccionamientos.colonia as coloniaFracc',
         'fraccionamientos.estado as estadoFracc','ini_obras.anticipo',
@@ -306,6 +308,17 @@ class IniObraController extends Controller
         'ini_obras.contratista_id','ini_obras.descripcion_corta','ini_obras.descripcion_larga','ini_obras.iva','ini_obras.tipo')
     /*->where('ini_obras.id','=',$id)*/
     ->orderBy('ini_obras.id', 'desc')->take(1)->get();
+
+    setlocale(LC_TIME, 'es');
+    $tiempo = new Carbon($cabecera[0]->f_ini);
+    $cabecera[0]->f_ini = $tiempo->formatLocalized('%d de %B de %Y');
+
+    $tiempo2 = new Carbon($cabecera[0]->f_fin);
+    $cabecera[0]->f_fin = $tiempo2->formatLocalized('%d de %B de %Y');
+
+    $cabecera[0]->f_ini2 = $tiempo->formatLocalized('%d dias del mes de %B del año %Y');
+
+    $cabecera[0]->anticipoLetra = NumerosEnLetras::convertir($cabecera[0]->total_anticipo,'Pesos',false,'Centavos');
 
         $pdf = \PDF::loadview('pdf.contratoContratista',['cabecera' => $cabecera]);
         return $pdf->download('contrato.pdf');

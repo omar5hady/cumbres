@@ -6,7 +6,7 @@
 	<STYLE TYPE="text/css">
 
 		@page { size: 8.5in 11in; margin-left: 0.98in; margin-right: 0.98in; margin-top: 0.39in; margin-bottom: 0.75in }
-		P { margin-bottom: 0in; direction: ltr; text-align: justify; widows: 2; orphans: 2 }
+		P { margin-bottom: 0in; direction: ltr; text-align: justify; widows: 2; orphans: 2; padding: 0em; }
 		P.western { so-language: en-US }
 		P.cjk { so-language: es-ES }
 		H2 { text-indent: 0.5in; margin-top: 0in; margin-bottom: 0in; direction: ltr; text-align: justify; widows: 2; orphans: 2 }
@@ -35,17 +35,22 @@
 	                                                                    
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    </B></I></SPAN></FONT></FONT><FONT FACE="Arial Narrow, serif"><FONT SIZE=3><SPAN LANG="es-ES" "><I><B>«FRACC»
-	            «CLAVE_»                                              
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </B></I></SPAN></FONT></FONT><FONT FACE="Arial Narrow, serif"><FONT SIZE=3><SPAN LANG="es-ES" "><I><B>{{$cabecera[0]->proyecto}}  &nbsp;&nbsp;&nbsp;
+	{{$cabecera[0]->clave}}                                          
 	                                                                    
 	                                                                    
 	                                         	                          
 	                                	</B></I></SPAN></FONT></FONT></P>
-	<P LANG="en-GB" ALIGN=RIGHT STYLE="margin-left: 1in"><FONT FACE="Arial Narrow, serif"><FONT SIZE=1><SPAN LANG="es-ES"><I>	
-	               Contrato «CONTRATO» referente a  «DESCRIP_CORTA»,
-	    Monto del Contrato $ «IMPORTE»</I></SPAN></FONT></FONT></P>
+		<P LANG="en-GB" ALIGN=RIGHT STYLE="margin-left: 1in"><FONT FACE="Arial Narrow, serif"><FONT SIZE=1><SPAN LANG="es-ES"><I>	
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		 Contrato referente a {{$cabecera[0]->descripcion_corta}},
+	    Monto del Contrato $ {{$cabecera[0]->total_importe}}</I></SPAN></FONT></FONT></P>
 	<IMG SRC="img/contratos/CONTRATOS_html_5d82e5a4.png" ALIGN=LEFT>
 
 </DIV>
@@ -68,9 +73,9 @@
 			EN SU CARACTER DE APODERADO LEGAL Y A QUIEN EN LO SUCESIVO SE LE
 			DENOMINA </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES"><B>“LA
 			CONTRATANTE”</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES">,
-			Y POR LA OTRA PARTE </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES"><B>«RAZON_SOCIAL»
+			Y POR LA OTRA PARTE </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES"><B>{{$cabecera[0]->contratista}}
 			</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES">REPRESENTADA
-			POR «REPRESENTANTE»</SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES"><B>,
+			POR {{$cabecera[0]->representante}}</SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES"><B>,
 			</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES">A
 			QUIEN EN LO SUBSECUENTE SE LE IDENTIFICARA COMO </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES"><B>“LA
 			CONTRATISTA”,</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES">
@@ -97,26 +102,29 @@ L A U S U L A S		</H5>
 - Datos del contratista:</SPAN></FONT></FONT></P>
 <H2 LANG="es-ES" CLASS="western"><BR>
 </H2>
-<H2 LANG="es-ES" CLASS="western"><FONT SIZE=4>«RAZON_SOCIAL»</FONT></H2>
+<H2 LANG="es-ES" CLASS="western"><FONT SIZE=4>{{$cabecera[0]->contratista}}</FONT></H2>
 <H2 LANG="es-ES" CLASS="western"><FONT SIZE=2><SPAN STYLE="font-weight: normal">REPRESENTADA
-POR EL «REPRESENTANTE»</SPAN></FONT></H2>
+POR EL {{$cabecera[0]->representante}}</SPAN></FONT></H2>
 <H2 LANG="es-ES" CLASS="western">	</H2>
-<P LANG="en-GB" CLASS="western" ALIGN=JUSTIFY STYLE="margin-left: 2.5in; text-indent: -2in">
-<FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN LANG="es-ES">Domicilio
-	 	«CALLE», </SPAN></FONT></FONT>
-</P>
-<P LANG="en-GB" CLASS="western" ALIGN=JUSTIFY STYLE="margin-left: 2.5in; text-indent: 0.5in">
-<FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN LANG="es-ES">«COL»,
-C.P. «CP»</SPAN></FONT></FONT></P>
-<P LANG="en-GB" CLASS="western" ALIGN=JUSTIFY STYLE="margin-left: 2.5in; text-indent: 0.5in">
-<FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN LANG="es-ES">«EDO»</SPAN></FONT></FONT></P>
+<H2 LANG="es-ES" CLASS="western"><FONT SIZE=2><SPAN STYLE="font-weight: normal">Domicilio</SPAN></FONT></H2>
+
+<H2 LANG="en-GB" CLASS="western" ALIGN=JUSTIFY STYLE="margin-left: 2.5in; margin-top:0in; text-indent: 0.5in; padding: 0em;">
+<FONT FACE="Arial, serif"><FONT SIZE=2"><SPAN LANG="es-ES">{{$cabecera[0]->direccion}},
+ </SPAN></FONT></FONT>
+</H2>
+<H2 LANG="en-GB" CLASS="western" ALIGN=JUSTIFY STYLE="margin-left: 2.5in; text-indent: 0.5in; padding: 0em;">
+<FONT FACE="Arial, serif"><FONT SIZE=2"><SPAN LANG="es-ES">{{$cabecera[0]->colonia}},
+C.P. {{$cabecera[0]->codigoPostal}}</SPAN></FONT></FONT></H2>
+
+<H2 LANG="en-GB" CLASS="western" ALIGN=JUSTIFY STYLE="margin-left: 2.5in; text-indent: 0.5in; padding: 0em;">
+<FONT FACE="Arial, serif"><FONT SIZE=2"><SPAN LANG="es-ES">{{$cabecera[0]->estado}}</SPAN></FONT></FONT></H2>
 
 <P LANG="en-US" CLASS="western" STYLE="text-indent: 0.5in"><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt">Registro
-Federal de Contribuyentes:	«RFC»</FONT></FONT></P>
+Federal de Contribuyentes:	{{$cabecera[0]->rfc}}</FONT></FONT></P>
 
-<P LANG="en-GB" CLASS="western" ALIGN=JUSTIFY STYLE="text-indent: 0.5in">
+<P LANG="en-GB" CLASS="western" ALIGN=JUSTIFY STYLE="text-indent: 0.5in; padding: 0em;">
 <FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN LANG="es-ES">Instituto
-Mexicano del Seguro Social: «IMSS»</SPAN></FONT></FONT></P>
+Mexicano del Seguro Social: {{$cabecera[0]->imss}}</SPAN></FONT></FONT></P>
 
 <P LANG="es-ES" CLASS="western" ALIGN=JUSTIFY><BR>
 </P>
@@ -149,10 +157,10 @@ cumplir y llevar a cabo la obra del presente contrato.</SPAN></FONT></FONT></P>
 
 <P LANG="en-GB" CLASS="western" ALIGN=JUSTIFY><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>5.
 - </B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">El
-contrato es referente a los trabajos de </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>«DESCRIP_CORTA»
-</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">«DESCRIP_LARGA_»,
-de la obra </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>«FRACC»</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">,
-«UBICACIÓN_», Misma que identifican ambas partes. </SPAN></FONT></FONT>
+contrato es referente a los trabajos de </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>{{$cabecera[0]->descripcion_corta}}
+</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">{{$cabecera[0]->descripcion_larga}},
+de la obra </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>{{$cabecera[0]->proyecto}}</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">,
+{{$cabecera[0]->coloniaFracc}}, Misma que identifican ambas partes. </SPAN></FONT></FONT>
 </P>
 
 <P LANG="es-ES" CLASS="western" ALIGN=JUSTIFY><BR>
@@ -160,7 +168,7 @@ de la obra </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LAN
 <P LANG="en-GB" CLASS="western" ALIGN=JUSTIFY> <FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>6</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>.
 - </B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">El
 monto del presente contrato es por </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>$
-«IMPORTE» «MONTO_CONTRATO»</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">
+{{$cabecera[0]->total_importe}} «MONTO_CONTRATO»</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">
 «IVA_2»</SPAN></FONT></FONT></P>
 
 <P LANG="es-ES" CLASS="western" ALIGN=JUSTIFY><BR>
@@ -170,8 +178,8 @@ monto del presente contrato es por </SPAN></FONT></FONT><FONT FACE="Arial, serif
 - </B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>LA
 CONTRATISTA </B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">se</SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>
 </B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">compromete
-a realizar los trabajos a partir del </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>«FECHA_INICIO_»</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">
-al </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>«FECHA_TERMINO_».</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">
+a realizar los trabajos a partir del </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>{{ $cabecera[0]->f_ini}}</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">
+al </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>{{$cabecera[0]->f_fin}}.</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">
 </SPAN></FONT></FONT>
 </P>
 
@@ -210,11 +218,11 @@ se compromete a liquidar de la siguiente forma:</SPAN></FONT></FONT></P>
 
 <OL TYPE=a>
 	<LI><P LANG="en-GB" ALIGN=JUSTIFY><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">Mediante
-	un «INCISO_A» correspondiente al  </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>«PORCENTAJE_ANTICIPO»
+	un «INCISO_A» correspondiente al  </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>{{$cabecera[0]->anticipo}}
 	</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">
 	del monto del contrato al iniciar las obras. El total del pago es </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>$
-	«ANTICIPO»</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">
-	</SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>«ANTICIPO_LETRA_».</B></SPAN></FONT></FONT></P>
+	{{$cabecera[0]->total_anticipo}}</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">
+	</SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>({{$cabecera[0]->anticipoLetra}}).</B></SPAN></FONT></FONT></P>
 </OL>
 <P LANG="en-GB" CLASS="western" ALIGN=JUSTIFY STYLE="margin-left: 0.2in; text-indent: -0.2in">
 <FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">«INCISO_B»
@@ -332,7 +340,7 @@ Tribunales de San Luis Potosí, S.L.P.</SPAN></FONT></FONT></P>
 </P>
 
 <P LANG="en-GB" CLASS="western" ALIGN=JUSTIFY><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>Se
-firma el presente contrato a los «FECHA_INICIO_».</B></SPAN></FONT></FONT></P>
+firma el presente contrato a los {{$cabecera[0]->f_ini2}}.</B></SPAN></FONT></FONT></P>
 <P LANG="es-ES" CLASS="western" ALIGN=JUSTIFY><BR>
 </P>
 <P LANG="es-ES" CLASS="western" ALIGN=JUSTIFY><BR>
@@ -341,8 +349,8 @@ firma el presente contrato a los «FECHA_INICIO_».</B></SPAN></FONT></FONT></P>
 
 <div class="table">
 <div class="table-row">
-      <div class="table-cell"><b>__________________________</div>
-      <div class="table-cell"><b>__________________________</div>
+      <div class="table-cell"><b>_____________________________</div>
+      <div class="table-cell"><b>_____________________________</div>
     </div>
     <div class="table-row">
       <div class="table-cell"><b>CONTRATANTE</div>
@@ -350,27 +358,27 @@ firma el presente contrato a los «FECHA_INICIO_».</B></SPAN></FONT></FONT></P>
     </div>
     <div class="table-row">
       <div class="table-cell" > <b>APDO .ING. DAVID CALVILLO MARTINEZ</div>
-      <div class="table-cell" > <b>REP.«REPRESENTANTE»</div>
+      <div class="table-cell" > <b>REP.{{$cabecera[0]->representante}}</div>
     </div>
     <div class="table-row">
         <div class="table-cell" > <b>GRUPO CONSTRUCTOR CUMBRES, SA DE CV</div>
-        <div class="table-cell" > <b>«RAZON_SOCIAL»</div>
+        <div class="table-cell" > <b>{{$cabecera[0]->contratista}}</div>
     </div>
     <div class="table-row">
         <div class="table-cell" > <b>Manuel Gutiérrez Nájera # 190 Col. Tequisquiapan</div>
-        <div class="table-cell" > <b>«CALLE»</div>
+        <div class="table-cell" > <b>{{$cabecera[0]->direccion}}</div>
     </div>
     <div class="table-row">
         <div class="table-cell" > <b>San Luis Potosí, S.L.P.</div>
-        <div class="table-cell" > <b>«COL», C.P. «CP»</div>
+        <div class="table-cell" > <b>{{$cabecera[0]->colonia}}, C.P. {{$cabecera[0]->codigoPostal}}</div>
     </div>
     <div class="table-row">
         <div class="table-cell" > <b>Tel. 01 (444) 8 33 46 83 </div>
-        <div class="table-cell" > <b>«EDO»</div>
+        <div class="table-cell" > <b>{{$cabecera[0]->estado}}</div>
     </div>
     <div class="table-row">
         <div class="table-cell" > <b>Tel. 01 (444) 8 33 46 84</div>
-        <div class="table-cell" > <b>Tel. «TELEFONO»</div>
+        <div class="table-cell" > <b>Tel. {{$cabecera[0]->telefono}}</div>
     </div>
   </div>
 

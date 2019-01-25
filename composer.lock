@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "133253a6fab53b98eb54ef0855b64db0",
+    "content-hash": "c8bf65b32ce852ee4f5fd21fcdbdba88",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
@@ -2781,6 +2781,43 @@
             "description": "CssToInlineStyles is a class that enables you to convert HTML-pages/files into HTML-pages/files with inline styles. This is very useful when you're sending emails.",
             "homepage": "https://github.com/tijsverkoyen/CssToInlineStyles",
             "time": "2017-11-27T11:13:29+00:00"
+        },
+        {
+            "name": "villca/numeros-en-letras",
+            "version": "v1.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/villca/Numeros-en-Letras.git",
+                "reference": "15b78a2cec778f2ec9cc742656836ae43ca3ce5c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/villca/Numeros-en-Letras/zipball/15b78a2cec778f2ec9cc742656836ae43ca3ce5c",
+                "reference": "15b78a2cec778f2ec9cc742656836ae43ca3ce5c",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.3.3 || ^7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "NumerosEnLetras": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jesus Villca",
+                    "email": "24villca@gmail.com",
+                    "homepage": "https://24villca.blogspot.com"
+                }
+            ],
+            "description": "Convierte cualquier número en letras con el valor correspondiente.",
+            "time": "2018-01-13T23:20:14+00:00"
         },
         {
             "name": "vlucas/phpdotenv",
