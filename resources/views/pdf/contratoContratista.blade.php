@@ -168,7 +168,7 @@ de la obra </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LAN
 <P LANG="en-GB" CLASS="western" ALIGN=JUSTIFY> <FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>6</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>.
 - </B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">El
 monto del presente contrato es por </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>$
-{{$cabecera[0]->total_importe}} «MONTO_CONTRATO»</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">
+{{$cabecera[0]->total_importe}} ({{$cabecera[0]->totalImporteLetra}})</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">
 «IVA_2»</SPAN></FONT></FONT></P>
 
 <P LANG="es-ES" CLASS="western" ALIGN=JUSTIFY><BR>

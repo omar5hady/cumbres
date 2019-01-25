@@ -83942,6 +83942,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -83963,6 +83965,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             total_importe: 0.0,
             total_costo_directo: 0.0,
             total_costo_indirecto: 0.0,
+            total_construccion: 0.0,
             anticipo: 0,
             costo_indirecto_porcentaje: 0,
             total_anticipo: 0,
@@ -84054,6 +84057,21 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 resultado_importe_total = parseFloat(resultado_importe_total) + parseFloat(this.arrayAvisoObraLotes[i].costo_directo) + parseFloat(this.arrayAvisoObraLotes[i].costo_indirecto);
             }
             return resultado_importe_total;
+        },
+
+        totalConstruccion: function totalConstruccion() {
+            var resultado_construccion_total = 0.0;
+            for (var i = 0; i < this.arrayAvisoObraLotes.length; i++) {
+                resultado_construccion_total = parseFloat(resultado_construccion_total) + parseFloat(this.arrayAvisoObraLotes[i].construccion);
+            }
+            return resultado_construccion_total;
+        },
+        totalSuperficie: function totalSuperficie() {
+            var resultado_construccion_total = 0.0;
+            for (var i = 0; i < this.arrayAvisoObraLotes.length; i++) {
+                resultado_construccion_total = parseFloat(resultado_construccion_total) + parseFloat(this.arrayAvisoObraLotes[i].superficie);
+            }
+            return resultado_construccion_total;
         }
 
     },
@@ -85460,10 +85478,12 @@ var render = function() {
                           _c("p", [
                             _vm._v(
                               _vm._s(
-                                (_vm.costo_indirecto =
-                                  (_vm.costo_directo *
-                                    _vm.costo_indirecto_porcentaje) /
-                                  100)
+                                _vm._f("currency")(
+                                  (_vm.costo_indirecto =
+                                    (_vm.costo_directo *
+                                      _vm.costo_indirecto_porcentaje) /
+                                    100)
+                                )
                               )
                             )
                           ])
@@ -85610,10 +85630,12 @@ var render = function() {
                                           _vm._v(
                                             "\n                                                " +
                                               _vm._s(
-                                                (detalle.costo_indirecto =
-                                                  (detalle.costo_directo *
-                                                    _vm.costo_indirecto_porcentaje) /
-                                                  100)
+                                                _vm._f("currency")(
+                                                  (detalle.costo_indirecto =
+                                                    (detalle.costo_directo *
+                                                      _vm.costo_indirecto_porcentaje) /
+                                                    100)
+                                                )
                                               ) +
                                               "\n                                            "
                                           )
@@ -85623,12 +85645,14 @@ var render = function() {
                                           _vm._v(
                                             "\n                                                " +
                                               _vm._s(
-                                                parseFloat(
-                                                  detalle.costo_directo
-                                                ) +
+                                                _vm._f("currency")(
                                                   parseFloat(
-                                                    detalle.costo_indirecto
-                                                  )
+                                                    detalle.costo_directo
+                                                  ) +
+                                                    parseFloat(
+                                                      detalle.costo_indirecto
+                                                    )
+                                                )
                                               ) +
                                               "\n                                              "
                                           )
@@ -85649,17 +85673,33 @@ var render = function() {
                                           {
                                             attrs: {
                                               align: "right",
-                                              colspan: "5"
+                                              colspan: "4"
                                             }
                                           },
                                           [
                                             _c("strong", [
                                               _vm._v(
-                                                "$" +
-                                                  _vm._s(
+                                                _vm._s(
+                                                  (_vm.total_construccion =
+                                                    _vm.totalSuperficie)
+                                                )
+                                              )
+                                            ])
+                                          ]
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "td",
+                                          { attrs: { align: "right" } },
+                                          [
+                                            _c("strong", [
+                                              _vm._v(
+                                                _vm._s(
+                                                  _vm._f("currency")(
                                                     (_vm.total_costo_directo =
                                                       _vm.totalCostoDirecto)
                                                   )
+                                                )
                                               )
                                             ])
                                           ]
@@ -85671,11 +85711,12 @@ var render = function() {
                                           [
                                             _c("strong", [
                                               _vm._v(
-                                                "$" +
-                                                  _vm._s(
+                                                _vm._s(
+                                                  _vm._f("currency")(
                                                     (_vm.total_costo_indirecto =
                                                       _vm.totalCostoIndirecto)
                                                   )
+                                                )
                                               )
                                             ])
                                           ]
@@ -85687,11 +85728,12 @@ var render = function() {
                                           [
                                             _c("strong", [
                                               _vm._v(
-                                                "$" +
-                                                  _vm._s(
+                                                _vm._s(
+                                                  _vm._f("currency")(
                                                     (_vm.total_importe =
                                                       _vm.totalImporte)
                                                   )
+                                                )
                                               )
                                             ])
                                           ]
@@ -86469,10 +86511,12 @@ var render = function() {
                             _c("p", [
                               _vm._v(
                                 _vm._s(
-                                  (_vm.costo_indirecto =
-                                    (_vm.costo_directo *
-                                      _vm.costo_indirecto_porcentaje) /
-                                    100)
+                                  _vm._f("currency")(
+                                    (_vm.costo_indirecto =
+                                      (_vm.costo_directo *
+                                        _vm.costo_indirecto_porcentaje) /
+                                      100)
+                                  )
                                 )
                               )
                             ])
@@ -86595,7 +86639,7 @@ var render = function() {
                                                 _c("td", {
                                                   domProps: {
                                                     textContent: _vm._s(
-                                                      detalle.superficie
+                                                      detalle.construccion
                                                     )
                                                   }
                                                 }),
@@ -86640,10 +86684,12 @@ var render = function() {
                                                   _vm._v(
                                                     "\n                                                " +
                                                       _vm._s(
-                                                        (detalle.costo_indirecto =
-                                                          (detalle.costo_directo *
-                                                            _vm.costo_indirecto_porcentaje) /
-                                                          100)
+                                                        _vm._f("currency")(
+                                                          (detalle.costo_indirecto =
+                                                            (detalle.costo_directo *
+                                                              _vm.costo_indirecto_porcentaje) /
+                                                            100)
+                                                        )
                                                       ) +
                                                       "\n                                            "
                                                   )
@@ -86653,12 +86699,14 @@ var render = function() {
                                                   _vm._v(
                                                     "\n                                                " +
                                                       _vm._s(
-                                                        parseFloat(
-                                                          detalle.costo_directo
-                                                        ) +
+                                                        _vm._f("currency")(
                                                           parseFloat(
-                                                            detalle.costo_indirecto
-                                                          )
+                                                            detalle.costo_directo
+                                                          ) +
+                                                            parseFloat(
+                                                              detalle.costo_indirecto
+                                                            )
+                                                        )
                                                       ) +
                                                       "\n                                              "
                                                   )
@@ -86681,17 +86729,33 @@ var render = function() {
                                               {
                                                 attrs: {
                                                   align: "right",
-                                                  colspan: "5"
+                                                  colspan: "4"
                                                 }
                                               },
                                               [
                                                 _c("strong", [
                                                   _vm._v(
-                                                    "$" +
-                                                      _vm._s(
+                                                    _vm._s(
+                                                      (_vm.total_construccion =
+                                                        _vm.totalConstruccion)
+                                                    )
+                                                  )
+                                                ])
+                                              ]
+                                            ),
+                                            _vm._v(" "),
+                                            _c(
+                                              "td",
+                                              { attrs: { align: "right" } },
+                                              [
+                                                _c("strong", [
+                                                  _vm._v(
+                                                    _vm._s(
+                                                      _vm._f("currency")(
                                                         (_vm.total_costo_directo =
                                                           _vm.totalCostoDirecto)
                                                       )
+                                                    )
                                                   )
                                                 ])
                                               ]
@@ -86703,11 +86767,12 @@ var render = function() {
                                               [
                                                 _c("strong", [
                                                   _vm._v(
-                                                    "$" +
-                                                      _vm._s(
+                                                    _vm._s(
+                                                      _vm._f("currency")(
                                                         (_vm.total_costo_indirecto =
                                                           _vm.totalCostoIndirecto)
                                                       )
+                                                    )
                                                   )
                                                 ])
                                               ]
@@ -86719,11 +86784,12 @@ var render = function() {
                                               [
                                                 _c("strong", [
                                                   _vm._v(
-                                                    "$" +
-                                                      _vm._s(
+                                                    _vm._s(
+                                                      _vm._f("currency")(
                                                         (_vm.total_importe =
                                                           _vm.totalImporte)
                                                       )
+                                                    )
                                                   )
                                                 ])
                                               ]

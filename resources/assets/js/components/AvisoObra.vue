@@ -191,7 +191,7 @@
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label>Costo indirecto <span style="color:red;" v-show="costo_indirecto==0">(*Ingrese)</span></label>
-                                        <p>{{ costo_indirecto=costo_directo*costo_indirecto_porcentaje/100}}</p>
+                                        <p>{{ costo_indirecto=costo_directo*costo_indirecto_porcentaje/100 | currency}}</p>
                                         <!--<input type="text" class="form-control" readonly v-model="costo_indirecto" v-on:keypress="isNumber($event)" placeholder="Costo indirecto">-->
                                     </div>
                                 </div>
@@ -237,19 +237,20 @@
                                                     <input v-model="detalle.costo_directo" type="text" class="form-control">
                                                 </td>
                                                 <td>
-                                                    {{ detalle.costo_indirecto=detalle.costo_directo*costo_indirecto_porcentaje/100}}
+                                                    {{ detalle.costo_indirecto=detalle.costo_directo*costo_indirecto_porcentaje/100 | currency}}
                                                 </td>
                                                 <td>
-                                                    {{parseFloat(detalle.costo_directo) + parseFloat(detalle.costo_indirecto)}}
+                                                    {{parseFloat(detalle.costo_directo) + parseFloat(detalle.costo_indirecto) | currency}}
                                                   <!-- <input readonly v-model="detalle.importe" type="text" class="form-control">  -->
                                                 </td>
                                             </tr>
                                   
                                             <tr style="background-color: #CEECF5;">
                                                
-                                                <td align="right" colspan="5"> <strong>${{ total_costo_directo=totalCostoDirecto}}</strong> </td>
-                                                 <td align="right"> <strong>${{ total_costo_indirecto=totalCostoIndirecto}}</strong> </td>
-                                                 <td align="right"> <strong>${{ total_importe=totalImporte}}</strong> </td>
+                                               <td align="right" colspan="4"> <strong>{{ total_construccion=totalSuperficie}}</strong> </td>
+                                                <td align="right"> <strong>{{ total_costo_directo=totalCostoDirecto | currency}}</strong> </td>
+                                                <td align="right"> <strong>{{ total_costo_indirecto=totalCostoIndirecto | currency}}</strong> </td>
+                                                <td align="right"> <strong>{{ total_importe=totalImporte | currency}}</strong> </td>
                                             </tr>
                                         </tbody>
 
@@ -414,7 +415,7 @@
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label>Costo indirecto <span style="color:red;" v-show="costo_indirecto==0">(*Ingrese)</span></label>
-                                        <p>{{ costo_indirecto=costo_directo*costo_indirecto_porcentaje/100}}</p>
+                                        <p>{{ costo_indirecto=costo_directo*costo_indirecto_porcentaje/100 | currency}}</p>
                                         <!--<input type="text" class="form-control" readonly v-model="costo_indirecto" v-on:keypress="isNumber($event)" placeholder="Costo indirecto">-->
                                     </div>
                                 </div>
@@ -453,26 +454,27 @@
                                                 <td v-text="detalle.lote">
                                                     
                                                 </td>
-                                                <td v-text="detalle.superficie">
+                                                <td v-text="detalle.construccion">
                                                    
                                                 </td>
                                                 <td>
                                                     <input v-model="detalle.costo_directo" type="text" class="form-control">
                                                 </td>
                                                 <td>
-                                                    {{ detalle.costo_indirecto=detalle.costo_directo*costo_indirecto_porcentaje/100}}
+                                                    {{ detalle.costo_indirecto=detalle.costo_directo*costo_indirecto_porcentaje/100 | currency}}
                                                 </td>
                                                 <td>
-                                                    {{parseFloat(detalle.costo_directo) + parseFloat(detalle.costo_indirecto)}}
+                                                    {{parseFloat(detalle.costo_directo) + parseFloat(detalle.costo_indirecto) | currency}}
                                                   <!-- <input readonly v-model="detalle.importe" type="text" class="form-control">  -->
                                                 </td>
                                             </tr>
                                   
                                             <tr style="background-color: #CEECF5;">
-                                               
-                                                <td align="right" colspan="5"> <strong>${{ total_costo_directo=totalCostoDirecto}}</strong> </td>
-                                                 <td align="right"> <strong>${{ total_costo_indirecto=totalCostoIndirecto}}</strong> </td>
-                                                 <td align="right"> <strong>${{ total_importe=totalImporte}}</strong> </td>
+                                                
+                                                <td align="right" colspan="4"> <strong>{{ total_construccion=totalConstruccion}}</strong> </td>
+                                                <td align="right" > <strong>{{ total_costo_directo=totalCostoDirecto | currency}}</strong> </td>
+                                                <td align="right"> <strong>{{ total_costo_indirecto=totalCostoIndirecto | currency}}</strong> </td>
+                                                <td align="right"> <strong>{{ total_importe=totalImporte | currency}}</strong> </td>
                                             </tr>
                                         </tbody>
 
@@ -673,6 +675,7 @@
                 total_importe:0.0,
                 total_costo_directo:0.0,
                 total_costo_indirecto:0.0,
+                total_construccion:0.0,
                 anticipo:0,
                 costo_indirecto_porcentaje:0,
                 total_anticipo:0,
@@ -769,6 +772,21 @@
                 resultado_importe_total = parseFloat(resultado_importe_total) + parseFloat(this.arrayAvisoObraLotes[i].costo_directo) + parseFloat(this.arrayAvisoObraLotes[i].costo_indirecto)
             }
             return resultado_importe_total;
+        },
+
+        totalConstruccion: function(){
+            var resultado_construccion_total =0.0;
+            for(var i=0;i<this.arrayAvisoObraLotes.length;i++){
+                resultado_construccion_total = parseFloat(resultado_construccion_total) + parseFloat(this.arrayAvisoObraLotes[i].construccion)
+            }
+            return resultado_construccion_total;
+        },
+        totalSuperficie: function(){
+            var resultado_construccion_total =0.0;
+            for(var i=0;i<this.arrayAvisoObraLotes.length;i++){
+                resultado_construccion_total = parseFloat(resultado_construccion_total) + parseFloat(this.arrayAvisoObraLotes[i].superficie)
+            }
+            return resultado_construccion_total;
         }
 
 

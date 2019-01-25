@@ -16,7 +16,7 @@ class CreateIniObraLotesTable extends Migration
         Schema::create('ini_obra_lotes', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('ini_obra_id');
-            $table->string('lote')->nullable();
+            $table->string('lote')->default(0)->nullable();
             $table->string('manzana')->nullable();
             $table->string('modelo')->nullable();
             $table->string('construccion')->nullable();

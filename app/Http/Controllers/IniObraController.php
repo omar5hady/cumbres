@@ -318,7 +318,13 @@ class IniObraController extends Controller
 
     $cabecera[0]->f_ini2 = $tiempo->formatLocalized('%d dias del mes de %B del año %Y');
 
+    $cabecera[0]->total_anticipo = number_format((float)$cabecera[0]->total_anticipo,2,'.','');
+    $cabecera[0]->total_costo_directo = number_format((float)$cabecera[0]->total_costo_directo,2,'.','');
+    $cabecera[0]->total_costo_indirecto = number_format((float)$cabecera[0]->total_costo_indirecto,2,'.','');
+    $cabecera[0]->total_importe = number_format((float)$cabecera[0]->total_importe,2,'.','');
+
     $cabecera[0]->anticipoLetra = NumerosEnLetras::convertir($cabecera[0]->total_anticipo,'Pesos',false,'Centavos');
+    $cabecera[0]->totalImporteLetra = NumerosEnLetras::convertir($cabecera[0]->total_importe,'Pesos',false,'Centavos');
 
         $pdf = \PDF::loadview('pdf.contratoContratista',['cabecera' => $cabecera]);
         return $pdf->download('contrato.pdf');
