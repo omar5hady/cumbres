@@ -83944,6 +83944,16 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -84208,7 +84218,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                         importe: me.importe,
                         modelo: me.modelo,
                         costo_directo: parseFloat(me.costo_directo),
-                        costo_indirecto: parseFloat(me.costo_indirecto)
+                        costo_indirecto: parseFloat(me.costo_indirecto),
+                        obra_extra: 0
                     });
                     me.lote = '';
                     me.lote_id = 0;
@@ -84337,7 +84348,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 'tipo': this.tipo,
                 'iva': this.iva,
                 'descripcion_larga': this.descripcion_larga,
-                'descripcion_corta': this.descripcion_corta
+                'descripcion_corta': this.descripcion_corta,
+                'total_superficie': this.total_construccion
             }).then(function (response) {
                 me.listado = 1;
                 me.limpiarDatos();
@@ -84383,7 +84395,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 'tipo': this.tipo,
                 'iva': this.iva,
                 'descripcion_larga': this.descripcion_larga,
-                'descripcion_corta': this.descripcion_corta
+                'descripcion_corta': this.descripcion_corta,
+                'total_superficie': this.total_construccion
             }).then(function (response) {
                 me.listado = 1;
                 me.limpiarDatos();
@@ -84427,6 +84440,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             this.descripcion_corta = '';
             this.iva = 0;
             this.tipo = 'Vivienda';
+            this.total_construccion = 0;
         },
         eliminarContrato: function eliminarContrato() {
             var _this2 = this;
@@ -84515,6 +84529,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 me.fraccionamiento = me.arrayAvisoT[0]['proyecto'];
                 me.total_anticipo = me.arrayAvisoT[0]['total_anticipo'];
                 me.costo_indirecto_porcentaje = me.arrayAvisoT[0]['costo_indirecto_porcentaje'];
+                me.total_construccion = me.arrayAvisoT[0]['total_superficie'];
             }).catch(function (error) {
                 console.log(error);
             });
@@ -85642,6 +85657,36 @@ var render = function() {
                                         ]),
                                         _vm._v(" "),
                                         _c("td", [
+                                          _c("input", {
+                                            directives: [
+                                              {
+                                                name: "model",
+                                                rawName: "v-model",
+                                                value: detalle.obra_extra,
+                                                expression: "detalle.obra_extra"
+                                              }
+                                            ],
+                                            staticClass: "form-control",
+                                            attrs: { type: "text" },
+                                            domProps: {
+                                              value: detalle.obra_extra
+                                            },
+                                            on: {
+                                              input: function($event) {
+                                                if ($event.target.composing) {
+                                                  return
+                                                }
+                                                _vm.$set(
+                                                  detalle,
+                                                  "obra_extra",
+                                                  $event.target.value
+                                                )
+                                              }
+                                            }
+                                          })
+                                        ]),
+                                        _vm._v(" "),
+                                        _c("td", [
                                           _vm._v(
                                             "\n                                                " +
                                               _vm._s(
@@ -85724,7 +85769,12 @@ var render = function() {
                                         _vm._v(" "),
                                         _c(
                                           "td",
-                                          { attrs: { align: "right" } },
+                                          {
+                                            attrs: {
+                                              align: "right",
+                                              colspan: "2"
+                                            }
+                                          },
                                           [
                                             _c("strong", [
                                               _vm._v(
@@ -86696,6 +86746,41 @@ var render = function() {
                                                 ]),
                                                 _vm._v(" "),
                                                 _c("td", [
+                                                  _c("input", {
+                                                    directives: [
+                                                      {
+                                                        name: "model",
+                                                        rawName: "v-model",
+                                                        value:
+                                                          detalle.obra_extra,
+                                                        expression:
+                                                          "detalle.obra_extra"
+                                                      }
+                                                    ],
+                                                    staticClass: "form-control",
+                                                    attrs: { type: "text" },
+                                                    domProps: {
+                                                      value: detalle.obra_extra
+                                                    },
+                                                    on: {
+                                                      input: function($event) {
+                                                        if (
+                                                          $event.target
+                                                            .composing
+                                                        ) {
+                                                          return
+                                                        }
+                                                        _vm.$set(
+                                                          detalle,
+                                                          "obra_extra",
+                                                          $event.target.value
+                                                        )
+                                                      }
+                                                    }
+                                                  })
+                                                ]),
+                                                _vm._v(" "),
+                                                _c("td", [
                                                   _vm._v(
                                                     "\n                                                " +
                                                       _vm._s(
@@ -86780,7 +86865,12 @@ var render = function() {
                                             _vm._v(" "),
                                             _c(
                                               "td",
-                                              { attrs: { align: "right" } },
+                                              {
+                                                attrs: {
+                                                  align: "right",
+                                                  colspan: "2"
+                                                }
+                                              },
                                               [
                                                 _c("strong", [
                                                   _vm._v(
@@ -87239,6 +87329,17 @@ var render = function() {
                                                     }
                                                   }),
                                                   _vm._v(" "),
+                                                  _c("td", {
+                                                    domProps: {
+                                                      textContent: _vm._s(
+                                                        "$" +
+                                                          _vm.formatNumber(
+                                                            detalle.obra_extra
+                                                          )
+                                                      )
+                                                    }
+                                                  }),
+                                                  _vm._v(" "),
                                                   _c("td", [
                                                     _vm._v(
                                                       "\n                                                " +
@@ -87274,9 +87375,25 @@ var render = function() {
                                                 {
                                                   attrs: {
                                                     align: "right",
-                                                    colspan: "5"
+                                                    colspan: "4"
                                                   }
                                                 },
+                                                [
+                                                  _c("strong", [
+                                                    _vm._v(
+                                                      _vm._s(
+                                                        _vm.formatNumber(
+                                                          _vm.total_construccion
+                                                        )
+                                                      )
+                                                    )
+                                                  ])
+                                                ]
+                                              ),
+                                              _vm._v(" "),
+                                              _c(
+                                                "td",
+                                                { attrs: { align: "right" } },
                                                 [
                                                   _c("strong", [
                                                     _vm._v(
@@ -87312,7 +87429,12 @@ var render = function() {
                                               _vm._v(" "),
                                               _c(
                                                 "td",
-                                                { attrs: { align: "right" } },
+                                                {
+                                                  attrs: {
+                                                    align: "right",
+                                                    colspan: "2"
+                                                  }
+                                                },
                                                 [
                                                   _c("strong", [
                                                     _vm._v(
@@ -87418,6 +87540,8 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Costo Indirecto")]),
         _vm._v(" "),
+        _c("th", [_vm._v("Obra extra")]),
+        _vm._v(" "),
         _c("th", [_vm._v("Importe")])
       ])
     ])
@@ -87451,6 +87575,8 @@ var staticRenderFns = [
         _c("th", [_vm._v("Costo Directo")]),
         _vm._v(" "),
         _c("th", [_vm._v("Costo Indirecto")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Obra extra")]),
         _vm._v(" "),
         _c("th", [_vm._v("Importe")])
       ])
@@ -87563,6 +87689,8 @@ var staticRenderFns = [
         _c("th", [_vm._v("Costo Directo")]),
         _vm._v(" "),
         _c("th", [_vm._v("Costo Indirecto")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Obra extra")]),
         _vm._v(" "),
         _c("th", [_vm._v("Importe")])
       ])

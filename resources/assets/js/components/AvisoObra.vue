@@ -214,6 +214,7 @@
                                                 <th>M&sup2;</th>
                                                 <th>Costo Directo</th>
                                                 <th>Costo Indirecto</th>
+                                                <th>Obra extra</th>
                                                 <th>Importe</th>
                                             </tr>
                                         </thead>
@@ -240,6 +241,9 @@
                                                     {{ detalle.costo_indirecto=detalle.costo_directo*costo_indirecto_porcentaje/100 | currency}}
                                                 </td>
                                                 <td>
+                                                    <input v-model="detalle.obra_extra" type="text" class="form-control">
+                                                </td>
+                                                <td>
                                                     {{parseFloat(detalle.costo_directo) + parseFloat(detalle.costo_indirecto) | currency}}
                                                   <!-- <input readonly v-model="detalle.importe" type="text" class="form-control">  -->
                                                 </td>
@@ -250,7 +254,7 @@
                                                <td align="right" colspan="4"> <strong>{{ total_construccion=totalSuperficie}}</strong> </td>
                                                 <td align="right"> <strong>{{ total_costo_directo=totalCostoDirecto | currency}}</strong> </td>
                                                 <td align="right"> <strong>{{ total_costo_indirecto=totalCostoIndirecto | currency}}</strong> </td>
-                                                <td align="right"> <strong>{{ total_importe=totalImporte | currency}}</strong> </td>
+                                                <td align="right" colspan="2"> <strong>{{ total_importe=totalImporte | currency}}</strong> </td>
                                             </tr>
                                         </tbody>
 
@@ -438,6 +442,7 @@
                                                 <th>M&sup2;</th>
                                                 <th>Costo Directo</th>
                                                 <th>Costo Indirecto</th>
+                                                <th>Obra extra</th>
                                                 <th>Importe</th>
                                             </tr>
                                         </thead>
@@ -464,6 +469,9 @@
                                                     {{ detalle.costo_indirecto=detalle.costo_directo*costo_indirecto_porcentaje/100 | currency}}
                                                 </td>
                                                 <td>
+                                                    <input v-model="detalle.obra_extra" type="text" class="form-control">
+                                                </td>
+                                                <td>
                                                     {{parseFloat(detalle.costo_directo) + parseFloat(detalle.costo_indirecto) | currency}}
                                                   <!-- <input readonly v-model="detalle.importe" type="text" class="form-control">  -->
                                                 </td>
@@ -474,7 +482,7 @@
                                                 <td align="right" colspan="4"> <strong>{{ total_construccion=totalConstruccion}}</strong> </td>
                                                 <td align="right" > <strong>{{ total_costo_directo=totalCostoDirecto | currency}}</strong> </td>
                                                 <td align="right"> <strong>{{ total_costo_indirecto=totalCostoIndirecto | currency}}</strong> </td>
-                                                <td align="right"> <strong>{{ total_importe=totalImporte | currency}}</strong> </td>
+                                                <td align="right" colspan="2"> <strong>{{ total_importe=totalImporte | currency}}</strong> </td>
                                             </tr>
                                         </tbody>
 
@@ -600,6 +608,7 @@
                                                 <th>M&sup2;</th>
                                                 <th>Costo Directo</th>
                                                 <th>Costo Indirecto</th>
+                                                <th>Obra extra</th>
                                                 <th>Importe</th>
                                             </tr>
                                         </thead>
@@ -611,6 +620,7 @@
                                                 <td v-text="detalle.construccion"></td>
                                                 <td v-text="'$'+formatNumber(detalle.costo_directo)"></td>
                                                 <td v-text="'$'+formatNumber(detalle.costo_indirecto)"></td>
+                                                <td v-text="'$'+formatNumber(detalle.obra_extra)"></td>
                                                 <td>
                                                     {{'$'+formatNumber(parseFloat(detalle.costo_directo) + parseFloat(detalle.costo_indirecto))}}
                                                   <!-- <input readonly v-model="detalle.importe" type="text" class="form-control">  -->
@@ -618,10 +628,10 @@
                                             </tr>
                                   
                                             <tr style="background-color: #CEECF5;">
-                                               
-                                                <td align="right" colspan="5"> <strong>${{ formatNumber(total_costo_directo=totalCostoDirecto)}}</strong> </td>
+                                                <td align="right" colspan="4"> <strong>{{ formatNumber(total_construccion)}}</strong> </td>
+                                                <td align="right"> <strong>${{ formatNumber(total_costo_directo=totalCostoDirecto)}}</strong> </td>
                                                 <td align="right"> <strong>${{ formatNumber(total_costo_indirecto=totalCostoIndirecto)}}</strong> </td>
-                                                <td align="right"> <strong>${{ formatNumber(total_importe=totalImporte)}}</strong> </td>
+                                                <td align="right" colspan="2"> <strong>${{ formatNumber(total_importe=totalImporte)}}</strong> </td>
                                             </tr>
                                         </tbody>
 
@@ -936,7 +946,8 @@
                     importe: me.importe,
                     modelo:me.modelo,
                     costo_directo: parseFloat(me.costo_directo),
-                    costo_indirecto: parseFloat(me.costo_indirecto)
+                    costo_indirecto: parseFloat(me.costo_indirecto),
+                    obra_extra:0,
                     });
                     me.lote = '';
                     me.lote_id =0;
@@ -975,7 +986,7 @@
                         'costo_indirecto' : this.costo_indirecto,
                         'importe' : this.importe,
                         'descripcion' : this.descripcion,
-                        'lote_id' : this.lote_id
+                        'lote_id' : this.lote_id,
                     }).then(function (response){
                         //Obtener detalle
                             me.arrayAvisoObraLotes=[];
@@ -1068,7 +1079,8 @@
                     'tipo':this.tipo,
                     'iva':this.iva,
                     'descripcion_larga':this.descripcion_larga,
-                    'descripcion_corta':this.descripcion_corta
+                    'descripcion_corta':this.descripcion_corta,
+                    'total_superficie':this.total_construccion
                 }).then(function (response){
                     me.listado=1;
                     me.limpiarDatos();
@@ -1113,7 +1125,8 @@
                     'tipo':this.tipo,
                     'iva':this.iva,
                     'descripcion_larga':this.descripcion_larga,
-                    'descripcion_corta':this.descripcion_corta
+                    'descripcion_corta':this.descripcion_corta,
+                    'total_superficie':this.total_construccion
                 }).then(function (response){
                     me.listado=1;
                     me.limpiarDatos();
@@ -1160,6 +1173,7 @@
                 this.descripcion_corta='';
                 this.iva=0;
                 this.tipo='Vivienda';
+                this.total_construccion=0;
             },
             eliminarContrato(data =[]){
                 this.id=data['id'];
@@ -1248,6 +1262,7 @@
                     me.fraccionamiento= me.arrayAvisoT[0]['proyecto'];
                     me.total_anticipo = me.arrayAvisoT[0]['total_anticipo'];
                     me.costo_indirecto_porcentaje=me.arrayAvisoT[0]['costo_indirecto_porcentaje'];
+                    me.total_construccion=me.arrayAvisoT[0]['total_superficie'];
                 })
                 .catch(function (error) {
                     console.log(error);

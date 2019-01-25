@@ -74,7 +74,8 @@ class IniObraController extends Controller
             'ini_obras.total_costo_directo','ini_obras.total_costo_indirecto','ini_obras.total_importe',
             'contratistas.nombre as contratista','fraccionamientos.nombre as proyecto','ini_obras.anticipo',
             'ini_obras.total_anticipo','ini_obras.costo_indirecto_porcentaje','ini_obras.fraccionamiento_id',
-            'ini_obras.contratista_id','ini_obras.descripcion_corta','ini_obras.descripcion_larga','ini_obras.iva','ini_obras.tipo')
+            'ini_obras.contratista_id','ini_obras.descripcion_corta','ini_obras.descripcion_larga',
+            'ini_obras.iva','ini_obras.tipo','ini_obras.total_superficie')
         ->where('ini_obras.id','=',$id)
         ->orderBy('ini_obras.id', 'desc')->take(1)->get();
          
@@ -87,7 +88,8 @@ class IniObraController extends Controller
         $detalles = Ini_obra_lote::select('ini_obra_lotes.costo_directo',
         'ini_obra_lotes.costo_indirecto','ini_obra_lotes.importe','ini_obra_lotes.lote',
         'ini_obra_lotes.manzana','ini_obra_lotes.modelo','ini_obra_lotes.construccion',
-        'ini_obra_lotes.descripcion','ini_obra_lotes.id','ini_obra_lotes.ini_obra_id','ini_obra_lotes.lote_id')
+        'ini_obra_lotes.descripcion','ini_obra_lotes.id','ini_obra_lotes.ini_obra_id',
+        'ini_obra_lotes.lote_id','ini_obra_lotes.obra_extra')
         ->where('ini_obra_lotes.ini_obra_id','=',$id)
         ->orderBy('ini_obra_lotes.id', 'desc')->get();
          
@@ -116,6 +118,7 @@ class IniObraController extends Controller
             $ini_obra->descripcion_corta = $request->descripcion_corta;
             $ini_obra->tipo = $request->tipo;
             $ini_obra->iva = $request->iva;
+            $ini_obra->total_superficie = $request->total_superficie;
             $ini_obra->save();
  
             $lotes = $request->data;//Array de detalles
@@ -134,6 +137,7 @@ class IniObraController extends Controller
                 $lotes->importe = $det['importe'];       
                 $lotes->descripcion = $det['descripcion'];
                 $lotes->lote_id= $det['lote_id'];
+                $lotes->obra_extra= $det['obra_extra'];
                 $lotes->save();
 
                 if($det['lote_id']>0){
@@ -229,6 +233,7 @@ class IniObraController extends Controller
             $ini_obra->descripcion_corta = $request->descripcion_corta;
             $ini_obra->tipo = $request->tipo;
             $ini_obra->iva = $request->iva;
+            $ini_obra->total_superficie = $request->total_superficie;
             $ini_obra->save();
  
             $lotes = $request->data;//Array de detalles
@@ -247,6 +252,7 @@ class IniObraController extends Controller
                 $lotes->importe = $det['importe'];       
                 $lotes->descripcion = $det['descripcion'];
                 $lotes->lote_id= $det['lote_id'];
+                $lotes->obra_extra= $det['obra_extra'];
                 $lotes->save();
 
                 if($det['lote_id']>0){

@@ -28,6 +28,7 @@ class CreateIniObrasTable extends Migration
             $table->double('total_anticipo');
             $table->string('descripcion_corta')->nullable();
             $table->string('descripcion_larga')->nullable();
+            $table->double('total_superficie')->nullable();
             $table->boolean('iva')->default(0);
             $table->string('tipo',30)->nullable();
 
