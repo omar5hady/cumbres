@@ -154,6 +154,7 @@ Route::get('/iniobra/obtenerDetalles','IniObraController@obtenerDetalles');
 Route::delete('/iniobra/contrato/eliminar','IniObraController@eliminarContrato');
 Route::post('/iniobra/lote/registrar','IniObraController@agregarIniObraLotes');
 Route::delete('/iniobra/lote/eliminar','IniObraController@eliminarIniObraLotes');
+Route::get('/iniobra/pdf','IniObraController@contratoObraPDF')->name('contratos.pdf');
 
 ////////////////////        RUTAS PARTIDAS   /////////////////////////////////
 Route::get('/partidas','PartidaController@index');
@@ -203,6 +204,8 @@ Route::get('/avance','AvanceController@index');
 Route::get('/avanceProm','AvanceController@indexProm');
 Route::put('/avance/actualizar','AvanceController@update');
 Route::get('/avances/resume_excel/{fraccionamiento}','AvanceController@exportExcel');
+
+
 
 
 

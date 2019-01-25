@@ -72,7 +72,7 @@ class IniObraController extends Controller
             'ini_obras.total_costo_directo','ini_obras.total_costo_indirecto','ini_obras.total_importe',
             'contratistas.nombre as contratista','fraccionamientos.nombre as proyecto','ini_obras.anticipo',
             'ini_obras.total_anticipo','ini_obras.costo_indirecto_porcentaje','ini_obras.fraccionamiento_id',
-            'ini_obras.contratista_id')
+            'ini_obras.contratista_id','ini_obras.descripcion_corta','ini_obras.descripcion_larga','ini_obras.iva','ini_obras.tipo')
         ->where('ini_obras.id','=',$id)
         ->orderBy('ini_obras.id', 'desc')->take(1)->get();
          
@@ -110,6 +110,10 @@ class IniObraController extends Controller
             $ini_obra->anticipo = $request->anticipo;
             $ini_obra->total_anticipo = $request->total_anticipo;
             $ini_obra->costo_indirecto_porcentaje = $request->costo_indirecto_porcentaje;
+            $ini_obra->descripcion_larga = $request->descripcion_larga;
+            $ini_obra->descripcion_corta = $request->descripcion_corta;
+            $ini_obra->tipo = $request->tipo;
+            $ini_obra->iva = $request->iva;
             $ini_obra->save();
  
             $lotes = $request->data;//Array de detalles
@@ -146,7 +150,6 @@ class IniObraController extends Controller
    
 
     public function select_manzana_lotes (Request $request)
-
     {
         $buscar = $request->buscar;
         $lotesManzana = Lote::select('manzana')
@@ -159,7 +162,6 @@ class IniObraController extends Controller
     }
 
     public function select_lotes (Request $request)
-
     {
         $buscar = $request->buscar;
         $buscar2 = $request->buscar2;
@@ -174,7 +176,6 @@ class IniObraController extends Controller
     }
 
     public function select_datos_lotes (Request $request)
-
     {
         $buscar = $request->buscar;
         $lotesDatos = Lote::join('modelos','lotes.modelo_id','=','modelos.id')
@@ -222,6 +223,10 @@ class IniObraController extends Controller
             $ini_obra->anticipo = $request->anticipo;
             $ini_obra->total_anticipo = $request->total_anticipo;
             $ini_obra->costo_indirecto_porcentaje = $request->costo_indirecto_porcentaje;
+            $ini_obra->descripcion_larga = $request->descripcion_larga;
+            $ini_obra->descripcion_corta = $request->descripcion_corta;
+            $ini_obra->tipo = $request->tipo;
+            $ini_obra->iva = $request->iva;
             $ini_obra->save();
  
             $lotes = $request->data;//Array de detalles
@@ -284,8 +289,27 @@ class IniObraController extends Controller
             $lotes->lote_id= $request->lote_id;
             $lotes->save();
 
-        
+     }
 
+   public function contratoObraPDF(Request $request  ){
+    $cabecera = Ini_obra::join('contratistas','ini_obras.contratista_id','=','contratistas.id')
+    ->join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
+    ->select('ini_obras.id','ini_obras.clave','ini_obras.f_ini','ini_obras.f_fin',
+        'ini_obras.total_costo_directo','ini_obras.total_costo_indirecto','ini_obras.total_importe',
+        'contratistas.nombre as contratista','contratistas.rfc as rfc',
+        'contratistas.direccion as direccion','contratistas.colonia as colonia',
+        'contratistas.cp as codigoPostal','contratistas.IMSS as imss',
+        'contratistas.representante as representante','fraccionamientos.nombre as proyecto',
+        'fraccionamientos.calle as calleFracc','fraccionamientos.colonia as coloniaFracc',
+        'fraccionamientos.estado as estadoFracc','ini_obras.anticipo',
+        'ini_obras.total_anticipo','ini_obras.costo_indirecto_porcentaje','ini_obras.fraccionamiento_id',
+        'ini_obras.contratista_id','ini_obras.descripcion_corta','ini_obras.descripcion_larga','ini_obras.iva','ini_obras.tipo')
+    /*->where('ini_obras.id','=',$id)*/
+    ->orderBy('ini_obras.id', 'desc')->take(1)->get();
+
+        $pdf = \PDF::loadview('pdf.contratoContratista',['cabecera' => $cabecera]);
+        return $pdf->download('contrato.pdf');
+        // return ['cabecera' => $cabecera];
      }
 
 }

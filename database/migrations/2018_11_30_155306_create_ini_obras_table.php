@@ -26,6 +26,11 @@ class CreateIniObrasTable extends Migration
             $table->float('anticipo');
             $table->float('costo_indirecto_porcentaje')->default(0);
             $table->double('total_anticipo');
+            $table->string('descripcion_corta')->nullable();
+            $table->string('descripcion_larga')->nullable();
+            $table->boolean('iva')->default(0);
+            $table->string('tipo',30)->nullable();
+
             $table->timestamps();
 
             $table->foreign('fraccionamiento_id')->references('id')->on('fraccionamientos');

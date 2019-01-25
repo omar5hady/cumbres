@@ -83855,6 +83855,93 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -83868,6 +83955,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             etapa_id: 0,
             fraccionamiento_id: 0,
             num_etapa: 0,
+            descripcion_larga: '',
+            descripcion_corta: '',
+            tipo: 'Vivienda',
+            iva: 0,
             clave: '',
             total_importe: 0.0,
             total_costo_directo: 0.0,
@@ -84224,7 +84315,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 'anticipo': this.anticipo,
                 'total_anticipo': this.total_anticipo,
                 'data': this.arrayAvisoObraLotes,
-                'costo_indirecto_porcentaje': this.costo_indirecto_porcentaje
+                'costo_indirecto_porcentaje': this.costo_indirecto_porcentaje,
+                'tipo': this.tipo,
+                'iva': this.iva,
+                'descripcion_larga': this.descripcion_larga,
+                'descripcion_corta': this.descripcion_corta
             }).then(function (response) {
                 me.listado = 1;
                 me.limpiarDatos();
@@ -84266,7 +84361,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 'anticipo': this.anticipo,
                 'total_anticipo': this.total_anticipo,
                 'data': this.arrayAvisoObraLotes,
-                'costo_indirecto_porcentaje': this.costo_indirecto_porcentaje
+                'costo_indirecto_porcentaje': this.costo_indirecto_porcentaje,
+                'tipo': this.tipo,
+                'iva': this.iva,
+                'descripcion_larga': this.descripcion_larga,
+                'descripcion_corta': this.descripcion_corta
             }).then(function (response) {
                 me.listado = 1;
                 me.limpiarDatos();
@@ -84306,6 +84405,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             this.arrayLotes = [];
             this.arrayDatosLotes = [];
             this.arrayManzanaLotes = [];
+            this.descripcion_larga = '';
+            this.descripcion_corta = '';
+            this.iva = 0;
+            this.tipo = 'Vivienda';
         },
         eliminarContrato: function eliminarContrato() {
             var _this2 = this;
@@ -84428,6 +84531,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 me.total_anticipo = me.arrayAvisoT[0]['total_anticipo'];
                 me.costo_indirecto_porcentaje = me.arrayAvisoT[0]['costo_indirecto_porcentaje'];
                 me.contratista = me.arrayAvisoT[0]['contratista'];
+                me.descripcion_larga = me.arrayAvisoT[0]['descripcion_larga'];
+                me.descripcion_corta = me.arrayAvisoT[0]['descripcion_corta'];
+                me.tipo = me.arrayAvisoT[0]['tipo'];
+                me.iva = me.arrayAvisoT[0]['iva'];
                 me.selectManzanaLotes(me.fraccionamiento_id);
                 me.id = id;
             }).catch(function (error) {
@@ -85600,6 +85707,228 @@ var render = function() {
                       ])
                     ]),
                     _vm._v(" "),
+                    _vm.arrayAvisoObraLotes.length
+                      ? _c("div", { staticClass: "form-group row border" }, [
+                          _c("div", { staticClass: "col-md-2" }, [
+                            _c("div", { staticClass: "form-group" }, [
+                              _c("label", [_vm._v("Tipo")]),
+                              _vm._v(" "),
+                              _c("div", { staticClass: "form-inline" }, [
+                                _c(
+                                  "select",
+                                  {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.tipo,
+                                        expression: "tipo"
+                                      }
+                                    ],
+                                    staticClass: "form-control",
+                                    on: {
+                                      change: function($event) {
+                                        var $$selectedVal = Array.prototype.filter
+                                          .call($event.target.options, function(
+                                            o
+                                          ) {
+                                            return o.selected
+                                          })
+                                          .map(function(o) {
+                                            var val =
+                                              "_value" in o ? o._value : o.value
+                                            return val
+                                          })
+                                        _vm.tipo = $event.target.multiple
+                                          ? $$selectedVal
+                                          : $$selectedVal[0]
+                                      }
+                                    }
+                                  },
+                                  [
+                                    _c(
+                                      "option",
+                                      { attrs: { value: "Vivienda" } },
+                                      [_vm._v("Vivienda")]
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "option",
+                                      { attrs: { value: "Urbanización" } },
+                                      [_vm._v("Urbanización")]
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "option",
+                                      { attrs: { value: "Casa club" } },
+                                      [_vm._v("Casa club")]
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "option",
+                                      { attrs: { value: "Caseta" } },
+                                      [_vm._v("Caseta")]
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "option",
+                                      { attrs: { value: "Locales" } },
+                                      [_vm._v("Locales")]
+                                    )
+                                  ]
+                                )
+                              ])
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col-md-1" }, [
+                            _c("div", { staticClass: "form-group" }, [
+                              _c("label", [_vm._v("IVA")]),
+                              _vm._v(" "),
+                              _c("div", { staticClass: "form-inline" }, [
+                                _c(
+                                  "select",
+                                  {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.iva,
+                                        expression: "iva"
+                                      }
+                                    ],
+                                    staticClass: "form-control",
+                                    on: {
+                                      change: function($event) {
+                                        var $$selectedVal = Array.prototype.filter
+                                          .call($event.target.options, function(
+                                            o
+                                          ) {
+                                            return o.selected
+                                          })
+                                          .map(function(o) {
+                                            var val =
+                                              "_value" in o ? o._value : o.value
+                                            return val
+                                          })
+                                        _vm.iva = $event.target.multiple
+                                          ? $$selectedVal
+                                          : $$selectedVal[0]
+                                      }
+                                    }
+                                  },
+                                  [
+                                    _c("option", { attrs: { value: "0" } }, [
+                                      _vm._v("No")
+                                    ]),
+                                    _vm._v(" "),
+                                    _c("option", { attrs: { value: "1" } }, [
+                                      _vm._v("Si")
+                                    ])
+                                  ]
+                                )
+                              ])
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col-md-3" }, [
+                            _c("div", { staticClass: "form-group" }, [
+                              _c("label", [
+                                _vm._v("Descripcion corta para contrato"),
+                                _c(
+                                  "span",
+                                  {
+                                    directives: [
+                                      {
+                                        name: "show",
+                                        rawName: "v-show",
+                                        value: _vm.descripcion_corta == "",
+                                        expression: "descripcion_corta==''"
+                                      }
+                                    ],
+                                    staticStyle: { color: "red" }
+                                  },
+                                  [_vm._v("(*Ingrese)")]
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.descripcion_corta,
+                                    expression: "descripcion_corta"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: {
+                                  type: "text",
+                                  placeholder: "Descripcion corta"
+                                },
+                                domProps: { value: _vm.descripcion_corta },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.descripcion_corta = $event.target.value
+                                  }
+                                }
+                              })
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col-md-6" }, [
+                            _c("div", { staticClass: "form-group" }, [
+                              _c("label", [
+                                _vm._v("Descripcion larga para contrato"),
+                                _c(
+                                  "span",
+                                  {
+                                    directives: [
+                                      {
+                                        name: "show",
+                                        rawName: "v-show",
+                                        value: _vm.descripcion_larga == "",
+                                        expression: "descripcion_larga==''"
+                                      }
+                                    ],
+                                    staticStyle: { color: "red" }
+                                  },
+                                  [_vm._v("(*Ingrese)")]
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.descripcion_larga,
+                                    expression: "descripcion_larga"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: {
+                                  type: "text",
+                                  placeholder: "Descripcion larga"
+                                },
+                                domProps: { value: _vm.descripcion_larga },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.descripcion_larga = $event.target.value
+                                  }
+                                }
+                              })
+                            ])
+                          ])
+                        ])
+                      : _vm._e(),
+                    _vm._v(" "),
                     _c("div", { staticClass: "form-group row" }, [
                       _c("div", { staticClass: "col-md-12" }, [
                         _c(
@@ -86410,6 +86739,236 @@ var render = function() {
                           ]
                         )
                       ]),
+                      _vm._v(" "),
+                      _vm.arrayAvisoObraLotes.length
+                        ? _c("div", { staticClass: "form-group row border" }, [
+                            _c("div", { staticClass: "col-md-2" }, [
+                              _c("div", { staticClass: "form-group" }, [
+                                _c("label", [_vm._v("Tipo")]),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "form-inline" }, [
+                                  _c(
+                                    "select",
+                                    {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: _vm.tipo,
+                                          expression: "tipo"
+                                        }
+                                      ],
+                                      staticClass: "form-control",
+                                      on: {
+                                        change: function($event) {
+                                          var $$selectedVal = Array.prototype.filter
+                                            .call(
+                                              $event.target.options,
+                                              function(o) {
+                                                return o.selected
+                                              }
+                                            )
+                                            .map(function(o) {
+                                              var val =
+                                                "_value" in o
+                                                  ? o._value
+                                                  : o.value
+                                              return val
+                                            })
+                                          _vm.tipo = $event.target.multiple
+                                            ? $$selectedVal
+                                            : $$selectedVal[0]
+                                        }
+                                      }
+                                    },
+                                    [
+                                      _c(
+                                        "option",
+                                        { attrs: { value: "Vivienda" } },
+                                        [_vm._v("Vivienda")]
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "option",
+                                        { attrs: { value: "Urbanización" } },
+                                        [_vm._v("Urbanización")]
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "option",
+                                        { attrs: { value: "Casa club" } },
+                                        [_vm._v("Casa club")]
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "option",
+                                        { attrs: { value: "Caseta" } },
+                                        [_vm._v("Caseta")]
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "option",
+                                        { attrs: { value: "Locales" } },
+                                        [_vm._v("Locales")]
+                                      )
+                                    ]
+                                  )
+                                ])
+                              ])
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "col-md-1" }, [
+                              _c("div", { staticClass: "form-group" }, [
+                                _c("label", [_vm._v("IVA")]),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "form-inline" }, [
+                                  _c(
+                                    "select",
+                                    {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: _vm.iva,
+                                          expression: "iva"
+                                        }
+                                      ],
+                                      staticClass: "form-control",
+                                      on: {
+                                        change: function($event) {
+                                          var $$selectedVal = Array.prototype.filter
+                                            .call(
+                                              $event.target.options,
+                                              function(o) {
+                                                return o.selected
+                                              }
+                                            )
+                                            .map(function(o) {
+                                              var val =
+                                                "_value" in o
+                                                  ? o._value
+                                                  : o.value
+                                              return val
+                                            })
+                                          _vm.iva = $event.target.multiple
+                                            ? $$selectedVal
+                                            : $$selectedVal[0]
+                                        }
+                                      }
+                                    },
+                                    [
+                                      _c("option", { attrs: { value: "0" } }, [
+                                        _vm._v("No")
+                                      ]),
+                                      _vm._v(" "),
+                                      _c("option", { attrs: { value: "1" } }, [
+                                        _vm._v("Si")
+                                      ])
+                                    ]
+                                  )
+                                ])
+                              ])
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "col-md-3" }, [
+                              _c("div", { staticClass: "form-group" }, [
+                                _c("label", [
+                                  _vm._v("Descripcion corta para contrato"),
+                                  _c(
+                                    "span",
+                                    {
+                                      directives: [
+                                        {
+                                          name: "show",
+                                          rawName: "v-show",
+                                          value: _vm.descripcion_corta == "",
+                                          expression: "descripcion_corta==''"
+                                        }
+                                      ],
+                                      staticStyle: { color: "red" }
+                                    },
+                                    [_vm._v("(*Ingrese)")]
+                                  )
+                                ]),
+                                _vm._v(" "),
+                                _c("input", {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.descripcion_corta,
+                                      expression: "descripcion_corta"
+                                    }
+                                  ],
+                                  staticClass: "form-control",
+                                  attrs: {
+                                    type: "text",
+                                    placeholder: "Descripcion corta"
+                                  },
+                                  domProps: { value: _vm.descripcion_corta },
+                                  on: {
+                                    input: function($event) {
+                                      if ($event.target.composing) {
+                                        return
+                                      }
+                                      _vm.descripcion_corta =
+                                        $event.target.value
+                                    }
+                                  }
+                                })
+                              ])
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "col-md-6" }, [
+                              _c("div", { staticClass: "form-group" }, [
+                                _c("label", [
+                                  _vm._v("Descripcion larga para contrato"),
+                                  _c(
+                                    "span",
+                                    {
+                                      directives: [
+                                        {
+                                          name: "show",
+                                          rawName: "v-show",
+                                          value: _vm.descripcion_larga == "",
+                                          expression: "descripcion_larga==''"
+                                        }
+                                      ],
+                                      staticStyle: { color: "red" }
+                                    },
+                                    [_vm._v("(*Ingrese)")]
+                                  )
+                                ]),
+                                _vm._v(" "),
+                                _c("input", {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.descripcion_larga,
+                                      expression: "descripcion_larga"
+                                    }
+                                  ],
+                                  staticClass: "form-control",
+                                  attrs: {
+                                    type: "text",
+                                    placeholder: "Descripcion larga"
+                                  },
+                                  domProps: { value: _vm.descripcion_larga },
+                                  on: {
+                                    input: function($event) {
+                                      if ($event.target.composing) {
+                                        return
+                                      }
+                                      _vm.descripcion_larga =
+                                        $event.target.value
+                                    }
+                                  }
+                                })
+                              ])
+                            ])
+                          ])
+                        : _vm._e(),
                       _vm._v(" "),
                       _c("div", { staticClass: "form-group row" }, [
                         _c("div", { staticClass: "col-md-12" }, [

@@ -263,6 +263,50 @@
                                     </table>
                                 </div>
                             </div>
+
+                            <!-- Parametros para contrato -->
+                            <div class="form-group row border"  v-if="arrayAvisoObraLotes.length">
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Tipo</label> 
+                                        <div class="form-inline">
+                                        <select class="form-control" v-model="tipo">
+                                            <option value="Vivienda">Vivienda</option>
+                                            <option value="Urbanización">Urbanización</option>
+                                            <option value="Casa club">Casa club</option>
+                                            <option value="Caseta">Caseta</option>
+                                            <option value="Locales">Locales</option>
+                                        </select>
+                                           
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <div class="form-group">
+                                        <label>IVA</label> 
+                                        <div class="form-inline">
+                                        <select class="form-control" v-model="iva">
+                                            <option value="0">No</option>
+                                            <option value="1">Si</option>
+                                        </select>
+                                           
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Descripcion corta para contrato<span style="color:red;" v-show="descripcion_corta==''">(*Ingrese)</span> </label>
+                                        <input type="text" class="form-control" v-model="descripcion_corta"  placeholder="Descripcion corta">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Descripcion larga para contrato<span style="color:red;" v-show="descripcion_larga==''">(*Ingrese)</span> </label>
+                                        <input type="text" class="form-control" v-model="descripcion_larga"  placeholder="Descripcion larga">
+                                    </div>
+                                </div>
+                                
+                            </div>
                             <div class="form-group row">
                                 <div class="col-md-12">
                                     <button type="button" class="btn btn-secondary" @click="ocultarDetalle()"> Cerrar </button>
@@ -442,6 +486,49 @@
                                     </table>
                                 </div>
                             </div>
+                            <!-- Parametros para contrato -->
+                            <div class="form-group row border"  v-if="arrayAvisoObraLotes.length">
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Tipo</label> 
+                                        <div class="form-inline">
+                                        <select class="form-control" v-model="tipo">
+                                            <option value="Vivienda">Vivienda</option>
+                                            <option value="Urbanización">Urbanización</option>
+                                            <option value="Casa club">Casa club</option>
+                                            <option value="Caseta">Caseta</option>
+                                            <option value="Locales">Locales</option>
+                                        </select>
+                                           
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <div class="form-group">
+                                        <label>IVA</label> 
+                                        <div class="form-inline">
+                                        <select class="form-control" v-model="iva">
+                                            <option value="0">No</option>
+                                            <option value="1">Si</option>
+                                        </select>
+                                           
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Descripcion corta para contrato<span style="color:red;" v-show="descripcion_corta==''">(*Ingrese)</span> </label>
+                                        <input type="text" class="form-control" v-model="descripcion_corta"  placeholder="Descripcion corta">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Descripcion larga para contrato<span style="color:red;" v-show="descripcion_larga==''">(*Ingrese)</span> </label>
+                                        <input type="text" class="form-control" v-model="descripcion_larga"  placeholder="Descripcion larga">
+                                    </div>
+                                </div>
+                                
+                            </div>
                             <div class="form-group row">
                                 <div class="col-md-12">
                                     <button type="button" class="btn btn-secondary" @click="ocultarDetalle()"> Cerrar </button>
@@ -578,6 +665,10 @@
                 etapa_id:0,
                 fraccionamiento_id : 0,
                 num_etapa : 0,
+                descripcion_larga:'',
+                descripcion_corta:'',
+                tipo:'Vivienda',
+                iva:0,
                 clave:'',
                 total_importe:0.0,
                 total_costo_directo:0.0,
@@ -955,7 +1046,11 @@
                     'anticipo':this.anticipo,
                     'total_anticipo':this.total_anticipo,
                     'data':this.arrayAvisoObraLotes,
-                    'costo_indirecto_porcentaje':this.costo_indirecto_porcentaje
+                    'costo_indirecto_porcentaje':this.costo_indirecto_porcentaje,
+                    'tipo':this.tipo,
+                    'iva':this.iva,
+                    'descripcion_larga':this.descripcion_larga,
+                    'descripcion_corta':this.descripcion_corta
                 }).then(function (response){
                     me.listado=1;
                     me.limpiarDatos();
@@ -996,7 +1091,11 @@
                     'anticipo':this.anticipo,
                     'total_anticipo':this.total_anticipo,
                     'data':this.arrayAvisoObraLotes,
-                    'costo_indirecto_porcentaje':this.costo_indirecto_porcentaje
+                    'costo_indirecto_porcentaje':this.costo_indirecto_porcentaje,
+                    'tipo':this.tipo,
+                    'iva':this.iva,
+                    'descripcion_larga':this.descripcion_larga,
+                    'descripcion_corta':this.descripcion_corta
                 }).then(function (response){
                     me.listado=1;
                     me.limpiarDatos();
@@ -1039,6 +1138,10 @@
                 this.arrayLotes=[];
                 this.arrayDatosLotes=[];
                 this.arrayManzanaLotes=[];
+                this.descripcion_larga='';
+                this.descripcion_corta='';
+                this.iva=0;
+                this.tipo='Vivienda';
             },
             eliminarContrato(data =[]){
                 this.id=data['id'];
@@ -1165,6 +1268,10 @@
                     me.total_anticipo = me.arrayAvisoT[0]['total_anticipo'];
                     me.costo_indirecto_porcentaje=me.arrayAvisoT[0]['costo_indirecto_porcentaje'];
                     me.contratista= me.arrayAvisoT[0]['contratista'];
+                    me.descripcion_larga=me.arrayAvisoT[0]['descripcion_larga'];
+                    me.descripcion_corta=me.arrayAvisoT[0]['descripcion_corta'];
+                    me.tipo=me.arrayAvisoT[0]['tipo'];
+                    me.iva=me.arrayAvisoT[0]['iva'];
                     me.selectManzanaLotes(me.fraccionamiento_id);
                     me.id=id;
                   
