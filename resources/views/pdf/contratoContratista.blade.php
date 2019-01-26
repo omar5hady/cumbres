@@ -5,7 +5,7 @@
 	<TITLE>Contrato</TITLE>
 	<STYLE TYPE="text/css">
 
-		@page { size: 8.5in 11in; margin-left: 0.98in; margin-right: 0.98in; margin-top: 0.39in; margin-bottom: 0.75in }
+		@page { size: 8.5in 11in; margin-left: 0.98in; margin-right: 0.98in; margin-top: 180px; margin-bottom: 50px }
 		P { margin-bottom: 0in; direction: ltr; text-align: justify; widows: 2; orphans: 2; padding: 0em; }
 		P.western { so-language: en-US }
 		P.cjk { so-language: es-ES }
@@ -24,44 +24,37 @@
         .table { display: table; width: 100%; border-collapse: collapse; }
         .table-row { display: table-row; }
         .table-cell { display: table-cell; padding: 0em; font-size: 9pt; }
+		#header { position: fixed; left: 0px; top: -160px; right: 0px; height: 200px; text-align: center; } 
+		#footer { position: fixed; left: 0px; bottom: -160px; right: 0px; height: 180px; } 
+		#footer .page:after { content: counter(page, upper-roman); } 
 	
 	</STYLE>
 
 </HEAD>
 <BODY LANG="es-MX" DIR="LTR" STYLE="padding-left: 0.05in; padding-right: 0.05in">
-<DIV TYPE=HEADER STYLE="padding-left: 0.05in; padding-right: 0.5in">
-	<P LANG="en-GB" ALIGN=LEFT><IMG SRC="img/contratos/CONTRATOS_html_7790d2bb.png" ALIGN=BOTTOM><SPAN LANG="es-ES">	</SPAN><FONT FACE="Arial Narrow, serif"><FONT SIZE=1 STYLE="font-size: 8pt"><SPAN LANG="es-ES"><I><B>
-	                                                                    
-	                                                                    
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    </B></I></SPAN></FONT></FONT><FONT FACE="Arial Narrow, serif"><FONT SIZE=3><SPAN LANG="es-ES" "><I><B>{{$cabecera[0]->proyecto}}  &nbsp;&nbsp;&nbsp;
-	{{$cabecera[0]->clave}}                                          
-	                                                                    
-	                                                                    
-	                                         	                          
-	                                	</B></I></SPAN></FONT></FONT></P>
-		<P LANG="en-GB" ALIGN=RIGHT STYLE="margin-left: 1in"><FONT FACE="Arial Narrow, serif"><FONT SIZE=1><SPAN LANG="es-ES"><I>	
-		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   
-		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   
-		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   
-		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<DIV id="header" >
+	<div class="table">
+	<div class="table-row">
+		<div class="table-cell"  STYLE="padding-left: -0.6in;"><IMG SRC="img/contratos/CONTRATOS_html_7790d2bb.png" ALIGN=BOTTOM STYLE="margin-top:5px"></div>
+		<div class="table-cell"><br><br><br><br><FONT FACE="Arial Narrow, serif"><FONT SIZE=3><SPAN LANG="es-ES" "><I><B>{{$cabecera[0]->proyecto}}
+	&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	{{$cabecera[0]->clave}}</B></I></SPAN></FONT></FONT></div>
+		</div>
+	</div>
+
+	</SPAN><P LANG="en-GB" ALIGN=RIGHT STYLE="margin-left: 1.8in"><FONT FACE="Arial Narrow, serif"><FONT SIZE=1><SPAN LANG="es-ES"><I>	
 		 Contrato referente a {{$cabecera[0]->descripcion_corta}},
-	    Monto del Contrato $ {{$cabecera[0]->total_importe}}</I></SPAN></FONT></FONT></P>
-	<IMG SRC="img/contratos/CONTRATOS_html_5d82e5a4.png" ALIGN=LEFT>
+	    Monto del Contrato ${{$cabecera[0]->total_importe}}</I></SPAN></FONT></FONT></P>
+	<IMG SRC="img/contratos/CONTRATOS_html_5d82e5a4.png">
 
 </DIV>
-<P LANG="es-ES" CLASS="western" ALIGN=JUSTIFY><A NAME="_GoBack"></A><BR>
-</P>
+
 <TABLE WIDTH=450 CELLPADDING=5 CELLSPACING=0>
 	<COL WIDTH=450>
 	<TR>
+	<br>
 		<TD WIDTH=450 HEIGHT=72 VALIGN=TOP BGCOLOR="#999999" STYLE="border: 1px solid #00000a; padding-top: 0in; padding-bottom: 0.2in; padding-left: 0.05in; padding-right: 0.09in">
 			<P LANG="es-ES" CLASS="western" ALIGN=JUSTIFY STYLE="margin-left: 0.07in">
-			<BR>
 			</P>
 			<P LANG="en-GB" CLASS="western" ALIGN=JUSTIFY STYLE="margin-top: 0in; margin-left: 0.05in">
 			<FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 10pt"><SPAN LANG="es-ES">CONTRATO
@@ -88,16 +81,12 @@
 </P>
 <H5 LANG="es-ES" CLASS="western" ALIGN=LEFT STYLE="padding-left: 0.05in; padding-right: 0.05in" ><FONT COLOR="#808080">	</FONT>C
 L A U S U L A S		</H5>
-<P LANG="es-ES" CLASS="western" ALIGN=JUSTIFY><BR>
-</P>
 
 <P LANG="en-GB" CLASS="western" ALIGN=JUSTIFY><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN LANG="es-ES"><B>1</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN LANG="es-ES">.
 - Contrato de Obra a Precio Alzado y Por Tiempo Determinado</SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=4><SPAN LANG="es-ES">
 </SPAN></FONT></FONT>
 </P>
 
-<P LANG="es-ES" CLASS="western" ALIGN=JUSTIFY><BR>
-</P>
 <P LANG="en-GB" CLASS="western" ALIGN=JUSTIFY><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN LANG="es-ES"><B>2</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=2 STYLE="font-size: 11pt"><SPAN LANG="es-ES">.
 - Datos del contratista:</SPAN></FONT></FONT></P>
 <H2 LANG="es-ES" CLASS="western"><BR>
@@ -151,29 +140,29 @@ En relación con los trabajos materia de este contrato.</SPAN></FONT></FONT></P>
 CONTRATISTA </B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">cuenta
 con los conocimientos técnicos y la experiencia necesaria para
 cumplir y llevar a cabo la obra del presente contrato.</SPAN></FONT></FONT></P>
-
-<P LANG="es-ES" CLASS="western" ALIGN=JUSTIFY><BR>
-</P>
-
+<br>
 <P LANG="en-GB" CLASS="western" ALIGN=JUSTIFY><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>5.
 - </B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">El
 contrato es referente a los trabajos de </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>{{$cabecera[0]->descripcion_corta}}
-</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">{{$cabecera[0]->descripcion_larga}},
-de la obra </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>{{$cabecera[0]->proyecto}}</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">,
-{{$cabecera[0]->coloniaFracc}}, Misma que identifican ambas partes. </SPAN></FONT></FONT>
+</B> {{$cabecera[0]->descripcion_larga}},
+de la obra </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>{{$cabecera[0]->proyecto}}, </B>{{$cabecera[0]->coloniaFracc}}, misma que identifican ambas partes. 
+</SPAN></FONT></FONT>
 </P>
-
-<P LANG="es-ES" CLASS="western" ALIGN=JUSTIFY><BR>
-</P>
+<br>
 <P LANG="en-GB" CLASS="western" ALIGN=JUSTIFY> <FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>6</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>.
 - </B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">El
 monto del presente contrato es por </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>$
 {{$cabecera[0]->total_importe}} ({{$cabecera[0]->totalImporteLetra}})</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">
-«IVA_2»</SPAN></FONT></FONT></P>
+@if ($cabecera[0]->iva == 1)
+Este monto incluye el impuesto al valor agregado del 16%.
+@else
+Trabajos que al estar destinados para casa habitación, de acuerdo a lo dispuesto en el articulo No. 29 del 
+R.L. del I.V.A. en vigor, queda exento del Impuesto al Valor Agregado correspondiente. 
+Precio que LA CONTRATANTE pagará a LA CONTRATISTA  por la ejecución de los trabajos descritos en la 
+cláusula Quinta de este contrato.
+@endif</SPAN></FONT></FONT></P>
 
-<P LANG="es-ES" CLASS="western" ALIGN=JUSTIFY><BR>
-</P>
-
+<br>
 <P LANG="en-GB" CLASS="western" ALIGN=JUSTIFY><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>7.
 - </B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>LA
 CONTRATISTA </B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">se</SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>
@@ -182,9 +171,7 @@ a realizar los trabajos a partir del </SPAN></FONT></FONT><FONT FACE="Arial, ser
 al </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>{{$cabecera[0]->f_fin}}.</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">
 </SPAN></FONT></FONT>
 </P>
-
-<P LANG="es-ES" CLASS="western" ALIGN=JUSTIFY><BR>
-</P>
+<br>
 
 <P LANG="en-GB" CLASS="western" ALIGN=JUSTIFY><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>8.
 - </B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>LA
@@ -196,9 +183,7 @@ parte se ocasionaran daños en las construcciones, comprometiéndose
 en tal caso a la reparación de los daños y al pago inmediato de los
 perjuicios ocasionados.</SPAN></FONT></FONT></P>
 
-<P LANG="es-ES" CLASS="western" ALIGN=JUSTIFY><BR>
-</P>
-
+<br>
 <P LANG="en-GB" CLASS="western" ALIGN=JUSTIFY><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>9.
 - LA CONTRATISTA</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">
 </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>&nbsp;</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">&nbsp;entregará
@@ -206,32 +191,50 @@ a la persona asignada por </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT S
 CONTRATANTE,</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">
 el trabajo señalado en este contrato, completamente terminado, le
 recibirá por escrito, debiendo firmar de recibido de conformidad.</SPAN></FONT></FONT></P>
-
-<P LANG="es-ES" CLASS="western" ALIGN=JUSTIFY><BR>
-</P>
+<br>
 
 <P LANG="en-GB" CLASS="western" ALIGN=JUSTIFY><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>10.</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">-
 </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>LA
 CONTRATANTE</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">
 se compromete a liquidar de la siguiente forma:</SPAN></FONT></FONT></P>
 
+	
 
-<OL TYPE=a>
-	<LI><P LANG="en-GB" ALIGN=JUSTIFY><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">Mediante
-	un «INCISO_A» correspondiente al  </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>{{$cabecera[0]->anticipo}}% </B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">
-	del monto del contrato al iniciar las obras. El total del pago es </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>$
-	{{$cabecera[0]->total_anticipo}}</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">
+	<FONT COLOR="#000000"><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">
+	<LI style="list-style-type: none; margin-left: 0.2in; text-indent: -0.2in"><P LANG="en-GB" ALIGN=JUSTIFY><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">a) Mediante
+		un anticipo correspondiente al  </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>{{$cabecera[0]->anticipo}}% </B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">
+		del monto del contrato al iniciar las obras. El total del pago es </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>$
+		{{$cabecera[0]->total_anticipo}}</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">
 	</SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>({{$cabecera[0]->anticipoLetra}}).</B></SPAN></FONT></FONT></P>
-</OL>
-<P LANG="en-GB" CLASS="western" ALIGN=JUSTIFY STYLE="margin-left: 0.2in; text-indent: -0.2in">
-<FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">«INCISO_B»
-</SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>{{$cabecera[0]->anticipo}}%</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">
-«INCISO_B1»</SPAN></FONT></FONT></P>
-<P LANG="en-GB" CLASS="western" ALIGN=JUSTIFY STYLE="margin-left: 0.2in; text-indent: -0.2in">
-<FONT COLOR="#000000"><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">«INCISO_C»</SPAN></FONT></FONT></FONT></P>
+
+</SPAN></FONT></FONT></FONT></P>
+	
+	<FONT COLOR="#000000"><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">
+	<LI style="list-style-type: none; margin-left: 0.15in; text-indent: -0.25in""><P LANG="en-GB" CLASS="western" ALIGN=JUSTIFY><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">
+	b) LA CONTRATANTE realizara pagos a LA CONTRATISTA por concepto de estimación, dicho importe será 
+		calculado en base al avance de obra, que determine la persona asignada por LA CONTRATANTE. 
+		De los pagos por estimación se retendrá el {{$cabecera[0]->anticipo}}% de dicho importe para amortizar el 
+		anticipo del contrato y adicionalmente LA CONTRATISTA autoriza que se le retenga el 3% de 
+		cada estimación por concepto de retención de fondo de garantía, para cubrir gastos por vicios 
+		ocultos al culminar las obras.</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">
+	</SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B></B></SPAN></FONT></FONT></P>
+
+</SPAN></FONT></FONT></FONT></P>
+<div style="page-break-after:always;"></div>
+	<LI style="list-style-type: none; margin-left: 0.1in; text-indent: -0.2in"><P LANG="en-GB" ALIGN=JUSTIFY><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">
+		c) LA CONTRATANTE realizara pagos a LA CONTRATISTA por concepto de devolución de fondo de garantía, 
+		cuando la persona asignada por LA CONTRATANTE autorice. En caso de existir un vicio oculto en la obra y 
+		que LA CONTRATISTA haga caso omiso para su reparación. LA CONTRATANTE reparará los daños generados en 
+		las obras por medio de otra empresa y el importe generado por dicha reparación será con cargo al fondo 
+		de garantía retenido a LA CONTRATISTA. Para realizar lo anterior no habrá necesidad de algún documento 
+		que autorice los trabajos por parte de LA CONTRATISTA a LA CONTRATANTE.</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">
+	</SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B></B></SPAN></FONT></FONT></P></LI></LI></LI>
+
+</SPAN></FONT></FONT></FONT></P>
 
 <P LANG="es-ES" CLASS="western" ALIGN=JUSTIFY><BR>
 </P>
+
 
 <P LANG="en-GB" CLASS="western" ALIGN=JUSTIFY><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>11.-
 </B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">Ambas
@@ -240,18 +243,27 @@ CONTRATISTA</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN
 no concluya en tiempo y en las condiciones establecidas, los trabajos
 señalados en el presente contrato y por lo tanto incumpla el
 programa de ejecución de obra, se hará acreedor a una sanción por
-cada día de retraso «tipo_1» por un importe equivalente al
-«tipo_2»  «tipo_3».</SPAN></FONT></FONT></P>
-<P LANG="es-ES" CLASS="western" ALIGN=JUSTIFY><BR>
-</P>
+cada día de retraso 
+@if($cabecera[0]->tipo == 'Vivienda')
+en la terminación de las casas 0.08 del valor del contrato de la casa que no se entregue en tiempo.
+@elseif($cabecera[0]->tipo == 'Urbanización') 
+, 0.02 el valor del contrato.
+@elseif($cabecera[0]->tipo == 'Casa Club') 
+en la terminación de La casa club 0.02 el valor del contrato.
+@elseif($cabecera[0]->tipo == 'Caseta') 
+en la terminación de La casa caseta 0.08 el valor del contrato.
+@elseif($cabecera[0]->tipo == 'Locales') 
+en la terminación de Los locales 0.02 el valor del contrato.
+@endif
+</SPAN></FONT></FONT></P>
+<br>
 <P LANG="en-GB" CLASS="western" ALIGN=JUSTIFY><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">La
 sanción especificada iniciará a partir del séptimo día hábil
 siguiente a la fecha de terminación de la obra, establecida en el
 Programa de Obra.   </SPAN></FONT></FONT>
 </P>
 
-<P LANG="es-ES" CLASS="western" ALIGN=JUSTIFY><BR>
-</P>
+<br>
 
 <P LANG="en-GB" CLASS="western" ALIGN=JUSTIFY><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>12.-
 LA</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">
@@ -261,30 +273,25 @@ obliga a expedir a favor de </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT
 CONTRATANTE</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">
 los siguientes documentos:</SPAN></FONT></FONT></P>
 
-<OL TYPE=a>
-	<LI><P LANG="en-GB" CLASS="western" ALIGN=JUSTIFY><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">Un
-	pagare por el monto del anticipo para garantizar el buen uso y
-	aplicación del mismo.</SPAN></FONT></FONT></P>
-</OL>
+	<LI style="list-style-type: none; margin-left: 0.2in; text-indent: -0.2in"><P LANG="en-GB" ALIGN=JUSTIFY><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">
+	a) Un pagare por el monto del anticipo para garantizar el buen uso y
+	aplicación del mismo.</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">
+	</SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B></B></SPAN></FONT></FONT></P></LI>
 
-<P LANG="es-ES" CLASS="western" ALIGN=JUSTIFY STYLE="margin-left: 0.5in">
-<BR>
-</P>
+</SPAN></FONT></FONT></FONT></P>
 
-<OL TYPE=a START=2>
-	<LI><P LANG="en-GB" CLASS="western" ALIGN=JUSTIFY><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">Un
-	pagare por el </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>10%</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">
-	del monto total de los trabajos contratados para garantizar el
-	cumplimiento en su totalidad de las obligaciones a cargo de </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>“LA
-	CONTRATISTA”</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">
-	así como, para responder por los defectos y vicios ocultos en las
-	obras hasta por un periodo de dos años o de cualquier otra
+	<LI style="list-style-type: none; margin-left: 0.15in; text-indent: -0.2in"><P LANG="en-GB" ALIGN=JUSTIFY><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">
+	b) Un pagare por el <B>10%</B> del monto total de los trabajos contratados para garantizar el
+	cumplimiento en su totalidad de las obligaciones a cargo de <B>“LA CONTRATISTA”</B> así como, para responder por los defectos y 
+	vicios ocultos en las obras hasta por un periodo de dos años o de cualquier otra
 	obligación contraída por virtud del contrato celebrado o que
-	derive del mismo.</SPAN></FONT></FONT></P>
-</OL>
+	derive del mismo.
+	
+	</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">
+	</SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B></B></SPAN></FONT></FONT></P></LI>
 
-<P LANG="es-ES" CLASS="western" ALIGN=JUSTIFY><BR>
-</P>
+</SPAN></FONT></FONT></FONT></P>
+<br>
 
 <P LANG="en-GB" CLASS="western" ALIGN=JUSTIFY><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">Estos
 documentos serán aplicables a partir del día hábil siguiente en el
@@ -292,8 +299,7 @@ que sean exigibles cualesquiera de las obligaciones a cargo de </SPAN></FONT></F
 CONTRATISTA”</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">
  para cuyo cumplimiento fueron constituidas dichas garantías.</SPAN></FONT></FONT></P>
 
-<P LANG="es-ES" CLASS="western" ALIGN=JUSTIFY><BR>
-</P>
+<br>
 
 <P LANG="en-GB" CLASS="western" ALIGN=JUSTIFY><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">Adicionalmente
 </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>“LA
@@ -310,8 +316,7 @@ o a terceros, en cuyo caso se hará efectiva la garantía otorgada
 para el cumplimiento del contrato, hasta por el monto total de la
 misma.</SPAN></FONT></FONT></P>
 
-<P LANG="es-ES" CLASS="western" ALIGN=JUSTIFY><BR>
-</P>
+<br>
 
 <P LANG="en-GB" CLASS="western" ALIGN=JUSTIFY><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>13.
 - LA CONTRATISTA</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">
@@ -319,17 +324,14 @@ deberá entregar la factura correspondiente a </SPAN></FONT></FONT><FONT FACE="A
 CONTRATANTE</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">
 para su revisión y pago.</SPAN></FONT></FONT></P>
 
-<P LANG="es-ES" CLASS="western" ALIGN=JUSTIFY><BR>
-</P>
+<br>
 
 <P LANG="en-GB" CLASS="western" ALIGN=JUSTIFY><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>14.
 - </B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">Todos
 los pagos se efectuarán en Manuel Gutiérrez Nájera # 190 Col.
 Tequisquiapan, en San Luis Potosí, S.L.P. </SPAN></FONT></FONT>
 </P>
-
-<P LANG="es-ES" CLASS="western" ALIGN=JUSTIFY><BR>
-</P>
+<br>
 
 <P LANG="en-GB" CLASS="western" ALIGN=JUSTIFY><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">Para
 cualquier controversia que se suscite con motivo del presente
@@ -344,6 +346,7 @@ firma el presente contrato a los {{$cabecera[0]->f_ini2}}.</B></SPAN></FONT></FO
 </P>
 <P LANG="es-ES" CLASS="western" ALIGN=JUSTIFY><BR>
 </P>
+<br>
 
 
 <div class="table">
@@ -387,22 +390,12 @@ firma el presente contrato a los {{$cabecera[0]->f_ini2}}.</B></SPAN></FONT></FO
 <P LANG="en-GB" CLASS="western" ALIGN=JUSTIFY STYLE="margin-left: 3.5in; text-indent: -3.5in">
 <SPAN LANG="es-ES"><B>						 </B></SPAN>
 </P>
-<P LANG="es-ES" CLASS="western" ALIGN=JUSTIFY><BR>
-</P>
-<P LANG="es-ES" CLASS="western" ALIGN=JUSTIFY><BR>
-</P>
-<P LANG="en-GB" CLASS="western" ALIGN=JUSTIFY><BR>
-</P>
-<DIV TYPE=FOOTER>
-	<P LANG="en-GB" ALIGN=LEFT STYLE="margin-right: 0.25in; margin-top: 0.2in">
 
-	</P>
-	<P LANG="en-GB" ALIGN=CENTER><IMG SRC="img/contratos/CONTRATOS_html_9b644e11.gif" ALIGN=LEFT><BR>
-	</P>
-	<P LANG="en-GB" ALIGN=JUSTIFY><FONT SIZE=1 STYLE="font-size: 8pt"><SPAN LANG="es-ES">MANUEL
-	GUTIERREZ  NAJERA     # 190     COL     TEQUIS             TEL Y FAX
-	01 (4)  833-46-83 - 85                   San Luis Potosí, S.L.P.</SPAN></FONT></P>
+<DIV id="footer">
+	<IMG SRC="img/contratos/CONTRATOS_html_5d82e5a4.png">
+	<P LANG="en-GB" ALIGN=CENTER><FONT SIZE=1 STYLE="font-size: 8pt; text-align:center;"><SPAN LANG="es-ES">MANUEL
+	GUTIERREZ NAJERA #190 COL TEQUIS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TEL Y FAX 01 (4) 833-46-83-85 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; San Luis Potosí, S.L.P.</SPAN></FONT></P></div>
 
 </BODY>
-</div>
+
 </HTML>

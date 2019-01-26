@@ -143,6 +143,7 @@ class IniObraController extends Controller
                 if($det['lote_id']>0){
                     $lote = Lote::findOrFail($det['lote_id']);
                     $lote->aviso=$ini_obra->clave;
+                    $lote->obra_extra=$det['obra_extra'];
                     $lote->save();
                 }
             }          
@@ -152,8 +153,6 @@ class IniObraController extends Controller
             DB::rollBack();
         }
     }
-
-   
 
     public function select_manzana_lotes (Request $request)
     {
@@ -258,6 +257,7 @@ class IniObraController extends Controller
                 if($det['lote_id']>0){
                     $lote = Lote::findOrFail($det['lote_id']);
                     $lote->aviso=$ini_obra->clave;
+                    $lote->obra_extra=$det['obra_extra'];
                     $lote->save();
                 }
             }          

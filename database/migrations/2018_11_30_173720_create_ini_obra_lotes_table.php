@@ -22,6 +22,7 @@ class CreateIniObraLotesTable extends Migration
             $table->string('construccion')->nullable();
             $table->double('costo_directo');
             $table->double('costo_indirecto');
+            $table->double('obra_extra')->default(0)->nullable();
             $table->double('importe');
             $table->text('descripcion');
             $table->integer('lote_id')->nullable();
