@@ -218,15 +218,14 @@ se compromete a liquidar de la siguiente forma:</SPAN></FONT></FONT></P>
 
 <OL TYPE=a>
 	<LI><P LANG="en-GB" ALIGN=JUSTIFY><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">Mediante
-	un «INCISO_A» correspondiente al  </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>{{$cabecera[0]->anticipo}}
-	</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">
+	un «INCISO_A» correspondiente al  </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>{{$cabecera[0]->anticipo}}% </B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">
 	del monto del contrato al iniciar las obras. El total del pago es </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>$
 	{{$cabecera[0]->total_anticipo}}</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">
 	</SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>({{$cabecera[0]->anticipoLetra}}).</B></SPAN></FONT></FONT></P>
 </OL>
 <P LANG="en-GB" CLASS="western" ALIGN=JUSTIFY STYLE="margin-left: 0.2in; text-indent: -0.2in">
 <FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">«INCISO_B»
-</SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>«PORCENTAJE_ANTICIPO_2»</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">
+</SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>{{$cabecera[0]->anticipo}}%</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">
 «INCISO_B1»</SPAN></FONT></FONT></P>
 <P LANG="en-GB" CLASS="western" ALIGN=JUSTIFY STYLE="margin-left: 0.2in; text-indent: -0.2in">
 <FONT COLOR="#000000"><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">«INCISO_C»</SPAN></FONT></FONT></FONT></P>

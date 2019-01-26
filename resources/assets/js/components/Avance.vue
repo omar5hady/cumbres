@@ -479,7 +479,7 @@
                     'id' : id
                 }).then(function (response){
                     
-                    me.listarAvance(1,'','lotes.num_lote');
+                    me.listarAvance(1,lote,'lotes.num_lote');
                     //window.alert("Cambios guardados correctamente");
                 const toast = Swal.mixin({
                     toast: true,

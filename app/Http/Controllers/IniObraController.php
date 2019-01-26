@@ -91,7 +91,7 @@ class IniObraController extends Controller
         'ini_obra_lotes.descripcion','ini_obra_lotes.id','ini_obra_lotes.ini_obra_id',
         'ini_obra_lotes.lote_id','ini_obra_lotes.obra_extra')
         ->where('ini_obra_lotes.ini_obra_id','=',$id)
-        ->orderBy('ini_obra_lotes.id', 'desc')->get();
+        ->orderBy('ini_obra_lotes.lote', 'desc')->get();
          
         return ['detalles' => $detalles];
     }
@@ -299,42 +299,50 @@ class IniObraController extends Controller
 
      }
 
-   public function contratoObraPDF(Request $request  ){
-    $cabecera = Ini_obra::join('contratistas','ini_obras.contratista_id','=','contratistas.id')
-    ->join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
-    ->select('ini_obras.id','ini_obras.clave','ini_obras.f_ini','ini_obras.f_fin',
-        'ini_obras.total_costo_directo','ini_obras.total_costo_indirecto','ini_obras.total_importe',
-        'contratistas.nombre as contratista','contratistas.rfc as rfc','contratistas.telefono as telefono',
-        'contratistas.direccion as direccion','contratistas.colonia as colonia',
-        'contratistas.cp as codigoPostal','contratistas.IMSS as imss','contratistas.estado as estado',
-        'contratistas.representante as representante','fraccionamientos.nombre as proyecto',
-        'fraccionamientos.calle as calleFracc','fraccionamientos.colonia as coloniaFracc',
-        'fraccionamientos.estado as estadoFracc','ini_obras.anticipo',
-        'ini_obras.total_anticipo','ini_obras.costo_indirecto_porcentaje','ini_obras.fraccionamiento_id',
-        'ini_obras.contratista_id','ini_obras.descripcion_corta','ini_obras.descripcion_larga','ini_obras.iva','ini_obras.tipo')
-    /*->where('ini_obras.id','=',$id)*/
-    ->orderBy('ini_obras.id', 'desc')->take(1)->get();
+    public function contratoObraPDF(Request $request, $id)
+    {
+        
+        $cabecera = Ini_obra::join('contratistas','ini_obras.contratista_id','=','contratistas.id')
+        ->join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
+        ->select('ini_obras.id','ini_obras.clave','ini_obras.f_ini','ini_obras.f_fin',
+            'ini_obras.total_costo_directo','ini_obras.total_costo_indirecto','ini_obras.total_importe',
+            'contratistas.nombre as contratista','contratistas.rfc as rfc','contratistas.telefono as telefono',
+            'contratistas.direccion as direccion','contratistas.colonia as colonia',
+            'contratistas.cp as codigoPostal','contratistas.IMSS as imss','contratistas.estado as estado',
+            'contratistas.representante as representante','fraccionamientos.nombre as proyecto',
+            'fraccionamientos.calle as calleFracc','fraccionamientos.colonia as coloniaFracc',
+            'fraccionamientos.estado as estadoFracc','ini_obras.anticipo',
+            'ini_obras.total_anticipo','ini_obras.costo_indirecto_porcentaje','ini_obras.fraccionamiento_id',
+            'ini_obras.contratista_id','ini_obras.descripcion_corta','ini_obras.descripcion_larga','ini_obras.iva','ini_obras.tipo')
+        ->where('ini_obras.id','=',$id)
+        ->orderBy('ini_obras.id', 'desc')->take(1)->get();
 
-    setlocale(LC_TIME, 'es');
-    $tiempo = new Carbon($cabecera[0]->f_ini);
-    $cabecera[0]->f_ini = $tiempo->formatLocalized('%d de %B de %Y');
+        setlocale(LC_TIME, 'es');
+        $tiempo = new Carbon($cabecera[0]->f_ini);
+        $cabecera[0]->f_ini = $tiempo->formatLocalized('%d de %B de %Y');
 
-    $tiempo2 = new Carbon($cabecera[0]->f_fin);
-    $cabecera[0]->f_fin = $tiempo2->formatLocalized('%d de %B de %Y');
+        $tiempo2 = new Carbon($cabecera[0]->f_fin);
+        $cabecera[0]->f_fin = $tiempo2->formatLocalized('%d de %B de %Y');
 
-    $cabecera[0]->f_ini2 = $tiempo->formatLocalized('%d dias del mes de %B del año %Y');
+        $cabecera[0]->f_ini2 = $tiempo->formatLocalized('%d dias del mes de %B del año %Y');
 
-    $cabecera[0]->total_anticipo = number_format((float)$cabecera[0]->total_anticipo,2,'.','');
-    $cabecera[0]->total_costo_directo = number_format((float)$cabecera[0]->total_costo_directo,2,'.','');
-    $cabecera[0]->total_costo_indirecto = number_format((float)$cabecera[0]->total_costo_indirecto,2,'.','');
-    $cabecera[0]->total_importe = number_format((float)$cabecera[0]->total_importe,2,'.','');
+        $cabecera[0]->total_anticipo = number_format((float)$cabecera[0]->total_anticipo,2,'.','');
+        $cabecera[0]->total_costo_directo = number_format((float)$cabecera[0]->total_costo_directo,2,'.','');
+        $cabecera[0]->total_costo_indirecto = number_format((float)$cabecera[0]->total_costo_indirecto,2,'.','');
+        $cabecera[0]->total_importe = number_format((float)$cabecera[0]->total_importe,2,'.','');
 
-    $cabecera[0]->anticipoLetra = NumerosEnLetras::convertir($cabecera[0]->total_anticipo,'Pesos',false,'Centavos');
-    $cabecera[0]->totalImporteLetra = NumerosEnLetras::convertir($cabecera[0]->total_importe,'Pesos',false,'Centavos');
+        $cabecera[0]->anticipoLetra = NumerosEnLetras::convertir($cabecera[0]->total_anticipo,'Pesos',false,'Centavos');
+        $cabecera[0]->totalImporteLetra = NumerosEnLetras::convertir($cabecera[0]->total_importe,'Pesos',false,'Centavos');
 
-        $pdf = \PDF::loadview('pdf.contratoContratista',['cabecera' => $cabecera]);
-        return $pdf->download('contrato.pdf');
-        // return ['cabecera' => $cabecera];
+            $pdf = \PDF::loadview('pdf.contratoContratista',['cabecera' => $cabecera]);
+            return $pdf->download('contrato.pdf');
+            // return ['cabecera' => $cabecera];
      }
 
-}
+     public function exportExcell(Request $request)
+     {
+        //Codigo para exportar vista PRE a excell
+        
+     }
+
+    }

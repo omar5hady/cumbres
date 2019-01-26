@@ -459,19 +459,19 @@
                                                 <td v-text="detalle.lote">
                                                     
                                                 </td>
-                                                <td v-text="detalle.construccion">
+                                                <td style="text-align: right;" v-text="detalle.construccion">
                                                    
                                                 </td>
-                                                <td>
+                                                <td style="text-align: right;">
                                                     <input v-model="detalle.costo_directo" type="text" class="form-control">
                                                 </td>
-                                                <td>
+                                                <td style="text-align: right;">
                                                     {{ detalle.costo_indirecto=detalle.costo_directo*costo_indirecto_porcentaje/100 | currency}}
                                                 </td>
-                                                <td>
+                                                <td style="text-align: right;">
                                                     <input v-model="detalle.obra_extra" type="text" class="form-control">
                                                 </td>
-                                                <td>
+                                                <td style="text-align: right;">
                                                     {{parseFloat(detalle.costo_directo) + parseFloat(detalle.costo_indirecto) | currency}}
                                                   <!-- <input readonly v-model="detalle.importe" type="text" class="form-control">  -->
                                                 </td>
@@ -617,11 +617,11 @@
                                                 <td v-text="detalle.descripcion"></td>
                                                 <td v-text="detalle.lote"></td>
                                                 <td v-text="detalle.manzana"></td>
-                                                <td v-text="detalle.construccion"></td>
-                                                <td v-text="'$'+formatNumber(detalle.costo_directo)"></td>
-                                                <td v-text="'$'+formatNumber(detalle.costo_indirecto)"></td>
-                                                <td v-text="'$'+formatNumber(detalle.obra_extra)"></td>
-                                                <td>
+                                                <td style="text-align: right;" v-text="detalle.construccion"></td>
+                                                <td style="text-align: right;" v-text="'$'+formatNumber(detalle.costo_directo)"></td>
+                                                <td style="text-align: right;" v-text="'$'+formatNumber(detalle.costo_indirecto)"></td>
+                                                <td style="text-align: right;" v-text="'$'+formatNumber(detalle.obra_extra)"></td>
+                                                <td align="right">
                                                     {{'$'+formatNumber(parseFloat(detalle.costo_directo) + parseFloat(detalle.costo_indirecto))}}
                                                   <!-- <input readonly v-model="detalle.importe" type="text" class="form-control">  -->
                                                 </td>
@@ -646,8 +646,13 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <div class="col-md-12">
+                                <div class="col-md-10">
                                     <button type="button" class="btn btn-secondary" @click="ocultarDetalle()"> Cerrar </button>
+                                </div>
+                                <div class="col-md-2">
+                                    <a class="btn btn-primary" v-bind:href="'/iniobra/pdf/'+ id " >
+                                        <i></i>Imprimir Contrato
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -1263,6 +1268,7 @@
                     me.total_anticipo = me.arrayAvisoT[0]['total_anticipo'];
                     me.costo_indirecto_porcentaje=me.arrayAvisoT[0]['costo_indirecto_porcentaje'];
                     me.total_construccion=me.arrayAvisoT[0]['total_superficie'];
+                    me.id=id;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -1323,7 +1329,7 @@
                     console.log(error);
                 });
 
-            },
+            }
            
         },
         mounted() {

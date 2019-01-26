@@ -83954,6 +83954,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -84530,6 +84535,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 me.total_anticipo = me.arrayAvisoT[0]['total_anticipo'];
                 me.costo_indirecto_porcentaje = me.arrayAvisoT[0]['costo_indirecto_porcentaje'];
                 me.total_construccion = me.arrayAvisoT[0]['total_superficie'];
+                me.id = id;
             }).catch(function (error) {
                 console.log(error);
             });
@@ -86687,6 +86693,9 @@ var render = function() {
                                                 }),
                                                 _vm._v(" "),
                                                 _c("td", {
+                                                  staticStyle: {
+                                                    "text-align": "right"
+                                                  },
                                                   domProps: {
                                                     textContent: _vm._s(
                                                       detalle.construccion
@@ -86694,108 +86703,147 @@ var render = function() {
                                                   }
                                                 }),
                                                 _vm._v(" "),
-                                                _c("td", [
-                                                  _c("input", {
-                                                    directives: [
-                                                      {
-                                                        name: "model",
-                                                        rawName: "v-model",
-                                                        value:
-                                                          detalle.costo_directo,
-                                                        expression:
-                                                          "detalle.costo_directo"
-                                                      }
-                                                    ],
-                                                    staticClass: "form-control",
-                                                    attrs: { type: "text" },
-                                                    domProps: {
-                                                      value:
-                                                        detalle.costo_directo
-                                                    },
-                                                    on: {
-                                                      input: function($event) {
-                                                        if (
-                                                          $event.target
-                                                            .composing
-                                                        ) {
-                                                          return
-                                                        }
-                                                        _vm.$set(
-                                                          detalle,
-                                                          "costo_directo",
-                                                          $event.target.value
-                                                        )
-                                                      }
+                                                _c(
+                                                  "td",
+                                                  {
+                                                    staticStyle: {
+                                                      "text-align": "right"
                                                     }
-                                                  })
-                                                ]),
-                                                _vm._v(" "),
-                                                _c("td", [
-                                                  _vm._v(
-                                                    "\n                                                " +
-                                                      _vm._s(
-                                                        _vm._f("currency")(
-                                                          (detalle.costo_indirecto =
-                                                            (detalle.costo_directo *
-                                                              _vm.costo_indirecto_porcentaje) /
-                                                            100)
-                                                        )
-                                                      ) +
-                                                      "\n                                            "
-                                                  )
-                                                ]),
-                                                _vm._v(" "),
-                                                _c("td", [
-                                                  _c("input", {
-                                                    directives: [
-                                                      {
-                                                        name: "model",
-                                                        rawName: "v-model",
-                                                        value:
-                                                          detalle.obra_extra,
-                                                        expression:
-                                                          "detalle.obra_extra"
-                                                      }
-                                                    ],
-                                                    staticClass: "form-control",
-                                                    attrs: { type: "text" },
-                                                    domProps: {
-                                                      value: detalle.obra_extra
-                                                    },
-                                                    on: {
-                                                      input: function($event) {
-                                                        if (
-                                                          $event.target
-                                                            .composing
-                                                        ) {
-                                                          return
+                                                  },
+                                                  [
+                                                    _c("input", {
+                                                      directives: [
+                                                        {
+                                                          name: "model",
+                                                          rawName: "v-model",
+                                                          value:
+                                                            detalle.costo_directo,
+                                                          expression:
+                                                            "detalle.costo_directo"
                                                         }
-                                                        _vm.$set(
-                                                          detalle,
-                                                          "obra_extra",
-                                                          $event.target.value
-                                                        )
+                                                      ],
+                                                      staticClass:
+                                                        "form-control",
+                                                      attrs: { type: "text" },
+                                                      domProps: {
+                                                        value:
+                                                          detalle.costo_directo
+                                                      },
+                                                      on: {
+                                                        input: function(
+                                                          $event
+                                                        ) {
+                                                          if (
+                                                            $event.target
+                                                              .composing
+                                                          ) {
+                                                            return
+                                                          }
+                                                          _vm.$set(
+                                                            detalle,
+                                                            "costo_directo",
+                                                            $event.target.value
+                                                          )
+                                                        }
                                                       }
-                                                    }
-                                                  })
-                                                ]),
+                                                    })
+                                                  ]
+                                                ),
                                                 _vm._v(" "),
-                                                _c("td", [
-                                                  _vm._v(
-                                                    "\n                                                " +
-                                                      _vm._s(
-                                                        _vm._f("currency")(
-                                                          parseFloat(
-                                                            detalle.costo_directo
-                                                          ) +
+                                                _c(
+                                                  "td",
+                                                  {
+                                                    staticStyle: {
+                                                      "text-align": "right"
+                                                    }
+                                                  },
+                                                  [
+                                                    _vm._v(
+                                                      "\n                                                " +
+                                                        _vm._s(
+                                                          _vm._f("currency")(
+                                                            (detalle.costo_indirecto =
+                                                              (detalle.costo_directo *
+                                                                _vm.costo_indirecto_porcentaje) /
+                                                              100)
+                                                          )
+                                                        ) +
+                                                        "\n                                            "
+                                                    )
+                                                  ]
+                                                ),
+                                                _vm._v(" "),
+                                                _c(
+                                                  "td",
+                                                  {
+                                                    staticStyle: {
+                                                      "text-align": "right"
+                                                    }
+                                                  },
+                                                  [
+                                                    _c("input", {
+                                                      directives: [
+                                                        {
+                                                          name: "model",
+                                                          rawName: "v-model",
+                                                          value:
+                                                            detalle.obra_extra,
+                                                          expression:
+                                                            "detalle.obra_extra"
+                                                        }
+                                                      ],
+                                                      staticClass:
+                                                        "form-control",
+                                                      attrs: { type: "text" },
+                                                      domProps: {
+                                                        value:
+                                                          detalle.obra_extra
+                                                      },
+                                                      on: {
+                                                        input: function(
+                                                          $event
+                                                        ) {
+                                                          if (
+                                                            $event.target
+                                                              .composing
+                                                          ) {
+                                                            return
+                                                          }
+                                                          _vm.$set(
+                                                            detalle,
+                                                            "obra_extra",
+                                                            $event.target.value
+                                                          )
+                                                        }
+                                                      }
+                                                    })
+                                                  ]
+                                                ),
+                                                _vm._v(" "),
+                                                _c(
+                                                  "td",
+                                                  {
+                                                    staticStyle: {
+                                                      "text-align": "right"
+                                                    }
+                                                  },
+                                                  [
+                                                    _vm._v(
+                                                      "\n                                                " +
+                                                        _vm._s(
+                                                          _vm._f("currency")(
                                                             parseFloat(
-                                                              detalle.costo_indirecto
-                                                            )
-                                                        )
-                                                      ) +
-                                                      "\n                                              "
-                                                  )
-                                                ])
+                                                              detalle.costo_directo
+                                                            ) +
+                                                              parseFloat(
+                                                                detalle.costo_indirecto
+                                                              )
+                                                          )
+                                                        ) +
+                                                        "\n                                              "
+                                                    )
+                                                  ]
+                                                )
                                               ]
                                             )
                                           }
@@ -87300,6 +87348,9 @@ var render = function() {
                                                   }),
                                                   _vm._v(" "),
                                                   _c("td", {
+                                                    staticStyle: {
+                                                      "text-align": "right"
+                                                    },
                                                     domProps: {
                                                       textContent: _vm._s(
                                                         detalle.construccion
@@ -87308,6 +87359,9 @@ var render = function() {
                                                   }),
                                                   _vm._v(" "),
                                                   _c("td", {
+                                                    staticStyle: {
+                                                      "text-align": "right"
+                                                    },
                                                     domProps: {
                                                       textContent: _vm._s(
                                                         "$" +
@@ -87319,6 +87373,9 @@ var render = function() {
                                                   }),
                                                   _vm._v(" "),
                                                   _c("td", {
+                                                    staticStyle: {
+                                                      "text-align": "right"
+                                                    },
                                                     domProps: {
                                                       textContent: _vm._s(
                                                         "$" +
@@ -87330,6 +87387,9 @@ var render = function() {
                                                   }),
                                                   _vm._v(" "),
                                                   _c("td", {
+                                                    staticStyle: {
+                                                      "text-align": "right"
+                                                    },
                                                     domProps: {
                                                       textContent: _vm._s(
                                                         "$" +
@@ -87340,23 +87400,29 @@ var render = function() {
                                                     }
                                                   }),
                                                   _vm._v(" "),
-                                                  _c("td", [
-                                                    _vm._v(
-                                                      "\n                                                " +
-                                                        _vm._s(
-                                                          "$" +
-                                                            _vm.formatNumber(
-                                                              parseFloat(
-                                                                detalle.costo_directo
-                                                              ) +
+                                                  _c(
+                                                    "td",
+                                                    {
+                                                      attrs: { align: "right" }
+                                                    },
+                                                    [
+                                                      _vm._v(
+                                                        "\n                                                " +
+                                                          _vm._s(
+                                                            "$" +
+                                                              _vm.formatNumber(
                                                                 parseFloat(
-                                                                  detalle.costo_indirecto
-                                                                )
-                                                            )
-                                                        ) +
-                                                        "\n                                              "
-                                                    )
-                                                  ])
+                                                                  detalle.costo_directo
+                                                                ) +
+                                                                  parseFloat(
+                                                                    detalle.costo_indirecto
+                                                                  )
+                                                              )
+                                                          ) +
+                                                          "\n                                              "
+                                                      )
+                                                    ]
+                                                  )
                                                 ]
                                               )
                                             }
@@ -87462,7 +87528,7 @@ var render = function() {
                         ]),
                         _vm._v(" "),
                         _c("div", { staticClass: "form-group row" }, [
-                          _c("div", { staticClass: "col-md-12" }, [
+                          _c("div", { staticClass: "col-md-10" }, [
                             _c(
                               "button",
                               {
@@ -87475,6 +87541,22 @@ var render = function() {
                                 }
                               },
                               [_vm._v(" Cerrar ")]
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col-md-2" }, [
+                            _c(
+                              "a",
+                              {
+                                staticClass: "btn btn-primary",
+                                attrs: { href: "/iniobra/pdf/" + _vm.id }
+                              },
+                              [
+                                _c("i"),
+                                _vm._v(
+                                  "Imprimir Contrato\n                                "
+                                )
+                              ]
                             )
                           ])
                         ])
@@ -89566,7 +89648,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'id': id
             }).then(function (response) {
 
-                me.listarAvance(1, '', 'lotes.num_lote');
+                me.listarAvance(1, lote, 'lotes.num_lote');
                 //window.alert("Cambios guardados correctamente");
                 var toast = Swal.mixin({
                     toast: true,

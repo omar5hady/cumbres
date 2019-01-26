@@ -154,7 +154,7 @@ Route::get('/iniobra/obtenerDetalles','IniObraController@obtenerDetalles');
 Route::delete('/iniobra/contrato/eliminar','IniObraController@eliminarContrato');
 Route::post('/iniobra/lote/registrar','IniObraController@agregarIniObraLotes');
 Route::delete('/iniobra/lote/eliminar','IniObraController@eliminarIniObraLotes');
-Route::get('/iniobra/pdf','IniObraController@contratoObraPDF')->name('contratos.pdf');
+Route::get('/iniobra/pdf/{id}','IniObraController@contratoObraPDF')->name('contratos.pdf');
 
 ////////////////////        RUTAS PARTIDAS   /////////////////////////////////
 Route::get('/partidas','PartidaController@index');
