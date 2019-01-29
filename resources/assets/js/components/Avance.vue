@@ -50,7 +50,7 @@
                                     <td v-text="avance.partida" style="width:30%"></td>
                                      <td style="width:8%">
                                      <input v-if="avance.cambio_avance == 1"  type="number" @keyup.enter="actualizarPorcentaje(avance.id,$event.target.value,avance.partida_id,avance.lote)" :id="avance.id" :value="avance.avance" step=".1" min="0" max="1" v-on:keypress="isNumber($event)" class="form-control Fields" > 
-                                        <input v-else type="number" @keyup.enter="actualizarPorcentaje(avance.id,$event.target.value,avance.partida_id,avance.lote)" :id="avance.id" :value="avance.avance" step=".1" min="0" max="1" v-on:keypress="isNumber($event)" class="form-control" >
+                                    <input v-else type="number" @keyup.enter="actualizarPorcentaje(avance.id,$event.target.value,avance.partida_id,avance.lote)" :id="avance.id" :value="avance.avance" step=".1" min="0" max="1" v-on:keypress="isNumber($event)" class="form-control" >
                                     </td>
                                     <td v-text="formatNumber(avance.avance_porcentaje) + '%'"></td>
 
