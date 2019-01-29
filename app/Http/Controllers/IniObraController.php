@@ -9,6 +9,8 @@ use App\Lote;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use NumerosEnLetras;
+use Excel;
+use PHPExcel_Worksheet_Drawing;
 
 class IniObraController extends Controller
 {
@@ -339,9 +341,234 @@ class IniObraController extends Controller
             // return ['cabecera' => $cabecera];
      }
 
-     public function exportExcell(Request $request)
+     public function exportExcel(Request $request, $id)
      {
         //Codigo para exportar vista PRE a excell
+        $id = $request->id;
+        $detalles = Ini_obra_lote::select('ini_obra_lotes.costo_directo',
+        'ini_obra_lotes.costo_indirecto','ini_obra_lotes.importe','ini_obra_lotes.lote',
+        'ini_obra_lotes.manzana','ini_obra_lotes.modelo','ini_obra_lotes.construccion',
+        'ini_obra_lotes.descripcion','ini_obra_lotes.id','ini_obra_lotes.ini_obra_id',
+        'ini_obra_lotes.lote_id','ini_obra_lotes.obra_extra')
+        ->where('ini_obra_lotes.ini_obra_id','=',$id)
+        ->orderBy('ini_obra_lotes.lote', 'desc')->get();
+
+        $relacion =  Ini_obra::join('contratistas','ini_obras.contratista_id','=','contratistas.id')
+        ->join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
+        ->select('ini_obras.id','ini_obras.clave','ini_obras.f_ini','ini_obras.f_fin',
+            'ini_obras.total_costo_directo','ini_obras.total_costo_indirecto','ini_obras.total_importe',
+            'contratistas.nombre as contratista','contratistas.rfc as rfc','contratistas.telefono as telefono',
+            'contratistas.direccion as direccion','contratistas.colonia as colonia',
+            'contratistas.cp as codigoPostal','contratistas.IMSS as imss','contratistas.estado as estado',
+            'contratistas.representante as representante','fraccionamientos.nombre as proyecto',
+            'fraccionamientos.calle as calleFracc','fraccionamientos.colonia as coloniaFracc',
+            'fraccionamientos.estado as estadoFracc','ini_obras.anticipo','fraccionamientos.cp as cpFracc',
+            'ini_obras.total_anticipo','ini_obras.costo_indirecto_porcentaje','ini_obras.fraccionamiento_id',
+            'ini_obras.contratista_id','ini_obras.descripcion_corta','ini_obras.descripcion_larga','ini_obras.iva','ini_obras.tipo')
+        ->where('ini_obras.id','=',$id)
+        ->orderBy('ini_obras.id', 'desc')->take(1)->get();
+
+
+        return Excel::create('Pre_'.$relacion[0]->proyecto , function($excel) use ($relacion, $detalles){
+            $excel->sheet($relacion[0]->clave, function($sheet) use ($relacion, $detalles){
+                
+                $sheet->mergeCells('A1:G1');
+                $sheet->mergeCells('A3:G3');
+                $sheet->mergeCells('A5:G5');
+                $sheet->setSize('A1', 100, 50);
+                $sheet->setSize('E7', 20, 20);
+                $sheet->setSize('F7', 20, 20);
+                $sheet->setSize('G7', 20, 20);
+
+                $objDrawing = new PHPExcel_Worksheet_Drawing;
+                $objDrawing->setPath(public_path('img/contratos/CONTRATOS_html_7790d2bb.png')); //your image path
+                $objDrawing->setCoordinates('A1');
+                $objDrawing->setWorksheet($sheet);
+
+
+                $sheet->cell('A1', function($cell) {
+
+                    // manipulate the cell
+                    $cell->setValue(  'GRUPO CONSTRUCTOR CUMBRES, SA DE CV');
+                    $cell->setFontFamily('Arial Narrow');
+                    $cell->setFontSize(32);
+                    $cell->setFontWeight('bold');
+                    $cell->setAlignment('center');
+                
+                });
+                
+                
+                $sheet->row(3, [
+                    'Relacion de viviendas en '.'"'.$relacion[0]->proyecto.'"'
+                ]);
+
+                $sheet->cell('A3', function($cell) {
+
+                    // manipulate the cell
+                    $cell->setFontFamily('Arial Narrow');
+                    $cell->setFontSize(18);
+                    $cell->setFontWeight('bold');
+                    $cell->setAlignment('center');
+                
+                });
+
+
+                $sheet->row(5, [
+                   $relacion[0]->contratista
+                ]);
+
+                
+                $sheet->cell('A5', function($cell) {
+
+                    // manipulate the cell
+                    $cell->setFontFamily('Arial Narrow');
+                    $cell->setFontSize(14);
+                    $cell->setFontWeight('bold');
+                    $cell->setAlignment('center');
+                
+                });
+
+
+                $sheet->row(7, [
+                    'Descripcion', 'manzana', 'lote', 'M2', 'Costo directo', 'Indirectos',
+                    'Importe'
+                ]);
+
+
+                $sheet->cells('A7:G7', function ($cells) {
+                    $cells->setBackground('#052154');
+                    $cells->setFontColor('#ffffff');
+                    // Set font family
+                    $cells->setFontFamily('Calibri');
+
+                    // Set font size
+                    $cells->setFontSize(13);
+
+                    // Set font weight to bold
+                    $cells->setFontWeight('bold');
+                    $cells->setAlignment('center');
+                });
+
+                
+                $cont=7;
+
+                $sheet->setColumnFormat(array(
+                    'G' => '$#,##0.00',
+                    'E' => '$#,##0.00',
+                    'F' => '$#,##0.00'
+                ));
+               
+                foreach($detalles as $index => $detalle) {
+                    $cont++;       
+                   
+                    $sheet->row($index+8, [
+                        $detalle->descripcion, 
+                        $detalle->manzana, 
+                        $detalle->lote, 
+                        $detalle->construccion, 
+                        $detalle->costo_directo,
+                        $detalle->costo_indirecto,
+                        $detalle->importe,
+                    ]);	
+                   
+                    
+                
+                }
+       
+                 $contador = $cont+1;
+                 $contador0 = $contador+2;
+                 $contador01 = $contador+3;
+                 $contador1 = $cont+6;
+                 $contador2 = $cont+7;
+                 $contador3 = $cont+8;
+                 $contador4 = $cont+9;
+
+                 $contador5 = $contador4+5;
+                 $contador6 = $contador5+1;
+                 $contador7 = $contador6+1;
+
+                 $sheet->cells('E'.$contador.':'.'G'.$contador, function ($cells) {
+                    // Set font weight to bold
+                    $cells->setFontWeight('bold');
+                    $cells->setAlignment('center');
+                });
+                
+
+                $sheet->setCellValue('G'.$contador, $relacion[0]->total_importe); 
+                $sheet->setCellValue('F'.$contador, $relacion[0]->total_costo_indirecto); 
+                $sheet->setCellValue('E'.$contador, $relacion[0]->total_costo_directo); 
+
+                $sheet->setColumnFormat(array(
+                    'G'.$contador0 => '0.00',
+                ));
+
+                $sheet->cell('G'.$contador01, function ($cell) {
+                    // Set font weight to bold
+                   
+                    $cell->setAlignment('left');
+                });
+                
+
+                $sheet->setCellValue('F'.$contador0, 'Anticipo');
+                $sheet->setCellValue('F'.$contador01, 'Total anticipo');
+                $sheet->setCellValue('G'.$contador0, $relacion[0]->anticipo.'%');
+                $sheet->setCellValue('G'.$contador01, $relacion[0]->total_anticipo);
+
+                $sheet->cell('A'.$contador1, function($cell) {
+                    // manipulate the cell
+                    $cell->setFontFamily('Arial Narrow');
+                    $cell->setAlignment('right');
+                
+                });
+                $sheet->cell('A'.$contador2, function($cell) {
+                    // manipulate the cell
+                    $cell->setFontFamily('Arial Narrow');
+                    $cell->setAlignment('right');
+                
+                });
+                $sheet->cell('A'.$contador3, function($cell) {
+                    // manipulate the cell
+                    $cell->setFontFamily('Arial Narrow');
+                    $cell->setAlignment('right');
+                
+                });
+                $sheet->cell('A'.$contador4, function($cell) {
+                    // manipulate the cell
+                    $cell->setFontFamily('Arial Narrow');
+                    $cell->setAlignment('right');
+                
+                });
+                    
+                    $sheet->setCellValue('A'.$contador1,'Fecha de inicio de obra '); 
+                    $sheet->setCellValue('A'.$contador2,'Fecha de termino de obra '); 
+                    $sheet->setCellValue('A'.$contador3,'Clave '); 
+                    $sheet->setCellValue('A'.$contador4,'Contratista'); 
+
+                    $sheet->setCellValue('C'.$contador1,$relacion[0]->f_ini); 
+                    $sheet->setCellValue('C'.$contador2,$relacion[0]->f_fin); 
+                    $sheet->setCellValue('C'.$contador3,$relacion[0]->clave); 
+                    $sheet->setCellValue('C'.$contador4,$relacion[0]->contratista); 
+
+                    $sheet->cell('A'.$contador5, function($cell) {
+                        // manipulate the cell
+                        $cell->setFontColor('#ff0000');
+                        $cell->setFontFamily('Arial Narrow');
+                        $cell->setAlignment('center');
+                    
+                    });
+               
+                    $sheet->setCellValue('A'.$contador5,'Datos de la obra'); 
+                    $sheet->setCellValue('A'.$contador6,$relacion[0]->calleFracc); 
+                    $sheet->setCellValue('A'.$contador7,$relacion[0]->coloniaFracc . ' C.P. '.$relacion[0]->cpFracc); 
+                
+                
+
+                $num='A7:G' . $cont;
+                $sheet->setBorder($num, 'thin');
+            });
+        }
+        
+        )->download('xls');
         
      }
 

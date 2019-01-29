@@ -83959,6 +83959,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -87528,7 +87533,7 @@ var render = function() {
                         ]),
                         _vm._v(" "),
                         _c("div", { staticClass: "form-group row" }, [
-                          _c("div", { staticClass: "col-md-10" }, [
+                          _c("div", { staticClass: "col-md-1" }, [
                             _c(
                               "button",
                               {
@@ -87541,6 +87546,24 @@ var render = function() {
                                 }
                               },
                               [_vm._v(" Cerrar ")]
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col-md-9" }, [
+                            _c(
+                              "a",
+                              {
+                                staticClass: "btn btn-success",
+                                attrs: {
+                                  href: "/iniobra/relacion/excel/" + _vm.id
+                                }
+                              },
+                              [
+                                _c("i"),
+                                _vm._v(
+                                  "Exportar relacion en excel\n                                "
+                                )
+                              ]
                             )
                           ]),
                           _vm._v(" "),

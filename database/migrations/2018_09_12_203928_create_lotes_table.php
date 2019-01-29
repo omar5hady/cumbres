@@ -40,7 +40,7 @@ class CreateLotesTable extends Migration
             $table->date('siembra')->nullable();    
             $table->date('ehl_solicitado')->nullable(); 
             $table->string('aviso',11)->default(0);    
-            $table->double('obra_extra')->default(0);;
+            $table->double('obra_extra')->default(0);
 
 
             $table->foreign('fraccionamiento_id')->references('id')->on('fraccionamientos');

@@ -646,8 +646,13 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <div class="col-md-10">
+                                <div class="col-md-1">
                                     <button type="button" class="btn btn-secondary" @click="ocultarDetalle()"> Cerrar </button>
+                                </div>
+                                   <div class="col-md-9">
+                                    <a class="btn btn-success" v-bind:href="'/iniobra/relacion/excel/'+ id " >
+                                        <i></i>Exportar relacion en excel
+                                    </a>
                                 </div>
                                 <div class="col-md-2">
                                     <a class="btn btn-primary" v-bind:href="'/iniobra/pdf/'+ id " >
