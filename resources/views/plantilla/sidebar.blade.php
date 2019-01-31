@@ -19,6 +19,9 @@
                     <li @click="menu=13" class="nav-item">
                         <a class="nav-link" href="#"><i class="icon-bag"></i> Empresas</a>
                     </li>
+                    <li @click="menu=14" class="nav-item">
+                        <a class="nav-link" href="#"><i class="icon-bag"></i> Medios Publicitarios</a>
+                    </li>
                 </ul>
             </li>
             <li class="nav-item nav-dropdown">

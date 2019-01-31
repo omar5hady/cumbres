@@ -50,6 +50,9 @@ Vue.component('aviso-obra', require('./components/AvisoObra.vue'));
 Vue.component('partidas', require('./components/Partidas.vue'));
 Vue.component('avance', require('./components/Avance.vue'));
 
+Vue.component('rol', require('./components/Rol.vue'));
+Vue.component('medio-publicitario', require('./components/MedioPublicitario.vue'));
+
 const app = new Vue({
     el: '#app',
     data :{

@@ -28,4 +28,8 @@ class Personal extends Model
     public function lote(){
         return $this->hasMany('App\Lote');
     }
+
+    public function user(){
+        return $this->hasOne('App\User');
+    }
 }

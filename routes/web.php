@@ -21,6 +21,18 @@ Route::post('/departamento/registrar','DepartamentoController@store');
 Route::put('/departamento/actualizar','DepartamentoController@update');
 Route::delete('/departamento/eliminar','DepartamentoController@destroy');
 
+///////////////////        RUTAS Roles    //////////////////////////////////
+Route::get('/rol','RolController@index');
+Route::post('/rol/registrar','RolController@store');
+Route::put('/rol/actualizar','RolController@update');
+Route::delete('/rol/eliminar','RolController@destroy');
+
+///////////////////        RUTAS Medios Publicitarios    //////////////////////////////////
+Route::get('/medio_publicitario','MedioPublicitarioController@index');
+Route::post('/medio_publicitario/registrar','MedioPublicitarioController@store');
+Route::put('/medio_publicitario/actualizar','MedioPublicitarioController@update');
+Route::delete('/medio_publicitario/eliminar','MedioPublicitarioController@destroy');
+
 ///////////////////     RUTAS FRACCIONAMIENTO     ////////////////////////////////
 Route::get('/fraccionamiento','FraccionamientoController@index');
 Route::post('/fraccionamiento/registrar','FraccionamientoController@store');

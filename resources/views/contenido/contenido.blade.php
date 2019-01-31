@@ -56,6 +56,9 @@
     <template v-if="menu==13">
         <empresa></empresa>
     </template>
+    <template v-if="menu==14">
+        <medio-publicitario></medio-publicitario>
+    </template>
 
     <template v-if="menu==20">
         <h1>Contenido del menu 20</h1>
@@ -92,6 +95,10 @@
 
     <template v-if="menu==54">
         <aviso-obra></aviso-obra>
+    </template>
+
+    <template v-if="menu==71">
+        <rol></rol>
     </template>
    
     
