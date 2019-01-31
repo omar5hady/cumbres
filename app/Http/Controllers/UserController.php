@@ -19,8 +19,10 @@ class UserController extends Controller
         if ($buscar==''){
             $personas = User::join('personal','users.id','=','personal.id')
             ->join('roles','users.rol_id','=','roles.id')
-            ->select('personal.id','personal.nombre','personal.rfc',
-            'personal.direccion','personal.telefono',
+            ->select('personal.id','personal.nombre','personal.rfc','personal.f_nacimiento',
+            'personal.direccion','personal.telefono','personal.departamento_id',
+            'personal.colonia','personal.ext','personal.homoclave','personal.cp',
+            'personal.celular','personal.activo','personal.empresa_id','personal.apellidos',
             'personal.email','users.usuario','users.password',
             'users.condicion','users.rol_id','roles.nombre as rol')
             ->orderBy('personal.id', 'desc')->paginate(3);
@@ -28,11 +30,13 @@ class UserController extends Controller
         else{
             $personas = User::join('personal','users.id','=','personal.id')
             ->join('roles','users.rol_id','=','roles.id')
-            ->select('personal.id','personal.nombre','personal.rfc',
-            'personal.direccion','personal.telefono',
+            ->select('personal.id','personal.nombre','personal.rfc','personal.f_nacimiento',
+            'personal.direccion','personal.telefono','personal.departamento_id',
+            'personal.colonia','personal.ext','personal.homoclave','personal.cp',
+            'personal.celular','personal.activo','personal.empresa_id','personal.apellidos',
             'personal.email','users.usuario','users.password',
-            'users.condicion','users.rol_id','roles.nombre as rol')            
-            ->where('personal.'.$criterio, 'like', '%'. $buscar . '%')
+            'users.condicion','users.rol_id','roles.nombre as rol')        
+            ->where($criterio, 'like', '%'. $buscar . '%')
             ->orderBy('personal.id', 'desc')->paginate(3);
         }
          

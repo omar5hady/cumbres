@@ -13,8 +13,8 @@
                         <button type="button" @click="abrirModal('Personal','registrar')" class="btn btn-secondary">
                             <i class="icon-plus"></i>&nbsp;Nuevo
                         </button>
-                        <button type="button" @click="abrirModal('Personal','Asignar')" class="btn btn-secondary">
-                            <i class="icon-plus"></i>&nbsp;Asignar rol
+                        <button type="button" @click="abrirModal('Personal','Asignar')" class="btn btn-warning">
+                            <i class="fa fa-user-plus"></i>&nbsp;Asignar rol
                         </button>
                         <!---->
                     </div>
@@ -52,7 +52,7 @@
                                             </button>
                                             <template v-if="Personal.condicion">
                                                 <button type="button" @click="desactivarPersonal(Personal.id)" class="btn btn-danger btn-sm">
-                                                <i class="icon-trash"></i>
+                                                <i class="fa fa-user-times"></i>
                                                 </button>
                                             </template>
                                             <template v-else>
@@ -740,6 +740,10 @@
                 this.celular='';
                 this.email='';
                 this.activo='';
+                this.id_persona = 0;
+                this.password = '';
+                this.usuario = '';
+                this.condicion = 1;
                 this.errorPersonal = 0;
                 this.errorMostrarMsjPersonal = [];
 
@@ -760,6 +764,7 @@
                                 this.apellidos='';
                                 this.f_nacimiento='';
                                 this.rfc='';
+                                this.homoclave='';
                                 this.colonia='0';
                                 this.direccion='';
                                 this.cp='';
@@ -767,6 +772,11 @@
                                 this.ext='';
                                 this.celular='';
                                 this.email='';
+                                this.usuario='';
+                                this.password='';
+                                this.condicion=1;
+                                this.rol_id=0;
+
                                 this.activo='1';
                                 this.tipoAccion = 3;
                                 break;
@@ -784,6 +794,7 @@
                                 this.apellidos=data['apellidos'];
                                 this.f_nacimiento=data['f_nacimiento'];
                                 this.rfc=data['rfc'];
+                                this.homoclave=data['homoclave'];
                                 this.colonia=data['colonia'];
                                 this.direccion=data['direccion'];
                                 this.cp=data['cp'];
@@ -804,6 +815,11 @@
                                 //console.log(data);
                                 this.modal =1;
                                 this.tituloModal='Asignar rol';
+                                this.id_persona = 0;
+                                this.usuario='';
+                                this.password='';
+                                this.condicion=1;
+                                this.rol_id=0;
                                 this.tipoAccion = 1;
                                 break;
                             }

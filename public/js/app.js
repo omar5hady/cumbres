@@ -93152,6 +93152,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.celular = '';
             this.email = '';
             this.activo = '';
+            this.id_persona = 0;
+            this.password = '';
+            this.usuario = '';
+            this.condicion = 1;
             this.errorPersonal = 0;
             this.errorMostrarMsjPersonal = [];
         },
@@ -93172,6 +93176,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     this.apellidos = '';
                                     this.f_nacimiento = '';
                                     this.rfc = '';
+                                    this.homoclave = '';
                                     this.colonia = '0';
                                     this.direccion = '';
                                     this.cp = '';
@@ -93179,6 +93184,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     this.ext = '';
                                     this.celular = '';
                                     this.email = '';
+                                    this.usuario = '';
+                                    this.password = '';
+                                    this.condicion = 1;
+                                    this.rol_id = 0;
+
                                     this.activo = '1';
                                     this.tipoAccion = 3;
                                     break;
@@ -93196,6 +93206,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     this.apellidos = data['apellidos'];
                                     this.f_nacimiento = data['f_nacimiento'];
                                     this.rfc = data['rfc'];
+                                    this.homoclave = data['homoclave'];
                                     this.colonia = data['colonia'];
                                     this.direccion = data['direccion'];
                                     this.cp = data['cp'];
@@ -93216,6 +93227,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     //console.log(data);
                                     this.modal = 1;
                                     this.tituloModal = 'Asignar rol';
+                                    this.id_persona = 0;
+                                    this.usuario = '';
+                                    this.password = '';
+                                    this.condicion = 1;
+                                    this.rol_id = 0;
                                     this.tipoAccion = 1;
                                     break;
                                 }
@@ -93271,7 +93287,7 @@ var render = function() {
           _c(
             "button",
             {
-              staticClass: "btn btn-secondary",
+              staticClass: "btn btn-warning",
               attrs: { type: "button" },
               on: {
                 click: function($event) {
@@ -93280,7 +93296,7 @@ var render = function() {
               }
             },
             [
-              _c("i", { staticClass: "icon-plus" }),
+              _c("i", { staticClass: "fa fa-user-plus" }),
               _vm._v(" Asignar rol\n                    ")
             ]
           )
@@ -93425,7 +93441,7 @@ var render = function() {
                                       }
                                     }
                                   },
-                                  [_c("i", { staticClass: "icon-trash" })]
+                                  [_c("i", { staticClass: "fa fa-user-times" })]
                                 )
                               ]
                             : [
