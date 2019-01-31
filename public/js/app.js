@@ -53371,17 +53371,24 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
             id: 0,
             departamento_id: 0,
-            empresa_id: 0,
+            empresa_id: 1,
             nombre: '',
             apellidos: '',
             f_nacimiento: '',
             rfc: '',
+            homoclave: '',
             colonia: '',
             direccion: '',
             cp: 0,
@@ -53700,8 +53707,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             if (!this.rfc || this.rfc.length < 10) this.errorMostrarMsjPersonal.push("El RFC no debe ir vacio (10 caracteres)");
 
-            if (!this.telefono || this.telefono.length < 7) this.errorMostrarMsjPersonal.push("El número de telefono debe ser de 8 digitos");
-
             if (!this.telefono || this.celular.length < 10) this.errorMostrarMsjPersonal.push("El número de celular debe ser de 10 digitos");
 
             if (this.errorMostrarMsjPersonal.length) //Si el mensaje tiene almacenado algo en el array
@@ -53722,7 +53727,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         cerrarModal: function cerrarModal() {
             this.modal = 0;
             this.departamento_id = '';
-            this.empresa_id = '';
+            this.empresa_id = 1;
             this.nombre = '';
             this.apellidos = '';
             this.f_nacimiento = '';
@@ -53751,7 +53756,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                 {
                                     this.modal = 1;
                                     this.tituloModal = 'Registrar Personal';
-                                    this.departamento_id = '0', this.empresa_id = '0', this.nombre = '';
+                                    this.departamento_id = '0', this.empresa_id = 1, this.nombre = '';
                                     this.apellidos = '';
                                     this.f_nacimiento = '';
                                     this.rfc = '';
@@ -54420,7 +54425,7 @@ var render = function() {
                         [_vm._v("RFC")]
                       ),
                       _vm._v(" "),
-                      _c("div", { staticClass: "col-md-6" }, [
+                      _c("div", { staticClass: "col-md-3" }, [
                         _c("input", {
                           directives: [
                             {
@@ -54434,7 +54439,7 @@ var render = function() {
                           staticStyle: { "text-transform": "uppercase" },
                           attrs: {
                             type: "text",
-                            maxlength: "13",
+                            maxlength: "10",
                             placeholder: "RFC",
                             disabled: _vm.tipoAccion == 3
                           },
@@ -54445,6 +54450,38 @@ var render = function() {
                                 return
                               }
                               _vm.rfc = $event.target.value
+                            }
+                          }
+                        })
+                      ]),
+                      _vm._v(" "),
+                      _vm._m(2),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-2" }, [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.homoclave,
+                              expression: "homoclave"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          staticStyle: { "text-transform": "uppercase" },
+                          attrs: {
+                            type: "text",
+                            maxlength: "3",
+                            placeholder: "Homoclave",
+                            disabled: _vm.tipoAccion == 3
+                          },
+                          domProps: { value: _vm.homoclave },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.homoclave = $event.target.value
                             }
                           }
                         })
@@ -54648,66 +54685,6 @@ var render = function() {
                                   textContent: _vm._s(
                                     departamentos.departamento
                                   )
-                                }
-                              })
-                            })
-                          ],
-                          2
-                        )
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "text-input" }
-                        },
-                        [_vm._v("Empresa")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-6" }, [
-                        _c(
-                          "select",
-                          {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.empresa_id,
-                                expression: "empresa_id"
-                              }
-                            ],
-                            staticClass: "form-control",
-                            attrs: { disabled: _vm.tipoAccion == 3 },
-                            on: {
-                              change: function($event) {
-                                var $$selectedVal = Array.prototype.filter
-                                  .call($event.target.options, function(o) {
-                                    return o.selected
-                                  })
-                                  .map(function(o) {
-                                    var val = "_value" in o ? o._value : o.value
-                                    return val
-                                  })
-                                _vm.empresa_id = $event.target.multiple
-                                  ? $$selectedVal
-                                  : $$selectedVal[0]
-                              }
-                            }
-                          },
-                          [
-                            _c("option", { attrs: { value: "0" } }, [
-                              _vm._v("Seleccione")
-                            ]),
-                            _vm._v(" "),
-                            _vm._l(_vm.arrayEmpresas, function(empresas) {
-                              return _c("option", {
-                                key: empresas.id,
-                                domProps: {
-                                  value: empresas.id,
-                                  textContent: _vm._s(empresas.nombre)
                                 }
                               })
                             })
@@ -55059,6 +55036,14 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Activo/Inactivo")])
       ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-1" }, [
+      _c("label", { attrs: { for: "" } }, [_vm._v("-")])
     ])
   }
 ]

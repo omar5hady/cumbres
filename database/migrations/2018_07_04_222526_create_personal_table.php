@@ -20,10 +20,11 @@ class CreatePersonalTable extends Migration
             $table->string('nombre',35);
             $table->date('f_nacimiento');
             $table->string('rfc',13)->unique();
+            $table->string('homoclave',3)->nullable();
             $table->string('direccion',80);
             $table->string('colonia',80)->nullable();
             $table->integer('cp')->nullable();
-            $table->string('telefono',8);
+            $table->string('telefono',8)->nullable();
             $table->string('ext',3)->nullable();
             $table->string('celular',10);
             $table->string('email',40);

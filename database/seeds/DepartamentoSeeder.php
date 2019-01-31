@@ -26,7 +26,7 @@ class DepartamentoSeeder extends Seeder
             'user_alta' => 1
         ]);
         Departamento::create([
-            'departamento' => 'Postventa',
+            'departamento' => 'Posventa',
             'user_alta' => 1
         ]);
         Departamento::create([
@@ -43,6 +43,10 @@ class DepartamentoSeeder extends Seeder
         ]);
         Departamento::create([
             'departamento' => 'Clientes',
+            'user_alta' => 1
+        ]);
+        Departamento::create([
+            'departamento' => 'Ventas',
             'user_alta' => 1
         ]);
         

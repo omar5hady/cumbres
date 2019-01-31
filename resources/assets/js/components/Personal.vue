@@ -139,8 +139,14 @@
                                 </div>
                                      <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">RFC</label>
-                                    <div class="col-md-6">
-                                        <input type="text" maxlength="13" style="text-transform:uppercase" v-model="rfc" class="form-control" placeholder="RFC" :disabled="tipoAccion == 3">
+                                    <div class="col-md-3">
+                                        <input type="text" maxlength="10" style="text-transform:uppercase" v-model="rfc" class="form-control" placeholder="RFC" :disabled="tipoAccion == 3">
+                                    </div>
+                                    <div class="col-md-1">
+                                        <label for="">-</label>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input type="text" maxlength="3" style="text-transform:uppercase" v-model="homoclave" class="form-control" placeholder="Homoclave" :disabled="tipoAccion == 3">
                                     </div>
                                 </div>
 
@@ -177,7 +183,7 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group row">
+                                <!-- <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Empresa</label>
                                     <div class="col-md-6">
                                           <select class="form-control" v-model="empresa_id" :disabled="tipoAccion == 3">
@@ -185,7 +191,7 @@
                                             <option v-for="empresas in arrayEmpresas" :key="empresas.id" :value="empresas.id" v-text="empresas.nombre"></option>
                                         </select>
                                     </div>
-                                </div>
+                                </div> -->
 
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Telefono</label>
@@ -262,11 +268,12 @@
             return{
                 id:0,
                 departamento_id : 0,
-                empresa_id : 0,
+                empresa_id : 1,
                 nombre : '',
                 apellidos : '',
                 f_nacimiento: '',
                 rfc : '',
+                homoclave : '',
                 colonia : '',
                 direccion : '',
                 cp: 0,
@@ -605,10 +612,6 @@
                 
                 if(!this.rfc || this.rfc.length<10)
                     this.errorMostrarMsjPersonal.push("El RFC no debe ir vacio (10 caracteres)");
-
-                if(!this.telefono || this.telefono.length<7)
-                    this.errorMostrarMsjPersonal.push("El número de telefono debe ser de 8 digitos");
-
                 
                 if(!this.telefono || this.celular.length<10)
                     this.errorMostrarMsjPersonal.push("El número de celular debe ser de 10 digitos");
@@ -630,7 +633,7 @@
             cerrarModal(){
                 this.modal = 0;
                 this.departamento_id = '';
-                this.empresa_id = '';
+                this.empresa_id = 1;
                 this.nombre='';
                 this.apellidos='';
                 this.f_nacimiento='';
@@ -658,7 +661,7 @@
                                 this.modal = 1;
                                 this.tituloModal = 'Registrar Personal';
                                 this.departamento_id = '0',
-                                this.empresa_id = '0',
+                                this.empresa_id = 1,
                                 this.nombre='';
                                 this.apellidos='';
                                 this.f_nacimiento='';
