@@ -75,7 +75,7 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+                            <!--<form action="" method="" enctype="multipart/form-data" class="form-horizontal">-->
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Medio Publicitario</label>
                                     <div class="col-md-9">
@@ -90,7 +90,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </form>
+                           <!-- </form>-->
                         </div>
                         <!-- Botones del modal -->
                         <div class="modal-footer">

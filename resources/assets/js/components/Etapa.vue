@@ -95,7 +95,6 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Fraccionamientos</label>
                                     <div class="col-md-6">
@@ -139,7 +138,6 @@
                                         </div>
                                     </div>
                                 </div>
-                            </form>
                         </div>
                         <!-- Botones del modal -->
                         <div class="modal-footer">
