@@ -100,6 +100,10 @@
     <template v-if="menu==71">
         <rol></rol>
     </template>
+
+    <template v-if="menu==72">
+        <usuario></usuario>
+    </template>
    
     
 @endsection

@@ -196,7 +196,7 @@ class PersonalController extends Controller
 
     public function selectNombre(Request $request){
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
-        //if(!$request->ajax())return redirect('/');
+        if(!$request->ajax())return redirect('/');
         $departamento = $request->departamento_id;
 
         $Personal = Personal::select(DB::raw("CONCAT(nombre,' ',apellidos) AS name"),'id')
@@ -205,6 +205,16 @@ class PersonalController extends Controller
                      ->orderBy('name')
                      ->get();
                      return['personal' => $Personal];
+    }
+
+
+    public function select_Pers_sinUser(Request $request){
+        $personas = Personal::leftJoin('users as users','personal.id','=','users.id')
+                             ->select('nombre','users.id as UserId','personal.id as personalId')
+                             ->where('users.id','=',NULL)
+                             ->where('nombre','!=','Sin Asignar')->get();
+
+                             return ['personas' => $personas];
     }
 
 

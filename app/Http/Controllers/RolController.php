@@ -33,14 +33,6 @@ class RolController extends Controller
 
     }
 
-    public function selectRol(Request $request)
-    {
-        $roles = Rol::where('condicion', '=', '1')
-        ->select('id','nombre')
-        ->orderBy('nombre', 'asc')->get();
- 
-        return ['roles' => $roles];
-    } 
 
     public function store(Request $request){
         $rol = new Rol();
@@ -65,4 +57,14 @@ class RolController extends Controller
         $rol = Rol::findOrFail($request->id);
         $rol->delete();
     }
+
+ 
+    public function selectRol(Request $request)
+    {
+        $roles = Rol::where('condicion', '=', '1')
+        ->select('id','nombre')
+        ->orderBy('nombre', 'asc')->get();
+ 
+        return ['roles' => $roles];
+    } 
 }

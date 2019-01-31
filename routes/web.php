@@ -27,6 +27,14 @@ Route::post('/rol/registrar','RolController@store');
 Route::put('/rol/actualizar','RolController@update');
 Route::delete('/rol/eliminar','RolController@destroy');
 
+///////////////////        RUTAS Usuarios    //////////////////////////////////
+Route::get('/usuarios','UserController@index');
+Route::post('/usuarios/registrar','UserController@store');
+Route::post('/usuarios/asignar','UserController@asignar');
+Route::put('/usuarios/actualizar','UserController@update');
+Route::put('/usuarios/activar','UserController@activar');
+Route::put('/usuarios/desactivar','UserController@desactivar');
+
 ///////////////////        RUTAS Medios Publicitarios    //////////////////////////////////
 Route::get('/medio_publicitario','MedioPublicitarioController@index');
 Route::post('/medio_publicitario/registrar','MedioPublicitarioController@store');
@@ -157,6 +165,8 @@ Route::post('/contratista/registrar','ContratistaController@store');
 Route::put('/contratista/actualizar','ContratistaController@update');
 Route::delete('/contratista/eliminar','ContratistaController@destroy');
 
+
+
 ////////////////////        RUTAS INICIO DE OBRA    /////////////////////////////////
 Route::get('/iniobra','IniObraController@index');
 Route::post('/iniobra/registrar','IniObraController@store');
@@ -201,6 +211,8 @@ Route::get('/select_fraccionamientoLote','FraccionamientoController@selectFracci
 Route::get('/select_manzana_lotes','IniObraController@select_manzana_lotes');
 Route::get('/select_lotes_obra','IniObraController@select_lotes'); 
 Route::get('/select_datos_lotes','IniObraController@select_datos_lotes'); 
+Route::get('/select_roles','RolController@selectRol');
+Route::get('/select_personas_sin_user','PersonalController@select_Pers_sinUser');  
 
 
 /***************************************************************************** */

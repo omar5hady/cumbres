@@ -51,6 +51,7 @@ Vue.component('partidas', require('./components/Partidas.vue'));
 Vue.component('avance', require('./components/Avance.vue'));
 
 Vue.component('rol', require('./components/Rol.vue'));
+Vue.component('usuario', require('./components/Usuarios.vue'));
 Vue.component('medio-publicitario', require('./components/MedioPublicitario.vue'));
 
 const app = new Vue({
