@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\User;
 use App\Personal;
+use App\Vendedor;
 use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
@@ -25,7 +26,9 @@ class UserController extends Controller
             'personal.celular','personal.activo','personal.empresa_id','personal.apellidos',
             'personal.email','users.usuario','users.password',
             'users.condicion','users.rol_id','roles.nombre as rol')
-            ->orderBy('personal.id', 'desc')->paginate(3);
+            ->orderBy('users.condicion', 'desc')
+            ->orderBy('personal.id', 'desc')
+            ->paginate(3);
         }
         else{
             $personas = User::join('personal','users.id','=','personal.id')
@@ -37,7 +40,9 @@ class UserController extends Controller
             'personal.email','users.usuario','users.password',
             'users.condicion','users.rol_id','roles.nombre as rol')        
             ->where($criterio, 'like', '%'. $buscar . '%')
-            ->orderBy('personal.id', 'desc')->paginate(3);
+            ->orderBy('users.condicion', 'desc')
+            ->orderBy('personal.id', 'desc')
+           ->paginate(3);
         }
          
  
@@ -86,14 +91,20 @@ class UserController extends Controller
             $user->id = $persona->id;
  
             $user->save();
- 
+            
+            if($user->rol_id == 2){
+                $vendedor = new Vendedor();
+                $vendedor->id = $persona->id;
+                $vendedor->save();
+            }
+
             DB::commit();
+
+            
  
         } catch (Exception $e){
             DB::rollBack();
-        }
- 
-         
+        }         
          
     }
  
@@ -107,7 +118,7 @@ class UserController extends Controller
             //Buscar primero el proveedor a modificar
             $user = User::findOrFail($request->id);
  
-            $persona = Personal::findOrFail($user->id);
+            $Persona = Personal::findOrFail($request->id);
  
             $Persona->departamento_id = $request->departamento_id;
             $Persona->nombre = $request->nombre;
@@ -124,14 +135,28 @@ class UserController extends Controller
             $Persona->activo = $request->activo;
             $Persona->empresa_id = $request->empresa_id;
             $Persona->save();
- 
+            
+            if($user->rol_id == 2){
+                if($request->rol_id != 2){
+                    $vendedor = Vendedor::findOrFail($request->id);
+                    $vendedor->delete();
+                }
+            }
+
+            if($user->rol_id != 2){
+                if($request->rol_id == 2){
+                    $vendedor = new Vendedor();
+                    $vendedor->id = $Persona->id;
+                    $vendedor->save();
+                }
+            }
              
             $user->usuario = $request->usuario;
             $user->password = bcrypt( $request->password);
             $user->condicion = '1';
             $user->rol_id = $request->rol_id;
             $user->save();
- 
+
  
             DB::commit();
  
@@ -148,9 +173,13 @@ class UserController extends Controller
         $user->usuario = $request->usuario;
         $user->password = bcrypt( $request->password);
         $user->condicion = '1';
-        $user->rol_id = $request->rol_id;          
-
+        $user->rol_id = $request->rol_id; 
         
+        if($user->rol_id == 2){
+            $vendedor = new Vendedor();
+            $vendedor->id = $persona->id;
+            $vendedor->save();
+        }     
 
         $user->save();
     }

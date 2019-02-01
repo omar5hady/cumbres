@@ -42,6 +42,7 @@
                                         <th>Nombre</th>
                                         <th>Usuario</th>
                                         <th>Rol</th>
+                                        <th>Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -66,7 +67,10 @@
                                         
                                         <td v-text="Personal.usuario"></td>
                                         <td v-text="Personal.rol"></td>
-                                       
+                                        <td>
+                                            <span v-if = "Personal.condicion==1" class="badge badge-success">Activo</span>
+                                            <span v-if = "Personal.condicion==0" class="badge badge-danger">Inactivo</span>
+                                        </td>
                                                            
                                     
                                     </tr>                               
@@ -456,6 +460,10 @@
                 me.listarPersonal(page,buscar,criterio);
             },
             asignarUsuario(){
+                if(this.validarUsuario()) //Se verifica si hay un error (campo vacio)
+                {
+                    return;
+                }
                   let me = this;
                 //Con axios se llama el metodo store de PersonalController
                 axios.post('/usuarios/asignar',{
@@ -560,7 +568,7 @@
                     'condicion':this.condicion 
                 }).then(function (response){
                     me.cerrarModal();
-                    me.listarPersonal(1,'','Personal');
+                    me.listarPersonal(1,'','nombre');
                     //window.alert("Cambios guardados correctamente");
                     swal({
                         position: 'top-end',
@@ -707,8 +715,46 @@
                 if(!this.rfc || this.rfc.length<10)
                     this.errorMostrarMsjPersonal.push("El RFC no debe ir vacio (10 caracteres)");
                 
-                if(!this.telefono || this.celular.length<10)
+                if(!this.celular || this.celular.length<10)
                     this.errorMostrarMsjPersonal.push("El número de celular debe ser de 10 digitos");
+                
+                if(!this.direccion)
+                    this.errorMostrarMsjPersonal.push("La direccion no puede ir vacio");
+
+                if(!this.departamento_id)
+                    this.errorMostrarMsjPersonal.push("Debe seleccionar el departamento");
+
+                if(!this.f_nacimiento)
+                    this.errorMostrarMsjPersonal.push("La fecha de nacimiento no puede ir vacia");
+
+                if(!this.usuario)
+                    this.errorMostrarMsjPersonal.push("Ingresar nombre de usuario");
+                
+                if(!this.password)
+                    this.errorMostrarMsjPersonal.push("Ingresar contraseña");
+
+                if(!this.rol_id)
+                    this.errorMostrarMsjPersonal.push("Seleccionar rol");
+
+                if(this.errorMostrarMsjPersonal.length)//Si el mensaje tiene almacenado algo en el array
+                    this.errorPersonal = 1;
+
+                return this.errorPersonal;
+            },
+            validarUsuario(){
+                this.errorPersonal=0;
+                this.errorMostrarMsjPersonal=[];
+
+                if(!this.id_persona)
+                    this.errorMostrarMsjPersonal.push("Seleccionar la persona");
+                if(!this.usuario)
+                    this.errorMostrarMsjPersonal.push("Ingresar nombre de usuario");
+                
+                if(!this.password)
+                    this.errorMostrarMsjPersonal.push("Ingresar contraseña");
+
+                if(!this.rol_id)
+                    this.errorMostrarMsjPersonal.push("Seleccionar rol");
 
                 if(this.errorMostrarMsjPersonal.length)//Si el mensaje tiene almacenado algo en el array
                     this.errorPersonal = 1;
