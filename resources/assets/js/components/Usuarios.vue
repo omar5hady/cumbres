@@ -46,7 +46,7 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="Personal in arrayPersonal" :key="Personal.id">
-                                        <td>
+                                        <td width="10%">
                                             <button type="button" @click="abrirModal('Personal','actualizar',Personal)" class="btn btn-warning btn-sm">
                                             <i class="icon-pencil"></i>
                                             </button>

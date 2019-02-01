@@ -93409,6 +93409,7 @@ var render = function() {
                     return _c("tr", { key: Personal.id }, [
                       _c(
                         "td",
+                        { attrs: { width: "10%" } },
                         [
                           _c(
                             "button",
