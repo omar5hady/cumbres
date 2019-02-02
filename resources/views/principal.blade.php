@@ -57,7 +57,7 @@
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                     <img src="img/avatars/goku.jpg" class="img-avatar" alt="admin@bootstrapmaster.com">
-                    <span class="d-md-down-none">admin </span>
+                    <span class="d-md-down-none">{{Auth::user()->usuario}} </span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
                     <div class="dropdown-header text-center">
@@ -65,14 +65,35 @@
                     </div>
                     <a class="dropdown-item" href="#"><i class="fa fa-user"></i> Perfil</a>
                     <a class="dropdown-item" href="https://calendar.google.com" target="_blank"><i class="fa fa-calendar-check-o"></i> Agenda</a>
-                    <a class="dropdown-item" href="#"><i class="fa fa-lock"></i> Cerrar sesión</a>
+                    <a class="dropdown-item" href="{{route('logout')}}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="fa fa-lock"></i> Cerrar sesión</a>
+
+                    <form  id="logout-form" action="{{route('logout')}}" method="POST" style="display: none;">
+                    {{csrf_field()}}
+                    
+                    </form>
                 </div>
             </li>
         </ul>
     </header>
 
     <div class="app-body">
-        @include('plantilla/sidebar')
+
+        @if(Auth::check())
+
+            @if(Auth::user()->rol_id == 1)
+                @include('plantilla.sidebar_administrador')
+            @elseif(Auth::user()->rol_id == 2)
+                @include('plantilla.sidebar_asesor')
+            @elseif(Auth::user()->rol_id == 3)
+                @include('plantilla.sidebar_gerente_proyectos')
+            @elseif(Auth::user()->rol_id == 4)
+                @include('plantilla.sidebar_gerente_ventas')
+            @elseif(Auth::user()->rol_id == 5)
+                @include('plantilla.sidebar_gerente_obra')
+
+            @endif
+        @endif
+
 
         <!-- Contenido Principal -->
         @yield('contenido')
