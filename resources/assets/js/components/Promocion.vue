@@ -830,13 +830,7 @@
     .text-error{
         color: red !important;
         font-weight: bold;
-    }
-    .scroll-box {
-            overflow-x: scroll;
-            width: auto;
-            padding: 1rem
-        }
-    
+    }    
     .btn-success {
         color: #fff;
         background-color: #2c309e;

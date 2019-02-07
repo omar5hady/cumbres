@@ -753,11 +753,6 @@
         color: red !important;
         font-weight: bold;
     }
-    .scroll-box {
-            overflow-x: scroll;
-            width: auto;
-            padding: 1rem
-    }
 
 input[type=number]::-webkit-inner-spin-button, 
 input[type=number]::-webkit-outer-spin-button { 

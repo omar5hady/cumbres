@@ -628,12 +628,6 @@
         color: red !important;
         font-weight: bold;
     }
-    .scroll-box {
-            overflow-x: scroll;
-            width: auto;
-            padding: 1rem;
-            
-        }
         .Fields {
 	/*background-color: #f44242;*/
 	border: 2px solid #f40404;

@@ -1069,9 +1069,4 @@
         color: red !important;
         font-weight: bold;
     }
-    .scroll-box {
-            overflow-x: scroll;
-            width: auto;
-            padding: 1rem
-        }
 </style>

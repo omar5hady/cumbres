@@ -100,7 +100,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                     <label for="">Nombre </label>
-                                    <input type="text" class="form-control" v-model="nombre" placeholder="nombre">
+                                    <input type="text" class="form-control" v-model="nombre" placeholder="Nombre">
                                     </div>
                                 </div> 
 
@@ -108,7 +108,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                     <label for="">Apellidos</label>
-                                    <input type="text" class="form-control" v-model="apellidos" placeholder="apellidos">
+                                    <input type="text" class="form-control" v-model="apellidos" placeholder="Apellidos">
                                 </div>
                                 </div>
 
@@ -116,6 +116,7 @@
                                     <div class="form-group">
                                     <label for="">Sexo </label>
                                     <select class="form-control" v-model="sexo" >
+                                            <option value="">Seleccione</option>
                                             <option value="F">Femenino</option>
                                             <option value="M">Masculino</option>
                                     </select>
@@ -125,21 +126,21 @@
                                   <div class="col-md-4">
                                     <div class="form-group">
                                     <label for="">Telefono </label>
-                                    <input type="text" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="telefono" placeholder="telefono">
+                                    <input type="text" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="telefono" placeholder="Telefono">
                                 </div>
                                 </div>
 
                                   <div class="col-md-4">
                                      <div class="form-group">
                                     <label for="">Celular </label>
-                                    <input type="text" pattern="\d*" maxlength="7" class="form-control" v-on:keypress="isNumber($event)" v-model="celular" placeholder="(444)-000-000">
+                                    <input type="text" pattern="\d*" maxlength="7" class="form-control" v-on:keypress="isNumber($event)" v-model="celular" placeholder="Celular">
                                 </div>
                                  </div>
 
                                  <div class="col-md-4">
                                      <div class="form-group">
                                     <label for="">Email personal</label>
-                                    <input type="text" class="form-control" v-model="email" placeholder="email">
+                                    <input type="text" class="form-control" v-model="email" placeholder="E-mail">
                                 </div>
                                  </div>
 
@@ -161,7 +162,7 @@
                                 <div class="col-md-4">
                                      <div class="form-group">
                                     <label for="">Email institucional </label>
-                                    <input type="text" class="form-control" v-model="email_inst" placeholder="email">
+                                    <input type="text" class="form-control" v-model="email_inst" placeholder="E-mail">
                                 </div>
                                  </div>
 
@@ -221,6 +222,7 @@
                                   <div class="form-group">
                                   <label for="">Estado civil</label>
                                     <select class="form-control" v-model="e_civil" >
+                                        <option value="0">Seleccione</option> 
                                         <option value="1">Casado - separacion de bienes</option> 
                                         <option value="2">Casado - sociedad conyugal</option> 
                                         <option value="3">Divorciado</option> 
@@ -899,7 +901,7 @@
                 rfc:'',
                 homoclave: '',
                 e_civil: 0,
-                tipo_casa:'',
+                tipo_casa:0,
                 coacreditado: '',
                 publicidad_id: 0,
                 proyecto_interes_id: 0,
@@ -919,7 +921,7 @@
                 rfc_coa:'',
                 homoclave_coa: '',
                 e_civil_coa: 0,
-                tipo_casa_coa:'',
+                tipo_casa_coa:0,
                 colonia: '',
                 cp:'',
                 direccion: '',
@@ -1625,11 +1627,6 @@
     .text-error{
         color: red !important;
         font-weight: bold;
-    }
-    .scroll-box {
-            overflow-x: scroll;
-            width: auto;
-            padding: 1rem
     }
     @media (min-width: 600px){
         .btnagregar{

@@ -1365,11 +1365,6 @@
         color: red !important;
         font-weight: bold;
     }
-    .scroll-box {
-            overflow-x: scroll;
-            width: auto;
-            padding: 1rem
-    }
     @media (min-width: 600px){
         .btnagregar{
         margin-top: 2rem;
