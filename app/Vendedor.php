@@ -19,4 +19,8 @@ class Vendedor extends Model
     public function persona(){
         return $this->belongsTo('App\Persona');
     }
+
+    public function cliente(){
+        return $this->hasMany('App\Cliente');
+    }
 }

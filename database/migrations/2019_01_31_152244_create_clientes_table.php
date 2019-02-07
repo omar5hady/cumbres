@@ -48,6 +48,7 @@ class CreateClientesTable extends Migration
             $table->string('ext_coa',3)->nullable();
             $table->string('celular_coa',10)->nullable();
             $table->string('email_coa',40)->nullable();
+            $table->string('parentesco_coa',20)->nullable();
 
             $table->timestamps();
 

@@ -95605,24 +95605,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -95631,13 +95613,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
         return _ref = {
             id: 0,
-            clasificacion: 0,
+            clasificacion: 1,
             nombre: '',
             apellidos: '',
             telefono: '',
             celular: '',
             email: '',
-            email_institucional: '',
+            email_inst: '',
             nss: '',
             sexo: '',
             fecha_nac: '',
@@ -95650,8 +95632,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             publicidad_id: 0,
             proyecto_interes_id: 0,
             empresa: '',
+            observacion: '',
+            lugar_contacto: 0,
 
             nombre_coa: '',
+            parentesco_coa: '',
             apellidos_coa: '',
             telefono_coa: '',
             celular_coa: '',
@@ -95665,12 +95650,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             homoclave_coa: '',
             e_civil_coa: 0,
             tipo_casa_coa: 0,
-            colonia: '',
-            cp: '',
-            direccion: '',
 
             arrayEmpresa: [],
-            arrayColonias: [],
+            arrayMediosPublicidad: [],
 
             anticipo: 0,
             costo_indirecto_porcentaje: 0,
@@ -95681,8 +95663,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             listado: 1,
             tituloModal: '',
             tipoAccion: 0,
-            errorAvisoObra: 0,
-            errorMostrarMsjAvisoObra: [],
+            errorProspecto: 0,
+            errorMostrarMsjProspecto: [],
             pagination: {
                 'total': 0,
                 'current_page': 0,
@@ -95739,24 +95721,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 from++;
             }
             return pagesArray;
-        },
-
-        totalImporte: function totalImporte() {
-            var resultado_importe_total = 0.0;
-            for (var i = 0; i < this.arrayAvisoObraLotes.length; i++) {
-                resultado_importe_total = parseFloat(resultado_importe_total) + parseFloat(this.arrayAvisoObraLotes[i].costo_directo) + parseFloat(this.arrayAvisoObraLotes[i].costo_indirecto);
-            }
-            return resultado_importe_total;
-        },
-
-        totalConstruccion: function totalConstruccion() {
-            var resultado_construccion_total = 0.0;
-            for (var i = 0; i < this.arrayAvisoObraLotes.length; i++) {
-                resultado_construccion_total = parseFloat(resultado_construccion_total) + parseFloat(this.arrayAvisoObraLotes[i].construccion);
-            }
-            return resultado_construccion_total;
         }
-
     },
 
     methods: (_methods = {
@@ -95779,6 +95744,17 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             axios.get(url).then(function (response) {
                 var respuesta = response.data;
                 me.arrayFraccionamientos = respuesta.fraccionamientos;
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        selectMedioPublicidad: function selectMedioPublicidad() {
+            var me = this;
+            me.arrayFraccionamientos = [];
+            var url = '/select_medio_publicidad';
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayMediosPublicidad = respuesta.medios_publicitarios;
             }).catch(function (error) {
                 console.log(error);
             });
@@ -95806,20 +95782,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             var me = this;
             me.loading = true;
             me.empresa_coa = val1.nombre;
-        },
-        selectColonias: function selectColonias(search, loading) {
-            var me = this;
-            loading(true);
-
-            var url = '/select_colonias_vue?filtro=' + search;
-            axios.get(url).then(function (response) {
-                var respuesta = response.data;
-                q: search;
-                me.arrayColonias = respuesta.colonias;
-                loading(false);
-            }).catch(function (error) {
-                console.log(error);
-            });
         }
     }, _defineProperty(_methods, 'getDatosEmpresaCoa', function getDatosEmpresaCoa(val1) {
         var me = this;
@@ -95843,65 +95805,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         me.loading = true;
         me.fraccionamiento_id = val1.id;
         me.selectManzanaLotes(me.fraccionamiento_id);
-    }), _defineProperty(_methods, 'selectColonias', function selectColonias(buscar) {
-        var me = this;
-        me.arrayColonias = [];
-        var url = '/select_colonias?buscar=' + buscar;
-        axios.get(url).then(function (response) {
-            var respuesta = response.data;
-            me.arrayColonias = respuesta.colonias;
-        }).catch(function (error) {
-            console.log(error);
-        });
     }), _defineProperty(_methods, 'cambiarPagina', function cambiarPagina(page, buscar, criterio) {
         var me = this;
         //Actualiza la pagina actual
         me.pagination.current_page = page;
         //Envia la petición para visualizar la data de esta pagina
         me.listarAvisos(page, buscar, criterio);
-    }), _defineProperty(_methods, 'encuentra', function encuentra(id) {
-        var sw = 0;
-        for (var i = 0; i < this.arrayAvisoObraLotes.length; i++) {
-            if (this.arrayAvisoObraLotes[i].lote_id == id) {
-                sw = true;
-            }
-        }
-
-        return sw;
-    }), _defineProperty(_methods, 'agregarLote', function agregarLote() {
-        var me = this;
-        if (me.descripcion == '' || me.costo_directo == 0 || me.costo_indirecto == 0) {} else {
-            if (me.encuentra(me.lote_id)) {
-                swal({
-                    type: 'error',
-                    title: 'Error',
-                    text: 'Este lote ya se encuentra agregado'
-                });
-            } else {
-                me.costo_indirecto = parseFloat(me.costo_directo) * parseFloat(me.costo_indirecto_porcentaje) / 100;
-                me.importe = parseFloat(me.costo_directo) + parseFloat(me.costo_indirecto);
-                me.arrayAvisoObraLotes.push({
-                    lote_id: me.lote_id,
-                    lote: me.lote,
-                    superficie: me.construccion,
-                    manzana: me.manzana,
-                    descripcion: me.descripcion,
-                    importe: me.importe,
-                    modelo: me.modelo,
-                    costo_directo: parseFloat(me.costo_directo),
-                    costo_indirecto: parseFloat(me.costo_indirecto),
-                    obra_extra: 0
-                });
-                me.lote = '';
-                me.lote_id = 0;
-                me.construccion = 0;
-                me.manzana = '';
-                me.descripcion = '';
-                me.costo_directo = 0;
-                me.costo_indirecto = 0;
-                me.modelo = '';
-            }
-        }
     }), _defineProperty(_methods, 'registrarLote', function registrarLote() {
         var me = this;
         if (me.descripcion == '' || me.costo_directo == 0 || me.costo_indirecto == 0) {} else {
@@ -95985,11 +95894,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 });
             }
         });
-    }), _defineProperty(_methods, 'eliminarDetalle', function eliminarDetalle(index) {
-        var me = this;
-        me.arrayAvisoObraLotes.splice(index, 1);
     }), _defineProperty(_methods, 'registrarAvisoObra', function registrarAvisoObra() {
-        if (this.validarAviso()) //Se verifica si hay un error (campo vacio)
+        if (this.validarProspecto()) //Se verifica si hay un error (campo vacio)
             {
                 return;
             }
@@ -96031,7 +95937,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             console.log(error);
         });
     }), _defineProperty(_methods, 'actualizarAvisoObra', function actualizarAvisoObra() {
-        if (this.validarAviso()) //Se verifica si hay un error (campo vacio)
+        if (this.validarProspecto()) //Se verifica si hay un error (campo vacio)
             {
                 return;
             }
@@ -96073,77 +95979,19 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         }).catch(function (error) {
             console.log(error);
         });
-    }), _defineProperty(_methods, 'limpiarBusqueda', function limpiarBusqueda() {
-        var me = this;
-        me.buscar = "";
-    }), _defineProperty(_methods, 'limpiarDatos', function limpiarDatos() {
-        this.contratista_id = 0;
-        this.f_fin = '';
-        this.clave = '';
-        this.fraccionamiento_id = 0;
-        this.anticipo = 0;
-        this.total_anticipo = 0;
-        this.total_importe = 0;
-        this.total_costo_directo = 0;
-        this.total_costo_indirecto = 0;
-        this.manzana = '';
-        this.lote = '';
-        this.modelo = '';
-        this.construccion = 0;
-        this.descripcion = '';
-        this.arrayAvisoObraLotes = [];
-        this.arrayLotes = [];
-        this.arrayDatosLotes = [];
-        this.arrayManzanaLotes = [];
-        this.descripcion_larga = '';
-        this.descripcion_corta = '';
-        this.iva = 0;
-        this.tipo = 'Vivienda';
-        this.total_construccion = 0;
-    }), _defineProperty(_methods, 'eliminarContrato', function eliminarContrato() {
-        var _this2 = this;
+    }), _defineProperty(_methods, 'validarProspecto', function validarProspecto() {
+        this.errorProspecto = 0;
+        this.errorMostrarMsjProspecto = [];
 
-        var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+        if (this.contratista_id == 0) this.errorMostrarMsjProspecto.push("Seleccionar un contratista.");
+        if (this.fraccionamiento_id == 0) this.errorMostrarMsjProspecto.push("Seleccionar un fraccionamiento.");
+        if (this.clave == '') this.errorMostrarMsjProspecto.push("Ingresar clave.");
+        if (this.arrayAvisoObraLotes.length <= 0) this.errorMostrarMsjProspecto.push("No se ha ingresado ningun lote");
 
-        this.id = data['id'];
-        swal({
-            title: '¿Desea eliminar?',
-            text: "Esta acción no se puede revertir!",
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            cancelButtonText: 'Cancelar',
-            confirmButtonText: 'Si, eliminar!'
-        }).then(function (result) {
-            if (result.value) {
-                var me = _this2;
+        if (this.errorMostrarMsjProspecto.length) //Si el mensaje tiene almacenado algo en el array
+            this.errorProspecto = 1;
 
-                axios.delete('/iniobra/contrato/eliminar', { params: { 'id': _this2.id } }).then(function (response) {
-                    swal('Borrado!', 'Contrato borrada correctamente.', 'success');
-                    me.listarAvisos(1, '', 'ini_obras.clave');
-                }).catch(function (error) {
-                    console.log(error);
-                });
-            }
-        });
-    }), _defineProperty(_methods, 'validarAviso', function validarAviso() {
-        this.errorAvisoObra = 0;
-        this.errorMostrarMsjAvisoObra = [];
-
-        if (this.contratista_id == 0) //Si la variable Fraccionamiento esta vacia
-            this.errorMostrarMsjAvisoObra.push("Seleccionar un contratista.");
-        if (this.fraccionamiento_id == 0) //Si la variable Fraccionamiento esta vacia
-            this.errorMostrarMsjAvisoObra.push("Seleccionar un fraccionamiento.");
-        if (this.clave == '') //Si la variable Fraccionamiento esta vacia
-            this.errorMostrarMsjAvisoObra.push("Ingresar clave.");
-        if (this.arrayAvisoObraLotes.length <= 0) //Si la variable Fraccionamiento esta vacia
-            this.errorMostrarMsjAvisoObra.push("No se ha ingresado ningun lote");
-
-        if (this.errorMostrarMsjAvisoObra.length) //Si el mensaje tiene almacenado algo en el array
-            this.errorAvisoObra = 1;
-
-        return this.errorAvisoObra;
+        return this.errorProspecto;
     }), _defineProperty(_methods, 'isNumber', function isNumber(evt) {
         evt = evt ? evt : window.event;
         var charCode = evt.which ? evt.which : evt.keyCode;
@@ -96152,6 +96000,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         } else {
             return true;
         }
+    }), _defineProperty(_methods, 'limpiarDatos', function limpiarDatos() {
+        this.nombre = '';
+        this.apellidos = '';
     }), _defineProperty(_methods, 'formatNumber', function formatNumber(value) {
         var val = (value / 1).toFixed(2);
         return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -96261,13 +96112,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                     }
                 }
         }
-        this.selectColonias(this.cp);
-        this.selectCiudades(this.estado);
     }), _methods),
     mounted: function mounted() {
         this.listarAvisos(1, this.buscar, this.criterio);
-        this.selectColonias(this.cp);
-        this.selectFraccionamientos();
+        this.selectMedioPublicidad();
     }
 });
 
@@ -96711,7 +96559,7 @@ var render = function() {
                       _c("div", { staticClass: "col-md-4" }, [
                         _c("div", { staticClass: "form-group" }, [
                           _c("label", { attrs: { for: "" } }, [
-                            _vm._v("Nombre ")
+                            _vm._v("Nombre (*) ")
                           ]),
                           _vm._v(" "),
                           _c("input", {
@@ -96741,7 +96589,7 @@ var render = function() {
                       _c("div", { staticClass: "col-md-4" }, [
                         _c("div", { staticClass: "form-group" }, [
                           _c("label", { attrs: { for: "" } }, [
-                            _vm._v("Apellidos")
+                            _vm._v("Apellidos (*)")
                           ]),
                           _vm._v(" "),
                           _c("input", {
@@ -96771,7 +96619,7 @@ var render = function() {
                       _c("div", { staticClass: "col-md-4" }, [
                         _c("div", { staticClass: "form-group" }, [
                           _c("label", { attrs: { for: "" } }, [
-                            _vm._v("Sexo ")
+                            _vm._v("Sexo (*)")
                           ]),
                           _vm._v(" "),
                           _c(
@@ -96860,7 +96708,7 @@ var render = function() {
                       _c("div", { staticClass: "col-md-4" }, [
                         _c("div", { staticClass: "form-group" }, [
                           _c("label", { attrs: { for: "" } }, [
-                            _vm._v("Celular ")
+                            _vm._v("Celular (*)")
                           ]),
                           _vm._v(" "),
                           _c("input", {
@@ -96898,7 +96746,7 @@ var render = function() {
                       _c("div", { staticClass: "col-md-4" }, [
                         _c("div", { staticClass: "form-group" }, [
                           _c("label", { attrs: { for: "" } }, [
-                            _vm._v("Email personal")
+                            _vm._v("Email personal (*)")
                           ]),
                           _vm._v(" "),
                           _c("input", {
@@ -96931,7 +96779,7 @@ var render = function() {
                           { staticClass: "form-group" },
                           [
                             _c("label", { attrs: { for: "" } }, [
-                              _vm._v("Empresa ")
+                              _vm._v("Empresa (*)")
                             ]),
                             _vm._v(" "),
                             _c("v-select", {
@@ -96981,7 +96829,7 @@ var render = function() {
                       _c("div", { staticClass: "col-md-2" }, [
                         _c("div", { staticClass: "form-group" }, [
                           _c("label", { attrs: { for: "" } }, [
-                            _vm._v("Fecha de nacimiento")
+                            _vm._v("Fecha de nacimiento (*)")
                           ]),
                           _vm._v(" "),
                           _c("input", {
@@ -97038,7 +96886,9 @@ var render = function() {
                       _vm._v(" "),
                       _c("div", { staticClass: "col-md-2" }, [
                         _c("div", { staticClass: "form-group" }, [
-                          _c("label", { attrs: { for: "" } }, [_vm._v("RFC")]),
+                          _c("label", { attrs: { for: "" } }, [
+                            _vm._v("RFC (*)")
+                          ]),
                           _vm._v(" "),
                           _c("input", {
                             directives: [
@@ -97100,7 +96950,9 @@ var render = function() {
                       _vm._v(" "),
                       _c("div", { staticClass: "col-md-3" }, [
                         _c("div", { staticClass: "form-group" }, [
-                          _c("label", { attrs: { for: "" } }, [_vm._v("NSS ")]),
+                          _c("label", { attrs: { for: "" } }, [
+                            _vm._v("NSS (*)")
+                          ]),
                           _vm._v(" "),
                           _c("input", {
                             directives: [
@@ -97138,7 +96990,7 @@ var render = function() {
                       _c("div", { staticClass: "col-md-3" }, [
                         _c("div", { staticClass: "form-group" }, [
                           _c("label", { attrs: { for: "" } }, [
-                            _vm._v("Vive en casa ")
+                            _vm._v("Vive en casa (*)")
                           ]),
                           _vm._v(" "),
                           _c(
@@ -97172,7 +97024,7 @@ var render = function() {
                             },
                             [
                               _c("option", { attrs: { value: "0" } }, [
-                                _vm._v("seleccione")
+                                _vm._v("Seleccione")
                               ])
                             ]
                           )
@@ -97182,7 +97034,7 @@ var render = function() {
                       _c("div", { staticClass: "col-md-3" }, [
                         _c("div", { staticClass: "form-group" }, [
                           _c("label", { attrs: { for: "" } }, [
-                            _vm._v("Estado civil")
+                            _vm._v("Estado civil (*)")
                           ]),
                           _vm._v(" "),
                           _c(
@@ -97251,7 +97103,7 @@ var render = function() {
                         ])
                       ]),
                       _vm._v(" "),
-                      _c("div", { staticClass: "col-md-2" }, [
+                      _c("div", { staticClass: "col-md-6" }, [
                         _c("div", { staticClass: "bmd-form-group checkbox" }, [
                           _c("label", { attrs: { for: "" } }, [
                             _vm._v(" Conyuge o coacreditado ")
@@ -97301,6 +97153,33 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _vm.coacreditado == true
+                        ? _c("div", { staticClass: "col-md-1" }, [
+                            _c("div", { staticClass: "form-group" }, [
+                              _c(
+                                "button",
+                                {
+                                  staticClass:
+                                    "btn btn-success form-control btnagregar",
+                                  staticStyle: { "margin-top": "1.5rem" },
+                                  attrs: {
+                                    title: "Agregar nuevo coacreditado"
+                                  },
+                                  on: {
+                                    click: function($event) {
+                                      _vm.abrirModal(
+                                        "coacreditado",
+                                        "registrar"
+                                      )
+                                    }
+                                  }
+                                },
+                                [_c("i", { staticClass: "icon-plus" })]
+                              )
+                            ])
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _vm.coacreditado == true
                         ? _c("div", { staticClass: "col-md-3" }, [
                             _c(
                               "div",
@@ -97327,24 +97206,36 @@ var render = function() {
                         : _vm._e(),
                       _vm._v(" "),
                       _vm.coacreditado == true
-                        ? _c("div", { staticClass: "col-md-1" }, [
+                        ? _c("div", { staticClass: "col-md-3" }, [
                             _c("div", { staticClass: "form-group" }, [
-                              _c(
-                                "button",
-                                {
-                                  staticClass:
-                                    "btn btn-success form-control btnagregar",
-                                  on: {
-                                    click: function($event) {
-                                      _vm.abrirModal(
-                                        "coacreditado",
-                                        "registrar"
-                                      )
-                                    }
+                              _c("label", { attrs: { for: "" } }, [
+                                _vm._v("Parentesco ")
+                              ]),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.parentesco_coa,
+                                    expression: "parentesco_coa"
                                   }
+                                ],
+                                staticClass: "form-control",
+                                attrs: {
+                                  type: "text",
+                                  placeholder: "Parentesco"
                                 },
-                                [_c("i", { staticClass: "icon-plus" })]
-                              )
+                                domProps: { value: _vm.parentesco_coa },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.parentesco_coa = $event.target.value
+                                  }
+                                }
+                              })
                             ])
                           ])
                         : _vm._e()
@@ -97364,8 +97255,8 @@ var render = function() {
                                 {
                                   name: "model",
                                   rawName: "v-model",
-                                  value: _vm.clasificacion,
-                                  expression: "clasificacion"
+                                  value: _vm.lugar_contacto,
+                                  expression: "lugar_contacto"
                                 }
                               ],
                               staticClass: "form-control",
@@ -97380,7 +97271,7 @@ var render = function() {
                                         "_value" in o ? o._value : o.value
                                       return val
                                     })
-                                  _vm.clasificacion = $event.target.multiple
+                                  _vm.lugar_contacto = $event.target.multiple
                                     ? $$selectedVal
                                     : $$selectedVal[0]
                                 }
@@ -97431,7 +97322,7 @@ var render = function() {
                       _c("div", { staticClass: "col-md-2" }, [
                         _c("div", { staticClass: "form-group" }, [
                           _c("label", { attrs: { for: "" } }, [
-                            _vm._v("Clasificacion ")
+                            _vm._v("Clasificacion (*)")
                           ]),
                           _vm._v(" "),
                           _c(
@@ -97498,7 +97389,7 @@ var render = function() {
                           { staticClass: "form-group" },
                           [
                             _c("label", { attrs: { for: "" } }, [
-                              _vm._v("Proyecto en el que esta interesado ")
+                              _vm._v("Proyecto en el que esta interesado (*)")
                             ]),
                             _vm._v(" "),
                             _c("v-select", {
@@ -97518,7 +97409,7 @@ var render = function() {
                       _c("div", { staticClass: "col-md-3" }, [
                         _c("div", { staticClass: "form-group" }, [
                           _c("label", { attrs: { for: "" } }, [
-                            _vm._v("Medio donde se entero de nosotros")
+                            _vm._v("Medio donde se entero de nosotros (*)")
                           ]),
                           _vm._v(" "),
                           _c(
@@ -97552,7 +97443,7 @@ var render = function() {
                             },
                             [
                               _c("option", { attrs: { value: "0" } }, [
-                                _vm._v("seleccione")
+                                _vm._v("Seleccione")
                               ]),
                               _vm._v(" "),
                               _vm._l(_vm.arrayMediosPublicidad, function(
@@ -97572,6 +97463,40 @@ var render = function() {
                         ])
                       ]),
                       _vm._v(" "),
+                      _c("div", { staticClass: "col-md-10" }, [
+                        _c("div", { staticClass: "form-group" }, [
+                          _c("label", { attrs: { for: "" } }, [
+                            _vm._v("Observaciones (*)")
+                          ]),
+                          _vm._v(" "),
+                          _c("textarea", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.observacion,
+                                expression: "observacion"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: {
+                              rows: "3",
+                              cols: "30",
+                              placeholder: "Observaciones"
+                            },
+                            domProps: { value: _vm.observacion },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.observacion = $event.target.value
+                              }
+                            }
+                          })
+                        ])
+                      ]),
+                      _vm._v(" "),
                       _c("div", { staticClass: "col-md-12" }, [
                         _c(
                           "div",
@@ -97580,8 +97505,8 @@ var render = function() {
                               {
                                 name: "show",
                                 rawName: "v-show",
-                                value: _vm.errorAvisoObra,
-                                expression: "errorAvisoObra"
+                                value: _vm.errorProspecto,
+                                expression: "errorProspecto"
                               }
                             ],
                             staticClass: "form-group row div-error"
@@ -97590,7 +97515,7 @@ var render = function() {
                             _c(
                               "div",
                               { staticClass: "text-center text-error" },
-                              _vm._l(_vm.errorMostrarMsjAvisoObra, function(
+                              _vm._l(_vm.errorMostrarMsjProspecto, function(
                                 error
                               ) {
                                 return _c("div", {
@@ -97936,8 +97861,8 @@ var render = function() {
                                 {
                                   name: "show",
                                   rawName: "v-show",
-                                  value: _vm.errorAvisoObra,
-                                  expression: "errorAvisoObra"
+                                  value: _vm.errorProspecto,
+                                  expression: "errorProspecto"
                                 }
                               ],
                               staticClass: "form-group row div-error"
@@ -97946,7 +97871,7 @@ var render = function() {
                               _c(
                                 "div",
                                 { staticClass: "text-center text-error" },
-                                _vm._l(_vm.errorMostrarMsjAvisoObra, function(
+                                _vm._l(_vm.errorMostrarMsjProspecto, function(
                                   error
                                 ) {
                                   return _c("div", {
@@ -99342,49 +99267,6 @@ var render = function() {
                           staticClass: "col-md-3 form-control-label",
                           attrs: { for: "text-input" }
                         },
-                        [_vm._v("Extension ")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-2" }, [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.extencion_coa,
-                              expression: "extencion_coa"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: {
-                            type: "text",
-                            pattern: "\\d*",
-                            maxlength: "3",
-                            placeholder: "ext"
-                          },
-                          domProps: { value: _vm.extencion_coa },
-                          on: {
-                            keypress: function($event) {
-                              _vm.isNumber($event)
-                            },
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.extencion_coa = $event.target.value
-                            }
-                          }
-                        })
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "text-input" }
-                        },
                         [_vm._v("Celular ")]
                       ),
                       _vm._v(" "),
@@ -99781,145 +99663,6 @@ var render = function() {
                           staticClass: "col-md-3 form-control-label",
                           attrs: { for: "text-input" }
                         },
-                        [_vm._v("Codigo postal ")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-2" }, [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.cp_coa,
-                              expression: "cp_coa"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: {
-                            type: "text",
-                            maxlength: "5",
-                            placeholder: "C.P"
-                          },
-                          domProps: { value: _vm.cp_coa },
-                          on: {
-                            keypress: function($event) {
-                              _vm.isNumber($event)
-                            },
-                            keyup: function($event) {
-                              _vm.selectColonias(_vm.cp)
-                            },
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.cp_coa = $event.target.value
-                            }
-                          }
-                        })
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "text-input" }
-                        },
-                        [_vm._v("Direccion")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-5" }, [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.direccion_coa,
-                              expression: "direccion_coa"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: { type: "text", placeholder: "Direccion" },
-                          domProps: { value: _vm.direccion_coa },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.direccion_coa = $event.target.value
-                            }
-                          }
-                        })
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "text-input" }
-                        },
-                        [_vm._v("Colonia")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-6" }, [
-                        _c(
-                          "select",
-                          {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.colonia_coa,
-                                expression: "colonia_coa"
-                              }
-                            ],
-                            staticClass: "form-control",
-                            on: {
-                              change: function($event) {
-                                var $$selectedVal = Array.prototype.filter
-                                  .call($event.target.options, function(o) {
-                                    return o.selected
-                                  })
-                                  .map(function(o) {
-                                    var val = "_value" in o ? o._value : o.value
-                                    return val
-                                  })
-                                _vm.colonia_coa = $event.target.multiple
-                                  ? $$selectedVal
-                                  : $$selectedVal[0]
-                              }
-                            }
-                          },
-                          [
-                            _c("option", { attrs: { value: "0" } }, [
-                              _vm._v("Seleccione")
-                            ]),
-                            _vm._v(" "),
-                            _vm._l(_vm.arrayColonias, function(colonias) {
-                              return _c("option", {
-                                key: colonias.colonia,
-                                domProps: {
-                                  value: colonias.colonia,
-                                  textContent: _vm._s(colonias.colonia)
-                                }
-                              })
-                            })
-                          ],
-                          2
-                        )
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "text-input" }
-                        },
                         [_vm._v("Estado civil")]
                       ),
                       _vm._v(" "),
@@ -99992,8 +99735,8 @@ var render = function() {
                           {
                             name: "show",
                             rawName: "v-show",
-                            value: _vm.errorAvisoObra,
-                            expression: "errorAvisoObra"
+                            value: _vm.errorProspecto,
+                            expression: "errorProspecto"
                           }
                         ],
                         staticClass: "form-group row div-error"
@@ -100002,7 +99745,7 @@ var render = function() {
                         _c(
                           "div",
                           { staticClass: "text-center text-error" },
-                          _vm._l(_vm.errorMostrarMsjAvisoObra, function(error) {
+                          _vm._l(_vm.errorMostrarMsjProspecto, function(error) {
                             return _c("div", {
                               key: error,
                               domProps: { textContent: _vm._s(error) }

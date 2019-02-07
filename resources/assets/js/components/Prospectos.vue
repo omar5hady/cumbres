@@ -99,7 +99,7 @@
 
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                    <label for="">Nombre </label>
+                                    <label for="">Nombre (*) </label>
                                     <input type="text" class="form-control" v-model="nombre" placeholder="Nombre">
                                     </div>
                                 </div> 
@@ -107,14 +107,14 @@
 
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                    <label for="">Apellidos</label>
+                                    <label for="">Apellidos (*)</label>
                                     <input type="text" class="form-control" v-model="apellidos" placeholder="Apellidos">
                                 </div>
                                 </div>
 
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                    <label for="">Sexo </label>
+                                    <label for="">Sexo (*)</label>
                                     <select class="form-control" v-model="sexo" >
                                             <option value="">Seleccione</option>
                                             <option value="F">Femenino</option>
@@ -132,21 +132,21 @@
 
                                   <div class="col-md-4">
                                      <div class="form-group">
-                                    <label for="">Celular </label>
+                                    <label for="">Celular (*)</label>
                                     <input type="text" pattern="\d*" maxlength="7" class="form-control" v-on:keypress="isNumber($event)" v-model="celular" placeholder="Celular">
                                 </div>
                                  </div>
 
                                  <div class="col-md-4">
                                      <div class="form-group">
-                                    <label for="">Email personal</label>
+                                    <label for="">Email personal (*)</label>
                                     <input type="text" class="form-control" v-model="email" placeholder="E-mail">
                                 </div>
                                  </div>
 
                                    <div class="col-md-8">
                                     <div class="form-group">
-                                    <label for="">Empresa </label>
+                                    <label for="">Empresa (*)</label>
                                         <v-select 
                                             :on-search="selectEmpresaVueselect"
                                             label="nombre"
@@ -169,7 +169,7 @@
 
                                   <div class="col-md-2">
                                     <div class="form-group">
-                                    <label for="">Fecha de nacimiento</label>
+                                    <label for="">Fecha de nacimiento (*)</label>
                                     <input type="date" class="form-control"  v-model="fecha_nac" >
                                 </div>
                                 </div>
@@ -183,7 +183,7 @@
 
                                   <div class="col-md-2">
                                     <div class="form-group">
-                                        <label for="">RFC</label>
+                                        <label for="">RFC (*)</label>
                                         <input type="text" class="form-control"  v-model="rfc" placeholder="RFC">
                                     </div>
                                  </div>
@@ -196,12 +196,12 @@
                                 </div>
 
                                  
-                                 <div class="col-md-3">
+                                <div class="col-md-3">
                                      <div class="form-group">
-                                    <label for="">NSS </label>
+                                    <label for="">NSS (*)</label>
                                     <input type="text" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="nss" placeholder="NSS">
                                 </div>
-                                 </div>
+                                </div>
 
                                 
                             </div>
@@ -211,16 +211,16 @@
                                         
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                    <label for="">Vive en casa </label>
+                                    <label for="">Vive en casa (*)</label>
                                         <select class="form-control" v-model="tipo_casa" >
-                                            <option value="0">seleccione</option>  
+                                            <option value="0">Seleccione</option>  
                                         </select>
                                     </div>
                                 </div>
 
                                 <div class="col-md-3">
                                   <div class="form-group">
-                                  <label for="">Estado civil</label>
+                                  <label for="">Estado civil (*)</label>
                                     <select class="form-control" v-model="e_civil" >
                                         <option value="0">Seleccione</option> 
                                         <option value="1">Casado - separacion de bienes</option> 
@@ -234,12 +234,18 @@
                                   </div>
                                 </div>
 
-                                <div class="col-md-2">
+                                <div class="col-md-6">
                                     <div class="bmd-form-group checkbox">
                                     <label for=""> Conyuge o coacreditado </label>
                                     <br>
                                    <input id="checkcoa" type="checkbox" v-model="coacreditado">
                                 </div>
+                                </div>
+
+                                <div class="col-md-1"  v-if="coacreditado==true">
+                                    <div class="form-group">
+                                        <button @click="abrirModal('coacreditado','registrar')" style="margin-top:1.5rem;" class="btn btn-success form-control btnagregar" title="Agregar nuevo coacreditado"><i class="icon-plus"></i></button>
+                                    </div>
                                 </div>
 
                                 <div class="col-md-3" v-if="coacreditado==true">
@@ -256,11 +262,14 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-1"  v-if="coacreditado==true">
-                                    <div class="form-group">
-                                        <button @click="abrirModal('coacreditado','registrar')" class="btn btn-success form-control btnagregar"><i class="icon-plus"></i></button>
-                                    </div>
+                                <div class="col-md-3" v-if="coacreditado==true">
+                                     <div class="form-group">
+                                    <label for="">Parentesco </label>
+                                    <input type="text" class="form-control" v-model="parentesco_coa" placeholder="Parentesco">
                                 </div>
+                                </div>
+
+                                
                                 
                             </div>
 
@@ -269,7 +278,7 @@
                               <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="">Lugar de contacto </label>
-                                          <select class="form-control" v-model="clasificacion" >
+                                          <select class="form-control" v-model="lugar_contacto" >
                                             <option value="0">Seleccione</option>
                                             <option value="Asesor externo">Asesor externo</option>
                                             <option value="Oficina central">Oficina central</option>
@@ -281,7 +290,7 @@
                                 </div>
                                 <div class="col-md-2">
                                     <div class="form-group">
-                                    <label for="">Clasificacion </label>
+                                    <label for="">Clasificacion (*)</label>
                                     <select class="form-control" v-model="clasificacion" >
                                             <option value="1">No viable</option>
                                             <option value="2">Tipo A</option>
@@ -295,7 +304,7 @@
                                  
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        <label for="">Proyecto en el que esta interesado </label>
+                                        <label for="">Proyecto en el que esta interesado (*)</label>
                                         <v-select 
                                             :on-search="selectFraccionamientoVueselect"
                                             label="nombre"
@@ -309,20 +318,26 @@
 
                                  <div class="col-md-3">
                                      <div class="form-group">
-                                  <label for="">Medio donde se entero de nosotros</label>
+                                  <label for="">Medio donde se entero de nosotros (*)</label>
                                     <select class="form-control" v-model="publicidad_id" >
-                                            <option value="0">seleccione</option>
+                                            <option value="0">Seleccione</option>
                                              <option v-for="medios in arrayMediosPublicidad" :key="medios.id" :value="medios.id" v-text="medios.nombre"></option>    
                                     </select>
                                 </div>
-                                 </div>
+                                </div>
 
+                                <div class="col-md-10">
+                                    <div class="form-group">
+                                        <label for="">Observaciones (*)</label>
+                                        <textarea rows="3" cols="30" v-model="observacion" class="form-control" placeholder="Observaciones"></textarea>
+                                    </div>
+                                </div>
                                  
                                  <div class="col-md-12">
                                     <!-- Div para mostrar los errores que mande validerFraccionamiento -->
-                                    <div v-show="errorAvisoObra" class="form-group row div-error">
+                                    <div v-show="errorProspecto" class="form-group row div-error">
                                         <div class="text-center text-error">
-                                            <div v-for="error in errorMostrarMsjAvisoObra" :key="error" v-text="error">
+                                            <div v-for="error in errorMostrarMsjProspecto" :key="error" v-text="error">
                                             </div>
                                         </div>
                                     </div>
@@ -403,9 +418,9 @@
 
                                  <div class="col-md-12">
                                     <!-- Div para mostrar los errores que mande validerFraccionamiento -->
-                                    <div v-show="errorAvisoObra" class="form-group row div-error">
+                                    <div v-show="errorProspecto" class="form-group row div-error">
                                         <div class="text-center text-error">
-                                            <div v-for="error in errorMostrarMsjAvisoObra" :key="error" v-text="error">
+                                            <div v-for="error in errorMostrarMsjProspecto" :key="error" v-text="error">
                                             </div>
                                         </div>
                                     </div>
@@ -724,13 +739,6 @@
                                 </div>
 
                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Extension </label>
-                                    <div class="col-md-2">
-                                    <input type="text" pattern="\d*" maxlength="3" class="form-control" v-on:keypress="isNumber($event)" v-model="extencion_coa" placeholder="ext">
-                                </div>
-                                </div>
-
-                               <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Celular </label>
                                     <div class="col-md-3">
                                     <input type="text" pattern="\d*" maxlength="10" class="form-control" v-on:keypress="isNumber($event)" v-model="celular_coa" placeholder="Celular">
@@ -806,32 +814,6 @@
                                     </div>
                                 </div>
 
-
-                               <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Codigo postal </label>
-                                     <div class="col-md-2">
-                                    <input type="text" maxlength="5" class="form-control" v-on:keypress="isNumber($event)"  @keyup="selectColonias(cp)" v-model="cp_coa" placeholder="C.P">
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Direccion</label>
-                                     <div class="col-md-5">
-                                     <input type="text" class="form-control" v-model="direccion_coa" placeholder="Direccion">
-                                </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Colonia</label>
-                                    <div class="col-md-6">
-                                        <select class="form-control" v-model="colonia_coa">
-                                            <option value="0">Seleccione</option>
-                                            <option v-for="colonias in arrayColonias" :key="colonias.colonia" :value="colonias.colonia" v-text="colonias.colonia"></option>
-                                        </select>
-                                    </div>
-                                </div>
-
-
                                <div class="form-group row">
                                   <label class="col-md-3 form-control-label" for="text-input">Estado civil</label>
                                     <div class="col-md-3">
@@ -850,9 +832,9 @@
 
                                  
                                     <!-- Div para mostrar los errores que mande validerFraccionamiento -->
-                                    <div v-show="errorAvisoObra" class="form-group row div-error">
+                                    <div v-show="errorProspecto" class="form-group row div-error">
                                         <div class="text-center text-error">
-                                            <div v-for="error in errorMostrarMsjAvisoObra" :key="error" v-text="error">
+                                            <div v-for="error in errorMostrarMsjProspecto" :key="error" v-text="error">
                                             </div>
                                         </div>
                                     </div>
@@ -887,13 +869,13 @@
         data(){
             return{
                 id:0,
-                clasificacion:0,
+                clasificacion:1,
                 nombre:'',
                 apellidos:'',
                 telefono : '',
                 celular : '',
                 email:'',
-                email_institucional:'',
+                email_inst:'',
                 nss:'',
                 sexo:'',
                 fecha_nac: '',
@@ -906,9 +888,12 @@
                 publicidad_id: 0,
                 proyecto_interes_id: 0,
                 empresa: '',
+                observacion:'',
+                lugar_contacto: 0,
 
 
                 nombre_coa:'',
+                parentesco_coa:'',
                 apellidos_coa:'',
                 telefono_coa : '',
                 celular_coa : '',
@@ -922,13 +907,10 @@
                 homoclave_coa: '',
                 e_civil_coa: 0,
                 tipo_casa_coa:0,
-                colonia: '',
-                cp:'',
-                direccion: '',
 
 
                 arrayEmpresa: [],
-                arrayColonias: [],
+                arrayMediosPublicidad:[],
 
                 anticipo:0,
                 costo_indirecto_porcentaje:0,
@@ -939,8 +921,8 @@
                 listado:1,
                 tituloModal : '',
                 tipoAccion: 0,
-                errorAvisoObra : 0,
-                errorMostrarMsjAvisoObra : [],
+                errorProspecto : 0,
+                errorMostrarMsjProspecto : [],
                 pagination : {
                     'total' : 0,         
                     'current_page' : 0,
@@ -1003,26 +985,6 @@
                 }
                 return pagesArray;
             },
-       
-      
-
-        totalImporte: function(){
-            var resultado_importe_total =0.0;
-            for(var i=0;i<this.arrayAvisoObraLotes.length;i++){
-                resultado_importe_total = parseFloat(resultado_importe_total) + parseFloat(this.arrayAvisoObraLotes[i].costo_directo) + parseFloat(this.arrayAvisoObraLotes[i].costo_indirecto)
-            }
-            return resultado_importe_total;
-        },
-
-        totalConstruccion: function(){
-            var resultado_construccion_total =0.0;
-            for(var i=0;i<this.arrayAvisoObraLotes.length;i++){
-                resultado_construccion_total = parseFloat(resultado_construccion_total) + parseFloat(this.arrayAvisoObraLotes[i].construccion)
-            }
-            return resultado_construccion_total;
-        }
-
-
         },
        
         methods : {
@@ -1039,13 +1001,25 @@
                     console.log(error);
                 });
             },
-         selectFraccionamientos(){
+            selectFraccionamientos(){
                 let me = this;
                 me.arrayFraccionamientos=[];
                 var url = '/select_fraccionamiento';
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayFraccionamientos = respuesta.fraccionamientos;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            selectMedioPublicidad(){
+                let me = this;
+                me.arrayFraccionamientos=[];
+                var url = '/select_medio_publicidad';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayMediosPublicidad = respuesta.medios_publicitarios;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -1079,21 +1053,6 @@
                
             },
             
-            selectColonias(search, loading){
-                let me = this;
-                loading(true)
-
-                var url = '/select_colonias_vue?filtro='+search;
-                axios.get(url).then(function (response) {
-                    let respuesta = response.data;
-                    q: search
-                    me.arrayColonias = respuesta.colonias;
-                    loading(false)
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            },
             
             getDatosEmpresaCoa(val1){
                 let me = this;
@@ -1123,75 +1082,12 @@
                 me.fraccionamiento_id = val1.id;
                 me.selectManzanaLotes(me.fraccionamiento_id);
             },
-
-            selectColonias(buscar){
-                let me = this;
-                me.arrayColonias=[];
-                var url = '/select_colonias?buscar=' + buscar;
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayColonias = respuesta.colonias;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            },
             cambiarPagina(page, buscar, criterio){
                 let me = this;
                 //Actualiza la pagina actual
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
                 me.listarAvisos(page,buscar,criterio);
-            },
-            encuentra(id){
-                var sw=0;
-                for(var i=0;i<this.arrayAvisoObraLotes.length;i++)
-                {
-                    if(this.arrayAvisoObraLotes[i].lote_id == id)
-                    {
-                        sw=true;
-                    }
-                }
-
-                return sw;
-            },
-            agregarLote(){
-                let me = this;
-                if(me.descripcion == '' || me.costo_directo==0 || me.costo_indirecto==0){
-
-                }else{
-                    if(me.encuentra(me.lote_id)){
-                         swal({
-                        type: 'error',
-                        title: 'Error',
-                        text: 'Este lote ya se encuentra agregado',
-                        })
-                    }else{
-                    me.costo_indirecto = parseFloat(me.costo_directo) * parseFloat(me.costo_indirecto_porcentaje)/100;
-                    me.importe = parseFloat(me.costo_directo) + parseFloat(me.costo_indirecto);
-                    me.arrayAvisoObraLotes.push({
-                    lote_id: me.lote_id,
-                    lote: me.lote,
-                    superficie: me.construccion,
-                    manzana: me.manzana,
-                    descripcion: me.descripcion,
-                    importe: me.importe,
-                    modelo:me.modelo,
-                    costo_directo: parseFloat(me.costo_directo),
-                    costo_indirecto: parseFloat(me.costo_indirecto),
-                    obra_extra:0,
-                    });
-                    me.lote = '';
-                    me.lote_id =0;
-                    me.construccion = 0;
-                    me.manzana='';
-                    me.descripcion='';
-                    me.costo_directo = 0;
-                    me.costo_indirecto = 0;
-                    me.modelo='';
-                    }
-                }
-
             },
             registrarLote(){
                 let me = this;
@@ -1281,13 +1177,9 @@
                 }
                 })
             },
-            eliminarDetalle(index){
-                let me = this;
-                me.arrayAvisoObraLotes.splice(index,1);
-            },
             /**Metodo para registrar  */
             registrarAvisoObra(){
-                if(this.validarAviso()) //Se verifica si hay un error (campo vacio)
+                if(this.validarProspecto()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
@@ -1332,7 +1224,7 @@
 
              /**Metodo para actualizar  */
             actualizarAvisoObra(){
-                if(this.validarAviso()) //Se verifica si hay un error (campo vacio)
+                if(this.validarProspecto()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
@@ -1374,85 +1266,24 @@
                 }).catch(function (error){
                     console.log(error);
                 });
-            },
-            
-             limpiarBusqueda(){
-                let me=this;
-                me.buscar= "";
-            },
-  
+            },  
+            validarProspecto(){
+                this.errorProspecto=0;
+                this.errorMostrarMsjProspecto=[];
 
-            limpiarDatos(){
-                this.contratista_id=0;
-                this.f_fin='';
-                this.clave='';
-                this.fraccionamiento_id=0;
-                this.anticipo=0;
-                this.total_anticipo=0;
-                this.total_importe=0;
-                this.total_costo_directo=0;
-                this.total_costo_indirecto=0;
-                this.manzana='';
-                this.lote='';
-                this.modelo='';
-                this.construccion=0;
-                this.descripcion='';
-                this.arrayAvisoObraLotes=[];
-                this.arrayLotes=[];
-                this.arrayDatosLotes=[];
-                this.arrayManzanaLotes=[];
-                this.descripcion_larga='';
-                this.descripcion_corta='';
-                this.iva=0;
-                this.tipo='Vivienda';
-                this.total_construccion=0;
-            },
-            eliminarContrato(data =[]){
-                this.id=data['id'];
-                swal({
-                title: '¿Desea eliminar?',
-                text: "Esta acción no se puede revertir!",
-                type: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                cancelButtonText: 'Cancelar',
-                confirmButtonText: 'Si, eliminar!'
-                }).then((result) => {
-                if (result.value) {
-                    let me = this;
+                if(this.contratista_id==0) 
+                    this.errorMostrarMsjProspecto.push("Seleccionar un contratista.");
+                if(this.fraccionamiento_id==0) 
+                    this.errorMostrarMsjProspecto.push("Seleccionar un fraccionamiento.");
+                if(this.clave=='') 
+                    this.errorMostrarMsjProspecto.push("Ingresar clave.");
+                if(this.arrayAvisoObraLotes.length<=0) 
+                    this.errorMostrarMsjProspecto.push("No se ha ingresado ningun lote");
 
-                axios.delete('/iniobra/contrato/eliminar', 
-                        {params: {'id': this.id}}).then(function (response){
-                        swal(
-                        'Borrado!',
-                        'Contrato borrada correctamente.',
-                        'success'
-                        )
-                         me.listarAvisos(1,'','ini_obras.clave'); 
-                    }).catch(function (error){
-                        console.log(error);
-                    });
-                }
-                })
-            },
-            validarAviso(){
-                this.errorAvisoObra=0;
-                this.errorMostrarMsjAvisoObra=[];
+                if(this.errorMostrarMsjProspecto.length)//Si el mensaje tiene almacenado algo en el array
+                    this.errorProspecto = 1;
 
-                if(this.contratista_id==0) //Si la variable Fraccionamiento esta vacia
-                    this.errorMostrarMsjAvisoObra.push("Seleccionar un contratista.");
-                    if(this.fraccionamiento_id==0) //Si la variable Fraccionamiento esta vacia
-                    this.errorMostrarMsjAvisoObra.push("Seleccionar un fraccionamiento.");
-                if(this.clave=='') //Si la variable Fraccionamiento esta vacia
-                    this.errorMostrarMsjAvisoObra.push("Ingresar clave.");
-                if(this.arrayAvisoObraLotes.length<=0) //Si la variable Fraccionamiento esta vacia
-                    this.errorMostrarMsjAvisoObra.push("No se ha ingresado ningun lote");
-
-                if(this.errorMostrarMsjAvisoObra.length)//Si el mensaje tiene almacenado algo en el array
-                    this.errorAvisoObra = 1;
-
-                return this.errorAvisoObra;
+                return this.errorProspecto;
             },
 
             isNumber: function(evt) {
@@ -1463,6 +1294,10 @@
                 } else {
                     return true;
                 }
+            },
+            limpiarDatos(){
+                this.nombre='';
+                this.apellidos='';
             },
             formatNumber(value) {
                 let val = (value/1).toFixed(2)
@@ -1588,16 +1423,13 @@
                         }
                     }
                 }
-                this.selectColonias(this.cp);
-                this.selectCiudades(this.estado);
             }
 
            
         },
         mounted() {
             this.listarAvisos(1,this.buscar,this.criterio);
-            this.selectColonias(this.cp);
-            this.selectFraccionamientos();
+            this.selectMedioPublicidad();
           
         }
     }

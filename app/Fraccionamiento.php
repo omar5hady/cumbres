@@ -31,6 +31,10 @@ class Fraccionamiento extends Model
         return $this->hasMany('App\Precio_etapa');
     }
 
+    public function cliente(){
+        return $this->hasMany('App\Cliente');
+    }
+
     public function ini_obra(){
         return $this->belongsTo('App\Ini_obra');
     }
