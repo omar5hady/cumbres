@@ -181,24 +181,15 @@
                                  </div>
 
                                   <div class="col-md-2">
-                                     <div class="form-group">
-                                    <label for="">RFC</label>
-                                    <input type="text" class="form-control"  v-model="rfc" placeholder="RFC">
-                                    
-                                </div>
+                                    <div class="form-group">
+                                        <label for="">RFC</label>
+                                        <input type="text" class="form-control"  v-model="rfc" placeholder="RFC">
+                                    </div>
                                  </div>
-                                  
-                                  <div class="col-md-1">
-                                       <div class="form-group">
-                                       <label for="">&nbsp;</label>
-                                       <br>
-                                       <label align="center" for="">-</label>
-                                       </div>
-                                  </div>
-                                    
+                                       
                                 <div align="left" class="col-md-1">
                                    <div class="form-group">
-                                    <label for="">&nbsp;</label>
+                                    <label for="">Homoclave</label>
                                          <input type="text" class="form-control"  v-model="homoclave" placeholder="AA0">
                                    </div>
                                 </div>
@@ -711,42 +702,42 @@
 
                                <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Nombre </label>
-                                     <div class="col-md-3">
-                                    <input type="text" class="form-control" v-model="nombre_coa" placeholder="nombre">
+                                     <div class="col-md-6">
+                                    <input type="text" class="form-control" v-model="nombre_coa" placeholder="Nombre">
                                     </div>
                                 </div> 
 
                                <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Apellidos</label>
-                                 <div class="col-md-3">
-                                    <input type="text" class="form-control" v-model="apellidos_coa" placeholder="apellidos">
+                                 <div class="col-md-6">
+                                    <input type="text" class="form-control" v-model="apellidos_coa" placeholder="Apellidos">
                                 </div>
                                 </div>
 
                                <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Telefono </label>
-                                     <div class="col-md-2">
-                                    <input type="text" class="form-control" v-on:keypress="isNumber($event)" v-model="telefono_coa" placeholder="telefono">
+                                     <div class="col-md-3">
+                                    <input type="text" maxlength="7" class="form-control" v-on:keypress="isNumber($event)" v-model="telefono_coa" placeholder="Telefono">
                                 </div>
                                 </div>
 
                                <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Extension </label>
                                     <div class="col-md-2">
-                                    <input type="text" class="form-control" v-on:keypress="isNumber($event)" v-model="extencion_coa" placeholder="telefono">
+                                    <input type="text" maxlength="3" class="form-control" v-on:keypress="isNumber($event)" v-model="extencion_coa" placeholder="ext">
                                 </div>
                                 </div>
 
                                <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Celular </label>
-                                    <div class="col-md-2">
-                                    <input type="text" maxlength="7" class="form-control" v-on:keypress="isNumber($event)" v-model="celular_coa" placeholder="celular">
+                                    <div class="col-md-3">
+                                    <input type="text" maxlength="10" class="form-control" v-on:keypress="isNumber($event)" v-model="celular_coa" placeholder="Celular">
                                 </div>
                                  </div>
 
                                <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Email personal</label>
-                                     <div class="col-md-3">
+                                     <div class="col-md-4">
                                     <input type="text" class="form-control" v-on:keypress="isNumber($event)" v-model="email_coa" placeholder="email">
                                 </div>
                                  </div>
@@ -755,10 +746,10 @@
 
                                <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Email institucional </label>
-                                         <div class="col-md-3">
+                                         <div class="col-md-4">
                                     <input type="text" class="form-control" v-on:keypress="isNumber($event)" v-model="email_institucional_coa" placeholder="email">
                                 </div>
-                                 </div>
+                                </div>
 
                    
                                <div class="form-group row">                                 
@@ -780,7 +771,7 @@
 
                                <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">CURP</label>
-                                       <div class="col-md-3">
+                                       <div class="col-md-4">
                                     <input type="text" class="form-control"  v-model="curp_coa" placeholder="CURP">
                                       </div>
                                  </div>
@@ -788,19 +779,18 @@
                             
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">RFC</label>
-                                    <div class="col-md-2">
+                                    <div class="col-md-3">
                                         <input type="text" maxlength="10" style="text-transform:uppercase" v-model="rfc_coa" class="form-control" placeholder="RFC" :disabled="tipoAccion == 3">
                                     </div>
-                                    <label for="">-</label>
-                                    <div class="col-md-2">
-                                        <input type="text" maxlength="3" style="text-transform:uppercase" v-model="homoclave_coa" class="form-control" placeholder="000" :disabled="tipoAccion == 3">
+                                    <div class="col-md-3">
+                                        <input type="text" maxlength="3" style="text-transform:uppercase" v-model="homoclave_coa" class="form-control" placeholder="Homoclave" :disabled="tipoAccion == 3">
                                     </div>
                                 </div>
 
 
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">NSS </label>
-                                     <div class="col-md-2">
+                                     <div class="col-md-4">
                                     <input type="text" class="form-control" v-on:keypress="isNumber($event)" v-model="nss_coa" placeholder="NSS">
                                     </div>
                                  </div>
@@ -818,11 +808,18 @@
                                <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Codigo postal </label>
                                      <div class="col-md-2">
-                                    <input type="text" class="form-control" v-on:keypress="isNumber($event)"  @keyup="selectColonias(cp)" v-model="cp_coa" placeholder="C.P">
+                                    <input type="text" maxlength="5" class="form-control" v-on:keypress="isNumber($event)"  @keyup="selectColonias(cp)" v-model="cp_coa" placeholder="C.P">
                                     </div>
                                 </div>
 
-                                    <div class="form-group row">
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Direccion</label>
+                                     <div class="col-md-5">
+                                    <input type="text" class="form-control" v-on:keypress="isNumber($event)" v-model="direccion_coa" placeholder="Direccion">
+                                </div>
+                                </div>
+
+                                <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Colonia</label>
                                     <div class="col-md-6">
                                         <select class="form-control" v-model="colonia_coa">
@@ -834,27 +831,19 @@
 
 
                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Direccion</label>
-                                     <div class="col-md-2">
-                                    <input type="text" class="form-control" v-on:keypress="isNumber($event)" v-model="direccion_coa" placeholder="Direccion">
-                                </div>
-                                </div>
-
-
-                               <div class="form-group row">
                                   <label class="col-md-3 form-control-label" for="text-input">Estado civil</label>
-                                     <div class="col-md-3">
-                                    <select class="form-control" v-model="e_civil_coa" >
-                                        <option value="1">Casado - separacion de bienes</option> 
-                                        <option value="2">Casado - sociedad conyugal</option> 
-                                        <option value="3">Divorciado</option> 
-                                        <option value="4">Soltero</option> 
-                                        <option value="5">Union libre</option>
-                                        <option value="6">Viudo</option> 
-                                        <option value="7">Otro</option>    
-                                    </select>
+                                    <div class="col-md-3">
+                                        <select class="form-control" v-model="e_civil_coa" >
+                                            <option value="1">Casado - separacion de bienes</option> 
+                                            <option value="2">Casado - sociedad conyugal</option> 
+                                            <option value="3">Divorciado</option> 
+                                            <option value="4">Soltero</option> 
+                                            <option value="5">Union libre</option>
+                                            <option value="6">Viudo</option> 
+                                            <option value="7">Otro</option>    
+                                        </select>
+                                    </div>
                                 </div>
-                                 </div>
 
 
                                  
@@ -899,8 +888,8 @@
                 clasificacion:0,
                 nombre:'',
                 apellidos:'',
-                telefono : 0,
-                celular : 0,
+                telefono : '',
+                celular : '',
                 email:'',
                 email_institucional:'',
                 nss:'',
@@ -919,8 +908,8 @@
 
                 nombre_coa:'',
                 apellidos_coa:'',
-                telefono_coa : 0,
-                celular_coa : 0,
+                telefono_coa : '',
+                celular_coa : '',
                 email_coa:'',
                 email_institucional_coa:'',
                 nss_coa:'',
@@ -932,7 +921,7 @@
                 e_civil_coa: 0,
                 tipo_casa_coa:'',
                 colonia: '',
-                cp:0,
+                cp:'',
                 direccion: '',
 
 

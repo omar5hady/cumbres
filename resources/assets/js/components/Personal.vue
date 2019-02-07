@@ -151,7 +151,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Codigo Postal</label>
                                     <div class="col-md-6">
-                                        <input type="text" maxlength="5" v-model="cp" v-on:keypress="isNumber($event)" @keyup="selectColonias(cp)" class="form-control" placeholder="Codigo postal" :disabled="tipoAccion == 3">
+                                        <input type="text" pattern="\d*" maxlength="5" v-model="cp" v-on:keypress="isNumber($event)" @keyup="selectColonias(cp)" class="form-control" placeholder="Codigo postal" :disabled="tipoAccion == 3">
                                     </div>
                                 </div>
 
@@ -194,21 +194,21 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Telefono</label>
                                     <div class="col-md-6">
-                                        <input type="text" maxlength="7" v-on:keypress="isNumber($event)" class="form-control" v-model="telefono"  placeholder="Telefono" :disabled="tipoAccion == 3">
+                                        <input type="text" pattern="\d*" maxlength="7" v-on:keypress="isNumber($event)" class="form-control" v-model="telefono"  placeholder="Telefono" :disabled="tipoAccion == 3">
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Extension</label>
                                     <div class="col-md-4">
-                                        <input type="text" maxlength="3" v-on:keypress="isNumber($event)" v-model="ext" class="form-control" placeholder="Extension" :disabled="tipoAccion == 3">
+                                        <input type="text" pattern="\d*" maxlength="3" v-on:keypress="isNumber($event)" v-model="ext" class="form-control" placeholder="Extension" :disabled="tipoAccion == 3">
                                     </div>
                                 </div>
                             
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Celular</label>
                                     <div class="col-md-6">
-                                        <input type="text" maxlength="10" v-on:keypress="isNumber($event)" v-model="celular" class="form-control" placeholder="Celular" :disabled="tipoAccion == 3">
+                                        <input type="text" pattern="\d*" maxlength="10" v-on:keypress="isNumber($event)" v-model="celular" class="form-control" placeholder="Celular" :disabled="tipoAccion == 3">
                                     </div>
                                 </div>
 
@@ -752,7 +752,7 @@
     .mostrar{
         display: list-item !important;
         opacity: 1 !important;
-        position: absolute !important;
+        position: fixed !important;
         background-color: #3c29297a !important;
         overflow-y: auto;
     }
