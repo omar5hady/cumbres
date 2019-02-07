@@ -49,8 +49,8 @@
                                     <td v-text="avance.lote"></td>
                                     <td v-text="avance.partida" style="width:30%"></td>
                                      <td style="width:8%">
-                                     <input v-if="avance.cambio_avance == 1"  type="number" @keyup.enter="actualizarPorcentaje(avance.id,$event.target.value,avance.partida_id,avance.lote)" :id="avance.id" :value="avance.avance" step=".1" min="0" max="1" v-on:keypress="isNumber($event)" class="form-control Fields" > 
-                                    <input v-else type="number" @keyup.enter="actualizarPorcentaje(avance.id,$event.target.value,avance.partida_id,avance.lote)" :id="avance.id" :value="avance.avance" step=".1" min="0" max="1" v-on:keypress="isNumber($event)" class="form-control" >
+                                     <input v-if="avance.cambio_avance == 1" pattern="\d*"  type="number" @keyup.enter="actualizarPorcentaje(avance.id,$event.target.value,avance.partida_id,avance.lote)" :id="avance.id" :value="avance.avance" step=".1" min="0" max="1" v-on:keypress="isNumber($event)" class="form-control Fields" > 
+                                    <input v-else type="number" pattern="\d*" @keyup.enter="actualizarPorcentaje(avance.id,$event.target.value,avance.partida_id,avance.lote)" :id="avance.id" :value="avance.avance" step=".1" min="0" max="1" v-on:keypress="isNumber($event)" class="form-control" >
                                     </td>
                                     <td v-text="formatNumber(avance.avance_porcentaje) + '%'"></td>
 
@@ -179,7 +179,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Avance</label>
                                     <div class="col-md-2">
-                                        <input type="number" step="0.1" min="0" max="1" onkeydown="return false" v-model="avance" maxlength="3" v-on:keypress="isNumber($event)" class="form-control" placeholder="Costo de la Partida">
+                                        <input type="number" pattern="\d*" step="0.1" min="0" max="1" onkeydown="return false" v-model="avance" maxlength="3" v-on:keypress="isNumber($event)" class="form-control" placeholder="Costo de la Partida">
                                     </div>
                                 </div>
 

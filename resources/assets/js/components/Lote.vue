@@ -144,13 +144,13 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Clave catastral</label>
                                     <div class="col-md-4">
-                                        <input type="text" maxlength="13" v-model="clv_catastral" class="form-control" v-on:keypress="isNumber(event)" placeholder="Clave catastral">
+                                        <input type="text" pattern="\d*" maxlength="13" v-model="clv_catastral" class="form-control" v-on:keypress="isNumber(event)" placeholder="Clave catastral">
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Etapa de servicios</label>
                                     <div class="col-md-4">
-                                        <input type="text" maxlength="2" v-model="etapa_servicios" class="form-control" v-on:keypress="isNumber(event)" placeholder="Etapa de servicios">
+                                        <input type="text" pattern="\d*" maxlength="2" v-model="etapa_servicios" class="form-control" v-on:keypress="isNumber(event)" placeholder="Etapa de servicios">
                                     </div>
                                 </div>
                                 

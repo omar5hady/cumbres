@@ -125,21 +125,21 @@
                                   <div class="col-md-4">
                                     <div class="form-group">
                                     <label for="">Telefono </label>
-                                    <input type="text" class="form-control" v-on:keypress="isNumber($event)" v-model="telefono" placeholder="telefono">
+                                    <input type="text" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="telefono" placeholder="telefono">
                                 </div>
                                 </div>
 
                                   <div class="col-md-4">
                                      <div class="form-group">
                                     <label for="">Celular </label>
-                                    <input type="text" maxlength="7" class="form-control" v-on:keypress="isNumber($event)" v-model="celular" placeholder="(444)-000-000">
+                                    <input type="text" pattern="\d*" maxlength="7" class="form-control" v-on:keypress="isNumber($event)" v-model="celular" placeholder="(444)-000-000">
                                 </div>
                                  </div>
 
                                  <div class="col-md-4">
                                      <div class="form-group">
                                     <label for="">Email personal</label>
-                                    <input type="text" class="form-control" v-on:keypress="isNumber($event)" v-model="email" placeholder="email">
+                                    <input type="text" class="form-control" v-model="email" placeholder="email">
                                 </div>
                                  </div>
 
@@ -161,7 +161,7 @@
                                 <div class="col-md-4">
                                      <div class="form-group">
                                     <label for="">Email institucional </label>
-                                    <input type="text" class="form-control" v-on:keypress="isNumber($event)" v-model="email_inst" placeholder="email">
+                                    <input type="text" class="form-control" v-model="email_inst" placeholder="email">
                                 </div>
                                  </div>
 
@@ -198,7 +198,7 @@
                                  <div class="col-md-3">
                                      <div class="form-group">
                                     <label for="">NSS </label>
-                                    <input type="text" class="form-control" v-on:keypress="isNumber($event)" v-model="nss" placeholder="NSS">
+                                    <input type="text" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="nss" placeholder="NSS">
                                 </div>
                                  </div>
 
@@ -686,7 +686,7 @@
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
            
-             <!--Inicio del modal agregar/actualizar-->
+             <!--Inicio del modal agregar/actualizar coacreditado-->
             <div class="modal fade" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
                 <div class="modal-dialog modal-primary modal-lg" role="document">
                     <div class="modal-content">
@@ -717,28 +717,28 @@
                                <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Telefono </label>
                                      <div class="col-md-3">
-                                    <input type="text" maxlength="7" class="form-control" v-on:keypress="isNumber($event)" v-model="telefono_coa" placeholder="Telefono">
+                                    <input type="text" pattern="\d*" maxlength="7" class="form-control" v-on:keypress="isNumber($event)" v-model="telefono_coa" placeholder="Telefono">
                                 </div>
                                 </div>
 
                                <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Extension </label>
                                     <div class="col-md-2">
-                                    <input type="text" maxlength="3" class="form-control" v-on:keypress="isNumber($event)" v-model="extencion_coa" placeholder="ext">
+                                    <input type="text" pattern="\d*" maxlength="3" class="form-control" v-on:keypress="isNumber($event)" v-model="extencion_coa" placeholder="ext">
                                 </div>
                                 </div>
 
                                <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Celular </label>
                                     <div class="col-md-3">
-                                    <input type="text" maxlength="10" class="form-control" v-on:keypress="isNumber($event)" v-model="celular_coa" placeholder="Celular">
+                                    <input type="text" pattern="\d*" maxlength="10" class="form-control" v-on:keypress="isNumber($event)" v-model="celular_coa" placeholder="Celular">
                                 </div>
                                  </div>
 
                                <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Email personal</label>
                                      <div class="col-md-4">
-                                    <input type="text" class="form-control" v-on:keypress="isNumber($event)" v-model="email_coa" placeholder="email">
+                                    <input type="text" class="form-control"  v-model="email_coa" placeholder="email">
                                 </div>
                                  </div>
 
@@ -747,7 +747,7 @@
                                <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Email institucional </label>
                                          <div class="col-md-4">
-                                    <input type="text" class="form-control" v-on:keypress="isNumber($event)" v-model="email_institucional_coa" placeholder="email">
+                                    <input type="text" class="form-control" v-model="email_institucional_coa" placeholder="email">
                                 </div>
                                 </div>
 
@@ -791,7 +791,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">NSS </label>
                                      <div class="col-md-4">
-                                    <input type="text" class="form-control" v-on:keypress="isNumber($event)" v-model="nss_coa" placeholder="NSS">
+                                    <input type="text" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="nss_coa" placeholder="NSS">
                                     </div>
                                  </div>
 
@@ -815,7 +815,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Direccion</label>
                                      <div class="col-md-5">
-                                    <input type="text" class="form-control" v-on:keypress="isNumber($event)" v-model="direccion_coa" placeholder="Direccion">
+                                     <input type="text" class="form-control" v-model="direccion_coa" placeholder="Direccion">
                                 </div>
                                 </div>
 

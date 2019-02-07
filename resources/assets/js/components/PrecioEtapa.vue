@@ -133,7 +133,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Precio del modelo</label>
                                     <div class="col-md-4" >
-                                        <input type="text"  v-model="precio_modelo" class="form-control" placeholder="Precio del modelo">
+                                        <input type="text" pattern="\d*" v-model="precio_modelo" class="form-control" placeholder="Precio del modelo" v-on:keypress="isNumber($event)">
                                     </div>
                                 </div>
 
@@ -245,6 +245,15 @@
                 .catch(function (error) {
                     console.log(error);
                 });
+            },
+            isNumber: function(evt) {
+                evt = (evt) ? evt : window.event;
+                var charCode = (evt.which) ? evt.which : evt.keyCode;
+                if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
+                    evt.preventDefault();;
+                } else {
+                    return true;
+                }
             },
             cambiarPagina(page, buscar,){
                 let me = this;

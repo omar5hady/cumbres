@@ -162,7 +162,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">No. Acta</label>
                                     <div class="col-md-4">
-                                        <input type="text" maxlength="13" v-on:keypress="isNumber(event)" v-model="num_acta" class="form-control" placeholder="Numero de Acta">
+                                        <input type="text" pattern="\d*" maxlength="13" v-on:keypress="isNumber(event)" v-model="num_acta" class="form-control" placeholder="Numero de Acta">
                                     </div>
                                 </div>
 

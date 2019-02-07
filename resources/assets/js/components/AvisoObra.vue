@@ -118,7 +118,7 @@
                                 </div>
                                 <div class="col-md-3">
                                     <label for="">% Anticipo </label>
-                                    <input type="number" class="form-control" min="0" max="100" v-model="anticipo" v-on:keypress="isNumber($event)">
+                                    <input type="number" pattern="\d*" class="form-control" min="0" max="100" v-model="anticipo" v-on:keypress="isNumber($event)">
                                 </div>
                                 <div class="col-md-3">
                                     <label for="">% Costo Indirecto </label>
@@ -185,7 +185,7 @@
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label>Costo directo<span style="color:red;" v-show="costo_directo==0">(*Ingrese)</span></label>
-                                        <input type="text" class="form-control" v-model="costo_directo" v-on:keypress="isNumber($event)" placeholder="Costo directo">
+                                        <input type="text" pattern="\d*" class="form-control" v-model="costo_directo" v-on:keypress="isNumber($event)" placeholder="Costo directo">
                                     </div>
                                 </div>
                                 <div class="col-md-2">
@@ -354,7 +354,7 @@
                                 </div>
                                 <div class="col-md-3">
                                     <label for="">% Anticipo </label>
-                                    <input type="number" class="form-control" min="0" max="100" v-model="anticipo" v-on:keypress="isNumber($event)">
+                                    <input type="number" pattern="\d*" class="form-control" min="0" max="100" v-model="anticipo" v-on:keypress="isNumber($event)">
                                 </div>
                                 <div class="col-md-3">
                                     <label for="">% Costo Indirecto </label>
@@ -413,7 +413,7 @@
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label>Costo directo<span style="color:red;" v-show="costo_directo==0">(*Ingrese)</span></label>
-                                        <input type="text" class="form-control" v-model="costo_directo" v-on:keypress="isNumber($event)" placeholder="Costo directo">
+                                        <input type="text" pattern="\d*" class="form-control" v-model="costo_directo" v-on:keypress="isNumber($event)" placeholder="Costo directo">
                                     </div>
                                 </div>
                                 <div class="col-md-2">

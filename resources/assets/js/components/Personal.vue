@@ -139,18 +139,17 @@
                                 </div>
                                      <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">RFC</label>
-                                    <div class="col-md-2">
+                                    <div class="col-md-3">
                                         <input type="text" maxlength="10" style="text-transform:uppercase" v-model="rfc" class="form-control" placeholder="RFC" :disabled="tipoAccion == 3">
                                     </div>
-                                    <label for="">-</label>
-                                    <div class="col-md-2">
-                                        <input type="text" maxlength="3" style="text-transform:uppercase" v-model="homoclave" class="form-control" placeholder="000" :disabled="tipoAccion == 3">
+                                    <div class="col-md-3">
+                                        <input type="text" maxlength="3" style="text-transform:uppercase" v-model="homoclave" class="form-control" placeholder="Homoclave" :disabled="tipoAccion == 3">
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Codigo Postal</label>
-                                    <div class="col-md-6">
+                                    <div class="col-md-3">
                                         <input type="text" pattern="\d*" maxlength="5" v-model="cp" v-on:keypress="isNumber($event)" @keyup="selectColonias(cp)" class="form-control" placeholder="Codigo postal" :disabled="tipoAccion == 3">
                                     </div>
                                 </div>
@@ -181,33 +180,23 @@
                                     </div>
                                 </div>
 
-                                <!-- <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Empresa</label>
-                                    <div class="col-md-6">
-                                          <select class="form-control" v-model="empresa_id" :disabled="tipoAccion == 3">
-                                            <option value="0">Seleccione</option>
-                                            <option v-for="empresas in arrayEmpresas" :key="empresas.id" :value="empresas.id" v-text="empresas.nombre"></option>
-                                        </select>
-                                    </div>
-                                </div> -->
-
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Telefono</label>
-                                    <div class="col-md-6">
+                                    <div class="col-md-5">
                                         <input type="text" pattern="\d*" maxlength="7" v-on:keypress="isNumber($event)" class="form-control" v-model="telefono"  placeholder="Telefono" :disabled="tipoAccion == 3">
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Extension</label>
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <input type="text" pattern="\d*" maxlength="3" v-on:keypress="isNumber($event)" v-model="ext" class="form-control" placeholder="Extension" :disabled="tipoAccion == 3">
                                     </div>
                                 </div>
                             
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Celular</label>
-                                    <div class="col-md-6">
+                                    <div class="col-md-5">
                                         <input type="text" pattern="\d*" maxlength="10" v-on:keypress="isNumber($event)" v-model="celular" class="form-control" placeholder="Celular" :disabled="tipoAccion == 3">
                                     </div>
                                 </div>
@@ -220,7 +209,7 @@
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Estatus</label>
-                                    <div class="col-md-5">
+                                    <div class="col-md-3">
                                         <select class="form-control" v-model="activo" :disabled="tipoAccion == 3">
                                             <option value="1">Activo</option>
                                             <option value="0"> Inactivo</option>

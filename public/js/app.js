@@ -53360,17 +53360,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -54419,7 +54408,7 @@ var render = function() {
                         [_vm._v("RFC")]
                       ),
                       _vm._v(" "),
-                      _c("div", { staticClass: "col-md-2" }, [
+                      _c("div", { staticClass: "col-md-3" }, [
                         _c("input", {
                           directives: [
                             {
@@ -54449,9 +54438,7 @@ var render = function() {
                         })
                       ]),
                       _vm._v(" "),
-                      _c("label", { attrs: { for: "" } }, [_vm._v("-")]),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-2" }, [
+                      _c("div", { staticClass: "col-md-3" }, [
                         _c("input", {
                           directives: [
                             {
@@ -54466,7 +54453,7 @@ var render = function() {
                           attrs: {
                             type: "text",
                             maxlength: "3",
-                            placeholder: "000",
+                            placeholder: "Homoclave",
                             disabled: _vm.tipoAccion == 3
                           },
                           domProps: { value: _vm.homoclave },
@@ -54492,7 +54479,7 @@ var render = function() {
                         [_vm._v("Codigo Postal")]
                       ),
                       _vm._v(" "),
-                      _c("div", { staticClass: "col-md-6" }, [
+                      _c("div", { staticClass: "col-md-3" }, [
                         _c("input", {
                           directives: [
                             {
@@ -54702,7 +54689,7 @@ var render = function() {
                         [_vm._v("Telefono")]
                       ),
                       _vm._v(" "),
-                      _c("div", { staticClass: "col-md-6" }, [
+                      _c("div", { staticClass: "col-md-5" }, [
                         _c("input", {
                           directives: [
                             {
@@ -54746,7 +54733,7 @@ var render = function() {
                         [_vm._v("Extension")]
                       ),
                       _vm._v(" "),
-                      _c("div", { staticClass: "col-md-4" }, [
+                      _c("div", { staticClass: "col-md-3" }, [
                         _c("input", {
                           directives: [
                             {
@@ -54790,7 +54777,7 @@ var render = function() {
                         [_vm._v("Celular")]
                       ),
                       _vm._v(" "),
-                      _c("div", { staticClass: "col-md-6" }, [
+                      _c("div", { staticClass: "col-md-5" }, [
                         _c("input", {
                           directives: [
                             {
@@ -54873,7 +54860,7 @@ var render = function() {
                         [_vm._v("Estatus")]
                       ),
                       _vm._v(" "),
-                      _c("div", { staticClass: "col-md-5" }, [
+                      _c("div", { staticClass: "col-md-3" }, [
                         _c(
                           "select",
                           {
@@ -62279,6 +62266,7 @@ var render = function() {
                           staticClass: "form-control",
                           attrs: {
                             type: "text",
+                            pattern: "\\d*",
                             maxlength: "13",
                             placeholder: "Clave catastral"
                           },
@@ -62321,6 +62309,7 @@ var render = function() {
                           staticClass: "form-control",
                           attrs: {
                             type: "text",
+                            pattern: "\\d*",
                             maxlength: "2",
                             placeholder: "Etapa de servicios"
                           },
@@ -71610,6 +71599,7 @@ var render = function() {
                           staticClass: "form-control",
                           attrs: {
                             type: "text",
+                            pattern: "\\d*",
                             maxlength: "13",
                             placeholder: "Numero de Acta"
                           },
@@ -73418,6 +73408,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 console.log(error);
             });
         },
+
+        isNumber: function isNumber(evt) {
+            evt = evt ? evt : window.event;
+            var charCode = evt.which ? evt.which : evt.keyCode;
+            if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode !== 46) {
+                evt.preventDefault();;
+            } else {
+                return true;
+            }
+        },
         cambiarPagina: function cambiarPagina(page, buscar) {
             var me = this;
             //Actualiza la pagina actual
@@ -74304,10 +74304,14 @@ var render = function() {
                           staticClass: "form-control",
                           attrs: {
                             type: "text",
+                            pattern: "\\d*",
                             placeholder: "Precio del modelo"
                           },
                           domProps: { value: _vm.precio_modelo },
                           on: {
+                            keypress: function($event) {
+                              _vm.isNumber($event)
+                            },
                             input: function($event) {
                               if ($event.target.composing) {
                                 return
@@ -78467,6 +78471,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 console.log(error);
             });
         },
+
+        isNumber: function isNumber(evt) {
+            evt = evt ? evt : window.event;
+            var charCode = evt.which ? evt.which : evt.keyCode;
+            if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode !== 46) {
+                evt.preventDefault();;
+            } else {
+                return true;
+            }
+        },
         cambiarPagina: function cambiarPagina(page, buscar, criterio) {
             var me = this;
             //Actualiza la pagina actual
@@ -79461,9 +79475,16 @@ var render = function() {
                             }
                           ],
                           staticClass: "form-control",
-                          attrs: { type: "text", placeholder: "Descuento" },
+                          attrs: {
+                            type: "text",
+                            pattern: "\\d*",
+                            placeholder: "Descuento"
+                          },
                           domProps: { value: _vm.descuento },
                           on: {
+                            keypress: function($event) {
+                              _vm.isNumber($event)
+                            },
                             input: function($event) {
                               if ($event.target.composing) {
                                 return
@@ -85074,7 +85095,12 @@ var render = function() {
                             }
                           ],
                           staticClass: "form-control",
-                          attrs: { type: "number", min: "0", max: "100" },
+                          attrs: {
+                            type: "number",
+                            pattern: "\\d*",
+                            min: "0",
+                            max: "100"
+                          },
                           domProps: { value: _vm.anticipo },
                           on: {
                             keypress: function($event) {
@@ -85377,6 +85403,7 @@ var render = function() {
                             staticClass: "form-control",
                             attrs: {
                               type: "text",
+                              pattern: "\\d*",
                               placeholder: "Costo directo"
                             },
                             domProps: { value: _vm.costo_directo },
@@ -86128,7 +86155,12 @@ var render = function() {
                               }
                             ],
                             staticClass: "form-control",
-                            attrs: { type: "number", min: "0", max: "100" },
+                            attrs: {
+                              type: "number",
+                              pattern: "\\d*",
+                              min: "0",
+                              max: "100"
+                            },
                             domProps: { value: _vm.anticipo },
                             on: {
                               keypress: function($event) {
@@ -86445,6 +86477,7 @@ var render = function() {
                               staticClass: "form-control",
                               attrs: {
                                 type: "text",
+                                pattern: "\\d*",
                                 placeholder: "Costo directo"
                               },
                               domProps: { value: _vm.costo_directo },
@@ -88489,6 +88522,7 @@ var render = function() {
                           staticClass: "form-control",
                           attrs: {
                             type: "text",
+                            pattern: "\\d*",
                             id: partida.id,
                             maxlength: "9"
                           },
@@ -88861,6 +88895,7 @@ var render = function() {
                           staticClass: "form-control",
                           attrs: {
                             type: "text",
+                            pattern: "\\d*",
                             maxlength: "9",
                             placeholder: "Costo de la Partida"
                           },
@@ -89835,6 +89870,7 @@ var render = function() {
                             ? _c("input", {
                                 staticClass: "form-control Fields",
                                 attrs: {
+                                  pattern: "\\d*",
                                   type: "number",
                                   id: avance.id,
                                   step: ".1",
@@ -89872,6 +89908,7 @@ var render = function() {
                                 staticClass: "form-control",
                                 attrs: {
                                   type: "number",
+                                  pattern: "\\d*",
                                   id: avance.id,
                                   step: ".1",
                                   min: "0",
@@ -90608,6 +90645,7 @@ var render = function() {
                           staticClass: "form-control",
                           attrs: {
                             type: "number",
+                            pattern: "\\d*",
                             step: "0.1",
                             min: "0",
                             max: "1",
@@ -91564,17 +91602,6 @@ exports.push([module.i, "\n.form-control:disabled, .form-control[readonly] {\n  
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 //
 //
 //
@@ -92930,7 +92957,7 @@ var render = function() {
                             [_vm._v("RFC")]
                           ),
                           _vm._v(" "),
-                          _c("div", { staticClass: "col-md-2" }, [
+                          _c("div", { staticClass: "col-md-4" }, [
                             _c("input", {
                               directives: [
                                 {
@@ -92959,9 +92986,7 @@ var render = function() {
                             })
                           ]),
                           _vm._v(" "),
-                          _c("label", { attrs: { for: "" } }, [_vm._v("-")]),
-                          _vm._v(" "),
-                          _c("div", { staticClass: "col-md-2" }, [
+                          _c("div", { staticClass: "col-md-4" }, [
                             _c("input", {
                               directives: [
                                 {
@@ -92976,7 +93001,7 @@ var render = function() {
                               attrs: {
                                 type: "text",
                                 maxlength: "3",
-                                placeholder: "000"
+                                placeholder: "Homoclave"
                               },
                               domProps: { value: _vm.homoclave },
                               on: {
@@ -93003,7 +93028,7 @@ var render = function() {
                             [_vm._v("Codigo Postal")]
                           ),
                           _vm._v(" "),
-                          _c("div", { staticClass: "col-md-6" }, [
+                          _c("div", { staticClass: "col-md-4" }, [
                             _c("input", {
                               directives: [
                                 {
@@ -93016,6 +93041,7 @@ var render = function() {
                               staticClass: "form-control",
                               attrs: {
                                 type: "text",
+                                pattern: "\\d*",
                                 maxlength: "5",
                                 placeholder: "Codigo postal"
                               },
@@ -93215,7 +93241,7 @@ var render = function() {
                             [_vm._v("Telefono")]
                           ),
                           _vm._v(" "),
-                          _c("div", { staticClass: "col-md-6" }, [
+                          _c("div", { staticClass: "col-md-5" }, [
                             _c("input", {
                               directives: [
                                 {
@@ -93228,6 +93254,7 @@ var render = function() {
                               staticClass: "form-control",
                               attrs: {
                                 type: "text",
+                                pattern: "\\d*",
                                 maxlength: "7",
                                 placeholder: "Telefono"
                               },
@@ -93259,7 +93286,7 @@ var render = function() {
                             [_vm._v("Extension")]
                           ),
                           _vm._v(" "),
-                          _c("div", { staticClass: "col-md-4" }, [
+                          _c("div", { staticClass: "col-md-3" }, [
                             _c("input", {
                               directives: [
                                 {
@@ -93272,6 +93299,7 @@ var render = function() {
                               staticClass: "form-control",
                               attrs: {
                                 type: "text",
+                                pattern: "\\d*",
                                 maxlength: "3",
                                 placeholder: "Extension"
                               },
@@ -93303,7 +93331,7 @@ var render = function() {
                             [_vm._v("Celular")]
                           ),
                           _vm._v(" "),
-                          _c("div", { staticClass: "col-md-6" }, [
+                          _c("div", { staticClass: "col-md-5" }, [
                             _c("input", {
                               directives: [
                                 {
@@ -93316,6 +93344,7 @@ var render = function() {
                               staticClass: "form-control",
                               attrs: {
                                 type: "text",
+                                pattern: "\\d*",
                                 maxlength: "10",
                                 placeholder: "Celular"
                               },
@@ -96801,7 +96830,11 @@ var render = function() {
                               }
                             ],
                             staticClass: "form-control",
-                            attrs: { type: "text", placeholder: "telefono" },
+                            attrs: {
+                              type: "text",
+                              pattern: "\\d*",
+                              placeholder: "telefono"
+                            },
                             domProps: { value: _vm.telefono },
                             on: {
                               keypress: function($event) {
@@ -96836,6 +96869,7 @@ var render = function() {
                             staticClass: "form-control",
                             attrs: {
                               type: "text",
+                              pattern: "\\d*",
                               maxlength: "7",
                               placeholder: "(444)-000-000"
                             },
@@ -96874,9 +96908,6 @@ var render = function() {
                             attrs: { type: "text", placeholder: "email" },
                             domProps: { value: _vm.email },
                             on: {
-                              keypress: function($event) {
-                                _vm.isNumber($event)
-                              },
                               input: function($event) {
                                 if ($event.target.composing) {
                                   return
@@ -96930,9 +96961,6 @@ var render = function() {
                             attrs: { type: "text", placeholder: "email" },
                             domProps: { value: _vm.email_inst },
                             on: {
-                              keypress: function($event) {
-                                _vm.isNumber($event)
-                              },
                               input: function($event) {
                                 if ($event.target.composing) {
                                   return
@@ -97078,7 +97106,11 @@ var render = function() {
                               }
                             ],
                             staticClass: "form-control",
-                            attrs: { type: "text", placeholder: "NSS" },
+                            attrs: {
+                              type: "text",
+                              pattern: "\\d*",
+                              placeholder: "NSS"
+                            },
                             domProps: { value: _vm.nss },
                             on: {
                               keypress: function($event) {
@@ -99273,6 +99305,7 @@ var render = function() {
                           staticClass: "form-control",
                           attrs: {
                             type: "text",
+                            pattern: "\\d*",
                             maxlength: "7",
                             placeholder: "Telefono"
                           },
@@ -99315,6 +99348,7 @@ var render = function() {
                           staticClass: "form-control",
                           attrs: {
                             type: "text",
+                            pattern: "\\d*",
                             maxlength: "3",
                             placeholder: "ext"
                           },
@@ -99357,6 +99391,7 @@ var render = function() {
                           staticClass: "form-control",
                           attrs: {
                             type: "text",
+                            pattern: "\\d*",
                             maxlength: "10",
                             placeholder: "Celular"
                           },
@@ -99400,9 +99435,6 @@ var render = function() {
                           attrs: { type: "text", placeholder: "email" },
                           domProps: { value: _vm.email_coa },
                           on: {
-                            keypress: function($event) {
-                              _vm.isNumber($event)
-                            },
                             input: function($event) {
                               if ($event.target.composing) {
                                 return
@@ -99438,9 +99470,6 @@ var render = function() {
                           attrs: { type: "text", placeholder: "email" },
                           domProps: { value: _vm.email_institucional_coa },
                           on: {
-                            keypress: function($event) {
-                              _vm.isNumber($event)
-                            },
                             input: function($event) {
                               if ($event.target.composing) {
                                 return
@@ -99666,7 +99695,11 @@ var render = function() {
                             }
                           ],
                           staticClass: "form-control",
-                          attrs: { type: "text", placeholder: "NSS" },
+                          attrs: {
+                            type: "text",
+                            pattern: "\\d*",
+                            placeholder: "NSS"
+                          },
                           domProps: { value: _vm.nss_coa },
                           on: {
                             keypress: function($event) {
@@ -99800,9 +99833,6 @@ var render = function() {
                           attrs: { type: "text", placeholder: "Direccion" },
                           domProps: { value: _vm.direccion_coa },
                           on: {
-                            keypress: function($event) {
-                              _vm.isNumber($event)
-                            },
                             input: function($event) {
                               if ($event.target.composing) {
                                 return
