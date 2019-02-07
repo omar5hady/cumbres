@@ -129,7 +129,10 @@ class EmpresaController extends Controller
     public function selectEmpresa(Request $request){
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
         if(!$request->ajax())return redirect('/');
-        $empresas = Empresa::select('nombre','id')->get();
+        $filtro = $request->filtro;
+        $empresas = Empresa::select('nombre','id')
+                             ->where('nombre','like','%'.$filtro.'%')
+                             ->orderBy('nombre','asc')->get();
         return['empresas' => $empresas];
     }
 }

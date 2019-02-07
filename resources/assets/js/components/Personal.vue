@@ -344,6 +344,7 @@
                     console.log(error);
                 });
             },
+            
             selectColonias(buscar){
                 let me = this;
                 me.arrayColonias=[];

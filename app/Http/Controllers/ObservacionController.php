@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Observacion;
 use App\Lote;
+use Auth;
 
 class ObservacionController extends Controller
 {
@@ -32,7 +33,7 @@ class ObservacionController extends Controller
         $observacion = new Observacion();
         $observacion->lote_id = $request->lote_id;
         $observacion->comentario = $request->comentario;
-        $observacion->usuario = $request->usuario;
+        $observacion->usuario = Auth::user()->usuario;
         $observacion->save();
     }
     public function index(Request $request){

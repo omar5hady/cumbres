@@ -425,12 +425,12 @@
 
                                     </div>
                                 </div>
-                                <div class="form-group row"  v-if="tipoAccion==3">
+                                <!-- <div class="form-group row"  v-if="tipoAccion==3">
                                     <label class="col-md-3 form-control-label" for="text-input">Usuario</label>
                                     <div class="col-md-6">
-                                        <input type="text" v-model="usuario" class="form-control" placeholder="Usuario">
+                                        <input type="text" disabled v-model="usuario" class="form-control" placeholder="Usuario">
                                     </div>
-                                </div>
+                                </div> -->
                                 <!--//////////tabla de consulta de observaciones//////////////-->
                                 <table class="table table-bordered table-striped table-sm" v-if="tipoAccion == 4">
                                     <thead>
@@ -548,7 +548,7 @@
                 fraccionamiento_id : 0,
                 observacion:'',
                 observacion_completa:'',
-                usuario:'',
+                usuario: '',
                 etapa_id: 0,
                 manzana: '',
                 num_lote: 0,

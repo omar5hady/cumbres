@@ -110,6 +110,9 @@
                 <usuario></usuario>
             </template>
    
+            <template v-if="menu==60">
+                <prospectos></prospectos>
+            </template>
             
             @elseif(Auth::user()->rol_id == 2)
                 

@@ -53,6 +53,7 @@ Vue.component('avance', require('./components/Avance.vue'));
 Vue.component('rol', require('./components/Rol.vue'));
 Vue.component('usuario', require('./components/Usuarios.vue'));
 Vue.component('medio-publicitario', require('./components/MedioPublicitario.vue'));
+Vue.component('prospectos', require('./components/Prospectos.vue'));
 
 const app = new Vue({
     el: '#app',

@@ -234,6 +234,7 @@ Route::group(['middleware' => ['auth']],function(){
     ///////////////////       RUTAS SELECT    ////////////////////////////////////
     Route::get('/select_departamentos','DepartamentoController@selectDepartamento');
     Route::get('/select_colonias','CiudadController@selectColonias');
+    Route::get('/select_colonias_vue','CiudadController@selectColoniasVue');
     Route::get('/select_empresas','EmpresaController@selectEmpresa');
     Route::get('/select_ciudades','CiudadController@selectCiudades');
     Route::get('/select_personal','PersonalController@selectNombre'); //Nombre completo de persona (Directivos activos)
@@ -257,7 +258,8 @@ Route::group(['middleware' => ['auth']],function(){
     Route::get('/select_lotes_obra','IniObraController@select_lotes'); 
     Route::get('/select_datos_lotes','IniObraController@select_datos_lotes'); 
     Route::get('/select_roles','RolController@selectRol');
-    Route::get('/select_personas_sin_user','PersonalController@select_Pers_sinUser');  
+    Route::get('/select_personas_sin_user','PersonalController@select_Pers_sinUser');
+    Route::get('/select_medio_publicidad','MedioPublicitarioController@selectMedioPublicitario');  
     
     
     

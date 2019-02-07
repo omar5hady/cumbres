@@ -28,4 +28,16 @@ class CiudadController extends Controller
         ->select('colonia')->orderBy('colonia','asc')->get();
         return['colonias' => $colonias];
     }
+
+    public function selectColoniasVue(Request $request)
+    {
+        //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
+        if(!$request->ajax())return redirect('/');
+        $buscar = $request->buscar;
+        $filtro = $request->filtro;
+        $colonias = Ciudad::where('cp', '=', $buscar)
+        ->where('colonia', 'like', '%'.$filtro.'%')
+        ->select('colonia')->orderBy('colonia','asc')->get();
+        return['colonias' => $colonias];
+    }
 }
