@@ -114,7 +114,16 @@
                 <prospectos></prospectos>
             </template>
             
-            @elseif(Auth::user()->rol_id == 2)
+            @elseif(Auth::user()->rol_id == 2) <!--Vendedor -->
+            <template v-if="menu==13">
+                <empresa></empresa>
+            </template>
+            <template v-if="menu==14">
+                <medio-publicitario></medio-publicitario>
+            </template>
+            <template v-if="menu==60">
+                <prospectos></prospectos>
+            </template>
                 
             @elseif(Auth::user()->rol_id == 3)
                 

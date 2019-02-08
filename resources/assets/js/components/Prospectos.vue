@@ -23,15 +23,14 @@
                                     <div class="input-group">
                                         <!--Criterios para el listado de busqueda -->
                                         <select class="form-control col-md-4" v-model="criterio" @click="limpiarBusqueda()">
-                                            <option value="ini_obras.clave">Clave</option>
-                                            <option value="contratistas.nombre">Contratista</option>
-                                            <option value="ini_obras.f_ini">Fecha de inicio</option>
-                                            <option value="ini_obras.f_fin">Fecha de termino</option>
+                                            <option value="personal.nombre">Nombre</option>
+                                            <option value="personal.rfc">RFC</option>
+                                            <option value="clientes.curp">CURP</option>
+                                            <option value="clientes.nss">NSS</option>
+                                            <option value="clientes.proyecto">Proyecto</option>
                                         </select>
-                                         <input v-if="criterio=='ini_obras.f_ini'" type="date" v-model="buscar" @keyup.enter="listarAvisos(1,buscar,criterio)" class="form-control">
-                                         <input v-else-if="criterio=='ini_obras.f_fin'" type="date" v-model="buscar" @keyup.enter="listarAvisos(1,buscar,criterio)" class="form-control">
-                                        <input v-else type="text" v-model="buscar" @keyup.enter="listarAvisos(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
-                                        <button type="submit" @click="listarAvisos(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                        <input  type="text" v-model="buscar" @keyup.enter="listarProspectos(1,buscar,criterio)" class="form-control">
+                                        <button type="submit" @click="listarProspectos(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                     </div>
                                 </div>
                             </div>
@@ -40,32 +39,34 @@
                                     <thead>
                                         <tr>
                                             <th>Opciones</th>
-                                            <th>Clave</th>
-                                            <th>Contratista</th>
-                                            <th>Fraccionamiento</th>
-                                            <th>Fecha de inicio </th>
-                                            <th>Fecha de termino</th>
+                                            <th>Nombre</th>
+                                            <th>RFC</th>
+                                            <th>IMSS</th>
+                                            <th>CURP </th>
+                                            <th>Proyecto de interes</th>
+                                            <th>Observaciones</th>
                                             
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="avisoObra in arrayAvisoObra" :key="avisoObra.id">
+                                        <tr v-for="prospecto in arrayProspectos" :key="prospecto.id">
                                             <td>
-                                                <button type="button" @click="verAviso(avisoObra.id)" class="btn btn-success btn-sm">
+                                                <button type="button" @click="verAviso(prospecto.id)" class="btn btn-success btn-sm">
                                                 <i class="icon-eye"></i>
                                                 </button>
-                                                <button type="button" class="btn btn-danger btn-sm" @click="eliminarContrato(avisoObra)">
+                                                <button type="button" class="btn btn-danger btn-sm" @click="eliminarContrato(prospecto)">
                                                     <i class="icon-trash"></i>
                                                 </button>
-                                                <button type="button" class="btn btn-warning btn-sm" @click="actualizarContrato(avisoObra.id)">
+                                                <button type="button" class="btn btn-warning btn-sm" @click="actualizarContrato(prospecto.id)">
                                                     <i class="icon-pencil"></i>
                                                 </button>
                                             </td>
-                                            <td v-text="avisoObra.clave"></td>
-                                            <td v-text="avisoObra.contratista"></td>
-                                            <td v-text="avisoObra.proyecto"></td>
-                                            <td v-text="avisoObra.f_ini"></td>
-                                            <td v-text="avisoObra.f_fin"></td>
+                                            <td v-text="prospecto.nombre + ' ' + prospecto.apellidos "></td>
+                                            <td v-text="prospecto.rfc"></td>
+                                            <td v-text="prospecto.nss"></td>
+                                            <td v-text="prospecto.curp"></td>
+                                            <td v-text="prospecto.proyecto"></td>
+                                            <td> Observacion </td>
                                         </tr>                               
                                     </tbody>
                                 </table>
@@ -99,7 +100,7 @@
 
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                    <label for="">Nombre (*) </label>
+                                    <label for="">Nombre <span style="color:red;" v-show="nombre==''">(*)</span> </label>
                                     <input type="text" class="form-control" v-model="nombre" placeholder="Nombre">
                                     </div>
                                 </div> 
@@ -107,14 +108,14 @@
 
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                    <label for="">Apellidos (*)</label>
+                                    <label for="">Apellidos <span style="color:red;" v-show="apellidos==''">(*)</span></label>
                                     <input type="text" class="form-control" v-model="apellidos" placeholder="Apellidos">
                                 </div>
                                 </div>
 
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                    <label for="">Sexo (*)</label>
+                                    <label for="">Sexo <span style="color:red;" v-show="sexo==''">(*)</span></label>
                                     <select class="form-control" v-model="sexo" >
                                             <option value="">Seleccione</option>
                                             <option value="F">Femenino</option>
@@ -126,27 +127,27 @@
                                   <div class="col-md-4">
                                     <div class="form-group">
                                     <label for="">Telefono </label>
-                                    <input type="text" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="telefono" placeholder="Telefono">
+                                    <input type="text" maxlength="7" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="telefono" placeholder="Telefono">
                                 </div>
                                 </div>
 
                                   <div class="col-md-4">
                                      <div class="form-group">
-                                    <label for="">Celular (*)</label>
-                                    <input type="text" pattern="\d*" maxlength="7" class="form-control" v-on:keypress="isNumber($event)" v-model="celular" placeholder="Celular">
+                                    <label for="">Celular <span style="color:red;" v-show="celular==''">(*)</span></label>
+                                    <input type="text" pattern="\d*" maxlength="10" class="form-control" v-on:keypress="isNumber($event)" v-model="celular" placeholder="Celular">
                                 </div>
                                  </div>
 
                                  <div class="col-md-4">
                                      <div class="form-group">
-                                    <label for="">Email personal (*)</label>
+                                    <label for="">Email personal <span style="color:red;" v-show="email==''">(*)</span></label>
                                     <input type="text" class="form-control" v-model="email" placeholder="E-mail">
                                 </div>
                                  </div>
 
                                    <div class="col-md-8">
                                     <div class="form-group">
-                                    <label for="">Empresa (*)</label>
+                                    <label for="">Empresa <span style="color:red;" v-show="empresa==0">(*)</span></label>
                                         <v-select 
                                             :on-search="selectEmpresaVueselect"
                                             label="nombre"
@@ -169,7 +170,7 @@
 
                                   <div class="col-md-2">
                                     <div class="form-group">
-                                    <label for="">Fecha de nacimiento (*)</label>
+                                    <label for="">Fecha de nacimiento <span style="color:red;" v-show="fecha_nac==''">(*)</span></label>
                                     <input type="date" class="form-control"  v-model="fecha_nac" >
                                 </div>
                                 </div>
@@ -177,50 +178,109 @@
                                  <div class="col-md-3">
                                      <div class="form-group">
                                     <label for="">CURP</label>
-                                    <input type="text" class="form-control"  v-model="curp" placeholder="CURP">
+                                    <input type="text" maxlength="18" class="form-control"  v-model="curp" placeholder="CURP">
                                 </div>
                                  </div>
 
                                   <div class="col-md-2">
                                     <div class="form-group">
-                                        <label for="">RFC (*)</label>
-                                        <input type="text" class="form-control"  v-model="rfc" placeholder="RFC">
+                                        <label for="">RFC <span style="color:red;" v-show="rfc==''">(*)</span></label>
+                                        <input type="text" maxlength="10" class="form-control"  v-model="rfc" placeholder="RFC">
                                     </div>
                                  </div>
                                        
                                 <div align="left" class="col-md-1">
                                    <div class="form-group">
                                     <label for="">Homoclave</label>
-                                         <input type="text" class="form-control"  v-model="homoclave" placeholder="AA0">
+                                         <input type="text" maxlength="3" class="form-control"  v-model="homoclave" placeholder="AA0">
                                    </div>
                                 </div>
 
                                  
                                 <div class="col-md-3">
                                      <div class="form-group">
-                                    <label for="">NSS (*)</label>
-                                    <input type="text" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="nss" placeholder="NSS">
+                                    <label for="">NSS <span style="color:red;" v-show="nss==''">(*)</span></label>
+                                    <input type="text" maxlength="11" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="nss" placeholder="NSS">
                                 </div>
                                 </div>
 
                                 
                             </div>
+                <!--  lugar de contacto , clasificacion y otros-->
+                        <div class="form-group row border">
+                              <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="">Lugar de contacto </label>
+                                          <select class="form-control" v-model="lugar_contacto" >
+                                            <option value="0">Seleccione</option>
+                                            <option value="Asesor externo">Asesor externo</option>
+                                            <option value="Oficina central">Oficina central</option>
+                                            <option value="Modulo">Modulo</option>
+                                            <option value="Pagina web">Pagina web</option>
+                                            <option v-for="fraccionamientos in arrayFraccionamientos2" :key="fraccionamientos.id" :value="fraccionamientos.nombre" v-text="fraccionamientos.nombre"></option>
+                                    </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                    <label for="">Clasificacion</label>
+                                    <select class="form-control" v-model="clasificacion" >
+                                            <option value="1">No viable</option>
+                                            <option value="2">Tipo A</option>
+                                            <option value="3">Tipo B</option>
+                                            <option value="4">Tipo C</option>
+                                            <option value="5">Ventas</option>
+                                            <option value="6">Cancelado</option>                               
+                                    </select>
+                                </div>
+                                </div>
+                                 
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="">Proyecto en el que esta interesado <span style="color:red;" v-show="proyecto_interes_id==0">(*)</span></label>
+                                        <v-select 
+                                            :on-search="selectFraccionamientoVueselect"
+                                            label="nombre"
+                                            :options="arrayFraccionamientos"
+                                            placeholder="Buscar proyecto..."
+                                            :onChange="getDatosFraccionamiento"
+                                        >
+                                        </v-select>
+                                    </div>
+                                </div>
+
+                                 <div class="col-md-3">
+                                     <div class="form-group">
+                                  <label for="">Medio donde se entero de nosotros <span style="color:red;" v-show="publicidad_id==0">(*)</span></label>
+                                    <select class="form-control" v-model="publicidad_id" >
+                                            <option value="0">Seleccione</option>
+                                            <option v-for="medios in arrayMediosPublicidad" :key="medios.id" :value="medios.id" v-text="medios.nombre"></option>    
+                                    </select>
+                                </div>
+                                </div>
+
+
+                        </div>
 
                 <!--  apartado  de datos vive en casa , edo civil, conyuge-->
                            <div class="form-group row border" >    
                                         
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                    <label for="">Vive en casa (*)</label>
+                                    <label for="">Vive en casa <span style="color:red;" v-show="tipo_casa==0">(*)</span></label>
                                         <select class="form-control" v-model="tipo_casa" >
                                             <option value="0">Seleccione</option>  
+                                            <option value="De familiares">De familiares</option>
+                                            <option value="Prestada">Prestada</option>
+                                            <option value="Propia">Propia</option>
+                                            <option value="Rentada">Rentada</option>
                                         </select>
                                     </div>
                                 </div>
 
                                 <div class="col-md-3">
                                   <div class="form-group">
-                                  <label for="">Estado civil (*)</label>
+                                  <label for="">Estado civil <span style="color:red;" v-show="e_civil==0">(*)</span></label>
                                     <select class="form-control" v-model="e_civil" >
                                         <option value="0">Seleccione</option> 
                                         <option value="1">Casado - separacion de bienes</option> 
@@ -252,11 +312,11 @@
                                     <div class="form-group">
                                         <label for="">Buscar coacreditado... </label>
                                         <v-select 
-                                            :on-search="selectFraccionamientoVueselect"
-                                            label="nombre"
-                                            :options="arrayFraccionamientos"
+                                            :on-search="selectCoacreditadoVueselect"
+                                            label="n_completo"
+                                            :options="arrayCoacreditados"
                                             placeholder="Buscar..."
-                                            :onChange="getDatosFraccionamiento"
+                                            :onChange="getDatosCoacreditado"
                                         >
                                         </v-select>
                                     </div>
@@ -269,66 +329,9 @@
                                 </div>
                                 </div>
 
-                                
-                                
-                            </div>
-
-                 <!--  lugar de contacto , clasificacion y otros-->
-                        <div class="form-group row border">
-                              <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="">Lugar de contacto </label>
-                                          <select class="form-control" v-model="lugar_contacto" >
-                                            <option value="0">Seleccione</option>
-                                            <option value="Asesor externo">Asesor externo</option>
-                                            <option value="Oficina central">Oficina central</option>
-                                            <option value="Modulo">Modulo</option>
-                                            <option value="Pagina web">Pagina web</option>
-                                            <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
-                                    </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <div class="form-group">
-                                    <label for="">Clasificacion (*)</label>
-                                    <select class="form-control" v-model="clasificacion" >
-                                            <option value="1">No viable</option>
-                                            <option value="2">Tipo A</option>
-                                            <option value="3">Tipo B</option>
-                                            <option value="4">Tipo C</option>
-                                            <option value="5">Ventas</option>
-                                            <option value="6">Cancelado</option>                               
-                                    </select>
-                                </div>
-                                </div>
-                                 
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label for="">Proyecto en el que esta interesado (*)</label>
-                                        <v-select 
-                                            :on-search="selectFraccionamientoVueselect"
-                                            label="nombre"
-                                            :options="arrayFraccionamientos"
-                                            placeholder="Buscar proyecto..."
-                                            :onChange="getDatosFraccionamiento"
-                                        >
-                                        </v-select>
-                                    </div>
-                                </div>
-
-                                 <div class="col-md-3">
-                                     <div class="form-group">
-                                  <label for="">Medio donde se entero de nosotros (*)</label>
-                                    <select class="form-control" v-model="publicidad_id" >
-                                            <option value="0">Seleccione</option>
-                                             <option v-for="medios in arrayMediosPublicidad" :key="medios.id" :value="medios.id" v-text="medios.nombre"></option>    
-                                    </select>
-                                </div>
-                                </div>
-
                                 <div class="col-md-10">
                                     <div class="form-group">
-                                        <label for="">Observaciones (*)</label>
+                                        <label for="">Observaciones <span style="color:red;" v-show="observacion==''">(*)</span></label>
                                         <textarea rows="3" cols="30" v-model="observacion" class="form-control" placeholder="Observaciones"></textarea>
                                     </div>
                                 </div>
@@ -347,357 +350,25 @@
                             <div class="form-group">
                                 <div class="col-md-12">
                                     <button type="button" class="btn btn-secondary" @click="ocultarDetalle()"> Cerrar </button>
-                                    <button type="button" class="btn btn-primary" @click="registrarAvisoObra()"> Guardar </button>
+                                    <button type="button" class="btn btn-primary" @click="registrarProspecto()"> Guardar </button>
                                 </div>
                             </div>
 
-                        </div>
+                                
+                                
+                            </div>
+
+                 
 
                         </div>
 
                     </template>
 
                     <!-- Div Card Body para actualizar registros -->
-                    <template v-else-if="listado == 3">
-                        <div class="card-body"> 
-                            <div class="form-group row border">
-                                <div class="col-md-9">
-                                    <div class="form-group">
-                                        <label for="">Contratista </label>
-                                        <v-select 
-                                            :on-search="selectContratista"
-                                            label="nombre"
-                                            :options="arrayContratista"
-                                            placeholder="Buscar contratista..."
-                                            :onChange="getDatosContratista"
-                                        >
-                                        </v-select>
-                                         <input type="text" class="form-control" readonly  v-model="contratista">
-                                    </div>
-                                </div>
-                                
-                                <div class="col-md-3">
-                                    <label for="">Clave </label>
-                                    <input type="text" class="form-control" v-model="clave" placeholder="CLV-00-00">
-                                </div> 
-                                <div class="col-md-3">
-                                    <label for="">Fecha de inicio </label>
-                                    <input type="date" class="form-control" v-model="f_ini">
-                                </div>
-                                <div class="col-md-3">
-                                    <label for="">Fecha de termino </label>
-                                    <input type="date" class="form-control" v-model="f_fin">
-                                </div>
-                                <div class="col-md-3">
-                                    <label for="">% Anticipo </label>
-                                    <input type="number" class="form-control" min="0" max="100" v-model="anticipo" v-on:keypress="isNumber($event)">
-                                </div>
-                                <div class="col-md-3">
-                                    <label for="">% Costo Indirecto </label>
-                                    <input type="number" class="form-control" min="0" max="100" v-model="costo_indirecto_porcentaje" v-on:keypress="isNumber($event)">
-                                </div>
-
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                       <label for="">Fraccionamiento </label>
-                                        <input type="text" class="form-control" readonly  v-model="fraccionamiento">
-                                    </div>
-                                </div>
-
-                                <div class="col-md-2">
-                                    <div class="form-group">
-                                        <label>Manzana</label>
-                                        <div class="form-inline">
-                                        <select class="form-control" v-model="manzana" @click="selectLotes(manzana,fraccionamiento_id)">
-                                            <option value="">Seleccione</option>
-                                            <option v-for="manzana in arrayManzanaLotes" :key="manzana.id" :value="manzana.manzana" v-text="manzana.manzana"></option>
-                                        </select>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                 <div class="col-md-12">
-                                    <!-- Div para mostrar los errores que mande validerFraccionamiento -->
-                                    <div v-show="errorProspecto" class="form-group row div-error">
-                                        <div class="text-center text-error">
-                                            <div v-for="error in errorMostrarMsjProspecto" :key="error" v-text="error">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                            </div>
-                            <div class="form-group row border">
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label>Lote</label> 
-                                        <div class="form-inline">
-                                        <select class="form-control" v-model="lote_id" @click="selectDatosLotes(lote_id)">
-                                            <option value="0">Seleccione</option>
-                                            <option v-for="lotes in arrayLotes" :key="lotes.id" :value="lotes.id" v-text="lotes.num_lote"></option>
-                                        </select>
-                                           
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label>Descripcion <span style="color:red;" v-show="descripcion==''">(*Ingrese)</span> </label>
-                                        <input type="text" class="form-control" v-model="descripcion"  placeholder="Descripcion">
-                                    </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <div class="form-group">
-                                        <label>Costo directo<span style="color:red;" v-show="costo_directo==0">(*Ingrese)</span></label>
-                                        <input type="text" class="form-control" v-model="costo_directo" v-on:keypress="isNumber($event)" placeholder="Costo directo">
-                                    </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <div class="form-group">
-                                        <label>Costo indirecto <span style="color:red;" v-show="costo_indirecto==0">(*Ingrese)</span></label>
-                                        <p>{{ costo_indirecto=costo_directo*costo_indirecto_porcentaje/100 | currency}}</p>
-                                        <!--<input type="text" class="form-control" readonly v-model="costo_indirecto" v-on:keypress="isNumber($event)" placeholder="Costo indirecto">-->
-                                    </div>
-                                </div>
-
-                                <div class="col-md-1">
-                                    <div class="form-group">
-                                        <button @click="registrarLote()" class="btn btn-success form-control btnagregar"><i class="icon-plus"></i></button>
-                                    </div>
-                                </div>
-                                
-                            </div>
-                            <div class="form-group row">
-                                <div class="table-responsive col-md-12">
-                                    <table class="table table-bordered table-striped table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th>Opciones</th>
-                                                <th>Descripcion</th>
-                                                <th>Lote</th>
-                                                <th>M&sup2;</th>
-                                                <th>Costo Directo</th>
-                                                <th>Costo Indirecto</th>
-                                                <th>Obra extra</th>
-                                                <th>Importe</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody v-if="arrayAvisoObraLotes.length">
-                                            <tr v-for="detalle in arrayAvisoObraLotes" :key="detalle.id">
-                                                <td>
-                                                    <button @click="eliminarLote(detalle)" type="button" class="btn btn-danger btn-sm">
-                                                        <i class="icon-close"></i>
-                                                    </button>
-                                                </td>
-                                                <td>
-                                                    <input v-model="detalle.descripcion" type="text" class="form-control">
-                                                </td>
-                                                <td v-text="detalle.lote">
-                                                    
-                                                </td>
-                                                <td style="text-align: right;" v-text="detalle.construccion">
-                                                   
-                                                </td>
-                                                <td style="text-align: right;">
-                                                    <input v-model="detalle.costo_directo" type="text" class="form-control">
-                                                </td>
-                                                <td style="text-align: right;">
-                                                    {{ detalle.costo_indirecto=detalle.costo_directo*costo_indirecto_porcentaje/100 | currency}}
-                                                </td>
-                                                <td style="text-align: right;">
-                                                    <input v-model="detalle.obra_extra" type="text" class="form-control">
-                                                </td>
-                                                <td style="text-align: right;">
-                                                    {{parseFloat(detalle.costo_directo) + parseFloat(detalle.costo_indirecto) | currency}}
-                                                  <!-- <input readonly v-model="detalle.importe" type="text" class="form-control">  -->
-                                                </td>
-                                            </tr>
-                                  
-                                            <tr style="background-color: #CEECF5;">
-                                                
-                                                <td align="right" colspan="4"> <strong>{{ total_construccion=totalConstruccion}}</strong> </td>
-                                                <td align="right" > <strong>{{ total_costo_directo=totalCostoDirecto | currency}}</strong> </td>
-                                                <td align="right"> <strong>{{ total_costo_indirecto=totalCostoIndirecto | currency}}</strong> </td>
-                                                <td align="right" colspan="2"> <strong>{{ total_importe=totalImporte | currency}}</strong> </td>
-                                            </tr>
-                                        </tbody>
-
-                                        <tbody v-else>
-                                            <tr>
-                                                <td colspan="7">
-                                                    No hay lotes seleccionados
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <!-- Parametros para contrato -->
-                            <div class="form-group row border"  v-if="arrayAvisoObraLotes.length">
-                                <div class="col-md-2">
-                                    <div class="form-group">
-                                        <label>Tipo</label> 
-                                        <div class="form-inline">
-                                        <select class="form-control" v-model="tipo">
-                                            <option value="Vivienda">Vivienda</option>
-                                            <option value="Urbanización">Urbanización</option>
-                                            <option value="Casa club">Casa club</option>
-                                            <option value="Caseta">Caseta</option>
-                                            <option value="Locales">Locales</option>
-                                        </select>
-                                           
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-1">
-                                    <div class="form-group">
-                                        <label>IVA</label> 
-                                        <div class="form-inline">
-                                        <select class="form-control" v-model="iva">
-                                            <option value="0">No</option>
-                                            <option value="1">Si</option>
-                                        </select>
-                                           
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label>Descripcion corta para contrato<span style="color:red;" v-show="descripcion_corta==''">(*Ingrese)</span> </label>
-                                        <input type="text" class="form-control" v-model="descripcion_corta"  placeholder="Descripcion corta">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Descripcion larga para contrato<span style="color:red;" v-show="descripcion_larga==''">(*Ingrese)</span> </label>
-                                        <input type="text" class="form-control" v-model="descripcion_larga"  placeholder="Descripcion larga">
-                                    </div>
-                                </div>
-                                
-                            </div>
-                            <div class="form-group row">
-                                <div class="col-md-12">
-                                    <button type="button" class="btn btn-secondary" @click="ocultarDetalle()"> Cerrar </button>
-                                    <button type="button" class="btn btn-primary" @click="actualizarAvisoObra()"> Actualizar </button>
-                                </div>
-                            </div>
-                        </div>
-                    </template>
+                    
 
                     <!--Div para ver detalle del aviso -->
-                    <template v-else-if="listado == 2">
-                        <div class="card-body"> 
-                            <div class="form-group row border">
-                                <div class="col-md-10">
-                                    <div class="form-group">
-                                        <label style="color:#2271b3;" for=""><strong> Contratista </strong></label>
-                                        <p v-text="contratista"></p>
-                                    </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <label style="color:#2271b3;" for=""><strong>Clave</strong> </label>
-                                    <p v-text="clave"></p>
-                                </div> 
-                                <div class="col-md-3">
-                                    <label style="color:#2271b3;" for=""><strong>Fecha de inicio</strong></label>
-                                    <p v-text="f_ini"></p>
-                                </div>
-                                <div class="col-md-3">
-                                    <label style="color:#2271b3;" for=""><strong>Fecha de termino </strong></label>
-                                    <p v-text="f_fin"></p>
-                                </div>
-                                <div class="col-md-3">
-                                    <label style="color:#2271b3;" for=""><strong>% Anticipo </strong></label>
-                                    <p v-text="anticipo+'%'"></p>
-                                </div>
-                                <div class="col-md-3">
-                                    <label style="color:#2271b3;" for=""><strong>% Costo Indirecto </strong></label>
-                                    <p v-text="costo_indirecto_porcentaje+'%'"></p>
-                                </div>
-
-                                <div class="col-md-8">
-                                    <div class="form-group">
-                                        <label style="color:#2271b3;" for=""><strong>Fraccionamiento </strong></label>
-                                        <p v-text="fraccionamiento"></p>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-2">
-                                    <div class="form-group">
-                                        <label style="color:#2271b3;"><strong>Total de Anticipo</strong></label>
-                                        <div class="form-inline">
-                                        <p v-text="'$'+formatNumber(total_anticipo)"></p>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                            </div>
-
-                            <div class="form-group row">
-                                <div class="table-responsive col-md-12">
-                                    <table class="table table-bordered table-striped table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th>Descripcion</th>
-                                                <th>Lote</th>
-                                                <th>Manzana</th>
-                                                <th>M&sup2;</th>
-                                                <th>Costo Directo</th>
-                                                <th>Costo Indirecto</th>
-                                                <th>Obra extra</th>
-                                                <th>Importe</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody v-if="arrayAvisoObraLotes.length">
-                                            <tr v-for="detalle in arrayAvisoObraLotes" :key="detalle.id">
-                                                <td v-text="detalle.descripcion"></td>
-                                                <td v-text="detalle.lote"></td>
-                                                <td v-text="detalle.manzana"></td>
-                                                <td style="text-align: right;" v-text="detalle.construccion"></td>
-                                                <td style="text-align: right;" v-text="'$'+formatNumber(detalle.costo_directo)"></td>
-                                                <td style="text-align: right;" v-text="'$'+formatNumber(detalle.costo_indirecto)"></td>
-                                                <td style="text-align: right;" v-text="'$'+formatNumber(detalle.obra_extra)"></td>
-                                                <td align="right">
-                                                    {{'$'+formatNumber(parseFloat(detalle.costo_directo) + parseFloat(detalle.costo_indirecto))}}
-                                                  <!-- <input readonly v-model="detalle.importe" type="text" class="form-control">  -->
-                                                </td>
-                                            </tr>
-                                  
-                                            <tr style="background-color: #CEECF5;">
-                                                <td align="right" colspan="4"> <strong>{{ formatNumber(total_construccion)}}</strong> </td>
-                                                <td align="right"> <strong>${{ formatNumber(total_costo_directo=totalCostoDirecto)}}</strong> </td>
-                                                <td align="right"> <strong>${{ formatNumber(total_costo_indirecto=totalCostoIndirecto)}}</strong> </td>
-                                                <td align="right" colspan="2"> <strong>${{ formatNumber(total_importe=totalImporte)}}</strong> </td>
-                                            </tr>
-                                        </tbody>
-
-                                        <tbody v-else>
-                                            <tr>
-                                                <td colspan="7">
-                                                    No hay lotes seleccionados
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <div class="col-md-1">
-                                    <button type="button" class="btn btn-secondary" @click="ocultarDetalle()"> Cerrar </button>
-                                </div>
-                                   <div class="col-md-9">
-                                    <a class="btn btn-success" v-bind:href="'/iniobra/relacion/excel/'+ id " >
-                                        <i></i>Exportar relacion en excel
-                                    </a>
-                                </div>
-                                <div class="col-md-2">
-                                    <a class="btn btn-primary" v-bind:href="'/iniobra/pdf/'+ id " >
-                                        <i></i>Imprimir Contrato
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </template>
+                    
                     
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
@@ -766,6 +437,7 @@
                                     <label class="col-md-3 form-control-label" for="text-input">Sexo </label>
                                      <div class="col-md-2">
                                     <select class="form-control" v-model="sexo_coa" >
+                                            <option value="">Seleccione</option>
                                             <option value="F">Femenino</option>
                                             <option value="M">Masculino</option>
                                     </select>
@@ -782,7 +454,7 @@
                                <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">CURP</label>
                                        <div class="col-md-4">
-                                    <input type="text" class="form-control"  v-model="curp_coa" placeholder="CURP">
+                                    <input type="text" maxlength="18" class="form-control"  v-model="curp_coa" placeholder="CURP">
                                       </div>
                                  </div>
 
@@ -801,7 +473,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">NSS </label>
                                      <div class="col-md-4">
-                                    <input type="text" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="nss_coa" placeholder="NSS">
+                                    <input type="text" maxlength="11" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="nss_coa" placeholder="NSS">
                                     </div>
                                  </div>
 
@@ -809,7 +481,11 @@
                                     <label class="col-md-3 form-control-label" for="text-input">Vive en casa </label>
                                     <div class="col-md-3">
                                         <select class="form-control" v-model="tipo_casa_coa" >
-                                            <option value="0">seleccione</option>  
+                                            <option value="0">Seleccione</option>  
+                                            <option value="De familiares">De familiares</option>
+                                            <option value="Prestada">Prestada</option>
+                                            <option value="Propia">Propia</option>
+                                            <option value="Rentada">Rentada</option>
                                         </select>
                                     </div>
                                 </div>
@@ -818,6 +494,7 @@
                                   <label class="col-md-3 form-control-label" for="text-input">Estado civil</label>
                                     <div class="col-md-3">
                                         <select class="form-control" v-model="e_civil_coa" >
+                                            <option value="0">Seleccione</option>
                                             <option value="1">Casado - separacion de bienes</option> 
                                             <option value="2">Casado - sociedad conyugal</option> 
                                             <option value="3">Divorciado</option> 
@@ -832,9 +509,9 @@
 
                                  
                                     <!-- Div para mostrar los errores que mande validerFraccionamiento -->
-                                    <div v-show="errorProspecto" class="form-group row div-error">
+                                    <div v-show="errorCoacreditado" class="form-group row div-error">
                                         <div class="text-center text-error">
-                                            <div v-for="error in errorMostrarMsjProspecto" :key="error" v-text="error">
+                                            <div v-for="error in errorMostrarMsjCoacreditado" :key="error" v-text="error">
                                             </div>
                                         </div>
                                     </div>
@@ -846,7 +523,7 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
                             <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarEmpresa()">Guardar</button>
+                            <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarCoacreditado()">Guardar</button>
                             <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarEmpresa()">Actualizar</button>
                         </div>
                     </div>
@@ -884,7 +561,7 @@
                 homoclave: '',
                 e_civil: 0,
                 tipo_casa:0,
-                coacreditado: '',
+                coacreditado: 0,
                 publicidad_id: 0,
                 proyecto_interes_id: 0,
                 empresa: '',
@@ -912,17 +589,14 @@
                 arrayEmpresa: [],
                 arrayMediosPublicidad:[],
 
-                anticipo:0,
-                costo_indirecto_porcentaje:0,
-                total_anticipo:0,
-                f_ini : new Date().toISOString().substr(0, 10),
-                f_fin : '',
                 modal : 0,
                 listado:1,
                 tituloModal : '',
                 tipoAccion: 0,
                 errorProspecto : 0,
                 errorMostrarMsjProspecto : [],
+                errorCoacreditado : 0,
+                errorMostrarMsjCoacreditado : [],
                 pagination : {
                     'total' : 0,         
                     'current_page' : 0,
@@ -932,24 +606,13 @@
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'ini_obras.clave', 
+                criterio : 'personal.nombre', 
                 buscar : '',
+                arrayCoacreditados : [],
+                arrayProspectos: [],
                 arrayFraccionamientos : [],
+                arrayFraccionamientos2 : [],
                 arrayFraccionamientosVue : [],
-                arrayLotes:[],
-                arrayManzanaLotes: [],
-                arrayDatosLotes: [],
-                lote_id:0,
-                lote:'',
-                manzana:'',
-                construccion:'',
-                costo_directo:0,
-                costo_indirecto:0,
-                descripcion: '',
-                manzana: '',
-                modelo:'',
-                importe: 0.0,
-                contratista:'',
                 fraccionamiento:''
                 
             }
@@ -989,12 +652,12 @@
        
         methods : {
             /**Metodo para mostrar los registros */
-            listarAvisos(page, buscar, criterio){
+            listarProspectos(page, buscar, criterio){
                 let me = this;
-                var url = '/iniobra?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
+                var url = '/clientes?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
-                    me.arrayAvisoObra = respuesta.ini_obra.data;
+                    me.arrayProspectos = respuesta.personas.data;
                     me.pagination = respuesta.pagination;
                 })
                 .catch(function (error) {
@@ -1046,22 +709,19 @@
                 me.empresa = val1.nombre;
                
             }, 
-            getDatosEmpresaCoa(val1){
+            selectFraccionamientos(){
                 let me = this;
-                me.loading = true;
-                me.empresa_coa = val1.nombre;
-               
+                me.arrayFraccionamientos=[];
+                var url = '/select_fraccionamiento';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayFraccionamientos2 = respuesta.fraccionamientos;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
             },
-            
-            
-            getDatosEmpresaCoa(val1){
-                let me = this;
-                me.loading = true;
-                me.colonia = val1.colonia;
-               
-            },
-            
-             selectFraccionamientoVueselect(search, loading){
+            selectFraccionamientoVueselect(search, loading){
                 let me = this;
                 loading(true)
 
@@ -1069,7 +729,7 @@
                 axios.get(url).then(function (response) {
                     let respuesta = response.data;
                     q: search
-                    me.arrayFraccionamientosVue = respuesta.fraccionamientos;
+                    me.arrayFraccionamientos = respuesta.fraccionamientos;
                     loading(false)
                 })
                 .catch(function (error) {
@@ -1079,141 +739,146 @@
             getDatosFraccionamiento(val1){
                 let me = this;
                 me.loading = true;
-                me.fraccionamiento_id = val1.id;
-                me.selectManzanaLotes(me.fraccionamiento_id);
+                me.proyecto_interes_id = val1.id;
+            },
+            selectCoacreditadoVueselect(search, loading){
+                let me = this;
+                loading(true)
+
+                var url = '/select_coacreditadoVue?filtro='+search;
+                axios.get(url).then(function (response) {
+                    let respuesta = response.data;
+                    q: search
+                    me.arrayCoacreditados = respuesta.coacreditados;
+                    loading(false)
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            getDatosCoacreditado(val1){
+                let me = this;
+                me.loading = true;
+                me.nombre_coa = val1.nombre;
+                me.apellidos_coa = val1.apellidos;
+                me.telefono_coa = val1.telefono;
+                me.celular_coa = val1.celular;
+                me.email_coa = val1.email;
+                me.email_institucional_coa = val1.email_institucional;
+                me.sexo_coa = val1.sexo;
+                me.fecha_nac_coa = val1.f_nacimiento;
+                me.edo_civil_coa = val1.edo_civil;
+                me.rfc_coa = val1.rfc;
+                me.curp_coa = val1.curp;
+                me.nss_coa = val1.nss;
+                me.homoclave_coa = val1.homoclave;
+                me.tipo_casa_coa = val1.tipo_casa;
             },
             cambiarPagina(page, buscar, criterio){
                 let me = this;
                 //Actualiza la pagina actual
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
-                me.listarAvisos(page,buscar,criterio);
-            },
-            registrarLote(){
-                let me = this;
-                if(me.descripcion == '' || me.costo_directo==0 || me.costo_indirecto==0){
-
-                }else{
-                    if(me.encuentra(me.lote_id)){
-                         swal({
-                        type: 'error',
-                        title: 'Error',
-                        text: 'Este lote ya se encuentra agregado',
-                        })
-                    }else{
-                    me.costo_indirecto = parseFloat(me.costo_directo) * parseFloat(me.costo_indirecto_porcentaje)/100;
-                    me.importe = parseFloat(me.costo_directo) + parseFloat(me.costo_indirecto);
-                   
-                    axios.post('/iniobra/lote/registrar',{
-                        'id': this.id,
-                        'lote': this.lote,
-                        'manzana' : this.manzana,
-                        'modelo' : this.modelo,
-                        'superficie' : this.construccion,
-                        'costo_directo' : this.costo_directo,
-                        'costo_indirecto' : this.costo_indirecto,
-                        'importe' : this.importe,
-                        'descripcion' : this.descripcion,
-                        'lote_id' : this.lote_id,
-                    }).then(function (response){
-                        //Obtener detalle
-                            me.arrayAvisoObraLotes=[];
-                            var urld = '/iniobra/obtenerDetalles?id=' + me.id;
-                            axios.get(urld).then(function (response) {
-                                var respuesta = response.data;
-                                me.arrayAvisoObraLotes = respuesta.detalles;
-                            })
-                            .catch(function (error) {
-                                console.log(error);
-                            });
-                      
-                    }).catch(function (error){
-                        console.log(error);
-                    });
-
-                    me.lote = '';
-                    me.lote_id =0;
-                    me.construccion = 0;
-                    me.manzana='';
-                    me.descripcion='';
-                    me.costo_directo = 0;
-                    me.costo_indirecto = 0;
-                    me.modelo='';
-                    }
-                }
-
-            },
-             eliminarLote(data =[]){
-                //this.lote_id=data['id'];
-                swal({
-                title: '¿Desea remover este lote?',
-                text: "Esta acción no se puede revertir!",
-                type: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                cancelButtonText: 'Cancelar',
-                confirmButtonText: 'Si, eliminar!'
-                }).then((result) => {
-                if (result.value) {
-                    let me = this;
-
-                axios.delete('/iniobra/lote/eliminar', 
-                        {params: {'id': data['id']}}).then(function (response){
-                        
-                         //Obtener detalle
-                            me.arrayAvisoObraLotes=[];
-                            var urld = '/iniobra/obtenerDetalles?id=' + me.id;
-                            axios.get(urld).then(function (response) {
-                                var respuesta = response.data;
-                                me.arrayAvisoObraLotes = respuesta.detalles;
-                            })
-                            .catch(function (error) {
-                                console.log(error);
-                            });
-                    }).catch(function (error){
-                        console.log(error);
-                    });
-                }
-                })
+                me.listarProspectos(page,buscar,criterio);
             },
             /**Metodo para registrar  */
-            registrarAvisoObra(){
+            registrarProspecto(){
                 if(this.validarProspecto()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
 
                 let me = this;
-                me.total_anticipo=(me.anticipo/100)*me.total_importe;
-                //Con axios se llama el metodo store de FraccionaminetoController
-                axios.post('/iniobra/registrar',{
-                    'fraccionamiento_id': this.fraccionamiento_id,
-                    'contratista_id': this.contratista_id,
-                    'clave': this.clave,
-                    'f_ini': this.f_ini,
-                    'f_fin': this.f_fin,
-                    'total_importe' :this.total_importe,
-                    'total_costo_directo':this.total_costo_directo,
-                    'total_costo_indirecto':this.total_costo_indirecto,
-                    'anticipo':this.anticipo,
-                    'total_anticipo':this.total_anticipo,
-                    'data':this.arrayAvisoObraLotes,
-                    'costo_indirecto_porcentaje':this.costo_indirecto_porcentaje,
-                    'tipo':this.tipo,
-                    'iva':this.iva,
-                    'descripcion_larga':this.descripcion_larga,
-                    'descripcion_corta':this.descripcion_corta,
-                    'total_superficie':this.total_construccion
+                //Con axios se llama el metodo store del controller
+                axios.post('/clientes/registrar',{
+                    'clasificacion':this.clasificacion,
+                    'nombre':this.nombre,
+                    'apellidos':this.apellidos,
+                    'telefono':this.telefono ,
+                    'celular':this.celular ,
+                    'email':this.email,
+                    'email_institucional':this.email_inst,
+                    'nss':this.nss,
+                    'sexo':this.sexo,
+                    'f_nacimiento':this.fecha_nac,
+                    'curp':this.curp,
+                    'rfc':this.rfc,
+                    'homoclave':this.homoclave,
+                    'edo_civil':this.e_civil,
+                    'tipo_casa':this.tipo_casa,
+                    'coacreditado':this.coacreditado,
+                    'publicidad_id':this.publicidad_id,
+                    'proyecto_interes_id':this.proyecto_interes_id,
+                    'empresa':this.empresa,
+                    'observacion':this.observacion,
+                    'lugar_contacto':this.lugar_contacto,
+
+                    'nombre_coa':this.nombre_coa,
+                    'parentesco_coa':this.parentesco_coa,
+                    'apellidos_coa':this.apellidos_coa,
+                    'telefono_coa':this.telefono_coa ,
+                    'celular_coa':this.celular_coa ,
+                    'email_coa':this.email_coa,
+                    'email_institucional_coa':this.email_institucional_coa,
+                    'nss_coa':this.nss_coa,
+                    'sexo_coa':this.sexo_coa,
+                    'f_nacimiento_coa':this.fecha_nac_coa,
+                    'curp_coa':this.curp_coa,
+                    'rfc_coa':this.rfc_coa,
+                    'homoclave_coa':this.homoclave_coa,
+                    'edo_civil_coa':this.e_civil_coa,
+                    'tipo_casa_coa':this.tipo_casa_coa,
                 }).then(function (response){
                     me.listado=1;
                     me.limpiarDatos();
-                    me.listarAvisos(1,'','ini_obras.clave'); //se enlistan nuevamente los registros
+                    me.listarProspectos(1,'','ini_obras.clave'); //se enlistan nuevamente los registros
                     //Se muestra mensaje Success
                     swal({
                         position: 'top-end',
                         type: 'success',
                         title: 'Etapa agregada correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
+            registrarCoacreditado(){
+                if(this.validarCoacreditado()) //Se verifica si hay un error (campo vacio)
+                {
+                    return;
+                }
+
+                let me = this;
+                //Con axios se llama el metodo store del controller
+                axios.post('/clientes/registrar_coacreditado',{
+                    'clasificacion':this.clasificacion,
+                    'nombre':this.nombre_coa,
+                    'apellidos':this.apellidos_coa,
+                    'telefono':this.telefono_coa,
+                    'celular':this.celular_coa,
+                    'email':this.email_coa,
+                    'email_institucional':this.email_institucional_coa,
+                    'nss':this.nss_coa,
+                    'sexo':this.sexo_coa,
+                    'f_nacimiento':this.fecha_nac_coa,
+                    'curp':this.curp_coa,
+                    'rfc':this.rfc_coa,
+                    'homoclave':this.homoclave_coa,
+                    'edo_civil':this.e_civil_coa,
+                    'tipo_casa':this.tipo_casa_coa,
+                    'coacreditado':0,
+                    'proyecto_interes_id':this.proyecto_interes_id,
+                    'lugar_contacto':this.lugar_contacto,
+                }).then(function (response){
+                    me.cerrarModal();
+                    //Se muestra mensaje Success
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Coacreditado agregada correctamente',
                         showConfirmButton: false,
                         timer: 1500
                         })
@@ -1244,7 +909,7 @@
                     'total_costo_indirecto':this.total_costo_indirecto,
                     'anticipo':this.anticipo,
                     'total_anticipo':this.total_anticipo,
-                    'data':this.arrayAvisoObraLotes,
+                    'data':this.arrayProspectosLotes,
                     'costo_indirecto_porcentaje':this.costo_indirecto_porcentaje,
                     'tipo':this.tipo,
                     'iva':this.iva,
@@ -1254,7 +919,7 @@
                 }).then(function (response){
                     me.listado=1;
                     me.limpiarDatos();
-                    me.listarAvisos(1,'','ini_obras.clave'); //se enlistan nuevamente los registros
+                    me.listarProspectos(1,'','ini_obras.clave'); //se enlistan nuevamente los registros
                     //Se muestra mensaje Success
                     swal({
                         position: 'top-end',
@@ -1271,19 +936,65 @@
                 this.errorProspecto=0;
                 this.errorMostrarMsjProspecto=[];
 
-                if(this.contratista_id==0) 
-                    this.errorMostrarMsjProspecto.push("Seleccionar un contratista.");
-                if(this.fraccionamiento_id==0) 
-                    this.errorMostrarMsjProspecto.push("Seleccionar un fraccionamiento.");
-                if(this.clave=='') 
-                    this.errorMostrarMsjProspecto.push("Ingresar clave.");
-                if(this.arrayAvisoObraLotes.length<=0) 
-                    this.errorMostrarMsjProspecto.push("No se ha ingresado ningun lote");
+                if(this.nombre=='' || this.apellidos=='') 
+                    this.errorMostrarMsjProspecto.push("El nombre del prospecto no puede ir vacio.");
+                if(this.sexo=='') 
+                    this.errorMostrarMsjProspecto.push("Seleccionar el sexo del prospecto.");
+                if(this.celular=='') 
+                    this.errorMostrarMsjProspecto.push("Ingresar numero de celular.");
+                if(this.email=='') 
+                    this.errorMostrarMsjProspecto.push("Ingresar email personal.");
+                if(this.empresa=='') 
+                    this.errorMostrarMsjProspecto.push("Seleccionar empresa.");
+                if(this.fecha_nac=='') 
+                    this.errorMostrarMsjProspecto.push("Ingresar fecha de nacimiento.");
+                if(this.rfc=='') 
+                    this.errorMostrarMsjProspecto.push("Ingresar RFC.");
+                if(this.nss=='') 
+                    this.errorMostrarMsjProspecto.push("Ingresar numero de seguro social.");
+                if(this.tipo_casa==0) 
+                    this.errorMostrarMsjProspecto.push("Seleccionar tipo de casa.");
+                if(this.e_civil==0) 
+                    this.errorMostrarMsjProspecto.push("Seleccionar estado civil.");
+                if(this.proyecto_interes_id==0) 
+                    this.errorMostrarMsjProspecto.push("Seleccionar proyecto de interes.");
+                if(this.publicidad_id==0) 
+                    this.errorMostrarMsjProspecto.push("Seleccionar medio de publicidad.");
+                if(this.observacion=='') 
+                    this.errorMostrarMsjProspecto.push("Escribir una observación.");
 
                 if(this.errorMostrarMsjProspecto.length)//Si el mensaje tiene almacenado algo en el array
                     this.errorProspecto = 1;
 
                 return this.errorProspecto;
+            },
+            validarCoacreditado(){
+                this.errorCoacreditado=0;
+                this.errorMostrarMsjCoacreditado=[];
+
+                if(this.nombre_coa=='' || this.apellidos_coa=='') 
+                    this.errorMostrarMsjCoacreditado.push("El nombre del prospecto no puede ir vacio.");
+                if(this.sexo_coa=='') 
+                    this.errorMostrarMsjCoacreditado.push("Seleccionar el sexo del prospecto.");
+                if(this.celular_coa=='') 
+                    this.errorMostrarMsjCoacreditado.push("Ingresar numero de celular.");
+                if(this.email_coa=='') 
+                    this.errorMostrarMsjCoacreditado.push("Ingresar email personal.");
+                if(this.fecha_nac_coa=='') 
+                    this.errorMostrarMsjCoacreditado.push("Ingresar fecha de nacimiento.");
+                if(this.rfc_coa=='') 
+                    this.errorMostrarMsjCoacreditado.push("Ingresar RFC.");
+                if(this.nss_coa=='') 
+                    this.errorMostrarMsjCoacreditado.push("Ingresar numero de seguro social.");
+                if(this.tipo_casa_coa==0) 
+                    this.errorMostrarMsjCoacreditado.push("Seleccionar tipo de casa.");
+                if(this.e_civil_coa==0) 
+                    this.errorMostrarMsjCoacreditado.push("Seleccionar estado civil.");
+
+                if(this.errorMostrarMsjCoacreditado.length)//Si el mensaje tiene almacenado algo en el array
+                    this.errorCoacreditado = 1;
+
+                return this.errorCoacreditado;
             },
 
             isNumber: function(evt) {
@@ -1296,12 +1007,46 @@
                 }
             },
             limpiarDatos(){
+                this.clasificacion=1;
                 this.nombre='';
                 this.apellidos='';
-            },
-            formatNumber(value) {
-                let val = (value/1).toFixed(2)
-                return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+                this.telefono = '';
+                this.celular = '';
+                this.email='';
+                this.email_inst='';
+                this.nss='';
+                this.sexo='';
+                this.fecha_nac= '';
+                this.curp='';
+                this.rfc='';
+                this.homoclave= '';
+                this.e_civil= 0;
+                this.tipo_casa=0;
+                this.coacreditado= '';
+                this.publicidad_id= 0;
+                this.proyecto_interes_id= 0;
+                this.empresa= '';
+                this.observacion='';
+                this.lugar_contacto= 0;
+
+                this.nombre_coa='';
+                this.parentesco_coa='';
+                this.apellidos_coa='';
+                this.telefono_coa = '';
+                this.celular_coa = '';
+                this.email_coa='';
+                this.email_institucional_coa='';
+                this.nss_coa='';
+                this.sexo_coa='';
+                this.fecha_nac_coa= '';
+                this.curp_coa='';
+                this.rfc_coa='';
+                this.homoclave_coa= '';
+                this.e_civil_coa= 0;
+                this.tipo_casa_coa=0;
+
+                this.errorProspecto=0;
+                this.errorMostrarMsjProspecto=[];
             },
             mostrarDetalle(){
                 this.limpiarDatos();
@@ -1340,7 +1085,7 @@
                 var urld = '/iniobra/obtenerDetalles?id=' + id;
                 axios.get(urld).then(function (response) {
                     var respuesta = response.data;
-                    me.arrayAvisoObraLotes = respuesta.detalles;
+                    me.arrayProspectosLotes = respuesta.detalles;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -1385,7 +1130,7 @@
                 var urld = '/iniobra/obtenerDetalles?id=' + id;
                 axios.get(urld).then(function (response) {
                     var respuesta = response.data;
-                    me.arrayAvisoObraLotes = respuesta.detalles;
+                    me.arrayProspectosLotes = respuesta.detalles;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -1395,6 +1140,23 @@
 
             cerrarModal(){
                 this.modal = 0;
+                this.nombre_coa='';
+                this.parentesco_coa='';
+                this.apellidos_coa='';
+                this.telefono_coa = '';
+                this.celular_coa = '';
+                this.email_coa='';
+                this.email_institucional_coa='';
+                this.nss_coa='';
+                this.sexo_coa='';
+                this.fecha_nac_coa= '';
+                this.curp_coa='';
+                this.rfc_coa='';
+                this.homoclave_coa= '';
+                this.e_civil_coa= 0;
+                this.tipo_casa_coa=0;
+                this.errorCoacreditado=0;
+                this.errorMostrarMsjCoacreditado=[];
             },
 
 
@@ -1407,7 +1169,21 @@
                             {
                                 this.modal = 1;
                                 this.tituloModal = 'Registrar Conyuge o coacreditado';
-                              
+                                this.nombre_coa='';
+                                this.parentesco_coa='';
+                                this.apellidos_coa='';
+                                this.telefono_coa = '';
+                                this.celular_coa = '';
+                                this.email_coa='';
+                                this.email_institucional_coa='';
+                                this.nss_coa='';
+                                this.sexo_coa='';
+                                this.fecha_nac_coa= '';
+                                this.curp_coa='';
+                                this.rfc_coa='';
+                                this.homoclave_coa= '';
+                                this.e_civil_coa= 0;
+                                this.tipo_casa_coa=0;
                                 this.tipoAccion = 1;
                                 break;
                             }
@@ -1428,8 +1204,9 @@
            
         },
         mounted() {
-            this.listarAvisos(1,this.buscar,this.criterio);
+            this.listarProspectos(1,this.buscar,this.criterio);
             this.selectMedioPublicidad();
+            this.selectFraccionamientos();
           
         }
     }

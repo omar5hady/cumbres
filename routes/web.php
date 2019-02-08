@@ -67,6 +67,12 @@ Route::group(['middleware' => ['auth']],function(){
     Route::put('/usuarios/actualizar','UserController@update');
     Route::put('/usuarios/activar','UserController@activar');
     Route::put('/usuarios/desactivar','UserController@desactivar');
+
+    ///////////////////        RUTAS Prospectos    //////////////////////////////////
+    Route::get('/clientes','ClienteController@index');
+    Route::post('/clientes/registrar','ClienteController@store');
+    Route::post('/clientes/registrar_coacreditado','ClienteController@storeCoacreditado');
+    Route::put('/clientes/actualizar','ClienteController@update');
     
     ///////////////////        RUTAS Medios Publicitarios    //////////////////////////////////
     Route::get('/medio_publicitario','MedioPublicitarioController@index');
@@ -240,6 +246,7 @@ Route::group(['middleware' => ['auth']],function(){
     Route::get('/select_personal','PersonalController@selectNombre'); //Nombre completo de persona (Directivos activos)
     Route::get('/select_fraccionamiento','FraccionamientoController@selectFraccionamiento'); 
     Route::get('/select_fraccionamiento2','FraccionamientoController@selectFraccionamientoVue'); 
+    Route::get('/select_coacreditadoVue','ClienteController@selectCoacreditadoVue'); 
     Route::get('/select_Frac_Tipo','FraccionamientoController@selectFrac_Tipo');
     Route::get('/contador_etapa','EtapaController@contEtapa'); 
     Route::get('/select_etapa_proyecto','EtapaController@selectEtapa_proyecto'); 

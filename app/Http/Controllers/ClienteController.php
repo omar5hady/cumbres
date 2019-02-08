@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Cliente;
 use App\Personal;
+use Auth;
 use App\Cliente_observacion;
+use Illuminate\Support\Facades\DB;
 
 class ClienteController extends Controller
 {
@@ -36,6 +38,7 @@ class ClienteController extends Controller
             'clientes.cp_coa','clientes.telefono_coa','clientes.ext_coa','clientes.celular_coa','clientes.email_coa','clientes.parentesco_coa',
 
             'medios_publicitarios.nombre as publicidad','fraccionamientos.nombre as proyecto')
+            ->where('vendedor_id','=',Auth::user()->id)
             ->orderBy('personal.apellidos', 'desc')
             ->orderBy('personal.nombre', 'desc')
             ->paginate(6);
@@ -59,7 +62,8 @@ class ClienteController extends Controller
             'clientes.f_nacimiento_coa', 'clientes.rfc_coa','clientes.homoclave_coa','clientes.direccion_coa','clientes.colonia_coa',
             'clientes.cp_coa','clientes.telefono_coa','clientes.ext_coa','clientes.celular_coa','clientes.email_coa','clientes.parentesco_coa',
 
-            'medios_publicitarios.nombre as publicidad','fraccionamientos.nombre as proyecto')        
+            'medios_publicitarios.nombre as publicidad','fraccionamientos.nombre as proyecto')   
+            ->where('vendedor_id','=',Auth::user()->id)     
             ->where($criterio, 'like', '%'. $buscar . '%')
             ->orderBy('personal.apellidos', 'desc')
             ->orderBy('personal.nombre', 'desc')
@@ -92,15 +96,13 @@ class ClienteController extends Controller
             $persona->apellidos = $request->apellidos;
             $persona->f_nacimiento = $request->f_nacimiento;
             $persona->rfc = $request->rfc;
-            $persona->direccion = $request->direccion;
-            $persona->colonia = $request->colonia;
-            $persona->cp = $request->cp;
+            $persona->homoclave = $request->homoclave;
             $persona->telefono = $request->telefono;
             $persona->ext = $request->ext;
             $persona->celular = $request->celular;
             $persona->email = $request->email;
-            $persona->activo = $request->activo;
-            $persona->empresa_id = $request->empresa_id;
+            $persona->departamento_id = 8;
+            $persona->activo = 1;
             $persona->save();
  
             $cliente = new Cliente();
@@ -114,7 +116,11 @@ class ClienteController extends Controller
             $cliente->edo_civil = $request->edo_civil;
             $cliente->nss = $request->nss;
             $cliente->curp = $request->curp;
-            $cliente->vendedor_id = $request->vendedor_id;
+            if($request->vendedor_id == NULL)
+                $cliente->vendedor_id = Auth::user()->id;
+            else{
+                $cliente->vendedor_id = $request->vendedor_id;
+            }
             $cliente->empresa = $request->empresa;
             $cliente->coacreditado = $request->coacreditado;
             $cliente->clasificacion = $request->clasificacion;
@@ -132,9 +138,6 @@ class ClienteController extends Controller
             $cliente->f_nacimiento_coa = $request->f_nacimiento_coa;
             $cliente->rfc_coa = $request->rfc_coa;
             $cliente->homoclave_coa = $request->homoclave_coa;
-            $cliente->direccion_coa = $request->direccion_coa;
-            $cliente->colonia_coa = $request->colonia_coa;
-            $cliente->cp_coa = $request->cp_coa;
             $cliente->telefono_coa = $request->telefono_coa;
             $cliente->ext_coa = $request->ext_coa;
             $cliente->celular_coa = $request->celular_coa;
@@ -143,8 +146,60 @@ class ClienteController extends Controller
             $cliente->save();
 
             $observacion = new Cliente_observacion();
-            $observacion->cliente_id = $cliente->id;
+            $observacion->cliente_id = $persona->id;
             $observacion->comentario = $request->observacion;
+            $observacion->usuario = Auth::user()->usuario;
+            $observacion->save();
+
+            DB::commit();
+ 
+        } catch (Exception $e){
+            DB::rollBack();
+        }         
+         
+    }
+
+    public function storeCoacreditado(Request $request)
+    {
+        if (!$request->ajax()) return redirect('/');
+         
+        try{
+            DB::beginTransaction();
+            $persona = new Personal();
+            $persona->departamento_id = $request->departamento_id;
+            $persona->nombre = $request->nombre;
+            $persona->apellidos = $request->apellidos;
+            $persona->f_nacimiento = $request->f_nacimiento;
+            $persona->rfc = $request->rfc;
+            $persona->homoclave = $request->homoclave;
+            $persona->telefono = $request->telefono;
+            $persona->celular = $request->celular;
+            $persona->email = $request->email;
+            $persona->departamento_id = 8;
+            $persona->activo = 1;
+            $persona->save();
+ 
+            $cliente = new Cliente();
+            $cliente->id = $persona->id;
+            $cliente->sexo = $request->sexo;
+            $cliente->tipo_casa = $request->tipo_casa;
+            $cliente->email_institucional = $request->email_institucional;
+            $cliente->lugar_contacto = $request->lugar_contacto;
+            $cliente->proyecto_interes_id = $request->proyecto_interes_id;
+            $cliente->publicidad_id = 1;
+            $cliente->edo_civil = $request->edo_civil;
+            $cliente->nss = $request->nss;
+            $cliente->curp = $request->curp;
+            $cliente->vendedor_id = Auth::user()->id;
+            $cliente->empresa = $request->empresa;
+            $cliente->coacreditado = $request->coacreditado;
+            $cliente->clasificacion = $request->clasificacion;
+            
+            $cliente->save();
+
+            $observacion = new Cliente_observacion();
+            $observacion->cliente_id = $persona->id;
+            $observacion->comentario = "Dado de alta como coacreditado";
             $observacion->usuario = Auth::user()->usuario;
             $observacion->save();
 
@@ -235,4 +290,20 @@ class ClienteController extends Controller
  
     }
  
+    public function selectCoacreditadoVue(Request $request){
+        //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
+        if(!$request->ajax())return redirect('/');
+        $filtro = $request->filtro;
+
+        $coacreditados = Cliente::join('personal','clientes.id','=','personal.id')
+        ->select('personal.nombre','personal.apellidos','personal.id','personal.rfc','personal.homoclave','personal.f_nacimiento',
+            'personal.telefono','personal.celular','personal.email','clientes.sexo',
+            'clientes.email_institucional','clientes.edo_civil','clientes.nss','clientes.curp','clientes.tipo_casa',
+            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"))
+        ->where('vendedor_id','=',Auth::user()->id)
+        ->where('nombre','like','%'.$filtro.'%')
+        ->orWhere('apellidos','like','%'.$filtro.'%')
+        ->get();
+        return['coacreditados' => $coacreditados];
+    }
 }
