@@ -35,9 +35,13 @@ class ObservacionController extends Controller
         $observacion->comentario = $request->comentario;
         $observacion->usuario = Auth::user()->usuario;
         $observacion->save();
+
+
     }
+
+
     public function index(Request $request){
-        $buscar = $request->buscar;;
+        $buscar = $request->buscar;
         $observacion = Observacion::select('comentario','usuario','created_at')
                     ->where('lote_id','=', $buscar)->orderBy('created_at','desc')->paginate(20);
 

@@ -31,6 +31,7 @@ Route::group(['middleware' => ['auth']],function(){
 
     //RUTAS PARA LOS ASESORES
     Route::group(['middleware' => ['Asesor']],function(){
+        
     });
     
     //RUTAS PARA GERENTE DE OBRA
@@ -73,6 +74,8 @@ Route::group(['middleware' => ['auth']],function(){
     Route::post('/clientes/registrar','ClienteController@store');
     Route::post('/clientes/registrar_coacreditado','ClienteController@storeCoacreditado');
     Route::put('/clientes/actualizar','ClienteController@update');
+    Route::get('/clientes/obtenerDatos','ClienteController@obtenerDatos');
+    Route::get('/cliente/observacion','ClienteController@listarObservacion');
     
     ///////////////////        RUTAS Medios Publicitarios    //////////////////////////////////
     Route::get('/medio_publicitario','MedioPublicitarioController@index');
@@ -222,7 +225,7 @@ Route::group(['middleware' => ['auth']],function(){
     Route::delete('/partidas/eliminar','PartidaController@destroy');
 
     
-    /**********************************RUTAS OBSERVACION*************************** */
+    /**********************************RUTAS OBSERVACION LOTES*************************** */
     Route::post('/observacion/registrar','ObservacionController@store');
     Route::get('/observacion/select_ultima','ObservacionController@select_ultima'); 
     Route::get('/observacion','ObservacionController@index');

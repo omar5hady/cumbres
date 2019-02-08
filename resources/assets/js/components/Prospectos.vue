@@ -51,13 +51,11 @@
                                     <tbody>
                                         <tr v-for="prospecto in arrayProspectos" :key="prospecto.id">
                                             <td>
-                                                <button type="button" @click="verAviso(prospecto.id)" class="btn btn-success btn-sm">
-                                                <i class="icon-eye"></i>
-                                                </button>
+                                            
                                                 <button type="button" class="btn btn-danger btn-sm" @click="eliminarContrato(prospecto)">
                                                     <i class="icon-trash"></i>
                                                 </button>
-                                                <button type="button" class="btn btn-warning btn-sm" @click="actualizarContrato(prospecto.id)">
+                                                <button type="button" class="btn btn-warning btn-sm" @click="actualizarProspectoBTN(prospecto.id)">
                                                     <i class="icon-pencil"></i>
                                                 </button>
                                             </td>
@@ -66,7 +64,7 @@
                                             <td v-text="prospecto.nss"></td>
                                             <td v-text="prospecto.curp"></td>
                                             <td v-text="prospecto.proyecto"></td>
-                                            <td> Observacion </td>
+                                            <td> <button type="button" class="btn btn-info pull-right" @click="abrirModal3('prospecto','ver_todo', prospecto.id,listarObservacion(1,prospecto.id))">Ver todos</button> </td>
                                         </tr>                               
                                     </tbody>
                                 </table>
@@ -88,7 +86,7 @@
                         </div>
                     </template>
                     
-                    <!-- Div Card Body para nuevo registro -->
+     <!-- Div Card Body para nuevo registro -->
                     <template v-else-if="listado == 0">
                         <div class="card-body"> 
                             <div class="form-group row border">
@@ -206,7 +204,7 @@
 
                                 
                             </div>
-                <!--  lugar de contacto , clasificacion y otros-->
+                  <!--  lugar de contacto , clasificacion y otros-->
                         <div class="form-group row border">
                               <div class="col-md-4">
                                     <div class="form-group">
@@ -261,8 +259,7 @@
 
 
                         </div>
-
-                <!--  apartado  de datos vive en casa , edo civil, conyuge-->
+                  <!--  apartado  de datos vive en casa , edo civil, conyuge-->
                            <div class="form-group row border" >    
                                         
                                 <div class="col-md-3">
@@ -361,14 +358,283 @@
                  
 
                         </div>
-
                     </template>
 
-                    <!-- Div Card Body para actualizar registros -->
-                    
+     <!-- Div Card Body para actualizar -->
+                    <template v-else-if="listado == 3">
+                        <div class="card-body"> 
+                            <div class="form-group row border">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                  <center> <h2>Prospecto</h2> </center>
+                                    </div>
+                                </div> 
 
-                    <!--Div para ver detalle del aviso -->
-                    
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                    <label for="">Nombre <span style="color:red;" v-show="nombre==''">(*)</span> </label>
+                                    <input type="text" class="form-control" v-model="nombre" placeholder="Nombre">
+                                    </div>
+                                </div> 
+
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                    <label for="">Apellidos <span style="color:red;" v-show="apellidos==''">(*)</span></label>
+                                    <input type="text" class="form-control" v-model="apellidos" placeholder="Apellidos">
+                                </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                    <label for="">Sexo <span style="color:red;" v-show="sexo==''">(*)</span></label>
+                                    <select class="form-control" v-model="sexo" >
+                                            <option value="">Seleccione</option>
+                                            <option value="F">Femenino</option>
+                                            <option value="M">Masculino</option>
+                                    </select>
+                                </div>
+                                </div>
+
+                                  <div class="col-md-4">
+                                    <div class="form-group">
+                                    <label for="">Telefono </label>
+                                    <input type="text" maxlength="7" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="telefono" placeholder="Telefono">
+                                </div>
+                                </div>
+
+                                  <div class="col-md-4">
+                                     <div class="form-group">
+                                    <label for="">Celular <span style="color:red;" v-show="celular==''">(*)</span></label>
+                                    <input type="text" pattern="\d*" maxlength="10" class="form-control" v-on:keypress="isNumber($event)" v-model="celular" placeholder="Celular">
+                                </div>
+                                 </div>
+
+                                 <div class="col-md-4">
+                                     <div class="form-group">
+                                    <label for="">Email personal <span style="color:red;" v-show="email==''">(*)</span></label>
+                                    <input type="text" class="form-control" v-model="email" placeholder="E-mail">
+                                </div>
+                                 </div>
+
+                                   <div class="col-md-8">
+                                    <div class="form-group">
+                                    <label for="">Empresa <span style="color:red;" v-show="empresa==0">(*)</span></label>
+                                        <v-select 
+                                            :on-search="selectEmpresaVueselect"
+                                            label="nombre"
+                                            :options="arrayEmpresa"
+                                            placeholder="Buscar empresa..."
+                                            :onChange="getDatosEmpresa"
+                                        >
+                                        </v-select>
+                                </div>
+                                </div>
+
+                                
+                                <div class="col-md-4">
+                                     <div class="form-group">
+                                    <label for="">Email institucional </label>
+                                    <input type="text" class="form-control" v-model="email_inst" placeholder="E-mail">
+                                </div>
+                                 </div>
+
+
+                                  <div class="col-md-2">
+                                    <div class="form-group">
+                                    <label for="">Fecha de nacimiento <span style="color:red;" v-show="fecha_nac==''">(*)</span></label>
+                                    <input type="date" class="form-control"  v-model="fecha_nac" >
+                                </div>
+                                </div>
+
+                                 <div class="col-md-3">
+                                     <div class="form-group">
+                                    <label for="">CURP</label>
+                                    <input type="text" maxlength="18" class="form-control"  v-model="curp" placeholder="CURP">
+                                </div>
+                                 </div>
+
+                                  <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="">RFC <span style="color:red;" v-show="rfc==''">(*)</span></label>
+                                        <input type="text" maxlength="10" class="form-control"  v-model="rfc" placeholder="RFC">
+                                    </div>
+                                 </div>
+                                       
+                                <div align="left" class="col-md-1">
+                                   <div class="form-group">
+                                    <label for="">Homoclave</label>
+                                         <input type="text" maxlength="3" class="form-control"  v-model="homoclave" placeholder="AA0">
+                                   </div>
+                                </div>
+
+                                 
+                                <div class="col-md-3">
+                                     <div class="form-group">
+                                    <label for="">NSS <span style="color:red;" v-show="nss==''">(*)</span></label>
+                                    <input type="text" maxlength="11" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="nss" placeholder="NSS">
+                                </div>
+                                </div>
+
+                                
+                            </div>
+                  <!--  lugar de contacto , clasificacion y otros-->
+                        <div class="form-group row border">
+                              <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="">Lugar de contacto </label>
+                                          <select class="form-control" v-model="lugar_contacto" >
+                                            <option value="0">Seleccione</option>
+                                            <option value="Asesor externo">Asesor externo</option>
+                                            <option value="Oficina central">Oficina central</option>
+                                            <option value="Modulo">Modulo</option>
+                                            <option value="Pagina web">Pagina web</option>
+                                            <option v-for="fraccionamientos in arrayFraccionamientos2" :key="fraccionamientos.id" :value="fraccionamientos.nombre" v-text="fraccionamientos.nombre"></option>
+                                    </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                    <label for="">Clasificacion</label>
+                                    <select class="form-control" v-model="clasificacion" >
+                                            <option value="1">No viable</option>
+                                            <option value="2">Tipo A</option>
+                                            <option value="3">Tipo B</option>
+                                            <option value="4">Tipo C</option>
+                                            <option value="5">Ventas</option>
+                                            <option value="6">Cancelado</option>                               
+                                    </select>
+                                </div>
+                                </div>
+                                 
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="">Proyecto en el que esta interesado <span style="color:red;" v-show="proyecto_interes_id==0">(*)</span></label>
+                                        <v-select 
+                                            :on-search="selectFraccionamientoVueselect"
+                                            label="nombre"
+                                            :options="arrayFraccionamientos"
+                                            placeholder="Buscar proyecto..."
+                                            :onChange="getDatosFraccionamiento"
+                                        >
+                                        </v-select>
+                                    </div>
+                                </div>
+
+                                 <div class="col-md-3">
+                                     <div class="form-group">
+                                  <label for="">Medio donde se entero de nosotros <span style="color:red;" v-show="publicidad_id==0">(*)</span></label>
+                                    <select class="form-control" v-model="publicidad_id" >
+                                            <option value="0">Seleccione</option>
+                                            <option v-for="medios in arrayMediosPublicidad" :key="medios.id" :value="medios.id" v-text="medios.nombre"></option>    
+                                    </select>
+                                </div>
+                                </div>
+
+
+                        </div>
+
+                  <!--  apartado  de datos vive en casa , edo civil, conyuge-->
+                           <div class="form-group row border" >    
+                                        
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                    <label for="">Vive en casa <span style="color:red;" v-show="tipo_casa==0">(*)</span></label>
+                                        <select class="form-control" v-model="tipo_casa" >
+                                            <option value="0">Seleccione</option>  
+                                            <option value="De familiares">De familiares</option>
+                                            <option value="Prestada">Prestada</option>
+                                            <option value="Propia">Propia</option>
+                                            <option value="Rentada">Rentada</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                  <div class="form-group">
+                                  <label for="">Estado civil <span style="color:red;" v-show="e_civil==0">(*)</span></label>
+                                    <select class="form-control" v-model="e_civil" >
+                                        <option value="0">Seleccione</option> 
+                                        <option value="1">Casado - separacion de bienes</option> 
+                                        <option value="2">Casado - sociedad conyugal</option> 
+                                        <option value="3">Divorciado</option> 
+                                        <option value="4">Soltero</option> 
+                                        <option value="5">Union libre</option>
+                                        <option value="6">Viudo</option> 
+                                        <option value="7">Otro</option>    
+                                    </select>
+                                  </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="bmd-form-group checkbox">
+                                    <label for=""> Conyuge o coacreditado </label>
+                                    <br>
+                                   <input id="checkcoa" type="checkbox" v-model="coacreditado">
+                                </div>
+                                </div>
+
+                                <div class="col-md-1"  v-if="coacreditado==true">
+                                    <div class="form-group">
+                                        <button @click="abrirModal('coacreditado','registrar')" style="margin-top:1.5rem;" class="btn btn-success form-control btnagregar" title="Agregar nuevo coacreditado"><i class="icon-plus"></i></button>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3" v-if="coacreditado==true">
+                                    <div class="form-group">
+                                        <label for="">Buscar coacreditado... </label>
+                                        <v-select 
+                                            :on-search="selectCoacreditadoVueselect"
+                                            label="n_completo"
+                                            :options="arrayCoacreditados"
+                                            placeholder="Buscar..."
+                                            :onChange="getDatosCoacreditado"
+                                        >
+                                        </v-select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3" v-if="coacreditado==true">
+                                     <div class="form-group">
+                                    <label for="">Parentesco </label>
+                                    <input type="text" class="form-control" v-model="parentesco_coa" placeholder="Parentesco">
+                                </div>
+                                </div>
+
+                                <div class="col-md-10">
+                                    <div class="form-group">
+                                        <label for="">Observaciones <span style="color:red;" v-show="observacion==''">(*)</span></label>
+                                        <textarea rows="3" cols="30" v-model="observacion" class="form-control" placeholder="Observaciones"></textarea>
+                                    </div>
+                                </div>
+                                 
+                                 <div class="col-md-12">
+                                    <!-- Div para mostrar los errores que mande validerFraccionamiento -->
+                                    <div v-show="errorProspecto" class="form-group row div-error">
+                                        <div class="text-center text-error">
+                                            <div v-for="error in errorMostrarMsjProspecto" :key="error" v-text="error">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                    
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <button type="button" class="btn btn-secondary" @click="ocultarDetalle()"> Cerrar </button>
+                                    <button type="button" class="btn btn-primary" @click="actualizarProspecto()"> Actualizar </button>
+                                </div>
+                            </div>
+
+                                
+                                
+                            </div>
+
+                 
+
+                        </div>
+                    </template>
+                   
                     
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
@@ -533,6 +799,51 @@
             </div>
             <!--Fin del modal-->
 
+               <!--Inicio del modal observaciones-->
+            <div class="modal fade" tabindex="-1" :class="{'mostrar': modal3}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" v-text="tituloModal3"></h4>
+                            <button type="button" class="close" @click="cerrarModal3()" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+
+                                
+                                <table class="table table-bordered table-striped table-sm" v-if="tipoAccion == 4">
+                                    <thead>
+                                        <tr>
+                                            <th>Usuario</th>
+                                            <th>Observacion</th>
+                                            <th>Fecha</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="observacion in arrayObservacion" :key="observacion.id">
+                                            
+                                            <td v-text="observacion.usuario" ></td>
+                                            <td v-text="observacion.comentario" ></td>
+                                            <td v-text="observacion.created_at"></td>
+                                        </tr>                               
+                                    </tbody>
+                                </table>
+                                
+                            </form>
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal3()">Cerrar</button>
+                        </div>
+                    </div>
+                      <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            
+
         </main>
 </template>
 
@@ -590,8 +901,10 @@
                 arrayMediosPublicidad:[],
 
                 modal : 0,
+                modal3: 0,
                 listado:1,
                 tituloModal : '',
+                tituloModal3 : '',
                 tipoAccion: 0,
                 errorProspecto : 0,
                 errorMostrarMsjProspecto : [],
@@ -613,6 +926,7 @@
                 arrayFraccionamientos : [],
                 arrayFraccionamientos2 : [],
                 arrayFraccionamientosVue : [],
+                arrayObservacion: [],
                 fraccionamiento:''
                 
             }
@@ -774,6 +1088,22 @@
                 me.homoclave_coa = val1.homoclave;
                 me.tipo_casa_coa = val1.tipo_casa;
             },
+
+            listarObservacion(page, buscar){
+                let me = this;
+                var url = '/cliente/observacion?page=' + page + '&buscar=' + buscar ;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayObservacion = respuesta.observacion.data;
+                    me.pagination = respuesta.pagination;
+                    console.log(url);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+                
+            },
+
             cambiarPagina(page, buscar, criterio){
                 let me = this;
                 //Actualiza la pagina actual
@@ -887,51 +1217,72 @@
                 });
             },
 
-             /**Metodo para actualizar  */
-            actualizarAvisoObra(){
+               /**Metodo para actualizar  */
+            actualizarProspecto(){
                 if(this.validarProspecto()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
 
                 let me = this;
-                me.total_anticipo=(me.anticipo/100)*me.total_importe;
                 //Con axios se llama el metodo store de FraccionaminetoController
-                axios.put('/iniobra/actualizar',{
+                axios.put('/clientes/actualizar',{
                     'id':this.id,
-                    'fraccionamiento_id': this.fraccionamiento_id,
-                    'contratista_id': this.contratista_id,
-                    'clave': this.clave,
-                    'f_ini': this.f_ini,
-                    'f_fin': this.f_fin,
-                    'total_importe' :this.total_importe,
-                    'total_costo_directo':this.total_costo_directo,
-                    'total_costo_indirecto':this.total_costo_indirecto,
-                    'anticipo':this.anticipo,
-                    'total_anticipo':this.total_anticipo,
-                    'data':this.arrayProspectosLotes,
-                    'costo_indirecto_porcentaje':this.costo_indirecto_porcentaje,
-                    'tipo':this.tipo,
-                    'iva':this.iva,
-                    'descripcion_larga':this.descripcion_larga,
-                    'descripcion_corta':this.descripcion_corta,
-                    'total_superficie':this.total_construccion
+                    'clasificacion':this.clasificacion,
+                    'nombre':this.nombre,
+                    'apellidos':this.apellidos,
+                    'telefono':this.telefono ,
+                    'celular':this.celular ,
+                    'email':this.email,
+                    'email_institucional':this.email_inst,
+                    'nss':this.nss,
+                    'sexo':this.sexo,
+                    'f_nacimiento':this.fecha_nac,
+                    'curp':this.curp,
+                    'rfc':this.rfc,
+                    'homoclave':this.homoclave,
+                    'edo_civil':this.e_civil,
+                    'tipo_casa':this.tipo_casa,
+                    'coacreditado':this.coacreditado,
+                    'publicidad_id':this.publicidad_id,
+                    'proyecto_interes_id':this.proyecto_interes_id,
+                    'empresa':this.empresa,
+                    'observacion':this.observacion,
+                    'lugar_contacto':this.lugar_contacto,
+
+                    'nombre_coa':this.nombre_coa,
+                    'parentesco_coa':this.parentesco_coa,
+                    'apellidos_coa':this.apellidos_coa,
+                    'telefono_coa':this.telefono_coa ,
+                    'celular_coa':this.celular_coa ,
+                    'email_coa':this.email_coa,
+                    'email_institucional_coa':this.email_institucional_coa,
+                    'nss_coa':this.nss_coa,
+                    'sexo_coa':this.sexo_coa,
+                    'f_nacimiento_coa':this.fecha_nac_coa,
+                    'curp_coa':this.curp_coa,
+                    'rfc_coa':this.rfc_coa,
+                    'homoclave_coa':this.homoclave_coa,
+                    'edo_civil_coa':this.e_civil_coa,
+                    'tipo_casa_coa':this.tipo_casa_coa,
                 }).then(function (response){
                     me.listado=1;
                     me.limpiarDatos();
                     me.listarProspectos(1,'','ini_obras.clave'); //se enlistan nuevamente los registros
+                    
                     //Se muestra mensaje Success
                     swal({
                         position: 'top-end',
                         type: 'success',
-                        title: 'Contrato actualizado correctamente',
+                        title: 'Prospecto actualizado correctamente',
                         showConfirmButton: false,
                         timer: 1500
                         })
                 }).catch(function (error){
                     console.log(error);
                 });
-            },  
+            },
+            
             validarProspecto(){
                 this.errorProspecto=0;
                 this.errorMostrarMsjProspecto=[];
@@ -1022,7 +1373,7 @@
                 this.homoclave= '';
                 this.e_civil= 0;
                 this.tipo_casa=0;
-                this.coacreditado= '';
+                this.coacreditado= 0;
                 this.publicidad_id= 0;
                 this.proyecto_interes_id= 0;
                 this.empresa= '';
@@ -1093,48 +1444,45 @@
 
             },
 
-            actualizarContrato(id){
+            actualizarProspectoBTN(id){
+              
                 let me= this;
                 this.listado=3;
+                var arrayDatosProspecto=[];
+                var url = '/clientes/obtenerDatos?id=' + id;
 
-                //Obtener datos de cabecera
-                var arrayAvisoT=[];
-                var url = '/iniobra/obtenerCabecera?id=' + id;
-                axios.get(url).then(function (response) {
+                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
-                    me.arrayAvisoT = respuesta.ini_obra;
+                    me.arrayDatosProspecto = respuesta.personas;
 
-                    me.contratista_id= me.arrayAvisoT[0]['contratista_id'];
-                    me.clave= me.arrayAvisoT[0]['clave'];
-                    me.f_ini= me.arrayAvisoT[0]['f_ini'];
-                    me.f_fin= me.arrayAvisoT[0]['f_fin'];
-                    me.anticipo= me.arrayAvisoT[0]['anticipo'];
-                    me.fraccionamiento_id= me.arrayAvisoT[0]['fraccionamiento_id'];
-                    me.fraccionamiento= me.arrayAvisoT[0]['proyecto'];
-                    me.total_anticipo = me.arrayAvisoT[0]['total_anticipo'];
-                    me.costo_indirecto_porcentaje=me.arrayAvisoT[0]['costo_indirecto_porcentaje'];
-                    me.contratista= me.arrayAvisoT[0]['contratista'];
-                    me.descripcion_larga=me.arrayAvisoT[0]['descripcion_larga'];
-                    me.descripcion_corta=me.arrayAvisoT[0]['descripcion_corta'];
-                    me.tipo=me.arrayAvisoT[0]['tipo'];
-                    me.iva=me.arrayAvisoT[0]['iva'];
-                    me.selectManzanaLotes(me.fraccionamiento_id);
+                    me.nombre= me.arrayDatosProspecto[0]['nombre'];
+                    me.apellidos= me.arrayDatosProspecto[0]['apellidos'];
+                    me.sexo= me.arrayDatosProspecto[0]['sexo'];
+                    me.telefono= me.arrayDatosProspecto[0]['telefono'];
+                    me.celular= me.arrayDatosProspecto[0]['celular'];
+                    me.email_inst= me.arrayDatosProspecto[0]['email_institucional'];
+                    me.email = me.arrayDatosProspecto[0]['email'];
+                    me.empresa=me.arrayDatosProspecto[0]['empresa'];
+                    me.fecha_nac=me.arrayDatosProspecto[0]['f_nacimiento'];
+                    me.curp=me.arrayDatosProspecto[0]['curp'];
+                    me.rfc=me.arrayDatosProspecto[0]['rfc'];
+                    me.homoclave=me.arrayDatosProspecto[0]['homoclave'];
+                    me.nss=me.arrayDatosProspecto[0]['nss'];
+                    me.lugar_contacto=me.arrayDatosProspecto[0]['lugar_contacto'];
+                    me.clasificacion=me.arrayDatosProspecto[0]['clasificacion'];
+                    me.proyecto_interes_id=me.arrayDatosProspecto[0]['proyecto_interes_id'];
+                    me.publicidad_id=me.arrayDatosProspecto[0]['publicidad_id'];
+                    me.tipo_casa=me.arrayDatosProspecto[0]['tipo_casa'];
+                    me.e_civil=me.arrayDatosProspecto[0]['edo_civil'];
+                    me.parentesco_coa=me.arrayDatosProspecto[0]['parentesco_coa'];
+                    
+                    
                     me.id=id;
-                  
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
-                //Obtener detalle
-                var arrayAvisoT=[];
-                var urld = '/iniobra/obtenerDetalles?id=' + id;
-                axios.get(urld).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayProspectosLotes = respuesta.detalles;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
+               
 
             },
 
@@ -1159,6 +1507,33 @@
                 this.errorMostrarMsjCoacreditado=[];
             },
 
+             cerrarModal3(){
+                this.modal3 = 0;
+                this.tituloModal3 = '';
+              
+            },
+            
+  
+             abrirModal3(prospectos,accion,prospecto){
+             switch(prospectos){
+                    case "prospecto":
+                    {
+                        switch(accion){
+                         
+                             case 'ver_todo':
+                            {
+                                this.modal3 =1;
+                                this.tituloModal3='Consulta Observaciones';
+                                this.tipoAccion= 4;
+                                break;  
+                            }
+                            
+                        }
+                    }
+                 
+             }
+                
+         },
 
          abrirModal(modelo, accion,data =[]){
                 switch(modelo){
@@ -1187,15 +1562,7 @@
                                 this.tipoAccion = 1;
                                 break;
                             }
-                            case 'actualizar':
-                            {
-                                //console.log(data);
-                                this.modal =1;
-                                this.tituloModal='Actualizar Empresa';
-                                this.tipoAccion=2;
-                               
-                                break;
-                            }
+                            
                         }
                     }
                 }
