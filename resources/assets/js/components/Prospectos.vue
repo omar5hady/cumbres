@@ -41,6 +41,7 @@
                                             <th>Opciones</th>
                                             <th>Nombre</th>
                                             <th>Telefono</th>
+                                            <th>Email personal</th>
                                             <th>RFC</th>
                                             <th>IMSS</th>
                                             <th>CURP </th>
@@ -53,20 +54,28 @@
                                         <tr v-for="prospecto in arrayProspectos" :key="prospecto.id">
                                             <td>
                                             
-                                                <button type="button" class="btn btn-danger btn-sm" @click="eliminarContrato(prospecto)">
-                                                    <i class="icon-trash"></i>
+                                            <template v-if="prospecto.activo">
+                                                <button type="button" @click="desactivarProspecto(prospecto.id)" class="btn btn-danger btn-sm">
+                                                <i class="fa fa-user-times"></i>
                                                 </button>
+                                            </template>
+                                            <template v-else>
+                                                <button type="button" @click="activarProspecto(prospecto.id)" class="btn btn-success btn-sm">
+                                                    <i class="icon-check"></i>
+                                                </button>
+                                            </template>
                                                 <button type="button" class="btn btn-warning btn-sm" @click="actualizarProspectoBTN(prospecto.id)">
                                                     <i class="icon-pencil"></i>
                                                 </button>
                                             </td>
                                             <td v-text="prospecto.nombre + ' ' + prospecto.apellidos "></td>
                                             <td > <a v-text="prospecto.celular" :href="'tel:'+prospecto.celular"></a></td>
+                                            <td > <a v-text="prospecto.email" :href="'mailto:'+prospecto.email"></a></td>
                                             <td v-text="prospecto.rfc"></td>
                                             <td v-text="prospecto.nss"></td>
                                             <td v-text="prospecto.curp"></td>
                                             <td v-text="prospecto.proyecto"></td>
-                                            <td> <button type="button" class="btn btn-info pull-right" @click="abrirModal3('prospecto','ver_todo', prospecto.id,listarObservacion(1,prospecto.id))">Ver todos</button> </td>
+                                            <td> <button type="button" class="btn btn-info pull-right" @click="abrirModal3('prospecto','ver_todo', prospecto.id),listarObservacion(1,prospecto.id)">Ver todos</button> </td>
                                         </tr>                               
                                     </tbody>
                                 </table>
@@ -430,6 +439,7 @@
                                             :onChange="getDatosEmpresa"
                                         >
                                         </v-select>
+                                         <input type="text" class="form-control" readonly  v-model="empresa">
                                 </div>
                                 </div>
 
@@ -459,7 +469,7 @@
                                   <div class="col-md-2">
                                     <div class="form-group">
                                         <label for="">RFC <span style="color:red;" v-show="rfc==''">(*)</span></label>
-                                        <input type="text" maxlength="10" class="form-control"  v-model="rfc" placeholder="RFC">
+                                        <input type="text" maxlength="10" class="form-control"  disabled  v-model="rfc" placeholder="RFC">
                                     </div>
                                  </div>
                                        
@@ -520,6 +530,7 @@
                                             :onChange="getDatosFraccionamiento"
                                         >
                                         </v-select>
+                                         <input type="text" class="form-control" readonly  v-model="arrayProspectos[0].proyecto">
                                     </div>
                                 </div>
 
@@ -1093,7 +1104,7 @@
 
             listarObservacion(page, buscar){
                 let me = this;
-                var url = '/cliente/observacion?page=' + page + '&buscar=' + buscar ;
+                var url = '/clientes/observacion?page=' + page + '&buscar=' + buscar ;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayObservacion = respuesta.observacion.data;
@@ -1283,6 +1294,88 @@
                 }).catch(function (error){
                     console.log(error);
                 });
+            },
+            desactivarProspecto(id){
+               swal({
+                title: 'Esta seguro de desactivar a este cliente?',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Aceptar!',
+                cancelButtonText: 'Cancelar',
+                confirmButtonClass: 'btn btn-success',
+                cancelButtonClass: 'btn btn-danger',
+                buttonsStyling: false,
+                reverseButtons: true
+                }).then((result) => {
+                if (result.value) {
+                    let me = this;
+
+                    axios.put('/clientes/desactivar',{
+                        'id': id
+                    }).then(function (response) {
+                        me.listado=1;
+                        me.limpiarDatos();
+                        me.listarProspectos(1,'','ini_obras.clave');
+                        swal(
+                        'Desactivado!',
+                        'El registro ha sido desactivado con éxito.',
+                        'success'
+                        )
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                    
+                    
+                } else if (
+                    // Read more about handling dismissals
+                    result.dismiss === swal.DismissReason.cancel
+                ) {
+                    
+                }
+                }) 
+            },
+            activarProspecto(id){
+               swal({
+                title: 'Esta seguro de activar a este cliente?',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Aceptar!',
+                cancelButtonText: 'Cancelar',
+                confirmButtonClass: 'btn btn-success',
+                cancelButtonClass: 'btn btn-danger',
+                buttonsStyling: false,
+                reverseButtons: true
+                }).then((result) => {
+                if (result.value) {
+                    let me = this;
+
+                    axios.put('/clientes/activar',{
+                        'id': id
+                    }).then(function (response) {
+                    me.listado=1;
+                    me.limpiarDatos();
+                    me.listarProspectos(1,'','ini_obras.clave');
+                        swal(
+                        'Activado!',
+                        'El registro ha sido activado con éxito.',
+                        'success'
+                        )
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                    
+                    
+                } else if (
+                    // Read more about handling dismissals
+                    result.dismiss === swal.DismissReason.cancel
+                ) {
+                    
+                }
+                }) 
             },
             
             validarProspecto(){

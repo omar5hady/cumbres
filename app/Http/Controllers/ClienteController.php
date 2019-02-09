@@ -360,6 +360,35 @@ class ClienteController extends Controller
         ];
     }
 
+    public function desactivar(Request $request)
+    {
+        if(!$request->ajax())return redirect('/');
+        //FindOrFail se utiliza para buscar lo que recibe de argumento
+        $Personal = Personal::findOrFail($request->id);
+        $cliente = Cliente::findOrFail($request->id);
+
+        $Personal->activo = '0';
+        $Personal->save();
+
+        $cliente->clasificacion = 6;
+        $cliente->save();
+    }
+
+    public function activar(Request $request)
+    {
+        if(!$request->ajax())return redirect('/');
+        //FindOrFail se utiliza para buscar lo que recibe de argumento
+        $Personal = Personal::findOrFail($request->id);
+        $cliente = Cliente::findOrFail($request->id);
+
+        $Personal->activo = '1';
+        $Personal->save();
+
+        $cliente->clasificacion = 5;
+        $cliente->save();
+        
+    }
+
   
     
 }

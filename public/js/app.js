@@ -95589,6 +95589,17 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -95814,7 +95825,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         me.tipo_casa_coa = val1.tipo_casa;
     }), _defineProperty(_methods, 'listarObservacion', function listarObservacion(page, buscar) {
         var me = this;
-        var url = '/cliente/observacion?page=' + page + '&buscar=' + buscar;
+        var url = '/clientes/observacion?page=' + page + '&buscar=' + buscar;
         axios.get(url).then(function (response) {
             var respuesta = response.data;
             me.arrayObservacion = respuesta.observacion.data;
@@ -95992,6 +96003,72 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             });
         }).catch(function (error) {
             console.log(error);
+        });
+    }), _defineProperty(_methods, 'desactivarProspecto', function desactivarProspecto(id) {
+        var _this = this;
+
+        swal({
+            title: 'Esta seguro de desactivar a este cliente?',
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Aceptar!',
+            cancelButtonText: 'Cancelar',
+            confirmButtonClass: 'btn btn-success',
+            cancelButtonClass: 'btn btn-danger',
+            buttonsStyling: false,
+            reverseButtons: true
+        }).then(function (result) {
+            if (result.value) {
+                var me = _this;
+
+                axios.put('/clientes/desactivar', {
+                    'id': id
+                }).then(function (response) {
+                    me.listado = 1;
+                    me.limpiarDatos();
+                    me.listarProspectos(1, '', 'ini_obras.clave');
+                    swal('Desactivado!', 'El registro ha sido desactivado con éxito.', 'success');
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            } else if (
+            // Read more about handling dismissals
+            result.dismiss === swal.DismissReason.cancel) {}
+        });
+    }), _defineProperty(_methods, 'activarProspecto', function activarProspecto(id) {
+        var _this2 = this;
+
+        swal({
+            title: 'Esta seguro de activar a este cliente?',
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Aceptar!',
+            cancelButtonText: 'Cancelar',
+            confirmButtonClass: 'btn btn-success',
+            cancelButtonClass: 'btn btn-danger',
+            buttonsStyling: false,
+            reverseButtons: true
+        }).then(function (result) {
+            if (result.value) {
+                var me = _this2;
+
+                axios.put('/clientes/activar', {
+                    'id': id
+                }).then(function (response) {
+                    me.listado = 1;
+                    me.limpiarDatos();
+                    me.listarProspectos(1, '', 'ini_obras.clave');
+                    swal('Activado!', 'El registro ha sido activado con éxito.', 'success');
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            } else if (
+            // Read more about handling dismissals
+            result.dismiss === swal.DismissReason.cancel) {}
         });
     }), _defineProperty(_methods, 'validarProspecto', function validarProspecto() {
         this.errorProspecto = 0;
@@ -96418,35 +96495,73 @@ var render = function() {
                           "tbody",
                           _vm._l(_vm.arrayProspectos, function(prospecto) {
                             return _c("tr", { key: prospecto.id }, [
-                              _c("td", [
-                                _c(
-                                  "button",
-                                  {
-                                    staticClass: "btn btn-danger btn-sm",
-                                    attrs: { type: "button" },
-                                    on: {
-                                      click: function($event) {
-                                        _vm.eliminarContrato(prospecto)
+                              _c(
+                                "td",
+                                [
+                                  prospecto.activo
+                                    ? [
+                                        _c(
+                                          "button",
+                                          {
+                                            staticClass:
+                                              "btn btn-danger btn-sm",
+                                            attrs: { type: "button" },
+                                            on: {
+                                              click: function($event) {
+                                                _vm.desactivarProspecto(
+                                                  prospecto.id
+                                                )
+                                              }
+                                            }
+                                          },
+                                          [
+                                            _c("i", {
+                                              staticClass: "fa fa-user-times"
+                                            })
+                                          ]
+                                        )
+                                      ]
+                                    : [
+                                        _c(
+                                          "button",
+                                          {
+                                            staticClass:
+                                              "btn btn-success btn-sm",
+                                            attrs: { type: "button" },
+                                            on: {
+                                              click: function($event) {
+                                                _vm.activarProspecto(
+                                                  prospecto.id
+                                                )
+                                              }
+                                            }
+                                          },
+                                          [
+                                            _c("i", {
+                                              staticClass: "icon-check"
+                                            })
+                                          ]
+                                        )
+                                      ],
+                                  _vm._v(" "),
+                                  _c(
+                                    "button",
+                                    {
+                                      staticClass: "btn btn-warning btn-sm",
+                                      attrs: { type: "button" },
+                                      on: {
+                                        click: function($event) {
+                                          _vm.actualizarProspectoBTN(
+                                            prospecto.id
+                                          )
+                                        }
                                       }
-                                    }
-                                  },
-                                  [_c("i", { staticClass: "icon-trash" })]
-                                ),
-                                _vm._v(" "),
-                                _c(
-                                  "button",
-                                  {
-                                    staticClass: "btn btn-warning btn-sm",
-                                    attrs: { type: "button" },
-                                    on: {
-                                      click: function($event) {
-                                        _vm.actualizarProspectoBTN(prospecto.id)
-                                      }
-                                    }
-                                  },
-                                  [_c("i", { staticClass: "icon-pencil" })]
-                                )
-                              ]),
+                                    },
+                                    [_c("i", { staticClass: "icon-pencil" })]
+                                  )
+                                ],
+                                2
+                              ),
                               _vm._v(" "),
                               _c("td", {
                                 domProps: {
@@ -96461,6 +96576,15 @@ var render = function() {
                                   attrs: { href: "tel:" + prospecto.celular },
                                   domProps: {
                                     textContent: _vm._s(prospecto.celular)
+                                  }
+                                })
+                              ]),
+                              _vm._v(" "),
+                              _c("td", [
+                                _c("a", {
+                                  attrs: { href: "mailto:" + prospecto.email },
+                                  domProps: {
+                                    textContent: _vm._s(prospecto.email)
                                   }
                                 })
                               ]),
@@ -96496,9 +96620,9 @@ var render = function() {
                                         _vm.abrirModal3(
                                           "prospecto",
                                           "ver_todo",
-                                          prospecto.id,
+                                          prospecto.id
+                                        ),
                                           _vm.listarObservacion(1, prospecto.id)
-                                        )
                                       }
                                     }
                                   },
@@ -98195,6 +98319,28 @@ var render = function() {
                                   placeholder: "Buscar empresa...",
                                   onChange: _vm.getDatosEmpresa
                                 }
+                              }),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.empresa,
+                                    expression: "empresa"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "text", readonly: "" },
+                                domProps: { value: _vm.empresa },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.empresa = $event.target.value
+                                  }
+                                }
                               })
                             ],
                             1
@@ -98344,6 +98490,7 @@ var render = function() {
                               attrs: {
                                 type: "text",
                                 maxlength: "10",
+                                disabled: "",
                                 placeholder: "RFC"
                               },
                               domProps: { value: _vm.rfc },
@@ -98629,6 +98776,34 @@ var render = function() {
                                   options: _vm.arrayFraccionamientos,
                                   placeholder: "Buscar proyecto...",
                                   onChange: _vm.getDatosFraccionamiento
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.arrayProspectos[0].proyecto,
+                                    expression: "arrayProspectos[0].proyecto"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: { type: "text", readonly: "" },
+                                domProps: {
+                                  value: _vm.arrayProspectos[0].proyecto
+                                },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.$set(
+                                      _vm.arrayProspectos[0],
+                                      "proyecto",
+                                      $event.target.value
+                                    )
+                                  }
                                 }
                               })
                             ],
@@ -100045,6 +100220,8 @@ var staticRenderFns = [
         _c("th", [_vm._v("Nombre")]),
         _vm._v(" "),
         _c("th", [_vm._v("Telefono")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Email personal")]),
         _vm._v(" "),
         _c("th", [_vm._v("RFC")]),
         _vm._v(" "),

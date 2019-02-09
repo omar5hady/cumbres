@@ -75,7 +75,9 @@ Route::group(['middleware' => ['auth']],function(){
     Route::post('/clientes/registrar_coacreditado','ClienteController@storeCoacreditado');
     Route::put('/clientes/actualizar','ClienteController@update');
     Route::get('/clientes/obtenerDatos','ClienteController@obtenerDatos');
-    Route::get('/cliente/observacion','ClienteController@listarObservacion');
+    Route::get('/clientes/observacion','ClienteController@listarObservacion');
+    Route::put('/clientes/desactivar','ClienteController@desactivar');
+    Route::put('/clientes/activar','ClienteController@activar');
     
     ///////////////////        RUTAS Medios Publicitarios    //////////////////////////////////
     Route::get('/medio_publicitario','MedioPublicitarioController@index');
