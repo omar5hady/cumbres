@@ -95587,6 +95587,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -96453,6 +96455,15 @@ var render = function() {
                                   )
                                 }
                               }),
+                              _vm._v(" "),
+                              _c("td", [
+                                _c("a", {
+                                  attrs: { href: "tel:" + prospecto.celular },
+                                  domProps: {
+                                    textContent: _vm._s(prospecto.celular)
+                                  }
+                                })
+                              ]),
                               _vm._v(" "),
                               _c("td", {
                                 domProps: { textContent: _vm._s(prospecto.rfc) }
@@ -100032,6 +100043,8 @@ var staticRenderFns = [
         _c("th", [_vm._v("Opciones")]),
         _vm._v(" "),
         _c("th", [_vm._v("Nombre")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Telefono")]),
         _vm._v(" "),
         _c("th", [_vm._v("RFC")]),
         _vm._v(" "),

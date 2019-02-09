@@ -40,6 +40,7 @@
                                         <tr>
                                             <th>Opciones</th>
                                             <th>Nombre</th>
+                                            <th>Telefono</th>
                                             <th>RFC</th>
                                             <th>IMSS</th>
                                             <th>CURP </th>
@@ -60,6 +61,7 @@
                                                 </button>
                                             </td>
                                             <td v-text="prospecto.nombre + ' ' + prospecto.apellidos "></td>
+                                            <td > <a v-text="prospecto.celular" :href="'tel:'+prospecto.celular"></a></td>
                                             <td v-text="prospecto.rfc"></td>
                                             <td v-text="prospecto.nss"></td>
                                             <td v-text="prospecto.curp"></td>
