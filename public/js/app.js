@@ -95600,6 +95600,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -95624,9 +95625,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             coacreditado: 0,
             publicidad_id: 0,
             proyecto_interes_id: 0,
+            proyecto: '',
             empresa: '',
             observacion: '',
             lugar_contacto: 0,
+            conyugeNom: '',
 
             nombre_coa: '',
             parentesco_coa: '',
@@ -96156,6 +96159,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         this.homoclave_coa = '';
         this.e_civil_coa = 0;
         this.tipo_casa_coa = 0;
+        this.conyugeNom = '';
 
         this.errorProspecto = 0;
         this.errorMostrarMsjProspecto = [];
@@ -96228,6 +96232,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             me.tipo_casa = me.arrayDatosProspecto[0]['tipo_casa'];
             me.e_civil = me.arrayDatosProspecto[0]['edo_civil'];
             me.parentesco_coa = me.arrayDatosProspecto[0]['parentesco_coa'];
+            me.coacreditado = me.arrayDatosProspecto[0]['coacreditado'];
+            me.conyugeNom = me.arrayDatosProspecto[0]['n_completo_coa'];
+            me.proyecto = me.arrayDatosProspecto[0]['proyecto'];
 
             me.id = id;
         }).catch(function (error) {
@@ -96347,7 +96354,7 @@ var render = function() {
                     }
                   },
                   [
-                    _c("i", { staticClass: "icon-plus" }),
+                    _c("i", { staticClass: "icon-people" }),
                     _vm._v(" Agregar\n                    ")
                   ]
                 )
@@ -98321,27 +98328,29 @@ var render = function() {
                                 }
                               }),
                               _vm._v(" "),
-                              _c("input", {
-                                directives: [
-                                  {
-                                    name: "model",
-                                    rawName: "v-model",
-                                    value: _vm.empresa,
-                                    expression: "empresa"
-                                  }
-                                ],
-                                staticClass: "form-control",
-                                attrs: { type: "text", readonly: "" },
-                                domProps: { value: _vm.empresa },
-                                on: {
-                                  input: function($event) {
-                                    if ($event.target.composing) {
-                                      return
+                              _vm.empresa != null
+                                ? _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.empresa,
+                                        expression: "empresa"
+                                      }
+                                    ],
+                                    staticClass: "form-control",
+                                    attrs: { type: "text", readonly: "" },
+                                    domProps: { value: _vm.empresa },
+                                    on: {
+                                      input: function($event) {
+                                        if ($event.target.composing) {
+                                          return
+                                        }
+                                        _vm.empresa = $event.target.value
+                                      }
                                     }
-                                    _vm.empresa = $event.target.value
-                                  }
-                                }
-                              })
+                                  })
+                                : _vm._e()
                             ],
                             1
                           )
@@ -98779,33 +98788,29 @@ var render = function() {
                                 }
                               }),
                               _vm._v(" "),
-                              _c("input", {
-                                directives: [
-                                  {
-                                    name: "model",
-                                    rawName: "v-model",
-                                    value: _vm.arrayProspectos[0].proyecto,
-                                    expression: "arrayProspectos[0].proyecto"
-                                  }
-                                ],
-                                staticClass: "form-control",
-                                attrs: { type: "text", readonly: "" },
-                                domProps: {
-                                  value: _vm.arrayProspectos[0].proyecto
-                                },
-                                on: {
-                                  input: function($event) {
-                                    if ($event.target.composing) {
-                                      return
+                              _vm.proyecto != null
+                                ? _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.proyecto,
+                                        expression: "proyecto"
+                                      }
+                                    ],
+                                    staticClass: "form-control",
+                                    attrs: { type: "text", readonly: "" },
+                                    domProps: { value: _vm.proyecto },
+                                    on: {
+                                      input: function($event) {
+                                        if ($event.target.composing) {
+                                          return
+                                        }
+                                        _vm.proyecto = $event.target.value
+                                      }
                                     }
-                                    _vm.$set(
-                                      _vm.arrayProspectos[0],
-                                      "proyecto",
-                                      $event.target.value
-                                    )
-                                  }
-                                }
-                              })
+                                  })
+                                : _vm._e()
                             ],
                             1
                           )
@@ -99148,7 +99153,31 @@ var render = function() {
                                       placeholder: "Buscar...",
                                       onChange: _vm.getDatosCoacreditado
                                     }
-                                  })
+                                  }),
+                                  _vm._v(" "),
+                                  _vm.conyugeNom != null
+                                    ? _c("input", {
+                                        directives: [
+                                          {
+                                            name: "model",
+                                            rawName: "v-model",
+                                            value: _vm.conyugeNom,
+                                            expression: "conyugeNom"
+                                          }
+                                        ],
+                                        staticClass: "form-control",
+                                        attrs: { type: "text", readonly: "" },
+                                        domProps: { value: _vm.conyugeNom },
+                                        on: {
+                                          input: function($event) {
+                                            if ($event.target.composing) {
+                                              return
+                                            }
+                                            _vm.conyugeNom = $event.target.value
+                                          }
+                                        }
+                                      })
+                                    : _vm._e()
                                 ],
                                 1
                               )

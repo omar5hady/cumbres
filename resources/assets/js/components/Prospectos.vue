@@ -11,7 +11,7 @@
                         <i class="fa fa-align-justify"></i> Mis prospectos
                         <!--   Boton agregar    -->
                         <button type="button" @click="mostrarDetalle()" class="btn btn-secondary" v-if="listado==1">
-                            <i class="icon-plus"></i>&nbsp;Agregar
+                            <i class="icon-people"></i>&nbsp;Agregar
                         </button>
                         <!---->
                     </div>
@@ -439,7 +439,7 @@
                                             :onChange="getDatosEmpresa"
                                         >
                                         </v-select>
-                                         <input type="text" class="form-control" readonly  v-model="empresa">
+                                         <input v-if="empresa != null" type="text" class="form-control" readonly  v-model="empresa">
                                 </div>
                                 </div>
 
@@ -530,7 +530,7 @@
                                             :onChange="getDatosFraccionamiento"
                                         >
                                         </v-select>
-                                         <input type="text" class="form-control" readonly  v-model="arrayProspectos[0].proyecto">
+                                         <input type="text" v-if="proyecto != null" class="form-control" readonly  v-model="proyecto">
                                     </div>
                                 </div>
 
@@ -548,7 +548,7 @@
                         </div>
 
                   <!--  apartado  de datos vive en casa , edo civil, conyuge-->
-                           <div class="form-group row border" >    
+                        <div class="form-group row border" >    
                                         
                                 <div class="col-md-3">
                                     <div class="form-group">
@@ -604,6 +604,7 @@
                                             :onChange="getDatosCoacreditado"
                                         >
                                         </v-select>
+                                        <input type="text" v-if="conyugeNom != null" class="form-control" readonly v-model="conyugeNom">
                                     </div>
                                 </div>
 
@@ -888,9 +889,11 @@
                 coacreditado: 0,
                 publicidad_id: 0,
                 proyecto_interes_id: 0,
+                proyecto: '',
                 empresa: '',
                 observacion:'',
                 lugar_contacto: 0,
+                conyugeNom: '',
 
 
                 nombre_coa:'',
@@ -1490,6 +1493,8 @@
                 this.homoclave_coa= '';
                 this.e_civil_coa= 0;
                 this.tipo_casa_coa=0;
+                this.conyugeNom = '';
+
 
                 this.errorProspecto=0;
                 this.errorMostrarMsjProspecto=[];
@@ -1570,6 +1575,9 @@
                     me.tipo_casa=me.arrayDatosProspecto[0]['tipo_casa'];
                     me.e_civil=me.arrayDatosProspecto[0]['edo_civil'];
                     me.parentesco_coa=me.arrayDatosProspecto[0]['parentesco_coa'];
+                    me.coacreditado=me.arrayDatosProspecto[0]['coacreditado'];
+                    me.conyugeNom = me.arrayDatosProspecto[0]['n_completo_coa'];
+                    me.proyecto = me.arrayDatosProspecto[0]['proyecto'];
                     
                     
                     me.id=id;
