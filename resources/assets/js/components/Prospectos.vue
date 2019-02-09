@@ -40,7 +40,7 @@
                                         <tr>
                                             <th>Opciones</th>
                                             <th>Nombre</th>
-                                            <th>Telefono</th>
+                                            <th>Celular</th>
                                             <th>Email personal</th>
                                             <th>RFC</th>
                                             <th>IMSS</th>
@@ -69,7 +69,11 @@
                                                 </button>
                                             </td>
                                             <td v-text="prospecto.nombre + ' ' + prospecto.apellidos "></td>
-                                            <td > <a v-text="prospecto.celular" :href="'tel:'+prospecto.celular"></a></td>
+                                            <td >
+                                                 <a class="btn btn-primary" :href="'tel:'+prospecto.celular"><i class="fa fa-phone fa-lg"></i></a>
+                                                 <a class="btn btn-success" :href="'https://api.whatsapp.com/send?phone=+52'+prospecto.celular+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>
+                                                 
+                                            </td>
                                             <td > <a v-text="prospecto.email" :href="'mailto:'+prospecto.email"></a></td>
                                             <td v-text="prospecto.rfc"></td>
                                             <td v-text="prospecto.nss"></td>

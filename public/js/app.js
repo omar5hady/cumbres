@@ -95601,6 +95601,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -96579,12 +96583,36 @@ var render = function() {
                               }),
                               _vm._v(" "),
                               _c("td", [
-                                _c("a", {
-                                  attrs: { href: "tel:" + prospecto.celular },
-                                  domProps: {
-                                    textContent: _vm._s(prospecto.celular)
-                                  }
-                                })
+                                _c(
+                                  "a",
+                                  {
+                                    staticClass: "btn btn-primary",
+                                    attrs: { href: "tel:" + prospecto.celular }
+                                  },
+                                  [
+                                    _c("i", {
+                                      staticClass: "fa fa-phone fa-lg"
+                                    })
+                                  ]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "a",
+                                  {
+                                    staticClass: "btn btn-success",
+                                    attrs: {
+                                      href:
+                                        "https://api.whatsapp.com/send?phone=+52" +
+                                        prospecto.celular +
+                                        "&text=Hola"
+                                    }
+                                  },
+                                  [
+                                    _c("i", {
+                                      staticClass: "fa fa-whatsapp fa-lg"
+                                    })
+                                  ]
+                                )
                               ]),
                               _vm._v(" "),
                               _c("td", [
@@ -100248,7 +100276,7 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Nombre")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Telefono")]),
+        _c("th", [_vm._v("Celular")]),
         _vm._v(" "),
         _c("th", [_vm._v("Email personal")]),
         _vm._v(" "),
