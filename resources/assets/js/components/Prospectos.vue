@@ -55,23 +55,23 @@
                                             <td>
                                             
                                             <template v-if="prospecto.activo">
-                                                <button type="button" @click="desactivarProspecto(prospecto.id)" class="btn btn-danger btn-sm">
+                                                <button title="Desactivar cliente" type="button" @click="desactivarProspecto(prospecto.id)" class="btn btn-danger btn-sm">
                                                 <i class="fa fa-user-times"></i>
                                                 </button>
                                             </template>
                                             <template v-else>
-                                                <button type="button" @click="activarProspecto(prospecto.id)" class="btn btn-success btn-sm">
+                                                <button title="Activar cliente" type="button" @click="activarProspecto(prospecto.id)" class="btn btn-success btn-sm">
                                                     <i class="icon-check"></i>
                                                 </button>
                                             </template>
-                                                <button type="button" class="btn btn-warning btn-sm" @click="actualizarProspectoBTN(prospecto.id)">
+                                                <button title="Editar" type="button" class="btn btn-warning btn-sm" @click="actualizarProspectoBTN(prospecto.id)">
                                                     <i class="icon-pencil"></i>
                                                 </button>
                                             </td>
                                             <td v-text="prospecto.nombre + ' ' + prospecto.apellidos "></td>
                                             <td >
-                                                 <a class="btn btn-primary" :href="'tel:'+prospecto.celular"><i class="fa fa-phone fa-lg"></i></a>
-                                                 <a class="btn btn-success" :href="'https://api.whatsapp.com/send?phone=+52'+prospecto.celular+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>
+                                                 <a title="Llamar" class="btn btn-primary" :href="'tel:'+prospecto.celular"><i class="fa fa-phone fa-lg"></i></a>
+                                                 <a title="Enviar whatsapp" class="btn btn-success" :href="'https://api.whatsapp.com/send?phone=+52'+prospecto.celular+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>
                                                  
                                             </td>
                                             <td > <a v-text="prospecto.email" :href="'mailto:'+prospecto.email"></a></td>
@@ -79,7 +79,7 @@
                                             <td v-text="prospecto.nss"></td>
                                             <td v-text="prospecto.curp"></td>
                                             <td v-text="prospecto.proyecto"></td>
-                                            <td> <button type="button" class="btn btn-info pull-right" @click="abrirModal3('prospecto','ver_todo', prospecto.id),listarObservacion(1,prospecto.id)">Ver todos</button> </td>
+                                            <td> <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" @click="abrirModal3('prospecto','ver_todo', prospecto.id),listarObservacion(1,prospecto.id)">Ver todos</button> </td>
                                         </tr>                               
                                     </tbody>
                                 </table>

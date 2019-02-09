@@ -96516,7 +96516,10 @@ var render = function() {
                                           {
                                             staticClass:
                                               "btn btn-danger btn-sm",
-                                            attrs: { type: "button" },
+                                            attrs: {
+                                              title: "Desactivar cliente",
+                                              type: "button"
+                                            },
                                             on: {
                                               click: function($event) {
                                                 _vm.desactivarProspecto(
@@ -96538,7 +96541,10 @@ var render = function() {
                                           {
                                             staticClass:
                                               "btn btn-success btn-sm",
-                                            attrs: { type: "button" },
+                                            attrs: {
+                                              title: "Activar cliente",
+                                              type: "button"
+                                            },
                                             on: {
                                               click: function($event) {
                                                 _vm.activarProspecto(
@@ -96559,7 +96565,10 @@ var render = function() {
                                     "button",
                                     {
                                       staticClass: "btn btn-warning btn-sm",
-                                      attrs: { type: "button" },
+                                      attrs: {
+                                        title: "Editar",
+                                        type: "button"
+                                      },
                                       on: {
                                         click: function($event) {
                                           _vm.actualizarProspectoBTN(
@@ -96587,7 +96596,10 @@ var render = function() {
                                   "a",
                                   {
                                     staticClass: "btn btn-primary",
-                                    attrs: { href: "tel:" + prospecto.celular }
+                                    attrs: {
+                                      title: "Llamar",
+                                      href: "tel:" + prospecto.celular
+                                    }
                                   },
                                   [
                                     _c("i", {
@@ -96601,6 +96613,7 @@ var render = function() {
                                   {
                                     staticClass: "btn btn-success",
                                     attrs: {
+                                      title: "Enviar whatsapp",
                                       href:
                                         "https://api.whatsapp.com/send?phone=+52" +
                                         prospecto.celular +
@@ -96649,7 +96662,10 @@ var render = function() {
                                   "button",
                                   {
                                     staticClass: "btn btn-info pull-right",
-                                    attrs: { type: "button" },
+                                    attrs: {
+                                      title: "Ver todas las observaciones",
+                                      type: "button"
+                                    },
                                     on: {
                                       click: function($event) {
                                         _vm.abrirModal3(
