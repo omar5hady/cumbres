@@ -279,7 +279,7 @@ Route::group(['middleware' => ['auth']],function(){
     Route::get('/select_roles','RolController@selectRol');
     Route::get('/select_personas_sin_user','PersonalController@select_Pers_sinUser');
     Route::get('/select_medio_publicidad','MedioPublicitarioController@selectMedioPublicitario');
-    Route::get('/select_lugar_contacto','LugarContactoController@selectLugarContacto');
+    Route::get('/select_lugar_contacto','LugarContactoController@selectLugar_contacto');
     
     
     

@@ -95606,6 +95606,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -95679,6 +95686,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             arrayCoacreditados: [],
             arrayProspectos: [],
             arrayFraccionamientos: [],
+            arrayLugarContacto: [],
             arrayFraccionamientos2: [],
             arrayFraccionamientosVue: [],
             arrayObservacion: [],
@@ -95740,6 +95748,17 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             axios.get(url).then(function (response) {
                 var respuesta = response.data;
                 me.arrayFraccionamientos = respuesta.fraccionamientos;
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        selectLugarContacto: function selectLugarContacto() {
+            var me = this;
+            me.arrayLugarContacto = [];
+            var url = '/select_lugar_contacto';
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayLugarContacto = respuesta.lugares_contacto;
             }).catch(function (error) {
                 console.log(error);
             });
@@ -96323,6 +96342,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         this.listarProspectos(1, this.buscar, this.criterio);
         this.selectMedioPublicidad();
         this.selectFraccionamientos();
+        this.selectLugarContacto();
     }
 });
 
@@ -96629,14 +96649,45 @@ var render = function() {
                                 )
                               ]),
                               _vm._v(" "),
-                              _c("td", [
-                                _c("a", {
-                                  attrs: { href: "mailto:" + prospecto.email },
-                                  domProps: {
-                                    textContent: _vm._s(prospecto.email)
-                                  }
-                                })
-                              ]),
+                              prospecto.email_institucional == null
+                                ? _c("td", [
+                                    _c(
+                                      "a",
+                                      {
+                                        staticClass: "btn btn-primary",
+                                        attrs: {
+                                          title: "Enviar correo",
+                                          href: "mailto:" + prospecto.email
+                                        }
+                                      },
+                                      [
+                                        _c("i", {
+                                          staticClass: "fa fa-envelope-o fa-lg"
+                                        })
+                                      ]
+                                    )
+                                  ])
+                                : _c("td", [
+                                    _c(
+                                      "a",
+                                      {
+                                        staticClass: "btn btn-primary",
+                                        attrs: {
+                                          title: "Enviar correo",
+                                          href:
+                                            "mailto:" +
+                                            prospecto.email +
+                                            ";" +
+                                            prospecto.email_institucional
+                                        }
+                                      },
+                                      [
+                                        _c("i", {
+                                          staticClass: "fa fa-envelope-o fa-lg"
+                                        })
+                                      ]
+                                    )
+                                  ]),
                               _vm._v(" "),
                               _c("td", {
                                 domProps: { textContent: _vm._s(prospecto.rfc) }
@@ -97433,6 +97484,16 @@ var render = function() {
                                   domProps: {
                                     value: fraccionamientos.nombre,
                                     textContent: _vm._s(fraccionamientos.nombre)
+                                  }
+                                })
+                              }),
+                              _vm._v(" "),
+                              _vm._l(_vm.arrayLugarContacto, function(lugares) {
+                                return _c("option", {
+                                  key: lugares.id,
+                                  domProps: {
+                                    value: lugares.nombre,
+                                    textContent: _vm._s(lugares.nombre)
                                   }
                                 })
                               })
@@ -98725,6 +98786,18 @@ var render = function() {
                                       textContent: _vm._s(
                                         fraccionamientos.nombre
                                       )
+                                    }
+                                  })
+                                }),
+                                _vm._v(" "),
+                                _vm._l(_vm.arrayLugarContacto, function(
+                                  lugares
+                                ) {
+                                  return _c("option", {
+                                    key: lugares.id,
+                                    domProps: {
+                                      value: lugares.nombre,
+                                      textContent: _vm._s(lugares.nombre)
                                     }
                                   })
                                 })
@@ -100295,7 +100368,7 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Celular")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Email personal")]),
+        _c("th", [_vm._v("Email")]),
         _vm._v(" "),
         _c("th", [_vm._v("RFC")]),
         _vm._v(" "),

@@ -41,7 +41,7 @@
                                             <th>Opciones</th>
                                             <th>Nombre</th>
                                             <th>Celular</th>
-                                            <th>Email personal</th>
+                                            <th>Email</th>
                                             <th>RFC</th>
                                             <th>IMSS</th>
                                             <th>CURP </th>
@@ -74,7 +74,12 @@
                                                  <a title="Enviar whatsapp" class="btn btn-success" :href="'https://api.whatsapp.com/send?phone=+52'+prospecto.celular+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>
                                                  
                                             </td>
-                                            <td > <a v-text="prospecto.email" :href="'mailto:'+prospecto.email"></a></td>
+                                            <td v-if="prospecto.email_institucional == null"> 
+                                                <a title="Enviar correo" class="btn btn-primary" :href="'mailto:'+prospecto.email"> <i class="fa fa-envelope-o fa-lg"></i> </a>
+                                            </td>
+                                              <td v-else> 
+                                                <a title="Enviar correo" class="btn btn-primary" :href="'mailto:'+prospecto.email+ ';'+prospecto.email_institucional"> <i class="fa fa-envelope-o fa-lg"></i> </a>
+                                            </td>
                                             <td v-text="prospecto.rfc"></td>
                                             <td v-text="prospecto.nss"></td>
                                             <td v-text="prospecto.curp"></td>
@@ -231,6 +236,7 @@
                                             <option value="Modulo">Modulo</option>
                                             <option value="Pagina web">Pagina web</option>
                                             <option v-for="fraccionamientos in arrayFraccionamientos2" :key="fraccionamientos.id" :value="fraccionamientos.nombre" v-text="fraccionamientos.nombre"></option>
+                                            <option v-for="lugares in arrayLugarContacto" :key="lugares.id" :value="lugares.nombre" v-text="lugares.nombre"></option>
                                     </select>
                                     </div>
                                 </div>
@@ -506,6 +512,7 @@
                                             <option value="Modulo">Modulo</option>
                                             <option value="Pagina web">Pagina web</option>
                                             <option v-for="fraccionamientos in arrayFraccionamientos2" :key="fraccionamientos.id" :value="fraccionamientos.nombre" v-text="fraccionamientos.nombre"></option>
+                                            <option v-for="lugares in arrayLugarContacto" :key="lugares.id" :value="lugares.nombre" v-text="lugares.nombre"></option>
                                     </select>
                                     </div>
                                 </div>
@@ -944,6 +951,7 @@
                 arrayCoacreditados : [],
                 arrayProspectos: [],
                 arrayFraccionamientos : [],
+                arrayLugarContacto: [],
                 arrayFraccionamientos2 : [],
                 arrayFraccionamientosVue : [],
                 arrayObservacion: [],
@@ -1009,6 +1017,20 @@
                 .catch(function (error) {
                     console.log(error);
                 });
+            },
+
+            selectLugarContacto(){
+                let me = this;
+                me.arrayLugarContacto=[];
+                var url = '/select_lugar_contacto';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayLugarContacto = respuesta.lugares_contacto;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+
             },
             selectMedioPublicidad(){
                 let me = this;
@@ -1681,6 +1703,7 @@
             this.listarProspectos(1,this.buscar,this.criterio);
             this.selectMedioPublicidad();
             this.selectFraccionamientos();
+            this.selectLugarContacto();
           
         }
     }
