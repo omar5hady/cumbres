@@ -64,6 +64,9 @@
             <template v-if="menu==14">
                 <medio-publicitario></medio-publicitario>
             </template>
+            <template v-if="menu==15">
+                <lugar-contacto></lugar-contacto>
+            </template>
 
             <template v-if="menu==20">
                 <h1>Contenido del menu 20</h1>

@@ -85,6 +85,12 @@ Route::group(['middleware' => ['auth']],function(){
     Route::post('/medio_publicitario/registrar','MedioPublicitarioController@store');
     Route::put('/medio_publicitario/actualizar','MedioPublicitarioController@update');
     Route::delete('/medio_publicitario/eliminar','MedioPublicitarioController@destroy');
+
+    ///////////////////        RUTAS Lugares de Contacto    //////////////////////////////////
+    Route::get('/lugar_contacto','LugarContactoController@index');
+    Route::post('/lugar_contacto/registrar','LugarContactoController@store');
+    Route::put('/lugar_contacto/actualizar','LugarContactoController@update');
+    Route::delete('/lugar_contacto/eliminar','LugarContactoController@destroy');
     
     ///////////////////     RUTAS FRACCIONAMIENTO     ////////////////////////////////
     Route::get('/fraccionamiento','FraccionamientoController@index');
@@ -272,12 +278,10 @@ Route::group(['middleware' => ['auth']],function(){
     Route::get('/select_datos_lotes','IniObraController@select_datos_lotes'); 
     Route::get('/select_roles','RolController@selectRol');
     Route::get('/select_personas_sin_user','PersonalController@select_Pers_sinUser');
-    Route::get('/select_medio_publicidad','MedioPublicitarioController@selectMedioPublicitario');  
+    Route::get('/select_medio_publicidad','MedioPublicitarioController@selectMedioPublicitario');
+    Route::get('/select_lugar_contacto','LugarContactoController@selectLugarContacto');
     
     
     
 });
 
-
-
-//Route::get('/home', 'HomeController@index')->name('home');

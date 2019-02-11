@@ -70,7 +70,7 @@ class ClienteController extends Controller
                 ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
                 ->orderBy('personal.apellidos', 'desc')
                 ->orderBy('personal.nombre', 'desc')
-               ->paginate(3);
+               ->paginate(6);
             }
 
             else{
