@@ -70,15 +70,15 @@
                                             </td>
                                             <td v-text="prospecto.nombre + ' ' + prospecto.apellidos "></td>
                                             <td >
-                                                 <a title="Llamar" class="btn btn-primary" :href="'tel:'+prospecto.celular"><i class="fa fa-phone fa-lg"></i></a>
+                                                 <a title="Llamar" class="btn btn-dark" :href="'tel:'+prospecto.celular"><i class="fa fa-phone fa-lg"></i></a>
                                                  <a title="Enviar whatsapp" class="btn btn-success" :href="'https://api.whatsapp.com/send?phone=+52'+prospecto.celular+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>
                                                  
                                             </td>
                                             <td v-if="prospecto.email_institucional == null"> 
-                                                <a title="Enviar correo" class="btn btn-primary" :href="'mailto:'+prospecto.email"> <i class="fa fa-envelope-o fa-lg"></i> </a>
+                                                <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+prospecto.email"> <i class="fa fa-envelope-o fa-lg"></i> </a>
                                             </td>
                                               <td v-else> 
-                                                <a title="Enviar correo" class="btn btn-primary" :href="'mailto:'+prospecto.email+ ';'+prospecto.email_institucional"> <i class="fa fa-envelope-o fa-lg"></i> </a>
+                                                <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+prospecto.email+ ';'+prospecto.email_institucional"> <i class="fa fa-envelope-o fa-lg"></i> </a>
                                             </td>
                                             <td v-text="prospecto.rfc"></td>
                                             <td v-text="prospecto.nss"></td>
