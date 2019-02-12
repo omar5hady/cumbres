@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Lugar_contacto;
+use Auth;
 
 class LugarContactoController extends Controller
 {
