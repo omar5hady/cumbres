@@ -158,7 +158,7 @@
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
             <!--Inicio del modal agregar/actualizar-->
-            <div class="modal fade" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
                 <div class="modal-dialog modal-primary modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -238,7 +238,7 @@
             <!--Fin del modal-->
 
             <!--Inicio del modal consulta-->
-            <div class="modal fade" tabindex="-1" :class="{'mostrar': modal2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
                 <div class="modal-dialog modal-primary modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -406,7 +406,7 @@
             <!--Fin del modal consulta-->
 
              <!--Inicio del modal observaciones-->
-            <div class="modal fade" tabindex="-1" :class="{'mostrar': modal3}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal3}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
                 <div class="modal-dialog modal-primary modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -458,61 +458,60 @@
                 <!-- /.modal-dialog -->
             </div>
             
+            <!-- Modal para la carga de foto de licencia -->
+            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal4}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                        <div class="modal-dialog modal-primary modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title" v-text="tituloModal4"></h4>
+                                    <button type="button" class="close" @click="cerrarModal4()" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                <div style="float:left;">
+                                    <form  method="post" @submit="formSubmit" enctype="multipart/form-data">
 
-<!-- Modal para la carga de foto de licencia -->
-<div class="modal fade" tabindex="-1" :class="{'mostrar': modal4}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" v-text="tituloModal4"></h4>
-                            <button type="button" class="close" @click="cerrarModal4()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
+                                            <strong>Licencia:</strong>
+
+                                            <input disabled type="text" class="form-control" v-model="num_licencia" >
+
+                                            <strong>Sube aqui foto de licencia</strong>
+
+                                            <input type="file" class="form-control" v-on:change="onImageChange">
+                                            <br/>
+                                            <button type="submit" class="btn btn-success">Cargar</button>
+                                    </form>
+                                </div>
+
+                                <div style="float:right;">
+                                        <form  method="post" @submit="formSubmitPredial" enctype="multipart/form-data">
+
+                                            <strong>Sube aqui foto del predial</strong>
+
+                                            <input type="file" class="form-control" v-on:change="onImageChangePredial">
+                                            <br/>
+                                            <button type="submit" class="btn btn-success">Cargar</button>
+                                    </form>
+                                </div>
+
+                                </div>
+                                <!-- Botones del modal -->
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" @click="cerrarModal4()">Cerrar</button>
+                                    </div>
+                            </div> 
+                            <!-- /.modal-content -->
                         </div>
-                        <div class="modal-body">
-                     <div style="float:left;">
-                            <form  method="post" @submit="formSubmit" enctype="multipart/form-data">
-
-                                    <strong>Licencia:</strong>
-
-                                    <input disabled type="text" class="form-control" v-model="num_licencia" >
-
-                                    <strong>Sube aqui foto de licencia</strong>
-
-                                    <input type="file" class="form-control" v-on:change="onImageChange">
-                                    <br/>
-                                    <button type="submit" class="btn btn-success">Cargar</button>
-                            </form>
-                     </div>
-
-                     <div style="float:right;">
-                             <form  method="post" @submit="formSubmitPredial" enctype="multipart/form-data">
-
-                                    <strong>Sube aqui foto del predial</strong>
-
-                                    <input type="file" class="form-control" v-on:change="onImageChangePredial">
-                                    <br/>
-                                    <button type="submit" class="btn btn-success">Cargar</button>
-                            </form>
-                     </div>
-
-                        </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal4()">Cerrar</button>
-                         </div>
-                    </div> 
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
-            </div>
-            <!--Fin del modal-->
+                        <!-- /.modal-dialog -->
+                    </div>
+                    <!--Fin del modal-->
 
 
 
-                    
-        </main>
-</template>
+                            
+                </main>
+            </template>
 
 <!-- ************************************************************************************************************************************  -->
 <!-- *********************************************************** CODIGO JAVASCRIPT *************************************************************************  -->

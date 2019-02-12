@@ -50165,7 +50165,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: absolute !important;\n    background-color: #3c29297a !important;\n}\n.div-error{\n    display:flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n", ""]);
+exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: fixed !important;\n    background-color: #3c29297a !important;\n}\n.div-error{\n    display:flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n", ""]);
 
 // exports
 
@@ -50819,7 +50819,7 @@ var render = function() {
     _c(
       "div",
       {
-        staticClass: "modal fade",
+        staticClass: "modal animated fadeIn",
         class: { mostrar: _vm.modal },
         staticStyle: { display: "none" },
         attrs: {
@@ -51789,7 +51789,7 @@ var render = function() {
       _c("div", { staticClass: "card scroll-box" }, [
         _c("div", { staticClass: "card-header" }, [
           _c("i", { staticClass: "fa fa-align-justify" }),
-          _vm._v(" Fraccionamientos\n                        "),
+          _vm._v(" Fraccionamientos\n                    "),
           _vm._v(" "),
           _c(
             "button",
@@ -51804,7 +51804,7 @@ var render = function() {
             },
             [
               _c("i", { staticClass: "icon-plus" }),
-              _vm._v(" Nuevo\n                        ")
+              _vm._v(" Nuevo\n                    ")
             ]
           )
         ]),
@@ -52210,7 +52210,7 @@ var render = function() {
     _c(
       "div",
       {
-        staticClass: "modal fade",
+        staticClass: "modal animated fadeIn",
         class: { mostrar: _vm.modal },
         staticStyle: { display: "none" },
         attrs: {
@@ -52833,7 +52833,7 @@ var render = function() {
     _c(
       "div",
       {
-        staticClass: "modal fade",
+        staticClass: "modal animated fadeIn",
         class: { mostrar: _vm.modal4 },
         staticStyle: { display: "none" },
         attrs: {
@@ -54226,7 +54226,7 @@ var render = function() {
     _c(
       "div",
       {
-        staticClass: "modal fade",
+        staticClass: "modal animated fadeIn",
         class: { mostrar: _vm.modal },
         staticStyle: { display: "none" },
         attrs: {
@@ -55124,7 +55124,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: absolute !important;\n    background-color: #3c29297a !important;\n}\n.div-error{\n    display:flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n", ""]);
+exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: fixed !important;\n    background-color: #3c29297a !important;\n}\n.div-error{\n    display:flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n", ""]);
 
 // exports
 
@@ -55905,7 +55905,7 @@ var render = function() {
     _c(
       "div",
       {
-        staticClass: "modal fade",
+        staticClass: "modal animated fadeIn",
         class: { mostrar: _vm.modal },
         staticStyle: { display: "none" },
         attrs: {
@@ -56665,7 +56665,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: absolute !important;\n    background-color: #3c29297a !important;\n}\n.div-error{\n    display:flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n", ""]);
+exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: fixed !important;\n    background-color: #3c29297a !important;\n}\n.div-error{\n    display:flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n", ""]);
 
 // exports
 
@@ -57625,7 +57625,7 @@ var render = function() {
     _c(
       "div",
       {
-        staticClass: "modal fade",
+        staticClass: "modal animated fadeIn",
         class: { mostrar: _vm.modal },
         staticStyle: { display: "none" },
         attrs: {
@@ -58114,7 +58114,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: absolute !important;\n    background-color: #3c29297a !important;\n}\n.div-error{\n    display:flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n", ""]);
+exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: fixed !important;\n    background-color: #3c29297a !important;\n}\n.div-error{\n    display:flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n", ""]);
 
 // exports
 
@@ -59110,7 +59110,7 @@ var render = function() {
     _c(
       "div",
       {
-        staticClass: "modal fade",
+        staticClass: "modal animated fadeIn",
         class: { mostrar: _vm.modal },
         staticStyle: { display: "none" },
         attrs: {
@@ -59480,7 +59480,7 @@ var render = function() {
     _c(
       "div",
       {
-        staticClass: "modal fade",
+        staticClass: "modal animated fadeIn",
         class: { mostrar: _vm.modal2 },
         staticStyle: { display: "none" },
         attrs: {
@@ -62123,7 +62123,7 @@ var render = function() {
     _c(
       "div",
       {
-        staticClass: "modal fade",
+        staticClass: "modal animated fadeIn",
         class: { mostrar: _vm.modal },
         staticStyle: { display: "none" },
         attrs: {
@@ -62679,7 +62679,7 @@ var render = function() {
     _c(
       "div",
       {
-        staticClass: "modal fade",
+        staticClass: "modal animated fadeIn",
         class: { mostrar: _vm.modal2 },
         staticStyle: { display: "none" },
         attrs: {
@@ -62834,7 +62834,7 @@ var render = function() {
     _c(
       "div",
       {
-        staticClass: "modal fade ",
+        staticClass: "modal animated fadeIn",
         class: { mostrar: _vm.modal4 },
         staticStyle: { display: "none" },
         attrs: {
@@ -64859,7 +64859,7 @@ var render = function() {
     _c(
       "div",
       {
-        staticClass: "modal fade",
+        staticClass: "modal animated fadeIn",
         class: { mostrar: _vm.modal },
         staticStyle: { display: "none" },
         attrs: {
@@ -65731,7 +65731,7 @@ var render = function() {
     _c(
       "div",
       {
-        staticClass: "modal fade",
+        staticClass: "modal animated fadeIn",
         class: { mostrar: _vm.modal2 },
         staticStyle: { display: "none" },
         attrs: {
@@ -66130,7 +66130,6 @@ exports.push([module.i, "\n.form-control:disabled, .form-control[readonly] {\nba
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
 //
 //
 //
@@ -67147,7 +67146,7 @@ var render = function() {
       _c("div", { staticClass: "card scroll-box" }, [
         _c("div", { staticClass: "card-header" }, [
           _c("i", { staticClass: "fa fa-align-justify" }),
-          _vm._v("Licencias\n\n                        "),
+          _vm._v("Licencias\n\n                    "),
           _vm._v(" "),
           _c(
             "a",
@@ -67157,7 +67156,7 @@ var render = function() {
             },
             [
               _c("i", { staticClass: "icon-pencil" }),
-              _vm._v(" Descargar resumen\n                        ")
+              _vm._v(" Descargar resumen\n                    ")
             ]
           )
         ]),
@@ -68045,7 +68044,7 @@ var render = function() {
     _c(
       "div",
       {
-        staticClass: "modal fade",
+        staticClass: "modal animated fadeIn",
         class: { mostrar: _vm.modal },
         staticStyle: { display: "none" },
         attrs: {
@@ -68434,7 +68433,7 @@ var render = function() {
     _c(
       "div",
       {
-        staticClass: "modal fade",
+        staticClass: "modal animated fadeIn",
         class: { mostrar: _vm.modal2 },
         staticStyle: { display: "none" },
         attrs: {
@@ -69270,7 +69269,7 @@ var render = function() {
     _c(
       "div",
       {
-        staticClass: "modal fade",
+        staticClass: "modal animated fadeIn",
         class: { mostrar: _vm.modal3 },
         staticStyle: { display: "none" },
         attrs: {
@@ -69454,7 +69453,7 @@ var render = function() {
     _c(
       "div",
       {
-        staticClass: "modal fade",
+        staticClass: "modal animated fadeIn",
         class: { mostrar: _vm.modal4 },
         staticStyle: { display: "none" },
         attrs: {
@@ -69769,7 +69768,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n.form-control:disabled, .form-control[readonly] {\nbackground-color: rgba(0, 0, 0, 0.06);\nopacity: 1;\nfont-size: 1rem;\ncolor: #27417b;\n}\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: center !important;\n    background-color: #3c29297a !important;\n     overflow-y: auto;\n}\n.div-error{\n    display:flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\ninput[type=number]::-webkit-inner-spin-button, \ninput[type=number]::-webkit-outer-spin-button { \n-webkit-appearance: none; \nmargin: 0;\n}\n", ""]);
+exports.push([module.i, "\n.form-control:disabled, .form-control[readonly] {\nbackground-color: rgba(0, 0, 0, 0.06);\nopacity: 1;\nfont-size: 1rem;\ncolor: #27417b;\n}\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: fixed !important;\n    background-color: #3c29297a !important;\n     overflow-y: auto;\n}\n.div-error{\n    display:flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\ninput[type=number]::-webkit-inner-spin-button, \ninput[type=number]::-webkit-outer-spin-button { \n-webkit-appearance: none; \nmargin: 0;\n}\n", ""]);
 
 // exports
 
@@ -71446,7 +71445,7 @@ var render = function() {
     _c(
       "div",
       {
-        staticClass: "modal fade",
+        staticClass: "modal animated fadeIn",
         class: { mostrar: _vm.modal },
         staticStyle: { display: "none" },
         attrs: {
@@ -71710,7 +71709,7 @@ var render = function() {
     _c(
       "div",
       {
-        staticClass: "modal fade",
+        staticClass: "modal animated fadeIn",
         class: { mostrar: _vm.modal2 },
         staticStyle: { display: "none" },
         attrs: {
@@ -72638,7 +72637,7 @@ var render = function() {
     _c(
       "div",
       {
-        staticClass: "modal fade",
+        staticClass: "modal animated fadeIn",
         class: { mostrar: _vm.modal3 },
         staticStyle: { display: "none" },
         attrs: {
@@ -72859,7 +72858,7 @@ var render = function() {
     _c(
       "div",
       {
-        staticClass: "modal fade",
+        staticClass: "modal animated fadeIn",
         class: { mostrar: _vm.modal4 },
         staticStyle: { display: "none" },
         attrs: {
@@ -73000,7 +72999,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "card-header" }, [
       _c("i", { staticClass: "fa fa-align-justify" }),
-      _vm._v("Acta de terminacion\n\n                        ")
+      _vm._v("Acta de terminacion\n\n                    ")
     ])
   },
   function() {
@@ -74033,7 +74032,7 @@ var render = function() {
     _c(
       "div",
       {
-        staticClass: "modal fade",
+        staticClass: "modal animated fadeIn",
         class: { mostrar: _vm.modal },
         staticStyle: { display: "none" },
         attrs: {
@@ -75956,7 +75955,7 @@ var render = function() {
     _c(
       "div",
       {
-        staticClass: "modal fade",
+        staticClass: "modal animated fadeIn",
         class: { mostrar: _vm.modal },
         staticStyle: { display: "none" },
         attrs: {
@@ -77427,7 +77426,7 @@ var render = function() {
     _c(
       "div",
       {
-        staticClass: "modal fade",
+        staticClass: "modal animated fadeIn",
         class: { mostrar: _vm.modal },
         staticStyle: { display: "none" },
         attrs: {
@@ -78009,7 +78008,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: absolute !important;\n    background-color: #3c29297a !important;\n    overflow-y: auto;\n}\n.div-error{\n    display:flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n.btn-success {\n    color: #fff;\n    background-color: #2c309e;\n    border-color: #313a98;\n}\n.btn-success:active, .btn-success.active, .show > .btn-success.dropdown-toggle {\n    background-color: #2c309e;\n    background-image: none;\n    border-color: #313a98;\n}\n.btn-success:focus, .btn-success.focus {\n    box-shadow: 0 0 0 3px rgba(77, 100, 189, 0.5);\n}\n.btn-success:hover {\n    color: #fff;\n    background-color: #2c309e;\n    border-color: #313a98;\n}\n", ""]);
+exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: fixed !important;\n    background-color: #3c29297a !important;\n    overflow-y: auto;\n}\n.div-error{\n    display:flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n.btn-success {\n    color: #fff;\n    background-color: #2c309e;\n    border-color: #313a98;\n}\n.btn-success:active, .btn-success.active, .show > .btn-success.dropdown-toggle {\n    background-color: #2c309e;\n    background-image: none;\n    border-color: #313a98;\n}\n.btn-success:focus, .btn-success.focus {\n    box-shadow: 0 0 0 3px rgba(77, 100, 189, 0.5);\n}\n.btn-success:hover {\n    color: #fff;\n    background-color: #2c309e;\n    border-color: #313a98;\n}\n", ""]);
 
 // exports
 
@@ -79166,7 +79165,7 @@ var render = function() {
     _c(
       "div",
       {
-        staticClass: "modal fade",
+        staticClass: "modal animated fadeIn",
         class: { mostrar: _vm.modal },
         staticStyle: { display: "none" },
         attrs: {
@@ -79617,7 +79616,7 @@ var render = function() {
     _c(
       "div",
       {
-        staticClass: "modal fade",
+        staticClass: "modal animated fadeIn",
         class: { mostrar: _vm.modal2 },
         staticStyle: { display: "none" },
         attrs: {
@@ -80282,7 +80281,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: absolute !important;\n    background-color: #3c29297a !important;\n}\n.div-error{\n    display:flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n", ""]);
+exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: fixed !important;\n    background-color: #3c29297a !important;\n}\n.div-error{\n    display:flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n", ""]);
 
 // exports
 
@@ -81224,7 +81223,7 @@ var render = function() {
     _c(
       "div",
       {
-        staticClass: "modal fade",
+        staticClass: "modal animated fadeIn",
         class: { mostrar: _vm.modal },
         staticStyle: { display: "none" },
         attrs: {
@@ -82117,7 +82116,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: absolute !important;\n    background-color: #3c29297a !important;\n}\n.div-error{\n    display:flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n", ""]);
+exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: fixed !important;\n    background-color: #3c29297a !important;\n}\n.div-error{\n    display:flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n", ""]);
 
 // exports
 
@@ -82837,7 +82836,7 @@ var render = function() {
     _c(
       "div",
       {
-        staticClass: "modal fade",
+        staticClass: "modal animated fadeIn",
         class: { mostrar: _vm.modal },
         staticStyle: { display: "none" },
         attrs: {
@@ -83211,7 +83210,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: absolute !important;\n    background-color: #3c29297a !important;\n}\n.div-error{\n    display:flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n@media (min-width: 600px){\n.btnagregar{\n    margin-top: 2rem;\n}\n}\n", ""]);
+exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: fixed !important;\n    background-color: #3c29297a !important;\n}\n.div-error{\n    display:flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n@media (min-width: 600px){\n.btnagregar{\n    margin-top: 2rem;\n}\n}\n", ""]);
 
 // exports
 
@@ -88651,7 +88650,7 @@ var render = function() {
     _c(
       "div",
       {
-        staticClass: "modal fade",
+        staticClass: "modal animated fadeIn",
         class: { mostrar: _vm.modal },
         staticStyle: { display: "none" },
         attrs: {
@@ -90457,7 +90456,7 @@ var render = function() {
     _c(
       "div",
       {
-        staticClass: "modal fade",
+        staticClass: "modal animated fadeIn",
         class: { mostrar: _vm.modal },
         staticStyle: { display: "none" },
         attrs: {
@@ -90751,7 +90750,7 @@ var render = function() {
     _c(
       "div",
       {
-        staticClass: "modal fade",
+        staticClass: "modal animated fadeIn",
         class: { mostrar: _vm.modal2 },
         staticStyle: { display: "none" },
         attrs: {
@@ -91064,7 +91063,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: absolute !important;\n    background-color: #3c29297a !important;\n}\n.div-error{\n    display: flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n", ""]);
+exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: fixed !important;\n    background-color: #3c29297a !important;\n}\n.div-error{\n    display: flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n", ""]);
 
 // exports
 
@@ -91587,7 +91586,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n.form-control:disabled, .form-control[readonly] {\n        background-color: rgba(0, 0, 0, 0.06);\n        opacity: 1;\n        font-size: 0.85rem;\n        color: #27417b;\n}\n.modal-content{\n        width: 100% !important;\n        position: absolute !important;\n}\n.mostrar{\n        display: list-item !important;\n        opacity: 1 !important;\n        position: absolute !important;\n        background-color: #3c29297a !important;\n        overflow-y: auto;\n}\n.div-error{\n        display:flex;\n        justify-content: center;\n}\n.text-error{\n        color: red !important;\n        font-weight: bold;\n}\ninput[type=number]::-webkit-inner-spin-button, \ninput[type=number]::-webkit-outer-spin-button { \n  -webkit-appearance: none; \n   margin: 0;\n} \n\n\n", ""]);
+exports.push([module.i, "\n.form-control:disabled, .form-control[readonly] {\n        background-color: rgba(0, 0, 0, 0.06);\n        opacity: 1;\n        font-size: 0.85rem;\n        color: #27417b;\n}\n.modal-content{\n        width: 100% !important;\n        position: absolute !important;\n}\n.mostrar{\n        display: list-item !important;\n        opacity: 1 !important;\n        position: fixed !important;\n        background-color: #3c29297a !important;\n        overflow-y: auto;\n}\n.div-error{\n        display:flex;\n        justify-content: center;\n}\n.text-error{\n        color: red !important;\n        font-weight: bold;\n}\ninput[type=number]::-webkit-inner-spin-button, \ninput[type=number]::-webkit-outer-spin-button { \n  -webkit-appearance: none; \n   margin: 0;\n} \n\n\n", ""]);
 
 // exports
 
@@ -92768,7 +92767,7 @@ var render = function() {
     _c(
       "div",
       {
-        staticClass: "modal fade",
+        staticClass: "modal animated fadeIn",
         class: { mostrar: _vm.modal },
         staticStyle: { display: "none" },
         attrs: {
@@ -93879,7 +93878,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: absolute !important;\n    background-color: #3c29297a !important;\n}\n.div-error{\n    display: flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n", ""]);
+exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: fixed !important;\n    background-color: #3c29297a !important;\n}\n.div-error{\n    display: flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n", ""]);
 
 // exports
 
@@ -94435,7 +94434,7 @@ var render = function() {
     _c(
       "div",
       {
-        staticClass: "modal fade",
+        staticClass: "modal animated fadeIn",
         class: { mostrar: _vm.modal },
         staticStyle: { display: "none" },
         attrs: {
@@ -94719,7 +94718,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: absolute !important;\n    background-color: #3c29297a !important;\n}\n.div-error{\n    display: flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n", ""]);
+exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: fixed !important;\n    background-color: #3c29297a !important;\n}\n.div-error{\n    display: flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n", ""]);
 
 // exports
 
@@ -95274,7 +95273,7 @@ var render = function() {
     _c(
       "div",
       {
-        staticClass: "modal fade",
+        staticClass: "modal animated fadeIn",
         class: { mostrar: _vm.modal },
         staticStyle: { display: "none" },
         attrs: {
@@ -100297,7 +100296,7 @@ var render = function() {
     _c(
       "div",
       {
-        staticClass: "modal fade",
+        staticClass: "modal animated fadeIn",
         class: { mostrar: _vm.modal },
         staticStyle: { display: "none" },
         attrs: {
@@ -101053,7 +101052,7 @@ var render = function() {
     _c(
       "div",
       {
-        staticClass: "modal fade",
+        staticClass: "modal animated fadeIn",
         class: { mostrar: _vm.modal3 },
         staticStyle: { display: "none" },
         attrs: {
@@ -101329,7 +101328,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: absolute !important;\n    background-color: #3c29297a !important;\n}\n.div-error{\n    display: flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n", ""]);
+exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: fixed !important;\n    background-color: #3c29297a !important;\n    overflow-y: auto;\n}\n.div-error{\n    display: flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n", ""]);
 
 // exports
 
@@ -101968,7 +101967,7 @@ var render = function() {
     _c(
       "div",
       {
-        staticClass: "modal fade",
+        staticClass: "modal animated fadeIn",
         class: { mostrar: _vm.modal },
         staticStyle: { display: "none" },
         attrs: {
