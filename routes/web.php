@@ -86,6 +86,12 @@ Route::group(['middleware' => ['auth']],function(){
     Route::put('/medio_publicitario/actualizar','MedioPublicitarioController@update');
     Route::delete('/medio_publicitario/eliminar','MedioPublicitarioController@destroy');
 
+    ///////////////////        RUTAS Medios Publicitarios    //////////////////////////////////
+    Route::get('/institucion_financiamiento','InstitucionFinanciamientoController@index');
+    Route::post('/institucion_financiamiento/registrar','InstitucionFinanciamientoController@store');
+    Route::put('/institucion_financiamiento/actualizar','InstitucionFinanciamientoController@update');
+    Route::delete('/institucion_financiamiento/eliminar','InstitucionFinanciamientoController@destroy');
+
     ///////////////////        RUTAS Lugares de Contacto    //////////////////////////////////
     Route::get('/lugar_contacto','LugarContactoController@index');
     Route::post('/lugar_contacto/registrar','LugarContactoController@store');

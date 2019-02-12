@@ -10,7 +10,7 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Lugares de Contacto
                         <!--   Boton Nuevo    -->
-                        <button type="button" @click="abrirModal('lugar_contacto','registrar')" class="btn btn-secondary">
+                        <button type="button" @click="abrirModal('lugar','registrar')" class="btn btn-secondary">
                             <i class="icon-plus"></i>&nbsp;Nuevo
                         </button>
                         <!---->
@@ -33,16 +33,16 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="medio in arrayLugares" :key="medio.id">
+                                <tr v-for="lugar in arrayLugares" :key="lugar.id">
                                     <td style="width:15%">
-                                        <button title="Editar" type="button" @click="abrirModal('medio','actualizar',medio)" class="btn btn-warning btn-sm">
+                                        <button title="Editar" type="button" @click="abrirModal('lugar','actualizar',lugar)" class="btn btn-warning btn-sm">
                                             <i class="icon-pencil"></i>
                                         </button>  
-                                        <button type="button" class="btn btn-danger btn-sm" @click="eliminarLugarContacto(medio)">
+                                        <button type="button" class="btn btn-danger btn-sm" @click="eliminarLugarContacto(lugar)">
                                             <i class="icon-trash"></i>
                                         </button>                                       
                                     </td>
-                                    <td v-text="medio.nombre"></td>
+                                    <td v-text="lugar.nombre"></td>
                                 </tr>                                
                             </tbody>
                         </table>
@@ -184,7 +184,7 @@
             },
             /**Metodo para registrar  */
             registrarLugar(){
-                if(this.validarMedio()) //Se verifica si hay un error (campo vacio)
+                if(this.validarLugar()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
@@ -209,7 +209,7 @@
                 });
             },
             actualizarLugar(){
-                if(this.registrarLugar()) //Se verifica si hay un error (campo vacio)
+                if(this.validarLugar()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
@@ -264,7 +264,7 @@
                 }
                 })
             },
-            validarMedio(){
+            validarLugar(){
                 this.errorLugarContacto=0;
                 this.errorMostrarMsjLugar=[];
 
@@ -285,9 +285,9 @@
 
             },
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
-            abrirModal(medio, accion,data =[]){
-                switch(medio){
-                    case "medio":
+            abrirModal(lugar, accion,data =[]){
+                switch(lugar){
+                    case "lugar":
                     {
                         switch(accion){
                             case 'registrar':

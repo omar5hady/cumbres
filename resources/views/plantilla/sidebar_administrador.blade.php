@@ -25,6 +25,9 @@
                     <li @click="menu=15" class="nav-item">
                         <a class="nav-link" href="#"><i class="icon-bag"></i> Lugares de contacto</a>
                     </li>
+                    <li @click="menu=16" class="nav-item">
+                        <a class="nav-link" href="#"><i class="icon-bag"></i> Instituciones de financiamiento</a>
+                    </li>
                 </ul>
             </li>
             <li class="nav-item nav-dropdown">

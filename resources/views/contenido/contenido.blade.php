@@ -67,6 +67,9 @@
             <template v-if="menu==15">
                 <lugar-contacto></lugar-contacto>
             </template>
+            <template v-if="menu==16">
+                <institucion-financiamiento></institucion-financiamiento>
+            </template>
 
             <template v-if="menu==20">
                 <h1>Contenido del menu 20</h1>

@@ -16,10 +16,10 @@ class LugarContactoController extends Controller
         $criterio = $request->criterio;
         
         if($buscar==''){
-            $lugares_contacto = Lugar_contacto::orderBy('nombre','desc')->paginate(5);
+            $lugares_contacto = Lugar_contacto::orderBy('nombre','desc')->paginate(9);
         }
         else{
-            $lugares_contacto = Lugar_contacto::where($criterio, 'like', '%'. $buscar . '%')->orderBy('nombre','desc')->paginate(5);
+            $lugares_contacto = Lugar_contacto::where($criterio, 'like', '%'. $buscar . '%')->orderBy('nombre','desc')->paginate(9);
         }
 
         return [
@@ -41,7 +41,7 @@ class LugarContactoController extends Controller
         if(!$request->ajax())return redirect('/');
         $lugar_contacto = new Lugar_contacto();
         $lugar_contacto->nombre = $request->nombre;
-        $lugar_contacto->usuario = $request->usuario;
+        $lugar_contacto->usuario = Auth::user()->usuario;
         $lugar_contacto->save();
     }
 
@@ -52,7 +52,6 @@ class LugarContactoController extends Controller
         //FindOrFail se utiliza para buscar lo que recibe de argumento
         $lugar_contacto = Lugar_contacto::findOrFail($request->id);
         $lugar_contacto->nombre = $request->nombre;
-        $lugar_contacto->usuario = $request->usuario;
         $lugar_contacto->save();
     }
 
