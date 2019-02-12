@@ -56,6 +56,7 @@ Vue.component('medio-publicitario', require('./components/MedioPublicitario.vue'
 Vue.component('lugar-contacto', require('./components/LugarContacto.vue'));
 Vue.component('prospectos', require('./components/Prospectos.vue'));
 Vue.component('institucion-financiamiento', require('./components/InstitucionFinanciamiento.vue'));
+Vue.component('tipo-credito', require('./components/TipoCredito.vue'));
 
 const app = new Vue({
     el: '#app',

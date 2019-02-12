@@ -41,11 +41,6 @@ class InstitucionFinanciamientoController extends Controller
         if(!$request->ajax())return redirect('/');
         $InstitucionFinanciamiento = new InstitucionFinanciamiento();
         $InstitucionFinanciamiento->nombre = $request->nombre;
-        $InstitucionFinanciamiento->telefono1 = $request->telefono1;
-        $InstitucionFinanciamiento->telefono2 = $request->telefono2;
-        $InstitucionFinanciamiento->telefono3 = $request->telefono3;
-        $InstitucionFinanciamiento->telefono4 = $request->telefono4;
-        $InstitucionFinanciamiento->pagina_web = $request->pagina_web;
         $InstitucionFinanciamiento->save();
     }
 
@@ -56,11 +51,6 @@ class InstitucionFinanciamientoController extends Controller
         //FindOrFail se utiliza para buscar lo que recibe de argumento
         $InstitucionFinanciamiento = InstitucionFinanciamiento::findOrFail($request->id);
         $InstitucionFinanciamiento->nombre = $request->nombre;
-        $InstitucionFinanciamiento->telefono1 = $request->telefono1;
-        $InstitucionFinanciamiento->telefono2 = $request->telefono2;
-        $InstitucionFinanciamiento->telefono3 = $request->telefono3;
-        $InstitucionFinanciamiento->telefono4 = $request->telefono4;
-        $InstitucionFinanciamiento->pagina_web = $request->pagina_web;
         $InstitucionFinanciamiento->save();
     }
 

@@ -8,9 +8,9 @@
                 <!-- Ejemplo de tabla Listado -->
                 <div class="card">
                     <div class="card-header">
-                        <i class="fa fa-align-justify"></i> Instituciones de Financiamiento
+                        <i class="fa fa-align-justify"></i> Tipo de Crédito
                         <!--   Boton Nuevo    -->
-                        <button type="button" @click="abrirModal('institucion','registrar')" class="btn btn-secondary">
+                        <button type="button" @click="abrirModal('credito','registrar')" class="btn btn-secondary">
                             <i class="icon-plus"></i>&nbsp;Nuevo
                         </button>
                         <!---->
@@ -19,8 +19,12 @@
                         <div class="form-group row">
                             <div class="col-md-6">
                                 <div class="input-group">
-                                    <input type="text" v-model="buscar" @keyup.enter="listarInstituciones(1,buscar,'nombre')" class="form-control" placeholder="Texto a buscar">
-                                    <button type="submit" @click="listarInstituciones(1,buscar,'nombre')" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <select class="form-control col-md-3" v-model="criterio">
+                                        <option value="nombre">Nombre</option>
+                                        <option value="institucion_fin">Institucion Financiera</option>
+                                    </select>
+                                    <input type="text" v-model="buscar" @keyup.enter="listarCreditos(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
+                                    <button type="submit" @click="listarCreditos(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
                         </div>
@@ -29,20 +33,22 @@
                             <thead>
                                 <tr>
                                     <th>Opciones</th>
-                                    <th>Institución</th>
+                                    <th>Crédito</th>
+                                    <th>Institución Financiera</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="institucion in arrayInstituciones" :key="institucion.id">
+                                <tr v-for="credito in arrayCreditos" :key="credito.id">
                                     <td style="width:15%">
-                                        <button title="Editar" type="button" @click="abrirModal('institucion','actualizar',institucion)" class="btn btn-warning btn-sm">
+                                        <button title="Editar" type="button" @click="abrirModal('credito','actualizar',credito)" class="btn btn-warning btn-sm">
                                             <i class="icon-pencil"></i>
                                         </button>  
-                                        <button type="button" class="btn btn-danger btn-sm" @click="eliminarInstitucion(institucion)">
+                                        <button type="button" class="btn btn-danger btn-sm" @click="eliminarCredito(credito)">
                                             <i class="icon-trash"></i>
                                         </button>                                       
                                     </td>
-                                    <td v-text="institucion.nombre"></td>
+                                    <td v-text="credito.nombre"></td>
+                                    <td v-text="credito.institucion_fin"></td>
                                 </tr>                                
                             </tbody>
                         </table>
@@ -77,15 +83,25 @@
                         <div class="modal-body">
                             <!--<form action="" method="" enctype="multipart/form-data" class="form-horizontal">-->
                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Institucion</label>
+                                    <label class="col-md-3 form-control-label" for="text-input">Crédito</label>
                                     <div class="col-md-9">
-                                        <input type="text" v-model="nombre" class="form-control" placeholder="Institucion de Financiamiento">
+                                        <input type="text" v-model="nombre" class="form-control" placeholder="Crédito">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Institución Financiera</label>
+                                    <div class="col-md-9">
+                                        <select class="form-control" v-model="institucion_fin" >
+                                            <option value="">Seleccione</option>
+                                            <option v-for="institucion in arrayInstituciones" :key="institucion.id" :value="institucion.nombre" v-text="institucion.nombre"></option>
+                                        </select>
                                     </div>
                                 </div>
                              
-                                <div v-show="errorInstitucion" class="form-group row div-error">
+                                <div v-show="errorCredito" class="form-group row div-error">
                                     <div class="text-center text-error">
-                                        <div v-for="error in errorMostrarMsjInstitucion" :key="error" v-text="error">
+                                        <div v-for="error in errorMostrarMsjCredito" :key="error" v-text="error">
 
                                         </div>
                                     </div>
@@ -96,8 +112,8 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
                             <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarInstitucion()">Guardar</button>
-                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarInstitucion()">Actualizar</button>
+                            <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarCredito()">Guardar</button>
+                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarCredito()">Actualizar</button>
                         </div>
                     </div>
                     <!-- /.modal-content -->
@@ -114,12 +130,14 @@
             return {
                 id: 0,
                 nombre : '',
+                institucion_fin : '',
+                arrayCreditos : [],
                 arrayInstituciones : [],
                 modal : 0,
                 tituloModal : '',
                 tipoAccion: 0,
-                errorInstitucion : 0,
-                errorMostrarMsjInstitucion : [],
+                errorCredito : 0,
+                errorMostrarMsjCredito : [],
                 pagination : {
                     'total' : 0,
                     'current_page' : 0,
@@ -163,12 +181,12 @@
             }
         },
         methods : {
-            listarInstituciones (page,buscar,criterio){
+            listarCreditos (page,buscar,criterio){
                 let me=this;
-                var url= '/institucion_financiamiento?page=' + page + '&buscar='+ buscar + '&criterio='+ criterio;
+                var url= '/tipo_credito?page=' + page + '&buscar='+ buscar + '&criterio='+ criterio;
                 axios.get(url).then(function (response) {
                     var respuesta= response.data;
-                    me.arrayInstituciones = respuesta.instituciones_financiamiento.data;
+                    me.arrayCreditos = respuesta.Tipos_creditos.data;
                     me.pagination= respuesta.pagination;
                 })
                 .catch(function (error) {
@@ -180,27 +198,41 @@
                 //Actualiza la página actual
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esa página
-                me.listarInstituciones(page,buscar,criterio);
+                me.listarCreditos(page,buscar,criterio);
+            },
+            selectInstitucion(){
+                let me = this;
+                me.arrayDepartamentos=[];
+                var url = '/select_inst_financiamiento';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayInstituciones = respuesta.instituciones_financiamiento;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+              
             },
             /**Metodo para registrar  */
-            registrarInstitucion(){
-                if(this.validarinstitucion()) //Se verifica si hay un error (campo vacio)
+            registrarCredito(){
+                if(this.validarCredito()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
 
                 let me = this;
                 //Con axios se llama el metodo store de DepartamentoController
-                axios.post('/institucion_financiamiento/registrar',{
-                    'nombre': this.nombre
+                axios.post('/tipo_credito/registrar',{
+                    'nombre': this.nombre,
+                    'institucion_fin' : this.institucion_fin
                 }).then(function (response){
                     me.cerrarModal(); //al guardar el registro se cierra el modal
-                    me.listarInstituciones(1,'','nombre'); //se enlistan nuevamente los registros
+                    me.listarCreditos(1,'','nombre'); //se enlistan nuevamente los registros
                     //Se muestra mensaje Success
                     swal({
                         position: 'top-end',
                         type: 'success',
-                        title: 'Institucion de Financiamiento agregado correctamente',
+                        title: 'Crédito agregado correctamente',
                         showConfirmButton: false,
                         timer: 1500
                         })
@@ -208,20 +240,21 @@
                     console.log(error);
                 });
             },
-            actualizarInstitucion(){
-                if(this.validarinstitucion()) //Se verifica si hay un error (campo vacio)
+            actualizarCredito(){
+                if(this.validarCredito()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
 
                 let me = this;
                 //Con axios se llama el metodo update de DepartamentoController
-                axios.put('/institucion_financiamiento/actualizar',{
+                axios.put('/tipo_credito/actualizar',{
                     'nombre': this.nombre,
+                    'institucion_fin':this.institucion_fin,
                     'id' : this.id
                 }).then(function (response){
                     me.cerrarModal();
-                    me.listarInstituciones(1,'','nombre'); //se enlistan nuevamente los registros
+                    me.listarCreditos(1,'','nombre'); //se enlistan nuevamente los registros
                     //window.alert("Cambios guardados correctamente");
                     swal({
                         position: 'top-end',
@@ -234,7 +267,7 @@
                     console.log(error);
                 });
             },
-            eliminarInstitucion(data =[]){
+            eliminarCredito(data =[]){
                 this.id=data['id'];
                 this.nombre=data['nombre'];
                 swal({
@@ -250,52 +283,55 @@
                 if (result.value) {
                     let me = this;
 
-                axios.delete('/institucion_financiamiento/eliminar', 
+                axios.delete('/tipo_credito/eliminar', 
                         {params: {'id': this.id}}).then(function (response){
                         swal(
                         'Borrado!',
-                        'Departamento borrado correctamente.',
+                        'Crédito borrado correctamente.',
                         'success'
                         )
-                        me.listarInstituciones(1,'','nombre'); //se enlistan nuevamente los registros
+                        me.listarCreditos(1,'','nombre'); //se enlistan nuevamente los registros
                     }).catch(function (error){
                         console.log(error);
                     });
                 }
                 })
             },
-            validarinstitucion(){
-                this.errorInstitucion=0;
-                this.errorMostrarMsjInstitucion=[];
+            validarCredito(){
+                this.errorCredito=0;
+                this.errorMostrarMsjCredito=[];
 
                 if(!this.nombre) //Si la variable departamento esta vacia
-                    this.errorMostrarMsjInstitucion.push("El nombre de la institución no puede ir vacio.");
+                    this.errorMostrarMsjCredito.push("El nombre de la institución no puede ir vacio.");
 
-                if(this.errorMostrarMsjInstitucion.length)//Si el mensaje tiene almacenado algo en el array
-                    this.errorInstitucion = 1;
+                if(this.errorMostrarMsjCredito.length)//Si el mensaje tiene almacenado algo en el array
+                    this.errorCredito = 1;
 
-                return this.errorInstitucion;
+                return this.errorCredito;
             },
             cerrarModal(){
                 this.modal = 0;
                 this.tituloModal = '';
                 this.nombre = '';
-                this.errorInstitucion = 0;
-                this.errorMostrarMsjInstitucion = [];
+                this.institucion_fin = '';
+                this.errorCredito = 0;
+                this.errorMostrarMsjCredito = [];
                 this.tipoAccion = 0;
 
             },
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
-            abrirModal(institucion, accion,data =[]){
-                switch(institucion){
-                    case "institucion":
+            abrirModal(credito, accion,data =[]){
+                this.selectInstitucion()
+                switch(credito){
+                    case "credito":
                     {
                         switch(accion){
                             case 'registrar':
                             {
                                 this.modal = 1;
-                                this.tituloModal = 'Registrar Institucion de Financiamiento';
+                                this.tituloModal = 'Registrar Credito';
                                 this.nombre ='';
+                                this.institucion_fin='';
                                 this.tipoAccion = 1;
                                 break;
                             }
@@ -303,11 +339,11 @@
                             {
                                 //console.log(data);
                                 this.modal =1;
-                                this.tituloModal='Actualizar Institucion de Financiamiento';
+                                this.tituloModal='Actualizar Credito';
                                 this.tipoAccion=2;
                                 this.id=data['id'];
                                 this.nombre=data['nombre'];
-                                this.pagina_web = data['pagina_web'];
+                                this.institucion_fin = data['institucion_fin'];
                                 break;
                             }
                         }
@@ -316,7 +352,7 @@
             }
         },
         mounted() {
-            this.listarInstituciones(1,this.buscar,this.criterio);
+            this.listarCreditos(1,this.buscar,this.criterio);
         }
     }
 </script>

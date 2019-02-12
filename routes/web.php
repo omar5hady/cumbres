@@ -86,11 +86,17 @@ Route::group(['middleware' => ['auth']],function(){
     Route::put('/medio_publicitario/actualizar','MedioPublicitarioController@update');
     Route::delete('/medio_publicitario/eliminar','MedioPublicitarioController@destroy');
 
-    ///////////////////        RUTAS Medios Publicitarios    //////////////////////////////////
+    ///////////////////        RUTAS Inst. Financiamiento    //////////////////////////////////
     Route::get('/institucion_financiamiento','InstitucionFinanciamientoController@index');
     Route::post('/institucion_financiamiento/registrar','InstitucionFinanciamientoController@store');
     Route::put('/institucion_financiamiento/actualizar','InstitucionFinanciamientoController@update');
     Route::delete('/institucion_financiamiento/eliminar','InstitucionFinanciamientoController@destroy');
+
+    ///////////////////        RUTAS Tipos de credito    //////////////////////////////////
+    Route::get('/tipo_credito','TipoCreditoController@index');
+    Route::post('/tipo_credito/registrar','TipoCreditoController@store');
+    Route::put('/tipo_credito/actualizar','TipoCreditoController@update');
+    Route::delete('/tipo_credito/eliminar','TipoCreditoController@destroy');
 
     ///////////////////        RUTAS Lugares de Contacto    //////////////////////////////////
     Route::get('/lugar_contacto','LugarContactoController@index');
@@ -286,6 +292,7 @@ Route::group(['middleware' => ['auth']],function(){
     Route::get('/select_personas_sin_user','PersonalController@select_Pers_sinUser');
     Route::get('/select_medio_publicidad','MedioPublicitarioController@selectMedioPublicitario');
     Route::get('/select_lugar_contacto','LugarContactoController@selectLugar_contacto');
+    Route::get('/select_inst_financiamiento','InstitucionFinanciamientoController@select_institucion_financiamiento');
     
     
     

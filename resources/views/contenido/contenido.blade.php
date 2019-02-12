@@ -70,6 +70,9 @@
             <template v-if="menu==16">
                 <institucion-financiamiento></institucion-financiamiento>
             </template>
+            <template v-if="menu==17">
+                <tipo-credito></tipo-credito>
+            </template>
 
             <template v-if="menu==20">
                 <h1>Contenido del menu 20</h1>

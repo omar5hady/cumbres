@@ -28,6 +28,9 @@
                     <li @click="menu=16" class="nav-item">
                         <a class="nav-link" href="#"><i class="icon-bag"></i> Instituciones de financiamiento</a>
                     </li>
+                    <li @click="menu=17" class="nav-item">
+                        <a class="nav-link" href="#"><i class="icon-bag"></i> Tipos de crédito</a>
+                    </li>
                 </ul>
             </li>
             <li class="nav-item nav-dropdown">
