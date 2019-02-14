@@ -148,6 +148,7 @@
     export default {
         data(){
             return{
+                proceso:false,
                 allSelected: false,
                 id:0,
                 f_ini : new Date().toISOString().substr(0, 10),
@@ -253,10 +254,14 @@
             },
             /**Metodo para registrar  */
             registrarInicioObra(){
+                if(this.proceso==true){
+                    return;
+                }
                 if(this.validarInicioObra()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+                this.proceso=true;
 
                 let me = this;
                 //Con axios se llama el metodo update de DepartamentoController
@@ -279,7 +284,7 @@
                 imageAlt: 'Custom image',
                 animation: true
                 })
-
+                me.proceso=false;
                 me.cerrarModal();
                 me.listarLotesIniObra(1,'','fraccionamientos.nombre');
                 
@@ -327,9 +332,6 @@
                     })
                     return;
                 }
-
-
-
                 switch(modelo){
                     case "lotes":
                     {

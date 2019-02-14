@@ -128,6 +128,7 @@
     export default {
         data (){
             return {
+                proceso:false,
                 id: 0,
                 nombre : '',
                 institucion_fin : '',
@@ -215,10 +216,11 @@
             },
             /**Metodo para registrar  */
             registrarCredito(){
-                if(this.validarCredito()) //Se verifica si hay un error (campo vacio)
+                if(this.validarCredito() || this.proceso==true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+                this.proceso=true;
 
                 let me = this;
                 //Con axios se llama el metodo store de DepartamentoController
@@ -226,6 +228,7 @@
                     'nombre': this.nombre,
                     'institucion_fin' : this.institucion_fin
                 }).then(function (response){
+                    me.proceso=false;
                     me.cerrarModal(); //al guardar el registro se cierra el modal
                     me.listarCreditos(1,'','nombre'); //se enlistan nuevamente los registros
                     //Se muestra mensaje Success
@@ -241,10 +244,12 @@
                 });
             },
             actualizarCredito(){
-                if(this.validarCredito()) //Se verifica si hay un error (campo vacio)
+                if(this.validarCredito() || this.proceso==true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+
+                this.proceso=true;
 
                 let me = this;
                 //Con axios se llama el metodo update de DepartamentoController
@@ -253,6 +258,7 @@
                     'institucion_fin':this.institucion_fin,
                     'id' : this.id
                 }).then(function (response){
+                    me.proceso=false;
                     me.cerrarModal();
                     me.listarCreditos(1,'','nombre'); //se enlistan nuevamente los registros
                     //window.alert("Cambios guardados correctamente");
@@ -310,6 +316,7 @@
                 return this.errorCredito;
             },
             cerrarModal(){
+                this.proceso=false;
                 this.modal = 0;
                 this.tituloModal = '';
                 this.nombre = '';

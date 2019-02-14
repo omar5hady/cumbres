@@ -314,6 +314,7 @@
     export default {
         data(){
             return{
+                proceso:false,
                 id :0,
                 fraccionamiento_id:0,
                 etapa_id : 0,
@@ -471,11 +472,12 @@
             },
             /**Metodo para registrar  */
             registrarPromociones(){
-                if(this.validarPromociones()) //Se verifica si hay un error (campo vacio)
+                if(this.validarPromociones() || this.proceso==true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
 
+                this.proceso=true;
                 let me = this;
                 //Con axios se llama el metodo store de DepartamentoController
                 axios.post('/promocion/registrar',{
@@ -487,6 +489,7 @@
                     'descuento': this.descuento,
                     'descripcion': this.descripcion
                 }).then(function (response){
+                    me.proceso=false;
                     me.cerrarModal(); //al guardar el registro se cierra el modal
                     me.listarPromociones(1,'','nombre'); //se enlistan nuevamente los registros
                     //Se muestra mensaje Success
@@ -502,10 +505,11 @@
                 });
             },
             registrarLotePromocion(){
-                if(this.validarLotePromociones()) //Se verifica si hay un error (campo vacio)
+                if(this.validarLotePromociones() || this.proceso==true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+                this.proceso=true;
 
                 let me = this;
                 //Con axios se llama el metodo store de DepartamentoController
@@ -513,6 +517,7 @@
                     'promocion_id': this.id,
                     'lote_id': this.lote_id
                 }).then(function (response){
+                    me.proceso=false;
                     me.cerrarModal2(); //al guardar el registro se cierra el modal
                     me.listarPromociones(1,'','nombre'); //se enlistan nuevamente los registros
                     //Se muestra mensaje Success
@@ -528,10 +533,12 @@
                 });
             },
             actualizarPromociones(){
-                if(this.validarPromociones()) //Se verifica si hay un error (campo vacio)
+                if(this.validarPromociones() || this.proceso==true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+
+                this.proceso=true;
 
                 let me = this;
                 //Con axios se llama el metodo update de DepartamentoController
@@ -545,6 +552,7 @@
                     'descripcion': this.descripcion,
                     'id': this.id
                 }).then(function (response){
+                    me.proceso=false;
                     me.cerrarModal();
                     me.listarPromociones(1,'','nombre');
                     //window.alert("Cambios guardados correctamente");

@@ -193,6 +193,7 @@
     export default {
         data(){
             return{
+                proceso:false,
                 id :0,
                 fraccionamiento_id:0,
                 etapa_id : 0,
@@ -273,10 +274,11 @@
             },
             /**Metodo para registrar  */
             registrarPaquetes(){
-                if(this.validarPaquetes()) //Se verifica si hay un error (campo vacio)
+                if(this.validarPaquetes() || this.proceso==true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+                this.proceso=true;
 
                 let me = this;
                 //Con axios se llama el metodo store de DepartamentoController
@@ -289,6 +291,7 @@
                     'costo': this.costo,
                     'descripcion': this.descripcion
                 }).then(function (response){
+                    me.proceso=false;
                     me.cerrarModal(); //al guardar el registro se cierra el modal
                     me.listarPaquetes(1,'','nombre'); //se enlistan nuevamente los registros
                     //Se muestra mensaje Success
@@ -304,10 +307,12 @@
                 });
             },
             actualizarPaquetes(){
-                if(this.validarPaquetes()) //Se verifica si hay un error (campo vacio)
+                if(this.validarPaquetes() || this.proceso==true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+
+                this.proceso=true;
 
                 let me = this;
                 //Con axios se llama el metodo update de DepartamentoController
@@ -321,6 +326,7 @@
                     'descripcion': this.descripcion,
                     'id': this.id
                 }).then(function (response){
+                    me.proceso=false;
                     me.cerrarModal();
                     me.listarPaquetes(1,'','nombre');
                     //window.alert("Cambios guardados correctamente");

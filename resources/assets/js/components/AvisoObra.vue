@@ -681,6 +681,7 @@
     export default {
         data(){
             return{
+                proceso:false,
                 id:0,
                 aviso_id:0,
                 contratista_id:0,
@@ -1065,11 +1066,15 @@
             },
             /**Metodo para registrar  */
             registrarAvisoObra(){
+                if(this.proceso==true){
+                    return;
+                }
                 if(this.validarAviso()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
 
+                this.proceso=true;
                 let me = this;
                 me.total_anticipo=(me.anticipo/100)*me.total_importe;
                 //Con axios se llama el metodo store de FraccionaminetoController
@@ -1092,6 +1097,7 @@
                     'descripcion_corta':this.descripcion_corta,
                     'total_superficie':this.total_construccion
                 }).then(function (response){
+                    me.proceso=false;
                     me.listado=1;
                     me.limpiarDatos();
                     me.listarAvisos(1,'','ini_obras.clave'); //se enlistan nuevamente los registros
@@ -1110,11 +1116,15 @@
 
              /**Metodo para actualizar  */
             actualizarAvisoObra(){
+                if(this.proceso==true){
+                    return;
+                }
                 if(this.validarAviso()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
-
+                
+                this.proceso=true;
                 let me = this;
                 me.total_anticipo=(me.anticipo/100)*me.total_importe;
                 //Con axios se llama el metodo store de FraccionaminetoController
@@ -1138,6 +1148,7 @@
                     'descripcion_corta':this.descripcion_corta,
                     'total_superficie':this.total_construccion
                 }).then(function (response){
+                    me.proceso=false;
                     me.listado=1;
                     me.limpiarDatos();
                     me.listarAvisos(1,'','ini_obras.clave'); //se enlistan nuevamente los registros

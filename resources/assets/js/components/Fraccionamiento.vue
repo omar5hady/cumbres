@@ -280,6 +280,7 @@
     export default {
         data(){
             return{
+                proceso:false,
                 id:0,
                 nombre : '',
                 tipo_proyecto : 0,
@@ -453,11 +454,15 @@
             },
             /**Metodo para registrar  */
             registrarFraccionamiento(){
+                if(this.proceso==true){
+                    return;
+                }
                 if(this.validarFraccionamiento()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
 
+                this.proceso=true;
                 let me = this;
                 //Con axios se llama el metodo store de FraccionaminetoController
                 axios.post('/fraccionamiento/registrar',{
@@ -470,6 +475,7 @@
                     'delegacion' : this.delegacion,
                     'cp' : this.cp
                 }).then(function (response){
+                    me.proceso=false;
                     me.cerrarModal(); //al guardar el registro se cierra el modal
                     me.listarFraccionamiento(1,'','fraccionamiento'); //se enlistan nuevamente los registros
                     //Se muestra mensaje Success
@@ -485,11 +491,14 @@
                 });
             },
             actualizarFraccionamiento(){
+                if(this.proceso==true){
+                    return;
+                }
                 if(this.validarFraccionamiento()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
-
+                this.proceso=true;
                 let me = this;
                 //Con axios se llama el metodo update de FraccionaminetoController
                 axios.put('/fraccionamiento/actualizar',{
@@ -503,6 +512,7 @@
                     'cp' : this.cp,
                     'id' : this.id
                 }).then(function (response){
+                    this.proceso=false;
                     me.cerrarModal();
                     me.listarFraccionamiento(1,'','fraccionamiento');
                     //window.alert("Cambios guardados correctamente");

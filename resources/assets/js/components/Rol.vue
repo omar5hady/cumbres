@@ -74,6 +74,7 @@
     export default {
         data (){
             return {
+                proceso:false,
                 rol_id: 0,
                 nombre : '',
                 descripcion : '',

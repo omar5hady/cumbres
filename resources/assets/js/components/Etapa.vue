@@ -165,6 +165,7 @@
     export default {
         data(){
             return{
+                proceso : false,
                 id:0,
                 contador : 0,
                 fraccionamiento_id : 0,
@@ -282,11 +283,15 @@
             },
             /**Metodo para registrar  */
             registrarEtapa(){
+                if(this.proceso==true){
+                    return;
+                }
                 if(this.validarEtapa()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
 
+                this.proceso=true;
                 let me = this;
                 //Con axios se llama el metodo store de FraccionaminetoController
                 axios.post('/etapa/registrar',{
@@ -296,6 +301,7 @@
                     'f_fin': this.f_fin,
                     'personal_id': this.personal_id
                 }).then(function (response){
+                    me.proceso=false;
                     me.cerrarModal(); //al guardar el registro se cierra el modal
                     me.listarEtapa(1,'','','etapa'); //se enlistan nuevamente los registros
                     //Se muestra mensaje Success
@@ -316,10 +322,15 @@
                 me.buscar2="";
             },
             actualizarEtapa(){
+                if(this.proceso==true){
+                    return;
+                }
                 if(this.validarEtapa()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+
+                this.proceso=true;
 
                 let me = this;
                 //Con axios se llama el metodo update de FraccionaminetoController
@@ -331,6 +342,7 @@
                     'f_fin': this.f_fin,
                     'personal_id': this.personal_id
                 }).then(function (response){
+                    me.proceso=false;
                     me.cerrarModal();
                     me.listarEtapa(1,'','','etapa');
                     //window.alert("Cambios guardados correctamente");

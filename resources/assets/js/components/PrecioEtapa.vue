@@ -173,6 +173,7 @@
     export default {
         data(){
             return{
+                proceso:false,
                 id_precioModelo: 0,
                 id:0,
                 fraccionamiento_id : 0,
@@ -328,10 +329,11 @@
 
             /**Metodo para registrar  */
             registrarPrecioEtapa(){
-                if(this.validarPrecioEtapa()) //Se verifica si hay un error (campo vacio)
+                if(this.validarPrecioEtapa() || this.proceso==true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+                this.proceso=true;
 
                 let me = this;
                 //Con axios se llama el metodo store de DepartamentoController
@@ -340,6 +342,7 @@
                     'etapa_id': this.etapa_id,
                     'precio_excedente': this.precio_excedente
                 }).then(function (response){
+                    me.proceso=false;
                     me.cerrarModal(); //al guardar el registro se cierra el modal
                     me.listarPrecioModelo(1,''); //se enlistan nuevamente los registros
                     //Se muestra mensaje Success
@@ -356,11 +359,11 @@
             },
              /**Metodo para registrar  */
             registrarPrecioModelo(){
-                if(this.validarPrecioEtapa()) //Se verifica si hay un error (campo vacio)
+                if(this.validarPrecioEtapa() || this.proceso==true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
-
+                this.proceso=true;
                 let me = this;
                 //Con axios se llama el metodo store de DepartamentoController
                 axios.post('/precio_modelo/registrar',{
@@ -368,6 +371,7 @@
                     'modelo_id': this.modelo_id,
                     'precio_modelo': this.precio_modelo
                 }).then(function (response){
+                    me.proceso=false;
                     me.cerrarModal(); //al guardar el registro se cierra el modal
                     me.listarPrecioModelo(1,me.id); //se enlistan nuevamente los registros
                     //Se muestra mensaje Success
@@ -383,10 +387,11 @@
                 });
             },
             actualizarPrecioEtapa(){
-                if(this.validarPrecioEtapa()) //Se verifica si hay un error (campo vacio)
+                if(this.validarPrecioEtapa() || this.proceso==true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+                this.proceso=true;
 
                 let me = this;
                 var proyecto = this.id
@@ -397,6 +402,7 @@
                     'etapa_id': this.etapa_id,
                     'precio_excedente': this.precio_excedente
                 }).then(function (response){
+                    me.proceso=false;
                     me.cerrarModal();
                     me.listarPrecioModelo(1,proyecto);
                     //window.alert("Cambios guardados correctamente");
@@ -412,11 +418,11 @@
                 });
             },
             actualizarPrecioModelo(){
-                if(this.validarPrecioEtapa()) //Se verifica si hay un error (campo vacio)
+                if(this.validarPrecioEtapa() || this.proceso==true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
-
+                this.proceso=true;
                 let me = this;
                 //Con axios se llama el metodo update de DepartamentoController
                 axios.put('/precio_modelo/actualizar',{
@@ -425,6 +431,7 @@
                     'modelo_id': this.modelo_id,
                     'precio_modelo': this.precio_modelo
                 }).then(function (response){
+                    me.proceso=false;
                     me.cerrarModal();
                     me.listarPrecioModelo(1,me.id);
                     //window.alert("Cambios guardados correctamente");

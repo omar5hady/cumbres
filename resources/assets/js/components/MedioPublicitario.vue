@@ -112,6 +112,7 @@
     export default {
         data (){
             return {
+                proceso:false,
                 id: 0,
                 nombre : '',
                 arrayMedios : [],
@@ -184,16 +185,18 @@
             },
             /**Metodo para registrar  */
             registrarMedio(){
-                if(this.validarMedio()) //Se verifica si hay un error (campo vacio)
+                if(this.validarMedio() || this.proceso==true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+                this.proceso=true;
 
                 let me = this;
                 //Con axios se llama el metodo store de DepartamentoController
                 axios.post('/medio_publicitario/registrar',{
                     'nombre': this.nombre,
                 }).then(function (response){
+                    me.proceso=false;
                     me.cerrarModal(); //al guardar el registro se cierra el modal
                     me.listarMedios(1,'','nombre'); //se enlistan nuevamente los registros
                     //Se muestra mensaje Success
@@ -209,10 +212,12 @@
                 });
             },
             actualizarMedio(){
-                if(this.validarMedio()) //Se verifica si hay un error (campo vacio)
+                if(this.validarMedio() || this.proceso==true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+
+                this.proceso= true;
 
                 let me = this;
                 //Con axios se llama el metodo update de DepartamentoController
@@ -220,6 +225,7 @@
                     'nombre': this.nombre,
                     'id' : this.id
                 }).then(function (response){
+                    me.proceso=false;
                     me.cerrarModal();
                     me.listarMedios(1,'','nombre'); //se enlistan nuevamente los registros
                     //window.alert("Cambios guardados correctamente");

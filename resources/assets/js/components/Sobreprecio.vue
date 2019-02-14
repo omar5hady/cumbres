@@ -300,6 +300,7 @@
     export default {
         data(){
             return{
+                proceso:false,
                 id_sobrePrecioEtapa: 0,
                 id_sobrePrecioModelo: 0,
                 id:0,
@@ -495,11 +496,12 @@
             },
              /**Metodo para registrar  */
             registrarSobrePrecioModelo(){
-                if(this.validarSobrePrecioModelo()) //Se verifica si hay un error (campo vacio)
+                if(this.validarSobrePrecioModelo() || this.proceso==true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
 
+                this.proceso=true;
                 let me = this;
                 
                 //Con axios se llama el metodo store de DepartamentoController
@@ -507,6 +509,7 @@
                     'lote_id': this.lote_id,
                     'sobreprecio_etapa_id' : this.sobreprecioEtapaModelo_id,
                 }).then(function (response){
+                    me.proceso=false;
                     me.cerrarModal(); //al guardar el registro se cierra el modal
                     me.listarSobrePrecioModelo(1,me.buscar,me.buscar2,me.buscar3);//se enlistan nuevamente los registros
                     //Se muestra mensaje Success
@@ -522,10 +525,11 @@
                 });
             },
             actualizarSobrePrecioEtapa(){
-                if(this.validarSobrePrecioEtapa()) //Se verifica si hay un error (campo vacio)
+                if(this.validarSobrePrecioEtapa() || this.proceso==true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+                this.proceso=true;
 
                 let me = this;
                 var etapa = this.etapa_id
@@ -536,6 +540,7 @@
                     'sobreprecio_id': this.sobreprecio_id,
                     'sobreprecio' : this.sobreprecioEtapa,
                 }).then(function (response){
+                    me.proceso=false;
                     me.cerrarModal();
                     me.listarSobrePrecioEtapa(1,etapa);
                     me.listarSobrePrecioModelo(1,me.etapa_id,'','');//se enlistan nuevamente los registros
@@ -552,10 +557,12 @@
                 });
             },
             actualizarSobrePrecioModelo(){
-                if(this.validarSobrePrecioModelo()) //Se verifica si hay un error (campo vacio)
+                if(this.validarSobrePrecioModelo() || this.proceso==true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+
+                this.proceso=true;
 
                 let me = this;
                 var etapa = this.etapa_id
@@ -565,6 +572,7 @@
                     'lote_id': this.lote_id,
                     'sobreprecio_etapa_id' : this.sobreprecioEtapaModelo_id,
                 }).then(function (response){
+                    me.proceso=false;
                     me.cerrarModal();
                     me.listarSobrePrecioModelo(1,me.etapa_id,'',me.buscar3);//se enlistan nuevamente los registros
                     //window.alert("Cambios guardados correctamente");

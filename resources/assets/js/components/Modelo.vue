@@ -225,6 +225,7 @@
     export default {
         data(){
             return{
+                proceso : false,
                 id:0,
                 nombre : '',
                 tipo : 0,
@@ -366,10 +367,12 @@
             },
             /**Metodo para registrar  */
             registrarModelo(){
-                if(this.validarModelo()) //Se verifica si hay un error (campo vacio)
+                if(this.validarModelo() || this.proceso==true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+
+                this.proceso=true;
 
                 let me = this;
                 //Con axios se llama el metodo store de FraccionaminetoController
@@ -381,6 +384,7 @@
                     'construccion': this.construccion,
                     'archivo': this.archivo
                 }).then(function (response){
+                    me.proceso=false;
                     me.cerrarModal(); //al guardar el registro se cierra el modal
                     me.listarModelo(1,'','modelo'); //se enlistan nuevamente los registros
                     //Se muestra mensaje Success
@@ -400,10 +404,12 @@
                 me.buscar= "";
             },
             actualizarModelo(){
-                if(this.validarModelo()) //Se verifica si hay un error (campo vacio)
+                if(this.validarModelo() || this.proceso==true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+
+                this.proceso=true;
 
                 let me = this;
                 //Con axios se llama el metodo update de FraccionaminetoController
@@ -416,6 +422,7 @@
                      'archivo': this.archivo,
                     'id' : this.id
                 }).then(function (response){
+                    me.proceso=false;
                     me.cerrarModal();
                     me.listarModelo(1,'','modelo');
                     //window.alert("Cambios guardados correctamente");

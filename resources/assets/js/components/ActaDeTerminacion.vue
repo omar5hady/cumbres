@@ -495,7 +495,7 @@
     export default {
         data(){
             return{
-               
+                proceso:false,
                 id: 0,
                 siembra:'',
                 f_planos:'',
@@ -608,7 +608,7 @@
             formSubmit(e) {
 
                 e.preventDefault();
-
+            
                 let currentObj = this;
             
                 let formData = new FormData();
@@ -687,6 +687,10 @@
             },
             
             agregarComentario(){
+                if (this.proceso === true) {
+                    return;
+                } 
+                this.proceso=true;
                 let me = this;
                 //Con axios se llama el metodo store de DepartamentoController
                 axios.post('/observacion/registrar',{
@@ -694,6 +698,7 @@
                     'comentario': this.observacion,
                     'usuario': this.usuario
                 }).then(function (response){
+                    me.proceso=false;
                     me.cerrarModal3(); //al guardar el registro se cierra el modal
                     
                     const toast = Swal.mixin({
@@ -752,11 +757,14 @@
             },
             
             actualizarActa(){
+                if (this.proceso === true) {
+                    return;
+                } 
                 if(this.validarActa()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
-
+                this.proceso=true;
                 let me = this;
                 //Con axios se llama el metodo update de LoteController
                 axios.put('/acta_terminacion/actualizar',{
@@ -764,10 +772,9 @@
                     'term_ingreso' : this.term_ingreso,
                     'term_salida' : this.term_salida,
                     'avance' : this.avance,
-                    'num_acta':this.num_acta
-                    
-                    
+                    'num_acta':this.num_acta                    
                 }).then(function (response){
+                    me.proceso=false;
                     me.cerrarModal();
                     me.listarActa(1,'','','','fraccionamientos.nombre','');
                     //window.alert("Cambios guardados correctamente");
@@ -865,7 +872,7 @@
                             {
                                 this.modal =1;
                                 this.tituloModal='Actualizar Acta de terminación';
-                             
+                                this.proceso=false;
                                 this.term_ingreso=data['term_ingreso'];
                                 this.term_salida=data['term_salida'];
                                 this.avance=data['avance'];
@@ -896,6 +903,7 @@
                             
                             case 'observacion':
                             {
+                                this.proceso=false;
                                 this.modal3 =1;
                                 this.tituloModal3='Agregar Observación';
                                 this.observacion='';

@@ -162,6 +162,7 @@
     export default {
         data(){
             return{
+                proceso:false,
                 id:0,
                 partida : '',
                 costo : 0,
@@ -245,10 +246,12 @@
             },
             /**Metodo para registrar  */
             registrarPartida(){
-                if(this.validarPartida()) //Se verifica si hay un error (campo vacio)
+                if(this.validarPartida() || this.proceso==true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+
+                this.proceso=true;
 
                 let me = this;
                 //Con axios se llama el metodo store de PartidaController
@@ -257,6 +260,7 @@
                     'modelo_id': this.modelo_id,
                     'costo':this.costo,
                 }).then(function (response){
+                    me.proceso=false;
                     me.cerrarModal(); //al guardar el registro se cierra el modal
                     me.listarPartidas(1,'','partida'); //se enlistan nuevamente los registros
                     //Se muestra mensaje Success
@@ -281,10 +285,12 @@
                 }
             },
             actualizarPartida(){
-                if(this.validarPartida()) //Se verifica si hay un error (campo vacio)
+                if(this.validarPartida() || this.proceso==true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+
+                this.proceso=true;
 
                 let me = this;
                 //Con axios se llama el metodo update de PartidaController
@@ -294,6 +300,7 @@
                     'costo':this.costo,
                     'id' : this.id
                 }).then(function (response){
+                    me.proceso=false;
                     me.cerrarModal();
                     me.listarPartidas(1,'','partida');
                     //window.alert("Cambios guardados correctamente");
@@ -309,6 +316,10 @@
                 });
             },
             actualizarCosto(id,costo,modelo){
+                if(this.proceso==true){
+                    return;
+                }
+                this.proceso=true;
             
 
                 let me = this;
@@ -319,7 +330,7 @@
                     'costo':costo,
                     'id' : id
                 }).then(function (response){
-                    
+                    me.proceso=false;
                     me.listarPartidas(1,modelo,'partidas.modelo_id');
                     //window.alert("Cambios guardados correctamente");
                 const toast = Swal.mixin({

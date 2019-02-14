@@ -112,6 +112,7 @@
     export default {
         data (){
             return {
+                proceso:false,
                 id: 0,
                 nombre : '',
                 arrayLugares : [],
@@ -184,16 +185,21 @@
             },
             /**Metodo para registrar  */
             registrarLugar(){
+                if (this.proceso === true) {
+                    return;
+                } 
                 if(this.validarLugar()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+                this.proceso= true;
 
                 let me = this;
                 //Con axios se llama el metodo store de DepartamentoController
                 axios.post('/lugar_contacto/registrar',{
                     'nombre': this.nombre,
                 }).then(function (response){
+                    me.proceso=false;
                     me.cerrarModal(); //al guardar el registro se cierra el modal
                     me.listarLugares(1,'','nombre'); //se enlistan nuevamente los registros
                     //Se muestra mensaje Success
@@ -209,17 +215,22 @@
                 });
             },
             actualizarLugar(){
+                if (this.proceso === true) {
+                    return;
+                } 
                 if(this.validarLugar()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
 
+                this.proceso=true;
                 let me = this;
                 //Con axios se llama el metodo update de DepartamentoController
                 axios.put('/lugar_contacto/actualizar',{
                     'nombre': this.nombre,
                     'id' : this.id
                 }).then(function (response){
+                    me.proceso=false;
                     me.cerrarModal();
                     me.listarLugares(1,'','nombre'); //se enlistan nuevamente los registros
                     //window.alert("Cambios guardados correctamente");
@@ -296,6 +307,7 @@
                                 this.tituloModal = 'Registrar Lugar de contacto';
                                 this.departamento ='';
                                 this.tipoAccion = 1;
+                                this.proceso=false;
                                 break;
                             }
                             case 'actualizar':
@@ -306,6 +318,7 @@
                                 this.tipoAccion=2;
                                 this.id=data['id'];
                                 this.nombre=data['nombre'];
+                                this.proceso=false;
                                 break;
                             }
                         }

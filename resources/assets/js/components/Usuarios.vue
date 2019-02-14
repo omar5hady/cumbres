@@ -285,6 +285,7 @@
     export default {
         data(){
             return{
+                proceso:false,
                 id:0,
                 id_persona:0,
                 usuario: '',
@@ -449,10 +450,11 @@
                 me.listarPersonal(page,buscar,criterio);
             },
             asignarUsuario(){
-                if(this.validarUsuario()) //Se verifica si hay un error (campo vacio)
+                if(this.validarUsuario() || this.proceso==true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+                this.proceso=true;
                   let me = this;
                 //Con axios se llama el metodo store de PersonalController
                 axios.post('/usuarios/asignar',{
@@ -463,6 +465,7 @@
                     'condicion':this.condicion 
                     
                 }).then(function (response){
+                    me.proceso=false;
                     me.cerrarModal(); //al guardar el registro se cierra el modal
                     me.listarPersonal(1,'','Personal'); //se enlistan nuevamente los registros
                     //Se muestra mensaje Success
@@ -480,10 +483,12 @@
             },
             /**Metodo para registrar  */
             registrarPersonal(){
-                if(this.validarPersonal()) //Se verifica si hay un error (campo vacio)
+                if(this.validarPersonal() || this.proceso==true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+
+                this.proceso=true;
 
                 let me = this;
                 //Con axios se llama el metodo store de PersonalController
@@ -508,6 +513,7 @@
                     'condicion':this.condicion 
                     
                 }).then(function (response){
+                    me.proceso=false;
                     me.cerrarModal(); //al guardar el registro se cierra el modal
                     me.listarPersonal(1,'','Personal'); //se enlistan nuevamente los registros
                     //Se muestra mensaje Success
@@ -528,10 +534,12 @@
                 });
             },
             actualizarPersonal(){
-                if(this.validarPersonal()) //Se verifica si hay un error (campo vacio)
+                if(this.validarPersonal() || this.proceso==true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+
+                this.proceso=true;
 
                 let me = this;
                 //Con axios se llama el metodo update de PersonalController
@@ -556,6 +564,7 @@
                     'rol_id' : this.rol_id,
                     'condicion':this.condicion 
                 }).then(function (response){
+                    me.proceso=false;
                     me.cerrarModal();
                     me.listarPersonal(1,'','nombre');
                     //window.alert("Cambios guardados correctamente");

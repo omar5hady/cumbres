@@ -493,6 +493,7 @@ class LoteController extends Controller
                             
 
                         $insert[] = [
+                        'id' => $id,
                         'fraccionamiento_id' => $request->fraccionamiento_id,
                         'etapa_id' => $etapa[0]->id,
                         'manzana' => $value->manzana,

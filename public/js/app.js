@@ -50337,6 +50337,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
+            proceso: false,
             departamento_id: 0,
             departamento: '',
             user_alta: '',
@@ -50411,10 +50412,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         /**Metodo para registrar  */
         registrarDepartamento: function registrarDepartamento() {
+            if (this.proceso == true) {
+                return;
+            }
             if (this.validarDepartamento()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+
+            this.proceso = true;
 
             var me = this;
             //Con axios se llama el metodo store de DepartamentoController
@@ -50422,6 +50428,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'departamento': this.departamento,
                 'user_alta': this.user_alta
             }).then(function (response) {
+                me.proceso = false;
                 me.cerrarModal(); //al guardar el registro se cierra el modal
                 me.listarDepartamento(1, '', 'departamento'); //se enlistan nuevamente los registros
                 //Se muestra mensaje Success
@@ -50437,10 +50444,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             });
         },
         actualizarDepartamento: function actualizarDepartamento() {
+            if (this.proceso == true) {
+                return;
+            }
             if (this.validarDepartamento()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+
+            this.proceso = true;
 
             var me = this;
             //Con axios se llama el metodo update de DepartamentoController
@@ -50449,6 +50461,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'user_alta': this.user_alta,
                 'id_departamento': this.departamento_id
             }).then(function (response) {
+                me.proceso = false;
                 me.cerrarModal();
                 me.listarDepartamento(1, '', 'departamento');
                 //window.alert("Cambios guardados correctamente");
@@ -51411,6 +51424,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
+            proceso: false,
             id: 0,
             nombre: '',
             tipo_proyecto: 0,
@@ -51573,11 +51587,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         /**Metodo para registrar  */
         registrarFraccionamiento: function registrarFraccionamiento() {
+            if (this.proceso == true) {
+                return;
+            }
             if (this.validarFraccionamiento()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
 
+            this.proceso = true;
             var me = this;
             //Con axios se llama el metodo store de FraccionaminetoController
             axios.post('/fraccionamiento/registrar', {
@@ -51590,6 +51608,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'delegacion': this.delegacion,
                 'cp': this.cp
             }).then(function (response) {
+                me.proceso = false;
                 me.cerrarModal(); //al guardar el registro se cierra el modal
                 me.listarFraccionamiento(1, '', 'fraccionamiento'); //se enlistan nuevamente los registros
                 //Se muestra mensaje Success
@@ -51605,11 +51624,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             });
         },
         actualizarFraccionamiento: function actualizarFraccionamiento() {
+            if (this.proceso == true) {
+                return;
+            }
             if (this.validarFraccionamiento()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
-
+            this.proceso = true;
             var me = this;
             //Con axios se llama el metodo update de FraccionaminetoController
             axios.put('/fraccionamiento/actualizar', {
@@ -51623,6 +51645,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'cp': this.cp,
                 'id': this.id
             }).then(function (response) {
+                this.proceso = false;
                 me.cerrarModal();
                 me.listarFraccionamiento(1, '', 'fraccionamiento');
                 //window.alert("Cambios guardados correctamente");
@@ -55349,6 +55372,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
+            proceso: false,
             id: 0,
             nombre: '',
             direccion: '',
@@ -55453,11 +55477,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         /**Metodo para registrar  */
         registrarEmpresa: function registrarEmpresa() {
+            if (this.proceso == true) {
+                return;
+            }
             if (this.validarEmpresa()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
 
+            this.proceso = true;
             var me = this;
             //Con axios se llama el metodo store de FraccionaminetoController
             axios.post('/empresa/registrar', {
@@ -55470,6 +55498,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'telefono': this.telefono,
                 'ext': this.ext
             }).then(function (response) {
+                me.proceso = false;
                 me.cerrarModal(); //al guardar el registro se cierra el modal
                 me.listarEmpresa(1, '', 'empresa'); //se enlistan nuevamente los registros
                 //Se muestra mensaje Success
@@ -55485,11 +55514,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             });
         },
         actualizarEmpresa: function actualizarEmpresa() {
+            if (this.proceso == true) {
+                return;
+            }
             if (this.validarEmpresa()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
 
+            this.proceso = true;
             var me = this;
             //Con axios se llama el metodo update de FraccionaminetoController
             axios.put('/empresa/actualizar', {
@@ -55503,6 +55536,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'ext': this.ext,
                 'id': this.id
             }).then(function (response) {
+                me.proceso = false;
                 me.cerrarModal();
                 me.listarEmpresa(1, '', 'empresa');
                 //window.alert("Cambios guardados correctamente");
@@ -56844,6 +56878,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
+            proceso: false,
             id: 0,
             contador: 0,
             fraccionamiento_id: 0,
@@ -56959,11 +56994,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         /**Metodo para registrar  */
         registrarEtapa: function registrarEtapa() {
+            if (this.proceso == true) {
+                return;
+            }
             if (this.validarEtapa()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
 
+            this.proceso = true;
             var me = this;
             //Con axios se llama el metodo store de FraccionaminetoController
             axios.post('/etapa/registrar', {
@@ -56973,6 +57012,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'f_fin': this.f_fin,
                 'personal_id': this.personal_id
             }).then(function (response) {
+                me.proceso = false;
                 me.cerrarModal(); //al guardar el registro se cierra el modal
                 me.listarEtapa(1, '', '', 'etapa'); //se enlistan nuevamente los registros
                 //Se muestra mensaje Success
@@ -56993,10 +57033,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             me.buscar2 = "";
         },
         actualizarEtapa: function actualizarEtapa() {
+            if (this.proceso == true) {
+                return;
+            }
             if (this.validarEtapa()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+
+            this.proceso = true;
 
             var me = this;
             //Con axios se llama el metodo update de FraccionaminetoController
@@ -57008,6 +57053,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'f_fin': this.f_fin,
                 'personal_id': this.personal_id
             }).then(function (response) {
+                me.proceso = false;
                 me.cerrarModal();
                 me.listarEtapa(1, '', '', 'etapa');
                 //window.alert("Cambios guardados correctamente");
@@ -60113,6 +60159,7 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
+            proceso: false,
             id: 0,
             clv_catastral: '',
             etapa_servicios: '',
@@ -60210,8 +60257,18 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
             console.log(e.target.files[0]);
 
             this.file = e.target.files[0];
+
+            if (this.file == '') {
+                return;
+            }
         },
         formSubmit: function formSubmit(e) {
+
+            if (this.proceso == true || this.file == '') {
+                return;
+            }
+
+            this.proceso = true;
 
             e.preventDefault();
 
@@ -60227,6 +60284,7 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
                     showConfirmButton: false,
                     timer: 2500
                 });
+                me.proceso = false;
                 me.cerrarModal2();
                 me.listarLote(1, '', '', '', 'lote');
             }).catch(function (error) {
@@ -60335,11 +60393,12 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 
         /**Metodo para registrar  */
         registrarLote: function registrarLote() {
-            if (this.validarLote()) //Se verifica si hay un error (campo vacio)
+            if (this.validarLote() || this.proceso == true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
 
+            this.proceso = true;
             var me = this;
             //Con axios se llama el metodo store de FraccionaminetoController
             axios.post('/lote/registrar', {
@@ -60360,6 +60419,7 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
                 'etapa_servicios': this.etapa_servicios,
                 'comentarios': this.comentarios
             }).then(function (response) {
+                me.proceso = false;
                 me.cerrarModal(); //al guardar el registro se cierra el modal
                 me.listarLote(1, '', '', '', 'lote'); //se enlistan nuevamente los registros
                 //Se muestra mensaje Success
@@ -62802,11 +62862,13 @@ var render = function() {
                       on: { change: _vm.onImageChange }
                     }),
                     _vm._v(" "),
-                    _c("input", {
-                      staticClass: "btn btn-primary btn-lg",
-                      staticStyle: { "margin-top": "3%" },
-                      attrs: { type: "submit", value: "Cargar" }
-                    })
+                    _vm.proceso == false
+                      ? _c("input", {
+                          staticClass: "btn btn-primary btn-lg",
+                          staticStyle: { "margin-top": "3%" },
+                          attrs: { type: "submit", value: "Cargar" }
+                        })
+                      : _vm._e()
                   ]
                 )
               ]),
@@ -63522,19 +63584,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
+            proceso: false,
             allSelected: false,
             lotes_ini: [],
             id: 0,
@@ -63624,13 +63679,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
 
     methods: {
-        onImageChange: function onImageChange(e) {
-
-            console.log(e.target.files[0]);
-
-            this.file = e.target.files[0];
-        },
-
         selectAll: function selectAll() {
             this.lotes_ini = [];
 
@@ -63643,32 +63691,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         select: function select() {
             this.allSelected = false;
-        },
-
-        formSubmit: function formSubmit(e) {
-
-            e.preventDefault();
-
-            var formData = new FormData();
-            formData.append('file', this.file);
-            formData.append('fraccionamiento_id', this.fraccionamiento_id);
-            formData.append('etapa_id', this.etapa_id);
-            formData.append('modelo_id', this.modelo_id);
-            var me = this;
-            axios.post('/import', formData).then(function (response) {
-                swal({
-                    position: 'top-end',
-                    type: 'success',
-                    title: 'Archivo cargado correctamente',
-                    showConfirmButton: false,
-                    timer: 2500
-                });
-                me.cerrarModal2();
-                me.listarLote(1, '', '', '', 'lote');
-            }).catch(function (error) {
-
-                console.log(error);
-            });
         },
         asignarModelos: function asignarModelos() {
             var _this = this;
@@ -63788,52 +63810,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 console.log(error);
             });
         },
-
-        /**Metodo para registrar  */
-        registrarLote: function registrarLote() {
-            if (this.validarLote()) //Se verifica si hay un error (campo vacio)
-                {
-                    return;
-                }
-
-            var me = this;
-            //Con axios se llama el metodo store de FraccionaminetoController
-            axios.post('/lote/registrar', {
-                'fraccionamiento_id': this.fraccionamiento_id,
-                'etapa_id': this.etapa_id,
-                'manzana': this.manzana,
-                'num_lote': this.num_lote,
-                'sublote': this.sublote,
-                'modelo_id': this.modelo_id,
-                'empresa_id': this.empresa_id,
-                'calle': this.calle,
-                'numero': this.numero,
-                'interior': this.interior,
-                'terreno': this.terreno,
-                'construccion': this.construccion,
-                'casa_muestra': this.casa_muestra,
-                'lote_comercial': this.lote_comercial,
-                'comentarios': this.comentarios
-            }).then(function (response) {
-                me.cerrarModal(); //al guardar el registro se cierra el modal
-                me.listarLote(1, '', '', '', 'lote'); //se enlistan nuevamente los registros
-                //Se muestra mensaje Success
-                swal({
-                    position: 'top-end',
-                    type: 'success',
-                    title: 'Lote agregado correctamente',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-            }).catch(function (error) {
-                console.log(error);
-            });
-        },
         actualizarLote: function actualizarLote() {
+            if (this.proceso === true) {
+                return;
+            }
             if (this.validarLote()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+
+            this.proceso = true;
 
             var me = this;
             //Con axios se llama el metodo update de LoteController
@@ -63857,6 +63843,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'comentarios': this.comentarios
 
             }).then(function (response) {
+                me.proceso = false;
                 me.cerrarModal();
                 me.listarLote(1, '', '', '', 'lote');
                 //window.alert("Cambios guardados correctamente");
@@ -63963,6 +63950,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         },
         cerrarModal2: function cerrarModal2() {
             this.modal2 = 0;
+            this.fraccionamiento_id = 0;
             this.tituloModal2 = '';
             this.lotes_ini = [];
             this.allSelected = false;
@@ -63989,30 +63977,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                             return;
                         }
                         switch (accion) {
-                            case 'registrar':
-                                {
-                                    this.modal = 1;
-                                    this.tituloModal = 'Registrar Lote';
-                                    this.fraccionamiento_id = '0';
-                                    this.etapa_id = '0';
-                                    this.num_lote = 0;
-                                    this.sublote = '';
-                                    this.modelo_id = '0';
-                                    this.empresa_id = 1;
-                                    this.calle = '';
-                                    this.numero = '';
-                                    this.interior = '';
-                                    this.comentarios = '';
-                                    this.terreno = this.terrenoModelo;
-                                    this.construccion = 0.0;
-                                    this.casa_muestra = 0;
-                                    this.lote_comercial = 0;
-                                    this.credito_puente = '';
-                                    this.tipoAccion = 1;
-                                    break;
-                                }
                             case 'actualizar':
                                 {
+                                    this.proceso = false;
                                     this.modal = 1;
                                     this.tituloModal = 'Actualizar Lote';
                                     this.tipoAccion = 2;
@@ -64038,11 +64005,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
                             case 'asignar':
                                 {
+                                    this.proceso = false;
                                     this.modal2 = 1;
                                     this.tituloModal2 = 'Asignar Modelo';
                                     this.tipoAccion = 3;
-                                    this.etapa_id = data['etapa_id'];
-                                    this.modelo_id = data['modelo_id'];
+                                    this.etapa_id = 0;
+                                    this.modelo_id = 0;
+                                    this.fraccionamiento_id = 0;
                                     break;
                                 }
 
@@ -65691,22 +65660,6 @@ var render = function() {
                   [_vm._v("Cerrar")]
                 ),
                 _vm._v(" "),
-                _vm.tipoAccion == 1
-                  ? _c(
-                      "button",
-                      {
-                        staticClass: "btn btn-primary",
-                        attrs: { type: "button" },
-                        on: {
-                          click: function($event) {
-                            _vm.registrarLote()
-                          }
-                        }
-                      },
-                      [_vm._v("Guardar")]
-                    )
-                  : _vm._e(),
-                _vm._v(" "),
                 _vm.tipoAccion == 2
                   ? _c(
                       "button",
@@ -65777,200 +65730,191 @@ var render = function() {
               ]),
               _vm._v(" "),
               _c("div", { staticClass: "modal-body" }, [
-                _c(
-                  "form",
-                  {
-                    attrs: { method: "post", enctype: "multipart/form-data" },
-                    on: { submit: _vm.formSubmit }
-                  },
-                  [
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "text-input" }
-                        },
-                        [_vm._v("Proyecto")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-6" }, [
-                        _c(
-                          "select",
+                _c("div", { staticClass: "form-group row" }, [
+                  _c(
+                    "label",
+                    {
+                      staticClass: "col-md-3 form-control-label",
+                      attrs: { for: "text-input" }
+                    },
+                    [_vm._v("Proyecto")]
+                  ),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-md-6" }, [
+                    _c(
+                      "select",
+                      {
+                        directives: [
                           {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.fraccionamiento_id,
-                                expression: "fraccionamiento_id"
-                              }
-                            ],
-                            staticClass: "form-control",
-                            on: {
-                              click: function($event) {
-                                _vm.selectEtapa(_vm.fraccionamiento_id),
-                                  _vm.selectModelo(_vm.fraccionamiento_id)
-                              },
-                              change: function($event) {
-                                var $$selectedVal = Array.prototype.filter
-                                  .call($event.target.options, function(o) {
-                                    return o.selected
-                                  })
-                                  .map(function(o) {
-                                    var val = "_value" in o ? o._value : o.value
-                                    return val
-                                  })
-                                _vm.fraccionamiento_id = $event.target.multiple
-                                  ? $$selectedVal
-                                  : $$selectedVal[0]
-                              }
-                            }
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.fraccionamiento_id,
+                            expression: "fraccionamiento_id"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        on: {
+                          click: function($event) {
+                            _vm.selectEtapa(_vm.fraccionamiento_id),
+                              _vm.selectModelo(_vm.fraccionamiento_id)
                           },
-                          [
-                            _c("option", { attrs: { value: "0" } }, [
-                              _vm._v("Seleccione")
-                            ]),
-                            _vm._v(" "),
-                            _vm._l(_vm.arrayFraccionamientos, function(
-                              fraccionamientos
-                            ) {
-                              return _c("option", {
-                                key: fraccionamientos.id,
-                                domProps: {
-                                  value: fraccionamientos.id,
-                                  textContent: _vm._s(fraccionamientos.nombre)
-                                }
+                          change: function($event) {
+                            var $$selectedVal = Array.prototype.filter
+                              .call($event.target.options, function(o) {
+                                return o.selected
                               })
-                            })
-                          ],
-                          2
-                        )
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "text-input" }
-                        },
-                        [_vm._v("Etapa")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-6" }, [
-                        _c(
-                          "select",
+                              .map(function(o) {
+                                var val = "_value" in o ? o._value : o.value
+                                return val
+                              })
+                            _vm.fraccionamiento_id = $event.target.multiple
+                              ? $$selectedVal
+                              : $$selectedVal[0]
+                          }
+                        }
+                      },
+                      [
+                        _c("option", { attrs: { value: "0" } }, [
+                          _vm._v("Seleccione")
+                        ]),
+                        _vm._v(" "),
+                        _vm._l(_vm.arrayFraccionamientos, function(
+                          fraccionamientos
+                        ) {
+                          return _c("option", {
+                            key: fraccionamientos.id,
+                            domProps: {
+                              value: fraccionamientos.id,
+                              textContent: _vm._s(fraccionamientos.nombre)
+                            }
+                          })
+                        })
+                      ],
+                      2
+                    )
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "form-group row" }, [
+                  _c(
+                    "label",
+                    {
+                      staticClass: "col-md-3 form-control-label",
+                      attrs: { for: "text-input" }
+                    },
+                    [_vm._v("Etapa")]
+                  ),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-md-6" }, [
+                    _c(
+                      "select",
+                      {
+                        directives: [
                           {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.etapa_id,
-                                expression: "etapa_id"
-                              }
-                            ],
-                            staticClass: "form-control",
-                            on: {
-                              change: function($event) {
-                                var $$selectedVal = Array.prototype.filter
-                                  .call($event.target.options, function(o) {
-                                    return o.selected
-                                  })
-                                  .map(function(o) {
-                                    var val = "_value" in o ? o._value : o.value
-                                    return val
-                                  })
-                                _vm.etapa_id = $event.target.multiple
-                                  ? $$selectedVal
-                                  : $$selectedVal[0]
-                              }
-                            }
-                          },
-                          [
-                            _c("option", { attrs: { value: "0" } }, [
-                              _vm._v("Seleccione")
-                            ]),
-                            _vm._v(" "),
-                            _vm._l(_vm.arrayEtapas, function(etapas) {
-                              return _c("option", {
-                                key: etapas.id,
-                                domProps: {
-                                  value: etapas.id,
-                                  textContent: _vm._s(etapas.num_etapa)
-                                }
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.etapa_id,
+                            expression: "etapa_id"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        on: {
+                          change: function($event) {
+                            var $$selectedVal = Array.prototype.filter
+                              .call($event.target.options, function(o) {
+                                return o.selected
                               })
-                            })
-                          ],
-                          2
-                        )
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "text-input" }
-                        },
-                        [_vm._v("Modelo")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-6" }, [
-                        _c(
-                          "select",
+                              .map(function(o) {
+                                var val = "_value" in o ? o._value : o.value
+                                return val
+                              })
+                            _vm.etapa_id = $event.target.multiple
+                              ? $$selectedVal
+                              : $$selectedVal[0]
+                          }
+                        }
+                      },
+                      [
+                        _c("option", { attrs: { value: "0" } }, [
+                          _vm._v("Seleccione")
+                        ]),
+                        _vm._v(" "),
+                        _vm._l(_vm.arrayEtapas, function(etapas) {
+                          return _c("option", {
+                            key: etapas.id,
+                            domProps: {
+                              value: etapas.id,
+                              textContent: _vm._s(etapas.num_etapa)
+                            }
+                          })
+                        })
+                      ],
+                      2
+                    )
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "form-group row" }, [
+                  _c(
+                    "label",
+                    {
+                      staticClass: "col-md-3 form-control-label",
+                      attrs: { for: "text-input" }
+                    },
+                    [_vm._v("Modelo")]
+                  ),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-md-6" }, [
+                    _c(
+                      "select",
+                      {
+                        directives: [
                           {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.modelo_id,
-                                expression: "modelo_id"
-                              }
-                            ],
-                            staticClass: "form-control",
-                            on: {
-                              click: function($event) {
-                                _vm.selectConsYTerreno(_vm.modelo_id)
-                              },
-                              change: function($event) {
-                                var $$selectedVal = Array.prototype.filter
-                                  .call($event.target.options, function(o) {
-                                    return o.selected
-                                  })
-                                  .map(function(o) {
-                                    var val = "_value" in o ? o._value : o.value
-                                    return val
-                                  })
-                                _vm.modelo_id = $event.target.multiple
-                                  ? $$selectedVal
-                                  : $$selectedVal[0]
-                              }
-                            }
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.modelo_id,
+                            expression: "modelo_id"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        on: {
+                          click: function($event) {
+                            _vm.selectConsYTerreno(_vm.modelo_id)
                           },
-                          [
-                            _c("option", { attrs: { value: "0" } }, [
-                              _vm._v("Seleccione")
-                            ]),
-                            _vm._v(" "),
-                            _vm._l(_vm.arrayModelos, function(modelos) {
-                              return _c("option", {
-                                key: modelos.id,
-                                domProps: {
-                                  value: modelos.id,
-                                  textContent: _vm._s(modelos.nombre)
-                                }
+                          change: function($event) {
+                            var $$selectedVal = Array.prototype.filter
+                              .call($event.target.options, function(o) {
+                                return o.selected
                               })
-                            })
-                          ],
-                          2
-                        )
-                      ])
-                    ])
-                  ]
-                )
+                              .map(function(o) {
+                                var val = "_value" in o ? o._value : o.value
+                                return val
+                              })
+                            _vm.modelo_id = $event.target.multiple
+                              ? $$selectedVal
+                              : $$selectedVal[0]
+                          }
+                        }
+                      },
+                      [
+                        _c("option", { attrs: { value: "0" } }, [
+                          _vm._v("Seleccione")
+                        ]),
+                        _vm._v(" "),
+                        _vm._l(_vm.arrayModelos, function(modelos) {
+                          return _c("option", {
+                            key: modelos.id,
+                            domProps: {
+                              value: modelos.id,
+                              textContent: _vm._s(modelos.nombre)
+                            }
+                          })
+                        })
+                      ],
+                      2
+                    )
+                  ])
+                ])
               ]),
               _vm._v(" "),
               _c("div", { staticClass: "modal-footer" }, [
@@ -66654,7 +66598,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
-
+            proceso: false,
             id: 0,
             siembra: '',
             f_planos: '',
@@ -66770,8 +66714,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var formData = new FormData();
 
             formData.append('foto_predial', this.foto_predial);
-            var me = this;
             axios.post('/formSubmitPredial/' + this.id, formData).then(function (response) {
+                me.proceso = false;
                 currentObj.success = response.data.success;
                 swal({
                     position: 'top-end',
@@ -66899,6 +66843,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             me.listarLicencias(page, buscar, b_manzana, b_lote, b_modelo, b_arquitecto, criterio, buscar2);
         },
         agregarComentario: function agregarComentario() {
+            if (this.proceso == true) {
+                return;
+            }
+            this.proceso = true;
             var me = this;
             //Con axios se llama el metodo store de DepartamentoController
             axios.post('/observacion/registrar', {
@@ -66906,6 +66854,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'comentario': this.observacion,
                 'usuario': this.usuario
             }).then(function (response) {
+                me.proceso = false;
                 me.cerrarModal3(); //al guardar el registro se cierra el modal
 
                 var toast = Swal.mixin({
@@ -66924,6 +66873,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             });
         },
         actualizarLicencia: function actualizarLicencia() {
+            if (this.proceso == true) {
+                return;
+            }
+            this.proceso = true;
             var me = this;
             //Con axios se llama el metodo update de LoteController
             axios.put('/licencias/actualizar', {
@@ -66936,6 +66889,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'perito_dro': this.perito_dro
 
             }).then(function (response) {
+                me.proceso = false;
                 me.cerrarModal();
                 me.listarLicencias(1, '', '', '', '', '', 'fraccionamientos.nombre', '');
                 //window.alert("Cambios guardados correctamente");
@@ -70277,7 +70231,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
-
+            proceso: false,
             id: 0,
             siembra: '',
             f_planos: '',
@@ -70454,6 +70408,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             });
         },
         agregarComentario: function agregarComentario() {
+            if (this.proceso === true) {
+                return;
+            }
+            this.proceso = true;
             var me = this;
             //Con axios se llama el metodo store de DepartamentoController
             axios.post('/observacion/registrar', {
@@ -70461,6 +70419,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'comentario': this.observacion,
                 'usuario': this.usuario
             }).then(function (response) {
+                me.proceso = false;
                 me.cerrarModal3(); //al guardar el registro se cierra el modal
 
                 var toast = Swal.mixin({
@@ -70512,11 +70471,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             me.listarActa(page, buscar, b_manzana, b_lote, criterio, buscar2);
         },
         actualizarActa: function actualizarActa() {
+            if (this.proceso === true) {
+                return;
+            }
             if (this.validarActa()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
-
+            this.proceso = true;
             var me = this;
             //Con axios se llama el metodo update de LoteController
             axios.put('/acta_terminacion/actualizar', {
@@ -70525,8 +70487,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'term_salida': this.term_salida,
                 'avance': this.avance,
                 'num_acta': this.num_acta
-
             }).then(function (response) {
+                me.proceso = false;
                 me.cerrarModal();
                 me.listarActa(1, '', '', '', 'fraccionamientos.nombre', '');
                 //window.alert("Cambios guardados correctamente");
@@ -70620,7 +70582,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                 {
                                     this.modal = 1;
                                     this.tituloModal = 'Actualizar Acta de terminación';
-
+                                    this.proceso = false;
                                     this.term_ingreso = data['term_ingreso'];
                                     this.term_salida = data['term_salida'];
                                     this.avance = data['avance'];
@@ -70650,6 +70612,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
                             case 'observacion':
                                 {
+                                    this.proceso = false;
                                     this.modal3 = 1;
                                     this.tituloModal3 = 'Agregar Observación';
                                     this.observacion = '';
@@ -80546,6 +80509,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
+            proceso: false,
             id: 0,
             nombre: '',
             representante: '',
@@ -80653,11 +80617,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         /**Metodo para registrar  */
         registrarContratista: function registrarContratista() {
+            if (this.proceso == true) {
+                return;
+            }
             if (this.validarContratista()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
-
+            this.proceso = true;
             var me = this;
             //Con axios se llama el metodo store de FraccionaminetoController
             axios.post('/contratista/registrar', {
@@ -80673,6 +80640,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'IMSS': this.IMSS,
                 'telefono': this.telefono
             }).then(function (response) {
+                me.proceso = false;
                 me.cerrarModal(); //al guardar el registro se cierra el modal
                 me.listarContratista(1, '', 'nombre'); //se enlistan nuevamente los registros
                 //Se muestra mensaje Success
@@ -80688,10 +80656,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             });
         },
         actualizarContratista: function actualizarContratista() {
+            if (this.proceso == true) {
+                return;
+            }
             if (this.validarContratista()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+
+            this.proceso = true;
 
             var me = this;
             //Con axios se llama el metodo update de FraccionaminetoController
@@ -80709,6 +80682,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'IMSS': this.IMSS,
                 'telefono': this.telefono
             }).then(function (response) {
+                me.proceso = false;
                 me.cerrarModal();
                 me.listarContratista(1, '', 'nombre');
                 //window.alert("Cambios guardados correctamente");
@@ -82278,6 +82252,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
+            proceso: false,
             allSelected: false,
             id: 0,
             f_ini: new Date().toISOString().substr(0, 10),
@@ -82384,10 +82359,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         registrarInicioObra: function registrarInicioObra() {
             var _this = this;
 
+            if (this.proceso == true) {
+                return;
+            }
             if (this.validarInicioObra()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+            this.proceso = true;
 
             var me = this;
             //Con axios se llama el metodo update de DepartamentoController
@@ -82410,7 +82389,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 imageAlt: 'Custom image',
                 animation: true
             });
-
+            me.proceso = false;
             me.cerrarModal();
             me.listarLotesIniObra(1, '', 'fraccionamientos.nombre');
         },
@@ -82458,7 +82437,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 });
                 return;
             }
-
             switch (modelo) {
                 case "lotes":
                     {
@@ -83911,6 +83889,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         var _ref;
 
         return _ref = {
+            proceso: false,
             id: 0,
             aviso_id: 0,
             contratista_id: 0,
@@ -84274,11 +84253,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
         /**Metodo para registrar  */
         registrarAvisoObra: function registrarAvisoObra() {
+            if (this.proceso == true) {
+                return;
+            }
             if (this.validarAviso()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
 
+            this.proceso = true;
             var me = this;
             me.total_anticipo = me.anticipo / 100 * me.total_importe;
             //Con axios se llama el metodo store de FraccionaminetoController
@@ -84301,6 +84284,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 'descripcion_corta': this.descripcion_corta,
                 'total_superficie': this.total_construccion
             }).then(function (response) {
+                me.proceso = false;
                 me.listado = 1;
                 me.limpiarDatos();
                 me.listarAvisos(1, '', 'ini_obras.clave'); //se enlistan nuevamente los registros
@@ -84320,11 +84304,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
         /**Metodo para actualizar  */
         actualizarAvisoObra: function actualizarAvisoObra() {
+            if (this.proceso == true) {
+                return;
+            }
             if (this.validarAviso()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
 
+            this.proceso = true;
             var me = this;
             me.total_anticipo = me.anticipo / 100 * me.total_importe;
             //Con axios se llama el metodo store de FraccionaminetoController
@@ -84348,6 +84336,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 'descripcion_corta': this.descripcion_corta,
                 'total_superficie': this.total_construccion
             }).then(function (response) {
+                me.proceso = false;
                 me.listado = 1;
                 me.limpiarDatos();
                 me.listarAvisos(1, '', 'ini_obras.clave'); //se enlistan nuevamente los registros
@@ -94844,6 +94833,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
+            proceso: false,
             id: 0,
             nombre: '',
             arrayLugares: [],
@@ -94916,16 +94906,21 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         /**Metodo para registrar  */
         registrarLugar: function registrarLugar() {
+            if (this.proceso === true) {
+                return;
+            }
             if (this.validarLugar()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+            this.proceso = true;
 
             var me = this;
             //Con axios se llama el metodo store de DepartamentoController
             axios.post('/lugar_contacto/registrar', {
                 'nombre': this.nombre
             }).then(function (response) {
+                me.proceso = false;
                 me.cerrarModal(); //al guardar el registro se cierra el modal
                 me.listarLugares(1, '', 'nombre'); //se enlistan nuevamente los registros
                 //Se muestra mensaje Success
@@ -94941,17 +94936,22 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             });
         },
         actualizarLugar: function actualizarLugar() {
+            if (this.proceso === true) {
+                return;
+            }
             if (this.validarLugar()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
 
+            this.proceso = true;
             var me = this;
             //Con axios se llama el metodo update de DepartamentoController
             axios.put('/lugar_contacto/actualizar', {
                 'nombre': this.nombre,
                 'id': this.id
             }).then(function (response) {
+                me.proceso = false;
                 me.cerrarModal();
                 me.listarLugares(1, '', 'nombre'); //se enlistan nuevamente los registros
                 //window.alert("Cambios guardados correctamente");
@@ -95029,6 +95029,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     this.tituloModal = 'Registrar Lugar de contacto';
                                     this.departamento = '';
                                     this.tipoAccion = 1;
+                                    this.proceso = false;
                                     break;
                                 }
                             case 'actualizar':
@@ -95039,6 +95040,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     this.tipoAccion = 2;
                                     this.id = data['id'];
                                     this.nombre = data['nombre'];
+                                    this.proceso = false;
                                     break;
                                 }
                         }
@@ -101454,6 +101456,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
+            proceso: false,
             id: 0,
             nombre: '',
             arrayInstituciones: [],
@@ -101526,16 +101529,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         /**Metodo para registrar  */
         registrarInstitucion: function registrarInstitucion() {
-            if (this.validarinstitucion()) //Se verifica si hay un error (campo vacio)
+            if (this.validarinstitucion() || this.proceso == true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
 
+            this.proceso = true;
             var me = this;
             //Con axios se llama el metodo store de DepartamentoController
             axios.post('/institucion_financiamiento/registrar', {
                 'nombre': this.nombre
             }).then(function (response) {
+                me.proceso = false;
                 me.cerrarModal(); //al guardar el registro se cierra el modal
                 me.listarInstituciones(1, '', 'nombre'); //se enlistan nuevamente los registros
                 //Se muestra mensaje Success
@@ -101551,10 +101556,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             });
         },
         actualizarInstitucion: function actualizarInstitucion() {
-            if (this.validarinstitucion()) //Se verifica si hay un error (campo vacio)
+            if (this.validarinstitucion() || this.proceso == true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+            this.proceso = true;
 
             var me = this;
             //Con axios se llama el metodo update de DepartamentoController
@@ -101562,6 +101568,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'nombre': this.nombre,
                 'id': this.id
             }).then(function (response) {
+                me.proceso = false;
                 me.cerrarModal();
                 me.listarInstituciones(1, '', 'nombre'); //se enlistan nuevamente los registros
                 //window.alert("Cambios guardados correctamente");

@@ -298,7 +298,6 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
                             <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarLote()">Guardar</button>
                             <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarLote()">Actualizar</button>
                         </div>
                     </div>
@@ -319,8 +318,6 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                         <form method="post" @submit="formSubmit"  enctype="multipart/form-data">
-
                          <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
                                     <div class="col-md-6">
@@ -350,11 +347,6 @@
                                         </select>
                                     </div>
                                 </div>
-
-                           
-
-                            
-                         </form>
                         </div>
                         <!-- Botones del modal -->
                         <div class="modal-footer">
@@ -384,6 +376,7 @@
     export default {
         data(){
             return{
+                proceso:false,
                 allSelected: false,
                 lotes_ini : [],
                 id: 0,
@@ -474,14 +467,6 @@
 
         
         methods : {
-
-            onImageChange(e){
-
-                console.log(e.target.files[0]);
-
-                this.file = e.target.files[0];
-
-            },
             selectAll: function() {
             this.lotes_ini = [];
 
@@ -495,38 +480,6 @@
 
              select: function() {
                 this.allSelected = false;
-            },
-
-            formSubmit(e) {
-
-                e.preventDefault();
-               
-               let formData = new FormData();
-                formData.append('file', this.file);
-                formData.append('fraccionamiento_id', this.fraccionamiento_id);
-                formData.append('etapa_id', this.etapa_id);
-                formData.append('modelo_id', this.modelo_id);
-                let me = this;
-                axios.post('/import',formData)
-                .then(function (response) {
-                    swal({
-                        position: 'top-end',
-                        type: 'success',
-                        title: 'Archivo cargado correctamente',
-                        showConfirmButton: false,
-                        timer: 2500
-                        })
-                    me.cerrarModal2();
-                    me.listarLote(1,'','','','lote');
-
-                })
-
-                .catch(function (error) {
-
-                  console.log(error);
-
-                });
-
             },
             asignarModelos(){
                 let me = this;
@@ -566,7 +519,6 @@
                         customClass: 'animated bounceInRight'
                     })
                     }})
- 
             },
 
             /**Metodo para mostrar los registros */
@@ -656,56 +608,18 @@
                 .catch(function (error) {
                     console.log(error);
                 });
-            },
-            /**Metodo para registrar  */
-            registrarLote(){
-                if(this.validarLote()) //Se verifica si hay un error (campo vacio)
-                {
-                    return;
-                }
-
-                let me = this;
-                //Con axios se llama el metodo store de FraccionaminetoController
-                axios.post('/lote/registrar',{                 
-                    'fraccionamiento_id': this.fraccionamiento_id,
-                    'etapa_id': this.etapa_id,
-                    'manzana': this.manzana,
-                    'num_lote': this.num_lote,
-                    'sublote': this.sublote,
-                    'modelo_id': this.modelo_id,
-                    'empresa_id': this.empresa_id,
-                    'calle': this.calle,
-                    'numero': this.numero,
-                    'interior': this.interior,
-                    'terreno': this.terreno,
-                    'construccion': this.construccion,
-                    'casa_muestra': this.casa_muestra,
-                    'lote_comercial': this.lote_comercial,
-                    'comentarios': this.comentarios,
-                }).then(function (response){
-                    me.cerrarModal(); //al guardar el registro se cierra el modal
-                    me.listarLote(1,'','','','lote'); //se enlistan nuevamente los registros
-                    //Se muestra mensaje Success
-                    swal({
-                        position: 'top-end',
-                        type: 'success',
-                        title: 'Lote agregado correctamente',
-                        showConfirmButton: false,
-                        timer: 1500
-                        })
-                }).catch(function (error){
-                    console.log(error);
-                });
-            },
-
-           
-            
+            },        
 
             actualizarLote(){
+                if (this.proceso === true) {
+                    return;
+                } 
                 if(this.validarLote()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+
+                this.proceso=true;
 
                 let me = this;
                 //Con axios se llama el metodo update de LoteController
@@ -729,6 +643,7 @@
                     'comentarios': this.comentarios,
                     
                 }).then(function (response){
+                    me.proceso=false;
                     me.cerrarModal();
                     me.listarLote(1,'','','','lote');
                     //window.alert("Cambios guardados correctamente");
@@ -839,6 +754,7 @@
             },
             cerrarModal2(){
                 this.modal2 = 0;
+                this.fraccionamiento_id=0;
                 this.tituloModal2 = '';
                 this.lotes_ini=[];
                 this.allSelected = false;
@@ -863,30 +779,9 @@
                     return;
                 }
                         switch(accion){
-                            case 'registrar':
-                            {
-                                this.modal = 1;
-                                this.tituloModal = 'Registrar Lote';
-                                this.fraccionamiento_id = '0';
-                                this.etapa_id= '0';
-                                this.num_lote= 0;
-                                this.sublote= '';
-                                this.modelo_id= '0';
-                                this.empresa_id= 1;
-                                this.calle= '';
-                                this.numero= '';
-                                this.interior= '';
-                                this.comentarios= '';
-                                this.terreno = this.terrenoModelo;
-                                this.construccion = 0.0;
-                                this.casa_muestra= 0;
-                                this.lote_comercial= 0;
-                                this.credito_puente='';
-                                this.tipoAccion = 1;
-                                break;
-                            }
                             case 'actualizar':
                             {
+                                this.proceso=false;
                                 this.modal =1;
                                 this.tituloModal='Actualizar Lote';
                                 this.tipoAccion=2;
@@ -912,11 +807,13 @@
 
                             case 'asignar':
                             {
+                                this.proceso=false;
                                 this.modal2 =1;
                                 this.tituloModal2= 'Asignar Modelo';
                                 this.tipoAccion=3;
-                                this.etapa_id=data['etapa_id'];
-                               this.modelo_id=data['modelo_id'];
+                                this.etapa_id=0;
+                                this.modelo_id=0;
+                                this.fraccionamiento_id=0;
                                 break;
                             }
 

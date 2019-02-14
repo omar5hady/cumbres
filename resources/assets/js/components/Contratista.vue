@@ -251,6 +251,7 @@
     export default {
         data(){
             return{
+                proceso:false,
                 id:0,
                 nombre : '',
                 representante : '',
@@ -359,11 +360,14 @@
             },
             /**Metodo para registrar  */
             registrarContratista(){
+                if(this.proceso==true){
+                    return;
+                }
                 if(this.validarContratista()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
-
+                this.proceso=true;
                 let me = this;
                 //Con axios se llama el metodo store de FraccionaminetoController
                 axios.post('/contratista/registrar',{
@@ -379,6 +383,7 @@
                     'IMSS': this.IMSS,
                     'telefono': this.telefono
                 }).then(function (response){
+                    me.proceso=false;
                     me.cerrarModal(); //al guardar el registro se cierra el modal
                     me.listarContratista(1,'','nombre'); //se enlistan nuevamente los registros
                     //Se muestra mensaje Success
@@ -394,10 +399,15 @@
                 });
             },
             actualizarContratista(){
+                if(this.proceso==true){
+                    return;
+                }
                 if(this.validarContratista()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+
+                this.proceso=true;
 
                 let me = this;
                 //Con axios se llama el metodo update de FraccionaminetoController
@@ -415,6 +425,7 @@
                     'IMSS': this.IMSS,
                     'telefono': this.telefono
                 }).then(function (response){
+                    me.proceso=false;
                     me.cerrarModal();
                     me.listarContratista(1,'','nombre');
                     //window.alert("Cambios guardados correctamente");

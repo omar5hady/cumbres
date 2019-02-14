@@ -521,7 +521,7 @@
     export default {
         data(){
             return{
-               
+                proceso:false,
                 id: 0,
                 siembra:'',
                 f_planos:'',
@@ -639,9 +639,9 @@
                 let formData = new FormData();
            
                 formData.append('foto_predial', this.foto_predial);
-                let me = this;
                 axios.post('/formSubmitPredial/'+this.id, formData)
                 .then(function (response) {
+                    me.proceso=false;
                     currentObj.success = response.data.success;
                     swal({
                         position: 'top-end',
@@ -791,6 +791,10 @@
             },
 
             agregarComentario(){
+                if(this.proceso==true){
+                    return;
+                }
+                this.proceso=true;
                 let me = this;
                 //Con axios se llama el metodo store de DepartamentoController
                 axios.post('/observacion/registrar',{
@@ -798,6 +802,7 @@
                     'comentario': this.observacion,
                     'usuario': this.usuario
                 }).then(function (response){
+                    me.proceso=false;
                     me.cerrarModal3(); //al guardar el registro se cierra el modal
                     
                     const toast = Swal.mixin({
@@ -817,6 +822,10 @@
             },
             
             actualizarLicencia(){
+                if(this.proceso==true){
+                    return;
+                }
+                this.proceso=true;
                 let me = this;
                 //Con axios se llama el metodo update de LoteController
                 axios.put('/licencias/actualizar',{
@@ -830,6 +839,7 @@
                     
                     
                 }).then(function (response){
+                    me.proceso=false;
                     me.cerrarModal();
                     me.listarLicencias(1,'','','','','','fraccionamientos.nombre','');
                     //window.alert("Cambios guardados correctamente");

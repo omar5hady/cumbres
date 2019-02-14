@@ -125,6 +125,7 @@
     export default {
         data(){
             return{
+                proceso:false,
                 departamento_id:0,
                 departamento : '',
                 user_alta : '',
@@ -198,10 +199,15 @@
             },
             /**Metodo para registrar  */
             registrarDepartamento(){
+                if(this.proceso==true){
+                    return;
+                }
                 if(this.validarDepartamento()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+
+                this.proceso=true;
 
                 let me = this;
                 //Con axios se llama el metodo store de DepartamentoController
@@ -209,6 +215,7 @@
                     'departamento': this.departamento,
                     'user_alta': this.user_alta
                 }).then(function (response){
+                    me.proceso=false;
                     me.cerrarModal(); //al guardar el registro se cierra el modal
                     me.listarDepartamento(1,'','departamento'); //se enlistan nuevamente los registros
                     //Se muestra mensaje Success
@@ -224,10 +231,15 @@
                 });
             },
             actualizarDepartamento(){
+                if(this.proceso==true){
+                    return;
+                }
                 if(this.validarDepartamento()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+
+                this.proceso=true;
 
                 let me = this;
                 //Con axios se llama el metodo update de DepartamentoController
@@ -236,6 +248,7 @@
                     'user_alta': this.user_alta,
                     'id_departamento' : this.departamento_id
                 }).then(function (response){
+                    me.proceso=false;
                     me.cerrarModal();
                     me.listarDepartamento(1,'','departamento');
                     //window.alert("Cambios guardados correctamente");

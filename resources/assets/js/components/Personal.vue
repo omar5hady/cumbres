@@ -253,6 +253,7 @@
     export default {
         data(){
             return{
+                proceso:false,
                 id:0,
                 departamento_id : 0,
                 empresa_id : 1,
@@ -385,10 +386,12 @@
             },
             /**Metodo para registrar  */
             registrarPersonal(){
-                if(this.validarPersonal()) //Se verifica si hay un error (campo vacio)
+                if(this.validarPersonal() || this.proceso==true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+
+                this.proceso=true;
 
                 let me = this;
                 //Con axios se llama el metodo store de PersonalController
@@ -409,6 +412,7 @@
                     'empresa_id': this.empresa_id
                     
                 }).then(function (response){
+                    me.proceso=false;
                     me.cerrarModal(); //al guardar el registro se cierra el modal
                     me.listarPersonal(1,'','Personal'); //se enlistan nuevamente los registros
                     //Se muestra mensaje Success
@@ -429,11 +433,12 @@
                 });
             },
             actualizarPersonal(){
-                if(this.validarPersonal()) //Se verifica si hay un error (campo vacio)
+                if(this.validarPersonal() || this.proceso==true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
 
+                this.proceso=true;
                 let me = this;
                 //Con axios se llama el metodo update de PersonalController
                 axios.put('/personal/actualizar',{
@@ -453,6 +458,7 @@
                     'id' : this.id,
                     'empresa_id' : this.empresa_id
                 }).then(function (response){
+                    me.proceso=false;
                     me.cerrarModal();
                     me.listarPersonal(1,'','Personal');
                     //window.alert("Cambios guardados correctamente");

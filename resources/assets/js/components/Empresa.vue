@@ -211,6 +211,7 @@
     export default {
         data(){
             return{
+                proceso:false,
                 id:0,
                 nombre : '',
                 direccion : '',
@@ -316,11 +317,15 @@
             },
             /**Metodo para registrar  */
             registrarEmpresa(){
+                if(this.proceso==true){
+                    return;
+                }
                 if(this.validarEmpresa()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
-
+                
+                this.proceso=true;
                 let me = this;
                 //Con axios se llama el metodo store de FraccionaminetoController
                 axios.post('/empresa/registrar',{
@@ -333,6 +338,7 @@
                     'telefono': this.telefono,
                     'ext': this.ext
                 }).then(function (response){
+                    me.proceso=false;
                     me.cerrarModal(); //al guardar el registro se cierra el modal
                     me.listarEmpresa(1,'','empresa'); //se enlistan nuevamente los registros
                     //Se muestra mensaje Success
@@ -348,11 +354,15 @@
                 });
             },
             actualizarEmpresa(){
+                if(this.proceso==true){
+                    return;
+                }
                 if(this.validarEmpresa()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
 
+                this.proceso=true;
                 let me = this;
                 //Con axios se llama el metodo update de FraccionaminetoController
                 axios.put('/empresa/actualizar',{
@@ -366,6 +376,7 @@
                     'ext': this.ext,
                     'id' : this.id
                 }).then(function (response){
+                    me.proceso=false;
                     me.cerrarModal();
                     me.listarEmpresa(1,'','empresa');
                     //window.alert("Cambios guardados correctamente");

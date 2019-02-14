@@ -112,6 +112,7 @@
     export default {
         data (){
             return {
+                proceso:false,
                 id: 0,
                 nombre : '',
                 arrayInstituciones : [],
@@ -184,16 +185,18 @@
             },
             /**Metodo para registrar  */
             registrarInstitucion(){
-                if(this.validarinstitucion()) //Se verifica si hay un error (campo vacio)
+                if(this.validarinstitucion() || this.proceso==true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
 
+                this.proceso=true;
                 let me = this;
                 //Con axios se llama el metodo store de DepartamentoController
                 axios.post('/institucion_financiamiento/registrar',{
                     'nombre': this.nombre
                 }).then(function (response){
+                    me.proceso=false;
                     me.cerrarModal(); //al guardar el registro se cierra el modal
                     me.listarInstituciones(1,'','nombre'); //se enlistan nuevamente los registros
                     //Se muestra mensaje Success
@@ -209,10 +212,11 @@
                 });
             },
             actualizarInstitucion(){
-                if(this.validarinstitucion()) //Se verifica si hay un error (campo vacio)
+                if(this.validarinstitucion() || this.proceso==true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+                this.proceso=true;
 
                 let me = this;
                 //Con axios se llama el metodo update de DepartamentoController
@@ -220,6 +224,7 @@
                     'nombre': this.nombre,
                     'id' : this.id
                 }).then(function (response){
+                    me.proceso=false;
                     me.cerrarModal();
                     me.listarInstituciones(1,'','nombre'); //se enlistan nuevamente los registros
                     //window.alert("Cambios guardados correctamente");

@@ -258,7 +258,7 @@
                             <!-- {{ csrf_field() }} -->
                             Selecciona archivo excel xls/csv: <input type="file" v-on:change="onImageChange" class="form-control">
 
-                            <input type="submit" value="Cargar" class="btn btn-primary btn-lg" style="margin-top: 3%">
+                            <input v-if="proceso==false" type="submit" value="Cargar" class="btn btn-primary btn-lg" style="margin-top: 3%">
                             
                          </form>
                         </div>
@@ -327,6 +327,7 @@
     export default {
         data(){
             return{
+                proceso:false,
                 id: 0,
                 clv_catastral: '',
                 etapa_servicios: '',
@@ -427,9 +428,19 @@
 
                 this.file = e.target.files[0];
 
+                if(this.file==''){
+                    return;
+                }
+
             },
            
             formSubmit(e) {
+
+                if(this.proceso==true || this.file==''){
+                    return;
+                }
+
+                this.proceso=true;
 
                 e.preventDefault();
                
@@ -446,6 +457,7 @@
                         showConfirmButton: false,
                         timer: 2500
                         })
+                    me.proceso=false;
                     me.cerrarModal2();
                     me.listarLote(1,'','','','lote');
 
@@ -570,11 +582,12 @@
             },
             /**Metodo para registrar  */
             registrarLote(){
-                if(this.validarLote()) //Se verifica si hay un error (campo vacio)
+                if(this.validarLote() || this.proceso==true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
 
+                this.proceso=true;
                 let me = this;
                 //Con axios se llama el metodo store de FraccionaminetoController
                 axios.post('/lote/registrar',{                 
@@ -595,6 +608,7 @@
                     'etapa_servicios':this.etapa_servicios,
                     'comentarios': this.comentarios,
                 }).then(function (response){
+                    me.proceso=false;
                     me.cerrarModal(); //al guardar el registro se cierra el modal
                     me.listarLote(1,'','','','lote'); //se enlistan nuevamente los registros
                     //Se muestra mensaje Success

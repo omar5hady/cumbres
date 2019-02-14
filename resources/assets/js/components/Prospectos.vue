@@ -881,6 +881,7 @@
     export default {
         data(){
             return{
+                proceso:false,
                 id:0,
                 clasificacion:1,
                 nombre:'',
@@ -1155,10 +1156,12 @@
             },
             /**Metodo para registrar  */
             registrarProspecto(){
-                if(this.validarProspecto()) //Se verifica si hay un error (campo vacio)
+                if(this.validarProspecto() || this.proceso==true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+
+                this.proceso=true;
 
                 let me = this;
                 //Con axios se llama el metodo store del controller
@@ -1201,6 +1204,7 @@
                     'edo_civil_coa':this.e_civil_coa,
                     'tipo_casa_coa':this.tipo_casa_coa,
                 }).then(function (response){
+                    me.proceso=false;
                     me.listado=1;
                     me.limpiarDatos();
                     me.listarProspectos(1,'','ini_obras.clave'); //se enlistan nuevamente los registros
@@ -1218,10 +1222,12 @@
             },
 
             registrarCoacreditado(){
-                if(this.validarCoacreditado()) //Se verifica si hay un error (campo vacio)
+                if(this.validarCoacreditado() || this.proceso==true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+
+                this.proceso=true;
 
                 let me = this;
                 //Con axios se llama el metodo store del controller
@@ -1245,6 +1251,7 @@
                     'proyecto_interes_id':this.proyecto_interes_id,
                     'lugar_contacto':this.lugar_contacto,
                 }).then(function (response){
+                    me.proceso=false;
                     me.cerrarModal();
                     //Se muestra mensaje Success
                     swal({
@@ -1261,10 +1268,12 @@
 
                /**Metodo para actualizar  */
             actualizarProspecto(){
-                if(this.validarProspecto()) //Se verifica si hay un error (campo vacio)
+                if(this.validarProspecto() || this.proceso==true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+
+                this.proceso=true;
 
                 let me = this;
                 //Con axios se llama el metodo store de FraccionaminetoController
@@ -1308,6 +1317,7 @@
                     'edo_civil_coa':this.e_civil_coa,
                     'tipo_casa_coa':this.tipo_casa_coa,
                 }).then(function (response){
+                    me.proceso=false;
                     me.listado=1;
                     me.limpiarDatos();
                     me.listarProspectos(1,'','ini_obras.clave'); //se enlistan nuevamente los registros
@@ -1520,6 +1530,7 @@
                 this.e_civil_coa= 0;
                 this.tipo_casa_coa=0;
                 this.conyugeNom = '';
+                this.proceso=false;
 
 
                 this.errorProspecto=0;
