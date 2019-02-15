@@ -35065,25 +35065,26 @@ Vue.component('lote', __webpack_require__(199));
 Vue.component('asignar-modelo', __webpack_require__(207));
 Vue.component('licencias', __webpack_require__(212));
 Vue.component('actadeterminacion', __webpack_require__(217));
+Vue.component('lote-disponible', __webpack_require__(222));
 
-Vue.component('precio-etapa', __webpack_require__(222));
-Vue.component('sobreprecios', __webpack_require__(227));
-Vue.component('paquetes', __webpack_require__(232));
-Vue.component('promociones', __webpack_require__(237));
+Vue.component('precio-etapa', __webpack_require__(227));
+Vue.component('sobreprecios', __webpack_require__(232));
+Vue.component('paquetes', __webpack_require__(237));
+Vue.component('promociones', __webpack_require__(242));
 
-Vue.component('contratistas', __webpack_require__(242));
-Vue.component('iniobra', __webpack_require__(247));
-Vue.component('aviso-obra', __webpack_require__(252));
-Vue.component('partidas', __webpack_require__(257));
-Vue.component('avance', __webpack_require__(262));
+Vue.component('contratistas', __webpack_require__(247));
+Vue.component('iniobra', __webpack_require__(252));
+Vue.component('aviso-obra', __webpack_require__(257));
+Vue.component('partidas', __webpack_require__(262));
+Vue.component('avance', __webpack_require__(267));
 
-Vue.component('rol', __webpack_require__(267));
-Vue.component('usuario', __webpack_require__(272));
-Vue.component('medio-publicitario', __webpack_require__(277));
-Vue.component('lugar-contacto', __webpack_require__(282));
-Vue.component('prospectos', __webpack_require__(287));
-Vue.component('institucion-financiamiento', __webpack_require__(292));
-Vue.component('tipo-credito', __webpack_require__(297));
+Vue.component('rol', __webpack_require__(272));
+Vue.component('usuario', __webpack_require__(277));
+Vue.component('medio-publicitario', __webpack_require__(282));
+Vue.component('lugar-contacto', __webpack_require__(287));
+Vue.component('prospectos', __webpack_require__(292));
+Vue.component('institucion-financiamiento', __webpack_require__(297));
+Vue.component('tipo-credito', __webpack_require__(302));
 
 var app = new Vue({
   el: '#app',
@@ -53390,6 +53391,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
+            proceso: false,
             id: 0,
             departamento_id: 0,
             empresa_id: 1,
@@ -53517,10 +53519,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         /**Metodo para registrar  */
         registrarPersonal: function registrarPersonal() {
-            if (this.validarPersonal()) //Se verifica si hay un error (campo vacio)
+            if (this.validarPersonal() || this.proceso == true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+
+            this.proceso = true;
 
             var me = this;
             //Con axios se llama el metodo store de PersonalController
@@ -53541,6 +53545,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'empresa_id': this.empresa_id
 
             }).then(function (response) {
+                me.proceso = false;
                 me.cerrarModal(); //al guardar el registro se cierra el modal
                 me.listarPersonal(1, '', 'Personal'); //se enlistan nuevamente los registros
                 //Se muestra mensaje Success
@@ -53561,11 +53566,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             });
         },
         actualizarPersonal: function actualizarPersonal() {
-            if (this.validarPersonal()) //Se verifica si hay un error (campo vacio)
+            if (this.validarPersonal() || this.proceso == true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
 
+            this.proceso = true;
             var me = this;
             //Con axios se llama el metodo update de PersonalController
             axios.put('/personal/actualizar', {
@@ -53585,6 +53591,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'id': this.id,
                 'empresa_id': this.empresa_id
             }).then(function (response) {
+                me.proceso = false;
                 me.cerrarModal();
                 me.listarPersonal(1, '', 'Personal');
                 //window.alert("Cambios guardados correctamente");
@@ -58399,6 +58406,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
+            proceso: false,
             id: 0,
             nombre: '',
             tipo: 0,
@@ -58533,10 +58541,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         /**Metodo para registrar  */
         registrarModelo: function registrarModelo() {
-            if (this.validarModelo()) //Se verifica si hay un error (campo vacio)
+            if (this.validarModelo() || this.proceso == true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+
+            this.proceso = true;
 
             var me = this;
             //Con axios se llama el metodo store de FraccionaminetoController
@@ -58548,6 +58558,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'construccion': this.construccion,
                 'archivo': this.archivo
             }).then(function (response) {
+                me.proceso = false;
                 me.cerrarModal(); //al guardar el registro se cierra el modal
                 me.listarModelo(1, '', 'modelo'); //se enlistan nuevamente los registros
                 //Se muestra mensaje Success
@@ -58567,10 +58578,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             me.buscar = "";
         },
         actualizarModelo: function actualizarModelo() {
-            if (this.validarModelo()) //Se verifica si hay un error (campo vacio)
+            if (this.validarModelo() || this.proceso == true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+
+            this.proceso = true;
 
             var me = this;
             //Con axios se llama el metodo update de FraccionaminetoController
@@ -58583,6 +58596,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'archivo': this.archivo,
                 'id': this.id
             }).then(function (response) {
+                me.proceso = false;
                 me.cerrarModal();
                 me.listarModelo(1, '', 'modelo');
                 //window.alert("Cambios guardados correctamente");
@@ -63584,6 +63598,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -63607,6 +63634,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             construccion: 0,
             casa_muestra: 0,
             lote_comercial: 0,
+            habilitado: 0,
             credito_puente: '',
             comentarios: '',
 
@@ -63839,6 +63867,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'construccion': this.construccion,
                 'casa_muestra': this.casa_muestra,
                 'lote_comercial': this.lote_comercial,
+                'habilitado': this.habilitado,
                 'credito_puente': this.credito_puente,
                 'comentarios': this.comentarios
 
@@ -63926,6 +63955,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             return this.errorLote;
         },
         cerrarModal: function cerrarModal() {
+            this.proceso = false;
             this.modal = 0;
             this.tituloModal = '';
             this.fraccionamiento_id = '';
@@ -63979,17 +64009,22 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                         switch (accion) {
                             case 'actualizar':
                                 {
+                                    this.modelo_id = 0;
+                                    this.etapa_id = 0;
+                                    if (data['modelo'] != 'Por Asignar') this.modelo_id = data['modelo_id'];
+                                    if (data['etapas'] != 'Sin Asignar') this.etapa_id = data['etapa_id'];
+
                                     this.proceso = false;
                                     this.modal = 1;
                                     this.tituloModal = 'Actualizar Lote';
                                     this.tipoAccion = 2;
                                     this.id = data['id'];
                                     this.fraccionamiento_id = data['fraccionamiento_id'];
-                                    this.etapa_id = data['etapa_id'];
+
                                     this.manzana = data['manzana'];
                                     this.num_lote = data['num_lote'];
                                     this.sublote = data['sublote'];
-                                    this.modelo_id = data['modelo_id'];
+
                                     this.empresa_id = data['empresa_id'];
                                     this.calle = data['calle'];
                                     this.numero = data['numero'];
@@ -63998,6 +64033,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     this.construccion = data['construccion'];
                                     this.casa_muestra = data['casa_muestra'];
                                     this.lote_comercial = data['lote_comercial'];
+                                    this.habilitado = data['habilitado'];
                                     this.credito_puente = data['credito_puente'];
                                     this.comentarios = data['comentarios'];
                                     break;
@@ -64668,7 +64704,9 @@ var render = function() {
                       }),
                       _vm._v(" "),
                       _c("td", [
-                        lote.casa_muestra == 0 && lote.lote_comercial == 0
+                        lote.casa_muestra == 0 &&
+                        lote.lote_comercial == 0 &&
+                        lote.habilitado == 1
                           ? _c("span", { staticClass: "badge badge-success" }, [
                               _vm._v("Activo")
                             ])
@@ -65410,6 +65448,61 @@ var render = function() {
                         })
                       ])
                     ]),
+                    _vm._v(" "),
+                    _vm.modelo_id != 0
+                      ? _c("div", { staticClass: "form-group row" }, [
+                          _c(
+                            "label",
+                            {
+                              staticClass: "col-md-3 form-control-label",
+                              attrs: { for: "text-input" }
+                            },
+                            [_vm._v("Estado ")]
+                          ),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col-md-3" }, [
+                            _c(
+                              "select",
+                              {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.habilitado,
+                                    expression: "habilitado"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                on: {
+                                  change: function($event) {
+                                    var $$selectedVal = Array.prototype.filter
+                                      .call($event.target.options, function(o) {
+                                        return o.selected
+                                      })
+                                      .map(function(o) {
+                                        var val =
+                                          "_value" in o ? o._value : o.value
+                                        return val
+                                      })
+                                    _vm.habilitado = $event.target.multiple
+                                      ? $$selectedVal
+                                      : $$selectedVal[0]
+                                  }
+                                }
+                              },
+                              [
+                                _c("option", { attrs: { value: "0" } }, [
+                                  _vm._v("Deshabilitar")
+                                ]),
+                                _vm._v(" "),
+                                _c("option", { attrs: { value: "1" } }, [
+                                  _vm._v("Habilitar")
+                                ])
+                              ]
+                            )
+                          ])
+                        ])
+                      : _vm._e(),
                     _vm._v(" "),
                     _c("div", { staticClass: "form-group row" }, [
                       _c(
@@ -73052,7 +73145,7 @@ var Component = normalizeComponent(
   __vue_scopeId__,
   __vue_module_identifier__
 )
-Component.options.__file = "resources\\assets\\js\\components\\PrecioEtapa.vue"
+Component.options.__file = "resources\\assets\\js\\components\\LotesDisp.vue"
 
 /* hot reload */
 if (false) {(function () {
@@ -73061,9 +73154,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-b13b7194", Component.options)
+    hotAPI.createRecord("data-v-1fd77c1a", Component.options)
   } else {
-    hotAPI.reload("data-v-b13b7194", Component.options)
+    hotAPI.reload("data-v-1fd77c1a", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -73084,13 +73177,13 @@ var content = __webpack_require__(224);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("926011ac", content, false, {});
+var update = __webpack_require__(2)("78cc4e9b", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
  if(!content.locals) {
-   module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-b13b7194\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./PrecioEtapa.vue", function() {
-     var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-b13b7194\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./PrecioEtapa.vue");
+   module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-1fd77c1a\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./LotesDisp.vue", function() {
+     var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-1fd77c1a\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./LotesDisp.vue");
      if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
      update(newContent);
    });
@@ -73108,7 +73201,7 @@ exports = module.exports = __webpack_require__(1)(false);
 
 
 // module
-exports.push([module.i, "\ninput[type=number]::-webkit-inner-spin-button, \ninput[type=number]::-webkit-outer-spin-button { \n    -webkit-appearance: none; \n    margin: 0;\n}\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: fixed !important;\n    background-color: #3c29297a !important;\n}\n.div-error{\n    display:flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n", ""]);
+exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: fixed !important;\n    background-color: #3c29297a !important;\n    overflow-y: auto;\n}\n.div-error{\n    display:flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\ntable {\nmargin: auto;\nborder-collapse: collapse;\noverflow-x: auto;\ndisplay: block;\nwidth: fit-content;\nmax-width: 100%;\nbox-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);\n}\ntd, th {\nborder: solid rgb(200, 200, 200) 1px;\npadding: .5rem;\n}\n\n/*th {\ntext-align: left;\nbackground-color: rgb(190, 220, 250);\ntext-transform: uppercase;\npadding-top: 1rem;\npadding-bottom: 1rem;\nborder-bottom: rgb(50, 50, 100) solid 2px;\nborder-top: none;\n}*/\ntd {\nwhite-space: nowrap;\nborder-bottom: none;\ncolor: rgb(20, 20, 20);\n}\ntd:first-of-type, th:first-of-type {\nborder-left: none;\n}\ntd:last-of-type, th:last-of-type {\nborder-right: none;\n}    \n", ""]);
 
 // exports
 
@@ -73290,10 +73383,1575 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
+            proceso: false,
+            id: 0,
+            comentarios: '',
+
+            arrayLote: [],
+            modal: 0,
+            tituloModal: '',
+            tipoAccion: 0,
+            errorLote: 0,
+            errorMostrarMsjLote: [],
+            pagination: {
+                'total': 0,
+                'current_page': 0,
+                'per_page': 0,
+                'last_page': 0,
+                'from': 0,
+                'to': 0
+            },
+            offset: 3,
+            criterio: 'modelos.nombre',
+            buscar2: '',
+            buscar3: '',
+            buscar: ''
+        };
+    },
+
+    computed: {
+
+        isActived: function isActived() {
+            return this.pagination.current_page;
+        },
+        //Calcula los elementos de la paginación
+        pagesNumber: function pagesNumber() {
+            if (!this.pagination.to) {
+                return [];
+            }
+
+            var from = this.pagination.current_page - this.offset;
+            if (from < 1) {
+                from = 1;
+            }
+
+            var to = from + this.offset * 2;
+            if (to >= this.pagination.last_page) {
+                to = this.pagination.last_page;
+            }
+
+            var pagesArray = [];
+            while (from <= to) {
+                pagesArray.push(from);
+                from++;
+            }
+            return pagesArray;
+        }
+
+    },
+
+    methods: {
+        /**Metodo para mostrar los registros */
+        listarLote: function listarLote(page, buscar, buscar2, buscar3, criterio) {
+            var me = this;
+            var url = '/lotesDisponibles?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3 + '&criterio=' + criterio;
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayLote = respuesta.lotes.data;
+                me.pagination = respuesta.pagination;
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        cambiarPagina: function cambiarPagina(page, buscar, buscar2, buscar3, criterio) {
+            var me = this;
+            //Actualiza la pagina actual
+            me.pagination.current_page = page;
+            //Envia la petición para visualizar la data de esta pagina
+            me.listarLote(page, buscar, buscar2, buscar3, criterio);
+        },
+
+
+        isNumber: function isNumber(evt) {
+            evt = evt ? evt : window.event;
+            var charCode = evt.which ? evt.which : evt.keyCode;
+            if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode !== 46) {
+                evt.preventDefault();;
+            } else {
+                return true;
+            }
+        },
+        validarLote: function validarLote() {
+            this.errorLote = 0;
+            this.errorMostrarMsjLote = [];
+
+            if (!this.fraccionamiento_id) //Si la variable Lote esta vacia
+                this.errorMostrarMsjLote.push("El nombre del proyecto para el Lote no puede ir vacio.");
+
+            if (this.errorMostrarMsjLote.length) //Si el mensaje tiene almacenado algo en el array
+                this.errorLote = 1;
+
+            return this.errorLote;
+        },
+        cerrarModal: function cerrarModal() {
+            this.modal = 0;
+            this.tituloModal = '';
+
+            this.errorLote = 0;
+            this.errorMostrarMsjLote = [];
+        },
+        cerrarModal2: function cerrarModal2() {
+            this.modal2 = 0;
+            this.tituloModal2 = '';
+        },
+        cerrarModal3: function cerrarModal3() {
+            this.modal3 = 0;
+            this.tituloModal3 = '';
+            this.tipoAccion = 1;
+        },
+        cerrarModal4: function cerrarModal4() {
+            this.modal4 = 0;
+            this.tituloModal4 = '';
+            this.buscar_fraccionamientoExcel = 0;
+        },
+
+        /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
+        abrirModal: function abrirModal(lote, accion) {
+            var data = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+
+            switch (lote) {
+                case "lote":
+                    {
+                        switch (accion) {
+                            case 'registrar':
+                                {
+                                    this.modal = 1;
+                                    this.tituloModal = 'Registrar Lote';
+                                    this.tipoAccion = 1;
+                                    break;
+                                }
+                            case 'actualizar':
+                                {
+                                    this.modal = 1;
+                                    this.tituloModal = 'Actualizar Lote';
+                                    this.tipoAccion = 2;
+                                    break;
+                                }
+
+                            case 'excel':
+                                {
+                                    this.modal2 = 1;
+                                    this.tituloModal2 = 'Cargar desde Excel';
+                                    this.tipoAccion = 3;
+                                    break;
+                                }
+
+                            case 'descargarExcel':
+                                {
+                                    this.modal4 = 1;
+                                    this.tituloModal4 = 'Descarga listado de lotes';
+                                    this.buscar_fraccionamientoExcel = 0;
+                                    break;
+                                }
+
+                        }
+                    }
+            }
+            this.selectFraccionamientos();
+            this.selectFraccionamientosConLote();
+            this.selectEtapa(this.fraccionamiento_id);
+            this.selectModelo(this.fraccionamiento_id);
+            this.selectConsYTerreno(this.modelo_id);
+        }
+    },
+    mounted: function mounted() {
+        this.listarLote(1, this.buscar, this.buscar2, this.buscar3, this.criterio);
+        this.selectFraccionamientos();
+    }
+});
+
+/***/ }),
+/* 226 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("main", { staticClass: "main" }, [
+    _vm._m(0),
+    _vm._v(" "),
+    _c("div", { staticClass: "container-fluid" }, [
+      _c("div", { staticClass: "card scroll-box" }, [
+        _vm._m(1),
+        _vm._v(" "),
+        _c("div", { staticClass: "card-body" }, [
+          _c("div", { staticClass: "form-group row" }, [
+            _c("div", { staticClass: "col-md-8" }, [
+              _c("div", { staticClass: "input-group" }, [
+                _c(
+                  "select",
+                  {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.criterio,
+                        expression: "criterio"
+                      }
+                    ],
+                    staticClass: "form-control col-md-5",
+                    on: {
+                      click: function($event) {
+                        _vm.selectFraccionamientos()
+                      },
+                      change: function($event) {
+                        var $$selectedVal = Array.prototype.filter
+                          .call($event.target.options, function(o) {
+                            return o.selected
+                          })
+                          .map(function(o) {
+                            var val = "_value" in o ? o._value : o.value
+                            return val
+                          })
+                        _vm.criterio = $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      }
+                    }
+                  },
+                  [
+                    _c(
+                      "option",
+                      { attrs: { value: "lotes.fraccionamiento_id" } },
+                      [_vm._v("Proyecto")]
+                    ),
+                    _vm._v(" "),
+                    _c("option", { attrs: { value: "modelos.nombre" } }, [
+                      _vm._v("Modelo")
+                    ]),
+                    _vm._v(" "),
+                    _c("option", { attrs: { value: "lotes.calle" } }, [
+                      _vm._v("Calle")
+                    ])
+                  ]
+                ),
+                _vm._v(" "),
+                _vm.criterio == "lotes.fraccionamiento_id"
+                  ? _c(
+                      "select",
+                      {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.buscar,
+                            expression: "buscar"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        on: {
+                          change: function($event) {
+                            var $$selectedVal = Array.prototype.filter
+                              .call($event.target.options, function(o) {
+                                return o.selected
+                              })
+                              .map(function(o) {
+                                var val = "_value" in o ? o._value : o.value
+                                return val
+                              })
+                            _vm.buscar = $event.target.multiple
+                              ? $$selectedVal
+                              : $$selectedVal[0]
+                          }
+                        }
+                      },
+                      [
+                        _c("option", { attrs: { value: "" } }, [
+                          _vm._v("Seleccione")
+                        ]),
+                        _vm._v(" "),
+                        _vm._l(_vm.arrayFraccionamientos, function(
+                          fraccionamientos
+                        ) {
+                          return _c("option", {
+                            key: fraccionamientos.id,
+                            domProps: {
+                              value: fraccionamientos.id,
+                              textContent: _vm._s(fraccionamientos.nombre)
+                            }
+                          })
+                        })
+                      ],
+                      2
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.criterio == "lotes.fraccionamiento_id"
+                  ? _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.buscar2,
+                          expression: "buscar2"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { type: "text", placeholder: "Etapa" },
+                      domProps: { value: _vm.buscar2 },
+                      on: {
+                        keyup: function($event) {
+                          if (
+                            !("button" in $event) &&
+                            _vm._k(
+                              $event.keyCode,
+                              "enter",
+                              13,
+                              $event.key,
+                              "Enter"
+                            )
+                          ) {
+                            return null
+                          }
+                          _vm.listarLote(
+                            1,
+                            _vm.buscar,
+                            _vm.buscar2,
+                            _vm.buscar3,
+                            _vm.criterio
+                          )
+                        },
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.buscar2 = $event.target.value
+                        }
+                      }
+                    })
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.criterio == "lotes.fraccionamiento_id"
+                  ? _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.buscar3,
+                          expression: "buscar3"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { type: "text", placeholder: "Manzana a buscar" },
+                      domProps: { value: _vm.buscar3 },
+                      on: {
+                        keyup: function($event) {
+                          if (
+                            !("button" in $event) &&
+                            _vm._k(
+                              $event.keyCode,
+                              "enter",
+                              13,
+                              $event.key,
+                              "Enter"
+                            )
+                          ) {
+                            return null
+                          }
+                          _vm.listarLote(
+                            1,
+                            _vm.buscar,
+                            _vm.buscar2,
+                            _vm.buscar3,
+                            _vm.criterio
+                          )
+                        },
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.buscar3 = $event.target.value
+                        }
+                      }
+                    })
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.criterio == "modelos.nombre"
+                  ? _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.buscar,
+                          expression: "buscar"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { type: "text", placeholder: "Texto a buscar" },
+                      domProps: { value: _vm.buscar },
+                      on: {
+                        keyup: function($event) {
+                          if (
+                            !("button" in $event) &&
+                            _vm._k(
+                              $event.keyCode,
+                              "enter",
+                              13,
+                              $event.key,
+                              "Enter"
+                            )
+                          ) {
+                            return null
+                          }
+                          _vm.listarLote(
+                            1,
+                            _vm.buscar,
+                            _vm.buscar2,
+                            _vm.buscar3,
+                            _vm.criterio
+                          )
+                        },
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.buscar = $event.target.value
+                        }
+                      }
+                    })
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.criterio == "lotes.calle"
+                  ? _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.buscar,
+                          expression: "buscar"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { type: "text", placeholder: "Texto a buscar" },
+                      domProps: { value: _vm.buscar },
+                      on: {
+                        keyup: function($event) {
+                          if (
+                            !("button" in $event) &&
+                            _vm._k(
+                              $event.keyCode,
+                              "enter",
+                              13,
+                              $event.key,
+                              "Enter"
+                            )
+                          ) {
+                            return null
+                          }
+                          _vm.listarLote(
+                            1,
+                            _vm.buscar,
+                            _vm.buscar2,
+                            _vm.buscar3,
+                            _vm.criterio
+                          )
+                        },
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.buscar = $event.target.value
+                        }
+                      }
+                    })
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.criterio == "fraccionamientos.nombre"
+                  ? _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.buscar,
+                          expression: "buscar"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { type: "text", placeholder: "Texto a buscar" },
+                      domProps: { value: _vm.buscar },
+                      on: {
+                        keyup: function($event) {
+                          if (
+                            !("button" in $event) &&
+                            _vm._k(
+                              $event.keyCode,
+                              "enter",
+                              13,
+                              $event.key,
+                              "Enter"
+                            )
+                          ) {
+                            return null
+                          }
+                          _vm.listarLote(
+                            1,
+                            _vm.buscar,
+                            _vm.buscar2,
+                            _vm.buscar3,
+                            _vm.criterio
+                          )
+                        },
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.buscar = $event.target.value
+                        }
+                      }
+                    })
+                  : _vm._e(),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary",
+                    attrs: { type: "submit" },
+                    on: {
+                      click: function($event) {
+                        _vm.listarLote(
+                          1,
+                          _vm.buscar,
+                          _vm.buscar2,
+                          _vm.buscar3,
+                          _vm.criterio
+                        )
+                      }
+                    }
+                  },
+                  [_c("i", { staticClass: "fa fa-search" }), _vm._v(" Buscar")]
+                )
+              ])
+            ])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "table-responsive" }, [
+            _c(
+              "table",
+              { staticClass: "table table-bordered table-striped table-sm" },
+              [
+                _vm._m(2),
+                _vm._v(" "),
+                _c(
+                  "tbody",
+                  _vm._l(_vm.arrayLote, function(lote) {
+                    return _c("tr", { key: lote.id }, [
+                      _c("td", { staticStyle: { width: "5%" } }, [
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-warning btn-sm",
+                            attrs: { title: "Editar", type: "button" },
+                            on: {
+                              click: function($event) {
+                                _vm.abrirModal("lote", "actualizar", lote)
+                              }
+                            }
+                          },
+                          [_c("i", { staticClass: "icon-pencil" })]
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c("td", {
+                        staticStyle: { width: "20%" },
+                        domProps: { textContent: _vm._s(lote.proyecto) }
+                      }),
+                      _vm._v(" "),
+                      _c("td", {
+                        domProps: { textContent: _vm._s(lote.manzana) }
+                      }),
+                      _vm._v(" "),
+                      !lote.sublote
+                        ? _c("td", {
+                            domProps: { textContent: _vm._s(lote.num_lote) }
+                          })
+                        : _c("td", {
+                            domProps: {
+                              textContent: _vm._s(
+                                lote.num_lote + "-" + lote.sublote
+                              )
+                            }
+                          }),
+                      _vm._v(" "),
+                      _c("td", {
+                        domProps: { textContent: _vm._s(lote.avance) }
+                      }),
+                      _vm._v(" "),
+                      _c("td", [
+                        _c("span", {
+                          staticClass: "badge badge-success",
+                          domProps: { textContent: _vm._s(lote.modelo) }
+                        })
+                      ]),
+                      _vm._v(" "),
+                      _c("td", {
+                        domProps: { textContent: _vm._s(lote.calle) }
+                      }),
+                      _vm._v(" "),
+                      !lote.interior
+                        ? _c("td", {
+                            domProps: { textContent: _vm._s(lote.numero) }
+                          })
+                        : _c("td", {
+                            domProps: {
+                              textContent: _vm._s(
+                                lote.numero + "-" + lote.interior
+                              )
+                            }
+                          }),
+                      _vm._v(" "),
+                      _c("td", {
+                        domProps: { textContent: _vm._s(lote.terreno) }
+                      }),
+                      _vm._v(" "),
+                      _c("td", {
+                        domProps: { textContent: _vm._s(lote.construccion) }
+                      }),
+                      _vm._v(" "),
+                      _c("td", {
+                        domProps: { textContent: _vm._s(lote.precio_base) }
+                      }),
+                      _vm._v(" "),
+                      _c("td", {
+                        domProps: {
+                          textContent: _vm._s(lote.excedente_terreno)
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("td", {
+                        domProps: { textContent: _vm._s(lote.sobreprecio) }
+                      }),
+                      _vm._v(" "),
+                      _c("td", {
+                        staticStyle: { width: "20%" },
+                        domProps: { textContent: _vm._s(lote.precio_venta) }
+                      }),
+                      _vm._v(" "),
+                      _c("td", {
+                        domProps: { textContent: _vm._s(lote.promocion) }
+                      }),
+                      _vm._v(" "),
+                      _c("td", {
+                        domProps: { textContent: _vm._s(lote.fecha_fin) }
+                      }),
+                      _vm._v(" "),
+                      _c("td", {
+                        staticStyle: { width: "40%" },
+                        domProps: { textContent: _vm._s(lote.comentarios) }
+                      })
+                    ])
+                  })
+                )
+              ]
+            )
+          ]),
+          _vm._v(" "),
+          _c("nav", [
+            _c(
+              "ul",
+              { staticClass: "pagination" },
+              [
+                _vm.pagination.last_page > 7 && _vm.pagination.current_page > 7
+                  ? _c("li", { staticClass: "page-item" }, [
+                      _c(
+                        "a",
+                        {
+                          staticClass: "page-link",
+                          attrs: { href: "#" },
+                          on: {
+                            click: function($event) {
+                              $event.preventDefault()
+                              _vm.cambiarPagina(
+                                1,
+                                _vm.buscar,
+                                _vm.buscar2,
+                                _vm.buscar3,
+                                _vm.criterio
+                              )
+                            }
+                          }
+                        },
+                        [_vm._v("Inicio")]
+                      )
+                    ])
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.pagination.current_page > 1
+                  ? _c("li", { staticClass: "page-item" }, [
+                      _c(
+                        "a",
+                        {
+                          staticClass: "page-link",
+                          attrs: { href: "#" },
+                          on: {
+                            click: function($event) {
+                              $event.preventDefault()
+                              _vm.cambiarPagina(
+                                _vm.pagination.current_page - 1,
+                                _vm.buscar,
+                                _vm.buscar2,
+                                _vm.buscar3,
+                                _vm.criterio
+                              )
+                            }
+                          }
+                        },
+                        [_vm._v("Ant")]
+                      )
+                    ])
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm._l(_vm.pagesNumber, function(page) {
+                  return _c(
+                    "li",
+                    {
+                      key: page,
+                      staticClass: "page-item",
+                      class: [page == _vm.isActived ? "active" : ""]
+                    },
+                    [
+                      _c("a", {
+                        staticClass: "page-link",
+                        attrs: { href: "#" },
+                        domProps: { textContent: _vm._s(page) },
+                        on: {
+                          click: function($event) {
+                            $event.preventDefault()
+                            _vm.cambiarPagina(
+                              page,
+                              _vm.buscar,
+                              _vm.buscar2,
+                              _vm.buscar3,
+                              _vm.criterio
+                            )
+                          }
+                        }
+                      })
+                    ]
+                  )
+                }),
+                _vm._v(" "),
+                _vm.pagination.current_page < _vm.pagination.last_page
+                  ? _c("li", { staticClass: "page-item" }, [
+                      _c(
+                        "a",
+                        {
+                          staticClass: "page-link",
+                          attrs: { href: "#" },
+                          on: {
+                            click: function($event) {
+                              $event.preventDefault()
+                              _vm.cambiarPagina(
+                                _vm.pagination.current_page + 1,
+                                _vm.buscar,
+                                _vm.buscar2,
+                                _vm.buscar3,
+                                _vm.criterio
+                              )
+                            }
+                          }
+                        },
+                        [_vm._v("Sig")]
+                      )
+                    ])
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.pagination.last_page > 7 &&
+                _vm.pagination.current_page < _vm.pagination.last_page
+                  ? _c("li", { staticClass: "page-item" }, [
+                      _c(
+                        "a",
+                        {
+                          staticClass: "page-link",
+                          attrs: { href: "#" },
+                          on: {
+                            click: function($event) {
+                              $event.preventDefault()
+                              _vm.cambiarPagina(
+                                _vm.pagination.last_page,
+                                _vm.buscar,
+                                _vm.buscar2,
+                                _vm.buscar3,
+                                _vm.criterio
+                              )
+                            }
+                          }
+                        },
+                        [_vm._v("Ultimo")]
+                      )
+                    ])
+                  : _vm._e()
+              ],
+              2
+            )
+          ])
+        ])
+      ])
+    ]),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal animated fadeIn",
+        class: { mostrar: _vm.modal },
+        staticStyle: { display: "none" },
+        attrs: {
+          tabindex: "-1",
+          role: "dialog",
+          "aria-labelledby": "myModalLabel",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c(
+          "div",
+          {
+            staticClass: "modal-dialog modal-primary modal-lg",
+            attrs: { role: "document" }
+          },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _c("div", { staticClass: "modal-header" }, [
+                _c("h4", {
+                  staticClass: "modal-title",
+                  domProps: { textContent: _vm._s(_vm.tituloModal) }
+                }),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "close",
+                    attrs: { type: "button", "aria-label": "Close" },
+                    on: {
+                      click: function($event) {
+                        _vm.cerrarModal()
+                      }
+                    }
+                  },
+                  [
+                    _c("span", { attrs: { "aria-hidden": "true" } }, [
+                      _vm._v("×")
+                    ])
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-body" }, [
+                _c(
+                  "form",
+                  {
+                    staticClass: "form-horizontal",
+                    attrs: {
+                      action: "",
+                      method: "post",
+                      enctype: "multipart/form-data"
+                    }
+                  },
+                  [
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "text-input" }
+                        },
+                        [_vm._v("Proyecto")]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-6" }, [
+                        _c(
+                          "select",
+                          {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.fraccionamiento_id,
+                                expression: "fraccionamiento_id"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: { id: "myselect" },
+                            on: {
+                              click: function($event) {
+                                _vm.selectEtapa(_vm.fraccionamiento_id),
+                                  _vm.selectModelo(_vm.fraccionamiento_id)
+                              },
+                              change: function($event) {
+                                var $$selectedVal = Array.prototype.filter
+                                  .call($event.target.options, function(o) {
+                                    return o.selected
+                                  })
+                                  .map(function(o) {
+                                    var val = "_value" in o ? o._value : o.value
+                                    return val
+                                  })
+                                _vm.fraccionamiento_id = $event.target.multiple
+                                  ? $$selectedVal
+                                  : $$selectedVal[0]
+                              }
+                            }
+                          },
+                          [
+                            _c("option", { attrs: { value: "0" } }, [
+                              _vm._v("Seleccione")
+                            ]),
+                            _vm._v(" "),
+                            _vm._l(_vm.arrayFraccionamientos, function(
+                              fraccionamientos
+                            ) {
+                              return _c("option", {
+                                key: fraccionamientos.id,
+                                domProps: {
+                                  value: fraccionamientos.id,
+                                  textContent: _vm._s(fraccionamientos.nombre)
+                                }
+                              })
+                            })
+                          ],
+                          2
+                        )
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "text-input" }
+                        },
+                        [_vm._v("Clave catastral")]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-4" }, [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.clv_catastral,
+                              expression: "clv_catastral"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: {
+                            type: "text",
+                            pattern: "\\d*",
+                            maxlength: "13",
+                            placeholder: "Clave catastral"
+                          },
+                          domProps: { value: _vm.clv_catastral },
+                          on: {
+                            keypress: function($event) {
+                              _vm.isNumber(_vm.event)
+                            },
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.clv_catastral = $event.target.value
+                            }
+                          }
+                        })
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "text-input" }
+                        },
+                        [_vm._v("Dirección")]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-4" }, [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.calle,
+                              expression: "calle"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: { type: "text", placeholder: "Calle" },
+                          domProps: { value: _vm.calle },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.calle = $event.target.value
+                            }
+                          }
+                        })
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-2" }, [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.numero,
+                              expression: "numero"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: { type: "text", placeholder: "Numero" },
+                          domProps: { value: _vm.numero },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.numero = $event.target.value
+                            }
+                          }
+                        })
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-2" }, [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.interior,
+                              expression: "interior"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: { type: "text", placeholder: "Interior" },
+                          domProps: { value: _vm.interior },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.interior = $event.target.value
+                            }
+                          }
+                        })
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "text-input" }
+                        },
+                        [_vm._v("Terreno (mts²)")]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-4" }, [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.terreno,
+                              expression: "terreno"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: { type: "text", placeholder: "Terreno" },
+                          domProps: { value: _vm.terreno },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.terreno = $event.target.value
+                            }
+                          }
+                        })
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "text-input" }
+                        },
+                        [_vm._v("Construcción (mts²)")]
+                      ),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col-md-7" }, [
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.construccion,
+                              expression: "construccion"
+                            }
+                          ],
+                          staticClass: "form-control",
+                          attrs: {
+                            type: "text",
+                            disabled: "",
+                            placeholder: "Construccion"
+                          },
+                          domProps: { value: _vm.construccion },
+                          on: {
+                            input: function($event) {
+                              if ($event.target.composing) {
+                                return
+                              }
+                              _vm.construccion = $event.target.value
+                            }
+                          }
+                        })
+                      ])
+                    ])
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-footer" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-secondary",
+                    attrs: { type: "button" },
+                    on: {
+                      click: function($event) {
+                        _vm.cerrarModal()
+                      }
+                    }
+                  },
+                  [_vm._v("Cerrar")]
+                ),
+                _vm._v(" "),
+                _vm.tipoAccion == 1
+                  ? _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-primary",
+                        attrs: { type: "button" },
+                        on: {
+                          click: function($event) {
+                            _vm.registrarLote()
+                          }
+                        }
+                      },
+                      [_vm._v("Guardar")]
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.tipoAccion == 2
+                  ? _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-primary",
+                        attrs: { type: "button" },
+                        on: {
+                          click: function($event) {
+                            _vm.actualizarLote()
+                          }
+                        }
+                      },
+                      [_vm._v("Actualizar")]
+                    )
+                  : _vm._e()
+              ])
+            ])
+          ]
+        )
+      ]
+    )
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("ol", { staticClass: "breadcrumb" }, [
+      _c("li", { staticClass: "breadcrumb-item" }, [
+        _c("strong", [
+          _c("a", { staticStyle: { color: "#FFFFFF" }, attrs: { href: "/" } }, [
+            _vm._v("Home")
+          ])
+        ])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card-header" }, [
+      _c("i", { staticClass: "fa fa-align-justify" }),
+      _vm._v(" Lotes Disponibles\n                    ")
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("Opciones")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Proyecto")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Manzana")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("# Lote")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("% Avance")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Modelo")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Calle")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("# Oficial")]),
+        _vm._v(" "),
+        _c("th", { staticStyle: { width: "8%" } }, [_vm._v("Terreno m²")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Construc. m²")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Precio Base")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Terreno Excedente")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Sobreprecios")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Precio venta")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Promoción")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Fecha termino")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Canal de venta")])
+      ])
+    ])
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-1fd77c1a", module.exports)
+  }
+}
+
+/***/ }),
+/* 227 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(228)
+}
+var normalizeComponent = __webpack_require__(3)
+/* script */
+var __vue_script__ = __webpack_require__(230)
+/* template */
+var __vue_template__ = __webpack_require__(231)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources\\assets\\js\\components\\PrecioEtapa.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-b13b7194", Component.options)
+  } else {
+    hotAPI.reload("data-v-b13b7194", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 228 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(229);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(2)("926011ac", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-b13b7194\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./PrecioEtapa.vue", function() {
+     var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-b13b7194\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./PrecioEtapa.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 229 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(1)(false);
+// imports
+
+
+// module
+exports.push([module.i, "\ninput[type=number]::-webkit-inner-spin-button, \ninput[type=number]::-webkit-outer-spin-button { \n    -webkit-appearance: none; \n    margin: 0;\n}\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: fixed !important;\n    background-color: #3c29297a !important;\n}\n.div-error{\n    display:flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 230 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    data: function data() {
+        return {
+            proceso: false,
             id_precioModelo: 0,
             id: 0,
             fraccionamiento_id: 0,
@@ -73445,10 +75103,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         /**Metodo para registrar  */
         registrarPrecioEtapa: function registrarPrecioEtapa() {
-            if (this.validarPrecioEtapa()) //Se verifica si hay un error (campo vacio)
+            if (this.validarPrecioEtapa() || this.proceso == true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+            this.proceso = true;
 
             var me = this;
             //Con axios se llama el metodo store de DepartamentoController
@@ -73457,6 +75116,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'etapa_id': this.etapa_id,
                 'precio_excedente': this.precio_excedente
             }).then(function (response) {
+                me.proceso = false;
                 me.cerrarModal(); //al guardar el registro se cierra el modal
                 me.listarPrecioModelo(1, ''); //se enlistan nuevamente los registros
                 //Se muestra mensaje Success
@@ -73474,11 +75134,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         /**Metodo para registrar  */
         registrarPrecioModelo: function registrarPrecioModelo() {
-            if (this.validarPrecioEtapa()) //Se verifica si hay un error (campo vacio)
+            if (this.validarPrecioEtapa() || this.proceso == true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
-
+            this.proceso = true;
             var me = this;
             //Con axios se llama el metodo store de DepartamentoController
             axios.post('/precio_modelo/registrar', {
@@ -73486,6 +75146,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'modelo_id': this.modelo_id,
                 'precio_modelo': this.precio_modelo
             }).then(function (response) {
+                me.proceso = false;
                 me.cerrarModal(); //al guardar el registro se cierra el modal
                 me.listarPrecioModelo(1, me.id); //se enlistan nuevamente los registros
                 //Se muestra mensaje Success
@@ -73501,10 +75162,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             });
         },
         actualizarPrecioEtapa: function actualizarPrecioEtapa() {
-            if (this.validarPrecioEtapa()) //Se verifica si hay un error (campo vacio)
+            if (this.validarPrecioEtapa() || this.proceso == true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+            this.proceso = true;
 
             var me = this;
             var proyecto = this.id;
@@ -73515,6 +75177,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'etapa_id': this.etapa_id,
                 'precio_excedente': this.precio_excedente
             }).then(function (response) {
+                me.proceso = false;
                 me.cerrarModal();
                 me.listarPrecioModelo(1, proyecto);
                 //window.alert("Cambios guardados correctamente");
@@ -73530,11 +75193,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             });
         },
         actualizarPrecioModelo: function actualizarPrecioModelo() {
-            if (this.validarPrecioEtapa()) //Se verifica si hay un error (campo vacio)
+            if (this.validarPrecioEtapa() || this.proceso == true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
-
+            this.proceso = true;
             var me = this;
             //Con axios se llama el metodo update de DepartamentoController
             axios.put('/precio_modelo/actualizar', {
@@ -73543,6 +75206,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'modelo_id': this.modelo_id,
                 'precio_modelo': this.precio_modelo
             }).then(function (response) {
+                me.proceso = false;
                 me.cerrarModal();
                 me.listarPrecioModelo(1, me.id);
                 //window.alert("Cambios guardados correctamente");
@@ -73657,7 +75321,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 226 */
+/* 231 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -74408,19 +76072,19 @@ if (false) {
 }
 
 /***/ }),
-/* 227 */
+/* 232 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(228)
+  __webpack_require__(233)
 }
 var normalizeComponent = __webpack_require__(3)
 /* script */
-var __vue_script__ = __webpack_require__(230)
+var __vue_script__ = __webpack_require__(235)
 /* template */
-var __vue_template__ = __webpack_require__(231)
+var __vue_template__ = __webpack_require__(236)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -74459,13 +76123,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 228 */
+/* 233 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(229);
+var content = __webpack_require__(234);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -74485,7 +76149,7 @@ if(false) {
 }
 
 /***/ }),
-/* 229 */
+/* 234 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)(false);
@@ -74499,7 +76163,7 @@ exports.push([module.i, "\ninput[type=number]::-webkit-inner-spin-button, \ninpu
 
 
 /***/ }),
-/* 230 */
+/* 235 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -74806,6 +76470,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
+            proceso: false,
             id_sobrePrecioEtapa: 0,
             id_sobrePrecioModelo: 0,
             id: 0,
@@ -74992,11 +76657,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         /**Metodo para registrar  */
         registrarSobrePrecioModelo: function registrarSobrePrecioModelo() {
-            if (this.validarSobrePrecioModelo()) //Se verifica si hay un error (campo vacio)
+            if (this.validarSobrePrecioModelo() || this.proceso == true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
 
+            this.proceso = true;
             var me = this;
 
             //Con axios se llama el metodo store de DepartamentoController
@@ -75004,6 +76670,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'lote_id': this.lote_id,
                 'sobreprecio_etapa_id': this.sobreprecioEtapaModelo_id
             }).then(function (response) {
+                me.proceso = false;
                 me.cerrarModal(); //al guardar el registro se cierra el modal
                 me.listarSobrePrecioModelo(1, me.buscar, me.buscar2, me.buscar3); //se enlistan nuevamente los registros
                 //Se muestra mensaje Success
@@ -75019,10 +76686,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             });
         },
         actualizarSobrePrecioEtapa: function actualizarSobrePrecioEtapa() {
-            if (this.validarSobrePrecioEtapa()) //Se verifica si hay un error (campo vacio)
+            if (this.validarSobrePrecioEtapa() || this.proceso == true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+            this.proceso = true;
 
             var me = this;
             var etapa = this.etapa_id;
@@ -75033,6 +76701,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'sobreprecio_id': this.sobreprecio_id,
                 'sobreprecio': this.sobreprecioEtapa
             }).then(function (response) {
+                me.proceso = false;
                 me.cerrarModal();
                 me.listarSobrePrecioEtapa(1, etapa);
                 me.listarSobrePrecioModelo(1, me.etapa_id, '', ''); //se enlistan nuevamente los registros
@@ -75049,10 +76718,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             });
         },
         actualizarSobrePrecioModelo: function actualizarSobrePrecioModelo() {
-            if (this.validarSobrePrecioModelo()) //Se verifica si hay un error (campo vacio)
+            if (this.validarSobrePrecioModelo() || this.proceso == true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+
+            this.proceso = true;
 
             var me = this;
             var etapa = this.etapa_id;
@@ -75062,6 +76733,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'lote_id': this.lote_id,
                 'sobreprecio_etapa_id': this.sobreprecioEtapaModelo_id
             }).then(function (response) {
+                me.proceso = false;
                 me.cerrarModal();
                 me.listarSobrePrecioModelo(1, me.etapa_id, '', me.buscar3); //se enlistan nuevamente los registros
                 //window.alert("Cambios guardados correctamente");
@@ -75207,7 +76879,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 231 */
+/* 236 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -76509,19 +78181,19 @@ if (false) {
 }
 
 /***/ }),
-/* 232 */
+/* 237 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(233)
+  __webpack_require__(238)
 }
 var normalizeComponent = __webpack_require__(3)
 /* script */
-var __vue_script__ = __webpack_require__(235)
+var __vue_script__ = __webpack_require__(240)
 /* template */
-var __vue_template__ = __webpack_require__(236)
+var __vue_template__ = __webpack_require__(241)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -76560,13 +78232,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 233 */
+/* 238 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(234);
+var content = __webpack_require__(239);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -76586,7 +78258,7 @@ if(false) {
 }
 
 /***/ }),
-/* 234 */
+/* 239 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)(false);
@@ -76600,7 +78272,7 @@ exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    pos
 
 
 /***/ }),
-/* 235 */
+/* 240 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -76800,6 +78472,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
+            proceso: false,
             id: 0,
             fraccionamiento_id: 0,
             etapa_id: 0,
@@ -76881,10 +78554,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         /**Metodo para registrar  */
         registrarPaquetes: function registrarPaquetes() {
-            if (this.validarPaquetes()) //Se verifica si hay un error (campo vacio)
+            if (this.validarPaquetes() || this.proceso == true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+            this.proceso = true;
 
             var me = this;
             //Con axios se llama el metodo store de DepartamentoController
@@ -76897,6 +78571,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'costo': this.costo,
                 'descripcion': this.descripcion
             }).then(function (response) {
+                me.proceso = false;
                 me.cerrarModal(); //al guardar el registro se cierra el modal
                 me.listarPaquetes(1, '', 'nombre'); //se enlistan nuevamente los registros
                 //Se muestra mensaje Success
@@ -76912,10 +78587,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             });
         },
         actualizarPaquetes: function actualizarPaquetes() {
-            if (this.validarPaquetes()) //Se verifica si hay un error (campo vacio)
+            if (this.validarPaquetes() || this.proceso == true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+
+            this.proceso = true;
 
             var me = this;
             //Con axios se llama el metodo update de DepartamentoController
@@ -76929,6 +78606,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'descripcion': this.descripcion,
                 'id': this.id
             }).then(function (response) {
+                me.proceso = false;
                 me.cerrarModal();
                 me.listarPaquetes(1, '', 'nombre');
                 //window.alert("Cambios guardados correctamente");
@@ -77008,7 +78686,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.errorMostrarMsjPaquete = [];
 
             if (!this.nombre) //Si la variable departamento esta vacia
-                this.errorMostrarMsjPaquete.push("El nombre del Paquete no puede ir vacio.");
+                this.errorMostrarMsjPaquete.push("El nombre del paquete no puede ir vacio.");
+
+            if (!this.fraccionamiento_id) //Si la variable departamento esta vacia
+                this.errorMostrarMsjPaquete.push("Seleccionar fraccionamiento.");
+
+            if (!this.etapa_id) //Si la variable departamento esta vacia
+                this.errorMostrarMsjPaquete.push("Seleccionar etapa");
+
+            if (!this.costo) //Si la variable departamento esta vacia
+                this.errorMostrarMsjPaquete.push("El costo del paquete no puede ir vacio.");
+
+            if (!this.descripcion) //Si la variable departamento esta vacia
+                this.errorMostrarMsjPaquete.push("La descripción del paquete no puede ir vacia.");
 
             if (this.errorMostrarMsjPaquete.length) //Si el mensaje tiene almacenado algo en el array
                 this.errorPaquete = 1;
@@ -77027,6 +78717,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.descripcion = '';
             this.errorPaquete = 0;
             this.errorMostrarMsjPaquete = [];
+            this.proceso = false;
         },
 
         /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
@@ -77081,7 +78772,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 236 */
+/* 241 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -77887,19 +79578,19 @@ if (false) {
 }
 
 /***/ }),
-/* 237 */
+/* 242 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(238)
+  __webpack_require__(243)
 }
 var normalizeComponent = __webpack_require__(3)
 /* script */
-var __vue_script__ = __webpack_require__(240)
+var __vue_script__ = __webpack_require__(245)
 /* template */
-var __vue_template__ = __webpack_require__(241)
+var __vue_template__ = __webpack_require__(246)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -77938,13 +79629,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 238 */
+/* 243 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(239);
+var content = __webpack_require__(244);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -77964,7 +79655,7 @@ if(false) {
 }
 
 /***/ }),
-/* 239 */
+/* 244 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)(false);
@@ -77978,7 +79669,7 @@ exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    pos
 
 
 /***/ }),
-/* 240 */
+/* 245 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -78299,6 +79990,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
+            proceso: false,
             id: 0,
             fraccionamiento_id: 0,
             etapa_id: 0,
@@ -78457,11 +80149,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         /**Metodo para registrar  */
         registrarPromociones: function registrarPromociones() {
-            if (this.validarPromociones()) //Se verifica si hay un error (campo vacio)
+            if (this.validarPromociones() || this.proceso == true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
 
+            this.proceso = true;
             var me = this;
             //Con axios se llama el metodo store de DepartamentoController
             axios.post('/promocion/registrar', {
@@ -78473,6 +80166,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'descuento': this.descuento,
                 'descripcion': this.descripcion
             }).then(function (response) {
+                me.proceso = false;
                 me.cerrarModal(); //al guardar el registro se cierra el modal
                 me.listarPromociones(1, '', 'nombre'); //se enlistan nuevamente los registros
                 //Se muestra mensaje Success
@@ -78488,10 +80182,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             });
         },
         registrarLotePromocion: function registrarLotePromocion() {
-            if (this.validarLotePromociones()) //Se verifica si hay un error (campo vacio)
+            if (this.validarLotePromociones() || this.proceso == true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+            this.proceso = true;
 
             var me = this;
             //Con axios se llama el metodo store de DepartamentoController
@@ -78499,6 +80194,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'promocion_id': this.id,
                 'lote_id': this.lote_id
             }).then(function (response) {
+                me.proceso = false;
                 me.cerrarModal2(); //al guardar el registro se cierra el modal
                 me.listarPromociones(1, '', 'nombre'); //se enlistan nuevamente los registros
                 //Se muestra mensaje Success
@@ -78514,10 +80210,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             });
         },
         actualizarPromociones: function actualizarPromociones() {
-            if (this.validarPromociones()) //Se verifica si hay un error (campo vacio)
+            if (this.validarPromociones() || this.proceso == true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+
+            this.proceso = true;
 
             var me = this;
             //Con axios se llama el metodo update de DepartamentoController
@@ -78531,6 +80229,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'descripcion': this.descripcion,
                 'id': this.id
             }).then(function (response) {
+                me.proceso = false;
                 me.cerrarModal();
                 me.listarPromociones(1, '', 'nombre');
                 //window.alert("Cambios guardados correctamente");
@@ -78674,6 +80373,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             if (this.etapa_id == 0) //Si la variable departamento esta vacia
                 this.errorMostrarMsjPromocion.push("Debe seleccionar la etapa.");
 
+            if (this.descripcion == '') //Si la variable departamento esta vacia
+                this.errorMostrarMsjPromocion.push("Se debe escribir una descripción.");
+
             if (this.errorMostrarMsjPromocion.length) //Si el mensaje tiene almacenado algo en el array
                 this.errorPromocion = 1;
 
@@ -78794,7 +80496,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 241 */
+/* 246 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -80160,19 +81862,19 @@ if (false) {
 }
 
 /***/ }),
-/* 242 */
+/* 247 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(243)
+  __webpack_require__(248)
 }
 var normalizeComponent = __webpack_require__(3)
 /* script */
-var __vue_script__ = __webpack_require__(245)
+var __vue_script__ = __webpack_require__(250)
 /* template */
-var __vue_template__ = __webpack_require__(246)
+var __vue_template__ = __webpack_require__(251)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -80211,13 +81913,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 243 */
+/* 248 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(244);
+var content = __webpack_require__(249);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -80237,7 +81939,7 @@ if(false) {
 }
 
 /***/ }),
-/* 244 */
+/* 249 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)(false);
@@ -80251,7 +81953,7 @@ exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    pos
 
 
 /***/ }),
-/* 245 */
+/* 250 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -80826,7 +82528,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 246 */
+/* 251 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -82006,19 +83708,19 @@ if (false) {
 }
 
 /***/ }),
-/* 247 */
+/* 252 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(248)
+  __webpack_require__(253)
 }
 var normalizeComponent = __webpack_require__(3)
 /* script */
-var __vue_script__ = __webpack_require__(250)
+var __vue_script__ = __webpack_require__(255)
 /* template */
-var __vue_template__ = __webpack_require__(251)
+var __vue_template__ = __webpack_require__(256)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -82057,13 +83759,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 248 */
+/* 253 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(249);
+var content = __webpack_require__(254);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -82083,7 +83785,7 @@ if(false) {
 }
 
 /***/ }),
-/* 249 */
+/* 254 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)(false);
@@ -82097,7 +83799,7 @@ exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    pos
 
 
 /***/ }),
-/* 250 */
+/* 255 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -82462,7 +84164,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 251 */
+/* 256 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -83104,19 +84806,19 @@ if (false) {
 }
 
 /***/ }),
-/* 252 */
+/* 257 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(253)
+  __webpack_require__(258)
 }
 var normalizeComponent = __webpack_require__(3)
 /* script */
-var __vue_script__ = __webpack_require__(255)
+var __vue_script__ = __webpack_require__(260)
 /* template */
-var __vue_template__ = __webpack_require__(256)
+var __vue_template__ = __webpack_require__(261)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -83155,13 +84857,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 253 */
+/* 258 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(254);
+var content = __webpack_require__(259);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -83181,7 +84883,7 @@ if(false) {
 }
 
 /***/ }),
-/* 254 */
+/* 259 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)(false);
@@ -83195,7 +84897,7 @@ exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    pos
 
 
 /***/ }),
-/* 255 */
+/* 260 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -84533,7 +86235,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 });
 
 /***/ }),
-/* 256 */
+/* 261 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -87757,19 +89459,19 @@ if (false) {
 }
 
 /***/ }),
-/* 257 */
+/* 262 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(258)
+  __webpack_require__(263)
 }
 var normalizeComponent = __webpack_require__(3)
 /* script */
-var __vue_script__ = __webpack_require__(260)
+var __vue_script__ = __webpack_require__(265)
 /* template */
-var __vue_template__ = __webpack_require__(261)
+var __vue_template__ = __webpack_require__(266)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -87808,13 +89510,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 258 */
+/* 263 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(259);
+var content = __webpack_require__(264);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -87834,7 +89536,7 @@ if(false) {
 }
 
 /***/ }),
-/* 259 */
+/* 264 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)(false);
@@ -87848,7 +89550,7 @@ exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    pos
 
 
 /***/ }),
-/* 260 */
+/* 265 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -88017,6 +89719,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
+            proceso: false,
             id: 0,
             partida: '',
             costo: 0,
@@ -88101,10 +89804,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         /**Metodo para registrar  */
         registrarPartida: function registrarPartida() {
-            if (this.validarPartida()) //Se verifica si hay un error (campo vacio)
+            if (this.validarPartida() || this.proceso == true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+
+            this.proceso = true;
 
             var me = this;
             //Con axios se llama el metodo store de PartidaController
@@ -88113,6 +89818,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'modelo_id': this.modelo_id,
                 'costo': this.costo
             }).then(function (response) {
+                me.proceso = false;
                 me.cerrarModal(); //al guardar el registro se cierra el modal
                 me.listarPartidas(1, '', 'partida'); //se enlistan nuevamente los registros
                 //Se muestra mensaje Success
@@ -88138,10 +89844,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             }
         },
         actualizarPartida: function actualizarPartida() {
-            if (this.validarPartida()) //Se verifica si hay un error (campo vacio)
+            if (this.validarPartida() || this.proceso == true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+
+            this.proceso = true;
 
             var me = this;
             //Con axios se llama el metodo update de PartidaController
@@ -88151,6 +89859,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'costo': this.costo,
                 'id': this.id
             }).then(function (response) {
+                me.proceso = false;
                 me.cerrarModal();
                 me.listarPartidas(1, '', 'partida');
                 //window.alert("Cambios guardados correctamente");
@@ -88166,6 +89875,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             });
         },
         actualizarCosto: function actualizarCosto(id, costo, modelo) {
+            if (this.proceso == true) {
+                return;
+            }
+            this.proceso = true;
 
             var me = this;
             //Con axios se llama el metodo update de PartidaController
@@ -88175,7 +89888,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'costo': costo,
                 'id': id
             }).then(function (response) {
-
+                me.proceso = false;
                 me.listarPartidas(1, modelo, 'partidas.modelo_id');
                 //window.alert("Cambios guardados correctamente");
                 var toast = Swal.mixin({
@@ -88317,7 +90030,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 261 */
+/* 266 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -89030,19 +90743,19 @@ if (false) {
 }
 
 /***/ }),
-/* 262 */
+/* 267 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(263)
+  __webpack_require__(268)
 }
 var normalizeComponent = __webpack_require__(3)
 /* script */
-var __vue_script__ = __webpack_require__(265)
+var __vue_script__ = __webpack_require__(270)
 /* template */
-var __vue_template__ = __webpack_require__(266)
+var __vue_template__ = __webpack_require__(271)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -89081,13 +90794,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 263 */
+/* 268 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(264);
+var content = __webpack_require__(269);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -89107,7 +90820,7 @@ if(false) {
 }
 
 /***/ }),
-/* 264 */
+/* 269 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)(false);
@@ -89121,7 +90834,7 @@ exports.push([module.i, "\n.modal-content{\n        width: 100% !important;\n   
 
 
 /***/ }),
-/* 265 */
+/* 270 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -89732,7 +91445,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 266 */
+/* 271 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -90968,19 +92681,19 @@ if (false) {
 }
 
 /***/ }),
-/* 267 */
+/* 272 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(268)
+  __webpack_require__(273)
 }
 var normalizeComponent = __webpack_require__(3)
 /* script */
-var __vue_script__ = __webpack_require__(270)
+var __vue_script__ = __webpack_require__(275)
 /* template */
-var __vue_template__ = __webpack_require__(271)
+var __vue_template__ = __webpack_require__(276)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -91019,13 +92732,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 268 */
+/* 273 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(269);
+var content = __webpack_require__(274);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -91045,7 +92758,7 @@ if(false) {
 }
 
 /***/ }),
-/* 269 */
+/* 274 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)(false);
@@ -91059,7 +92772,7 @@ exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    pos
 
 
 /***/ }),
-/* 270 */
+/* 275 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -91140,6 +92853,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
+            proceso: false,
             rol_id: 0,
             nombre: '',
             descripcion: '',
@@ -91215,7 +92929,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 271 */
+/* 276 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -91491,19 +93205,19 @@ if (false) {
 }
 
 /***/ }),
-/* 272 */
+/* 277 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(273)
+  __webpack_require__(278)
 }
 var normalizeComponent = __webpack_require__(3)
 /* script */
-var __vue_script__ = __webpack_require__(275)
+var __vue_script__ = __webpack_require__(280)
 /* template */
-var __vue_template__ = __webpack_require__(276)
+var __vue_template__ = __webpack_require__(281)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -91542,13 +93256,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 273 */
+/* 278 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(274);
+var content = __webpack_require__(279);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -91568,7 +93282,7 @@ if(false) {
 }
 
 /***/ }),
-/* 274 */
+/* 279 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)(false);
@@ -91582,7 +93296,7 @@ exports.push([module.i, "\n.form-control:disabled, .form-control[readonly] {\n  
 
 
 /***/ }),
-/* 275 */
+/* 280 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -91874,6 +93588,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
+            proceso: false,
             id: 0,
             id_persona: 0,
             usuario: '',
@@ -92028,10 +93743,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             me.listarPersonal(page, buscar, criterio);
         },
         asignarUsuario: function asignarUsuario() {
-            if (this.validarUsuario()) //Se verifica si hay un error (campo vacio)
+            if (this.validarUsuario() || this.proceso == true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+            this.proceso = true;
             var me = this;
             //Con axios se llama el metodo store de PersonalController
             axios.post('/usuarios/asignar', {
@@ -92042,6 +93758,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'condicion': this.condicion
 
             }).then(function (response) {
+                me.proceso = false;
                 me.cerrarModal(); //al guardar el registro se cierra el modal
                 me.listarPersonal(1, '', 'Personal'); //se enlistan nuevamente los registros
                 //Se muestra mensaje Success
@@ -92060,10 +93777,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         /**Metodo para registrar  */
         registrarPersonal: function registrarPersonal() {
-            if (this.validarPersonal()) //Se verifica si hay un error (campo vacio)
+            if (this.validarPersonal() || this.proceso == true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+
+            this.proceso = true;
 
             var me = this;
             //Con axios se llama el metodo store de PersonalController
@@ -92088,6 +93807,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'condicion': this.condicion
 
             }).then(function (response) {
+                me.proceso = false;
                 me.cerrarModal(); //al guardar el registro se cierra el modal
                 me.listarPersonal(1, '', 'Personal'); //se enlistan nuevamente los registros
                 //Se muestra mensaje Success
@@ -92108,10 +93828,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             });
         },
         actualizarPersonal: function actualizarPersonal() {
-            if (this.validarPersonal()) //Se verifica si hay un error (campo vacio)
+            if (this.validarPersonal() || this.proceso == true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+
+            this.proceso = true;
 
             var me = this;
             //Con axios se llama el metodo update de PersonalController
@@ -92136,6 +93858,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'rol_id': this.rol_id,
                 'condicion': this.condicion
             }).then(function (response) {
+                me.proceso = false;
                 me.cerrarModal();
                 me.listarPersonal(1, '', 'nombre');
                 //window.alert("Cambios guardados correctamente");
@@ -92427,7 +94150,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 276 */
+/* 281 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -93783,19 +95506,19 @@ if (false) {
 }
 
 /***/ }),
-/* 277 */
+/* 282 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(278)
+  __webpack_require__(283)
 }
 var normalizeComponent = __webpack_require__(3)
 /* script */
-var __vue_script__ = __webpack_require__(280)
+var __vue_script__ = __webpack_require__(285)
 /* template */
-var __vue_template__ = __webpack_require__(281)
+var __vue_template__ = __webpack_require__(286)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -93834,13 +95557,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 278 */
+/* 283 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(279);
+var content = __webpack_require__(284);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -93860,7 +95583,7 @@ if(false) {
 }
 
 /***/ }),
-/* 279 */
+/* 284 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)(false);
@@ -93874,7 +95597,7 @@ exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    pos
 
 
 /***/ }),
-/* 280 */
+/* 285 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -93993,6 +95716,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
+            proceso: false,
             id: 0,
             nombre: '',
             arrayMedios: [],
@@ -94065,16 +95789,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         /**Metodo para registrar  */
         registrarMedio: function registrarMedio() {
-            if (this.validarMedio()) //Se verifica si hay un error (campo vacio)
+            if (this.validarMedio() || this.proceso == true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+            this.proceso = true;
 
             var me = this;
             //Con axios se llama el metodo store de DepartamentoController
             axios.post('/medio_publicitario/registrar', {
                 'nombre': this.nombre
             }).then(function (response) {
+                me.proceso = false;
                 me.cerrarModal(); //al guardar el registro se cierra el modal
                 me.listarMedios(1, '', 'nombre'); //se enlistan nuevamente los registros
                 //Se muestra mensaje Success
@@ -94090,10 +95816,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             });
         },
         actualizarMedio: function actualizarMedio() {
-            if (this.validarMedio()) //Se verifica si hay un error (campo vacio)
+            if (this.validarMedio() || this.proceso == true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+
+            this.proceso = true;
 
             var me = this;
             //Con axios se llama el metodo update de DepartamentoController
@@ -94101,6 +95829,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'nombre': this.nombre,
                 'id': this.id
             }).then(function (response) {
+                me.proceso = false;
                 me.cerrarModal();
                 me.listarMedios(1, '', 'nombre'); //se enlistan nuevamente los registros
                 //window.alert("Cambios guardados correctamente");
@@ -94202,7 +95931,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 281 */
+/* 286 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -94623,19 +96352,19 @@ if (false) {
 }
 
 /***/ }),
-/* 282 */
+/* 287 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(283)
+  __webpack_require__(288)
 }
 var normalizeComponent = __webpack_require__(3)
 /* script */
-var __vue_script__ = __webpack_require__(285)
+var __vue_script__ = __webpack_require__(290)
 /* template */
-var __vue_template__ = __webpack_require__(286)
+var __vue_template__ = __webpack_require__(291)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -94674,13 +96403,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 283 */
+/* 288 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(284);
+var content = __webpack_require__(289);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -94700,7 +96429,7 @@ if(false) {
 }
 
 /***/ }),
-/* 284 */
+/* 289 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)(false);
@@ -94714,7 +96443,7 @@ exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    pos
 
 
 /***/ }),
-/* 285 */
+/* 290 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -95054,7 +96783,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 286 */
+/* 291 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -95472,19 +97201,19 @@ if (false) {
 }
 
 /***/ }),
-/* 287 */
+/* 292 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(288)
+  __webpack_require__(293)
 }
 var normalizeComponent = __webpack_require__(3)
 /* script */
-var __vue_script__ = __webpack_require__(290)
+var __vue_script__ = __webpack_require__(295)
 /* template */
-var __vue_template__ = __webpack_require__(291)
+var __vue_template__ = __webpack_require__(296)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -95523,13 +97252,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 288 */
+/* 293 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(289);
+var content = __webpack_require__(294);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -95549,7 +97278,7 @@ if(false) {
 }
 
 /***/ }),
-/* 289 */
+/* 294 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)(false);
@@ -95563,7 +97292,7 @@ exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    pos
 
 
 /***/ }),
-/* 290 */
+/* 295 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -96457,6 +98186,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
+            proceso: false,
             id: 0,
             clasificacion: 1,
             nombre: '',
@@ -96707,10 +98437,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         //Envia la petición para visualizar la data de esta pagina
         me.listarProspectos(page, buscar, criterio);
     }), _defineProperty(_methods, 'registrarProspecto', function registrarProspecto() {
-        if (this.validarProspecto()) //Se verifica si hay un error (campo vacio)
+        if (this.validarProspecto() || this.proceso == true) //Se verifica si hay un error (campo vacio)
             {
                 return;
             }
+
+        this.proceso = true;
 
         var me = this;
         //Con axios se llama el metodo store del controller
@@ -96753,6 +98485,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             'edo_civil_coa': this.e_civil_coa,
             'tipo_casa_coa': this.tipo_casa_coa
         }).then(function (response) {
+            me.proceso = false;
             me.listado = 1;
             me.limpiarDatos();
             me.listarProspectos(1, '', 'ini_obras.clave'); //se enlistan nuevamente los registros
@@ -96768,10 +98501,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             console.log(error);
         });
     }), _defineProperty(_methods, 'registrarCoacreditado', function registrarCoacreditado() {
-        if (this.validarCoacreditado()) //Se verifica si hay un error (campo vacio)
+        if (this.validarCoacreditado() || this.proceso == true) //Se verifica si hay un error (campo vacio)
             {
                 return;
             }
+
+        this.proceso = true;
 
         var me = this;
         //Con axios se llama el metodo store del controller
@@ -96795,6 +98530,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             'proyecto_interes_id': this.proyecto_interes_id,
             'lugar_contacto': this.lugar_contacto
         }).then(function (response) {
+            me.proceso = false;
             me.cerrarModal();
             //Se muestra mensaje Success
             swal({
@@ -96808,10 +98544,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             console.log(error);
         });
     }), _defineProperty(_methods, 'actualizarProspecto', function actualizarProspecto() {
-        if (this.validarProspecto()) //Se verifica si hay un error (campo vacio)
+        if (this.validarProspecto() || this.proceso == true) //Se verifica si hay un error (campo vacio)
             {
                 return;
             }
+
+        this.proceso = true;
 
         var me = this;
         //Con axios se llama el metodo store de FraccionaminetoController
@@ -96855,6 +98593,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             'edo_civil_coa': this.e_civil_coa,
             'tipo_casa_coa': this.tipo_casa_coa
         }).then(function (response) {
+            me.proceso = false;
             me.listado = 1;
             me.limpiarDatos();
             me.listarProspectos(1, '', 'ini_obras.clave'); //se enlistan nuevamente los registros
@@ -97023,6 +98762,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         this.e_civil_coa = 0;
         this.tipo_casa_coa = 0;
         this.conyugeNom = '';
+        this.proceso = false;
 
         this.errorProspecto = 0;
         this.errorMostrarMsjProspecto = [];
@@ -97186,7 +98926,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 });
 
 /***/ }),
-/* 291 */
+/* 296 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -101246,19 +102986,19 @@ if (false) {
 }
 
 /***/ }),
-/* 292 */
+/* 297 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(293)
+  __webpack_require__(298)
 }
 var normalizeComponent = __webpack_require__(3)
 /* script */
-var __vue_script__ = __webpack_require__(295)
+var __vue_script__ = __webpack_require__(300)
 /* template */
-var __vue_template__ = __webpack_require__(296)
+var __vue_template__ = __webpack_require__(301)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -101297,13 +103037,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 293 */
+/* 298 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(294);
+var content = __webpack_require__(299);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -101323,7 +103063,7 @@ if(false) {
 }
 
 /***/ }),
-/* 294 */
+/* 299 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)(false);
@@ -101337,7 +103077,7 @@ exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    pos
 
 
 /***/ }),
-/* 295 */
+/* 300 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -101671,7 +103411,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 296 */
+/* 301 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -102096,19 +103836,19 @@ if (false) {
 }
 
 /***/ }),
-/* 297 */
+/* 302 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(298)
+  __webpack_require__(303)
 }
 var normalizeComponent = __webpack_require__(3)
 /* script */
-var __vue_script__ = __webpack_require__(300)
+var __vue_script__ = __webpack_require__(305)
 /* template */
-var __vue_template__ = __webpack_require__(301)
+var __vue_template__ = __webpack_require__(306)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -102147,13 +103887,13 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 298 */
+/* 303 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(299);
+var content = __webpack_require__(304);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
@@ -102173,7 +103913,7 @@ if(false) {
 }
 
 /***/ }),
-/* 299 */
+/* 304 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)(false);
@@ -102187,7 +103927,7 @@ exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    pos
 
 
 /***/ }),
-/* 300 */
+/* 305 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -102322,6 +104062,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
+            proceso: false,
             id: 0,
             nombre: '',
             institucion_fin: '',
@@ -102407,10 +104148,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         /**Metodo para registrar  */
         registrarCredito: function registrarCredito() {
-            if (this.validarCredito()) //Se verifica si hay un error (campo vacio)
+            if (this.validarCredito() || this.proceso == true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+            this.proceso = true;
 
             var me = this;
             //Con axios se llama el metodo store de DepartamentoController
@@ -102418,6 +104160,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'nombre': this.nombre,
                 'institucion_fin': this.institucion_fin
             }).then(function (response) {
+                me.proceso = false;
                 me.cerrarModal(); //al guardar el registro se cierra el modal
                 me.listarCreditos(1, '', 'nombre'); //se enlistan nuevamente los registros
                 //Se muestra mensaje Success
@@ -102433,10 +104176,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             });
         },
         actualizarCredito: function actualizarCredito() {
-            if (this.validarCredito()) //Se verifica si hay un error (campo vacio)
+            if (this.validarCredito() || this.proceso == true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
+
+            this.proceso = true;
 
             var me = this;
             //Con axios se llama el metodo update de DepartamentoController
@@ -102445,6 +104190,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'institucion_fin': this.institucion_fin,
                 'id': this.id
             }).then(function (response) {
+                me.proceso = false;
                 me.cerrarModal();
                 me.listarCreditos(1, '', 'nombre'); //se enlistan nuevamente los registros
                 //window.alert("Cambios guardados correctamente");
@@ -102501,6 +104247,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             return this.errorCredito;
         },
         cerrarModal: function cerrarModal() {
+            this.proceso = false;
             this.modal = 0;
             this.tituloModal = '';
             this.nombre = '';
@@ -102550,7 +104297,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 301 */
+/* 306 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {

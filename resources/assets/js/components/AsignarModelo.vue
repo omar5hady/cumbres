@@ -106,7 +106,7 @@
                                         <td v-text="lote.construccion"></td>
                                         <td v-text="lote.credito_puente"></td>
                                         <td>
-                                            <span v-if = "lote.casa_muestra==0 && lote.lote_comercial==0" class="badge badge-success">Activo</span>
+                                            <span v-if = "lote.casa_muestra==0 && lote.lote_comercial==0 && lote.habilitado==1" class="badge badge-success">Activo</span>
                                             <span v-else class="badge badge-danger">Inactivo</span>
                                         </td> 
                                     </tr>                               
@@ -245,6 +245,17 @@
                                         <textarea rows="3" cols="30" v-model="comentarios" class="form-control" placeholder="Comentarios"></textarea>
                                     </div>
                                 </div>
+
+                                <div class="form-group row" v-if="modelo_id!=0">
+                                    <label class="col-md-3 form-control-label" for="text-input">Estado </label>
+                                    <div class="col-md-3">
+                                        <select class="form-control" v-model="habilitado">
+                                            <option value="0">Deshabilitar</option>
+                                            <option value="1">Habilitar</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Casa muestra</label>
                                     <div class="col-md-2">
@@ -274,6 +285,8 @@
                                             <label class="form-check-label" for="radio4">No </label>
                                         </div>
                                     </div>
+
+                                    
 
                                     <!-- Hidden para agregar el id de la empresa -->
                                     
@@ -394,6 +407,7 @@
                 construccion : 0,
                 casa_muestra: 0,
                 lote_comercial: 0,
+                habilitado: 0,
                 credito_puente:'',
                 comentarios: '',
                 
@@ -639,6 +653,7 @@
                     'construccion': this.construccion,
                     'casa_muestra': this.casa_muestra,
                     'lote_comercial': this.lote_comercial,
+                    'habilitado': this.habilitado,
                     'credito_puente':this.credito_puente,
                     'comentarios': this.comentarios,
                     
@@ -729,6 +744,7 @@
             },
 
             cerrarModal(){
+                this.proceso=false;
                 this.modal = 0;
                 this.tituloModal = '';
                 this.fraccionamiento_id = '';
@@ -781,17 +797,24 @@
                         switch(accion){
                             case 'actualizar':
                             {
+                                this.modelo_id=0;
+                                this.etapa_id=0;
+                                if(data['modelo']!='Por Asignar')
+                                    this.modelo_id=data['modelo_id'];
+                                if(data['etapas']!='Sin Asignar')
+                                    this.etapa_id=data['etapa_id'];
+                                    
                                 this.proceso=false;
                                 this.modal =1;
                                 this.tituloModal='Actualizar Lote';
                                 this.tipoAccion=2;
                                 this.id=data['id'];
                                 this.fraccionamiento_id=data['fraccionamiento_id'];
-                                this.etapa_id=data['etapa_id'];
+                                
                                 this.manzana=data['manzana'];
                                 this.num_lote=data['num_lote'];
                                 this.sublote=data['sublote'];
-                                this.modelo_id=data['modelo_id'];
+                                
                                 this.empresa_id=data['empresa_id'];
                                 this.calle=data['calle'];
                                 this.numero=data['numero'];
@@ -800,6 +823,7 @@
                                 this.construccion=data['construccion'];
                                 this.casa_muestra=data['casa_muestra'];
                                 this.lote_comercial=data['lote_comercial'];
+                                this.habilitado=data['habilitado'];
                                 this.credito_puente=data['credito_puente'];
                                 this.comentarios=data['comentarios'];
                                 break;

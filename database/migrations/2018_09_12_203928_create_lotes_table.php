@@ -28,8 +28,10 @@ class CreateLotesTable extends Migration
             $table->float('terreno'); /** Dimensiones */
             $table->float('construccion');
             $table->boolean('casa_muestra')->default(0);
+            $table->boolean('apartado')->default(0);
             $table->boolean('lote_comercial')->default(0);
             $table->boolean('ini_obra')->default(0);
+            $table->boolean('habilitado')->default(0);
             $table->string('comentarios')->nullable();
             $table->string('clv_catastral',13)->nullable();
             $table->integer('etapa_servicios')->nullable();
@@ -42,6 +44,10 @@ class CreateLotesTable extends Migration
             $table->string('aviso',11)->default(0);    
             $table->double('obra_extra')->default(0);
 
+            ///////// Datos para precio //////////////////
+            $table->double('precio_base')->default(0);
+            $table->double('excedente_terreno')->default(0);
+            $table->double('sobreprecio')->default(0);
 
             $table->foreign('fraccionamiento_id')->references('id')->on('fraccionamientos');
             $table->foreign('etapa_id')->references('id')->on('etapas'); 

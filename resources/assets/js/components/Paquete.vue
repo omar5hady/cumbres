@@ -409,7 +409,19 @@
                 this.errorMostrarMsjPaquete=[];
 
                 if(!this.nombre) //Si la variable departamento esta vacia
-                    this.errorMostrarMsjPaquete.push("El nombre del Paquete no puede ir vacio.");
+                    this.errorMostrarMsjPaquete.push("El nombre del paquete no puede ir vacio.");
+
+                if(!this.fraccionamiento_id) //Si la variable departamento esta vacia
+                    this.errorMostrarMsjPaquete.push("Seleccionar fraccionamiento.");
+
+                if(!this.etapa_id) //Si la variable departamento esta vacia
+                    this.errorMostrarMsjPaquete.push("Seleccionar etapa");
+
+                if(!this.costo) //Si la variable departamento esta vacia
+                    this.errorMostrarMsjPaquete.push("El costo del paquete no puede ir vacio.");
+                
+                if(!this.descripcion) //Si la variable departamento esta vacia
+                    this.errorMostrarMsjPaquete.push("La descripción del paquete no puede ir vacia.");
 
                 if(this.errorMostrarMsjPaquete.length)//Si el mensaje tiene almacenado algo en el array
                     this.errorPaquete = 1;
@@ -428,6 +440,7 @@
                 this.descripcion = '';
                 this.errorPaquete = 0;
                 this.errorMostrarMsjPaquete = [];
+                this.proceso=false;
 
             },
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */

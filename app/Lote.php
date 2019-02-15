@@ -11,8 +11,8 @@ class lote extends Model
     protected $fillable = ['fraccionamiento_id','etapa_id','manzana','num_lote','sublote','modelo_id',
                             'empresa_id','calle','numero','interior','terreno','construccion','casa_muestra',
                             'lote_comercial','ini_obra','clv_catastral','etapa_servicios','credito_puente',
-                            'siembra','fecha_ini','fecha_fin','arquitecto_id','ehl_solicitado',
-                            'aviso','obra_extra'];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
+                            'siembra','fecha_ini','fecha_fin','arquitecto_id','ehl_solicitado','sobreprecio',
+                            'aviso','obra_extra', 'habilitado','apartado','excedente_terreno','precio_base'];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
     
                            
     public function fraccionamiento(){

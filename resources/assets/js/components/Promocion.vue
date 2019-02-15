@@ -703,6 +703,9 @@
                 if(this.etapa_id==0) //Si la variable departamento esta vacia
                     this.errorMostrarMsjPromocion.push("Debe seleccionar la etapa.");
 
+                if(this.descripcion=='') //Si la variable departamento esta vacia
+                    this.errorMostrarMsjPromocion.push("Se debe escribir una descripción.");
+
                 if(this.errorMostrarMsjPromocion.length)//Si el mensaje tiene almacenado algo en el array
                     this.errorPromocion = 1;
 

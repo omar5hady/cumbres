@@ -4,12 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\AvanceController;
 use Illuminate\Http\Request;
+use App\Precio_etapa;
+use App\Sobreprecio_modelo;
+use App\Precio_modelo;
 use App\Lote;
+use App\Lote_promocion;
 use App\Modelo;
 use App\Etapa;
 use App\Licencia;
 use App\Partida;
 use App\Avance;
+use App\Promocion;
 use Session;
 use Excel;
 use File;
@@ -18,11 +23,7 @@ use Carbon\Carbon;
 
 class LoteController extends Controller
 {
-     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index(Request $request) //Index para modulo asignar modelo
     {
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
@@ -40,7 +41,7 @@ class LoteController extends Controller
             ->join('empresas','lotes.empresa_id','=','empresas.id')
             ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
                       'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                      'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
+                      'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
                       'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
                       'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios')
                       ->orderBy('fraccionamientos.nombre','DESC')
@@ -55,7 +56,7 @@ class LoteController extends Controller
                 ->join('empresas','lotes.empresa_id','=','empresas.id')
                 ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
                         'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                        'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
+                        'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
                         'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
                         'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios')
                     ->where($criterio, 'like', '%'. $buscar . '%')
@@ -71,7 +72,7 @@ class LoteController extends Controller
                     ->join('empresas','lotes.empresa_id','=','empresas.id')
                     ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
                             'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                            'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
+                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
                             'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
                             'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios')
                         ->where($criterio, 'like', '%'. $buscar . '%')
@@ -86,7 +87,7 @@ class LoteController extends Controller
                     ->join('empresas','lotes.empresa_id','=','empresas.id')
                     ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
                             'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                            'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
+                            'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
                             'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
                             'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios')
                         ->where($criterio, 'like', '%'. $buscar . '%')
@@ -203,23 +204,6 @@ class LoteController extends Controller
         ];
     }
 
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     //funcion para insertar en la tabla
     public function store(Request $request)
     {
@@ -271,28 +255,6 @@ class LoteController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -323,10 +285,10 @@ class LoteController extends Controller
         $lote->save();
     }
 
-
     public function update2(Request $request) //Update asignar modelo
     {
         $siembra = '';
+        $terrenoExcedente = 0;
        if(!$request->ajax())return redirect('/');
 
        $etapa= Etapa::select('num_etapa')
@@ -340,6 +302,22 @@ class LoteController extends Controller
        $nombreModelo = Modelo::select('nombre')
        ->where('id','=',$modeloOld[0]->modelo_id)
        ->get();
+
+       $terrenoModelo = Modelo::select('terreno')
+       ->where('id','=',$request->modelo_id)
+       ->get();
+
+       $precioTerreno = Precio_etapa::select('precio_excedente')
+       ->where('etapa_id','=',$request->etapa_id)
+       ->get();
+
+       $precioBase = Precio_modelo::select('precio_modelo')
+       ->where('modelo_id','=',$request->modelo_id)
+       ->get();
+
+       $sobreprecios = Sobreprecio_modelo::join('sobreprecios_etapas','sobreprecios_modelos.sobreprecio_etapa_id','=','sobreprecios_etapas.id')
+       ->select(DB::raw("SUM(sobreprecios_etapas.sobreprecio) as sobreprecios"))
+       ->where('sobreprecios_modelos.lote_id','=',$request->id)->get();
 
         //FindOrFail se utiliza para buscar lo que recibe de argumento
         $lote = Lote::findOrFail($request->id);
@@ -358,9 +336,6 @@ class LoteController extends Controller
             if($nombreModelo[0]->nombre != "Por Asignar")
                 $licencia->modelo_ant = $nombreModelo[0]->nombre;
             $licencia->save();
-
-            
-            
         }
         $lote->empresa_id = 1;
         $lote->calle = $request->calle;
@@ -368,12 +343,24 @@ class LoteController extends Controller
         $lote->interior = $request->interior;
         $lote->terreno = $request->terreno;
         $lote->construccion = $request->construccion;
-        $lote->credito_puente = $request->credito_puente;     
+        $lote->credito_puente = $request->credito_puente;  
+        $lote->lote_comercial = $request->lote_comercial;   
+        $lote->casa_muestra = $request->casa_muestra;
+
+        if($request->habilitado == 1){
+            $terrenoExcedente = ($lote->terreno - $terrenoModelo[0]->terreno);
+            if($terrenoExcedente > 0)
+                $lote->excedente_terreno = $terrenoExcedente * $precioTerreno[0]->precio_excedente;
+            $lote->precio_base = $precioBase[0]->precio_modelo;
+            if($sobreprecios[0]->sobreprecios != NULL)
+                $lote->sobreprecio = $sobreprecios[0]->sobreprecios;
+            else
+                $lote->sobreprecio = 0;
+        }
+        $lote->habilitado = $request->habilitado;
 
         $lote->save();
     }
-
-
 
     public function asignarMod(Request $request) // EN MASA
     {
@@ -441,20 +428,12 @@ class LoteController extends Controller
 
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Request $request)
     {
         if(!$request->ajax())return redirect('/');
         $lote = Lote::findOrFail($request->id);
         $lote->delete();
     }
-
-
 
     public function import(Request $request){
         //validate the xls file
@@ -541,9 +520,7 @@ class LoteController extends Controller
             }
         }
     }
-
-
-   
+  
     public function select_modelos_etapa(Request $request){
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
         if(!$request->ajax())return redirect('/');
@@ -640,7 +617,6 @@ class LoteController extends Controller
         ];
     }
 
-
     public function excelLotes (Request $request, $fraccionamiento_id)
     {
 
@@ -707,6 +683,50 @@ class LoteController extends Controller
         }
         
         )->download('xls');
+    }
+
+    public function indexLotesDisponibles (Request $request)
+    {
+        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+        ->join('licencias','lotes.id','=','licencias.id')
+        ->join('etapas','lotes.etapa_id','=','etapas.id')
+        ->join('modelos','lotes.modelo_id','=','modelos.id')
+        ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
+                  'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
+                  'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
+                  'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
+                  'lotes.sobreprecio', 'lotes.precio_base','lotes.excedente_terreno')
+                  ->where('lotes.habilitado','=',1)
+                  ->orderBy('fraccionamientos.nombre','DESC')
+                  ->orderBy('lotes.etapa_servicios','DESC')->paginate(7);  
+        
+        foreach($lotes as $index => $lote) {
+            $lote->precio_venta= $lote->sobreprecio + $lote->precio_base + $lote->excedente_terreno;
+            $promocion=[];
+            $promocion = Lote_promocion::join('promociones','lotes_promocion.promocion_id','=','promociones.id')
+                ->select('promociones.nombre','promociones.v_ini','promociones.v_fin','promociones.id')
+                ->where('lotes_promocion.lote_id','=',$lote->id)
+                ->where('promociones.v_fin','>',Carbon::today()->format('ymd'))->get();
+            if(sizeof($promocion) > 0){
+                $lote->v_iniPromo = $promocion[0]->v_ini;
+                $lote->v_finPromo = $promocion[0]->v_fin;
+                $lote->promocion = $promocion[0]->nombre;
+            }
+            else
+                $lote->promocion = 'Sin Promoción';
+        }
+
+        return [
+        'pagination' => [
+            'total'         => $lotes->total(),
+            'current_page'  => $lotes->currentPage(),
+            'per_page'      => $lotes->perPage(),
+            'last_page'     => $lotes->lastPage(),
+            'from'          => $lotes->firstItem(),
+            'to'            => $lotes->lastItem(),
+        ],
+        'lotes' => $lotes
+    ];
 
     }
 

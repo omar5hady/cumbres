@@ -118,6 +118,10 @@
             <template v-if="menu==72">
                 <usuario></usuario>
             </template>
+
+            <template v-if="menu==59">
+                <lote-disponible></lote-disponible>
+            </template>
    
             <template v-if="menu==60">
                 <prospectos></prospectos>

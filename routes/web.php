@@ -145,6 +145,7 @@ Route::group(['middleware' => ['auth']],function(){
     ////////////////////        RUTAS LOTES    /////////////////////////////////
     Route::get('/lote','LoteController@index');
     Route::get('/lote2','LoteController@index2');
+    Route::get('/lotesDisponibles','LoteController@indexLotesDisponibles');
     Route::post('/lote/registrar','LoteController@store');
     Route::put('/lote/actualizar','LoteController@update');
     Route::put('/lote/actualizar2','LoteController@update2');
