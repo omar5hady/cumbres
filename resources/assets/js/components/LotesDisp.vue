@@ -60,7 +60,7 @@
                                         <th>Promoción</th>
                                         <th>Fecha termino</th>
                                         <th>Canal de venta</th>
-                                    </tr>
+                                    </tr>s
                                 </thead>
                                 <tbody>
                                     <tr v-for="lote in arrayLote" :key="lote.id">

@@ -66684,9 +66684,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -67694,237 +67691,252 @@ var render = function() {
                 _c(
                   "tbody",
                   _vm._l(_vm.arrayLicencias, function(licencias) {
-                    return _c("tr", { key: licencias.id }, [
-                      _c("td", [
-                        _c(
-                          "button",
-                          {
-                            staticClass: "btn btn-warning btn-sm",
-                            attrs: { title: "Editar", type: "button" },
-                            on: {
-                              click: function($event) {
-                                _vm.abrirModal("lote", "actualizar", licencias)
-                              }
-                            }
-                          },
-                          [_c("i", { staticClass: "icon-pencil" })]
-                        ),
-                        _vm._v(" "),
-                        _c(
-                          "button",
-                          {
-                            staticClass: "btn btn-info btn-sm",
-                            attrs: { type: "button" },
-                            on: {
-                              click: function($event) {
-                                _vm.abrirModal2("lote", "ver", licencias)
-                              }
-                            }
-                          },
-                          [_c("i", { staticClass: "icon-magnifier" })]
-                        ),
-                        _vm._v(" "),
-                        _c(
-                          "button",
-                          {
-                            staticClass: "btn btn-default btn-sm",
-                            attrs: {
-                              title: "Subir foto y predial",
-                              type: "button"
-                            },
-                            on: {
-                              click: function($event) {
-                                _vm.abrirModal(
-                                  "lote",
-                                  "subirArchivo",
-                                  licencias
-                                )
-                              }
-                            }
-                          },
-                          [_c("i", { staticClass: "icon-cloud-upload" })]
-                        ),
-                        _vm._v(" "),
-                        licencias.foto_predial
-                          ? _c(
-                              "a",
-                              {
-                                staticClass: "btn btn-success btn-sm",
-                                attrs: {
-                                  title: "Descargar predial",
-                                  href:
-                                    "/downloadPredial/" + licencias.foto_predial
-                                }
-                              },
-                              [
-                                _c("i", {
-                                  staticClass: "fa fa-arrow-circle-down fa-lg"
-                                })
-                              ]
-                            )
-                          : _vm._e()
-                      ]),
-                      _vm._v(" "),
-                      _c("td", {
-                        domProps: { textContent: _vm._s(licencias.proyecto) }
-                      }),
-                      _vm._v(" "),
-                      _c("td", {
-                        domProps: { textContent: _vm._s(licencias.manzana) }
-                      }),
-                      _vm._v(" "),
-                      _c("td", {
-                        domProps: { textContent: _vm._s(licencias.num_lote) }
-                      }),
-                      _vm._v(" "),
-                      _c("td", {
-                        domProps: { textContent: _vm._s(licencias.terreno) }
-                      }),
-                      _vm._v(" "),
-                      _c("td", {
-                        domProps: {
-                          textContent: _vm._s(licencias.construccion)
+                    return _c(
+                      "tr",
+                      {
+                        key: licencias.id,
+                        on: {
+                          dblclick: function($event) {
+                            _vm.abrirModal2("lote", "ver", licencias)
+                          }
                         }
-                      }),
-                      _vm._v(" "),
-                      _c("td", [
-                        licencias.modelo != "Por Asignar" &&
-                        licencias.cambios == 0
-                          ? _c("span", {
-                              staticClass: "badge badge-success",
-                              domProps: {
-                                textContent: _vm._s(licencias.modelo)
+                      },
+                      [
+                        _c("td", [
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-warning btn-sm",
+                              attrs: { title: "Editar", type: "button" },
+                              on: {
+                                click: function($event) {
+                                  _vm.abrirModal(
+                                    "lote",
+                                    "actualizar",
+                                    licencias
+                                  )
+                                }
                               }
-                            })
-                          : _vm._e(),
-                        _vm._v(" "),
-                        licencias.modelo == "Por Asignar"
-                          ? _c("span", { staticClass: "badge badge-danger" }, [
-                              _vm._v("Por Asignar")
-                            ])
-                          : _vm._e(),
-                        _vm._v(" "),
-                        licencias.cambios == 1 && licencias.modelo_ant !== "N/A"
-                          ? _c("span", {
-                              staticClass: "badge badge-warning",
-                              domProps: {
-                                textContent: _vm._s(
-                                  licencias.modelo_ant + "->" + licencias.modelo
-                                )
-                              }
-                            })
-                          : _vm._e(),
-                        _vm._v(" "),
-                        licencias.cambios == 1 && licencias.modelo_ant == "N/A"
-                          ? _c("span", {
-                              staticClass: "badge badge-warning",
-                              domProps: {
-                                textContent: _vm._s(licencias.modelo)
-                              }
-                            })
-                          : _vm._e()
-                      ]),
-                      _vm._v(" "),
-                      _c("td", [
-                        licencias.arquitecto != "Sin Asignar  "
-                          ? _c("span", {
-                              staticClass: "badge badge-success",
-                              domProps: {
-                                textContent: _vm._s(
-                                  "Arq. " + licencias.arquitecto
-                                )
-                              }
-                            })
-                          : _c("span", { staticClass: "badge badge-danger" }, [
-                              _vm._v(" Por Asignar ")
-                            ])
-                      ]),
-                      _vm._v(" "),
-                      !licencias.siembra
-                        ? _c("td", { domProps: { textContent: _vm._s("") } })
-                        : _c("td", {
-                            domProps: {
-                              textContent: _vm._s(
-                                this.moment(licencias.siembra)
-                                  .locale("es")
-                                  .format("DD/MMM/YYYY")
-                              )
-                            }
-                          }),
-                      _vm._v(" "),
-                      !licencias.f_planos
-                        ? _c("td", { domProps: { textContent: _vm._s("") } })
-                        : _c("td", {
-                            domProps: {
-                              textContent: _vm._s(
-                                this.moment(licencias.f_planos)
-                                  .locale("es")
-                                  .format("DD/MMM/YYYY")
-                              )
-                            }
-                          }),
-                      _vm._v(" "),
-                      _c("td", [
-                        licencias.perito != "Sin Asignar  "
-                          ? _c("span", {
-                              staticClass: "badge badge-success",
-                              domProps: {
-                                textContent: _vm._s("Arq. " + licencias.perito)
-                              }
-                            })
-                          : _c("span", { staticClass: "badge badge-danger" }, [
-                              _vm._v(" Por Asignar ")
-                            ])
-                      ]),
-                      _vm._v(" "),
-                      !licencias.f_ingreso
-                        ? _c("td", { domProps: { textContent: _vm._s("") } })
-                        : _c("td", {
-                            domProps: {
-                              textContent: _vm._s(
-                                this.moment(licencias.f_ingreso)
-                                  .locale("es")
-                                  .format("DD/MMM/YYYY")
-                              )
-                            }
-                          }),
-                      _vm._v(" "),
-                      !licencias.f_salida
-                        ? _c("td", { domProps: { textContent: _vm._s("") } })
-                        : _c("td", {
-                            domProps: {
-                              textContent: _vm._s(
-                                this.moment(licencias.f_salida)
-                                  .locale("es")
-                                  .format("DD/MMM/YYYY")
-                              )
-                            }
-                          }),
-                      _vm._v(" "),
-                      !licencias.foto_lic
-                        ? _c("td", {
-                            domProps: {
-                              textContent: _vm._s(licencias.num_licencia)
-                            }
-                          })
-                        : _c("td", { staticStyle: { width: "7%" } }, [
-                            _c("a", {
+                            },
+                            [_c("i", { staticClass: "icon-pencil" })]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "button",
+                            {
                               staticClass: "btn btn-default btn-sm",
                               attrs: {
-                                href: "/downloadLicencias/" + licencias.foto_lic
+                                title: "Subir foto y predial",
+                                type: "button"
                               },
+                              on: {
+                                click: function($event) {
+                                  _vm.abrirModal(
+                                    "lote",
+                                    "subirArchivo",
+                                    licencias
+                                  )
+                                }
+                              }
+                            },
+                            [_c("i", { staticClass: "icon-cloud-upload" })]
+                          ),
+                          _vm._v(" "),
+                          licencias.foto_predial
+                            ? _c(
+                                "a",
+                                {
+                                  staticClass: "btn btn-success btn-sm",
+                                  attrs: {
+                                    title: "Descargar predial",
+                                    href:
+                                      "/downloadPredial/" +
+                                      licencias.foto_predial
+                                  }
+                                },
+                                [
+                                  _c("i", {
+                                    staticClass: "fa fa-arrow-circle-down fa-lg"
+                                  })
+                                ]
+                              )
+                            : _vm._e()
+                        ]),
+                        _vm._v(" "),
+                        _c("td", {
+                          domProps: { textContent: _vm._s(licencias.proyecto) }
+                        }),
+                        _vm._v(" "),
+                        _c("td", {
+                          domProps: { textContent: _vm._s(licencias.manzana) }
+                        }),
+                        _vm._v(" "),
+                        _c("td", {
+                          domProps: { textContent: _vm._s(licencias.num_lote) }
+                        }),
+                        _vm._v(" "),
+                        _c("td", {
+                          domProps: { textContent: _vm._s(licencias.terreno) }
+                        }),
+                        _vm._v(" "),
+                        _c("td", {
+                          domProps: {
+                            textContent: _vm._s(licencias.construccion)
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c("td", [
+                          licencias.modelo != "Por Asignar" &&
+                          licencias.cambios == 0
+                            ? _c("span", {
+                                staticClass: "badge badge-success",
+                                domProps: {
+                                  textContent: _vm._s(licencias.modelo)
+                                }
+                              })
+                            : _vm._e(),
+                          _vm._v(" "),
+                          licencias.modelo == "Por Asignar"
+                            ? _c(
+                                "span",
+                                { staticClass: "badge badge-danger" },
+                                [_vm._v("Por Asignar")]
+                              )
+                            : _vm._e(),
+                          _vm._v(" "),
+                          licencias.cambios == 1 &&
+                          licencias.modelo_ant !== "N/A"
+                            ? _c("span", {
+                                staticClass: "badge badge-warning",
+                                domProps: {
+                                  textContent: _vm._s(
+                                    licencias.modelo_ant +
+                                      "->" +
+                                      licencias.modelo
+                                  )
+                                }
+                              })
+                            : _vm._e(),
+                          _vm._v(" "),
+                          licencias.cambios == 1 &&
+                          licencias.modelo_ant == "N/A"
+                            ? _c("span", {
+                                staticClass: "badge badge-warning",
+                                domProps: {
+                                  textContent: _vm._s(licencias.modelo)
+                                }
+                              })
+                            : _vm._e()
+                        ]),
+                        _vm._v(" "),
+                        _c("td", [
+                          licencias.arquitecto != "Sin Asignar  "
+                            ? _c("span", {
+                                staticClass: "badge badge-success",
+                                domProps: {
+                                  textContent: _vm._s(
+                                    "Arq. " + licencias.arquitecto
+                                  )
+                                }
+                              })
+                            : _c(
+                                "span",
+                                { staticClass: "badge badge-danger" },
+                                [_vm._v(" Por Asignar ")]
+                              )
+                        ]),
+                        _vm._v(" "),
+                        !licencias.siembra
+                          ? _c("td", { domProps: { textContent: _vm._s("") } })
+                          : _c("td", {
+                              domProps: {
+                                textContent: _vm._s(
+                                  this.moment(licencias.siembra)
+                                    .locale("es")
+                                    .format("DD/MMM/YYYY")
+                                )
+                              }
+                            }),
+                        _vm._v(" "),
+                        !licencias.f_planos
+                          ? _c("td", { domProps: { textContent: _vm._s("") } })
+                          : _c("td", {
+                              domProps: {
+                                textContent: _vm._s(
+                                  this.moment(licencias.f_planos)
+                                    .locale("es")
+                                    .format("DD/MMM/YYYY")
+                                )
+                              }
+                            }),
+                        _vm._v(" "),
+                        _c("td", [
+                          licencias.perito != "Sin Asignar  "
+                            ? _c("span", {
+                                staticClass: "badge badge-success",
+                                domProps: {
+                                  textContent: _vm._s(
+                                    "Arq. " + licencias.perito
+                                  )
+                                }
+                              })
+                            : _c(
+                                "span",
+                                { staticClass: "badge badge-danger" },
+                                [_vm._v(" Por Asignar ")]
+                              )
+                        ]),
+                        _vm._v(" "),
+                        !licencias.f_ingreso
+                          ? _c("td", { domProps: { textContent: _vm._s("") } })
+                          : _c("td", {
+                              domProps: {
+                                textContent: _vm._s(
+                                  this.moment(licencias.f_ingreso)
+                                    .locale("es")
+                                    .format("DD/MMM/YYYY")
+                                )
+                              }
+                            }),
+                        _vm._v(" "),
+                        !licencias.f_salida
+                          ? _c("td", { domProps: { textContent: _vm._s("") } })
+                          : _c("td", {
+                              domProps: {
+                                textContent: _vm._s(
+                                  this.moment(licencias.f_salida)
+                                    .locale("es")
+                                    .format("DD/MMM/YYYY")
+                                )
+                              }
+                            }),
+                        _vm._v(" "),
+                        !licencias.foto_lic
+                          ? _c("td", {
                               domProps: {
                                 textContent: _vm._s(licencias.num_licencia)
                               }
                             })
-                          ]),
-                      _vm._v(" "),
-                      _c("td", {
-                        domProps: {
-                          textContent: _vm._s(licencias.credito_puente)
-                        }
-                      })
-                    ])
+                          : _c("td", { staticStyle: { width: "7%" } }, [
+                              _c("a", {
+                                staticClass: "btn btn-default btn-sm",
+                                attrs: {
+                                  href:
+                                    "/downloadLicencias/" + licencias.foto_lic
+                                },
+                                domProps: {
+                                  textContent: _vm._s(licencias.num_licencia)
+                                }
+                              })
+                            ]),
+                        _vm._v(" "),
+                        _c("td", {
+                          domProps: {
+                            textContent: _vm._s(licencias.credito_puente)
+                          }
+                        })
+                      ]
+                    )
                   })
                 )
               ]
@@ -74666,7 +74678,8 @@ var staticRenderFns = [
         _c("th", [_vm._v("Fecha termino")]),
         _vm._v(" "),
         _c("th", [_vm._v("Canal de venta")])
-      ])
+      ]),
+      _vm._v("s\n                            ")
     ])
   }
 ]

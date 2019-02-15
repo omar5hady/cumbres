@@ -70,15 +70,12 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="licencias in arrayLicencias" :key="licencias.id">
+                                    <tr v-on:dblclick="abrirModal2('lote','ver',licencias)" v-for="licencias in arrayLicencias" :key="licencias.id">
                                         
                                         <td >
                                             <button title="Editar" type="button" @click="abrirModal('lote','actualizar',licencias)" class="btn btn-warning btn-sm">
                                             <i class="icon-pencil"></i>
                                             </button> 
-                                            <button type="button" @click="abrirModal2('lote','ver',licencias)" class="btn btn-info btn-sm">
-                                            <i class="icon-magnifier"></i>
-                                            </button>
                                             <button title="Subir foto y predial" type="button" @click="abrirModal('lote','subirArchivo',licencias)" class="btn btn-default btn-sm">
                                             <i class="icon-cloud-upload"></i>
                                             </button>
