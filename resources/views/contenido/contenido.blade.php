@@ -120,7 +120,7 @@
             </template>
 
             <template v-if="menu==59">
-                <lote-disponible></lote-disponible>
+                <lote-disponible rol-id="{{Auth::user()->rol_id}}"></lote-disponible>
             </template>
    
             <template v-if="menu==60">
@@ -136,6 +136,9 @@
             </template>
             <template v-if="menu==60">
                 <prospectos></prospectos>
+            </template>
+            <template v-if="menu==59">
+                <lote-disponible rol-id="{{Auth::user()->rol_id}}"></lote-disponible>
             </template>
                 
             @elseif(Auth::user()->rol_id == 3)

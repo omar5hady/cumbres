@@ -53384,9 +53384,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -54057,115 +54054,118 @@ var render = function() {
                 _c(
                   "tbody",
                   _vm._l(_vm.arrayPersonal, function(Personal) {
-                    return _c("tr", { key: Personal.id }, [
-                      _c(
-                        "td",
-                        [
-                          _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-warning btn-sm",
-                              attrs: { type: "button" },
-                              on: {
-                                click: function($event) {
-                                  _vm.abrirModal(
-                                    "Personal",
-                                    "actualizar",
-                                    Personal
+                    return _c(
+                      "tr",
+                      {
+                        key: Personal.id,
+                        on: {
+                          dblclick: function($event) {
+                            _vm.abrirModal("Personal", "ver", Personal)
+                          }
+                        }
+                      },
+                      [
+                        _c(
+                          "td",
+                          [
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-warning btn-sm",
+                                attrs: { type: "button" },
+                                on: {
+                                  click: function($event) {
+                                    _vm.abrirModal(
+                                      "Personal",
+                                      "actualizar",
+                                      Personal
+                                    )
+                                  }
+                                }
+                              },
+                              [_c("i", { staticClass: "icon-pencil" })]
+                            ),
+                            _vm._v(" "),
+                            Personal.activo
+                              ? [
+                                  _c(
+                                    "button",
+                                    {
+                                      staticClass: "btn btn-danger btn-sm",
+                                      attrs: { type: "button" },
+                                      on: {
+                                        click: function($event) {
+                                          _vm.desactivarPersonal(Personal.id)
+                                        }
+                                      }
+                                    },
+                                    [_c("i", { staticClass: "icon-trash" })]
                                   )
-                                }
-                              }
-                            },
-                            [_c("i", { staticClass: "icon-pencil" })]
-                          ),
-                          _vm._v(" "),
-                          Personal.activo
-                            ? [
-                                _c(
-                                  "button",
-                                  {
-                                    staticClass: "btn btn-danger btn-sm",
-                                    attrs: { type: "button" },
-                                    on: {
-                                      click: function($event) {
-                                        _vm.desactivarPersonal(Personal.id)
+                                ]
+                              : [
+                                  _c(
+                                    "button",
+                                    {
+                                      staticClass: "btn btn-success btn-sm",
+                                      attrs: { type: "button" },
+                                      on: {
+                                        click: function($event) {
+                                          _vm.activarPersonal(Personal.id)
+                                        }
                                       }
-                                    }
-                                  },
-                                  [_c("i", { staticClass: "icon-trash" })]
-                                )
-                              ]
-                            : [
-                                _c(
-                                  "button",
-                                  {
-                                    staticClass: "btn btn-success btn-sm",
-                                    attrs: { type: "button" },
-                                    on: {
-                                      click: function($event) {
-                                        _vm.activarPersonal(Personal.id)
-                                      }
-                                    }
-                                  },
-                                  [_c("i", { staticClass: "icon-check" })]
-                                )
-                              ],
-                          _vm._v(" "),
-                          _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-info btn-sm",
-                              attrs: { type: "button" },
-                              on: {
-                                click: function($event) {
-                                  _vm.abrirModal("Personal", "ver", Personal)
-                                }
-                              }
-                            },
-                            [_c("i", { staticClass: "icon-magnifier" })]
-                          )
-                        ],
-                        2
-                      ),
-                      _vm._v(" "),
-                      _c("td", {
-                        domProps: { textContent: _vm._s(Personal.nombre) }
-                      }),
-                      _vm._v(" "),
-                      _c("td", {
-                        domProps: { textContent: _vm._s(Personal.apellidos) }
-                      }),
-                      _vm._v(" "),
-                      _c("td", {
-                        domProps: { textContent: _vm._s(Personal.departamento) }
-                      }),
-                      _vm._v(" "),
-                      _c("td", {
-                        domProps: { textContent: _vm._s(Personal.rfc) }
-                      }),
-                      _vm._v(" "),
-                      _c("td", {
-                        domProps: { textContent: _vm._s(Personal.celular) }
-                      }),
-                      _vm._v(" "),
-                      _c("td", {
-                        domProps: { textContent: _vm._s(Personal.email) }
-                      }),
-                      _vm._v(" "),
-                      _c("td", [
-                        Personal.activo == 1
-                          ? _c("span", { staticClass: "badge badge-success" }, [
-                              _vm._v("Activo")
-                            ])
-                          : _vm._e(),
+                                    },
+                                    [_c("i", { staticClass: "icon-check" })]
+                                  )
+                                ]
+                          ],
+                          2
+                        ),
                         _vm._v(" "),
-                        Personal.activo == 0
-                          ? _c("span", { staticClass: "badge badge-danger" }, [
-                              _vm._v("Inactivo")
-                            ])
-                          : _vm._e()
-                      ])
-                    ])
+                        _c("td", {
+                          domProps: { textContent: _vm._s(Personal.nombre) }
+                        }),
+                        _vm._v(" "),
+                        _c("td", {
+                          domProps: { textContent: _vm._s(Personal.apellidos) }
+                        }),
+                        _vm._v(" "),
+                        _c("td", {
+                          domProps: {
+                            textContent: _vm._s(Personal.departamento)
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c("td", {
+                          domProps: { textContent: _vm._s(Personal.rfc) }
+                        }),
+                        _vm._v(" "),
+                        _c("td", {
+                          domProps: { textContent: _vm._s(Personal.celular) }
+                        }),
+                        _vm._v(" "),
+                        _c("td", {
+                          domProps: { textContent: _vm._s(Personal.email) }
+                        }),
+                        _vm._v(" "),
+                        _c("td", [
+                          Personal.activo == 1
+                            ? _c(
+                                "span",
+                                { staticClass: "badge badge-success" },
+                                [_vm._v("Activo")]
+                              )
+                            : _vm._e(),
+                          _vm._v(" "),
+                          Personal.activo == 0
+                            ? _c(
+                                "span",
+                                { staticClass: "badge badge-danger" },
+                                [_vm._v("Inactivo")]
+                              )
+                            : _vm._e()
+                        ])
+                      ]
+                    )
                   })
                 )
               ]
@@ -70329,9 +70329,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -71183,180 +71180,184 @@ var render = function() {
                 _c(
                   "tbody",
                   _vm._l(_vm.arrayActaDeTerminacion, function(act_terminacion) {
-                    return _c("tr", { key: act_terminacion.id }, [
-                      _c("td", [
-                        _c(
-                          "button",
-                          {
-                            staticClass: "btn btn-warning btn-sm",
-                            attrs: { title: "Editar", type: "button" },
-                            on: {
-                              click: function($event) {
-                                _vm.abrirModal(
-                                  "lote",
-                                  "actualizar",
-                                  act_terminacion
-                                )
-                              }
-                            }
-                          },
-                          [_c("i", { staticClass: "icon-pencil" })]
-                        ),
-                        _vm._v(" "),
-                        _c(
-                          "button",
-                          {
-                            staticClass: "btn btn-info btn-sm",
-                            attrs: { type: "button" },
-                            on: {
-                              click: function($event) {
-                                _vm.abrirModal2("lote", "ver", act_terminacion)
-                              }
-                            }
-                          },
-                          [_c("i", { staticClass: "icon-magnifier" })]
-                        ),
-                        _vm._v(" "),
-                        _c(
-                          "button",
-                          {
-                            staticClass: "btn btn-default btn-sm",
-                            attrs: { title: "Subir foto acta", type: "button" },
-                            on: {
-                              click: function($event) {
-                                _vm.abrirModal(
-                                  "lote",
-                                  "subirArchivo",
-                                  act_terminacion
-                                )
-                              }
-                            }
-                          },
-                          [_c("i", { staticClass: "icon-cloud-upload" })]
-                        )
-                      ]),
-                      _vm._v(" "),
-                      _c("td", {
-                        domProps: {
-                          textContent: _vm._s(act_terminacion.proyecto)
+                    return _c(
+                      "tr",
+                      {
+                        key: act_terminacion.id,
+                        on: {
+                          dblclick: function($event) {
+                            _vm.abrirModal2("lote", "ver", act_terminacion)
+                          }
                         }
-                      }),
-                      _vm._v(" "),
-                      _c("td", {
-                        domProps: {
-                          textContent: _vm._s(act_terminacion.manzana)
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("td", {
-                        domProps: {
-                          textContent: _vm._s(act_terminacion.num_lote)
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("td", {
-                        domProps: {
-                          textContent: _vm._s(act_terminacion.terreno)
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("td", {
-                        domProps: {
-                          textContent: _vm._s(act_terminacion.construccion)
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("td", [
-                        act_terminacion.perito != "Sin Asignar  "
-                          ? _c("span", {
-                              staticClass: "badge badge-success",
-                              domProps: {
-                                textContent: _vm._s(
-                                  "Arq. " + act_terminacion.perito
-                                )
+                      },
+                      [
+                        _c("td", [
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-warning btn-sm",
+                              attrs: { title: "Editar", type: "button" },
+                              on: {
+                                click: function($event) {
+                                  _vm.abrirModal(
+                                    "lote",
+                                    "actualizar",
+                                    act_terminacion
+                                  )
+                                }
                               }
-                            })
-                          : _c("span", { staticClass: "badge badge-danger" }, [
-                              _vm._v(" Por Asignar ")
-                            ])
-                      ]),
-                      _vm._v(" "),
-                      _c("td", [
-                        act_terminacion.modelo != "Por Asignar" &&
-                        act_terminacion.cambios == 0
-                          ? _c("span", {
-                              staticClass: "badge badge-success",
-                              domProps: {
-                                textContent: _vm._s(act_terminacion.modelo)
-                              }
-                            })
-                          : _vm._e(),
-                        _vm._v(" "),
-                        act_terminacion.modelo == "Por Asignar"
-                          ? _c("span", { staticClass: "badge badge-danger" }, [
-                              _vm._v("Por Asignar")
-                            ])
-                          : _vm._e(),
-                        _vm._v(" "),
-                        act_terminacion.cambios == 1
-                          ? _c("span", {
-                              staticClass: "badge badge-warning",
-                              domProps: {
-                                textContent: _vm._s(act_terminacion.modelo)
-                              }
-                            })
-                          : _vm._e()
-                      ]),
-                      _vm._v(" "),
-                      _c("td", {
-                        domProps: {
-                          textContent: _vm._s(act_terminacion.avance + "%")
-                        }
-                      }),
-                      _vm._v(" "),
-                      !act_terminacion.term_ingreso
-                        ? _c("td", { domProps: { textContent: _vm._s("") } })
-                        : _c("td", {
-                            domProps: {
-                              textContent: _vm._s(
-                                this.moment(act_terminacion.term_ingreso)
-                                  .locale("es")
-                                  .format("DD/MMM/YYYY")
-                              )
-                            }
-                          }),
-                      _vm._v(" "),
-                      !act_terminacion.term_salida
-                        ? _c("td", { domProps: { textContent: _vm._s("") } })
-                        : _c("td", {
-                            domProps: {
-                              textContent: _vm._s(
-                                this.moment(act_terminacion.term_salida)
-                                  .locale("es")
-                                  .format("DD/MMM/YYYY")
-                              )
-                            }
-                          }),
-                      _vm._v(" "),
-                      !act_terminacion.foto_acta
-                        ? _c("td", {
-                            domProps: {
-                              textContent: _vm._s(act_terminacion.num_acta)
-                            }
-                          })
-                        : _c("td", { staticStyle: { width: "7%" } }, [
-                            _c("a", {
+                            },
+                            [_c("i", { staticClass: "icon-pencil" })]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "button",
+                            {
                               staticClass: "btn btn-default btn-sm",
                               attrs: {
-                                href:
-                                  "/downloadActa/" + act_terminacion.foto_acta
+                                title: "Subir foto acta",
+                                type: "button"
                               },
+                              on: {
+                                click: function($event) {
+                                  _vm.abrirModal(
+                                    "lote",
+                                    "subirArchivo",
+                                    act_terminacion
+                                  )
+                                }
+                              }
+                            },
+                            [_c("i", { staticClass: "icon-cloud-upload" })]
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("td", {
+                          domProps: {
+                            textContent: _vm._s(act_terminacion.proyecto)
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c("td", {
+                          domProps: {
+                            textContent: _vm._s(act_terminacion.manzana)
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c("td", {
+                          domProps: {
+                            textContent: _vm._s(act_terminacion.num_lote)
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c("td", {
+                          domProps: {
+                            textContent: _vm._s(act_terminacion.terreno)
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c("td", {
+                          domProps: {
+                            textContent: _vm._s(act_terminacion.construccion)
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c("td", [
+                          act_terminacion.perito != "Sin Asignar  "
+                            ? _c("span", {
+                                staticClass: "badge badge-success",
+                                domProps: {
+                                  textContent: _vm._s(
+                                    "Arq. " + act_terminacion.perito
+                                  )
+                                }
+                              })
+                            : _c(
+                                "span",
+                                { staticClass: "badge badge-danger" },
+                                [_vm._v(" Por Asignar ")]
+                              )
+                        ]),
+                        _vm._v(" "),
+                        _c("td", [
+                          act_terminacion.modelo != "Por Asignar" &&
+                          act_terminacion.cambios == 0
+                            ? _c("span", {
+                                staticClass: "badge badge-success",
+                                domProps: {
+                                  textContent: _vm._s(act_terminacion.modelo)
+                                }
+                              })
+                            : _vm._e(),
+                          _vm._v(" "),
+                          act_terminacion.modelo == "Por Asignar"
+                            ? _c(
+                                "span",
+                                { staticClass: "badge badge-danger" },
+                                [_vm._v("Por Asignar")]
+                              )
+                            : _vm._e(),
+                          _vm._v(" "),
+                          act_terminacion.cambios == 1
+                            ? _c("span", {
+                                staticClass: "badge badge-warning",
+                                domProps: {
+                                  textContent: _vm._s(act_terminacion.modelo)
+                                }
+                              })
+                            : _vm._e()
+                        ]),
+                        _vm._v(" "),
+                        _c("td", {
+                          domProps: {
+                            textContent: _vm._s(act_terminacion.avance + "%")
+                          }
+                        }),
+                        _vm._v(" "),
+                        !act_terminacion.term_ingreso
+                          ? _c("td", { domProps: { textContent: _vm._s("") } })
+                          : _c("td", {
+                              domProps: {
+                                textContent: _vm._s(
+                                  this.moment(act_terminacion.term_ingreso)
+                                    .locale("es")
+                                    .format("DD/MMM/YYYY")
+                                )
+                              }
+                            }),
+                        _vm._v(" "),
+                        !act_terminacion.term_salida
+                          ? _c("td", { domProps: { textContent: _vm._s("") } })
+                          : _c("td", {
+                              domProps: {
+                                textContent: _vm._s(
+                                  this.moment(act_terminacion.term_salida)
+                                    .locale("es")
+                                    .format("DD/MMM/YYYY")
+                                )
+                              }
+                            }),
+                        _vm._v(" "),
+                        !act_terminacion.foto_acta
+                          ? _c("td", {
                               domProps: {
                                 textContent: _vm._s(act_terminacion.num_acta)
                               }
                             })
-                          ])
-                    ])
+                          : _c("td", { staticStyle: { width: "7%" } }, [
+                              _c("a", {
+                                staticClass: "btn btn-default btn-sm",
+                                attrs: {
+                                  href:
+                                    "/downloadActa/" + act_terminacion.foto_acta
+                                },
+                                domProps: {
+                                  textContent: _vm._s(act_terminacion.num_acta)
+                                }
+                              })
+                            ])
+                      ]
+                    )
                   })
                 )
               ]
@@ -73423,8 +73424,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+    props: {
+        rolId: { type: String }
+    },
     data: function data() {
         return {
             proceso: false,
@@ -73432,6 +73438,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             comentarios: '',
 
             arrayLote: [],
+            arrayFraccionamientos: [],
+            arrayEtapas: [],
             modal: 0,
             tituloModal: '',
             tipoAccion: 0,
@@ -73497,12 +73505,43 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 console.log(error);
             });
         },
+        selectFraccionamientos: function selectFraccionamientos() {
+            var me = this;
+            me.buscar = "";
+            me.buscar2 = "";
+            me.buscar3 = "";
+            me.arrayFraccionamientos = [];
+            var url = '/select_fraccionamiento';
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayFraccionamientos = respuesta.fraccionamientos;
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        selectEtapa: function selectEtapa(buscar) {
+            var me = this;
+            me.buscar2 = "";
+            me.buscar3 = "";
+            me.arrayEtapas = [];
+            var url = '/select_etapa_proyecto?buscar=' + buscar;
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayEtapas = respuesta.etapas;
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
         cambiarPagina: function cambiarPagina(page, buscar, buscar2, buscar3, criterio) {
             var me = this;
             //Actualiza la pagina actual
             me.pagination.current_page = page;
             //Envia la petición para visualizar la data de esta pagina
             me.listarLote(page, buscar, buscar2, buscar3, criterio);
+        },
+        formatNumber: function formatNumber(value) {
+            var val = (value / 1).toFixed(2);
+            return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         },
 
 
@@ -73592,10 +73631,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     }
             }
             this.selectFraccionamientos();
-            this.selectFraccionamientosConLote();
             this.selectEtapa(this.fraccionamiento_id);
             this.selectModelo(this.fraccionamiento_id);
-            this.selectConsYTerreno(this.modelo_id);
         }
     },
     mounted: function mounted() {
@@ -73974,27 +74011,69 @@ var render = function() {
               "table",
               { staticClass: "table table-bordered table-striped table-sm" },
               [
-                _vm._m(2),
+                _c("thead", [
+                  _c("tr", [
+                    _vm.rolId == "1"
+                      ? _c("th", [_vm._v("Opciones")])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _c("th", [_vm._v("Proyecto")]),
+                    _vm._v(" "),
+                    _c("th", [_vm._v("Manzana")]),
+                    _vm._v(" "),
+                    _c("th", [_vm._v("# Lote")]),
+                    _vm._v(" "),
+                    _c("th", [_vm._v("% Avance")]),
+                    _vm._v(" "),
+                    _c("th", [_vm._v("Modelo")]),
+                    _vm._v(" "),
+                    _c("th", [_vm._v("Calle")]),
+                    _vm._v(" "),
+                    _c("th", [_vm._v("# Oficial")]),
+                    _vm._v(" "),
+                    _c("th", { staticStyle: { width: "8%" } }, [
+                      _vm._v("Terreno m²")
+                    ]),
+                    _vm._v(" "),
+                    _c("th", [_vm._v("Construc. m²")]),
+                    _vm._v(" "),
+                    _c("th", [_vm._v("Precio Base")]),
+                    _vm._v(" "),
+                    _c("th", [_vm._v("Terreno Excedente")]),
+                    _vm._v(" "),
+                    _c("th", [_vm._v("Sobreprecios")]),
+                    _vm._v(" "),
+                    _c("th", [_vm._v("Precio venta")]),
+                    _vm._v(" "),
+                    _c("th", [_vm._v("Promoción")]),
+                    _vm._v(" "),
+                    _c("th", [_vm._v("Fecha termino")]),
+                    _vm._v(" "),
+                    _c("th", [_vm._v("Canal de venta")])
+                  ])
+                ]),
                 _vm._v(" "),
                 _c(
                   "tbody",
                   _vm._l(_vm.arrayLote, function(lote) {
                     return _c("tr", { key: lote.id }, [
-                      _c("td", { staticStyle: { width: "5%" } }, [
-                        _c(
-                          "button",
-                          {
-                            staticClass: "btn btn-warning btn-sm",
-                            attrs: { title: "Editar", type: "button" },
-                            on: {
-                              click: function($event) {
-                                _vm.abrirModal("lote", "actualizar", lote)
-                              }
-                            }
-                          },
-                          [_c("i", { staticClass: "icon-pencil" })]
-                        )
-                      ]),
+                      _vm.rolId == "1"
+                        ? _c("td", { staticStyle: { width: "5%" } }, [
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-warning btn-sm",
+                                attrs: { title: "Editar", type: "button" },
+                                on: {
+                                  click: function($event) {
+                                    _vm.abrirModal("lote", "actualizar", lote)
+                                  }
+                                }
+                              },
+                              [_c("i", { staticClass: "icon-pencil" })]
+                            )
+                          ])
+                        : _vm._e(),
                       _vm._v(" "),
                       _c("td", {
                         staticStyle: { width: "20%" },
@@ -74053,22 +74132,36 @@ var render = function() {
                       }),
                       _vm._v(" "),
                       _c("td", {
-                        domProps: { textContent: _vm._s(lote.precio_base) }
-                      }),
-                      _vm._v(" "),
-                      _c("td", {
                         domProps: {
-                          textContent: _vm._s(lote.excedente_terreno)
+                          textContent: _vm._s(
+                            "$" + _vm.formatNumber(lote.precio_base)
+                          )
                         }
                       }),
                       _vm._v(" "),
                       _c("td", {
-                        domProps: { textContent: _vm._s(lote.sobreprecio) }
+                        domProps: {
+                          textContent: _vm._s(
+                            "$" + _vm.formatNumber(lote.excedente_terreno)
+                          )
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("td", {
+                        domProps: {
+                          textContent: _vm._s(
+                            "$" + _vm.formatNumber(lote.sobreprecio)
+                          )
+                        }
                       }),
                       _vm._v(" "),
                       _c("td", {
                         staticStyle: { width: "20%" },
-                        domProps: { textContent: _vm._s(lote.precio_venta) }
+                        domProps: {
+                          textContent: _vm._s(
+                            "$" + _vm.formatNumber(lote.precio_venta)
+                          )
+                        }
                       }),
                       _vm._v(" "),
                       _c("td", {
@@ -74306,35 +74399,8 @@ var render = function() {
                         _c(
                           "select",
                           {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.fraccionamiento_id,
-                                expression: "fraccionamiento_id"
-                              }
-                            ],
                             staticClass: "form-control",
-                            attrs: { id: "myselect" },
-                            on: {
-                              click: function($event) {
-                                _vm.selectEtapa(_vm.fraccionamiento_id),
-                                  _vm.selectModelo(_vm.fraccionamiento_id)
-                              },
-                              change: function($event) {
-                                var $$selectedVal = Array.prototype.filter
-                                  .call($event.target.options, function(o) {
-                                    return o.selected
-                                  })
-                                  .map(function(o) {
-                                    var val = "_value" in o ? o._value : o.value
-                                    return val
-                                  })
-                                _vm.fraccionamiento_id = $event.target.multiple
-                                  ? $$selectedVal
-                                  : $$selectedVal[0]
-                              }
-                            }
+                            attrs: { id: "myselect" }
                           },
                           [
                             _c("option", { attrs: { value: "0" } }, [
@@ -74370,14 +74436,6 @@ var render = function() {
                       _vm._v(" "),
                       _c("div", { staticClass: "col-md-4" }, [
                         _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.clv_catastral,
-                              expression: "clv_catastral"
-                            }
-                          ],
                           staticClass: "form-control",
                           attrs: {
                             type: "text",
@@ -74385,178 +74443,20 @@ var render = function() {
                             maxlength: "13",
                             placeholder: "Clave catastral"
                           },
-                          domProps: { value: _vm.clv_catastral },
                           on: {
                             keypress: function($event) {
                               _vm.isNumber(_vm.event)
-                            },
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.clv_catastral = $event.target.value
                             }
                           }
                         })
                       ])
                     ]),
                     _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "text-input" }
-                        },
-                        [_vm._v("Dirección")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-4" }, [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.calle,
-                              expression: "calle"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: { type: "text", placeholder: "Calle" },
-                          domProps: { value: _vm.calle },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.calle = $event.target.value
-                            }
-                          }
-                        })
-                      ]),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-2" }, [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.numero,
-                              expression: "numero"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: { type: "text", placeholder: "Numero" },
-                          domProps: { value: _vm.numero },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.numero = $event.target.value
-                            }
-                          }
-                        })
-                      ]),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-2" }, [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.interior,
-                              expression: "interior"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: { type: "text", placeholder: "Interior" },
-                          domProps: { value: _vm.interior },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.interior = $event.target.value
-                            }
-                          }
-                        })
-                      ])
-                    ]),
+                    _vm._m(2),
                     _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "text-input" }
-                        },
-                        [_vm._v("Terreno (mts²)")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-4" }, [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.terreno,
-                              expression: "terreno"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: { type: "text", placeholder: "Terreno" },
-                          domProps: { value: _vm.terreno },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.terreno = $event.target.value
-                            }
-                          }
-                        })
-                      ])
-                    ]),
+                    _vm._m(3),
                     _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "text-input" }
-                        },
-                        [_vm._v("Construcción (mts²)")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-7" }, [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.construccion,
-                              expression: "construccion"
-                            }
-                          ],
-                          staticClass: "form-control",
-                          attrs: {
-                            type: "text",
-                            disabled: "",
-                            placeholder: "Construccion"
-                          },
-                          domProps: { value: _vm.construccion },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.construccion = $event.target.value
-                            }
-                          }
-                        })
-                      ])
-                    ])
+                    _vm._m(4)
                   ]
                 )
               ]),
@@ -74643,43 +74543,80 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("thead", [
-      _c("tr", [
-        _c("th", [_vm._v("Opciones")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Proyecto")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Manzana")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("# Lote")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("% Avance")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Modelo")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Calle")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("# Oficial")]),
-        _vm._v(" "),
-        _c("th", { staticStyle: { width: "8%" } }, [_vm._v("Terreno m²")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Construc. m²")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Precio Base")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Terreno Excedente")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Sobreprecios")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Precio venta")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Promoción")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Fecha termino")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Canal de venta")])
+    return _c("div", { staticClass: "form-group row" }, [
+      _c(
+        "label",
+        {
+          staticClass: "col-md-3 form-control-label",
+          attrs: { for: "text-input" }
+        },
+        [_vm._v("Dirección")]
+      ),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-md-4" }, [
+        _c("input", {
+          staticClass: "form-control",
+          attrs: { type: "text", placeholder: "Calle" }
+        })
       ]),
-      _vm._v("s\n                            ")
+      _vm._v(" "),
+      _c("div", { staticClass: "col-md-2" }, [
+        _c("input", {
+          staticClass: "form-control",
+          attrs: { type: "text", placeholder: "Numero" }
+        })
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-md-2" }, [
+        _c("input", {
+          staticClass: "form-control",
+          attrs: { type: "text", placeholder: "Interior" }
+        })
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "form-group row" }, [
+      _c(
+        "label",
+        {
+          staticClass: "col-md-3 form-control-label",
+          attrs: { for: "text-input" }
+        },
+        [_vm._v("Terreno (mts²)")]
+      ),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-md-4" }, [
+        _c("input", {
+          staticClass: "form-control",
+          attrs: { type: "text", placeholder: "Terreno" }
+        })
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "form-group row" }, [
+      _c(
+        "label",
+        {
+          staticClass: "col-md-3 form-control-label",
+          attrs: { for: "text-input" }
+        },
+        [_vm._v("Construcción (mts²)")]
+      ),
+      _vm._v(" "),
+      _c("div", { staticClass: "col-md-7" }, [
+        _c("input", {
+          staticClass: "form-control",
+          attrs: { type: "text", disabled: "", placeholder: "Construccion" }
+        })
+      ])
     ])
   }
 ]
@@ -85594,9 +85531,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -86506,81 +86440,78 @@ var render = function() {
                         _c(
                           "tbody",
                           _vm._l(_vm.arrayAvisoObra, function(avisoObra) {
-                            return _c("tr", { key: avisoObra.id }, [
-                              _c("td", [
-                                _c(
-                                  "button",
-                                  {
-                                    staticClass: "btn btn-success btn-sm",
-                                    attrs: { type: "button" },
-                                    on: {
-                                      click: function($event) {
-                                        _vm.verAviso(avisoObra.id)
+                            return _c(
+                              "tr",
+                              {
+                                key: avisoObra.id,
+                                on: {
+                                  dblclick: function($event) {
+                                    _vm.verAviso(avisoObra.id)
+                                  }
+                                }
+                              },
+                              [
+                                _c("td", [
+                                  _c(
+                                    "button",
+                                    {
+                                      staticClass: "btn btn-danger btn-sm",
+                                      attrs: { type: "button" },
+                                      on: {
+                                        click: function($event) {
+                                          _vm.eliminarContrato(avisoObra)
+                                        }
                                       }
-                                    }
-                                  },
-                                  [_c("i", { staticClass: "icon-eye" })]
-                                ),
+                                    },
+                                    [_c("i", { staticClass: "icon-trash" })]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "button",
+                                    {
+                                      staticClass: "btn btn-warning btn-sm",
+                                      attrs: { type: "button" },
+                                      on: {
+                                        click: function($event) {
+                                          _vm.actualizarContrato(avisoObra.id)
+                                        }
+                                      }
+                                    },
+                                    [_c("i", { staticClass: "icon-pencil" })]
+                                  )
+                                ]),
                                 _vm._v(" "),
-                                _c(
-                                  "button",
-                                  {
-                                    staticClass: "btn btn-danger btn-sm",
-                                    attrs: { type: "button" },
-                                    on: {
-                                      click: function($event) {
-                                        _vm.eliminarContrato(avisoObra)
-                                      }
-                                    }
-                                  },
-                                  [_c("i", { staticClass: "icon-trash" })]
-                                ),
+                                _c("td", {
+                                  domProps: {
+                                    textContent: _vm._s(avisoObra.clave)
+                                  }
+                                }),
                                 _vm._v(" "),
-                                _c(
-                                  "button",
-                                  {
-                                    staticClass: "btn btn-warning btn-sm",
-                                    attrs: { type: "button" },
-                                    on: {
-                                      click: function($event) {
-                                        _vm.actualizarContrato(avisoObra.id)
-                                      }
-                                    }
-                                  },
-                                  [_c("i", { staticClass: "icon-pencil" })]
-                                )
-                              ]),
-                              _vm._v(" "),
-                              _c("td", {
-                                domProps: {
-                                  textContent: _vm._s(avisoObra.clave)
-                                }
-                              }),
-                              _vm._v(" "),
-                              _c("td", {
-                                domProps: {
-                                  textContent: _vm._s(avisoObra.contratista)
-                                }
-                              }),
-                              _vm._v(" "),
-                              _c("td", {
-                                domProps: {
-                                  textContent: _vm._s(avisoObra.proyecto)
-                                }
-                              }),
-                              _vm._v(" "),
-                              _c("td", {
-                                domProps: {
-                                  textContent: _vm._s(avisoObra.f_ini)
-                                }
-                              }),
-                              _vm._v(" "),
-                              _c("td", {
-                                domProps: {
-                                  textContent: _vm._s(avisoObra.f_fin)
-                                }
-                              })
-                            ])
+                                _c("td", {
+                                  domProps: {
+                                    textContent: _vm._s(avisoObra.contratista)
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("td", {
+                                  domProps: {
+                                    textContent: _vm._s(avisoObra.proyecto)
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("td", {
+                                  domProps: {
+                                    textContent: _vm._s(avisoObra.f_ini)
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("td", {
+                                  domProps: {
+                                    textContent: _vm._s(avisoObra.f_fin)
+                                  }
+                                })
+                              ]
+                            )
                           })
                         )
                       ]

@@ -49,11 +49,8 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="avisoObra in arrayAvisoObra" :key="avisoObra.id">
+                                        <tr v-on:dblclick="verAviso(avisoObra.id)" v-for="avisoObra in arrayAvisoObra" :key="avisoObra.id">
                                             <td>
-                                                <button type="button" @click="verAviso(avisoObra.id)" class="btn btn-success btn-sm">
-                                                <i class="icon-eye"></i>
-                                                </button>
                                                 <button type="button" class="btn btn-danger btn-sm" @click="eliminarContrato(avisoObra)">
                                                     <i class="icon-trash"></i>
                                                 </button>

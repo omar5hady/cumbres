@@ -25,7 +25,7 @@
                 <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-basket"></i> Ventas</a>
                 <ul class="nav-dropdown-items">
                     <li @click="menu=59" class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-basket-loaded"></i> Ventas</a>
+                        <a class="nav-link" href="#"><i class="icon-basket-loaded"></i> Lotes Disponibles</a>
                     </li>
                     <li @click="menu=60" class="nav-item">
                         <a class="nav-link" href="#"><i class="icon-basket-loaded"></i> Mis prospectos</a>

@@ -63,14 +63,11 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="act_terminacion in arrayActaDeTerminacion" :key="act_terminacion.id">
+                                    <tr v-on:dblclick="abrirModal2('lote','ver',act_terminacion)" v-for="act_terminacion in arrayActaDeTerminacion" :key="act_terminacion.id">
                                         
                                         <td >
                                             <button title="Editar" type="button" @click="abrirModal('lote','actualizar',act_terminacion)" class="btn btn-warning btn-sm">
                                             <i class="icon-pencil"></i>
-                                            </button>
-                                            <button type="button" @click="abrirModal2('lote','ver',act_terminacion)" class="btn btn-info btn-sm">
-                                            <i class="icon-magnifier"></i>
                                             </button>
                                             <button title="Subir foto acta" type="button" @click="abrirModal('lote','subirArchivo',act_terminacion)" class="btn btn-default btn-sm">
                                             <i class="icon-cloud-upload"></i>

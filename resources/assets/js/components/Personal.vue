@@ -50,7 +50,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="Personal in arrayPersonal" :key="Personal.id">
+                                    <tr v-on:dblclick="abrirModal('Personal','ver',Personal)" v-for="Personal in arrayPersonal" :key="Personal.id">
                                         <td>
                                             <button type="button" @click="abrirModal('Personal','actualizar',Personal)" class="btn btn-warning btn-sm">
                                             <i class="icon-pencil"></i>
@@ -65,9 +65,6 @@
                                                     <i class="icon-check"></i>
                                                 </button>
                                             </template>
-                                            <button type="button" @click="abrirModal('Personal','ver',Personal)" class="btn btn-info btn-sm">
-                                            <i class="icon-magnifier"></i>
-                                            </button>
                                         </td>
                                         <td v-text="Personal.nombre"></td>
                                         

@@ -43,7 +43,7 @@
                             <table class="table table-bordered table-striped table-sm">
                                 <thead>
                                     <tr>
-                                        <th>Opciones</th>
+                                        <th v-if="rolId == '1'">Opciones</th>
                                         <th>Proyecto</th>
                                         <th>Manzana</th>
                                         <th># Lote</th>
@@ -60,15 +60,17 @@
                                         <th>Promoción</th>
                                         <th>Fecha termino</th>
                                         <th>Canal de venta</th>
-                                    </tr>s
+                                    </tr>
                                 </thead>
                                 <tbody>
                                     <tr v-for="lote in arrayLote" :key="lote.id">
-                                        <td style="width:5%">
+                                         
+                                        <td v-if="rolId == '1'" style="width:5%">
                                             <button title="Editar" type="button" @click="abrirModal('lote','actualizar',lote)" class="btn btn-warning btn-sm">
                                             <i class="icon-pencil"></i>
                                             </button>
                                         </td>
+                                        
                                         
                                         <td style="width:20%" v-text="lote.proyecto"></td>
                                         <td v-text="lote.manzana"></td>
@@ -83,10 +85,10 @@
                                             <td v-else v-text="lote.numero + '-' + lote.interior" ></td>
                                         <td v-text="lote.terreno"></td>
                                         <td v-text="lote.construccion"></td>
-                                        <td v-text="lote.precio_base"></td>
-                                        <td v-text="lote.excedente_terreno"></td>
-                                        <td v-text="lote.sobreprecio"></td>
-                                        <td style="width:20%" v-text="lote.precio_venta"></td>
+                                        <td v-text="'$'+formatNumber(lote.precio_base)"></td>
+                                        <td v-text="'$'+formatNumber(lote.excedente_terreno)"></td>
+                                        <td v-text="'$'+formatNumber(lote.sobreprecio)"></td>
+                                        <td style="width:20%" v-text="'$'+formatNumber(lote.precio_venta)"></td>
                                         <td v-text="lote.promocion"></td>
                                         <td v-text="lote.fecha_fin"></td>
                                         <td style="width:40%" v-text="lote.comentarios"></td>
@@ -134,7 +136,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
                                     <div class="col-md-6">
-                                       <select id="myselect" class="form-control" v-model="fraccionamiento_id" @click="selectEtapa(fraccionamiento_id),selectModelo(fraccionamiento_id)" >
+                                       <select id="myselect" class="form-control" >
                                             <option value="0">Seleccione</option>
                                             <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                         </select>
@@ -143,20 +145,20 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Clave catastral</label>
                                     <div class="col-md-4">
-                                        <input type="text" pattern="\d*" maxlength="13" v-model="clv_catastral" class="form-control" v-on:keypress="isNumber(event)" placeholder="Clave catastral">
+                                        <input type="text" pattern="\d*" maxlength="13" class="form-control" v-on:keypress="isNumber(event)" placeholder="Clave catastral">
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Dirección</label>
                                     <div class="col-md-4">
-                                        <input type="text" v-model="calle" class="form-control" placeholder="Calle">
+                                        <input type="text" class="form-control" placeholder="Calle">
                                     </div>
                                     <div class="col-md-2">
-                                        <input type="text" v-model="numero" class="form-control" placeholder="Numero">
+                                        <input type="text"  class="form-control" placeholder="Numero">
                                     </div>
                                     <div class="col-md-2">
-                                        <input type="text" v-model="interior" class="form-control" placeholder="Interior">
+                                        <input type="text"  class="form-control" placeholder="Interior">
                                     </div>
                                 </div>
                                 
@@ -164,7 +166,7 @@
                                     <label class="col-md-3 form-control-label" for="text-input">Terreno (mts&sup2;)</label>
                                     <div class="col-md-4" >
                                      
-                                        <input type="text"  v-model="terreno" class="form-control" placeholder="Terreno">
+                                        <input type="text"   class="form-control" placeholder="Terreno">
                                 
                                     </div>
                                 </div>
@@ -172,7 +174,7 @@
                                     <label class="col-md-3 form-control-label" for="text-input">Construcción (mts&sup2;)</label>
                                     <div class="col-md-7">
 
-                                        <input type="text" v-model="construccion" disabled class="form-control" placeholder="Construccion">
+                                        <input type="text"  disabled class="form-control" placeholder="Construccion">
                                   
                                     </div>
                                 </div>
@@ -199,6 +201,9 @@
 
 <script>
     export default {
+        props:{
+            rolId:{type: String}
+        },
         data(){
             return{
                 proceso:false,
@@ -206,6 +211,8 @@
                 comentarios: '',
 
                 arrayLote : [],
+                arrayFraccionamientos :[],
+                arrayEtapas : [],
                 modal : 0,
                 tituloModal : '',
                 tipoAccion: 0,
@@ -272,13 +279,45 @@
                     console.log(error);
                 });
             },
-
+            selectFraccionamientos(){
+                let me = this;
+                me.buscar=""
+                me.buscar2=""
+                me.buscar3=""
+                me.arrayFraccionamientos=[];
+                var url = '/select_fraccionamiento';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayFraccionamientos = respuesta.fraccionamientos;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            selectEtapa(buscar){
+                let me = this;
+                me.buscar2=""
+                me.buscar3=""
+                me.arrayEtapas=[];
+                var url = '/select_etapa_proyecto?buscar=' + buscar;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayEtapas = respuesta.etapas;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
             cambiarPagina(page, buscar, buscar2, buscar3, criterio){
                 let me = this;
                 //Actualiza la pagina actual
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
                 me.listarLote(page,buscar,buscar2,buscar3,criterio);
+            },
+            formatNumber(value) {
+                let val = (value/1).toFixed(2)
+                return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             },
 
             isNumber: function(evt) {
@@ -369,10 +408,8 @@
                     }
                 }
                 this.selectFraccionamientos();
-                this.selectFraccionamientosConLote();
                 this.selectEtapa(this.fraccionamiento_id);
                 this.selectModelo(this.fraccionamiento_id);
-                this.selectConsYTerreno(this.modelo_id);
 
             }
         },
