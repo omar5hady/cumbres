@@ -307,7 +307,7 @@
             selectClientes(vendedor){
                 let me = this;
                 me.arrayClientes=[];
-                var url = '/select_clientes?vendedor_id=' + vendedor;
+                var url = '/select_clientes?vendedor_id=' + vendedor +'&fraccionamiento_id=' + this.fraccionamiento_id;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayClientes = respuesta.clientes;
