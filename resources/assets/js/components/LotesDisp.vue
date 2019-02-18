@@ -28,14 +28,14 @@
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
 
-                                    <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar2" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio)" class="form-control" placeholder="Etapa">
-                                    <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar3" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio)" class="form-control" placeholder="Manzana a buscar">
+                                    <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar2" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio,rolId)" class="form-control" placeholder="Etapa">
+                                    <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar3" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio,rolId)" class="form-control" placeholder="Manzana a buscar">
 
-                                    <input type="text" v-if="criterio=='modelos.nombre'" v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio)" class="form-control" placeholder="Texto a buscar">
-                                    <input type="text" v-if="criterio=='lotes.calle'" v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio)" class="form-control" placeholder="Texto a buscar">
+                                    <input type="text" v-if="criterio=='modelos.nombre'" v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio,rolId)" class="form-control" placeholder="Texto a buscar">
+                                    <input type="text" v-if="criterio=='lotes.calle'" v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio,rolId)" class="form-control" placeholder="Texto a buscar">
                                                                         
-                                    <input type="text" v-if="criterio=='fraccionamientos.nombre'" v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio)" class="form-control" placeholder="Texto a buscar">
-                                    <button type="submit" @click="listarLote(1,buscar,buscar2,buscar3,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <input type="text" v-if="criterio=='fraccionamientos.nombre'" v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio,rolId)" class="form-control" placeholder="Texto a buscar">
+                                    <button type="submit" @click="listarLote(1,buscar,buscar2,buscar3,criterio,rolId)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
                         </div>
@@ -66,7 +66,7 @@
                                     <tr v-for="lote in arrayLote" :key="lote.id">
                                          
                                         <td v-if="rolId == '1'" style="width:5%">
-                                            <button title="Editar" type="button" @click="abrirModal('lote','actualizar',lote)" class="btn btn-warning btn-sm">
+                                            <button title="Apartar" type="button" @click="abrirModal('lote','apartar',lote)" class="btn btn-warning btn-sm">
                                             <i class="icon-pencil"></i>
                                             </button>
                                         </td>
@@ -90,7 +90,7 @@
                                         <td v-text="'$'+formatNumber(lote.sobreprecio)"></td>
                                         <td style="width:20%" v-text="'$'+formatNumber(lote.precio_venta)"></td>
                                         <td v-text="lote.promocion"></td>
-                                        <td v-text="lote.fecha_fin"></td>
+                                        <td v-text="this.moment(lote.fecha_fin).locale('es').format('MMMM YYYY')"></td>
                                         <td style="width:40%" v-text="lote.comentarios"></td>
                                     </tr>                               
                                 </tbody>
@@ -100,19 +100,19 @@
                             <!--Botones de paginacion -->
                             <ul class="pagination">
                                 <li class="page-item" v-if="pagination.last_page > 7 && pagination.current_page > 7">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(1,buscar,buscar2,buscar3,criterio)">Inicio</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(1,buscar,buscar2,buscar3,criterio,rolId)">Inicio</a>
                                 </li>
                                 <li class="page-item" v-if="pagination.current_page > 1">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,buscar2,buscar3,criterio)">Ant</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,buscar2,buscar3,criterio,rolId)">Ant</a>
                                 </li>
                                 <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,buscar2,buscar3,criterio)" v-text="page"></a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,buscar2,buscar3,criterio,rolId)" v-text="page"></a>
                                 </li>
                                 <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,buscar2,buscar3,criterio)">Sig</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,buscar2,buscar3,criterio,rolId)">Sig</a>
                                 </li>
                                 <li class="page-item" v-if="pagination.last_page > 7 && pagination.current_page<pagination.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.last_page,buscar,buscar2,buscar3,criterio)">Ultimo</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.last_page,buscar,buscar2,buscar3,criterio,rolId)">Ultimo</a>
                                 </li>
                             </ul>
                         </nav>
@@ -134,48 +134,37 @@
                             <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
 
                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
+                                    <label class="col-md-3 form-control-label" for="text-input">Vendedor</label>
                                     <div class="col-md-6">
-                                       <select id="myselect" class="form-control" >
+                                       <select v-model="vendedor_id" id="myselect" class="form-control" @click="selectClientes(vendedor_id)" >
                                             <option value="0">Seleccione</option>
-                                            <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                                            <option v-for="vendedores in arrayVendedores" :key="vendedores.id" :value="vendedores.id" v-text="vendedores.n_completo"></option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Clave catastral</label>
-                                    <div class="col-md-4">
-                                        <input type="text" pattern="\d*" maxlength="13" class="form-control" v-on:keypress="isNumber(event)" placeholder="Clave catastral">
+                                    <label class="col-md-3 form-control-label" for="text-input">Cliente</label>
+                                    <div class="col-md-6">
+                                       <select v-model="cliente_id" id="myselect" class="form-control" >
+                                            <option value="0">Seleccione</option>
+                                            <option v-for="clientes in arrayClientes" :key="clientes.id" :value="clientes.id" v-text="clientes.n_completo"></option>
+                                        </select>
                                     </div>
                                 </div>
-
                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Dirección</label>
-                                    <div class="col-md-4">
-                                        <input type="text" class="form-control" placeholder="Calle">
-                                    </div>
-                                    <div class="col-md-2">
-                                        <input type="text"  class="form-control" placeholder="Numero">
-                                    </div>
-                                    <div class="col-md-2">
-                                        <input type="text"  class="form-control" placeholder="Interior">
+                                    <label class="col-md-3 form-control-label" for="text-input">Tipo de Crédito</label>
+                                    <div class="col-md-6">
+                                       <select id="myselect" v-model="credito" class="form-control" >
+                                            <option value="">Seleccione</option>
+                                            <option v-for="creditos in arrayCreditos" :key="creditos.nombre" :value="creditos.nombre" v-text="creditos.nombre"></option>
+                                        </select>
                                     </div>
                                 </div>
                                 
                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Terreno (mts&sup2;)</label>
+                                    <label class="col-md-3 form-control-label" for="text-input">Fecha apartado</label>
                                     <div class="col-md-4" >
-                                     
-                                        <input type="text"   class="form-control" placeholder="Terreno">
-                                
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Construcción (mts&sup2;)</label>
-                                    <div class="col-md-7">
-
-                                        <input type="text"  disabled class="form-control" placeholder="Construccion">
-                                  
+                                        <label v-text="fecha_mostrar"></label>
                                     </div>
                                 </div>
                             </form>
@@ -184,8 +173,7 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
                             <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarLote()">Guardar</button>
-                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarLote()">Actualizar</button>
+                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarLote()">Apartar</button>
                         </div>
                     </div>
                       <!-- /.modal-content -->
@@ -208,11 +196,18 @@
             return{
                 proceso:false,
                 id: 0,
+                cliente_id:0,
+                vendedor_id:0,
+                fraccionamiento_id:0,
+                credito:'',
                 comentarios: '',
-
+                fecha_apartado:'',
+                fecha_mostrar:'',
                 arrayLote : [],
                 arrayFraccionamientos :[],
-                arrayEtapas : [],
+                arrayClientes:[],
+                arrayVendedores:[],
+                arrayCreditos:[],
                 modal : 0,
                 tituloModal : '',
                 tipoAccion: 0,
@@ -264,12 +259,11 @@
 
         },
 
-        
         methods : {
             /**Metodo para mostrar los registros */
-            listarLote(page, buscar, buscar2, buscar3, criterio){
+            listarLote(page, buscar, buscar2, buscar3, criterio,rol){
                 let me = this;
-                var url = '/lotesDisponibles?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2+ '&buscar3=' + buscar3 + '&criterio=' + criterio;
+                var url = '/lotesDisponibles?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2+ '&buscar3=' + buscar3 + '&criterio=' + criterio + '&rolId=' + rol;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayLote = respuesta.lotes.data;
@@ -294,26 +288,48 @@
                     console.log(error);
                 });
             },
-            selectEtapa(buscar){
+            selectClientes(vendedor){
                 let me = this;
-                me.buscar2=""
-                me.buscar3=""
-                me.arrayEtapas=[];
-                var url = '/select_etapa_proyecto?buscar=' + buscar;
+                me.arrayClientes=[];
+                var url = '/select_clientes?vendedor_id=' + vendedor + '&fraccionamiento_id=' + this.fraccionamiento_id;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
-                    me.arrayEtapas = respuesta.etapas;
+                    me.arrayClientes = respuesta.clientes;
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
             },
-            cambiarPagina(page, buscar, buscar2, buscar3, criterio){
+            selectVendedores(){
+                let me = this;
+                me.arrayVendedores=[];
+                var url = '/select_vendedores';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayVendedores = respuesta.vendedores;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            selectCreditos(){
+                let me = this;
+                me.arrayCreditos=[];
+                var url = '/select_tipoCredito';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayCreditos = respuesta.Tipos_creditos;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            cambiarPagina(page, buscar, buscar2, buscar3, criterio,rol){
                 let me = this;
                 //Actualiza la pagina actual
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
-                me.listarLote(page,buscar,buscar2,buscar3,criterio);
+                me.listarLote(page,buscar,buscar2,buscar3,criterio,rol);
             },
             formatNumber(value) {
                 let val = (value/1).toFixed(2)
@@ -345,7 +361,10 @@
             cerrarModal(){
                 this.modal = 0;
                 this.tituloModal = '';
-                
+                this.fraccionamiento_id=0;
+                this.cliente_id=0;
+                this.vendedor_id=0;
+                this.credito='';
                 this.errorLote = 0;
                 this.errorMostrarMsjLote = [];
 
@@ -371,51 +390,31 @@
                     case "lote":
                     {
                         switch(accion){
-                            case 'registrar':
-                            {
-                                this.modal = 1;
-                                this.tituloModal = 'Registrar Lote';
-                                this.tipoAccion = 1;
-                                break;
-                            }
-                            case 'actualizar':
+                            
+                            case 'apartar':
                             {
                                 this.modal =1;
-                                this.tituloModal='Actualizar Lote';
+                                this.tituloModal='Realizar apartado';
+                                this.fraccionamiento_id=data['fraccionamiento_id'];
+                                this.fecha_apartado=moment().locale('es').format('YYYY-MM-DD');
+                                this.fecha_mostrar=moment(this.fecha_apartado).locale('es').format("DD [de] MMMM [de] YYYY");
                                 this.tipoAccion=2;
                                 break;
                             }
 
-                            case 'excel':
-                            {
-                                this.modal2 =1;
-                                this.tituloModal2= 'Cargar desde Excel';
-                                this.tipoAccion=3;
-                                break;
-                            }
-
-                            case 'descargarExcel':
-                            {
-                                this.modal4 =1;
-                                this.tituloModal4= 'Descarga listado de lotes';
-                                this.buscar_fraccionamientoExcel = 0;
-                                break;
-                            }
-
-
-                        
+                            
                         }
                     }
                 }
                 this.selectFraccionamientos();
-                this.selectEtapa(this.fraccionamiento_id);
-                this.selectModelo(this.fraccionamiento_id);
+                this.selectVendedores();
 
             }
         },
         mounted() {
-            this.listarLote(1,this.buscar,this.buscar2,this.buscar3,this.criterio);
+            this.listarLote(1,this.buscar,this.buscar2,this.buscar3,this.criterio,this.rolId);
             this.selectFraccionamientos();
+            this.selectCreditos();
         }
     }
 </script>

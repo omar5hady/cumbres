@@ -293,7 +293,10 @@ Route::group(['middleware' => ['auth']],function(){
     Route::get('/select_personas_sin_user','PersonalController@select_Pers_sinUser');
     Route::get('/select_medio_publicidad','MedioPublicitarioController@selectMedioPublicitario');
     Route::get('/select_lugar_contacto','LugarContactoController@selectLugar_contacto');
+    Route::get('/select_vendedores','UserController@selectVendedores');
+    Route::get('/select_clientes','ClienteController@selectClientes');
     Route::get('/select_inst_financiamiento','InstitucionFinanciamientoController@select_institucion_financiamiento');
+    Route::get('/select_tipoCredito','TipoCreditoController@select_tipoCredito');
     
     
     

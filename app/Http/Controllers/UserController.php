@@ -199,4 +199,15 @@ class UserController extends Controller
         $user->condicion = '1';
         $user->save();
     }
+
+    public function selectVendedores(Request $request){
+        if (!$request->ajax()) return redirect('/');
+        $personas = User::join('personal','users.id','=','personal.id')
+            ->select('personal.id', 
+            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"))
+            ->where('users.rol_id','=','2')
+            ->get();
+
+        return['vendedores' => $personas];
+    }
 }

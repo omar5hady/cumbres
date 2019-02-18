@@ -420,6 +420,18 @@ class ClienteController extends Controller
         
     }
 
+    public function selectClientes(Request $request){
+        if (!$request->ajax()) return redirect('/');
+        $personas = Cliente::join('personal','clientes.id','=','personal.id')
+            ->select('personal.id', 
+            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"))
+            ->where('clientes.vendedor_id','=',$request->vendedor_id)
+            ->where('clientes.proyecto_interes_id','=',$request->fraccionamiento_id)
+            ->get();
+
+        return['clientes' => $personas];
+    }
+
   
     
 }

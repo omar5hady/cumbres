@@ -71,4 +71,15 @@ class TipoCreditoController extends Controller
              ->get();
              return['Tipos_creditos' => $Tipos_creditos];
     }
+
+    public function select_tipoCredito(Request $request){
+        //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
+        //if(!$request->ajax())return redirect('/');
+        $Tipos_creditos = Tipo_credito::select('nombre')
+        ->distinct()
+        ->get();
+        return['Tipos_creditos' => $Tipos_creditos];
+}
+
+
 }

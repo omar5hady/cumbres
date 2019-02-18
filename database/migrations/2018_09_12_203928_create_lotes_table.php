@@ -28,10 +28,10 @@ class CreateLotesTable extends Migration
             $table->float('terreno'); /** Dimensiones */
             $table->float('construccion');
             $table->boolean('casa_muestra')->default(0);
-            $table->boolean('apartado')->default(0);
             $table->boolean('lote_comercial')->default(0);
             $table->boolean('ini_obra')->default(0);
             $table->boolean('habilitado')->default(0);
+            $table->integer('apartado')->default(0);
             $table->string('comentarios')->nullable();
             $table->string('clv_catastral',13)->nullable();
             $table->integer('etapa_servicios')->nullable();
