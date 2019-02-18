@@ -73414,6 +73414,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     props: {
@@ -73424,7 +73436,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             proceso: false,
             id: 0,
             cliente_id: 0,
+            cliente: '',
             vendedor_id: 0,
+            lote_id: 0,
+            apartado: 0,
             fraccionamiento_id: 0,
             credito: '',
             comentarios: '',
@@ -73435,6 +73450,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             arrayClientes: [],
             arrayVendedores: [],
             arrayCreditos: [],
+            arrayDatosApartado: [],
             modal: 0,
             tituloModal: '',
             tipoAccion: 0,
@@ -73517,7 +73533,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         selectClientes: function selectClientes(vendedor) {
             var me = this;
             me.arrayClientes = [];
-            var url = '/select_clientes?vendedor_id=' + vendedor + '&fraccionamiento_id=' + this.fraccionamiento_id;
+            var url = '/select_clientes?vendedor_id=' + vendedor;
             axios.get(url).then(function (response) {
                 var respuesta = response.data;
                 me.arrayClientes = respuesta.clientes;
@@ -73532,6 +73548,23 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             axios.get(url).then(function (response) {
                 var respuesta = response.data;
                 me.arrayVendedores = respuesta.vendedores;
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        selectDatosApartado: function selectDatosApartado(lote_id) {
+            var me = this;
+            me.arrayDatosApartado = [];
+            var url = '/select_datos_apartado?lote_id=' + lote_id;
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayDatosApartado = respuesta.apartados;
+                me.vendedor_id = me.arrayDatosApartado[0].vendedor_id;
+                me.cliente_id = me.arrayDatosApartado[0].cliente_id;
+                me.fecha_apartado = me.arrayDatosApartado[0].fecha_apartado;
+                me.credito = me.arrayDatosApartado[0].tipo_credito;
+                me.cliente = me.arrayDatosApartado[0].cliente;
+                me.fecha_apartado = moment(me.fecha_apartado).locale('es').format("DD [de] MMMM [de] YYYY");
             }).catch(function (error) {
                 console.log(error);
             });
@@ -73581,6 +73614,65 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             return this.errorLote;
         },
+        apartarLote: function apartarLote() {
+            if (this.validarLote() || this.proceso == true) //Se verifica si hay un error (campo vacio)
+                {
+                    return;
+                }
+
+            this.proceso = true;
+            var me = this;
+            //Con axios se llama el metodo store de FraccionaminetoController
+            axios.post('/apartado/registrar', {
+                'vendedor_id': this.vendedor_id,
+                'cliente_id': this.cliente_id,
+                'tipo_credito': this.credito,
+                'fecha_apartado': this.fecha_apartado,
+                'lote_id': this.lote_id
+            }).then(function (response) {
+                me.proceso = false;
+                me.cerrarModal(); //al guardar el registro se cierra el modal
+                me.listarLote(1, '', '', '', 'lote', 1); //se enlistan nuevamente los registros
+                //Se muestra mensaje Success
+                swal({
+                    position: 'top-end',
+                    type: 'success',
+                    title: 'Lote apartado correctamente',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        desapartarLote: function desapartarLote() {
+            var _this = this;
+
+            swal({
+                title: '¿Desea desapartar este lote?',
+                text: "El lote quedara disponible para apartar!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Si!'
+            }).then(function (result) {
+                if (result.value) {
+                    var me = _this;
+
+                    axios.delete('/apartado/eliminar', { params: { 'lote_id': _this.lote_id,
+                            'id': _this.apartado
+                        } }).then(function (response) {
+                        swal('Desapartado!', 'Lote desapartado correctamente.', 'success');
+                        me.cerrarModal();
+                        me.listarLote(1, '', '', '', 'lote', 1);
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                }
+            });
+        },
         cerrarModal: function cerrarModal() {
             this.modal = 0;
             this.tituloModal = '';
@@ -73590,6 +73682,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.credito = '';
             this.errorLote = 0;
             this.errorMostrarMsjLote = [];
+            this.id = 0;
+            this.lote_id = 0;
+            this.cliente = "";
+            this.apartado = 0;
         },
         cerrarModal2: function cerrarModal2() {
             this.modal2 = 0;
@@ -73620,9 +73716,22 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     this.modal = 1;
                                     this.tituloModal = 'Realizar apartado';
                                     this.fraccionamiento_id = data['fraccionamiento_id'];
+                                    this.lote_id = data['id'];
                                     this.fecha_apartado = moment().locale('es').format('YYYY-MM-DD');
                                     this.fecha_mostrar = moment(this.fecha_apartado).locale('es').format("DD [de] MMMM [de] YYYY");
                                     this.tipoAccion = 2;
+                                    break;
+                                }
+
+                            case 'mostrarApartado':
+                                {
+                                    this.selectDatosApartado(data['id']);
+                                    this.modal = 1;
+                                    this.tituloModal = 'Lote apartado';
+                                    this.lote_id = data['id'];
+                                    this.id = data['id'];
+                                    this.apartado = data['apartado'];
+                                    this.tipoAccion = 3;
                                     break;
                                 }
 
@@ -73631,6 +73740,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             }
             this.selectFraccionamientos();
             this.selectVendedores();
+            this.selectClientes(this.vendedor_id);
         }
     },
     mounted: function mounted() {
@@ -74064,19 +74174,40 @@ var render = function() {
                     return _c("tr", { key: lote.id }, [
                       _vm.rolId == "1"
                         ? _c("td", { staticStyle: { width: "5%" } }, [
-                            _c(
-                              "button",
-                              {
-                                staticClass: "btn btn-warning btn-sm",
-                                attrs: { title: "Apartar", type: "button" },
-                                on: {
-                                  click: function($event) {
-                                    _vm.abrirModal("lote", "apartar", lote)
-                                  }
-                                }
-                              },
-                              [_c("i", { staticClass: "icon-pencil" })]
-                            )
+                            lote.apartado == 0
+                              ? _c(
+                                  "button",
+                                  {
+                                    staticClass: "btn btn-warning btn-sm",
+                                    attrs: { title: "Apartar", type: "button" },
+                                    on: {
+                                      click: function($event) {
+                                        _vm.abrirModal("lote", "apartar", lote)
+                                      }
+                                    }
+                                  },
+                                  [_c("i", { staticClass: "icon-lock" })]
+                                )
+                              : _c(
+                                  "button",
+                                  {
+                                    staticClass: "btn btn-primary btn-sm",
+                                    attrs: {
+                                      title: "Mostrar Apartado",
+                                      type: "button"
+                                    },
+                                    on: {
+                                      click: function($event) {
+                                        _vm.abrirModal(
+                                          "lote",
+                                          "mostrarApartado",
+                                          lote
+                                        )
+                                      }
+                                    }
+                                  },
+                                  [_c("i", { staticClass: "icon-magnifier" })]
+                                )
                           ])
                         : _vm._e(),
                       _vm._v(" "),
@@ -74424,7 +74555,10 @@ var render = function() {
                               }
                             ],
                             staticClass: "form-control",
-                            attrs: { id: "myselect" },
+                            attrs: {
+                              id: "myselect",
+                              disabled: _vm.tipoAccion == 3
+                            },
                             on: {
                               click: function($event) {
                                 _vm.selectClientes(_vm.vendedor_id)
@@ -74464,65 +74598,91 @@ var render = function() {
                       ])
                     ]),
                     _vm._v(" "),
-                    _c("div", { staticClass: "form-group row" }, [
-                      _c(
-                        "label",
-                        {
-                          staticClass: "col-md-3 form-control-label",
-                          attrs: { for: "text-input" }
-                        },
-                        [_vm._v("Cliente")]
-                      ),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "col-md-6" }, [
-                        _c(
-                          "select",
-                          {
-                            directives: [
+                    _vm.tipoAccion != 3
+                      ? _c("div", { staticClass: "form-group row" }, [
+                          _c(
+                            "label",
+                            {
+                              staticClass: "col-md-3 form-control-label",
+                              attrs: { for: "text-input" }
+                            },
+                            [_vm._v("Cliente")]
+                          ),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col-md-6" }, [
+                            _c(
+                              "select",
                               {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.cliente_id,
-                                expression: "cliente_id"
-                              }
-                            ],
-                            staticClass: "form-control",
-                            attrs: { id: "myselect" },
-                            on: {
-                              change: function($event) {
-                                var $$selectedVal = Array.prototype.filter
-                                  .call($event.target.options, function(o) {
-                                    return o.selected
-                                  })
-                                  .map(function(o) {
-                                    var val = "_value" in o ? o._value : o.value
-                                    return val
-                                  })
-                                _vm.cliente_id = $event.target.multiple
-                                  ? $$selectedVal
-                                  : $$selectedVal[0]
-                              }
-                            }
-                          },
-                          [
-                            _c("option", { attrs: { value: "0" } }, [
-                              _vm._v("Seleccione")
-                            ]),
-                            _vm._v(" "),
-                            _vm._l(_vm.arrayClientes, function(clientes) {
-                              return _c("option", {
-                                key: clientes.id,
-                                domProps: {
-                                  value: clientes.id,
-                                  textContent: _vm._s(clientes.n_completo)
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.cliente_id,
+                                    expression: "cliente_id"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                attrs: {
+                                  id: "myselect",
+                                  disabled: _vm.tipoAccion == 3
+                                },
+                                on: {
+                                  change: function($event) {
+                                    var $$selectedVal = Array.prototype.filter
+                                      .call($event.target.options, function(o) {
+                                        return o.selected
+                                      })
+                                      .map(function(o) {
+                                        var val =
+                                          "_value" in o ? o._value : o.value
+                                        return val
+                                      })
+                                    _vm.cliente_id = $event.target.multiple
+                                      ? $$selectedVal
+                                      : $$selectedVal[0]
+                                  }
                                 }
-                              })
+                              },
+                              [
+                                _c("option", { attrs: { value: "0" } }, [
+                                  _vm._v("Seleccione")
+                                ]),
+                                _vm._v(" "),
+                                _vm._l(_vm.arrayClientes, function(clientes) {
+                                  return _c("option", {
+                                    key: clientes.id,
+                                    domProps: {
+                                      value: clientes.id,
+                                      textContent: _vm._s(clientes.n_completo)
+                                    }
+                                  })
+                                })
+                              ],
+                              2
+                            )
+                          ])
+                        ])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.tipoAccion == 3
+                      ? _c("div", { staticClass: "form-group row" }, [
+                          _c(
+                            "label",
+                            {
+                              staticClass: "col-md-3 form-control-label",
+                              attrs: { for: "text-input" }
+                            },
+                            [_vm._v("Cliente")]
+                          ),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col-md-6" }, [
+                            _c("label", {
+                              attrs: { for: "" },
+                              domProps: { textContent: _vm._s(_vm.cliente) }
                             })
-                          ],
-                          2
-                        )
-                      ])
-                    ]),
+                          ])
+                        ])
+                      : _vm._e(),
                     _vm._v(" "),
                     _c("div", { staticClass: "form-group row" }, [
                       _c(
@@ -74547,7 +74707,10 @@ var render = function() {
                               }
                             ],
                             staticClass: "form-control",
-                            attrs: { id: "myselect" },
+                            attrs: {
+                              id: "myselect",
+                              disabled: _vm.tipoAccion == 3
+                            },
                             on: {
                               change: function($event) {
                                 var $$selectedVal = Array.prototype.filter
@@ -74595,9 +74758,21 @@ var render = function() {
                       ),
                       _vm._v(" "),
                       _c("div", { staticClass: "col-md-4" }, [
-                        _c("label", {
-                          domProps: { textContent: _vm._s(_vm.fecha_mostrar) }
-                        })
+                        _vm.tipoAccion == 2
+                          ? _c("label", {
+                              domProps: {
+                                textContent: _vm._s(_vm.fecha_mostrar)
+                              }
+                            })
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm.tipoAccion == 3
+                          ? _c("label", {
+                              domProps: {
+                                textContent: _vm._s(_vm.fecha_apartado)
+                              }
+                            })
+                          : _vm._e()
                       ])
                     ])
                   ]
@@ -74627,11 +74802,27 @@ var render = function() {
                         attrs: { type: "button" },
                         on: {
                           click: function($event) {
-                            _vm.actualizarLote()
+                            _vm.apartarLote()
                           }
                         }
                       },
                       [_vm._v("Apartar")]
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.tipoAccion == 3
+                  ? _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-primary",
+                        attrs: { type: "button" },
+                        on: {
+                          click: function($event) {
+                            _vm.desapartarLote()
+                          }
+                        }
+                      },
+                      [_vm._v("Desapartar")]
                     )
                   : _vm._e()
               ])

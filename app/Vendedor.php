@@ -23,4 +23,8 @@ class Vendedor extends Model
     public function cliente(){
         return $this->hasMany('App\Cliente');
     }
+
+    public function vendedor(){
+        return $this->hasMany('App\Apartado');
+    }
 }

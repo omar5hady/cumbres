@@ -156,6 +156,10 @@ Route::group(['middleware' => ['auth']],function(){
     Route::put('/lotes/enviarAviObra','LoteController@enviarAviso');
     Route::get('/lotes/export_excel/{fraccionamiento_id}','LoteController@excelLotes');
     
+    ////////////////////        RUTAS APARTADOS    /////////////////////////////////
+    Route::post('/apartado/registrar','ApartadoController@store');
+    Route::delete('/apartado/eliminar','ApartadoController@destroy');
+
     ///////////////////       RUTAS LICENCIA   ////////////////////////////////////
     Route::get('/licencias','LicenciasController@index');
     Route::put('/licencias/actualizar','LicenciasController@update');
@@ -297,6 +301,7 @@ Route::group(['middleware' => ['auth']],function(){
     Route::get('/select_clientes','ClienteController@selectClientes');
     Route::get('/select_inst_financiamiento','InstitucionFinanciamientoController@select_institucion_financiamiento');
     Route::get('/select_tipoCredito','TipoCreditoController@select_tipoCredito');
+    Route::get('/select_datos_apartado','ApartadoController@select_datos_apartado');
     
     
     

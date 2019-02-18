@@ -177,7 +177,7 @@ class UserController extends Controller
         
         if($user->rol_id == 2){
             $vendedor = new Vendedor();
-            $vendedor->id = $persona->id;
+            $vendedor->id = $request->id_persona;
             $vendedor->save();
         }     
 

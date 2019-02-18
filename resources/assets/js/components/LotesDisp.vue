@@ -66,11 +66,14 @@
                                     <tr v-for="lote in arrayLote" :key="lote.id">
                                          
                                         <td v-if="rolId == '1'" style="width:5%">
-                                            <button title="Apartar" type="button" @click="abrirModal('lote','apartar',lote)" class="btn btn-warning btn-sm">
-                                            <i class="icon-pencil"></i>
+                                            <button v-if="lote.apartado == 0" title="Apartar" type="button" @click="abrirModal('lote','apartar',lote)" class="btn btn-warning btn-sm">
+                                            <i class="icon-lock"></i>
+                                            </button>
+
+                                            <button v-else title="Mostrar Apartado" type="button" @click="abrirModal('lote','mostrarApartado',lote)" class="btn btn-primary btn-sm">
+                                            <i class="icon-magnifier"></i>
                                             </button>
                                         </td>
-                                        
                                         
                                         <td style="width:20%" v-text="lote.proyecto"></td>
                                         <td v-text="lote.manzana"></td>
@@ -131,30 +134,37 @@
                             </button>
                         </div>
                         <div class="modal-body">
+                            
                             <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
 
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Vendedor</label>
                                     <div class="col-md-6">
-                                       <select v-model="vendedor_id" id="myselect" class="form-control" @click="selectClientes(vendedor_id)" >
+                                       <select v-model="vendedor_id" id="myselect" class="form-control" :disabled="tipoAccion==3" @click="selectClientes(vendedor_id)" >
                                             <option value="0">Seleccione</option>
                                             <option v-for="vendedores in arrayVendedores" :key="vendedores.id" :value="vendedores.id" v-text="vendedores.n_completo"></option>
                                         </select>
                                     </div>
                                 </div>
-                                <div class="form-group row">
+                                <div v-if="tipoAccion!=3" class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Cliente</label>
                                     <div class="col-md-6">
-                                       <select v-model="cliente_id" id="myselect" class="form-control" >
+                                       <select v-model="cliente_id" id="myselect" :disabled="tipoAccion==3" class="form-control" >
                                             <option value="0">Seleccione</option>
                                             <option v-for="clientes in arrayClientes" :key="clientes.id" :value="clientes.id" v-text="clientes.n_completo"></option>
                                         </select>
                                     </div>
                                 </div>
+                                <div v-if="tipoAccion==3" class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Cliente</label>
+                                    <div class="col-md-6">
+                                       <label for="" v-text="cliente"></label>
+                                    </div>
+                                </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Tipo de Crédito</label>
                                     <div class="col-md-6">
-                                       <select id="myselect" v-model="credito" class="form-control" >
+                                       <select id="myselect" v-model="credito" :disabled="tipoAccion==3" class="form-control" >
                                             <option value="">Seleccione</option>
                                             <option v-for="creditos in arrayCreditos" :key="creditos.nombre" :value="creditos.nombre" v-text="creditos.nombre"></option>
                                         </select>
@@ -164,7 +174,8 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Fecha apartado</label>
                                     <div class="col-md-4" >
-                                        <label v-text="fecha_mostrar"></label>
+                                        <label v-if="tipoAccion==2" v-text="fecha_mostrar"></label>
+                                        <label v-if="tipoAccion==3" v-text="fecha_apartado"></label>
                                     </div>
                                 </div>
                             </form>
@@ -173,7 +184,8 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
                             <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarLote()">Apartar</button>
+                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="apartarLote()">Apartar</button>
+                            <button type="button" v-if="tipoAccion==3" class="btn btn-primary" @click="desapartarLote()">Desapartar</button>
                         </div>
                     </div>
                       <!-- /.modal-content -->
@@ -197,7 +209,10 @@
                 proceso:false,
                 id: 0,
                 cliente_id:0,
+                cliente:'',
                 vendedor_id:0,
+                lote_id: 0,
+                apartado:0,
                 fraccionamiento_id:0,
                 credito:'',
                 comentarios: '',
@@ -208,6 +223,7 @@
                 arrayClientes:[],
                 arrayVendedores:[],
                 arrayCreditos:[],
+                arrayDatosApartado: [],
                 modal : 0,
                 tituloModal : '',
                 tipoAccion: 0,
@@ -291,7 +307,7 @@
             selectClientes(vendedor){
                 let me = this;
                 me.arrayClientes=[];
-                var url = '/select_clientes?vendedor_id=' + vendedor + '&fraccionamiento_id=' + this.fraccionamiento_id;
+                var url = '/select_clientes?vendedor_id=' + vendedor;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayClientes = respuesta.clientes;
@@ -307,6 +323,26 @@
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayVendedores = respuesta.vendedores;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            
+            selectDatosApartado(lote_id){
+                let me = this;
+                me.arrayDatosApartado=[];
+                var url = '/select_datos_apartado?lote_id=' + lote_id;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayDatosApartado = respuesta.apartados;
+                    me.vendedor_id = me.arrayDatosApartado[0].vendedor_id;
+                    me.cliente_id = me.arrayDatosApartado[0].cliente_id;
+                    me.fecha_apartado = me.arrayDatosApartado[0].fecha_apartado;
+                    me.credito = me.arrayDatosApartado[0].tipo_credito;
+                    me.cliente = me.arrayDatosApartado[0].cliente;
+                    me.fecha_apartado=moment(me.fecha_apartado).locale('es').format("DD [de] MMMM [de] YYYY");
+                   
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -358,6 +394,70 @@
                 return this.errorLote;
             },
 
+            apartarLote(){
+                 if(this.validarLote() || this.proceso==true) //Se verifica si hay un error (campo vacio)
+                {
+                    return;
+                }
+
+                this.proceso=true;
+                let me = this;
+                //Con axios se llama el metodo store de FraccionaminetoController
+                axios.post('/apartado/registrar',{                 
+                    'vendedor_id': this.vendedor_id,
+                    'cliente_id': this.cliente_id,
+                    'tipo_credito': this.credito,
+                    'fecha_apartado': this.fecha_apartado,
+                    'lote_id': this.lote_id,
+                }).then(function (response){
+                    me.proceso=false;
+                    me.cerrarModal(); //al guardar el registro se cierra el modal
+                    me.listarLote(1,'','','','lote', 1); //se enlistan nuevamente los registros
+                    //Se muestra mensaje Success
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Lote apartado correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
+            desapartarLote(){
+                swal({
+                title: '¿Desea desapartar este lote?',
+                text: "El lote quedara disponible para apartar!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Si!'
+                }).then((result) => {
+                if (result.value) {
+                    let me = this;
+
+                axios.delete('/apartado/eliminar', 
+                        {params: {'lote_id': this.lote_id,
+                        'id':this.apartado
+                        }}).then(function (response){
+                        swal(
+                        'Desapartado!',
+                        'Lote desapartado correctamente.',
+                        'success'
+                        )
+                        me.cerrarModal();
+                        me.listarLote(1,'','','','lote',1);
+                    }).catch(function (error){
+                        console.log(error);
+                    });
+                }
+                })
+            },
+
             cerrarModal(){
                 this.modal = 0;
                 this.tituloModal = '';
@@ -367,6 +467,10 @@
                 this.credito='';
                 this.errorLote = 0;
                 this.errorMostrarMsjLote = [];
+                this.id=0;
+                this.lote_id=0;
+                this.cliente="";
+                this.apartado=0;
 
             },
             cerrarModal2(){
@@ -396,9 +500,22 @@
                                 this.modal =1;
                                 this.tituloModal='Realizar apartado';
                                 this.fraccionamiento_id=data['fraccionamiento_id'];
+                                this.lote_id=data['id'];
                                 this.fecha_apartado=moment().locale('es').format('YYYY-MM-DD');
                                 this.fecha_mostrar=moment(this.fecha_apartado).locale('es').format("DD [de] MMMM [de] YYYY");
                                 this.tipoAccion=2;
+                                break;
+                            }
+
+                             case 'mostrarApartado':
+                            {
+                                this.selectDatosApartado(data['id']);
+                                this.modal =1;
+                                this.tituloModal='Lote apartado';
+                                this.lote_id=data['id'];
+                                this.id=data['id'];
+                                this.apartado=data['apartado'];
+                                this.tipoAccion=3;
                                 break;
                             }
 
@@ -408,6 +525,7 @@
                 }
                 this.selectFraccionamientos();
                 this.selectVendedores();
+                this.selectClientes(this.vendedor_id);
 
             }
         },

@@ -33,4 +33,8 @@ class Cliente extends Model
     public function cliente_observacion(){
         return $this->hasMany('App\Cliente_observacion');
     }
+
+    public function Apartado(){
+        return $this->hasMany('App\Apartado');
+    }
 }
