@@ -302,6 +302,9 @@ Route::group(['middleware' => ['auth']],function(){
     Route::get('/select_inst_financiamiento','InstitucionFinanciamientoController@select_institucion_financiamiento');
     Route::get('/select_tipoCredito','TipoCreditoController@select_tipoCredito');
     Route::get('/select_datos_apartado','ApartadoController@select_datos_apartado');
+    Route::get('/select_institucion','TipoCreditoController@select_institucion');
+    Route::get('/select_estados','CiudadController@selectEstados');
+    
     
     
     

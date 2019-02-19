@@ -28,6 +28,8 @@ class CreateClientesTable extends Migration
             $table->string('empresa')->nullable();
             $table->boolean('coacreditado')->default(0); //TinyInt
             $table->boolean('clasificacion')->default(1);
+            $table->string('estado',80)->nullable();
+            $table->string('ciudad',80)->nullable();
 
             $table->char('sexo_coa',1)->nullable();
             $table->string('tipo_casa_coa',25)->nullable();
@@ -43,6 +45,8 @@ class CreateClientesTable extends Migration
             $table->string('homoclave_coa',3)->nullable();
             $table->string('direccion_coa',80)->nullable();
             $table->string('colonia_coa',80)->nullable();
+            $table->string('ciudad_coa',80)->nullable();
+            $table->string('estado_coa',80)->nullable();
             $table->integer('cp_coa')->nullable();
             $table->string('telefono_coa',8)->nullable();
             $table->string('ext_coa',3)->nullable();

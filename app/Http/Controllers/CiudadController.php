@@ -40,4 +40,17 @@ class CiudadController extends Controller
         ->select('colonia')->orderBy('colonia','asc')->get();
         return['colonias' => $colonias];
     }
+
+
+    public function selectEstados (Request $request){
+        //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
+        if(!$request->ajax())return redirect('/');
+        $estados = Ciudad::select('estado')
+                           ->distinct()
+                           ->orderBy('estado','asc')->get();
+
+        return ['estados' => $estados];
+    }
+
+    
 }

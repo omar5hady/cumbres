@@ -106,7 +106,7 @@
                         <a class="nav-link" href="#"><i class="icon-basket-loaded"></i> Mis prospectos</a>
                     </li>
                     <li @click="menu=61" class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-notebook"></i> Ventas</a>
+                        <a class="nav-link" href="#"><i class="icon-notebook"></i> Simulacion de credito</a>
                     </li>
                 </ul>
             </li>

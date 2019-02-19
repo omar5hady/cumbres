@@ -127,6 +127,10 @@
                 <prospectos></prospectos>
             </template>
             
+            <template v-if="menu==61">
+                <simulacion></simulacion>
+            </template>
+            
             @elseif(Auth::user()->rol_id == 2) <!--Vendedor -->
             <template v-if="menu==13">
                 <empresa></empresa>
@@ -136,6 +140,9 @@
             </template>
             <template v-if="menu==60">
                 <prospectos></prospectos>
+            </template>
+            <template v-if="menu==61">
+                <simulacion></simulacion>
             </template>
             <template v-if="menu==59">
                 <lote-disponible rol-id="{{Auth::user()->rol_id}}"></lote-disponible>
