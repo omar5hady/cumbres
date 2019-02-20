@@ -96,7 +96,7 @@
      <!-- Div Card Body para actualizar -->
                     <template v-else-if="listado == 3">
                         <div class="card-body"> 
-                            <div class="form-group row border border-secondary">
+                            <div class="form-group row border border-primary">
                                 <div class="col-md-12">
                                     <div class="form-group">
                                   <center> <h3>Datos del prospecto</h3> </center>
@@ -238,7 +238,7 @@
                             </div>
                 
                   <!--  lugar de contacto , clasificacion y otros-->
-                        <div class="form-group row border border-secondary">
+                        <div class="form-group row border border-primary">
                               <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="">Lugar de contacto </label>
@@ -288,7 +288,7 @@
                         </div>
 
                   <!--  apartado  de datos vive en casa , edo civil-->
-                        <div class="form-group row border border-secondary" >    
+                        <div class="form-group row border border-primary" >    
                                         
                                 <div class="col-md-3">
                                     <div class="form-group">
@@ -319,6 +319,18 @@
                                   </div>
                                 </div>
 
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                    <label for="">Tipo de economia <span style="color:red;" v-show="tipo_economia==0">(*)</span></label>
+                                        <select class="form-control" v-model="tipo_economia" >
+                                            <option value="0">Seleccione</option>  
+                                            <option value="formal">Formal</option>
+                                            <option value="informal">Informal</option>
+                                            <option value="mixta">Mixta</option>
+                                        </select>
+                                    </div>
+                                </div>
+
                               
                                 <div class="col-md-10">
                                     <div class="form-group">
@@ -330,7 +342,7 @@
                         </div>
 
                   <!--  apartado de datos del conyuge-->
-                        <div class="form-group row border border-secondary" v-if="coacreditado==true" >  
+                        <div class="form-group row border border-dark" v-if="coacreditado==true" >  
                              <div class="col-md-12">
                                     <div class="form-group">
                                   <center> <h3>Datos del conyuge o coacreditado</h3> </center>
@@ -468,44 +480,127 @@
                                 <div class="col-md-3" v-if="coacreditado==true">
                                      <div class="form-group">
                                     <label for="">Celular</label>
-                                    <input type="text" class="form-control"  pattern="\d*" maxlength="5" v-on:keypress="isNumber($event)" @keyup="selectColonias(cp_coa)"  v-model="cp_coa" placeholder="C.Postal">
+                                    <input type="text" class="form-control" disabled v-model="celular_coa" placeholder="Celular">
                                 </div>
                                 </div>
 
                                 
                                 <div class="col-md-3" v-if="coacreditado==true">
                                      <div class="form-group">
-                                    <label for="">C.P</label>
-                                    <input type="text" class="form-control"  pattern="\d*" maxlength="5" v-on:keypress="isNumber($event)" @keyup="selectColonias(cp_coa)"  v-model="cp_coa" placeholder="C.Postal">
+                                    <label for="">Telefono</label>
+                                    <input type="text" class="form-control" disabled v-model="telefono_coa" placeholder="Telefono">
                                 </div>
                                 </div>
 
                                 
                                 <div class="col-md-3" v-if="coacreditado==true">
                                      <div class="form-group">
-                                    <label for="">C.P</label>
-                                    <input type="text" class="form-control"  pattern="\d*" maxlength="5" v-on:keypress="isNumber($event)" @keyup="selectColonias(cp_coa)"  v-model="cp_coa" placeholder="C.Postal">
+                                    <label for="">Email</label>
+                                    <input type="text" class="form-control" disabled v-model="email_coa" placeholder="Correo">
                                 </div>
                                 </div>
+
+
+                               <div class="col-md-3" v-if="coacreditado==true">
+                                     <div class="form-group">
+                                    <label for="">Email institucional</label>
+                                    <input type="text" class="form-control" disabled v-model="email_institucional_coa" placeholder="Correo institucional">
+                                </div>
+                                </div>
+
+                                   <div class="col-md-8">
+                                    <div class="form-group">
+                                    <label for="">Empresa <span style="color:red;" v-show="empresa_coa==0">(*)</span></label>
+                                        <v-select 
+                                            :on-search="selectEmpresaVueselect"
+                                            label="nombre"
+                                            :options="arrayEmpresa"
+                                            placeholder="Buscar empresa..."
+                                            :onChange="getDatosEmpresa"
+                                        >
+                                        </v-select>
+                                </div>
+                                </div>
+
+                             
 
                        
 
                         </div>
 
-                  <!--  apartado  de datos economicos y tipo de credito-->
-                        <div class="form-group row border border-secondary" >    
-                                        
-                                <div class="col-md-3">
+                  <!--  apartado de referencias familiares-->
+                        <div class="form-group row border border-warning">
+                                  <div class="col-md-12">
                                     <div class="form-group">
-                                    <label for="">Tipo de economia <span style="color:red;" v-show="tipo_economia==0">(*)</span></label>
-                                        <select class="form-control" v-model="tipo_economia" >
-                                            <option value="0">Seleccione</option>  
-                                            <option value="formal">Formal</option>
-                                            <option value="informal">Informal</option>
-                                            <option value="mixta">Mixta</option>
-                                        </select>
+                                  <center> <h3>Referencias familiares</h3> </center>
                                     </div>
+                                  </div> 
+
+
+                                <div class="col-md-4">
+                                     <div class="form-group">
+                                    <label for="">Nombre</label>
+                                    <input type="text" class="form-control"  v-model="nombre_referencia1" placeholder="Nombre">
                                 </div>
+                                </div>
+
+
+                                <div class="col-md-4">
+                                     <div class="form-group">
+                                    <label for="">Telefono</label>
+                                    <input type="text" class="form-control"  v-model="telefono_referencia1" placeholder="Telefono">
+                                </div>
+                                </div>
+
+                                
+                                <div class="col-md-4">
+                                     <div class="form-group">
+                                    <label for="">Celular</label>
+                                    <input type="text" class="form-control"  v-model="celular_referencia1" placeholder="Celular">
+                                </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                  <center> <h5>Segunda referencia</h5> </center>
+                                    </div>
+                                  </div> 
+
+                                <div class="col-md-4">
+                                     <div class="form-group">
+                                    <label for="">Nombre</label>
+                                    <input type="text" class="form-control"  v-model="nombre_referencia2" placeholder="Nombre">
+                                </div>
+                                </div>
+
+
+                                <div class="col-md-4">
+                                     <div class="form-group">
+                                    <label for="">Telefono</label>
+                                    <input type="text" class="form-control"  v-model="telefono_referencia2" placeholder="Telefono">
+                                </div>
+                                </div>
+
+                                
+                                <div class="col-md-4">
+                                     <div class="form-group">
+                                    <label for="">Celular</label>
+                                    <input type="text" class="form-control"  v-model="celular_referencia2" placeholder="Celular">
+                                </div>
+                                </div>
+
+                             
+                        </div>
+
+                  <!--  apartado  de datos economicos y tipo de credito-->
+                        <div class="form-group row border border-danger" >   
+
+                                  <div class="col-md-12">
+                                    <div class="form-group">
+                                  <center> <h3>Datos de la vivienda</h3> </center>
+                                    </div>
+                                  </div>  
+                                        
 
                                 <div class="col-md-3">
                                   <div class="form-group">
@@ -676,10 +771,17 @@
                 arrayCiudadesCoa: [],
                 arrayColonias: [],
 
-                modal : 0,
+                nombre_referencia1: '',
+                telefono_referencia1: '',
+                celular_referencia1: '',
+                
+                nombre_referencia2: '',
+                telefono_referencia2: '',
+                celular_referencia2: '',
+
+             
                 modal3: 0,
                 listado:1,
-                tituloModal : '',
                 tituloModal3 : '',
                 tipoAccion: 0,
                 errorProspecto : 0,
@@ -755,6 +857,28 @@
                     console.log(error);
                 });
             },
+             selectEmpresaVueselect(search, loading){
+                let me = this;
+                loading(true)
+
+                var url = '/select_empresas?filtro='+search;
+                axios.get(url).then(function (response) {
+                    let respuesta = response.data;
+                    q: search
+                    me.arrayEmpresa = respuesta.empresas;
+                    loading(false)
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            getDatosEmpresa(val1){
+                let me = this;
+                me.loading = true;
+                me.empresa_coa = val1.nombre;
+               
+            }, 
+
             selectFraccionamientos(){
                 let me = this;
                 me.arrayFraccionamientos=[];
@@ -1239,6 +1363,10 @@
                     me.homoclave_coa = me.arrayDatosProspecto[0]['homoclave_coa'];
                     me.curp_coa = me.arrayDatosProspecto[0]['curp_coa'];
                     me.nss_coa = me.arrayDatosProspecto[0]['nss_coa'];
+                    me.telefono_coa = me.arrayDatosProspecto[0]['telefono_coa'];
+                    me.celular_coa = me.arrayDatosProspecto[0]['celular_coa'];
+                    me.email_coa = me.arrayDatosProspecto[0]['email_coa'];
+                    me.email_institucional_coa = me.arrayDatosProspecto[0]['email_institucional_coa'];
                     
                     
                     me.id=id;
