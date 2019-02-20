@@ -98954,39 +98954,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         this.listado = 0;
     }), _defineProperty(_methods, 'ocultarDetalle', function ocultarDetalle() {
         this.listado = 1;
-    }), _defineProperty(_methods, 'verAviso', function verAviso(id) {
-        var me = this;
-        this.listado = 2;
-
-        //Obtener datos de cabecera
-        var arrayAvisoT = [];
-        var url = '/iniobra/obtenerCabecera?id=' + id;
-        axios.get(url).then(function (response) {
-            var respuesta = response.data;
-            me.arrayAvisoT = respuesta.ini_obra;
-
-            me.contratista = me.arrayAvisoT[0]['contratista'];
-            me.clave = me.arrayAvisoT[0]['clave'];
-            me.f_ini = me.arrayAvisoT[0]['f_ini'];
-            me.f_fin = me.arrayAvisoT[0]['f_fin'];
-            me.anticipo = me.arrayAvisoT[0]['anticipo'];
-            me.fraccionamiento = me.arrayAvisoT[0]['proyecto'];
-            me.total_anticipo = me.arrayAvisoT[0]['total_anticipo'];
-            me.costo_indirecto_porcentaje = me.arrayAvisoT[0]['costo_indirecto_porcentaje'];
-            me.total_construccion = me.arrayAvisoT[0]['total_superficie'];
-            me.id = id;
-        }).catch(function (error) {
-            console.log(error);
-        });
-        //Obtener detalle
-        var arrayAvisoT = [];
-        var urld = '/iniobra/obtenerDetalles?id=' + id;
-        axios.get(urld).then(function (response) {
-            var respuesta = response.data;
-            me.arrayProspectosLotes = respuesta.detalles;
-        }).catch(function (error) {
-            console.log(error);
-        });
     }), _defineProperty(_methods, 'actualizarProspectoBTN', function actualizarProspectoBTN(id) {
 
         var me = this;
@@ -99020,6 +98987,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             me.parentesco_coa = me.arrayDatosProspecto[0]['parentesco_coa'];
             me.coacreditado = me.arrayDatosProspecto[0]['coacreditado'];
             me.conyugeNom = me.arrayDatosProspecto[0]['n_completo_coa'];
+            me.nombre_coa = me.arrayDatosProspecto[0]['nombre_coa'];
+            me.apellidos_coa = me.arrayDatosProspecto[0]['apellidos_coa'];
             me.proyecto = me.arrayDatosProspecto[0]['proyecto'];
 
             me.id = id;
@@ -105814,6 +105783,50 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -105822,12 +105835,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             proceso: false,
             id: 0,
             clasificacion: 1,
+            dep_economicos: '',
             nombre: '',
             apellidos: '',
             telefono: '',
             celular: '',
             email: '',
             email_inst: '',
+            puesto: '',
             nss: '',
             sexo: '',
             fecha_nac: '',
@@ -105847,10 +105862,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             tipo_credito: 0,
             tipo_economia: 0,
             estado: '',
+            ciudad: '',
             cp: '',
             colonia: '',
             direccion: '',
             inst_financiera: '',
+            nacionalidad: 0,
 
             nombre_coa: '',
             parentesco_coa: '',
@@ -105870,12 +105887,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             estado_coa: '',
             ciudad_coa: '',
             cp_coa: '',
+            nacionalidad_coa: 0,
 
             arrayEmpresa: [],
             arrayMediosPublicidad: [],
             arrayInstituciones: [],
             arrayEstados: [],
             arrayCiudadesCoa: [],
+            arrayCiudades: [],
+            arrayColoniasCoa: [],
             arrayColonias: [],
 
             nombre_referencia1: '',
@@ -105954,7 +105974,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         /**Metodo para mostrar los registros */
         listarProspectos: function listarProspectos(page, buscar, criterio) {
             var me = this;
-            var url = '/clientes?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
+            var url = '/clientes_simulacion?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
             axios.get(url).then(function (response) {
                 var respuesta = response.data;
                 me.arrayProspectos = respuesta.personas.data;
@@ -106028,6 +106048,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }), _defineProperty(_methods, 'selectEstados', function selectEstados() {
         var me = this;
         me.arrayEstados = [];
+
         var url = '/select_estados';
         axios.get(url).then(function (response) {
             var respuesta = response.data;
@@ -106035,23 +106056,34 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         }).catch(function (error) {
             console.log(error);
         });
-    }), _defineProperty(_methods, 'selectCiudades', function selectCiudades(estado) {
+    }), _defineProperty(_methods, 'selectCiudades', function selectCiudades(estado, coacreditado) {
         var me = this;
-        me.arrayCiudadesCoa = [];
         var url = '/select_ciudades?buscar=' + estado;
         axios.get(url).then(function (response) {
             var respuesta = response.data;
-            me.arrayCiudadesCoa = respuesta.ciudades;
+            if (coacreditado == 1) {
+                me.arrayCiudadesCoa = [];
+                me.arrayCiudadesCoa = respuesta.ciudades;
+            } else {
+                me.arrayCiudades = [];
+                me.arrayCiudades = respuesta.ciudades;
+            }
         }).catch(function (error) {
             console.log(error);
         });
-    }), _defineProperty(_methods, 'selectColonias', function selectColonias(cp) {
+    }), _defineProperty(_methods, 'selectColonias', function selectColonias(cp, coacreditado) {
         var me = this;
         me.arrayColonias = [];
         var url = '/select_colonias?buscar=' + cp;
         axios.get(url).then(function (response) {
             var respuesta = response.data;
-            me.arrayColonias = respuesta.colonias;
+            if (coacreditado == 1) {
+                me.arrayColoniasCoa = [];
+                me.arrayColoniasCoa = respuesta.colonias;
+            } else {
+                me.arrayColonias = [];
+                me.arrayColonias = respuesta.colonias;
+            }
         }).catch(function (error) {
             console.log(error);
         });
@@ -106335,6 +106367,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         this.empresa = '';
         this.observacion = '';
         this.lugar_contacto = 0;
+        this.puesto = '';
+        this.dep_economicos = '';
 
         this.nombre_coa = '';
         this.parentesco_coa = '';
@@ -106358,54 +106392,59 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         this.errorMostrarMsjProspecto = [];
     }), _defineProperty(_methods, 'ocultarDetalle', function ocultarDetalle() {
         this.listado = 1;
-    }), _defineProperty(_methods, 'actualizarProspectoBTN', function actualizarProspectoBTN(id) {
+    }), _defineProperty(_methods, 'actualizarProspectoBTN', function actualizarProspectoBTN(prospecto) {
 
-        var me = this;
-        this.listado = 3;
+        //let me= this;
+
         var arrayDatosProspecto = [];
-        var url = '/clientes/obtenerDatos?id=' + id;
-
-        axios.get(url).then(function (response) {
+        /*var url = '/clientes/obtenerDatos?id=' + id;
+          axios.get(url).then(function (response) {
             var respuesta = response.data;
-            me.arrayDatosProspecto = respuesta.personas;
+            me.arrayDatosProspecto = respuesta.personas;*/
 
-            me.nombre = me.arrayDatosProspecto[0]['nombre'];
-            me.apellidos = me.arrayDatosProspecto[0]['apellidos'];
-            me.sexo = me.arrayDatosProspecto[0]['sexo'];
-            me.telefono = me.arrayDatosProspecto[0]['telefono'];
-            me.celular = me.arrayDatosProspecto[0]['celular'];
-            me.email_inst = me.arrayDatosProspecto[0]['email_institucional'];
-            me.email = me.arrayDatosProspecto[0]['email'];
-            me.empresa = me.arrayDatosProspecto[0]['empresa'];
-            me.fecha_nac = me.arrayDatosProspecto[0]['f_nacimiento'];
-            me.curp = me.arrayDatosProspecto[0]['curp'];
-            me.rfc = me.arrayDatosProspecto[0]['rfc'];
-            me.homoclave = me.arrayDatosProspecto[0]['homoclave'];
-            me.nss = me.arrayDatosProspecto[0]['nss'];
-            me.lugar_contacto = me.arrayDatosProspecto[0]['lugar_contacto'];
-            me.clasificacion = me.arrayDatosProspecto[0]['clasificacion'];
-            me.proyecto_interes_id = me.arrayDatosProspecto[0]['proyecto_interes_id'];
-            me.publicidad_id = me.arrayDatosProspecto[0]['publicidad_id'];
-            me.tipo_casa = me.arrayDatosProspecto[0]['tipo_casa'];
-            me.e_civil = me.arrayDatosProspecto[0]['edo_civil'];
-            me.parentesco_coa = me.arrayDatosProspecto[0]['parentesco_coa'];
-            me.coacreditado = me.arrayDatosProspecto[0]['coacreditado'];
-            me.conyugeNom = me.arrayDatosProspecto[0]['n_completo_coa'];
-            me.proyecto = me.arrayDatosProspecto[0]['proyecto'];
-            me.fecha_nac_coa = me.arrayDatosProspecto[0]['f_nacimiento_coa'];
-            me.rfc_coa = me.arrayDatosProspecto[0]['rfc_coa'];
-            me.homoclave_coa = me.arrayDatosProspecto[0]['homoclave_coa'];
-            me.curp_coa = me.arrayDatosProspecto[0]['curp_coa'];
-            me.nss_coa = me.arrayDatosProspecto[0]['nss_coa'];
-            me.telefono_coa = me.arrayDatosProspecto[0]['telefono_coa'];
-            me.celular_coa = me.arrayDatosProspecto[0]['celular_coa'];
-            me.email_coa = me.arrayDatosProspecto[0]['email_coa'];
-            me.email_institucional_coa = me.arrayDatosProspecto[0]['email_institucional_coa'];
+        this.nombre = prospecto['nombre'];
+        this.apellidos = prospecto['apellidos'];
+        this.sexo = prospecto['sexo'];
+        this.telefono = prospecto['telefono'];
+        this.celular = prospecto['celular'];
+        this.email_inst = prospecto['email_institucional'];
+        this.email = prospecto['email'];
+        this.empresa = prospecto['empresa'];
+        this.fecha_nac = prospecto['f_nacimiento'];
+        this.curp = prospecto['curp'];
+        this.rfc = prospecto['rfc'];
+        this.homoclave = prospecto['homoclave'];
+        this.nss = prospecto['nss'];
+        this.lugar_contacto = prospecto['lugar_contacto'];
+        this.clasificacion = prospecto['clasificacion'];
+        this.proyecto_interes_id = prospecto['proyecto_interes_id'];
+        this.publicidad_id = prospecto['publicidad_id'];
+        this.tipo_casa = prospecto['tipo_casa'];
+        this.e_civil = prospecto['edo_civil'];
+        this.parentesco_coa = prospecto['parentesco_coa'];
+        this.coacreditado = prospecto['coacreditado'];
+        this.conyugeNom = prospecto['n_completo_coa'];
+        this.proyecto = prospecto['proyecto'];
+        this.fecha_nac_coa = prospecto['f_nacimiento_coa'];
+        this.rfc_coa = prospecto['rfc_coa'];
+        this.homoclave_coa = prospecto['homoclave_coa'];
+        this.curp_coa = prospecto['curp_coa'];
+        this.nss_coa = prospecto['nss_coa'];
+        this.telefono_coa = prospecto['telefono_coa'];
+        this.celular_coa = prospecto['celular_coa'];
+        this.email_coa = prospecto['email_coa'];
+        this.email_institucional_coa = prospecto['email_institucional_coa'];
+        this.nacionalidad = prospecto['nacionalidad'];
+        this.nacionalidad_coa = prospecto['nacionalidad_coa'];
+        this.puesto = prospecto['puesto'];
+        this.dep_economicos = '';
 
-            me.id = id;
-        }).catch(function (error) {
-            console.log(error);
-        });
+        this.id = prospecto['id'];
+        this.listado = 3;
+        /* })
+         .catch(function (error) {
+             console.log(error);
+         });*/
     }), _defineProperty(_methods, 'cerrarModal', function cerrarModal() {
         this.modal = 0;
         this.nombre_coa = '';
@@ -106455,8 +106494,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         this.selectCreditos();
         this.selectInstitucion(this.tipo_credito);
         this.selectEstados();
-        this.selectCiudades(this.estado_coa);
-        this.selectColonias(this.cp_coa);
+        this.selectCiudades(this.estado, 0);
+        this.selectColonias(this.cp, 0);
     }
 });
 
@@ -106627,7 +106666,7 @@ var render = function() {
                                     attrs: { title: "Editar", type: "button" },
                                     on: {
                                       click: function($event) {
-                                        _vm.actualizarProspectoBTN(prospecto.id)
+                                        _vm.actualizarProspectoBTN(prospecto)
                                       }
                                     }
                                   },
@@ -107182,10 +107221,10 @@ var render = function() {
                           ])
                         ]),
                         _vm._v(" "),
-                        _c("div", { staticClass: "col-md-4" }, [
+                        _c("div", { staticClass: "col-md-3" }, [
                           _c("div", { staticClass: "form-group" }, [
                             _c("label", { attrs: { for: "" } }, [
-                              _vm._v("Direccion "),
+                              _vm._v("Direccion"),
                               _c(
                                 "span",
                                 {
@@ -107208,64 +107247,19 @@ var render = function() {
                                 {
                                   name: "model",
                                   rawName: "v-model",
-                                  value: _vm.direccion,
-                                  expression: "direccion"
+                                  value: _vm.direccion_coa,
+                                  expression: "direccion_coa"
                                 }
                               ],
                               staticClass: "form-control",
                               attrs: { type: "text", placeholder: "Direccion" },
-                              domProps: { value: _vm.direccion },
+                              domProps: { value: _vm.direccion_coa },
                               on: {
                                 input: function($event) {
                                   if ($event.target.composing) {
                                     return
                                   }
-                                  _vm.direccion = $event.target.value
-                                }
-                              }
-                            })
-                          ])
-                        ]),
-                        _vm._v(" "),
-                        _c("div", { staticClass: "col-md-4" }, [
-                          _c("div", { staticClass: "form-group" }, [
-                            _c("label", { attrs: { for: "" } }, [
-                              _vm._v("Colonia "),
-                              _c(
-                                "span",
-                                {
-                                  directives: [
-                                    {
-                                      name: "show",
-                                      rawName: "v-show",
-                                      value: _vm.colonia == "",
-                                      expression: "colonia==''"
-                                    }
-                                  ],
-                                  staticStyle: { color: "red" }
-                                },
-                                [_vm._v("(*)")]
-                              )
-                            ]),
-                            _vm._v(" "),
-                            _c("input", {
-                              directives: [
-                                {
-                                  name: "model",
-                                  rawName: "v-model",
-                                  value: _vm.colonia,
-                                  expression: "colonia"
-                                }
-                              ],
-                              staticClass: "form-control",
-                              attrs: { type: "text", placeholder: "Colonia" },
-                              domProps: { value: _vm.colonia },
-                              on: {
-                                input: function($event) {
-                                  if ($event.target.composing) {
-                                    return
-                                  }
-                                  _vm.colonia = $event.target.value
+                                  _vm.direccion_coa = $event.target.value
                                 }
                               }
                             })
@@ -107275,7 +107269,7 @@ var render = function() {
                         _c("div", { staticClass: "col-md-1" }, [
                           _c("div", { staticClass: "form-group" }, [
                             _c("label", { attrs: { for: "" } }, [
-                              _vm._v("C.P. "),
+                              _vm._v("C.P"),
                               _c(
                                 "span",
                                 {
@@ -107303,9 +107297,20 @@ var render = function() {
                                 }
                               ],
                               staticClass: "form-control",
-                              attrs: { type: "text", placeholder: "C. Postal" },
+                              attrs: {
+                                type: "text",
+                                pattern: "\\d*",
+                                maxlength: "5",
+                                placeholder: "C.Postal"
+                              },
                               domProps: { value: _vm.cp },
                               on: {
+                                keypress: function($event) {
+                                  _vm.isNumber($event)
+                                },
+                                keyup: function($event) {
+                                  _vm.selectColonias(_vm.cp, 0)
+                                },
                                 input: function($event) {
                                   if ($event.target.composing) {
                                     return
@@ -107314,6 +107319,76 @@ var render = function() {
                                 }
                               }
                             })
+                          ])
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "col-md-2" }, [
+                          _c("div", { staticClass: "form-group" }, [
+                            _c("label", { attrs: { for: "" } }, [
+                              _vm._v("Colonia"),
+                              _c(
+                                "span",
+                                {
+                                  directives: [
+                                    {
+                                      name: "show",
+                                      rawName: "v-show",
+                                      value: _vm.colonia == "",
+                                      expression: "colonia==''"
+                                    }
+                                  ],
+                                  staticStyle: { color: "red" }
+                                },
+                                [_vm._v("(*)")]
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _c(
+                              "select",
+                              {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.colonia,
+                                    expression: "colonia"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                on: {
+                                  change: function($event) {
+                                    var $$selectedVal = Array.prototype.filter
+                                      .call($event.target.options, function(o) {
+                                        return o.selected
+                                      })
+                                      .map(function(o) {
+                                        var val =
+                                          "_value" in o ? o._value : o.value
+                                        return val
+                                      })
+                                    _vm.colonia = $event.target.multiple
+                                      ? $$selectedVal
+                                      : $$selectedVal[0]
+                                  }
+                                }
+                              },
+                              [
+                                _c("option", { attrs: { value: "0" } }, [
+                                  _vm._v("Seleccione")
+                                ]),
+                                _vm._v(" "),
+                                _vm._l(_vm.arrayColonias, function(colonias) {
+                                  return _c("option", {
+                                    key: colonias.colonia,
+                                    domProps: {
+                                      value: colonias.colonia,
+                                      textContent: _vm._s(colonias.colonia)
+                                    }
+                                  })
+                                })
+                              ],
+                              2
+                            )
                           ])
                         ]),
                         _vm._v(" "),
@@ -107351,6 +107426,9 @@ var render = function() {
                                 ],
                                 staticClass: "form-control",
                                 on: {
+                                  click: function($event) {
+                                    _vm.selectCiudades(_vm.estado, 0)
+                                  },
                                   change: function($event) {
                                     var $$selectedVal = Array.prototype.filter
                                       .call($event.target.options, function(o) {
@@ -107387,10 +107465,10 @@ var render = function() {
                           ])
                         ]),
                         _vm._v(" "),
-                        _c("div", { staticClass: "col-md-8" }, [
+                        _c("div", { staticClass: "col-md-3" }, [
                           _c("div", { staticClass: "form-group" }, [
                             _c("label", { attrs: { for: "" } }, [
-                              _vm._v("Empresa "),
+                              _vm._v("Ciudad "),
                               _c(
                                 "span",
                                 {
@@ -107398,8 +107476,8 @@ var render = function() {
                                     {
                                       name: "show",
                                       rawName: "v-show",
-                                      value: _vm.empresa == 0,
-                                      expression: "empresa==0"
+                                      value: _vm.ciudad == "",
+                                      expression: "ciudad==''"
                                     }
                                   ],
                                   staticStyle: { color: "red" }
@@ -107408,63 +107486,52 @@ var render = function() {
                               )
                             ]),
                             _vm._v(" "),
-                            _vm.empresa != null
-                              ? _c("input", {
-                                  directives: [
-                                    {
-                                      name: "model",
-                                      rawName: "v-model",
-                                      value: _vm.empresa,
-                                      expression: "empresa"
-                                    }
-                                  ],
-                                  staticClass: "form-control",
-                                  attrs: { type: "text", readonly: "" },
-                                  domProps: { value: _vm.empresa },
-                                  on: {
-                                    input: function($event) {
-                                      if ($event.target.composing) {
-                                        return
-                                      }
-                                      _vm.empresa = $event.target.value
-                                    }
+                            _c(
+                              "select",
+                              {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.ciudad,
+                                    expression: "ciudad"
                                   }
-                                })
-                              : _vm._e()
-                          ])
-                        ]),
-                        _vm._v(" "),
-                        _c("div", { staticClass: "col-md-4" }, [
-                          _c("div", { staticClass: "form-group" }, [
-                            _c("label", { attrs: { for: "" } }, [
-                              _vm._v("Email institucional ")
-                            ]),
-                            _vm._v(" "),
-                            _c("input", {
-                              directives: [
-                                {
-                                  name: "model",
-                                  rawName: "v-model",
-                                  value: _vm.email_inst,
-                                  expression: "email_inst"
+                                ],
+                                staticClass: "form-control",
+                                on: {
+                                  change: function($event) {
+                                    var $$selectedVal = Array.prototype.filter
+                                      .call($event.target.options, function(o) {
+                                        return o.selected
+                                      })
+                                      .map(function(o) {
+                                        var val =
+                                          "_value" in o ? o._value : o.value
+                                        return val
+                                      })
+                                    _vm.ciudad = $event.target.multiple
+                                      ? $$selectedVal
+                                      : $$selectedVal[0]
+                                  }
                                 }
-                              ],
-                              staticClass: "form-control",
-                              attrs: {
-                                disabled: "",
-                                type: "text",
-                                placeholder: "E-mail"
                               },
-                              domProps: { value: _vm.email_inst },
-                              on: {
-                                input: function($event) {
-                                  if ($event.target.composing) {
-                                    return
-                                  }
-                                  _vm.email_inst = $event.target.value
-                                }
-                              }
-                            })
+                              [
+                                _c("option", { attrs: { value: "0" } }, [
+                                  _vm._v("Seleccione")
+                                ]),
+                                _vm._v(" "),
+                                _vm._l(_vm.arrayCiudades, function(ciudades) {
+                                  return _c("option", {
+                                    key: ciudades.municipio,
+                                    domProps: {
+                                      value: ciudades.municipio,
+                                      textContent: _vm._s(ciudades.municipio)
+                                    }
+                                  })
+                                })
+                              ],
+                              2
+                            )
                           ])
                         ]),
                         _vm._v(" "),
@@ -107512,6 +107579,59 @@ var render = function() {
                             })
                           ])
                         ]),
+                        _vm._v(" "),
+                        _vm.coacreditado == true
+                          ? _c("div", { staticClass: "col-md-2" }, [
+                              _c("div", { staticClass: "form-group" }, [
+                                _c("label", { attrs: { for: "" } }, [
+                                  _vm._v("Nacionalidad")
+                                ]),
+                                _vm._v(" "),
+                                _c(
+                                  "select",
+                                  {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.nacionalidad,
+                                        expression: "nacionalidad"
+                                      }
+                                    ],
+                                    staticClass: "form-control",
+                                    on: {
+                                      change: function($event) {
+                                        var $$selectedVal = Array.prototype.filter
+                                          .call($event.target.options, function(
+                                            o
+                                          ) {
+                                            return o.selected
+                                          })
+                                          .map(function(o) {
+                                            var val =
+                                              "_value" in o ? o._value : o.value
+                                            return val
+                                          })
+                                        _vm.nacionalidad = $event.target
+                                          .multiple
+                                          ? $$selectedVal
+                                          : $$selectedVal[0]
+                                      }
+                                    }
+                                  },
+                                  [
+                                    _c("option", { attrs: { value: "0" } }, [
+                                      _vm._v("Mexicana")
+                                    ]),
+                                    _vm._v(" "),
+                                    _c("option", { attrs: { value: "1" } }, [
+                                      _vm._v("Extranjera")
+                                    ])
+                                  ]
+                                )
+                              ])
+                            ])
+                          : _vm._e(),
                         _vm._v(" "),
                         _c("div", { staticClass: "col-md-3" }, [
                           _c("div", { staticClass: "form-group" }, [
@@ -107637,7 +107757,7 @@ var render = function() {
                           ]
                         ),
                         _vm._v(" "),
-                        _c("div", { staticClass: "col-md-3" }, [
+                        _c("div", { staticClass: "col-md-2" }, [
                           _c("div", { staticClass: "form-group" }, [
                             _c("label", { attrs: { for: "" } }, [
                               _vm._v("NSS "),
@@ -107690,6 +107810,278 @@ var render = function() {
                             })
                           ])
                         ])
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      { staticClass: "form-group row border border-primary" },
+                      [
+                        _c("div", { staticClass: "col-md-12" }, [
+                          _c(
+                            "div",
+                            { staticClass: "form-group" },
+                            [
+                              _c("center", [
+                                _c("h5", [_vm._v("Lugar de trabajo")])
+                              ])
+                            ],
+                            1
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "col-md-3" }, [
+                          _c("div", { staticClass: "form-group" }, [
+                            _c("label", { attrs: { for: "" } }, [
+                              _vm._v("Tipo de economia "),
+                              _c(
+                                "span",
+                                {
+                                  directives: [
+                                    {
+                                      name: "show",
+                                      rawName: "v-show",
+                                      value: _vm.tipo_economia == 0,
+                                      expression: "tipo_economia==0"
+                                    }
+                                  ],
+                                  staticStyle: { color: "red" }
+                                },
+                                [_vm._v("(*)")]
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _c(
+                              "select",
+                              {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.tipo_economia,
+                                    expression: "tipo_economia"
+                                  }
+                                ],
+                                staticClass: "form-control",
+                                on: {
+                                  change: function($event) {
+                                    var $$selectedVal = Array.prototype.filter
+                                      .call($event.target.options, function(o) {
+                                        return o.selected
+                                      })
+                                      .map(function(o) {
+                                        var val =
+                                          "_value" in o ? o._value : o.value
+                                        return val
+                                      })
+                                    _vm.tipo_economia = $event.target.multiple
+                                      ? $$selectedVal
+                                      : $$selectedVal[0]
+                                  }
+                                }
+                              },
+                              [
+                                _c("option", { attrs: { value: "0" } }, [
+                                  _vm._v("Seleccione")
+                                ]),
+                                _vm._v(" "),
+                                _c("option", { attrs: { value: "formal" } }, [
+                                  _vm._v("Formal")
+                                ]),
+                                _vm._v(" "),
+                                _c("option", { attrs: { value: "informal" } }, [
+                                  _vm._v("Informal")
+                                ]),
+                                _vm._v(" "),
+                                _c("option", { attrs: { value: "mixta" } }, [
+                                  _vm._v("Mixta")
+                                ])
+                              ]
+                            )
+                          ])
+                        ]),
+                        _vm._v(" "),
+                        _vm.tipo_economia != 0
+                          ? _c("div", { staticClass: "col-md-6" }, [
+                              _c("div", { staticClass: "form-group" }, [
+                                _c("label", { attrs: { for: "" } }, [
+                                  _vm._v("Empresa "),
+                                  _c(
+                                    "span",
+                                    {
+                                      directives: [
+                                        {
+                                          name: "show",
+                                          rawName: "v-show",
+                                          value: _vm.empresa == 0,
+                                          expression: "empresa==0"
+                                        }
+                                      ],
+                                      staticStyle: { color: "red" }
+                                    },
+                                    [_vm._v("(*)")]
+                                  )
+                                ]),
+                                _vm._v(" "),
+                                _vm.empresa != null
+                                  ? _c("input", {
+                                      directives: [
+                                        {
+                                          name: "model",
+                                          rawName: "v-model",
+                                          value: _vm.empresa,
+                                          expression: "empresa"
+                                        }
+                                      ],
+                                      staticClass: "form-control",
+                                      attrs: { type: "text", readonly: "" },
+                                      domProps: { value: _vm.empresa },
+                                      on: {
+                                        input: function($event) {
+                                          if ($event.target.composing) {
+                                            return
+                                          }
+                                          _vm.empresa = $event.target.value
+                                        }
+                                      }
+                                    })
+                                  : _vm._e()
+                              ])
+                            ])
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm.tipo_economia == "formal" ||
+                        _vm.tipo_economia == "mixta"
+                          ? _c("div", { staticClass: "col-md-3" }, [
+                              _c("div", { staticClass: "form-group" }, [
+                                _c("label", { attrs: { for: "" } }, [
+                                  _vm._v("Puesto "),
+                                  _c(
+                                    "span",
+                                    {
+                                      directives: [
+                                        {
+                                          name: "show",
+                                          rawName: "v-show",
+                                          value:
+                                            !_vm.puesto || _vm.puesto == "",
+                                          expression: "!puesto || puesto==''"
+                                        }
+                                      ],
+                                      staticStyle: { color: "red" }
+                                    },
+                                    [_vm._v("(*)")]
+                                  )
+                                ]),
+                                _vm._v(" "),
+                                _c("input", {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.puesto,
+                                      expression: "puesto"
+                                    }
+                                  ],
+                                  staticClass: "form-control",
+                                  attrs: { type: "text" },
+                                  domProps: { value: _vm.puesto },
+                                  on: {
+                                    input: function($event) {
+                                      if ($event.target.composing) {
+                                        return
+                                      }
+                                      _vm.puesto = $event.target.value
+                                    }
+                                  }
+                                })
+                              ])
+                            ])
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm.tipo_economia == "informal"
+                          ? _c("div", { staticClass: "col-md-3" }, [
+                              _c("div", { staticClass: "form-group" }, [
+                                _c("label", { attrs: { for: "" } }, [
+                                  _vm._v("Giro del negocio "),
+                                  _c(
+                                    "span",
+                                    {
+                                      directives: [
+                                        {
+                                          name: "show",
+                                          rawName: "v-show",
+                                          value:
+                                            !_vm.puesto || _vm.puesto == "",
+                                          expression: "!puesto || puesto==''"
+                                        }
+                                      ],
+                                      staticStyle: { color: "red" }
+                                    },
+                                    [_vm._v("(*)")]
+                                  )
+                                ]),
+                                _vm._v(" "),
+                                _c("input", {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.puesto,
+                                      expression: "puesto"
+                                    }
+                                  ],
+                                  staticClass: "form-control",
+                                  attrs: { type: "text" },
+                                  domProps: { value: _vm.puesto },
+                                  on: {
+                                    input: function($event) {
+                                      if ($event.target.composing) {
+                                        return
+                                      }
+                                      _vm.puesto = $event.target.value
+                                    }
+                                  }
+                                })
+                              ])
+                            ])
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm.tipo_economia != 0
+                          ? _c("div", { staticClass: "col-md-3" }, [
+                              _c("div", { staticClass: "form-group" }, [
+                                _c("label", { attrs: { for: "" } }, [
+                                  _vm._v("Email institucional ")
+                                ]),
+                                _vm._v(" "),
+                                _c("input", {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.email_inst,
+                                      expression: "email_inst"
+                                    }
+                                  ],
+                                  staticClass: "form-control",
+                                  attrs: {
+                                    disabled: "",
+                                    type: "text",
+                                    placeholder: "E-mail"
+                                  },
+                                  domProps: { value: _vm.email_inst },
+                                  on: {
+                                    input: function($event) {
+                                      if ($event.target.composing) {
+                                        return
+                                      }
+                                      _vm.email_inst = $event.target.value
+                                    }
+                                  }
+                                })
+                              ])
+                            ])
+                          : _vm._e()
                       ]
                     ),
                     _vm._v(" "),
@@ -108151,7 +108543,7 @@ var render = function() {
                         _c("div", { staticClass: "col-md-3" }, [
                           _c("div", { staticClass: "form-group" }, [
                             _c("label", { attrs: { for: "" } }, [
-                              _vm._v("Tipo de economia "),
+                              _vm._v("# Dependientes económicos"),
                               _c(
                                 "span",
                                 {
@@ -108159,8 +108551,8 @@ var render = function() {
                                     {
                                       name: "show",
                                       rawName: "v-show",
-                                      value: _vm.tipo_economia == 0,
-                                      expression: "tipo_economia==0"
+                                      value: _vm.dep_economicos == "",
+                                      expression: "dep_economicos==''"
                                     }
                                   ],
                                   staticStyle: { color: "red" }
@@ -108169,53 +108561,27 @@ var render = function() {
                               )
                             ]),
                             _vm._v(" "),
-                            _c(
-                              "select",
-                              {
-                                directives: [
-                                  {
-                                    name: "model",
-                                    rawName: "v-model",
-                                    value: _vm.tipo_economia,
-                                    expression: "tipo_economia"
-                                  }
-                                ],
-                                staticClass: "form-control",
-                                on: {
-                                  change: function($event) {
-                                    var $$selectedVal = Array.prototype.filter
-                                      .call($event.target.options, function(o) {
-                                        return o.selected
-                                      })
-                                      .map(function(o) {
-                                        var val =
-                                          "_value" in o ? o._value : o.value
-                                        return val
-                                      })
-                                    _vm.tipo_economia = $event.target.multiple
-                                      ? $$selectedVal
-                                      : $$selectedVal[0]
-                                  }
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.dep_economicos,
+                                  expression: "dep_economicos"
                                 }
-                              },
-                              [
-                                _c("option", { attrs: { value: "0" } }, [
-                                  _vm._v("Seleccione")
-                                ]),
-                                _vm._v(" "),
-                                _c("option", { attrs: { value: "formal" } }, [
-                                  _vm._v("Formal")
-                                ]),
-                                _vm._v(" "),
-                                _c("option", { attrs: { value: "informal" } }, [
-                                  _vm._v("Informal")
-                                ]),
-                                _vm._v(" "),
-                                _c("option", { attrs: { value: "mixta" } }, [
-                                  _vm._v("Mixta")
-                                ])
-                              ]
-                            )
+                              ],
+                              staticClass: "form-control",
+                              attrs: { type: "text" },
+                              domProps: { value: _vm.dep_economicos },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.dep_economicos = $event.target.value
+                                }
+                              }
+                            })
                           ])
                         ]),
                         _vm._v(" "),
@@ -108291,7 +108657,7 @@ var render = function() {
                             ]),
                             _vm._v(" "),
                             _vm.coacreditado == true
-                              ? _c("div", { staticClass: "col-md-3" }, [
+                              ? _c("div", { staticClass: "col-md-4" }, [
                                   _c("div", { staticClass: "form-group" }, [
                                     _c("label", { attrs: { for: "" } }, [
                                       _vm._v(" Nombre completo del conyuge ")
@@ -108326,7 +108692,7 @@ var render = function() {
                               : _vm._e(),
                             _vm._v(" "),
                             _vm.coacreditado == true
-                              ? _c("div", { staticClass: "col-md-3" }, [
+                              ? _c("div", { staticClass: "col-md-4" }, [
                                   _c("div", { staticClass: "form-group" }, [
                                     _c("label", { attrs: { for: "" } }, [
                                       _vm._v("Parentesco ")
@@ -108363,7 +108729,7 @@ var render = function() {
                               : _vm._e(),
                             _vm._v(" "),
                             _vm.coacreditado == true
-                              ? _c("div", { staticClass: "col-md-2" }, [
+                              ? _c("div", { staticClass: "col-md-4" }, [
                                   _c("div", { staticClass: "form-group" }, [
                                     _c("label", { attrs: { for: "" } }, [
                                       _vm._v("Fecha de nacimiento ")
@@ -108509,7 +108875,7 @@ var render = function() {
                               : _vm._e(),
                             _vm._v(" "),
                             _vm.coacreditado == true
-                              ? _c("div", { staticClass: "col-md-3" }, [
+                              ? _c("div", { staticClass: "col-md-2" }, [
                                   _c("div", { staticClass: "form-group" }, [
                                     _c("label", { attrs: { for: "" } }, [
                                       _vm._v("NSS")
@@ -108537,44 +108903,6 @@ var render = function() {
                                             return
                                           }
                                           _vm.nss_coa = $event.target.value
-                                        }
-                                      }
-                                    })
-                                  ])
-                                ])
-                              : _vm._e(),
-                            _vm._v(" "),
-                            _vm.coacreditado == true
-                              ? _c("div", { staticClass: "col-md-3" }, [
-                                  _c("div", { staticClass: "form-group" }, [
-                                    _c("label", { attrs: { for: "" } }, [
-                                      _vm._v("Lugar de nacimiento")
-                                    ]),
-                                    _vm._v(" "),
-                                    _c("input", {
-                                      directives: [
-                                        {
-                                          name: "model",
-                                          rawName: "v-model",
-                                          value: _vm.lugar_nacimiento_coa,
-                                          expression: "lugar_nacimiento_coa"
-                                        }
-                                      ],
-                                      staticClass: "form-control",
-                                      attrs: {
-                                        type: "text",
-                                        placeholder: "Lugar de nacimiento"
-                                      },
-                                      domProps: {
-                                        value: _vm.lugar_nacimiento_coa
-                                      },
-                                      on: {
-                                        input: function($event) {
-                                          if ($event.target.composing) {
-                                            return
-                                          }
-                                          _vm.lugar_nacimiento_coa =
-                                            $event.target.value
                                         }
                                       }
                                     })
@@ -108628,18 +108956,12 @@ var render = function() {
                                         _c(
                                           "option",
                                           { attrs: { value: "0" } },
-                                          [_vm._v("Seleccione")]
-                                        ),
-                                        _vm._v(" "),
-                                        _c(
-                                          "option",
-                                          { attrs: { value: "Mexicana" } },
                                           [_vm._v("Mexicana")]
                                         ),
                                         _vm._v(" "),
                                         _c(
                                           "option",
-                                          { attrs: { value: "Extranjera" } },
+                                          { attrs: { value: "1" } },
                                           [_vm._v("Extranjera")]
                                         )
                                       ]
@@ -108713,7 +109035,7 @@ var render = function() {
                                           _vm.isNumber($event)
                                         },
                                         keyup: function($event) {
-                                          _vm.selectColonias(_vm.cp_coa)
+                                          _vm.selectColonias(_vm.cp_coa, 1)
                                         },
                                         input: function($event) {
                                           if ($event.target.composing) {
@@ -108776,7 +109098,7 @@ var render = function() {
                                           [_vm._v("Seleccione")]
                                         ),
                                         _vm._v(" "),
-                                        _vm._l(_vm.arrayColonias, function(
+                                        _vm._l(_vm.arrayColoniasCoa, function(
                                           colonias
                                         ) {
                                           return _c("option", {
@@ -108831,7 +109153,7 @@ var render = function() {
                                     staticClass: "form-control",
                                     on: {
                                       click: function($event) {
-                                        _vm.selectCiudades(_vm.estado_coa)
+                                        _vm.selectCiudades(_vm.estado_coa, 1)
                                       },
                                       change: function($event) {
                                         var $$selectedVal = Array.prototype.filter
@@ -109725,7 +110047,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "card-header" }, [
       _c("i", { staticClass: "fa fa-align-justify" }),
-      _vm._v(" Simulacion de credito\n                ")
+      _vm._v(" Simulacion de credito\n                    ")
     ])
   },
   function() {

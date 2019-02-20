@@ -72,10 +72,11 @@ Route::group(['middleware' => ['auth']],function(){
 
     ///////////////////        RUTAS Prospectos    //////////////////////////////////
     Route::get('/clientes','ClienteController@index');
+    Route::get('/clientes_simulacion','ClienteController@clientesSimulacion');
+    Route::get('/clientes/obtenerDatos','ClienteController@obtenerDatos');
     Route::post('/clientes/registrar','ClienteController@store');
     Route::post('/clientes/registrar_coacreditado','ClienteController@storeCoacreditado');
     Route::put('/clientes/actualizar','ClienteController@update');
-    Route::get('/clientes/obtenerDatos','ClienteController@obtenerDatos');
     Route::get('/clientes/observacion','ClienteController@listarObservacion');
     Route::put('/clientes/desactivar','ClienteController@desactivar');
     Route::put('/clientes/activar','ClienteController@activar');

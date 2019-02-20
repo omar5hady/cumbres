@@ -1543,43 +1543,6 @@
             ocultarDetalle(){
                 this.listado=1;
             },
-            verAviso(id){
-                let me= this;
-                this.listado=2;
-
-                //Obtener datos de cabecera
-                var arrayAvisoT=[];
-                var url = '/iniobra/obtenerCabecera?id=' + id;
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayAvisoT = respuesta.ini_obra;
-
-                    me.contratista= me.arrayAvisoT[0]['contratista'];
-                    me.clave= me.arrayAvisoT[0]['clave'];
-                    me.f_ini= me.arrayAvisoT[0]['f_ini'];
-                    me.f_fin= me.arrayAvisoT[0]['f_fin'];
-                    me.anticipo= me.arrayAvisoT[0]['anticipo'];
-                    me.fraccionamiento= me.arrayAvisoT[0]['proyecto'];
-                    me.total_anticipo = me.arrayAvisoT[0]['total_anticipo'];
-                    me.costo_indirecto_porcentaje=me.arrayAvisoT[0]['costo_indirecto_porcentaje'];
-                    me.total_construccion=me.arrayAvisoT[0]['total_superficie'];
-                    me.id=id;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-                //Obtener detalle
-                var arrayAvisoT=[];
-                var urld = '/iniobra/obtenerDetalles?id=' + id;
-                axios.get(urld).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayProspectosLotes = respuesta.detalles;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-
-            },
 
             actualizarProspectoBTN(id){
               
@@ -1614,6 +1577,8 @@
                     me.parentesco_coa=me.arrayDatosProspecto[0]['parentesco_coa'];
                     me.coacreditado=me.arrayDatosProspecto[0]['coacreditado'];
                     me.conyugeNom = me.arrayDatosProspecto[0]['n_completo_coa'];
+                    me.nombre_coa = me.arrayDatosProspecto[0]['nombre_coa'];
+                    me.apellidos_coa = me.arrayDatosProspecto[0]['apellidos_coa'];
                     me.proyecto = me.arrayDatosProspecto[0]['proyecto'];
                     
                     

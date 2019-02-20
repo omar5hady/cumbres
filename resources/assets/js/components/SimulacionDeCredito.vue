@@ -50,7 +50,7 @@
                                             <td>
                                             
                                          
-                                                <button title="Editar" type="button" class="btn btn-warning btn-sm" @click="actualizarProspectoBTN(prospecto.id)">
+                                                <button title="Editar" type="button" class="btn btn-warning btn-sm" @click="actualizarProspectoBTN(prospecto)">
                                                     <i class="icon-pencil"></i>
                                                 </button>
                                             </td>
@@ -150,58 +150,75 @@
                                 </div>
                                  </div>
 
-                                   <div class="col-md-4">
-                                     <div class="form-group">
-                                    <label for="">Direccion <span style="color:red;" v-show="direccion==''">(*)</span></label>
-                                    <input type="text" class="form-control" v-model="direccion" placeholder="Direccion">
-                                </div>
-                                 </div>
 
-                                   <div class="col-md-4">
-                                     <div class="form-group">
-                                    <label for="">Colonia <span style="color:red;" v-show="colonia==''">(*)</span></label>
-                                    <input type="text" class="form-control" v-model="colonia" placeholder="Colonia">
-                                </div>
-                                 </div>
+                                 <!--------------------------------------------------------------------------------------------------
+                                 ------------------------------------------------>
 
-                                   <div class="col-md-1">
+                                <div class="col-md-3">
                                      <div class="form-group">
-                                    <label for="">C.P. <span style="color:red;" v-show="cp==''">(*)</span></label>
-                                    <input type="text" class="form-control" v-model="cp" placeholder="C. Postal">
+                                    <label for="">Direccion<span style="color:red;" v-show="direccion==''">(*)</span></label>
+                                    <input type="text" class="form-control"  v-model="direccion_coa" placeholder="Direccion">
+                                    </div>
                                 </div>
-                                 </div>
 
-                                 
+                                <div class="col-md-1">
+                                     <div class="form-group">
+                                    <label for="">C.P<span style="color:red;" v-show="cp==''">(*)</span></label>
+                                    <input type="text" class="form-control"  pattern="\d*" maxlength="5" v-on:keypress="isNumber($event)" @keyup="selectColonias(cp,0)"  v-model="cp" placeholder="C.Postal">
+                                </div>
+                                </div>
+
+                                <div class="col-md-2">
+                                     <div class="form-group">
+                                    <label for="">Colonia<span style="color:red;" v-show="colonia==''">(*)</span></label>
+                                    <select class="form-control" v-model="colonia">
+                                            <option value="0">Seleccione</option>
+                                            <option v-for="colonias in arrayColonias" :key="colonias.colonia" :value="colonias.colonia" v-text="colonias.colonia"></option>
+                                        </select>
+                                </div>
+                                </div>
+
+                                
                                 <div class="col-md-3">
                                      <div class="form-group">
                                     <label for="">Estado <span style="color:red;" v-show="estado==''">(*)</span></label>
-                                     <select class="form-control" v-model="estado" >
+                                     <select class="form-control" v-model="estado" @click="selectCiudades(estado,0)" >
                                             <option value="0">Seleccione</option>
                                             <option v-for="estados in arrayEstados" :key="estados.estado" :value="estados.estado" v-text="estados.estado"></option>    
                                     </select>
                                      </div>
                                  </div>
 
-                                   <div class="col-md-8">
-                                    <div class="form-group">
-                                    <label for="">Empresa <span style="color:red;" v-show="empresa==0">(*)</span></label>
-                                         <input v-if="empresa != null" type="text" class="form-control" readonly  v-model="empresa">
-                                </div>
-                                </div>
 
-                                
-                                <div class="col-md-4">
+                                     
+                                <div class="col-md-3">
                                      <div class="form-group">
-                                    <label for="">Email institucional </label>
-                                    <input disabled type="text" class="form-control" v-model="email_inst" placeholder="E-mail">
-                                </div>
+                                    <label for="">Ciudad <span style="color:red;" v-show="ciudad==''">(*)</span></label>
+                                     <select class="form-control" v-model="ciudad" >
+                                            <option value="0">Seleccione</option>
+                                            <option v-for="ciudades in arrayCiudades" :key="ciudades.municipio" :value="ciudades.municipio" v-text="ciudades.municipio"></option>    
+                                    </select>
+                                     </div>
                                  </div>
+
+                                 <!--------------------------------------------------------------------------------------------------
+                                 ------------------------------------------------>
 
 
                                   <div class="col-md-2">
                                     <div class="form-group">
                                     <label for="">Fecha de nacimiento <span style="color:red;" v-show="fecha_nac==''">(*)</span></label>
                                     <input disabled type="date" class="form-control"  v-model="fecha_nac" >
+                                </div>
+                                </div>
+
+                                <div class="col-md-2" v-if="coacreditado==true">
+                                     <div class="form-group">
+                                    <label for="">Nacionalidad</label>
+                                   <select class="form-control" v-model="nacionalidad" >
+                                            <option value="0">Mexicana</option>
+                                            <option value="1">Extranjera</option>    
+                                    </select>
                                 </div>
                                 </div>
 
@@ -227,17 +244,66 @@
                                 </div>
 
                                  
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                      <div class="form-group">
                                     <label for="">NSS <span style="color:red;" v-show="nss==''">(*)</span></label>
                                     <input disabled type="text" maxlength="11" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="nss" placeholder="NSS">
                                 </div>
+                                </div>                           
+                                
+                            </div>
+
+<!-------------------------------------- DATOS DE TRABAJO ------------------------------------->
+                        <div class="form-group row border border-primary">
+                            <div class="col-md-12">
+                                    <div class="form-group">
+                                  <center> <h5>Lugar de trabajo</h5> </center>
+                                    </div>
+                                </div>
+                            
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                <label for="">Tipo de economia <span style="color:red;" v-show="tipo_economia==0">(*)</span></label>
+                                    <select class="form-control" v-model="tipo_economia" >
+                                        <option value="0">Seleccione</option>  
+                                        <option value="formal">Formal</option>
+                                        <option value="informal">Informal</option>
+                                        <option value="mixta">Mixta</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6" v-if="tipo_economia!=0">
+                                <div class="form-group">
+                                    <label for="">Empresa <span style="color:red;" v-show="empresa==0">(*)</span></label>
+                                         <input v-if="empresa != null" type="text" class="form-control" readonly  v-model="empresa">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3" v-if="tipo_economia=='formal' ||tipo_economia=='mixta'">
+                                    <div class="form-group">
+                                    <label for="">Puesto <span style="color:red;" v-show="!puesto || puesto==''">(*)</span></label>
+                                         <input type="text" class="form-control"  v-model="puesto">
+                                </div>
+                                </div>
+
+                                 <div class="col-md-3" v-if="tipo_economia=='informal'">
+                                    <div class="form-group">
+                                    <label for="">Giro del negocio <span style="color:red;" v-show="!puesto || puesto==''">(*)</span></label>
+                                         <input type="text" class="form-control"  v-model="puesto">
+                                </div>
                                 </div>
 
                                 
-                            </div>
+                                <div class="col-md-3" v-if="tipo_economia!=0">
+                                     <div class="form-group">
+                                    <label for="">Email institucional </label>
+                                    <input disabled type="text" class="form-control" v-model="email_inst" placeholder="E-mail">
+                                </div>
+                                </div>
+                        </div>   
                 
-                  <!--  lugar de contacto , clasificacion y otros-->
+                  <!----------------------------------  lugar de contacto , clasificacion y otros -------------------------------------------->
                         <div class="form-group row border border-primary">
                               <div class="col-md-4">
                                     <div class="form-group">
@@ -287,7 +353,7 @@
 
                         </div>
 
-                  <!--  apartado  de datos vive en casa , edo civil-->
+                  <!--------------------------------------------  Apartado  de datos vive en casa , edo civil -------------------------------->
                         <div class="form-group row border border-primary" >    
                                         
                                 <div class="col-md-3">
@@ -321,13 +387,8 @@
 
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                    <label for="">Tipo de economia <span style="color:red;" v-show="tipo_economia==0">(*)</span></label>
-                                        <select class="form-control" v-model="tipo_economia" >
-                                            <option value="0">Seleccione</option>  
-                                            <option value="formal">Formal</option>
-                                            <option value="informal">Informal</option>
-                                            <option value="mixta">Mixta</option>
-                                        </select>
+                                        <label for=""># Dependientes económicos<span style="color:red;" v-show="dep_economicos==''">(*)</span></label>
+                                        <input type="text" class="form-control" v-model="dep_economicos">
                                     </div>
                                 </div>
 
@@ -341,30 +402,22 @@
 
                         </div>
 
-                  <!--  apartado de datos del conyuge-->
+                  <!--------------------------------  Apartado de datos del Conyuge o Coacreditado ----------------------------------------------->
                         <div class="form-group row border border-dark" v-if="coacreditado==true" >  
                              <div class="col-md-12">
                                     <div class="form-group">
                                   <center> <h3>Datos del conyuge o coacreditado</h3> </center>
                                     </div>
                                 </div>   
-                                        
-                                <!-- <div class="col-md-2" v-if="coacreditado==true">
-                                    <div class="bmd-form-group checkbox">
-                                    <label for=""> Conyuge o coacreditado </label>
-                                    <br>
-                                   <input id="checkcoa" disabled type="checkbox" v-model="coacreditado">
-                                </div>
-                                </div> -->
 
-                                <div class="col-md-3" v-if="coacreditado==true">
+                                <div class="col-md-4" v-if="coacreditado==true">
                                     <div class="form-group">
                                         <label for=""> Nombre completo del conyuge </label>
                                         <input type="text" v-if="conyugeNom != null" class="form-control" readonly v-model="conyugeNom">
                                     </div>
                                 </div>
 
-                                <div class="col-md-3" v-if="coacreditado==true">
+                                <div class="col-md-4" v-if="coacreditado==true">
                                      <div class="form-group">
                                     <label for="">Parentesco </label>
                                     <input type="text" class="form-control" disabled v-model="parentesco_coa" placeholder="Parentesco">
@@ -372,7 +425,7 @@
                                 </div>
 
                                 
-                                <div class="col-md-2" v-if="coacreditado==true">
+                                <div class="col-md-4" v-if="coacreditado==true">
                                      <div class="form-group">
                                     <label for="">Fecha de nacimiento </label>
                                     <input type="date" class="form-control" disabled v-model="fecha_nac_coa" placeholder="fecha de nacimiento">
@@ -403,18 +456,10 @@
                                 </div>
 
 
-                                <div class="col-md-3" v-if="coacreditado==true">
+                                <div class="col-md-2" v-if="coacreditado==true">
                                      <div class="form-group">
                                     <label for="">NSS</label>
                                     <input type="text" class="form-control" disabled v-model="nss_coa" placeholder="NSS">
-                                </div>
-                                </div>
-
-
-                                <div class="col-md-3" v-if="coacreditado==true">
-                                     <div class="form-group">
-                                    <label for="">Lugar de nacimiento</label>
-                                    <input type="text" class="form-control"  v-model="lugar_nacimiento_coa" placeholder="Lugar de nacimiento">
                                 </div>
                                 </div>
 
@@ -422,9 +467,8 @@
                                      <div class="form-group">
                                     <label for="">Nacionalidad</label>
                                    <select class="form-control" v-model="nacionalidad_coa" >
-                                            <option value="0">Seleccione</option>
-                                            <option value="Mexicana">Mexicana</option>
-                                            <option value="Extranjera">Extranjera</option>    
+                                            <option value="0">Mexicana</option>
+                                            <option value="1">Extranjera</option>    
                                     </select>
                                 </div>
                                 </div>
@@ -433,13 +477,13 @@
                                      <div class="form-group">
                                     <label for="">Direccion</label>
                                     <input type="text" class="form-control"  v-model="direccion_coa" placeholder="Direccion">
-                                </div>
+                                    </div>
                                 </div>
 
                                 <div class="col-md-1" v-if="coacreditado==true">
                                      <div class="form-group">
                                     <label for="">C.P</label>
-                                    <input type="text" class="form-control"  pattern="\d*" maxlength="5" v-on:keypress="isNumber($event)" @keyup="selectColonias(cp_coa)"  v-model="cp_coa" placeholder="C.Postal">
+                                    <input type="text" class="form-control"  pattern="\d*" maxlength="5" v-on:keypress="isNumber($event)" @keyup="selectColonias(cp_coa,1)"  v-model="cp_coa" placeholder="C.Postal">
                                 </div>
                                 </div>
 
@@ -448,7 +492,7 @@
                                     <label for="">Colonia</label>
                                     <select class="form-control" v-model="colonia_coa">
                                             <option value="0">Seleccione</option>
-                                            <option v-for="colonias in arrayColonias" :key="colonias.colonia" :value="colonias.colonia" v-text="colonias.colonia"></option>
+                                            <option v-for="colonias in arrayColoniasCoa" :key="colonias.colonia" :value="colonias.colonia" v-text="colonias.colonia"></option>
                                         </select>
                                 </div>
                                 </div>
@@ -457,7 +501,7 @@
                                 <div class="col-md-3">
                                      <div class="form-group">
                                     <label for="">Estado <span style="color:red;" v-show="estado_coa==''">(*)</span></label>
-                                     <select class="form-control" v-model="estado_coa" @click="selectCiudades(estado_coa)" >
+                                     <select class="form-control" v-model="estado_coa" @click="selectCiudades(estado_coa,1)" >
                                             <option value="0">Seleccione</option>
                                             <option v-for="estados in arrayEstados" :key="estados.estado" :value="estados.estado" v-text="estados.estado"></option>    
                                     </select>
@@ -714,12 +758,14 @@
                 proceso:false,
                 id:0,
                 clasificacion:1,
+                dep_economicos:'',
                 nombre:'',
                 apellidos:'',
                 telefono : '',
                 celular : '',
                 email:'',
                 email_inst:'',
+                puesto:'',
                 nss:'',
                 sexo:'',
                 fecha_nac: '',
@@ -739,10 +785,12 @@
                 tipo_credito: 0,
                 tipo_economia: 0,
                 estado: '',
+                ciudad:'',
                 cp:'',
                 colonia:'',
                 direccion: '',
                 inst_financiera:'',
+                nacionalidad:0,
 
                 nombre_coa:'',
                 parentesco_coa:'',
@@ -762,6 +810,7 @@
                 estado_coa: '',
                 ciudad_coa: '',
                 cp_coa:'',
+                nacionalidad_coa:0,
              
 
                 arrayEmpresa: [],
@@ -769,6 +818,8 @@
                 arrayInstituciones: [],
                 arrayEstados: [],
                 arrayCiudadesCoa: [],
+                arrayCiudades:[],
+                arrayColoniasCoa: [],
                 arrayColonias: [],
 
                 nombre_referencia1: '',
@@ -847,7 +898,7 @@
             /**Metodo para mostrar los registros */
             listarProspectos(page, buscar, criterio){
                 let me = this;
-                var url = '/clientes?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
+                var url = '/clientes_simulacion?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayProspectos = respuesta.personas.data;
@@ -935,10 +986,12 @@
             selectEstados(){
                 let me = this;
                 me.arrayEstados=[];
+                
                 var url = '/select_estados';
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayEstados = respuesta.estados;
+                    
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -946,26 +999,40 @@
             },
 
             
-            selectCiudades(estado){
+            selectCiudades(estado,coacreditado){
                 let me = this;
-                me.arrayCiudadesCoa=[];
                 var url = '/select_ciudades?buscar='+estado;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
-                    me.arrayCiudadesCoa = respuesta.ciudades;
+                    if(coacreditado==1){
+                        me.arrayCiudadesCoa=[];
+                        me.arrayCiudadesCoa = respuesta.ciudades;
+                    }
+                    else{
+                        me.arrayCiudades=[];
+                        me.arrayCiudades = respuesta.ciudades;
+                    }
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
             },
 
-            selectColonias(cp){
+
+            selectColonias(cp,coacreditado){
                 let me = this;
                 me.arrayColonias=[];
                 var url = '/select_colonias?buscar=' + cp;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
-                    me.arrayColonias = respuesta.colonias;
+                    if(coacreditado==1){
+                        me.arrayColoniasCoa=[];
+                        me.arrayColoniasCoa = respuesta.colonias;
+                    }
+                    else{
+                        me.arrayColonias=[];
+                        me.arrayColonias = respuesta.colonias;
+                    }
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -1296,6 +1363,8 @@
                 this.empresa= '';
                 this.observacion='';
                 this.lugar_contacto= 0;
+                this.puesto='';
+                this.dep_economicos='';
 
                 this.nombre_coa='';
                 this.parentesco_coa='';
@@ -1324,56 +1393,61 @@
             },
             
 
-            actualizarProspectoBTN(id){
+            actualizarProspectoBTN(prospecto){
               
-                let me= this;
-                this.listado=3;
+                //let me= this;
+                
                 var arrayDatosProspecto=[];
-                var url = '/clientes/obtenerDatos?id=' + id;
+                /*var url = '/clientes/obtenerDatos?id=' + id;
 
                  axios.get(url).then(function (response) {
                     var respuesta = response.data;
-                    me.arrayDatosProspecto = respuesta.personas;
+                    me.arrayDatosProspecto = respuesta.personas;*/
 
-                    me.nombre= me.arrayDatosProspecto[0]['nombre'];
-                    me.apellidos= me.arrayDatosProspecto[0]['apellidos'];
-                    me.sexo= me.arrayDatosProspecto[0]['sexo'];
-                    me.telefono= me.arrayDatosProspecto[0]['telefono'];
-                    me.celular= me.arrayDatosProspecto[0]['celular'];
-                    me.email_inst= me.arrayDatosProspecto[0]['email_institucional'];
-                    me.email = me.arrayDatosProspecto[0]['email'];
-                    me.empresa=me.arrayDatosProspecto[0]['empresa'];
-                    me.fecha_nac=me.arrayDatosProspecto[0]['f_nacimiento'];
-                    me.curp=me.arrayDatosProspecto[0]['curp'];
-                    me.rfc=me.arrayDatosProspecto[0]['rfc'];
-                    me.homoclave=me.arrayDatosProspecto[0]['homoclave'];
-                    me.nss=me.arrayDatosProspecto[0]['nss'];
-                    me.lugar_contacto=me.arrayDatosProspecto[0]['lugar_contacto'];
-                    me.clasificacion=me.arrayDatosProspecto[0]['clasificacion'];
-                    me.proyecto_interes_id=me.arrayDatosProspecto[0]['proyecto_interes_id'];
-                    me.publicidad_id=me.arrayDatosProspecto[0]['publicidad_id'];
-                    me.tipo_casa=me.arrayDatosProspecto[0]['tipo_casa'];
-                    me.e_civil=me.arrayDatosProspecto[0]['edo_civil'];
-                    me.parentesco_coa=me.arrayDatosProspecto[0]['parentesco_coa'];
-                    me.coacreditado=me.arrayDatosProspecto[0]['coacreditado'];
-                    me.conyugeNom = me.arrayDatosProspecto[0]['n_completo_coa'];
-                    me.proyecto = me.arrayDatosProspecto[0]['proyecto'];
-                    me.fecha_nac_coa = me.arrayDatosProspecto[0]['f_nacimiento_coa'];
-                    me.rfc_coa = me.arrayDatosProspecto[0]['rfc_coa'];
-                    me.homoclave_coa = me.arrayDatosProspecto[0]['homoclave_coa'];
-                    me.curp_coa = me.arrayDatosProspecto[0]['curp_coa'];
-                    me.nss_coa = me.arrayDatosProspecto[0]['nss_coa'];
-                    me.telefono_coa = me.arrayDatosProspecto[0]['telefono_coa'];
-                    me.celular_coa = me.arrayDatosProspecto[0]['celular_coa'];
-                    me.email_coa = me.arrayDatosProspecto[0]['email_coa'];
-                    me.email_institucional_coa = me.arrayDatosProspecto[0]['email_institucional_coa'];
+                    this.nombre= prospecto['nombre'];
+                    this.apellidos= prospecto['apellidos'];
+                    this.sexo= prospecto['sexo'];
+                    this.telefono= prospecto['telefono'];
+                    this.celular= prospecto['celular'];
+                    this.email_inst= prospecto['email_institucional'];
+                    this.email = prospecto['email'];
+                    this.empresa=prospecto['empresa'];
+                    this.fecha_nac=prospecto['f_nacimiento'];
+                    this.curp=prospecto['curp'];
+                    this.rfc=prospecto['rfc'];
+                    this.homoclave=prospecto['homoclave'];
+                    this.nss=prospecto['nss'];
+                    this.lugar_contacto=prospecto['lugar_contacto'];
+                    this.clasificacion=prospecto['clasificacion'];
+                    this.proyecto_interes_id=prospecto['proyecto_interes_id'];
+                    this.publicidad_id=prospecto['publicidad_id'];
+                    this.tipo_casa=prospecto['tipo_casa'];
+                    this.e_civil=prospecto['edo_civil'];
+                    this.parentesco_coa=prospecto['parentesco_coa'];
+                    this.coacreditado=prospecto['coacreditado'];
+                    this.conyugeNom = prospecto['n_completo_coa'];
+                    this.proyecto = prospecto['proyecto'];
+                    this.fecha_nac_coa = prospecto['f_nacimiento_coa'];
+                    this.rfc_coa = prospecto['rfc_coa'];
+                    this.homoclave_coa = prospecto['homoclave_coa'];
+                    this.curp_coa = prospecto['curp_coa'];
+                    this.nss_coa = prospecto['nss_coa'];
+                    this.telefono_coa = prospecto['telefono_coa'];
+                    this.celular_coa = prospecto['celular_coa'];
+                    this.email_coa = prospecto['email_coa'];
+                    this.email_institucional_coa = prospecto['email_institucional_coa'];
+                    this.nacionalidad = prospecto['nacionalidad'];
+                    this.nacionalidad_coa = prospecto['nacionalidad_coa'];
+                    this.puesto = prospecto['puesto'];
+                    this.dep_economicos='';
                     
                     
-                    me.id=id;
-                })
+                    this.id=prospecto['id'];
+                    this.listado=3;
+               /* })
                 .catch(function (error) {
                     console.log(error);
-                });
+                });*/
                
 
             },
@@ -1437,8 +1511,8 @@
             this.selectCreditos();
             this.selectInstitucion(this.tipo_credito);
             this.selectEstados();
-            this.selectCiudades(this.estado_coa);
-            this.selectColonias(this.cp_coa);
+            this.selectCiudades(this.estado,0);
+            this.selectColonias(this.cp,0);
         }
     }
 </script>
