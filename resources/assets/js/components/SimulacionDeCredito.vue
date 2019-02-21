@@ -150,10 +150,6 @@
                                 </div>
                                  </div>
 
-
-                                 <!--------------------------------------------------------------------------------------------------
-                                 ------------------------------------------------>
-
                                 <div class="col-md-3">
                                      <div class="form-group">
                                     <label for="">Direccion<span style="color:red;" v-show="direccion==''">(*)</span></label>
@@ -173,7 +169,7 @@
                                     <label for="">Colonia<span style="color:red;" v-show="colonia==''">(*)</span></label>
                                     <select class="form-control" v-model="colonia">
                                             <option value="0">Seleccione</option>
-                                            <option v-for="colonias in arrayColonias" :key="colonias.colonia" :value="colonias.colonia" v-text="colonias.colonia"></option>
+                                            <option v-for="colonias in arrayColonias" :key="colonias.colonia " :value="colonias.colonia" v-text="colonias.colonia"></option>
                                         </select>
                                 </div>
                                 </div>
@@ -253,7 +249,7 @@
                                 
                             </div>
 
-<!-------------------------------------- DATOS DE TRABAJO ------------------------------------->
+                  <!-------------------------------------- DATOS DE TRABAJO ------------------------------------->
                         <div class="form-group row border border-primary">
                             <div class="col-md-12">
                                     <div class="form-group">
@@ -314,7 +310,7 @@
                                             <option value="Oficina central">Oficina central</option>
                                             <option value="Modulo">Modulo</option>
                                             <option value="Pagina web">Pagina web</option>
-                                            <option v-for="fraccionamientos in arrayFraccionamientos2" :key="fraccionamientos.id" :value="fraccionamientos.nombre" v-text="fraccionamientos.nombre"></option>
+                                            <option v-for="fraccionamientos in arrayFraccionamientos2" :key="fraccionamientos.nombre" :value="fraccionamientos.nombre" v-text="fraccionamientos.nombre"></option>
                                             <option v-for="lugares in arrayLugarContacto" :key="lugares.id" :value="lugares.nombre" v-text="lugares.nombre"></option>
                                     </select>
                                     </div>
@@ -406,7 +402,7 @@
                         <div class="form-group row border border-dark" v-if="coacreditado==true" >  
                              <div class="col-md-12">
                                     <div class="form-group">
-                                  <center> <h3>Datos del conyuge o coacreditado</h3> </center>
+                                  <center> <h3>Datos del cónyuge o coacreditado</h3> </center>
                                     </div>
                                 </div>   
 
@@ -492,7 +488,7 @@
                                     <label for="">Colonia</label>
                                     <select class="form-control" v-model="colonia_coa">
                                             <option value="0">Seleccione</option>
-                                            <option v-for="colonias in arrayColoniasCoa" :key="colonias.colonia" :value="colonias.colonia" v-text="colonias.colonia"></option>
+                                            <option v-for="colonia in arrayColoniasCoa" :key="colonia.colonia " :value="colonia.colonia" v-text="colonia.colonia"></option>
                                         </select>
                                 </div>
                                 </div>
@@ -503,7 +499,7 @@
                                     <label for="">Estado <span style="color:red;" v-show="estado_coa==''">(*)</span></label>
                                      <select class="form-control" v-model="estado_coa" @click="selectCiudades(estado_coa,1)" >
                                             <option value="0">Seleccione</option>
-                                            <option v-for="estados in arrayEstados" :key="estados.estado" :value="estados.estado" v-text="estados.estado"></option>    
+                                            <option v-for="estado in arrayEstados" :key="estado.estado " :value="estado.estado" v-text="estado.estado"></option>    
                                     </select>
                                      </div>
                                  </div>
@@ -564,15 +560,10 @@
                                         >
                                         </v-select>
                                 </div>
-                                </div>
-
-                             
-
-                       
-
+                                </div>  
                         </div>
 
-                  <!--  apartado de referencias familiares-->
+                  <!--------------------------------  Apartado Referencias familiares ------------------------------->
                         <div class="form-group row border border-warning">
                                   <div class="col-md-12">
                                     <div class="form-group">
@@ -636,12 +627,12 @@
                              
                         </div>
 
-                  <!--  apartado  de datos economicos y tipo de credito-->
+                  <!--------------------------------  Apartado  de Datos economicos y tipo de credito ------------------------>
                         <div class="form-group row border border-danger" >   
 
                                   <div class="col-md-12">
                                     <div class="form-group">
-                                  <center> <h3>Datos de la vivienda</h3> </center>
+                                  <center> <h4>Datos de la vivienda</h4> </center>
                                     </div>
                                   </div>  
                                         
@@ -664,6 +655,127 @@
                                     </select>
                                   </div>
                                 </div>
+
+                                    
+                            <!--<div class="form-group">
+                                <div class="col-md-12">
+                                    <button type="button" class="btn btn-secondary" @click="ocultarDetalle()"> Cerrar </button>
+                                    <button type="button" class="btn btn-primary" @click="actualizarProspecto()"> Enviar </button>
+                                </div>
+                            </div>-->
+
+                                
+                                
+                        </div>
+
+                <!--------------------------------  Apartado  Datos estadisticos ------------------------>
+                        <div class="form-group row border border-info" >   
+
+                                  <div class="col-md-12">
+                                    <div class="form-group">
+                                  <center> <h4>Ayudanos a mejorar</h4> </center>
+                                    </div>
+                                  </div>  
+                                        
+
+                                <div class="col-md-2">
+                                    <h6> ¿Tiene mascotas? </h6>
+                                </div>
+                                <div class="col-md-2">
+                                    <select class="form-control" v-model="mascotas" >
+                                            <option value="0">No</option>
+                                            <option value="1">Si</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-1" v-if="mascotas==1">
+                                    <label for=""># de Perros </label>
+                                </div>
+                                <div class="col-md-3" v-if="mascotas==1">
+                                  <div class="form-group">
+                                    <input type="text" maxlength="2" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="num_perros">
+                                  </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <h6> </h6>
+                                </div>
+
+                                <div class="col-md-12" >
+                                  <h6># Habitantes en el domicilio <span style="color:red;" v-show="valHab==1">Validar numero de habitantes</span> </h6>
+                                </div>
+                                <div class="col-md-2" >
+                                  <div class="form-group">
+                                  <label for=""># Total <span style="color:red;" v-show="valHab==1">(*)</span> </label>
+                                    <input type="text" maxlength="2" pattern="\d*" class="form-control" v-on:keypress="isNumber($event), validarHab()" v-model="num_habitantes">
+                                  </div>
+                                </div>
+                                <div class="col-md-3" >
+                                  <div class="form-group">
+                                  <label for="">Entre 0-10 años de edad <span style="color:red;" v-show="valHab==1">(*)</span> </label>
+                                    <input type="text" maxlength="2" pattern="\d*" class="form-control" v-on:keypress="isNumber($event),validarHab()" v-model="rang0_10">
+                                  </div>
+                                </div>
+                               <div class="col-md-3" >
+                                  <div class="form-group">
+                                  <label for="">Entre 11-20 años de edad <span style="color:red;" v-show="valHab==1">(*)</span> </label>
+                                    <input type="text" maxlength="2" pattern="\d*" class="form-control" v-on:keypress="isNumber($event),validarHab()" v-model="rang11_20">
+                                  </div>
+                                </div>
+                                <div class="col-md-3" >
+                                  <div class="form-group">
+                                  <label for="">Mayores a 21 años de edad <span style="color:red;" v-show="valHab==1">(*)</span> </label>
+                                    <input type="text" maxlength="2" pattern="\d*" class="form-control" v-on:keypress="isNumber($event),validarHab()" v-model="rang21">
+                                  </div>
+                                </div>
+
+                                <div class="col-md-3" v-if="e_civil==1 || e_civil==2 ||e_civil==5" >
+                                  <div class="form-group">
+                                  <label for="">¿Cónyuge es ama de casa? </label>
+                                  </div>
+                                </div>
+                                <div class="col-md-2" v-if="e_civil==1 || e_civil==2 ||e_civil==5" >
+                                  <div class="form-group">
+                                    <select class="form-control" v-model="ama_casa" >
+                                            <option value="0">No</option>
+                                            <option value="1">Si</option>
+                                    </select>
+                                  </div>
+                                </div>
+                                <div class="col-md-12" >
+                                  <h6></h6>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label for=""> ¿Alguna de las personas que habitaran la casa cuenta con alguna discapacidad? </label>
+                                </div>
+                                <div class="col-md-2">
+                                   <select class="form-control" v-model="discapacidad" >
+                                            <option value="0">No</option>
+                                            <option value="1">Si</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2" v-if="discapacidad==1">
+                                    <label for=""> ¿Requiere silla de ruedas? </label>
+                                </div>
+                                <div class="col-md-2" v-if="discapacidad==1">
+                                    <select class="form-control" v-model="silla_ruedas" >
+                                            <option value="0">No</option>
+                                            <option value="1">Si</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-12">
+                                    <h6> </h6>
+                                </div>
+
+                                <div class="col-md-12" >
+                                  <h6># De vehiculos con los que cuenta </h6>
+                                </div>
+                                <div class="col-md-2" >
+                                  <div class="form-group">
+                                    <input type="text" maxlength="2" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="num_vehiculos">
+                                  </div>
+                                </div>
+                                
                                  
                                  <div class="col-md-12">
                                     <!-- Div para mostrar los errores que mande validerFraccionamiento -->
@@ -685,7 +797,7 @@
 
                                 
                                 
-                            </div>
+                        </div>
 
                  
 
@@ -773,6 +885,7 @@
                 rfc:'',
                 homoclave: '',
                 e_civil: 0,
+                ama_casa:0,
                 tipo_casa:0,
                 coacreditado: 0,
                 publicidad_id: 0,
@@ -811,6 +924,10 @@
                 ciudad_coa: '',
                 cp_coa:'',
                 nacionalidad_coa:0,
+                direccion_coa:'',
+                colonia_coa:'',
+                empresa_coa:'',
+
              
 
                 arrayEmpresa: [],
@@ -857,7 +974,17 @@
                 arrayFraccionamientos2 : [],
                 arrayFraccionamientosVue : [],
                 arrayObservacion: [],
-                fraccionamiento:''
+                fraccionamiento:'',
+                mascotas:0,
+                num_perros:0,
+                num_habitantes:0,
+                rang0_10:0,
+                rang11_20:0,
+                rang21:0,
+                valHab:0,
+                num_vehiculos:0,
+                silla_ruedas:0,
+                discapacidad:0
                 
             }
         },
@@ -1341,6 +1468,16 @@
                     return true;
                 }
             },
+            validarHab() {
+                var sum = parseInt(this.rang0_10)+parseInt(this.rang11_20)+parseInt(this.rang21);
+                
+                if(parseInt(this.num_habitantes)<sum){
+                    this.valHab=1
+                }
+                else{
+                    this.valHab=0;
+                }
+            },
             limpiarDatos(){
                 this.clasificacion=1;
                 this.nombre='';
@@ -1391,8 +1528,6 @@
             ocultarDetalle(){
                 this.listado=1;
             },
-            
-
             actualizarProspectoBTN(prospecto){
               
                 //let me= this;
@@ -1440,7 +1575,11 @@
                     this.nacionalidad_coa = prospecto['nacionalidad_coa'];
                     this.puesto = prospecto['puesto'];
                     this.dep_economicos='';
-                    
+                    this.rang0_10=0;
+                    this.rang11_20=0;
+                    this.rang21=0;
+                    this.num_habitantes=0;
+                    this.valHab=0;
                     
                     this.id=prospecto['id'];
                     this.listado=3;
