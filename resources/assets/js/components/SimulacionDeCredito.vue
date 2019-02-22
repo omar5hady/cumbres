@@ -621,40 +621,76 @@
                             </div>
                             </div>  
 
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <div class="form-group">
                                 <label for="">Proyecto en el que esta interesado <span style="color:red;" v-show="proyecto_interes_id==0">(*)</span></label>
+                            </div>
+                        </div>
+
+                        
+                        <div class="col-md-3">
+                            <div class="form-group">
                                    <select class="form-control" v-model="proyecto_interes_id" @click="selectEtapa(proyecto_interes_id)">
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                    </select>
                             </div>
                         </div>
+      
                     
-                     <div class="col-md-3">
+                     <div class="col-md-1">
                             <div class="form-group">
-                                <label for="">Etapa<span style="color:red;" v-show="etapa==0">(*)</span></label>
+                                <label for="">Etapa<span style="color:red;" v-show="etapa==0">(*)</span></label>     
+                            </div>
+                        </div>
+
+                           
+                     <div class="col-md-2">
+                            <div class="form-group">
                                    <select class="form-control" v-model="etapa" @click="selectManzana(etapa),selectPaquetes(etapa)">
                                         <option v-for="etapas in arrayEtapas" :key="etapas.etapa" :value="etapas.etapa" v-text="etapas.etapa"></option>
                                    </select>
                             </div>
                         </div>
 
-                        <div class="col-md-3">
+                        <div class="col-md-12" >
+                            <h6></h6>
+                        </div>
+
+                        
+                        <div class="col-md-2">
                             <div class="form-group">
                                 <label for="">Manzana<span style="color:red;" v-show="manzana==0">(*)</span></label>
+                            </div>
+                        </div>
+
+                          
+                        <div class="col-md-3">
+                            <div class="form-group">
                                    <select class="form-control" v-model="manzana" @click="selectLotes(manzana)">
                                         <option v-for="manzanas in arrayManzanas" :key="manzanas.manzana" :value="manzanas.manzana" v-text="manzanas.manzana"></option>
                                    </select>
                             </div>
                         </div>
 
-                           <div class="col-md-3">
+                           <div class="col-md-1">
                             <div class="form-group">
                                 <label for="">Lote<span style="color:red;" v-show="lote==0">(*)</span></label>
+                            </div>
+                        </div>
+
+                        
+                           <div class="col-md-2">
+                            <div class="form-group">
                                    <select class="form-control" v-model="lote" @click="mostrarDatosLote(lote)">
                                         <option v-for="lotes in arrayLotes" :key="lotes.id" :value="lotes.id" v-text="lotes.num_lote"></option>
                                    </select>
                             </div>
+                        </div>
+
+                         
+
+                        <div class="col-md-12" >
+                            <h6></h6>
                         </div>
    
                            <div class="col-md-3" v-if="modelo!=''">
@@ -718,7 +754,7 @@
                          <div class="col-md-3">
                             <div class="form-group">
                                 <label for="">Paquete<span style="color:red;" v-show="paquete_id==0">(*)</span></label>
-                                   <select class="form-control" v-model="paquete_id">
+                                   <select class="form-control" v-model="paquete_id" @click="datosPaquetes(paquete_id)">
                                         <option v-for="paquetes in arrayPaquetes" :key="paquetes.id" :value="paquetes.id" v-text="paquetes.nombre"></option>
                                    </select>
                             </div>
@@ -737,6 +773,10 @@
                                 <p v-text="'$'+formatNumber(costoPaquete)"></p>
                             </div>
                         </div> 
+
+                         <div class="col-md-12" >
+                            <h6></h6>
+                        </div>
 
                         <div class="col-md-3">
                             <div class="form-group">
@@ -893,15 +933,12 @@
                             <button type="button" class="btn btn-primary" @click="actualizarProspecto()"> Enviar </button>
                         </div>
                     </div>
-
-                        
-                        
+      
                 </div>
         </div>
     </div>
 </div>
                    
-                
                   <!----------------------------------  lugar de contacto , clasificacion y otros -------------------------------------------
                               <div class="col-md-4">
                                     <div class="form-group">
@@ -948,9 +985,7 @@
                                 </div>
                                 </div>
 
-
                         </div>-->
-
 
                         </div>
 
@@ -1093,6 +1128,7 @@
                 arrayLotes: [],
                 arrayDatosLotes: [],
                 arrayPaquetes: [],
+                arrayDatosPaquetes: [],
 
                 proyecto_interes_id: 0,
                 etapa: '',
@@ -1276,8 +1312,22 @@
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                      me.arrayPaquetes = respuesta.paquetes;
-                     me.descripcionPaquete = me.arrayPaquetes[0]['descripcion'];
-                     me.costoPaquete = me.arrayPaquetes[0]['costo'];
+                    
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            
+              datosPaquetes(paquete){
+                let me = this;
+                me.arrayDatosPaquetes=[];
+                var url = '/select_datos_paquetes?buscar=' + paquete;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                     me.arrayDatosPaquetes = respuesta.datos_paquetes;
+                     me.descripcionPaquete = me.arrayDatosPaquetes[0]['descripcion'];
+                     me.costoPaquete = me.arrayDatosPaquetes[0]['costo'];
                     
                 })
                 .catch(function (error) {
@@ -1910,6 +1960,7 @@
             this.selectEtapa(this.proyecto_interes_id);
             this.selectManzana(this.etapa);
             this.selectPaquetes(this.etapa);
+            this.datosPaquetes(this.paquete_id);
             this.selectLotes(this.manzana);
             this.mostrarDatosLote(this.lote);
             this.selectLugarContacto();

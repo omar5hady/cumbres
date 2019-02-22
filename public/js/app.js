@@ -106086,6 +106086,41 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -106164,6 +106199,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             arrayLotes: [],
             arrayDatosLotes: [],
             arrayPaquetes: [],
+            arrayDatosPaquetes: [],
 
             proyecto_interes_id: 0,
             etapa: '',
@@ -106334,8 +106370,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             axios.get(url).then(function (response) {
                 var respuesta = response.data;
                 me.arrayPaquetes = respuesta.paquetes;
-                me.descripcionPaquete = me.arrayPaquetes[0]['descripcion'];
-                me.costoPaquete = me.arrayPaquetes[0]['costo'];
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        datosPaquetes: function datosPaquetes(paquete) {
+            var me = this;
+            me.arrayDatosPaquetes = [];
+            var url = '/select_datos_paquetes?buscar=' + paquete;
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayDatosPaquetes = respuesta.datos_paquetes;
+                me.descripcionPaquete = me.arrayDatosPaquetes[0]['descripcion'];
+                me.costoPaquete = me.arrayDatosPaquetes[0]['costo'];
             }).catch(function (error) {
                 console.log(error);
             });
@@ -106895,6 +106942,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         this.selectEtapa(this.proyecto_interes_id);
         this.selectManzana(this.etapa);
         this.selectPaquetes(this.etapa);
+        this.datosPaquetes(this.paquete_id);
         this.selectLotes(this.manzana);
         this.mostrarDatosLote(this.lote);
         this.selectLugarContacto();
@@ -110472,7 +110520,7 @@ var render = function() {
                                   )
                                 ]),
                                 _vm._v(" "),
-                                _c("div", { staticClass: "col-md-3" }, [
+                                _c("div", { staticClass: "col-md-2" }, [
                                   _c("div", { staticClass: "form-group" }, [
                                     _c("label", { attrs: { for: "" } }, [
                                       _vm._v(
@@ -110495,8 +110543,12 @@ var render = function() {
                                         },
                                         [_vm._v("(*)")]
                                       )
-                                    ]),
-                                    _vm._v(" "),
+                                    ])
+                                  ])
+                                ]),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "col-md-3" }, [
+                                  _c("div", { staticClass: "form-group" }, [
                                     _c(
                                       "select",
                                       {
@@ -110555,7 +110607,7 @@ var render = function() {
                                   ])
                                 ]),
                                 _vm._v(" "),
-                                _c("div", { staticClass: "col-md-3" }, [
+                                _c("div", { staticClass: "col-md-1" }, [
                                   _c("div", { staticClass: "form-group" }, [
                                     _c("label", { attrs: { for: "" } }, [
                                       _vm._v("Etapa"),
@@ -110574,8 +110626,12 @@ var render = function() {
                                         },
                                         [_vm._v("(*)")]
                                       )
-                                    ]),
-                                    _vm._v(" "),
+                                    ])
+                                  ])
+                                ]),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "col-md-2" }, [
+                                  _c("div", { staticClass: "form-group" }, [
                                     _c(
                                       "select",
                                       {
@@ -110627,7 +110683,9 @@ var render = function() {
                                   ])
                                 ]),
                                 _vm._v(" "),
-                                _c("div", { staticClass: "col-md-3" }, [
+                                _vm._m(7),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "col-md-2" }, [
                                   _c("div", { staticClass: "form-group" }, [
                                     _c("label", { attrs: { for: "" } }, [
                                       _vm._v("Manzana"),
@@ -110646,8 +110704,12 @@ var render = function() {
                                         },
                                         [_vm._v("(*)")]
                                       )
-                                    ]),
-                                    _vm._v(" "),
+                                    ])
+                                  ])
+                                ]),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "col-md-3" }, [
+                                  _c("div", { staticClass: "form-group" }, [
                                     _c(
                                       "select",
                                       {
@@ -110702,7 +110764,7 @@ var render = function() {
                                   ])
                                 ]),
                                 _vm._v(" "),
-                                _c("div", { staticClass: "col-md-3" }, [
+                                _c("div", { staticClass: "col-md-1" }, [
                                   _c("div", { staticClass: "form-group" }, [
                                     _c("label", { attrs: { for: "" } }, [
                                       _vm._v("Lote"),
@@ -110721,8 +110783,12 @@ var render = function() {
                                         },
                                         [_vm._v("(*)")]
                                       )
-                                    ]),
-                                    _vm._v(" "),
+                                    ])
+                                  ])
+                                ]),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "col-md-2" }, [
+                                  _c("div", { staticClass: "form-group" }, [
                                     _c(
                                       "select",
                                       {
@@ -110773,10 +110839,12 @@ var render = function() {
                                   ])
                                 ]),
                                 _vm._v(" "),
+                                _vm._m(8),
+                                _vm._v(" "),
                                 _vm.modelo != ""
                                   ? _c("div", { staticClass: "col-md-3" }, [
                                       _c("div", { staticClass: "form-group" }, [
-                                        _vm._m(7),
+                                        _vm._m(9),
                                         _vm._v(" "),
                                         _c("p", {
                                           domProps: {
@@ -110790,7 +110858,7 @@ var render = function() {
                                 _vm.superficie != ""
                                   ? _c("div", { staticClass: "col-md-3" }, [
                                       _c("div", { staticClass: "form-group" }, [
-                                        _vm._m(8),
+                                        _vm._m(10),
                                         _vm._v(" "),
                                         _c("p", {
                                           domProps: {
@@ -110804,7 +110872,7 @@ var render = function() {
                                 _vm.precioBase != ""
                                   ? _c("div", { staticClass: "col-md-3" }, [
                                       _c("div", { staticClass: "form-group" }, [
-                                        _vm._m(9),
+                                        _vm._m(11),
                                         _vm._v(" "),
                                         _c("p", {
                                           domProps: {
@@ -110821,7 +110889,7 @@ var render = function() {
                                 _vm.precioExcedente != ""
                                   ? _c("div", { staticClass: "col-md-3" }, [
                                       _c("div", { staticClass: "form-group" }, [
-                                        _vm._m(10),
+                                        _vm._m(12),
                                         _vm._v(" "),
                                         _c("p", {
                                           domProps: {
@@ -110840,7 +110908,7 @@ var render = function() {
                                 _vm.precioVenta != ""
                                   ? _c("div", { staticClass: "col-md-3" }, [
                                       _c("div", { staticClass: "form-group" }, [
-                                        _vm._m(11),
+                                        _vm._m(13),
                                         _vm._v(" "),
                                         _c("p", {
                                           domProps: {
@@ -110859,7 +110927,7 @@ var render = function() {
                                 _vm.promocion != ""
                                   ? _c("div", { staticClass: "col-md-3" }, [
                                       _c("div", { staticClass: "form-group" }, [
-                                        _vm._m(12),
+                                        _vm._m(14),
                                         _vm._v(" "),
                                         _c("p", {
                                           domProps: {
@@ -110873,7 +110941,7 @@ var render = function() {
                                 _vm.descripcionPromo != ""
                                   ? _c("div", { staticClass: "col-md-3" }, [
                                       _c("div", { staticClass: "form-group" }, [
-                                        _vm._m(13),
+                                        _vm._m(15),
                                         _vm._v(" "),
                                         _c("p", {
                                           domProps: {
@@ -110889,7 +110957,7 @@ var render = function() {
                                 _vm.descuentoPromo != ""
                                   ? _c("div", { staticClass: "col-md-3" }, [
                                       _c("div", { staticClass: "form-group" }, [
-                                        _vm._m(14),
+                                        _vm._m(16),
                                         _vm._v(" "),
                                         _c("p", {
                                           domProps: {
@@ -110939,6 +111007,9 @@ var render = function() {
                                         ],
                                         staticClass: "form-control",
                                         on: {
+                                          click: function($event) {
+                                            _vm.datosPaquetes(_vm.paquete_id)
+                                          },
                                           change: function($event) {
                                             var $$selectedVal = Array.prototype.filter
                                               .call(
@@ -110979,7 +111050,7 @@ var render = function() {
                                 _vm.descripcionPaquete != ""
                                   ? _c("div", { staticClass: "col-md-3" }, [
                                       _c("div", { staticClass: "form-group" }, [
-                                        _vm._m(15),
+                                        _vm._m(17),
                                         _vm._v(" "),
                                         _c("p", {
                                           domProps: {
@@ -110995,7 +111066,7 @@ var render = function() {
                                 _vm.costoPaquete != ""
                                   ? _c("div", { staticClass: "col-md-3" }, [
                                       _c("div", { staticClass: "form-group" }, [
-                                        _vm._m(16),
+                                        _vm._m(18),
                                         _vm._v(" "),
                                         _c("p", {
                                           domProps: {
@@ -111010,6 +111081,8 @@ var render = function() {
                                       ])
                                     ])
                                   : _vm._e(),
+                                _vm._v(" "),
+                                _vm._m(19),
                                 _vm._v(" "),
                                 _c("div", { staticClass: "col-md-3" }, [
                                   _c("div", { staticClass: "form-group" }, [
@@ -111177,7 +111250,7 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _c("div", { staticClass: "card mb-0" }, [
-                        _vm._m(17),
+                        _vm._m(20),
                         _vm._v(" "),
                         _c(
                           "div",
@@ -111211,7 +111284,7 @@ var render = function() {
                                   )
                                 ]),
                                 _vm._v(" "),
-                                _vm._m(18),
+                                _vm._m(21),
                                 _vm._v(" "),
                                 _c("div", { staticClass: "col-md-2" }, [
                                   _c(
@@ -111304,7 +111377,7 @@ var render = function() {
                                     ])
                                   : _vm._e(),
                                 _vm._v(" "),
-                                _vm._m(19),
+                                _vm._m(22),
                                 _vm._v(" "),
                                 _c("div", { staticClass: "col-md-12" }, [
                                   _c("h6", [
@@ -111540,7 +111613,7 @@ var render = function() {
                                 _vm.e_civil == 2 ||
                                 _vm.e_civil == 5
                                   ? _c("div", { staticClass: "col-md-3" }, [
-                                      _vm._m(20)
+                                      _vm._m(23)
                                     ])
                                   : _vm._e(),
                                 _vm._v(" "),
@@ -111602,9 +111675,9 @@ var render = function() {
                                     ])
                                   : _vm._e(),
                                 _vm._v(" "),
-                                _vm._m(21),
+                                _vm._m(24),
                                 _vm._v(" "),
-                                _vm._m(22),
+                                _vm._m(25),
                                 _vm._v(" "),
                                 _c("div", { staticClass: "col-md-2" }, [
                                   _c(
@@ -111716,9 +111789,9 @@ var render = function() {
                                     ])
                                   : _vm._e(),
                                 _vm._v(" "),
-                                _vm._m(23),
+                                _vm._m(26),
                                 _vm._v(" "),
-                                _vm._m(24),
+                                _vm._m(27),
                                 _vm._v(" "),
                                 _c("div", { staticClass: "col-md-2" }, [
                                   _c("div", { staticClass: "form-group" }, [
@@ -111902,7 +111975,7 @@ var render = function() {
                               "table table-bordered table-striped table-sm"
                           },
                           [
-                            _vm._m(25),
+                            _vm._m(28),
                             _vm._v(" "),
                             _c(
                               "tbody",
@@ -112118,6 +112191,18 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-12" }, [_c("h6")])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-12" }, [_c("h6")])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
     return _c(
       "label",
       { staticStyle: { color: "#2271b3" }, attrs: { for: "" } },
@@ -112213,6 +112298,12 @@ var staticRenderFns = [
       { staticStyle: { color: "#2271b3" }, attrs: { for: "" } },
       [_c("strong", [_vm._v(" Costo del paquete ")])]
     )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-12" }, [_c("h6")])
   },
   function() {
     var _vm = this

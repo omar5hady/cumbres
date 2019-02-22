@@ -310,6 +310,7 @@ Route::group(['middleware' => ['auth']],function(){
     Route::get('/select_manzanas_disp','LoteController@select_manzanas_disp');
     Route::get('/select_datos_lotes_disp','LoteController@select_datos_lotes_disp');
     Route::get('/select_paquetes','PaqueteController@select_paquetes');
+    Route::get('/select_datos_paquetes','PaqueteController@select_datos_paquetes');
     
     
     

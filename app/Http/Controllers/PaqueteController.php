@@ -161,4 +161,15 @@ class PaqueteController extends Controller
         return['paquetes' => $paquetes];
     }
 
+    public function select_datos_paquetes(Request $request){
+        $buscar = $request->buscar;
+        $datos_paquetes = Paquete::select('paquetes.descripcion','paquetes.costo','paquetes.v_ini','paquetes.v_fin')
+                          ->where('paquetes.id','=',$buscar)
+                          ->get();
+
+        return['datos_paquetes' => $datos_paquetes];
+
+    }
+
+
 }
