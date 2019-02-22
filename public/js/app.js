@@ -106074,56 +106074,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -111863,79 +111813,76 @@ var render = function() {
                                       }
                                     })
                                   ])
-                                ]),
-                                _vm._v(" "),
-                                _c("div", { staticClass: "col-md-12" }, [
-                                  _c(
-                                    "div",
-                                    {
-                                      directives: [
-                                        {
-                                          name: "show",
-                                          rawName: "v-show",
-                                          value: _vm.errorProspecto,
-                                          expression: "errorProspecto"
-                                        }
-                                      ],
-                                      staticClass: "form-group row div-error"
-                                    },
-                                    [
-                                      _c(
-                                        "div",
-                                        {
-                                          staticClass: "text-center text-error"
-                                        },
-                                        _vm._l(
-                                          _vm.errorMostrarMsjProspecto,
-                                          function(error) {
-                                            return _c("div", {
-                                              key: error,
-                                              domProps: {
-                                                textContent: _vm._s(error)
-                                              }
-                                            })
-                                          }
-                                        )
-                                      )
-                                    ]
-                                  )
-                                ]),
-                                _vm._v(" "),
-                                _c("div", { staticClass: "form-group" }, [
-                                  _c("div", { staticClass: "col-md-12" }, [
-                                    _c(
-                                      "button",
-                                      {
-                                        staticClass: "btn btn-secondary",
-                                        attrs: { type: "button" },
-                                        on: {
-                                          click: function($event) {
-                                            _vm.ocultarDetalle()
-                                          }
-                                        }
-                                      },
-                                      [_vm._v(" Cerrar ")]
-                                    ),
-                                    _vm._v(" "),
-                                    _c(
-                                      "button",
-                                      {
-                                        staticClass: "btn btn-primary",
-                                        attrs: { type: "button" },
-                                        on: {
-                                          click: function($event) {
-                                            _vm.actualizarProspecto()
-                                          }
-                                        }
-                                      },
-                                      [_vm._v(" Enviar ")]
-                                    )
-                                  ])
                                 ])
                               ]
                             )
                           ]
                         )
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "card-body" }, [
+                        _c("div", { staticClass: "form-group" }, [
+                          _c("div", { staticClass: "col-md-12" }, [
+                            _c(
+                              "div",
+                              {
+                                directives: [
+                                  {
+                                    name: "show",
+                                    rawName: "v-show",
+                                    value: _vm.errorProspecto,
+                                    expression: "errorProspecto"
+                                  }
+                                ],
+                                staticClass: "form-group row div-error"
+                              },
+                              [
+                                _c(
+                                  "div",
+                                  { staticClass: "text-center text-error" },
+                                  _vm._l(_vm.errorMostrarMsjProspecto, function(
+                                    error
+                                  ) {
+                                    return _c("div", {
+                                      key: error,
+                                      domProps: { textContent: _vm._s(error) }
+                                    })
+                                  })
+                                )
+                              ]
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "col-md-12" }, [
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-secondary",
+                                attrs: { type: "button" },
+                                on: {
+                                  click: function($event) {
+                                    _vm.ocultarDetalle()
+                                  }
+                                }
+                              },
+                              [_vm._v(" Cerrar ")]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-primary",
+                                attrs: { type: "button" },
+                                on: {
+                                  click: function($event) {
+                                    _vm.actualizarProspecto()
+                                  }
+                                }
+                              },
+                              [_vm._v(" Enviar ")]
+                            )
+                          ])
+                        ])
                       ])
                     ])
                   ])
@@ -112095,7 +112042,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "card-header" }, [
       _c("i", { staticClass: "fa fa-align-justify" }),
-      _vm._v(" Simulacion de credito\n                    ")
+      _vm._v(" Simulacion de credito\n                ")
     ])
   },
   function() {
