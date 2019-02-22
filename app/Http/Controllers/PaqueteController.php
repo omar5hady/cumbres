@@ -148,4 +148,17 @@ class PaqueteController extends Controller
         $paquetes = Paquete::findOrFail($request->id);
         $paquetes->delete();
     }
+
+
+    public function select_paquetes(Request $request){
+        $buscar = $request->buscar;
+
+        $paquetes = Paquete::join('etapas','paquetes.etapa_id','=','etapas.id')
+                            ->select('paquetes.id','paquetes.nombre','paquetes.descripcion','paquetes.costo','paquetes.v_ini','paquetes.v_fin')
+                            ->where('etapas.num_etapa','=',$buscar)
+                            ->get();
+
+        return['paquetes' => $paquetes];
+    }
+
 }

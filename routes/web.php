@@ -305,6 +305,12 @@ Route::group(['middleware' => ['auth']],function(){
     Route::get('/select_datos_apartado','ApartadoController@select_datos_apartado');
     Route::get('/select_institucion','TipoCreditoController@select_institucion');
     Route::get('/select_estados','CiudadController@selectEstados');
+    Route::get('/select_lotes_disp','LoteController@select_lotes_disp');
+    Route::get('/select_etapas_disp','LoteController@select_etapas_disp');
+    Route::get('/select_manzanas_disp','LoteController@select_manzanas_disp');
+    Route::get('/select_datos_lotes_disp','LoteController@select_datos_lotes_disp');
+    Route::get('/select_paquetes','PaqueteController@select_paquetes');
+    
     
     
     

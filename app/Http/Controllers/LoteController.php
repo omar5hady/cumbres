@@ -872,7 +872,91 @@ class LoteController extends Controller
 
     }
 
+    public function select_etapas_disp(Request $request)
+    {
+        
+        $fraccionamiento = $request->buscar;
+        $lotes_etapas = Lote::join('etapas','lotes.etapa_id','=','etapas.id')
+                    ->select('etapas.num_etapa as etapa')
+                    ->where('lotes.habilitado','=',1)
+                    ->where('lotes.apartado','=',0)
+                    ->where('lotes.fraccionamiento_id','=',$fraccionamiento)
+                    ->orderBy('etapas.num_etapa','DESC')
+                    ->distinct()
+                    ->get();
+        return ['lotes_etapas' => $lotes_etapas];
+    }
 
+
+    public function select_manzanas_disp(Request $request)
+    {
+        
+        $etapa = $request->buscar;
+        $lotes_manzanas = Lote::join('etapas','lotes.etapa_id','=','etapas.id')
+                    ->select('lotes.manzana')
+                    ->where('lotes.habilitado','=',1)
+                    ->where('lotes.apartado','=',0)
+                    ->where('etapas.num_etapa','=',$etapa)
+                    ->orderBy('lotes.manzana','DESC')
+                    ->get();
+        return ['lotes_manzanas' => $lotes_manzanas];
+    }
+
+    public function select_lotes_disp(Request $request)
+    {
+        
+        $manzana = $request->buscar;
+        $lotes_disp = Lote::select('num_lote','id')
+                    ->where('habilitado','=',1)
+                    ->where('apartado','=',0)
+                    ->where('manzana','=',$manzana)
+                    ->orderBy('num_lote','DESC')
+                    ->get();
+        return ['lotes_disp' => $lotes_disp];
+    }
+
+
+
+    public function select_datos_lotes_disp(Request $request){
+
+        $buscar = $request->buscar;
+        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+        ->join('licencias','lotes.id','=','licencias.id')
+        ->join('etapas','lotes.etapa_id','=','etapas.id')
+        ->join('modelos','lotes.modelo_id','=','modelos.id')
+        ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
+                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
+                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
+                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
+                    'lotes.sobreprecio', 'lotes.precio_base','lotes.excedente_terreno','lotes.apartado')
+                    ->where('lotes.habilitado','=',1)
+                    ->where('lotes.apartado','=',0)
+                    ->where('lotes.id','=',$buscar)
+                    ->orderBy('fraccionamientos.nombre','DESC')
+                    ->orderBy('lotes.etapa_servicios','DESC')->get();
+
+    foreach($lotes as $index => $lote) {
+        $lote->precio_venta= $lote->sobreprecio + $lote->precio_base + $lote->excedente_terreno;
+        $promocion=[];
+        $promocion = Lote_promocion::join('promociones','lotes_promocion.promocion_id','=','promociones.id')
+            ->select('promociones.nombre','promociones.v_ini','promociones.v_fin','promociones.id',
+                     'promociones.descuento','promociones.descripcion')
+            ->where('lotes_promocion.lote_id','=',$lote->id)
+            ->where('promociones.v_fin','>',Carbon::today()->format('ymd'))->get();
+        if(sizeof($promocion) > 0){
+            $lote->v_iniPromo = $promocion[0]->v_ini;
+            $lote->v_finPromo = $promocion[0]->v_fin;
+            $lote->promocion = $promocion[0]->nombre;
+            $lote->descripcionPromo = $promocion[0]->descripcion;
+            $lote->descuentoPromo = $promocion[0]->descuento;
+        }
+        else
+            $lote->promocion = 'Sin Promoción';
+    }
+
+    return ['lotes' => $lotes];
+
+    }
 
 
 }

@@ -1,7 +1,7 @@
 @extends('auth.contenido')
 
 @section('login')
-<div class="row justify-content-center">
+<div class="row justify-content-center animated fadeInUp slow">
       <div class="col-md-8">
         <div class="card-group mb-0">
           <div class="card p-4">
@@ -20,7 +20,7 @@
                 <input type="password" name="password" id="password" class="form-control" placeholder="Password">
                 {!!$errors->first('password','<span class="invalid-feedback">:message</span>')!!}
               </div>
-              <div class="row">
+              <div class="row animated fadeInLeft slower">
                 <div class="col-6">
                   <button type="submit" class="btn btn-primary px-4">Acceder</button>
                 </div>

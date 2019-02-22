@@ -105071,10 +105071,111 @@ exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    pos
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_select__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_select___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue_select__);
-var _methods;
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -106012,7 +106113,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             tipo_casa: 0,
             coacreditado: 0,
             publicidad_id: 0,
-            proyecto_interes_id: 0,
             proyecto: '',
             empresa: '',
             observacion: '',
@@ -106059,6 +106159,27 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             arrayCiudades: [],
             arrayColoniasCoa: [],
             arrayColonias: [],
+            arrayEtapas: [],
+            arrayManzanas: [],
+            arrayLotes: [],
+            arrayDatosLotes: [],
+            arrayPaquetes: [],
+
+            proyecto_interes_id: 0,
+            etapa: '',
+            manzana: '',
+            lote: '',
+            modelo: '',
+            superficie: '',
+            precioBase: 0,
+            precioExcedente: 0,
+            precioVenta: 0,
+            promocion: '',
+            descripcionPromo: '',
+            descuentoPromo: 0,
+            paquete_id: 0,
+            descripcionPaquete: '',
+            costoPaquete: 0,
 
             nombre_referencia1: '',
             telefono_referencia1: '',
@@ -106092,7 +106213,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             arrayFraccionamientos: [],
             arrayLugarContacto: [],
             arrayFraccionamientos2: [],
-            arrayFraccionamientosVue: [],
             arrayObservacion: [],
             fraccionamiento: '',
             mascotas: 0,
@@ -106142,7 +106262,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         }
     },
 
-    methods: (_methods = {
+    methods: {
         /**Metodo para mostrar los registros */
         listarProspectos: function listarProspectos(page, buscar, criterio) {
             var me = this;
@@ -106185,6 +106305,71 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 console.log(error);
             });
         },
+        selectEtapa: function selectEtapa(fraccionamiento) {
+            var me = this;
+            me.arrayEtapas = [];
+            var url = '/select_etapas_disp?buscar=' + fraccionamiento;
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayEtapas = respuesta.lotes_etapas;
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        selectManzana: function selectManzana(etapa) {
+            var me = this;
+            me.arrayManzanas = [];
+            var url = '/select_manzanas_disp?buscar=' + etapa;
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayManzanas = respuesta.lotes_manzanas;
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        selectPaquetes: function selectPaquetes(etapa) {
+            var me = this;
+            me.arrayPaquetes = [];
+            var url = '/select_paquetes?buscar=' + etapa;
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayPaquetes = respuesta.paquetes;
+                me.descripcionPaquete = me.arrayPaquetes[0]['descripcion'];
+                me.costoPaquete = me.arrayPaquetes[0]['costo'];
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        selectLotes: function selectLotes(manzana) {
+            var me = this;
+            me.arrayLotes = [];
+            var url = '/select_lotes_disp?buscar=' + manzana;
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayLotes = respuesta.lotes_disp;
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        mostrarDatosLote: function mostrarDatosLote(lote) {
+            var me = this;
+            me.arrayDatosLotes = [];
+            var url = '/select_datos_lotes_disp?buscar=' + lote;
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayDatosLotes = respuesta.lotes;
+                me.modelo = me.arrayDatosLotes[0]['modelo'];
+                me.superficie = me.arrayDatosLotes[0]['terreno'];
+                me.precioBase = me.arrayDatosLotes[0]['precio_base'];
+                me.precioExcedente = me.arrayDatosLotes[0]['excedente_terreno'];
+                me.precioVenta = me.arrayDatosLotes[0]['precio_venta'];
+                me.promocion = me.arrayDatosLotes[0]['promocion'];
+                me.descripcionPromo = me.arrayDatosLotes[0]['descripcionPromo'];
+                me.descuentoPromo = me.arrayDatosLotes[0]['descuentoPromo'];
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
         selectLugarContacto: function selectLugarContacto() {
             var me = this;
             me.arrayLugarContacto = [];
@@ -106198,7 +106383,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         },
         selectMedioPublicidad: function selectMedioPublicidad() {
             var me = this;
-            me.arrayFraccionamientos = [];
+            me.arrayMediosPublicidad = [];
             var url = '/select_medio_publicidad';
             axios.get(url).then(function (response) {
                 var respuesta = response.data;
@@ -106206,475 +106391,512 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             }).catch(function (error) {
                 console.log(error);
             });
-        }
-    }, _defineProperty(_methods, 'selectFraccionamientos', function selectFraccionamientos() {
-        var me = this;
-        me.arrayFraccionamientos = [];
-        var url = '/select_fraccionamiento';
-        axios.get(url).then(function (response) {
-            var respuesta = response.data;
-            me.arrayFraccionamientos2 = respuesta.fraccionamientos;
-        }).catch(function (error) {
-            console.log(error);
-        });
-    }), _defineProperty(_methods, 'selectEstados', function selectEstados() {
-        var me = this;
-        me.arrayEstados = [];
-
-        var url = '/select_estados';
-        axios.get(url).then(function (response) {
-            var respuesta = response.data;
-            me.arrayEstados = respuesta.estados;
-        }).catch(function (error) {
-            console.log(error);
-        });
-    }), _defineProperty(_methods, 'selectCiudades', function selectCiudades(estado, coacreditado) {
-        var me = this;
-        var url = '/select_ciudades?buscar=' + estado;
-        axios.get(url).then(function (response) {
-            var respuesta = response.data;
-            if (coacreditado == 1) {
-                me.arrayCiudadesCoa = [];
-                me.arrayCiudadesCoa = respuesta.ciudades;
-            } else {
-                me.arrayCiudades = [];
-                me.arrayCiudades = respuesta.ciudades;
-            }
-        }).catch(function (error) {
-            console.log(error);
-        });
-    }), _defineProperty(_methods, 'selectColonias', function selectColonias(cp, coacreditado) {
-        var me = this;
-        me.arrayColonias = [];
-        var url = '/select_colonias?buscar=' + cp;
-        axios.get(url).then(function (response) {
-            var respuesta = response.data;
-            if (coacreditado == 1) {
-                me.arrayColoniasCoa = [];
-                me.arrayColoniasCoa = respuesta.colonias;
-            } else {
-                me.arrayColonias = [];
-                me.arrayColonias = respuesta.colonias;
-            }
-        }).catch(function (error) {
-            console.log(error);
-        });
-    }), _defineProperty(_methods, 'listarObservacion', function listarObservacion(page, buscar) {
-        var me = this;
-        var url = '/clientes/observacion?page=' + page + '&buscar=' + buscar;
-        axios.get(url).then(function (response) {
-            var respuesta = response.data;
-            me.arrayObservacion = respuesta.observacion.data;
-            me.pagination = respuesta.pagination;
-            console.log(url);
-        }).catch(function (error) {
-            console.log(error);
-        });
-    }), _defineProperty(_methods, 'selectCreditos', function selectCreditos() {
-        var me = this;
-        me.arrayCreditos = [];
-        var url = '/select_tipoCredito';
-        axios.get(url).then(function (response) {
-            var respuesta = response.data;
-            me.arrayCreditos = respuesta.Tipos_creditos;
-        }).catch(function (error) {
-            console.log(error);
-        });
-    }), _defineProperty(_methods, 'selectInstitucion', function selectInstitucion(credito) {
-        var me = this;
-        me.arrayInstituciones = [];
-        var url = '/select_institucion?buscar=' + credito;
-        axios.get(url).then(function (response) {
-            var respuesta = response.data;
-            me.arrayInstituciones = respuesta.instituciones;
-        }).catch(function (error) {
-            console.log(error);
-        });
-    }), _defineProperty(_methods, 'cambiarPagina', function cambiarPagina(page, buscar, criterio) {
-        var me = this;
-        //Actualiza la pagina actual
-        me.pagination.current_page = page;
-        //Envia la petición para visualizar la data de esta pagina
-        me.listarProspectos(page, buscar, criterio);
-    }), _defineProperty(_methods, 'registrarProspecto', function registrarProspecto() {
-        if (this.validarProspecto() || this.proceso == true) //Se verifica si hay un error (campo vacio)
-            {
-                return;
-            }
-
-        this.proceso = true;
-
-        var me = this;
-        //Con axios se llama el metodo store del controller
-        axios.post('/clientes/registrar', {
-            'clasificacion': this.clasificacion,
-            'nombre': this.nombre,
-            'apellidos': this.apellidos,
-            'telefono': this.telefono,
-            'celular': this.celular,
-            'email': this.email,
-            'email_institucional': this.email_inst,
-            'nss': this.nss,
-            'sexo': this.sexo,
-            'f_nacimiento': this.fecha_nac,
-            'curp': this.curp,
-            'rfc': this.rfc,
-            'homoclave': this.homoclave,
-            'edo_civil': this.e_civil,
-            'tipo_casa': this.tipo_casa,
-            'coacreditado': this.coacreditado,
-            'publicidad_id': this.publicidad_id,
-            'proyecto_interes_id': this.proyecto_interes_id,
-            'empresa': this.empresa,
-            'observacion': this.observacion,
-            'lugar_contacto': this.lugar_contacto,
-
-            'nombre_coa': this.nombre_coa,
-            'parentesco_coa': this.parentesco_coa,
-            'apellidos_coa': this.apellidos_coa,
-            'telefono_coa': this.telefono_coa,
-            'celular_coa': this.celular_coa,
-            'email_coa': this.email_coa,
-            'email_institucional_coa': this.email_institucional_coa,
-            'nss_coa': this.nss_coa,
-            'sexo_coa': this.sexo_coa,
-            'f_nacimiento_coa': this.fecha_nac_coa,
-            'curp_coa': this.curp_coa,
-            'rfc_coa': this.rfc_coa,
-            'homoclave_coa': this.homoclave_coa,
-            'edo_civil_coa': this.e_civil_coa,
-            'tipo_casa_coa': this.tipo_casa_coa
-        }).then(function (response) {
-            me.proceso = false;
-            me.listado = 1;
-            me.limpiarDatos();
-            me.listarProspectos(1, '', 'ini_obras.clave'); //se enlistan nuevamente los registros
-            //Se muestra mensaje Success
-            swal({
-                position: 'top-end',
-                type: 'success',
-                title: 'Etapa agregada correctamente',
-                showConfirmButton: false,
-                timer: 1500
+        },
+        selectFraccionamientos2: function selectFraccionamientos2() {
+            var me = this;
+            me.arrayFraccionamientos2 = [];
+            var url = '/select_fraccionamiento';
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayFraccionamientos2 = respuesta.fraccionamientos;
+            }).catch(function (error) {
+                console.log(error);
             });
-        }).catch(function (error) {
-            console.log(error);
-        });
-    }), _defineProperty(_methods, 'registrarCoacreditado', function registrarCoacreditado() {
-        if (this.validarCoacreditado() || this.proceso == true) //Se verifica si hay un error (campo vacio)
-            {
-                return;
-            }
+        },
+        selectEstados: function selectEstados() {
+            var me = this;
+            me.arrayEstados = [];
 
-        this.proceso = true;
-
-        var me = this;
-        //Con axios se llama el metodo store del controller
-        axios.post('/clientes/registrar_coacreditado', {
-            'clasificacion': this.clasificacion,
-            'nombre': this.nombre_coa,
-            'apellidos': this.apellidos_coa,
-            'telefono': this.telefono_coa,
-            'celular': this.celular_coa,
-            'email': this.email_coa,
-            'email_institucional': this.email_institucional_coa,
-            'nss': this.nss_coa,
-            'sexo': this.sexo_coa,
-            'f_nacimiento': this.fecha_nac_coa,
-            'curp': this.curp_coa,
-            'rfc': this.rfc_coa,
-            'homoclave': this.homoclave_coa,
-            'edo_civil': this.e_civil_coa,
-            'tipo_casa': this.tipo_casa_coa,
-            'coacreditado': 0,
-            'proyecto_interes_id': this.proyecto_interes_id,
-            'lugar_contacto': this.lugar_contacto
-        }).then(function (response) {
-            me.proceso = false;
-            me.cerrarModal();
-            //Se muestra mensaje Success
-            swal({
-                position: 'top-end',
-                type: 'success',
-                title: 'Coacreditado agregada correctamente',
-                showConfirmButton: false,
-                timer: 1500
+            var url = '/select_estados';
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayEstados = respuesta.estados;
+            }).catch(function (error) {
+                console.log(error);
             });
-        }).catch(function (error) {
-            console.log(error);
-        });
-    }), _defineProperty(_methods, 'actualizarProspecto', function actualizarProspecto() {
-        if (this.validarProspecto() || this.proceso == true) //Se verifica si hay un error (campo vacio)
-            {
-                return;
-            }
-
-        this.proceso = true;
-
-        var me = this;
-        //Con axios se llama el metodo store de FraccionaminetoController
-        axios.put('/clientes/actualizar', {
-            'id': this.id,
-            'clasificacion': this.clasificacion,
-            'nombre': this.nombre,
-            'apellidos': this.apellidos,
-            'telefono': this.telefono,
-            'celular': this.celular,
-            'email': this.email,
-            'email_institucional': this.email_inst,
-            'nss': this.nss,
-            'sexo': this.sexo,
-            'f_nacimiento': this.fecha_nac,
-            'curp': this.curp,
-            'rfc': this.rfc,
-            'homoclave': this.homoclave,
-            'edo_civil': this.e_civil,
-            'tipo_casa': this.tipo_casa,
-            'coacreditado': this.coacreditado,
-            'publicidad_id': this.publicidad_id,
-            'proyecto_interes_id': this.proyecto_interes_id,
-            'empresa': this.empresa,
-            'observacion': this.observacion,
-            'lugar_contacto': this.lugar_contacto,
-
-            'nombre_coa': this.nombre_coa,
-            'parentesco_coa': this.parentesco_coa,
-            'apellidos_coa': this.apellidos_coa,
-            'telefono_coa': this.telefono_coa,
-            'celular_coa': this.celular_coa,
-            'email_coa': this.email_coa,
-            'email_institucional_coa': this.email_institucional_coa,
-            'nss_coa': this.nss_coa,
-            'sexo_coa': this.sexo_coa,
-            'f_nacimiento_coa': this.fecha_nac_coa,
-            'curp_coa': this.curp_coa,
-            'rfc_coa': this.rfc_coa,
-            'homoclave_coa': this.homoclave_coa,
-            'edo_civil_coa': this.e_civil_coa,
-            'tipo_casa_coa': this.tipo_casa_coa
-        }).then(function (response) {
-            me.proceso = false;
-            me.listado = 1;
-            me.limpiarDatos();
-            me.listarProspectos(1, '', 'ini_obras.clave'); //se enlistan nuevamente los registros
-
-            //Se muestra mensaje Success
-            swal({
-                position: 'top-end',
-                type: 'success',
-                title: 'Prospecto actualizado correctamente',
-                showConfirmButton: false,
-                timer: 1500
+        },
+        selectCiudades: function selectCiudades(estado, coacreditado) {
+            var me = this;
+            var url = '/select_ciudades?buscar=' + estado;
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                if (coacreditado == 1) {
+                    me.arrayCiudadesCoa = [];
+                    me.arrayCiudadesCoa = respuesta.ciudades;
+                } else {
+                    me.arrayCiudades = [];
+                    me.arrayCiudades = respuesta.ciudades;
+                }
+            }).catch(function (error) {
+                console.log(error);
             });
-        }).catch(function (error) {
-            console.log(error);
-        });
-    }), _defineProperty(_methods, 'validarProspecto', function validarProspecto() {
-        this.errorProspecto = 0;
-        this.errorMostrarMsjProspecto = [];
+        },
+        formatNumber: function formatNumber(value) {
+            var val = (value / 1).toFixed(2);
+            return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        },
+        selectColonias: function selectColonias(cp, coacreditado) {
+            var me = this;
+            me.arrayColonias = [];
+            var url = '/select_colonias?buscar=' + cp;
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                if (coacreditado == 1) {
+                    me.arrayColoniasCoa = [];
+                    me.arrayColoniasCoa = respuesta.colonias;
+                } else {
+                    me.arrayColonias = [];
+                    me.arrayColonias = respuesta.colonias;
+                }
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        listarObservacion: function listarObservacion(page, buscar) {
+            var me = this;
+            var url = '/clientes/observacion?page=' + page + '&buscar=' + buscar;
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayObservacion = respuesta.observacion.data;
+                me.pagination = respuesta.pagination;
+                console.log(url);
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        selectCreditos: function selectCreditos() {
+            var me = this;
+            me.arrayCreditos = [];
+            var url = '/select_tipoCredito';
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayCreditos = respuesta.Tipos_creditos;
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        selectInstitucion: function selectInstitucion(credito) {
+            var me = this;
+            me.arrayInstituciones = [];
+            var url = '/select_institucion?buscar=' + credito;
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayInstituciones = respuesta.instituciones;
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        cambiarPagina: function cambiarPagina(page, buscar, criterio) {
+            var me = this;
+            //Actualiza la pagina actual
+            me.pagination.current_page = page;
+            //Envia la petición para visualizar la data de esta pagina
+            me.listarProspectos(page, buscar, criterio);
+        },
 
-        if (this.nombre == '' || this.apellidos == '') this.errorMostrarMsjProspecto.push("El nombre del prospecto no puede ir vacio.");
-        if (this.sexo == '') this.errorMostrarMsjProspecto.push("Seleccionar el sexo del prospecto.");
-        if (this.celular == '') this.errorMostrarMsjProspecto.push("Ingresar numero de celular.");
-        if (this.email == '') this.errorMostrarMsjProspecto.push("Ingresar email personal.");
-        if (this.empresa == '') this.errorMostrarMsjProspecto.push("Seleccionar empresa.");
-        if (this.fecha_nac == '') this.errorMostrarMsjProspecto.push("Ingresar fecha de nacimiento.");
-        if (this.rfc == '') this.errorMostrarMsjProspecto.push("Ingresar RFC.");
-        if (this.nss == '') this.errorMostrarMsjProspecto.push("Ingresar numero de seguro social.");
-        if (this.tipo_casa == 0) this.errorMostrarMsjProspecto.push("Seleccionar tipo de casa.");
-        if (this.e_civil == 0) this.errorMostrarMsjProspecto.push("Seleccionar estado civil.");
-        if (this.proyecto_interes_id == 0) this.errorMostrarMsjProspecto.push("Seleccionar proyecto de interes.");
-        if (this.publicidad_id == 0) this.errorMostrarMsjProspecto.push("Seleccionar medio de publicidad.");
-        if (this.observacion == '') this.errorMostrarMsjProspecto.push("Escribir una observación.");
-
-        if (this.errorMostrarMsjProspecto.length) //Si el mensaje tiene almacenado algo en el array
-            this.errorProspecto = 1;
-
-        return this.errorProspecto;
-    }), _defineProperty(_methods, 'validarCoacreditado', function validarCoacreditado() {
-        this.errorCoacreditado = 0;
-        this.errorMostrarMsjCoacreditado = [];
-
-        if (this.nombre_coa == '' || this.apellidos_coa == '') this.errorMostrarMsjCoacreditado.push("El nombre del prospecto no puede ir vacio.");
-        if (this.sexo_coa == '') this.errorMostrarMsjCoacreditado.push("Seleccionar el sexo del prospecto.");
-        if (this.celular_coa == '') this.errorMostrarMsjCoacreditado.push("Ingresar numero de celular.");
-        if (this.email_coa == '') this.errorMostrarMsjCoacreditado.push("Ingresar email personal.");
-        if (this.fecha_nac_coa == '') this.errorMostrarMsjCoacreditado.push("Ingresar fecha de nacimiento.");
-        if (this.rfc_coa == '') this.errorMostrarMsjCoacreditado.push("Ingresar RFC.");
-        if (this.nss_coa == '') this.errorMostrarMsjCoacreditado.push("Ingresar numero de seguro social.");
-        if (this.tipo_casa_coa == 0) this.errorMostrarMsjCoacreditado.push("Seleccionar tipo de casa.");
-        if (this.e_civil_coa == 0) this.errorMostrarMsjCoacreditado.push("Seleccionar estado civil.");
-
-        if (this.errorMostrarMsjCoacreditado.length) //Si el mensaje tiene almacenado algo en el array
-            this.errorCoacreditado = 1;
-
-        return this.errorCoacreditado;
-    }), _defineProperty(_methods, 'isNumber', function isNumber(evt) {
-        evt = evt ? evt : window.event;
-        var charCode = evt.which ? evt.which : evt.keyCode;
-        if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode !== 46) {
-            evt.preventDefault();;
-        } else {
-            return true;
-        }
-    }), _defineProperty(_methods, 'validarHab', function validarHab() {
-        var sum = parseInt(this.rang0_10) + parseInt(this.rang11_20) + parseInt(this.rang21);
-
-        if (parseInt(this.num_habitantes) < sum) {
-            this.valHab = 1;
-        } else {
-            this.valHab = 0;
-        }
-    }), _defineProperty(_methods, 'limpiarDatos', function limpiarDatos() {
-        this.clasificacion = 1;
-        this.nombre = '';
-        this.apellidos = '';
-        this.telefono = '';
-        this.celular = '';
-        this.email = '';
-        this.email_inst = '';
-        this.nss = '';
-        this.sexo = '';
-        this.fecha_nac = '';
-        this.curp = '';
-        this.rfc = '';
-        this.homoclave = '';
-        this.e_civil = 0;
-        this.tipo_casa = 0;
-        this.coacreditado = 0;
-        this.publicidad_id = 0;
-        this.proyecto_interes_id = 0;
-        this.empresa = '';
-        this.observacion = '';
-        this.lugar_contacto = 0;
-        this.puesto = '';
-        this.dep_economicos = '';
-
-        this.nombre_coa = '';
-        this.parentesco_coa = '';
-        this.apellidos_coa = '';
-        this.telefono_coa = '';
-        this.celular_coa = '';
-        this.email_coa = '';
-        this.email_institucional_coa = '';
-        this.nss_coa = '';
-        this.sexo_coa = '';
-        this.fecha_nac_coa = '';
-        this.curp_coa = '';
-        this.rfc_coa = '';
-        this.homoclave_coa = '';
-        this.e_civil_coa = 0;
-        this.tipo_casa_coa = 0;
-        this.conyugeNom = '';
-        this.proceso = false;
-
-        this.errorProspecto = 0;
-        this.errorMostrarMsjProspecto = [];
-    }), _defineProperty(_methods, 'ocultarDetalle', function ocultarDetalle() {
-        this.listado = 1;
-    }), _defineProperty(_methods, 'actualizarProspectoBTN', function actualizarProspectoBTN(prospecto) {
-
-        //let me= this;
-
-        var arrayDatosProspecto = [];
-        /*var url = '/clientes/obtenerDatos?id=' + id;
-          axios.get(url).then(function (response) {
-            var respuesta = response.data;
-            me.arrayDatosProspecto = respuesta.personas;*/
-
-        this.nombre = prospecto['nombre'];
-        this.apellidos = prospecto['apellidos'];
-        this.sexo = prospecto['sexo'];
-        this.telefono = prospecto['telefono'];
-        this.celular = prospecto['celular'];
-        this.email_inst = prospecto['email_institucional'];
-        this.email = prospecto['email'];
-        this.empresa = prospecto['empresa'];
-        this.fecha_nac = prospecto['f_nacimiento'];
-        this.curp = prospecto['curp'];
-        this.rfc = prospecto['rfc'];
-        this.homoclave = prospecto['homoclave'];
-        this.nss = prospecto['nss'];
-        this.lugar_contacto = prospecto['lugar_contacto'];
-        this.clasificacion = prospecto['clasificacion'];
-        this.proyecto_interes_id = prospecto['proyecto_interes_id'];
-        this.publicidad_id = prospecto['publicidad_id'];
-        this.tipo_casa = prospecto['tipo_casa'];
-        this.e_civil = prospecto['edo_civil'];
-        this.parentesco_coa = prospecto['parentesco_coa'];
-        this.coacreditado = prospecto['coacreditado'];
-        this.conyugeNom = prospecto['n_completo_coa'];
-        this.proyecto = prospecto['proyecto'];
-        this.fecha_nac_coa = prospecto['f_nacimiento_coa'];
-        this.rfc_coa = prospecto['rfc_coa'];
-        this.homoclave_coa = prospecto['homoclave_coa'];
-        this.curp_coa = prospecto['curp_coa'];
-        this.nss_coa = prospecto['nss_coa'];
-        this.telefono_coa = prospecto['telefono_coa'];
-        this.celular_coa = prospecto['celular_coa'];
-        this.email_coa = prospecto['email_coa'];
-        this.email_institucional_coa = prospecto['email_institucional_coa'];
-        this.nacionalidad = prospecto['nacionalidad'];
-        this.nacionalidad_coa = prospecto['nacionalidad_coa'];
-        this.puesto = prospecto['puesto'];
-        this.dep_economicos = '';
-        this.rang0_10 = 0;
-        this.rang11_20 = 0;
-        this.rang21 = 0;
-        this.num_habitantes = 0;
-        this.valHab = 0;
-
-        this.id = prospecto['id'];
-        this.listado = 3;
-        /* })
-         .catch(function (error) {
-             console.log(error);
-         });*/
-    }), _defineProperty(_methods, 'cerrarModal', function cerrarModal() {
-        this.modal = 0;
-        this.nombre_coa = '';
-        this.parentesco_coa = '';
-        this.apellidos_coa = '';
-        this.telefono_coa = '';
-        this.celular_coa = '';
-        this.email_coa = '';
-        this.email_institucional_coa = '';
-        this.nss_coa = '';
-        this.sexo_coa = '';
-        this.fecha_nac_coa = '';
-        this.curp_coa = '';
-        this.rfc_coa = '';
-        this.homoclave_coa = '';
-        this.e_civil_coa = 0;
-        this.tipo_casa_coa = 0;
-        this.errorCoacreditado = 0;
-        this.errorMostrarMsjCoacreditado = [];
-    }), _defineProperty(_methods, 'cerrarModal3', function cerrarModal3() {
-        this.modal3 = 0;
-        this.tituloModal3 = '';
-    }), _defineProperty(_methods, 'abrirModal3', function abrirModal3(prospectos, accion, prospecto) {
-        switch (prospectos) {
-            case "prospecto":
+        /**Metodo para registrar  */
+        registrarProspecto: function registrarProspecto() {
+            if (this.validarProspecto() || this.proceso == true) //Se verifica si hay un error (campo vacio)
                 {
-                    switch (accion) {
-
-                        case 'ver_todo':
-                            {
-                                this.modal3 = 1;
-                                this.tituloModal3 = 'Consulta Observaciones';
-                                this.tipoAccion = 4;
-                                break;
-                            }
-
-                    }
+                    return;
                 }
 
+            this.proceso = true;
+
+            var me = this;
+            //Con axios se llama el metodo store del controller
+            axios.post('/clientes/registrar', {
+                'clasificacion': this.clasificacion,
+                'nombre': this.nombre,
+                'apellidos': this.apellidos,
+                'telefono': this.telefono,
+                'celular': this.celular,
+                'email': this.email,
+                'email_institucional': this.email_inst,
+                'nss': this.nss,
+                'sexo': this.sexo,
+                'f_nacimiento': this.fecha_nac,
+                'curp': this.curp,
+                'rfc': this.rfc,
+                'homoclave': this.homoclave,
+                'edo_civil': this.e_civil,
+                'tipo_casa': this.tipo_casa,
+                'coacreditado': this.coacreditado,
+                'publicidad_id': this.publicidad_id,
+                'proyecto_interes_id': this.proyecto_interes_id,
+                'empresa': this.empresa,
+                'observacion': this.observacion,
+                'lugar_contacto': this.lugar_contacto,
+
+                'nombre_coa': this.nombre_coa,
+                'parentesco_coa': this.parentesco_coa,
+                'apellidos_coa': this.apellidos_coa,
+                'telefono_coa': this.telefono_coa,
+                'celular_coa': this.celular_coa,
+                'email_coa': this.email_coa,
+                'email_institucional_coa': this.email_institucional_coa,
+                'nss_coa': this.nss_coa,
+                'sexo_coa': this.sexo_coa,
+                'f_nacimiento_coa': this.fecha_nac_coa,
+                'curp_coa': this.curp_coa,
+                'rfc_coa': this.rfc_coa,
+                'homoclave_coa': this.homoclave_coa,
+                'edo_civil_coa': this.e_civil_coa,
+                'tipo_casa_coa': this.tipo_casa_coa
+            }).then(function (response) {
+                me.proceso = false;
+                me.listado = 1;
+                me.limpiarDatos();
+                me.listarProspectos(1, '', 'ini_obras.clave'); //se enlistan nuevamente los registros
+                //Se muestra mensaje Success
+                swal({
+                    position: 'top-end',
+                    type: 'success',
+                    title: 'Etapa agregada correctamente',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        registrarCoacreditado: function registrarCoacreditado() {
+            if (this.validarCoacreditado() || this.proceso == true) //Se verifica si hay un error (campo vacio)
+                {
+                    return;
+                }
+
+            this.proceso = true;
+
+            var me = this;
+            //Con axios se llama el metodo store del controller
+            axios.post('/clientes/registrar_coacreditado', {
+                'clasificacion': this.clasificacion,
+                'nombre': this.nombre_coa,
+                'apellidos': this.apellidos_coa,
+                'telefono': this.telefono_coa,
+                'celular': this.celular_coa,
+                'email': this.email_coa,
+                'email_institucional': this.email_institucional_coa,
+                'nss': this.nss_coa,
+                'sexo': this.sexo_coa,
+                'f_nacimiento': this.fecha_nac_coa,
+                'curp': this.curp_coa,
+                'rfc': this.rfc_coa,
+                'homoclave': this.homoclave_coa,
+                'edo_civil': this.e_civil_coa,
+                'tipo_casa': this.tipo_casa_coa,
+                'coacreditado': 0,
+                'proyecto_interes_id': this.proyecto_interes_id,
+                'lugar_contacto': this.lugar_contacto
+            }).then(function (response) {
+                me.proceso = false;
+                me.cerrarModal();
+                //Se muestra mensaje Success
+                swal({
+                    position: 'top-end',
+                    type: 'success',
+                    title: 'Coacreditado agregada correctamente',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+
+
+        /**Metodo para actualizar  */
+        actualizarProspecto: function actualizarProspecto() {
+            if (this.validarProspecto() || this.proceso == true) //Se verifica si hay un error (campo vacio)
+                {
+                    return;
+                }
+
+            this.proceso = true;
+
+            var me = this;
+            //Con axios se llama el metodo store de FraccionaminetoController
+            axios.put('/clientes/actualizar', {
+                'id': this.id,
+                'clasificacion': this.clasificacion,
+                'nombre': this.nombre,
+                'apellidos': this.apellidos,
+                'telefono': this.telefono,
+                'celular': this.celular,
+                'email': this.email,
+                'email_institucional': this.email_inst,
+                'nss': this.nss,
+                'sexo': this.sexo,
+                'f_nacimiento': this.fecha_nac,
+                'curp': this.curp,
+                'rfc': this.rfc,
+                'homoclave': this.homoclave,
+                'edo_civil': this.e_civil,
+                'tipo_casa': this.tipo_casa,
+                'coacreditado': this.coacreditado,
+                'publicidad_id': this.publicidad_id,
+                'proyecto_interes_id': this.proyecto_interes_id,
+                'empresa': this.empresa,
+                'observacion': this.observacion,
+                'lugar_contacto': this.lugar_contacto,
+
+                'nombre_coa': this.nombre_coa,
+                'parentesco_coa': this.parentesco_coa,
+                'apellidos_coa': this.apellidos_coa,
+                'telefono_coa': this.telefono_coa,
+                'celular_coa': this.celular_coa,
+                'email_coa': this.email_coa,
+                'email_institucional_coa': this.email_institucional_coa,
+                'nss_coa': this.nss_coa,
+                'sexo_coa': this.sexo_coa,
+                'f_nacimiento_coa': this.fecha_nac_coa,
+                'curp_coa': this.curp_coa,
+                'rfc_coa': this.rfc_coa,
+                'homoclave_coa': this.homoclave_coa,
+                'edo_civil_coa': this.e_civil_coa,
+                'tipo_casa_coa': this.tipo_casa_coa
+            }).then(function (response) {
+                me.proceso = false;
+                me.listado = 1;
+                me.limpiarDatos();
+                me.listarProspectos(1, '', 'ini_obras.clave'); //se enlistan nuevamente los registros
+
+                //Se muestra mensaje Success
+                swal({
+                    position: 'top-end',
+                    type: 'success',
+                    title: 'Prospecto actualizado correctamente',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        validarProspecto: function validarProspecto() {
+            this.errorProspecto = 0;
+            this.errorMostrarMsjProspecto = [];
+
+            if (this.nombre == '' || this.apellidos == '') this.errorMostrarMsjProspecto.push("El nombre del prospecto no puede ir vacio.");
+            if (this.sexo == '') this.errorMostrarMsjProspecto.push("Seleccionar el sexo del prospecto.");
+            if (this.celular == '') this.errorMostrarMsjProspecto.push("Ingresar numero de celular.");
+            if (this.email == '') this.errorMostrarMsjProspecto.push("Ingresar email personal.");
+            if (this.empresa == '') this.errorMostrarMsjProspecto.push("Seleccionar empresa.");
+            if (this.fecha_nac == '') this.errorMostrarMsjProspecto.push("Ingresar fecha de nacimiento.");
+            if (this.rfc == '') this.errorMostrarMsjProspecto.push("Ingresar RFC.");
+            if (this.nss == '') this.errorMostrarMsjProspecto.push("Ingresar numero de seguro social.");
+            if (this.tipo_casa == 0) this.errorMostrarMsjProspecto.push("Seleccionar tipo de casa.");
+            if (this.e_civil == 0) this.errorMostrarMsjProspecto.push("Seleccionar estado civil.");
+            if (this.proyecto_interes_id == 0) this.errorMostrarMsjProspecto.push("Seleccionar proyecto de interes.");
+            if (this.publicidad_id == 0) this.errorMostrarMsjProspecto.push("Seleccionar medio de publicidad.");
+            if (this.observacion == '') this.errorMostrarMsjProspecto.push("Escribir una observación.");
+
+            if (this.errorMostrarMsjProspecto.length) //Si el mensaje tiene almacenado algo en el array
+                this.errorProspecto = 1;
+
+            return this.errorProspecto;
+        },
+        validarCoacreditado: function validarCoacreditado() {
+            this.errorCoacreditado = 0;
+            this.errorMostrarMsjCoacreditado = [];
+
+            if (this.nombre_coa == '' || this.apellidos_coa == '') this.errorMostrarMsjCoacreditado.push("El nombre del prospecto no puede ir vacio.");
+            if (this.sexo_coa == '') this.errorMostrarMsjCoacreditado.push("Seleccionar el sexo del prospecto.");
+            if (this.celular_coa == '') this.errorMostrarMsjCoacreditado.push("Ingresar numero de celular.");
+            if (this.email_coa == '') this.errorMostrarMsjCoacreditado.push("Ingresar email personal.");
+            if (this.fecha_nac_coa == '') this.errorMostrarMsjCoacreditado.push("Ingresar fecha de nacimiento.");
+            if (this.rfc_coa == '') this.errorMostrarMsjCoacreditado.push("Ingresar RFC.");
+            if (this.nss_coa == '') this.errorMostrarMsjCoacreditado.push("Ingresar numero de seguro social.");
+            if (this.tipo_casa_coa == 0) this.errorMostrarMsjCoacreditado.push("Seleccionar tipo de casa.");
+            if (this.e_civil_coa == 0) this.errorMostrarMsjCoacreditado.push("Seleccionar estado civil.");
+
+            if (this.errorMostrarMsjCoacreditado.length) //Si el mensaje tiene almacenado algo en el array
+                this.errorCoacreditado = 1;
+
+            return this.errorCoacreditado;
+        },
+
+
+        isNumber: function isNumber(evt) {
+            evt = evt ? evt : window.event;
+            var charCode = evt.which ? evt.which : evt.keyCode;
+            if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode !== 46) {
+                evt.preventDefault();;
+            } else {
+                return true;
+            }
+        },
+        validarHab: function validarHab() {
+            var sum = parseInt(this.rang0_10) + parseInt(this.rang11_20) + parseInt(this.rang21);
+
+            if (parseInt(this.num_habitantes) < sum) {
+                this.valHab = 1;
+            } else {
+                this.valHab = 0;
+            }
+        },
+        limpiarDatos: function limpiarDatos() {
+            this.clasificacion = 1;
+            this.nombre = '';
+            this.apellidos = '';
+            this.telefono = '';
+            this.celular = '';
+            this.email = '';
+            this.email_inst = '';
+            this.nss = '';
+            this.sexo = '';
+            this.fecha_nac = '';
+            this.curp = '';
+            this.rfc = '';
+            this.homoclave = '';
+            this.e_civil = 0;
+            this.tipo_casa = 0;
+            this.coacreditado = 0;
+            this.publicidad_id = 0;
+            this.proyecto_interes_id = 0;
+            this.empresa = '';
+            this.observacion = '';
+            this.lugar_contacto = 0;
+            this.puesto = '';
+            this.dep_economicos = '';
+
+            this.nombre_coa = '';
+            this.parentesco_coa = '';
+            this.apellidos_coa = '';
+            this.telefono_coa = '';
+            this.celular_coa = '';
+            this.email_coa = '';
+            this.email_institucional_coa = '';
+            this.nss_coa = '';
+            this.sexo_coa = '';
+            this.fecha_nac_coa = '';
+            this.curp_coa = '';
+            this.rfc_coa = '';
+            this.homoclave_coa = '';
+            this.e_civil_coa = 0;
+            this.tipo_casa_coa = 0;
+            this.conyugeNom = '';
+            this.proceso = false;
+
+            this.errorProspecto = 0;
+            this.errorMostrarMsjProspecto = [];
+        },
+        ocultarDetalle: function ocultarDetalle() {
+            this.listado = 1;
+        },
+        actualizarProspectoBTN: function actualizarProspectoBTN(prospecto) {
+
+            //let me= this;
+
+            var arrayDatosProspecto = [];
+            /*var url = '/clientes/obtenerDatos?id=' + id;
+              axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayDatosProspecto = respuesta.personas;*/
+
+            this.nombre = prospecto['nombre'];
+            this.apellidos = prospecto['apellidos'];
+            this.sexo = prospecto['sexo'];
+            this.telefono = prospecto['telefono'];
+            this.celular = prospecto['celular'];
+            this.email_inst = prospecto['email_institucional'];
+            this.email = prospecto['email'];
+            this.empresa = prospecto['empresa'];
+            this.fecha_nac = prospecto['f_nacimiento'];
+            this.curp = prospecto['curp'];
+            this.rfc = prospecto['rfc'];
+            this.homoclave = prospecto['homoclave'];
+            this.nss = prospecto['nss'];
+            this.lugar_contacto = prospecto['lugar_contacto'];
+            this.clasificacion = prospecto['clasificacion'];
+            this.proyecto_interes_id = prospecto['proyecto_interes_id'];
+            this.publicidad_id = prospecto['publicidad_id'];
+            this.tipo_casa = prospecto['tipo_casa'];
+            this.e_civil = prospecto['edo_civil'];
+            this.parentesco_coa = prospecto['parentesco_coa'];
+            this.coacreditado = prospecto['coacreditado'];
+            this.conyugeNom = prospecto['n_completo_coa'];
+            this.proyecto = prospecto['proyecto'];
+            this.fecha_nac_coa = prospecto['f_nacimiento_coa'];
+            this.rfc_coa = prospecto['rfc_coa'];
+            this.homoclave_coa = prospecto['homoclave_coa'];
+            this.curp_coa = prospecto['curp_coa'];
+            this.nss_coa = prospecto['nss_coa'];
+            this.telefono_coa = prospecto['telefono_coa'];
+            this.celular_coa = prospecto['celular_coa'];
+            this.email_coa = prospecto['email_coa'];
+            this.email_institucional_coa = prospecto['email_institucional_coa'];
+            this.nacionalidad = prospecto['nacionalidad'];
+            this.nacionalidad_coa = prospecto['nacionalidad_coa'];
+            this.puesto = prospecto['puesto'];
+            this.dep_economicos = '';
+            this.rang0_10 = 0;
+            this.rang11_20 = 0;
+            this.rang21 = 0;
+            this.num_habitantes = 0;
+            this.valHab = 0;
+
+            this.id = prospecto['id'];
+            this.listado = 3;
+            /* })
+             .catch(function (error) {
+                 console.log(error);
+             });*/
+        },
+        cerrarModal: function cerrarModal() {
+            this.modal = 0;
+            this.nombre_coa = '';
+            this.parentesco_coa = '';
+            this.apellidos_coa = '';
+            this.telefono_coa = '';
+            this.celular_coa = '';
+            this.email_coa = '';
+            this.email_institucional_coa = '';
+            this.nss_coa = '';
+            this.sexo_coa = '';
+            this.fecha_nac_coa = '';
+            this.curp_coa = '';
+            this.rfc_coa = '';
+            this.homoclave_coa = '';
+            this.e_civil_coa = 0;
+            this.tipo_casa_coa = 0;
+            this.errorCoacreditado = 0;
+            this.errorMostrarMsjCoacreditado = [];
+        },
+        cerrarModal3: function cerrarModal3() {
+            this.modal3 = 0;
+            this.tituloModal3 = '';
+        },
+        abrirModal3: function abrirModal3(prospectos, accion, prospecto) {
+            switch (prospectos) {
+                case "prospecto":
+                    {
+                        switch (accion) {
+
+                            case 'ver_todo':
+                                {
+                                    this.modal3 = 1;
+                                    this.tituloModal3 = 'Consulta Observaciones';
+                                    this.tipoAccion = 4;
+                                    break;
+                                }
+
+                        }
+                    }
+
+            }
         }
-    }), _methods),
+    },
     mounted: function mounted() {
         this.listarProspectos(1, this.buscar, this.criterio);
         this.selectMedioPublicidad();
         this.selectFraccionamientos();
+        this.selectEtapa(this.proyecto_interes_id);
+        this.selectManzana(this.etapa);
+        this.selectPaquetes(this.etapa);
+        this.selectLotes(this.manzana);
+        this.mostrarDatosLote(this.lote);
         this.selectLugarContacto();
         this.selectCreditos();
         this.selectInstitucion(this.tipo_credito);
@@ -110253,6 +110475,545 @@ var render = function() {
                                 _c("div", { staticClass: "col-md-3" }, [
                                   _c("div", { staticClass: "form-group" }, [
                                     _c("label", { attrs: { for: "" } }, [
+                                      _vm._v(
+                                        "Proyecto en el que esta interesado "
+                                      ),
+                                      _c(
+                                        "span",
+                                        {
+                                          directives: [
+                                            {
+                                              name: "show",
+                                              rawName: "v-show",
+                                              value:
+                                                _vm.proyecto_interes_id == 0,
+                                              expression:
+                                                "proyecto_interes_id==0"
+                                            }
+                                          ],
+                                          staticStyle: { color: "red" }
+                                        },
+                                        [_vm._v("(*)")]
+                                      )
+                                    ]),
+                                    _vm._v(" "),
+                                    _c(
+                                      "select",
+                                      {
+                                        directives: [
+                                          {
+                                            name: "model",
+                                            rawName: "v-model",
+                                            value: _vm.proyecto_interes_id,
+                                            expression: "proyecto_interes_id"
+                                          }
+                                        ],
+                                        staticClass: "form-control",
+                                        on: {
+                                          click: function($event) {
+                                            _vm.selectEtapa(
+                                              _vm.proyecto_interes_id
+                                            )
+                                          },
+                                          change: function($event) {
+                                            var $$selectedVal = Array.prototype.filter
+                                              .call(
+                                                $event.target.options,
+                                                function(o) {
+                                                  return o.selected
+                                                }
+                                              )
+                                              .map(function(o) {
+                                                var val =
+                                                  "_value" in o
+                                                    ? o._value
+                                                    : o.value
+                                                return val
+                                              })
+                                            _vm.proyecto_interes_id = $event
+                                              .target.multiple
+                                              ? $$selectedVal
+                                              : $$selectedVal[0]
+                                          }
+                                        }
+                                      },
+                                      _vm._l(
+                                        _vm.arrayFraccionamientos,
+                                        function(fraccionamientos) {
+                                          return _c("option", {
+                                            key: fraccionamientos.id,
+                                            domProps: {
+                                              value: fraccionamientos.id,
+                                              textContent: _vm._s(
+                                                fraccionamientos.nombre
+                                              )
+                                            }
+                                          })
+                                        }
+                                      )
+                                    )
+                                  ])
+                                ]),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "col-md-3" }, [
+                                  _c("div", { staticClass: "form-group" }, [
+                                    _c("label", { attrs: { for: "" } }, [
+                                      _vm._v("Etapa"),
+                                      _c(
+                                        "span",
+                                        {
+                                          directives: [
+                                            {
+                                              name: "show",
+                                              rawName: "v-show",
+                                              value: _vm.etapa == 0,
+                                              expression: "etapa==0"
+                                            }
+                                          ],
+                                          staticStyle: { color: "red" }
+                                        },
+                                        [_vm._v("(*)")]
+                                      )
+                                    ]),
+                                    _vm._v(" "),
+                                    _c(
+                                      "select",
+                                      {
+                                        directives: [
+                                          {
+                                            name: "model",
+                                            rawName: "v-model",
+                                            value: _vm.etapa,
+                                            expression: "etapa"
+                                          }
+                                        ],
+                                        staticClass: "form-control",
+                                        on: {
+                                          click: function($event) {
+                                            _vm.selectManzana(_vm.etapa),
+                                              _vm.selectPaquetes(_vm.etapa)
+                                          },
+                                          change: function($event) {
+                                            var $$selectedVal = Array.prototype.filter
+                                              .call(
+                                                $event.target.options,
+                                                function(o) {
+                                                  return o.selected
+                                                }
+                                              )
+                                              .map(function(o) {
+                                                var val =
+                                                  "_value" in o
+                                                    ? o._value
+                                                    : o.value
+                                                return val
+                                              })
+                                            _vm.etapa = $event.target.multiple
+                                              ? $$selectedVal
+                                              : $$selectedVal[0]
+                                          }
+                                        }
+                                      },
+                                      _vm._l(_vm.arrayEtapas, function(etapas) {
+                                        return _c("option", {
+                                          key: etapas.etapa,
+                                          domProps: {
+                                            value: etapas.etapa,
+                                            textContent: _vm._s(etapas.etapa)
+                                          }
+                                        })
+                                      })
+                                    )
+                                  ])
+                                ]),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "col-md-3" }, [
+                                  _c("div", { staticClass: "form-group" }, [
+                                    _c("label", { attrs: { for: "" } }, [
+                                      _vm._v("Manzana"),
+                                      _c(
+                                        "span",
+                                        {
+                                          directives: [
+                                            {
+                                              name: "show",
+                                              rawName: "v-show",
+                                              value: _vm.manzana == 0,
+                                              expression: "manzana==0"
+                                            }
+                                          ],
+                                          staticStyle: { color: "red" }
+                                        },
+                                        [_vm._v("(*)")]
+                                      )
+                                    ]),
+                                    _vm._v(" "),
+                                    _c(
+                                      "select",
+                                      {
+                                        directives: [
+                                          {
+                                            name: "model",
+                                            rawName: "v-model",
+                                            value: _vm.manzana,
+                                            expression: "manzana"
+                                          }
+                                        ],
+                                        staticClass: "form-control",
+                                        on: {
+                                          click: function($event) {
+                                            _vm.selectLotes(_vm.manzana)
+                                          },
+                                          change: function($event) {
+                                            var $$selectedVal = Array.prototype.filter
+                                              .call(
+                                                $event.target.options,
+                                                function(o) {
+                                                  return o.selected
+                                                }
+                                              )
+                                              .map(function(o) {
+                                                var val =
+                                                  "_value" in o
+                                                    ? o._value
+                                                    : o.value
+                                                return val
+                                              })
+                                            _vm.manzana = $event.target.multiple
+                                              ? $$selectedVal
+                                              : $$selectedVal[0]
+                                          }
+                                        }
+                                      },
+                                      _vm._l(_vm.arrayManzanas, function(
+                                        manzanas
+                                      ) {
+                                        return _c("option", {
+                                          key: manzanas.manzana,
+                                          domProps: {
+                                            value: manzanas.manzana,
+                                            textContent: _vm._s(
+                                              manzanas.manzana
+                                            )
+                                          }
+                                        })
+                                      })
+                                    )
+                                  ])
+                                ]),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "col-md-3" }, [
+                                  _c("div", { staticClass: "form-group" }, [
+                                    _c("label", { attrs: { for: "" } }, [
+                                      _vm._v("Lote"),
+                                      _c(
+                                        "span",
+                                        {
+                                          directives: [
+                                            {
+                                              name: "show",
+                                              rawName: "v-show",
+                                              value: _vm.lote == 0,
+                                              expression: "lote==0"
+                                            }
+                                          ],
+                                          staticStyle: { color: "red" }
+                                        },
+                                        [_vm._v("(*)")]
+                                      )
+                                    ]),
+                                    _vm._v(" "),
+                                    _c(
+                                      "select",
+                                      {
+                                        directives: [
+                                          {
+                                            name: "model",
+                                            rawName: "v-model",
+                                            value: _vm.lote,
+                                            expression: "lote"
+                                          }
+                                        ],
+                                        staticClass: "form-control",
+                                        on: {
+                                          click: function($event) {
+                                            _vm.mostrarDatosLote(_vm.lote)
+                                          },
+                                          change: function($event) {
+                                            var $$selectedVal = Array.prototype.filter
+                                              .call(
+                                                $event.target.options,
+                                                function(o) {
+                                                  return o.selected
+                                                }
+                                              )
+                                              .map(function(o) {
+                                                var val =
+                                                  "_value" in o
+                                                    ? o._value
+                                                    : o.value
+                                                return val
+                                              })
+                                            _vm.lote = $event.target.multiple
+                                              ? $$selectedVal
+                                              : $$selectedVal[0]
+                                          }
+                                        }
+                                      },
+                                      _vm._l(_vm.arrayLotes, function(lotes) {
+                                        return _c("option", {
+                                          key: lotes.id,
+                                          domProps: {
+                                            value: lotes.id,
+                                            textContent: _vm._s(lotes.num_lote)
+                                          }
+                                        })
+                                      })
+                                    )
+                                  ])
+                                ]),
+                                _vm._v(" "),
+                                _vm.modelo != ""
+                                  ? _c("div", { staticClass: "col-md-3" }, [
+                                      _c("div", { staticClass: "form-group" }, [
+                                        _vm._m(7),
+                                        _vm._v(" "),
+                                        _c("p", {
+                                          domProps: {
+                                            textContent: _vm._s(_vm.modelo)
+                                          }
+                                        })
+                                      ])
+                                    ])
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.superficie != ""
+                                  ? _c("div", { staticClass: "col-md-3" }, [
+                                      _c("div", { staticClass: "form-group" }, [
+                                        _vm._m(8),
+                                        _vm._v(" "),
+                                        _c("p", {
+                                          domProps: {
+                                            textContent: _vm._s(_vm.superficie)
+                                          }
+                                        })
+                                      ])
+                                    ])
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.precioBase != ""
+                                  ? _c("div", { staticClass: "col-md-3" }, [
+                                      _c("div", { staticClass: "form-group" }, [
+                                        _vm._m(9),
+                                        _vm._v(" "),
+                                        _c("p", {
+                                          domProps: {
+                                            textContent: _vm._s(
+                                              "$" +
+                                                _vm.formatNumber(_vm.precioBase)
+                                            )
+                                          }
+                                        })
+                                      ])
+                                    ])
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.precioExcedente != ""
+                                  ? _c("div", { staticClass: "col-md-3" }, [
+                                      _c("div", { staticClass: "form-group" }, [
+                                        _vm._m(10),
+                                        _vm._v(" "),
+                                        _c("p", {
+                                          domProps: {
+                                            textContent: _vm._s(
+                                              "$" +
+                                                _vm.formatNumber(
+                                                  _vm.precioExcedente
+                                                )
+                                            )
+                                          }
+                                        })
+                                      ])
+                                    ])
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.precioVenta != ""
+                                  ? _c("div", { staticClass: "col-md-3" }, [
+                                      _c("div", { staticClass: "form-group" }, [
+                                        _vm._m(11),
+                                        _vm._v(" "),
+                                        _c("p", {
+                                          domProps: {
+                                            textContent: _vm._s(
+                                              "$" +
+                                                _vm.formatNumber(
+                                                  _vm.precioVenta
+                                                )
+                                            )
+                                          }
+                                        })
+                                      ])
+                                    ])
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.promocion != ""
+                                  ? _c("div", { staticClass: "col-md-3" }, [
+                                      _c("div", { staticClass: "form-group" }, [
+                                        _vm._m(12),
+                                        _vm._v(" "),
+                                        _c("p", {
+                                          domProps: {
+                                            textContent: _vm._s(_vm.promocion)
+                                          }
+                                        })
+                                      ])
+                                    ])
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.descripcionPromo != ""
+                                  ? _c("div", { staticClass: "col-md-3" }, [
+                                      _c("div", { staticClass: "form-group" }, [
+                                        _vm._m(13),
+                                        _vm._v(" "),
+                                        _c("p", {
+                                          domProps: {
+                                            textContent: _vm._s(
+                                              _vm.descripcionPromo
+                                            )
+                                          }
+                                        })
+                                      ])
+                                    ])
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.descuentoPromo != ""
+                                  ? _c("div", { staticClass: "col-md-3" }, [
+                                      _c("div", { staticClass: "form-group" }, [
+                                        _vm._m(14),
+                                        _vm._v(" "),
+                                        _c("p", {
+                                          domProps: {
+                                            textContent: _vm._s(
+                                              "$" +
+                                                _vm.formatNumber(
+                                                  _vm.descuentoPromo
+                                                )
+                                            )
+                                          }
+                                        })
+                                      ])
+                                    ])
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "col-md-3" }, [
+                                  _c("div", { staticClass: "form-group" }, [
+                                    _c("label", { attrs: { for: "" } }, [
+                                      _vm._v("Paquete"),
+                                      _c(
+                                        "span",
+                                        {
+                                          directives: [
+                                            {
+                                              name: "show",
+                                              rawName: "v-show",
+                                              value: _vm.paquete_id == 0,
+                                              expression: "paquete_id==0"
+                                            }
+                                          ],
+                                          staticStyle: { color: "red" }
+                                        },
+                                        [_vm._v("(*)")]
+                                      )
+                                    ]),
+                                    _vm._v(" "),
+                                    _c(
+                                      "select",
+                                      {
+                                        directives: [
+                                          {
+                                            name: "model",
+                                            rawName: "v-model",
+                                            value: _vm.paquete_id,
+                                            expression: "paquete_id"
+                                          }
+                                        ],
+                                        staticClass: "form-control",
+                                        on: {
+                                          change: function($event) {
+                                            var $$selectedVal = Array.prototype.filter
+                                              .call(
+                                                $event.target.options,
+                                                function(o) {
+                                                  return o.selected
+                                                }
+                                              )
+                                              .map(function(o) {
+                                                var val =
+                                                  "_value" in o
+                                                    ? o._value
+                                                    : o.value
+                                                return val
+                                              })
+                                            _vm.paquete_id = $event.target
+                                              .multiple
+                                              ? $$selectedVal
+                                              : $$selectedVal[0]
+                                          }
+                                        }
+                                      },
+                                      _vm._l(_vm.arrayPaquetes, function(
+                                        paquetes
+                                      ) {
+                                        return _c("option", {
+                                          key: paquetes.id,
+                                          domProps: {
+                                            value: paquetes.id,
+                                            textContent: _vm._s(paquetes.nombre)
+                                          }
+                                        })
+                                      })
+                                    )
+                                  ])
+                                ]),
+                                _vm._v(" "),
+                                _vm.descripcionPaquete != ""
+                                  ? _c("div", { staticClass: "col-md-3" }, [
+                                      _c("div", { staticClass: "form-group" }, [
+                                        _vm._m(15),
+                                        _vm._v(" "),
+                                        _c("p", {
+                                          domProps: {
+                                            textContent: _vm._s(
+                                              _vm.descripcionPaquete
+                                            )
+                                          }
+                                        })
+                                      ])
+                                    ])
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.costoPaquete != ""
+                                  ? _c("div", { staticClass: "col-md-3" }, [
+                                      _c("div", { staticClass: "form-group" }, [
+                                        _vm._m(16),
+                                        _vm._v(" "),
+                                        _c("p", {
+                                          domProps: {
+                                            textContent: _vm._s(
+                                              "$" +
+                                                _vm.formatNumber(
+                                                  _vm.costoPaquete
+                                                )
+                                            )
+                                          }
+                                        })
+                                      ])
+                                    ])
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "col-md-3" }, [
+                                  _c("div", { staticClass: "form-group" }, [
+                                    _c("label", { attrs: { for: "" } }, [
                                       _vm._v("Tipo de credito "),
                                       _c(
                                         "span",
@@ -110416,7 +111177,7 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _c("div", { staticClass: "card mb-0" }, [
-                        _vm._m(7),
+                        _vm._m(17),
                         _vm._v(" "),
                         _c(
                           "div",
@@ -110450,7 +111211,7 @@ var render = function() {
                                   )
                                 ]),
                                 _vm._v(" "),
-                                _vm._m(8),
+                                _vm._m(18),
                                 _vm._v(" "),
                                 _c("div", { staticClass: "col-md-2" }, [
                                   _c(
@@ -110543,7 +111304,7 @@ var render = function() {
                                     ])
                                   : _vm._e(),
                                 _vm._v(" "),
-                                _vm._m(9),
+                                _vm._m(19),
                                 _vm._v(" "),
                                 _c("div", { staticClass: "col-md-12" }, [
                                   _c("h6", [
@@ -110779,7 +111540,7 @@ var render = function() {
                                 _vm.e_civil == 2 ||
                                 _vm.e_civil == 5
                                   ? _c("div", { staticClass: "col-md-3" }, [
-                                      _vm._m(10)
+                                      _vm._m(20)
                                     ])
                                   : _vm._e(),
                                 _vm._v(" "),
@@ -110841,9 +111602,9 @@ var render = function() {
                                     ])
                                   : _vm._e(),
                                 _vm._v(" "),
-                                _vm._m(11),
+                                _vm._m(21),
                                 _vm._v(" "),
-                                _vm._m(12),
+                                _vm._m(22),
                                 _vm._v(" "),
                                 _c("div", { staticClass: "col-md-2" }, [
                                   _c(
@@ -110955,9 +111716,9 @@ var render = function() {
                                     ])
                                   : _vm._e(),
                                 _vm._v(" "),
-                                _vm._m(13),
+                                _vm._m(23),
                                 _vm._v(" "),
-                                _vm._m(14),
+                                _vm._m(24),
                                 _vm._v(" "),
                                 _c("div", { staticClass: "col-md-2" }, [
                                   _c("div", { staticClass: "form-group" }, [
@@ -111141,7 +111902,7 @@ var render = function() {
                               "table table-bordered table-striped table-sm"
                           },
                           [
-                            _vm._m(15),
+                            _vm._m(25),
                             _vm._v(" "),
                             _c(
                               "tbody",
@@ -111351,6 +112112,106 @@ var staticRenderFns = [
           )
         ])
       ]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "label",
+      { staticStyle: { color: "#2271b3" }, attrs: { for: "" } },
+      [_c("strong", [_vm._v(" Modelo ")])]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "label",
+      { staticStyle: { color: "#2271b3" }, attrs: { for: "" } },
+      [_c("strong", [_vm._v(" Superficie m²")])]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "label",
+      { staticStyle: { color: "#2271b3" }, attrs: { for: "" } },
+      [_c("strong", [_vm._v(" Precio base ")])]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "label",
+      { staticStyle: { color: "#2271b3" }, attrs: { for: "" } },
+      [_c("strong", [_vm._v(" Precio terreno excedente ")])]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "label",
+      { staticStyle: { color: "#2271b3" }, attrs: { for: "" } },
+      [_c("strong", [_vm._v(" Precio de venta ")])]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "label",
+      { staticStyle: { color: "#2271b3" }, attrs: { for: "" } },
+      [_c("strong", [_vm._v(" Promocion ")])]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "label",
+      { staticStyle: { color: "#2271b3" }, attrs: { for: "" } },
+      [_c("strong", [_vm._v(" Descripcion de la promocion ")])]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "label",
+      { staticStyle: { color: "#2271b3" }, attrs: { for: "" } },
+      [_c("strong", [_vm._v(" Descuento de la promocion ")])]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "label",
+      { staticStyle: { color: "#2271b3" }, attrs: { for: "" } },
+      [_c("strong", [_vm._v(" Descripcion del paquete ")])]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "label",
+      { staticStyle: { color: "#2271b3" }, attrs: { for: "" } },
+      [_c("strong", [_vm._v(" Costo del paquete ")])]
     )
   },
   function() {

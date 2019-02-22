@@ -620,7 +620,123 @@
                             <center> <h4>Datos de la vivienda</h4> </center>
                             </div>
                             </div>  
-                                
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">Proyecto en el que esta interesado <span style="color:red;" v-show="proyecto_interes_id==0">(*)</span></label>
+                                   <select class="form-control" v-model="proyecto_interes_id" @click="selectEtapa(proyecto_interes_id)">
+                                        <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                                   </select>
+                            </div>
+                        </div>
+                    
+                     <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">Etapa<span style="color:red;" v-show="etapa==0">(*)</span></label>
+                                   <select class="form-control" v-model="etapa" @click="selectManzana(etapa),selectPaquetes(etapa)">
+                                        <option v-for="etapas in arrayEtapas" :key="etapas.etapa" :value="etapas.etapa" v-text="etapas.etapa"></option>
+                                   </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">Manzana<span style="color:red;" v-show="manzana==0">(*)</span></label>
+                                   <select class="form-control" v-model="manzana" @click="selectLotes(manzana)">
+                                        <option v-for="manzanas in arrayManzanas" :key="manzanas.manzana" :value="manzanas.manzana" v-text="manzanas.manzana"></option>
+                                   </select>
+                            </div>
+                        </div>
+
+                           <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">Lote<span style="color:red;" v-show="lote==0">(*)</span></label>
+                                   <select class="form-control" v-model="lote" @click="mostrarDatosLote(lote)">
+                                        <option v-for="lotes in arrayLotes" :key="lotes.id" :value="lotes.id" v-text="lotes.num_lote"></option>
+                                   </select>
+                            </div>
+                        </div>
+   
+                           <div class="col-md-3" v-if="modelo!=''">
+                            <div class="form-group">
+                                <label style="color:#2271b3;" for=""><strong> Modelo </strong></label>
+                                <p v-text="modelo"></p>
+                            </div>
+                        </div>
+
+                          <div class="col-md-3" v-if="superficie!=''">
+                            <div class="form-group">
+                                <label style="color:#2271b3;" for=""><strong> Superficie m&sup2;</strong></label>
+                                <p v-text="superficie"></p>
+                            </div>
+                        </div>
+
+                         <div class="col-md-3" v-if="precioBase!=''">
+                            <div class="form-group">
+                                <label style="color:#2271b3;" for=""><strong> Precio base </strong></label>
+                                <p v-text="'$'+formatNumber(precioBase)"></p>
+                            </div>
+                        </div>
+
+                         <div class="col-md-3" v-if="precioExcedente!=''">
+                            <div class="form-group">
+                                <label style="color:#2271b3;" for=""><strong> Precio terreno excedente </strong></label>
+                                <p v-text="'$'+formatNumber(precioExcedente)"></p>
+                            </div>
+                        </div> 
+
+                        
+                         <div class="col-md-3" v-if="precioVenta!=''">
+                            <div class="form-group">
+                                <label style="color:#2271b3;" for=""><strong> Precio de venta </strong></label>
+                                <p v-text="'$'+formatNumber(precioVenta)"></p>
+                            </div>
+                        </div> 
+
+                        
+                         <div class="col-md-3" v-if="promocion!=''">
+                            <div class="form-group">
+                                <label style="color:#2271b3;" for=""><strong> Promocion </strong></label>
+                                <p v-text="promocion"></p>
+                            </div>
+                        </div> 
+
+                        <div class="col-md-3" v-if="descripcionPromo!=''">
+                            <div class="form-group">
+                                <label style="color:#2271b3;" for=""><strong> Descripcion de la promocion </strong></label>
+                                <p v-text="descripcionPromo"></p>
+                            </div>
+                        </div>
+
+                             <div class="col-md-3" v-if="descuentoPromo!=''">
+                            <div class="form-group">
+                                <label style="color:#2271b3;" for=""><strong> Descuento de la promocion </strong></label>
+                                <p v-text="'$'+formatNumber(descuentoPromo)"></p>
+                            </div>
+                        </div> 
+
+                         <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">Paquete<span style="color:red;" v-show="paquete_id==0">(*)</span></label>
+                                   <select class="form-control" v-model="paquete_id">
+                                        <option v-for="paquetes in arrayPaquetes" :key="paquetes.id" :value="paquetes.id" v-text="paquetes.nombre"></option>
+                                   </select>
+                            </div>
+                        </div> 
+
+                        <div class="col-md-3" v-if="descripcionPaquete!=''">
+                            <div class="form-group">
+                                <label style="color:#2271b3;" for=""><strong> Descripcion del paquete </strong></label>
+                                <p v-text="descripcionPaquete"></p>
+                            </div>
+                        </div> 
+
+                        <div class="col-md-3" v-if="costoPaquete!=''">
+                            <div class="form-group">
+                                <label style="color:#2271b3;" for=""><strong> Costo del paquete </strong></label>
+                                <p v-text="'$'+formatNumber(costoPaquete)"></p>
+                            </div>
+                        </div> 
 
                         <div class="col-md-3">
                             <div class="form-group">
@@ -835,17 +951,6 @@
 
                         </div>-->
 
-                  
-
-                  
-
-                  
-
-                  
-
-                
-
-                 
 
                         </div>
 
@@ -935,7 +1040,6 @@
                 tipo_casa:0,
                 coacreditado: 0,
                 publicidad_id: 0,
-                proyecto_interes_id: 0,
                 proyecto: '',
                 empresa: '',
                 observacion:'',
@@ -984,6 +1088,28 @@
                 arrayCiudades:[],
                 arrayColoniasCoa: [],
                 arrayColonias: [],
+                arrayEtapas: [],
+                arrayManzanas: [],
+                arrayLotes: [],
+                arrayDatosLotes: [],
+                arrayPaquetes: [],
+
+                proyecto_interes_id: 0,
+                etapa: '',
+                manzana: '',
+                lote: '',
+                modelo: '',
+                superficie: '',
+                precioBase: 0,
+                precioExcedente: 0,
+                precioVenta: 0,
+                promocion: '',
+                descripcionPromo: '',
+                descuentoPromo: 0,
+                paquete_id: 0,
+                descripcionPaquete: '',
+                costoPaquete: 0,
+                
 
                 nombre_referencia1: '',
                 telefono_referencia1: '',
@@ -1018,7 +1144,6 @@
                 arrayFraccionamientos : [],
                 arrayLugarContacto: [],
                 arrayFraccionamientos2 : [],
-                arrayFraccionamientosVue : [],
                 arrayObservacion: [],
                 fraccionamiento:'',
                 mascotas:0,
@@ -1116,6 +1241,89 @@
                 });
             },
 
+            selectEtapa(fraccionamiento){
+                let me = this;
+                me.arrayEtapas=[];
+                var url = '/select_etapas_disp?buscar=' + fraccionamiento;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                     me.arrayEtapas = respuesta.lotes_etapas;
+                    
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            
+            selectManzana(etapa){
+                let me = this;
+                me.arrayManzanas=[];
+                var url = '/select_manzanas_disp?buscar=' + etapa;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                     me.arrayManzanas = respuesta.lotes_manzanas;
+                    
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
+              selectPaquetes(etapa){
+                let me = this;
+                me.arrayPaquetes=[];
+                var url = '/select_paquetes?buscar=' + etapa;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                     me.arrayPaquetes = respuesta.paquetes;
+                     me.descripcionPaquete = me.arrayPaquetes[0]['descripcion'];
+                     me.costoPaquete = me.arrayPaquetes[0]['costo'];
+                    
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            
+            selectLotes(manzana){
+                let me = this;
+                me.arrayLotes=[];
+                var url = '/select_lotes_disp?buscar=' + manzana;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                     me.arrayLotes = respuesta.lotes_disp;
+                    
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
+           mostrarDatosLote(lote){
+               let me = this;
+                me.arrayDatosLotes=[];
+                var url = '/select_datos_lotes_disp?buscar=' + lote;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                     me.arrayDatosLotes = respuesta.lotes;
+                     me.modelo = me.arrayDatosLotes[0]['modelo'];
+                     me.superficie = me.arrayDatosLotes[0]['terreno'];
+                     me.precioBase = me.arrayDatosLotes[0]['precio_base'];
+                     me.precioExcedente = me.arrayDatosLotes[0]['excedente_terreno'];
+                     me.precioVenta = me.arrayDatosLotes[0]['precio_venta'];
+                     me.promocion = me.arrayDatosLotes[0]['promocion'];
+                     me.descripcionPromo = me.arrayDatosLotes[0]['descripcionPromo'];
+                     me.descuentoPromo = me.arrayDatosLotes[0]['descuentoPromo'];
+                  
+                    
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+               
+
+            },
+
             selectLugarContacto(){
                 let me = this;
                 me.arrayLugarContacto=[];
@@ -1131,7 +1339,7 @@
             },
             selectMedioPublicidad(){
                 let me = this;
-                me.arrayFraccionamientos=[];
+                me.arrayMediosPublicidad=[];
                 var url = '/select_medio_publicidad';
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
@@ -1142,9 +1350,9 @@
                 });
             },
            
-            selectFraccionamientos(){
+            selectFraccionamientos2(){
                 let me = this;
-                me.arrayFraccionamientos=[];
+                me.arrayFraccionamientos2=[];
                 var url = '/select_fraccionamiento';
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
@@ -1192,6 +1400,11 @@
             },
 
 
+            formatNumber(value) {
+                let val = (value/1).toFixed(2)
+                return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+            },
+
             selectColonias(cp,coacreditado){
                 let me = this;
                 me.arrayColonias=[];
@@ -1211,6 +1424,8 @@
                     console.log(error);
                 });
             },
+
+
 
             listarObservacion(page, buscar){
                 let me = this;
@@ -1692,12 +1907,18 @@
             this.listarProspectos(1,this.buscar,this.criterio);
             this.selectMedioPublicidad();
             this.selectFraccionamientos();
+            this.selectEtapa(this.proyecto_interes_id);
+            this.selectManzana(this.etapa);
+            this.selectPaquetes(this.etapa);
+            this.selectLotes(this.manzana);
+            this.mostrarDatosLote(this.lote);
             this.selectLugarContacto();
             this.selectCreditos();
             this.selectInstitucion(this.tipo_credito);
             this.selectEstados();
             this.selectCiudades(this.estado,0);
             this.selectColonias(this.cp,0);
+           
         }
     }
 </script>
