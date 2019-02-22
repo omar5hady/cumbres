@@ -106121,6 +106121,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -106376,16 +106379,21 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         },
         datosPaquetes: function datosPaquetes(paquete) {
             var me = this;
-            me.arrayDatosPaquetes = [];
-            var url = '/select_datos_paquetes?buscar=' + paquete;
-            axios.get(url).then(function (response) {
-                var respuesta = response.data;
-                me.arrayDatosPaquetes = respuesta.datos_paquetes;
-                me.descripcionPaquete = me.arrayDatosPaquetes[0]['descripcion'];
-                me.costoPaquete = me.arrayDatosPaquetes[0]['costo'];
-            }).catch(function (error) {
-                console.log(error);
-            });
+            if (paquete != 0) {
+                me.arrayDatosPaquetes = [];
+                var url = '/select_datos_paquetes?buscar=' + paquete;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayDatosPaquetes = respuesta.datos_paquetes;
+                    me.descripcionPaquete = me.arrayDatosPaquetes[0]['descripcion'];
+                    me.costoPaquete = me.arrayDatosPaquetes[0]['costo'];
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            } else {
+                me.descripcionPaquete = '';
+                me.costoPaquete = 0;
+            }
         },
         selectLotes: function selectLotes(manzana) {
             var me = this;
@@ -106416,6 +106424,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             }).catch(function (error) {
                 console.log(error);
             });
+        },
+        LimpiarMascotas: function LimpiarMascotas() {
+            if (this.mascotas == "0") {
+                this.num_perros = 0;
+            }
+        },
+        LimpiarSillaRuedas: function LimpiarSillaRuedas() {
+            if (this.discapacidad == "0") this.silla_ruedas = 0;
         },
         selectLugarContacto: function selectLugarContacto() {
             var me = this;
@@ -106524,6 +106540,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         },
         selectInstitucion: function selectInstitucion(credito) {
             var me = this;
+            if (me.tipo_credito == 0) {
+                me.inst_financiera = "";
+            }
             me.arrayInstituciones = [];
             var url = '/select_institucion?buscar=' + credito;
             axios.get(url).then(function (response) {
@@ -110589,20 +110608,29 @@ var render = function() {
                                           }
                                         }
                                       },
-                                      _vm._l(
-                                        _vm.arrayFraccionamientos,
-                                        function(fraccionamientos) {
-                                          return _c("option", {
-                                            key: fraccionamientos.id,
-                                            domProps: {
-                                              value: fraccionamientos.id,
-                                              textContent: _vm._s(
-                                                fraccionamientos.nombre
-                                              )
-                                            }
-                                          })
-                                        }
-                                      )
+                                      [
+                                        _c(
+                                          "option",
+                                          { attrs: { value: "0" } },
+                                          [_vm._v(" Seleccione ")]
+                                        ),
+                                        _vm._v(" "),
+                                        _vm._l(
+                                          _vm.arrayFraccionamientos,
+                                          function(fraccionamientos) {
+                                            return _c("option", {
+                                              key: fraccionamientos.id,
+                                              domProps: {
+                                                value: fraccionamientos.id,
+                                                textContent: _vm._s(
+                                                  fraccionamientos.nombre
+                                                )
+                                              }
+                                            })
+                                          }
+                                        )
+                                      ],
+                                      2
                                     )
                                   ])
                                 ]),
@@ -110954,7 +110982,7 @@ var render = function() {
                                     ])
                                   : _vm._e(),
                                 _vm._v(" "),
-                                _vm.descuentoPromo != ""
+                                _vm.descuentoPromo != 0
                                   ? _c("div", { staticClass: "col-md-3" }, [
                                       _c("div", { staticClass: "form-group" }, [
                                         _vm._m(16),
@@ -110976,22 +111004,7 @@ var render = function() {
                                 _c("div", { staticClass: "col-md-3" }, [
                                   _c("div", { staticClass: "form-group" }, [
                                     _c("label", { attrs: { for: "" } }, [
-                                      _vm._v("Paquete"),
-                                      _c(
-                                        "span",
-                                        {
-                                          directives: [
-                                            {
-                                              name: "show",
-                                              rawName: "v-show",
-                                              value: _vm.paquete_id == 0,
-                                              expression: "paquete_id==0"
-                                            }
-                                          ],
-                                          staticStyle: { color: "red" }
-                                        },
-                                        [_vm._v("(*)")]
-                                      )
+                                      _vm._v("Paquete")
                                     ]),
                                     _vm._v(" "),
                                     _c(
@@ -111032,17 +111045,28 @@ var render = function() {
                                           }
                                         }
                                       },
-                                      _vm._l(_vm.arrayPaquetes, function(
-                                        paquetes
-                                      ) {
-                                        return _c("option", {
-                                          key: paquetes.id,
-                                          domProps: {
-                                            value: paquetes.id,
-                                            textContent: _vm._s(paquetes.nombre)
-                                          }
+                                      [
+                                        _c(
+                                          "option",
+                                          { attrs: { value: "0" } },
+                                          [_vm._v("Seleccione")]
+                                        ),
+                                        _vm._v(" "),
+                                        _vm._l(_vm.arrayPaquetes, function(
+                                          paquetes
+                                        ) {
+                                          return _c("option", {
+                                            key: paquetes.id,
+                                            domProps: {
+                                              value: paquetes.id,
+                                              textContent: _vm._s(
+                                                paquetes.nombre
+                                              )
+                                            }
+                                          })
                                         })
-                                      })
+                                      ],
+                                      2
                                     )
                                   ])
                                 ]),
@@ -111227,19 +111251,27 @@ var render = function() {
                                           }
                                         }
                                       },
-                                      _vm._l(_vm.arrayInstituciones, function(
-                                        institucion
-                                      ) {
-                                        return _c("option", {
-                                          key: institucion.institucion_fin,
-                                          domProps: {
-                                            value: institucion.institucion_fin,
-                                            textContent: _vm._s(
-                                              institucion.institucion_fin
-                                            )
-                                          }
+                                      [
+                                        _c("option", { attrs: { value: "" } }, [
+                                          _vm._v("Seleccione")
+                                        ]),
+                                        _vm._v(" "),
+                                        _vm._l(_vm.arrayInstituciones, function(
+                                          institucion
+                                        ) {
+                                          return _c("option", {
+                                            key: institucion.institucion_fin,
+                                            domProps: {
+                                              value:
+                                                institucion.institucion_fin,
+                                              textContent: _vm._s(
+                                                institucion.institucion_fin
+                                              )
+                                            }
+                                          })
                                         })
-                                      })
+                                      ],
+                                      2
                                     )
                                   ])
                                 ])
@@ -111300,6 +111332,9 @@ var render = function() {
                                       ],
                                       staticClass: "form-control",
                                       on: {
+                                        click: function($event) {
+                                          _vm.LimpiarMascotas()
+                                        },
                                         change: function($event) {
                                           var $$selectedVal = Array.prototype.filter
                                             .call(
@@ -111693,6 +111728,9 @@ var render = function() {
                                       ],
                                       staticClass: "form-control",
                                       on: {
+                                        click: function($event) {
+                                          _vm.LimpiarSillaRuedas()
+                                        },
                                         change: function($event) {
                                           var $$selectedVal = Array.prototype.filter
                                             .call(

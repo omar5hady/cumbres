@@ -952,6 +952,8 @@ class LoteController extends Controller
         }
         else
             $lote->promocion = 'Sin Promoción';
+            $lote->descripcionPromo = '';
+            $lote->descuentoPromo = 0;
     }
 
     return ['lotes' => $lotes];

@@ -631,6 +631,7 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                    <select class="form-control" v-model="proyecto_interes_id" @click="selectEtapa(proyecto_interes_id)">
+                                        <option value=0> Seleccione </option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                    </select>
                             </div>
@@ -737,14 +738,14 @@
                             </div>
                         </div> 
 
-                        <div class="col-md-3" v-if="descripcionPromo!=''">
+                        <div class="col-md-3" v-if="descripcionPromo!=''" >
                             <div class="form-group">
                                 <label style="color:#2271b3;" for=""><strong> Descripcion de la promocion </strong></label>
                                 <p v-text="descripcionPromo"></p>
                             </div>
                         </div>
 
-                             <div class="col-md-3" v-if="descuentoPromo!=''">
+                             <div class="col-md-3" v-if="descuentoPromo!=0">
                             <div class="form-group">
                                 <label style="color:#2271b3;" for=""><strong> Descuento de la promocion </strong></label>
                                 <p v-text="'$'+formatNumber(descuentoPromo)"></p>
@@ -753,8 +754,9 @@
 
                          <div class="col-md-3">
                             <div class="form-group">
-                                <label for="">Paquete<span style="color:red;" v-show="paquete_id==0">(*)</span></label>
+                                <label for="">Paquete</label>
                                    <select class="form-control" v-model="paquete_id" @click="datosPaquetes(paquete_id)">
+                                        <option value="0">Seleccione</option>
                                         <option v-for="paquetes in arrayPaquetes" :key="paquetes.id" :value="paquetes.id" v-text="paquetes.nombre"></option>
                                    </select>
                             </div>
@@ -792,6 +794,7 @@
                             <div class="form-group">
                             <label for="">Institucion financiera <span style="color:red;" v-show="inst_financiera==0">(*)</span></label>
                             <select class="form-control" v-model="inst_financiera" >
+                                <option value="">Seleccione</option>
                                 <option v-for="institucion in arrayInstituciones" :key="institucion.institucion_fin" :value="institucion.institucion_fin" v-text="institucion.institucion_fin"></option>      
                             </select>
                             </div>
@@ -821,7 +824,7 @@
                             <h6> ¿Tiene mascotas? </h6>
                         </div>
                         <div class="col-md-2">
-                            <select class="form-control" v-model="mascotas" >
+                            <select class="form-control" v-model="mascotas" @click="LimpiarMascotas()">
                                     <option value="0">No</option>
                                     <option value="1">Si</option>
                             </select>
@@ -888,7 +891,7 @@
                             <label for=""> ¿Alguna de las personas que habitaran la casa cuenta con alguna discapacidad? </label>
                         </div>
                         <div class="col-md-2">
-                            <select class="form-control" v-model="discapacidad" >
+                            <select class="form-control" v-model="discapacidad" @click="LimpiarSillaRuedas()">
                                     <option value="0">No</option>
                                     <option value="1">Si</option>
                             </select>
@@ -1321,6 +1324,7 @@
             
               datosPaquetes(paquete){
                 let me = this;
+                if(paquete!=0){
                 me.arrayDatosPaquetes=[];
                 var url = '/select_datos_paquetes?buscar=' + paquete;
                 axios.get(url).then(function (response) {
@@ -1333,6 +1337,11 @@
                 .catch(function (error) {
                     console.log(error);
                 });
+                }
+                else{
+                    me.descripcionPaquete='';
+                    me.costoPaquete=0;
+                }
             },
             
             selectLotes(manzana){
@@ -1372,6 +1381,15 @@
                 });
                
 
+            },
+            LimpiarMascotas(){
+                if(this.mascotas=="0"){
+                    this.num_perros=0;
+                }
+            },
+            LimpiarSillaRuedas(){
+                if(this.discapacidad=="0")
+                    this.silla_ruedas=0;
             },
 
             selectLugarContacto(){
@@ -1507,6 +1525,9 @@
 
             selectInstitucion(credito){
                 let me = this;
+                if(me.tipo_credito==0){
+                    me.inst_financiera="";
+                }
                 me.arrayInstituciones=[];
                 var url = '/select_institucion?buscar='+credito;
                 axios.get(url).then(function (response) {
