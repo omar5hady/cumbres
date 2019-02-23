@@ -106108,6 +106108,33 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -106248,7 +106275,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             num_vehiculos: 0,
             silla_ruedas: 0,
             discapacidad: 0,
-            terreno_tam_excedente: 0
+            terreno_tam_excedente: 0,
+            plazo_credito: 0,
+            monto_credito: 0
 
         };
     },
@@ -111305,7 +111334,142 @@ var render = function() {
                                       2
                                     )
                                   ])
-                                ])
+                                ]),
+                                _vm._v(" "),
+                                _vm._m(26),
+                                _vm._v(" "),
+                                _vm.inst_financiera != ""
+                                  ? _c("div", { staticClass: "col-md-2" }, [
+                                      _c("div", { staticClass: "form-group" }, [
+                                        _c("label", { attrs: { for: "" } }, [
+                                          _vm._v("Plazo (años) "),
+                                          _c(
+                                            "span",
+                                            {
+                                              directives: [
+                                                {
+                                                  name: "show",
+                                                  rawName: "v-show",
+                                                  value: _vm.plazo_credito == 0,
+                                                  expression: "plazo_credito==0"
+                                                }
+                                              ],
+                                              staticStyle: { color: "red" }
+                                            },
+                                            [_vm._v("(*)")]
+                                          )
+                                        ]),
+                                        _vm._v(" "),
+                                        _c("input", {
+                                          directives: [
+                                            {
+                                              name: "model",
+                                              rawName: "v-model",
+                                              value: _vm.plazo_credito,
+                                              expression: "plazo_credito"
+                                            }
+                                          ],
+                                          staticClass: "form-control",
+                                          attrs: {
+                                            type: "text",
+                                            pattern: "\\d*",
+                                            maxlength: "2"
+                                          },
+                                          domProps: {
+                                            value: _vm.plazo_credito
+                                          },
+                                          on: {
+                                            keypress: function($event) {
+                                              _vm.isNumber($event)
+                                            },
+                                            input: function($event) {
+                                              if ($event.target.composing) {
+                                                return
+                                              }
+                                              _vm.plazo_credito =
+                                                $event.target.value
+                                            }
+                                          }
+                                        })
+                                      ])
+                                    ])
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.inst_financiera != ""
+                                  ? _c("div", { staticClass: "col-md-3" }, [
+                                      _c("div", { staticClass: "form-group" }, [
+                                        _c("label", { attrs: { for: "" } }, [
+                                          _vm._v("Crédito Solicitado "),
+                                          _c(
+                                            "span",
+                                            {
+                                              directives: [
+                                                {
+                                                  name: "show",
+                                                  rawName: "v-show",
+                                                  value: _vm.monto_credito == 0,
+                                                  expression: "monto_credito==0"
+                                                }
+                                              ],
+                                              staticStyle: { color: "red" }
+                                            },
+                                            [_vm._v("(*)")]
+                                          )
+                                        ]),
+                                        _vm._v(" "),
+                                        _c("input", {
+                                          directives: [
+                                            {
+                                              name: "model",
+                                              rawName: "v-model",
+                                              value: _vm.monto_credito,
+                                              expression: "monto_credito"
+                                            }
+                                          ],
+                                          staticClass: "form-control",
+                                          attrs: {
+                                            type: "text",
+                                            pattern: "\\d*",
+                                            maxlength: "9"
+                                          },
+                                          domProps: {
+                                            value: _vm.monto_credito
+                                          },
+                                          on: {
+                                            keypress: function($event) {
+                                              _vm.isNumber($event)
+                                            },
+                                            input: function($event) {
+                                              if ($event.target.composing) {
+                                                return
+                                              }
+                                              _vm.monto_credito =
+                                                $event.target.value
+                                            }
+                                          }
+                                        })
+                                      ])
+                                    ])
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.monto_credito != 0
+                                  ? _c("div", { staticClass: "col-md-3" }, [
+                                      _c("div", { staticClass: "form-group" }, [
+                                        _vm._m(27),
+                                        _vm._v(" "),
+                                        _c("h6", {
+                                          domProps: {
+                                            textContent: _vm._s(
+                                              "$" +
+                                                _vm.formatNumber(
+                                                  _vm.monto_credito
+                                                )
+                                            )
+                                          }
+                                        })
+                                      ])
+                                    ])
+                                  : _vm._e()
                               ]
                             )
                           ]
@@ -111313,7 +111477,7 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _c("div", { staticClass: "card mb-0" }, [
-                        _vm._m(26),
+                        _vm._m(28),
                         _vm._v(" "),
                         _c(
                           "div",
@@ -111347,7 +111511,7 @@ var render = function() {
                                   )
                                 ]),
                                 _vm._v(" "),
-                                _vm._m(27),
+                                _vm._m(29),
                                 _vm._v(" "),
                                 _c("div", { staticClass: "col-md-2" }, [
                                   _c(
@@ -111443,7 +111607,7 @@ var render = function() {
                                     ])
                                   : _vm._e(),
                                 _vm._v(" "),
-                                _vm._m(28),
+                                _vm._m(30),
                                 _vm._v(" "),
                                 _c("div", { staticClass: "col-md-12" }, [
                                   _c("h6", [
@@ -111679,7 +111843,7 @@ var render = function() {
                                 _vm.e_civil == 2 ||
                                 _vm.e_civil == 5
                                   ? _c("div", { staticClass: "col-md-3" }, [
-                                      _vm._m(29)
+                                      _vm._m(31)
                                     ])
                                   : _vm._e(),
                                 _vm._v(" "),
@@ -111741,9 +111905,9 @@ var render = function() {
                                     ])
                                   : _vm._e(),
                                 _vm._v(" "),
-                                _vm._m(30),
+                                _vm._m(32),
                                 _vm._v(" "),
-                                _vm._m(31),
+                                _vm._m(33),
                                 _vm._v(" "),
                                 _c("div", { staticClass: "col-md-2" }, [
                                   _c(
@@ -111858,9 +112022,9 @@ var render = function() {
                                     ])
                                   : _vm._e(),
                                 _vm._v(" "),
-                                _vm._m(32),
+                                _vm._m(34),
                                 _vm._v(" "),
-                                _vm._m(33),
+                                _vm._m(35),
                                 _vm._v(" "),
                                 _c("div", { staticClass: "col-md-2" }, [
                                   _c("div", { staticClass: "form-group" }, [
@@ -112041,7 +112205,7 @@ var render = function() {
                               "table table-bordered table-striped table-sm"
                           },
                           [
-                            _vm._m(34),
+                            _vm._m(36),
                             _vm._v(" "),
                             _c(
                               "tbody",
@@ -112410,6 +112574,22 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "col-md-12" }, [_c("h6")])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-12" }, [
+      _c("div", { staticClass: "form-group" }, [_c("h6")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("h6", { staticStyle: { color: "#2271b3" }, attrs: { for: "" } }, [
+      _c("strong", [_vm._v(" Credito Solicitado: ")])
+    ])
   },
   function() {
     var _vm = this

@@ -833,6 +833,33 @@
                                                         </select>
                                                         </div>
                                                     </div>
+
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <h6></h6>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-2" v-if="inst_financiera!=''">
+                                                        <div class="form-group">
+                                                        <label for="">Plazo (años) <span style="color:red;" v-show="plazo_credito==0">(*)</span></label>
+                                                            <input type="text" pattern="\d*" v-model="plazo_credito" maxlength="2" v-on:keypress="isNumber($event)" class="form-control" >
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-3" v-if="inst_financiera!=''">
+                                                        <div class="form-group">
+                                                        <label for="">Crédito Solicitado <span style="color:red;" v-show="monto_credito==0">(*)</span></label>
+                                                            <input type="text" pattern="\d*" v-model="monto_credito" maxlength="9" v-on:keypress="isNumber($event)" class="form-control" >
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-3" v-if="monto_credito!=0">
+                                                        <div class="form-group">
+                                                            <h6 style="color:#2271b3;" for=""><strong> Credito Solicitado: </strong></h6>
+                                                            <h6 v-text="'$'+formatNumber(monto_credito)"></h6>
+                                                        </div>
+                                                    </div> 
                                             </div>
                                     </div>
                                 </div>
@@ -1179,7 +1206,9 @@
                 num_vehiculos:0,
                 silla_ruedas:0,
                 discapacidad:0,
-                terreno_tam_excedente:0
+                terreno_tam_excedente:0,
+                plazo_credito:0,
+                monto_credito:0
                 
             }
         },
