@@ -106074,6 +106074,40 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -106213,7 +106247,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             valHab: 0,
             num_vehiculos: 0,
             silla_ruedas: 0,
-            discapacidad: 0
+            discapacidad: 0,
+            terreno_tam_excedente: 0
 
         };
     },
@@ -106329,6 +106364,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         },
         datosPaquetes: function datosPaquetes(paquete) {
             var me = this;
+            me.precioVenta = me.precioVenta - me.costoPaquete;
             if (paquete != 0) {
                 me.arrayDatosPaquetes = [];
                 var url = '/select_datos_paquetes?buscar=' + paquete;
@@ -106337,6 +106373,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     me.arrayDatosPaquetes = respuesta.datos_paquetes;
                     me.descripcionPaquete = me.arrayDatosPaquetes[0]['descripcion'];
                     me.costoPaquete = me.arrayDatosPaquetes[0]['costo'];
+
+                    me.precioVenta = me.precioVenta + me.costoPaquete;
                 }).catch(function (error) {
                     console.log(error);
                 });
@@ -106371,6 +106409,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 me.promocion = me.arrayDatosLotes[0]['promocion'];
                 me.descripcionPromo = me.arrayDatosLotes[0]['descripcionPromo'];
                 me.descuentoPromo = me.arrayDatosLotes[0]['descuentoPromo'];
+                me.terreno_tam_excedente = me.arrayDatosLotes[0]['terreno_tam_excedente'];
+
+                me.precioVenta = me.precioVenta - me.descuentoPromo;
             }).catch(function (error) {
                 console.log(error);
             });
@@ -110833,24 +110874,10 @@ var render = function() {
                                     ])
                                   : _vm._e(),
                                 _vm._v(" "),
-                                _vm.superficie != ""
-                                  ? _c("div", { staticClass: "col-md-3" }, [
-                                      _c("div", { staticClass: "form-group" }, [
-                                        _vm._m(10),
-                                        _vm._v(" "),
-                                        _c("p", {
-                                          domProps: {
-                                            textContent: _vm._s(_vm.superficie)
-                                          }
-                                        })
-                                      ])
-                                    ])
-                                  : _vm._e(),
-                                _vm._v(" "),
                                 _vm.precioBase != ""
                                   ? _c("div", { staticClass: "col-md-3" }, [
                                       _c("div", { staticClass: "form-group" }, [
-                                        _vm._m(11),
+                                        _vm._m(10),
                                         _vm._v(" "),
                                         _c("p", {
                                           domProps: {
@@ -110864,10 +110891,48 @@ var render = function() {
                                     ])
                                   : _vm._e(),
                                 _vm._v(" "),
-                                _vm.precioExcedente != ""
+                                _vm.precioBase != ""
+                                  ? _c("div", { staticClass: "col-md-12" }, [
+                                      _vm._m(11)
+                                    ])
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.superficie != ""
                                   ? _c("div", { staticClass: "col-md-3" }, [
                                       _c("div", { staticClass: "form-group" }, [
                                         _vm._m(12),
+                                        _vm._v(" "),
+                                        _c("p", {
+                                          domProps: {
+                                            textContent: _vm._s(_vm.superficie)
+                                          }
+                                        })
+                                      ])
+                                    ])
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.superficie != "" ||
+                                _vm.terreno_tam_excedente > 0
+                                  ? _c("div", { staticClass: "col-md-3" }, [
+                                      _c("div", { staticClass: "form-group" }, [
+                                        _vm._m(13),
+                                        _vm._v(" "),
+                                        _c("p", {
+                                          domProps: {
+                                            textContent: _vm._s(
+                                              _vm.terreno_tam_excedente
+                                            )
+                                          }
+                                        })
+                                      ])
+                                    ])
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.precioExcedente != "" ||
+                                _vm.terreno_tam_excedente > 0
+                                  ? _c("div", { staticClass: "col-md-3" }, [
+                                      _c("div", { staticClass: "form-group" }, [
+                                        _vm._m(14),
                                         _vm._v(" "),
                                         _c("p", {
                                           domProps: {
@@ -110883,29 +110948,16 @@ var render = function() {
                                     ])
                                   : _vm._e(),
                                 _vm._v(" "),
-                                _vm.precioVenta != ""
-                                  ? _c("div", { staticClass: "col-md-3" }, [
-                                      _c("div", { staticClass: "form-group" }, [
-                                        _vm._m(13),
-                                        _vm._v(" "),
-                                        _c("p", {
-                                          domProps: {
-                                            textContent: _vm._s(
-                                              "$" +
-                                                _vm.formatNumber(
-                                                  _vm.precioVenta
-                                                )
-                                            )
-                                          }
-                                        })
-                                      ])
+                                _vm.precioBase != ""
+                                  ? _c("div", { staticClass: "col-md-12" }, [
+                                      _vm._m(15)
                                     ])
                                   : _vm._e(),
                                 _vm._v(" "),
                                 _vm.promocion != ""
                                   ? _c("div", { staticClass: "col-md-3" }, [
                                       _c("div", { staticClass: "form-group" }, [
-                                        _vm._m(14),
+                                        _vm._m(16),
                                         _vm._v(" "),
                                         _c("p", {
                                           domProps: {
@@ -110919,7 +110971,7 @@ var render = function() {
                                 _vm.descripcionPromo != ""
                                   ? _c("div", { staticClass: "col-md-3" }, [
                                       _c("div", { staticClass: "form-group" }, [
-                                        _vm._m(15),
+                                        _vm._m(17),
                                         _vm._v(" "),
                                         _c("p", {
                                           domProps: {
@@ -110935,7 +110987,7 @@ var render = function() {
                                 _vm.descuentoPromo != 0
                                   ? _c("div", { staticClass: "col-md-3" }, [
                                       _c("div", { staticClass: "form-group" }, [
-                                        _vm._m(16),
+                                        _vm._m(18),
                                         _vm._v(" "),
                                         _c("p", {
                                           domProps: {
@@ -110950,6 +111002,8 @@ var render = function() {
                                       ])
                                     ])
                                   : _vm._e(),
+                                _vm._v(" "),
+                                _vm._m(19),
                                 _vm._v(" "),
                                 _c("div", { staticClass: "col-md-3" }, [
                                   _c("div", { staticClass: "form-group" }, [
@@ -111024,7 +111078,7 @@ var render = function() {
                                 _vm.descripcionPaquete != ""
                                   ? _c("div", { staticClass: "col-md-3" }, [
                                       _c("div", { staticClass: "form-group" }, [
-                                        _vm._m(17),
+                                        _vm._m(20),
                                         _vm._v(" "),
                                         _c("p", {
                                           domProps: {
@@ -111040,7 +111094,7 @@ var render = function() {
                                 _vm.costoPaquete != ""
                                   ? _c("div", { staticClass: "col-md-3" }, [
                                       _c("div", { staticClass: "form-group" }, [
-                                        _vm._m(18),
+                                        _vm._m(21),
                                         _vm._v(" "),
                                         _c("p", {
                                           domProps: {
@@ -111056,7 +111110,34 @@ var render = function() {
                                     ])
                                   : _vm._e(),
                                 _vm._v(" "),
-                                _vm._m(19),
+                                _vm._m(22),
+                                _vm._v(" "),
+                                _vm._m(23),
+                                _vm._v(" "),
+                                _vm.precioVenta != ""
+                                  ? _c("div", { staticClass: "col-md-3" }, [
+                                      _vm._m(24)
+                                    ])
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.precioVenta != ""
+                                  ? _c("div", { staticClass: "col-md-3" }, [
+                                      _c("div", { staticClass: "form-group" }, [
+                                        _c("h5", {
+                                          domProps: {
+                                            textContent: _vm._s(
+                                              "$" +
+                                                _vm.formatNumber(
+                                                  _vm.precioVenta
+                                                )
+                                            )
+                                          }
+                                        })
+                                      ])
+                                    ])
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm._m(25),
                                 _vm._v(" "),
                                 _c("div", { staticClass: "col-md-3" }, [
                                   _c("div", { staticClass: "form-group" }, [
@@ -111232,7 +111313,7 @@ var render = function() {
                       ]),
                       _vm._v(" "),
                       _c("div", { staticClass: "card mb-0" }, [
-                        _vm._m(20),
+                        _vm._m(26),
                         _vm._v(" "),
                         _c(
                           "div",
@@ -111266,7 +111347,7 @@ var render = function() {
                                   )
                                 ]),
                                 _vm._v(" "),
-                                _vm._m(21),
+                                _vm._m(27),
                                 _vm._v(" "),
                                 _c("div", { staticClass: "col-md-2" }, [
                                   _c(
@@ -111362,7 +111443,7 @@ var render = function() {
                                     ])
                                   : _vm._e(),
                                 _vm._v(" "),
-                                _vm._m(22),
+                                _vm._m(28),
                                 _vm._v(" "),
                                 _c("div", { staticClass: "col-md-12" }, [
                                   _c("h6", [
@@ -111598,7 +111679,7 @@ var render = function() {
                                 _vm.e_civil == 2 ||
                                 _vm.e_civil == 5
                                   ? _c("div", { staticClass: "col-md-3" }, [
-                                      _vm._m(23)
+                                      _vm._m(29)
                                     ])
                                   : _vm._e(),
                                 _vm._v(" "),
@@ -111660,9 +111741,9 @@ var render = function() {
                                     ])
                                   : _vm._e(),
                                 _vm._v(" "),
-                                _vm._m(24),
+                                _vm._m(30),
                                 _vm._v(" "),
-                                _vm._m(25),
+                                _vm._m(31),
                                 _vm._v(" "),
                                 _c("div", { staticClass: "col-md-2" }, [
                                   _c(
@@ -111777,9 +111858,9 @@ var render = function() {
                                     ])
                                   : _vm._e(),
                                 _vm._v(" "),
-                                _vm._m(26),
+                                _vm._m(32),
                                 _vm._v(" "),
-                                _vm._m(27),
+                                _vm._m(33),
                                 _vm._v(" "),
                                 _c("div", { staticClass: "col-md-2" }, [
                                   _c("div", { staticClass: "form-group" }, [
@@ -111960,7 +112041,7 @@ var render = function() {
                               "table table-bordered table-striped table-sm"
                           },
                           [
-                            _vm._m(28),
+                            _vm._m(34),
                             _vm._v(" "),
                             _c(
                               "tbody",
@@ -112166,7 +112247,7 @@ var staticRenderFns = [
                 "aria-controls": "collapseFour"
               }
             },
-            [_vm._v("Datos economicos")]
+            [_vm._v("Datos económicos")]
           )
         ])
       ]
@@ -112201,7 +112282,23 @@ var staticRenderFns = [
     return _c(
       "label",
       { staticStyle: { color: "#2271b3" }, attrs: { for: "" } },
-      [_c("strong", [_vm._v(" Superficie m²")])]
+      [_c("strong", [_vm._v(" Precio base ")])]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "form-group" }, [_c("h6")])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "label",
+      { staticStyle: { color: "#2271b3" }, attrs: { for: "" } },
+      [_c("strong", [_vm._v(" Superficie terreno m²")])]
     )
   },
   function() {
@@ -112211,7 +112308,7 @@ var staticRenderFns = [
     return _c(
       "label",
       { staticStyle: { color: "#2271b3" }, attrs: { for: "" } },
-      [_c("strong", [_vm._v(" Precio base ")])]
+      [_c("strong", [_vm._v(" Terreno excedente m²")])]
     )
   },
   function() {
@@ -112228,11 +112325,7 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c(
-      "label",
-      { staticStyle: { color: "#2271b3" }, attrs: { for: "" } },
-      [_c("strong", [_vm._v(" Precio de venta ")])]
-    )
+    return _c("div", { staticClass: "form-group" }, [_c("h6")])
   },
   function() {
     var _vm = this
@@ -112268,6 +112361,12 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-12" }, [_c("h6")])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
     return _c(
       "label",
       { staticStyle: { color: "#2271b3" }, attrs: { for: "" } },
@@ -112283,6 +112382,28 @@ var staticRenderFns = [
       { staticStyle: { color: "#2271b3" }, attrs: { for: "" } },
       [_c("strong", [_vm._v(" Costo del paquete ")])]
     )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-12" }, [_c("h6")])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-2" }, [_c("h6")])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "form-group" }, [
+      _c("h5", { staticStyle: { color: "#2271b3" }, attrs: { for: "" } }, [
+        _c("strong", [_vm._v(" Precio de venta: ")])
+      ])
+    ])
   },
   function() {
     var _vm = this

@@ -608,7 +608,7 @@
                                 <div class="card mb-0">
                                     <div class="card-header" id="headingFour" role="tab">
                                         <h5 class="mb-0">
-                                            <a class="collapsed" data-toggle="collapse" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">Datos economicos</a>
+                                            <a class="collapsed" data-toggle="collapse" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">Datos económicos</a>
                                         </h5>
                                     </div>
                                     <div class="collapse" id="collapseFour" role="tabpanel" aria-labelledby="headingFour" data-parent="#accordion">
@@ -701,35 +701,46 @@
                                                         </div>
                                                     </div>
 
-                                                    <div class="col-md-3" v-if="superficie!=''">
-                                                        <div class="form-group">
-                                                            <label style="color:#2271b3;" for=""><strong> Superficie m&sup2;</strong></label>
-                                                            <p v-text="superficie"></p>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-3" v-if="precioBase!=''">
+                                                     <div class="col-md-3" v-if="precioBase!=''">
                                                         <div class="form-group">
                                                             <label style="color:#2271b3;" for=""><strong> Precio base </strong></label>
                                                             <p v-text="'$'+formatNumber(precioBase)"></p>
                                                         </div>
                                                     </div>
 
-                                                    <div class="col-md-3" v-if="precioExcedente!=''">
+                                                     <div class="col-md-12" v-if="precioBase!=''">
+                                                        <div class="form-group">
+                                                            <h6></h6>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-3" v-if="superficie!=''">
+                                                        <div class="form-group">
+                                                            <label style="color:#2271b3;" for=""><strong> Superficie terreno m&sup2;</strong></label>
+                                                            <p v-text="superficie"></p>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-3" v-if="superficie!='' || terreno_tam_excedente>0">
+                                                        <div class="form-group">
+                                                            <label style="color:#2271b3;" for=""><strong> Terreno excedente m&sup2;</strong></label>
+                                                            <p v-text="terreno_tam_excedente"></p>
+                                                        </div>
+                                                    </div>
+
+
+                                                    <div class="col-md-3" v-if="precioExcedente!='' || terreno_tam_excedente>0">
                                                         <div class="form-group">
                                                             <label style="color:#2271b3;" for=""><strong> Precio terreno excedente </strong></label>
                                                             <p v-text="'$'+formatNumber(precioExcedente)"></p>
                                                         </div>
                                                     </div> 
 
-                                                    
-                                                    <div class="col-md-3" v-if="precioVenta!=''">
+                                                    <div class="col-md-12" v-if="precioBase!=''">
                                                         <div class="form-group">
-                                                            <label style="color:#2271b3;" for=""><strong> Precio de venta </strong></label>
-                                                            <p v-text="'$'+formatNumber(precioVenta)"></p>
+                                                            <h6></h6>
                                                         </div>
-                                                    </div> 
-
+                                                    </div>
                                                     
                                                     <div class="col-md-3" v-if="promocion!=''">
                                                         <div class="form-group">
@@ -752,6 +763,10 @@
                                                         </div>
                                                     </div> 
 
+                                                    <div class="col-md-12" >
+                                                        <h6></h6>
+                                                    </div>
+
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label for="">Paquete</label>
@@ -773,6 +788,25 @@
                                                         <div class="form-group">
                                                             <label style="color:#2271b3;" for=""><strong> Costo del paquete </strong></label>
                                                             <p v-text="'$'+formatNumber(costoPaquete)"></p>
+                                                        </div>
+                                                    </div> 
+
+                                                    <div class="col-md-12" >
+                                                        <h6></h6>
+                                                    </div>
+
+                                                    <div class="col-md-2" >
+                                                        <h6></h6>
+                                                    </div>
+
+                                                    <div class="col-md-3" v-if="precioVenta!=''">
+                                                        <div class="form-group">
+                                                            <h5 style="color:#2271b3;" for=""><strong> Precio de venta: </strong></h5>
+                                                        </div>
+                                                    </div> 
+                                                    <div class="col-md-3" v-if="precioVenta!=''">
+                                                        <div class="form-group">
+                                                            <h5 v-text="'$'+formatNumber(precioVenta)"></h5>
                                                         </div>
                                                     </div> 
 
@@ -1144,7 +1178,8 @@
                 valHab:0,
                 num_vehiculos:0,
                 silla_ruedas:0,
-                discapacidad:0
+                discapacidad:0,
+                terreno_tam_excedente:0
                 
             }
         },
@@ -1274,6 +1309,7 @@
             
               datosPaquetes(paquete){
                 let me = this;
+                me.precioVenta = me.precioVenta - me.costoPaquete;
                 if(paquete!=0){
                 me.arrayDatosPaquetes=[];
                 var url = '/select_datos_paquetes?buscar=' + paquete;
@@ -1282,7 +1318,8 @@
                      me.arrayDatosPaquetes = respuesta.datos_paquetes;
                      me.descripcionPaquete = me.arrayDatosPaquetes[0]['descripcion'];
                      me.costoPaquete = me.arrayDatosPaquetes[0]['costo'];
-                    
+
+                    me.precioVenta = me.precioVenta + me.costoPaquete;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -1323,6 +1360,9 @@
                      me.promocion = me.arrayDatosLotes[0]['promocion'];
                      me.descripcionPromo = me.arrayDatosLotes[0]['descripcionPromo'];
                      me.descuentoPromo = me.arrayDatosLotes[0]['descuentoPromo'];
+                     me.terreno_tam_excedente= me.arrayDatosLotes[0]['terreno_tam_excedente'];
+
+                     me.precioVenta = me.precioVenta - me.descuentoPromo;
                   
                     
                 })
