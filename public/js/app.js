@@ -106582,7 +106582,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         /**Metodo para registrar  */
         registrarProspecto: function registrarProspecto() {
-            if (this.validarProspecto() || this.proceso == true) //Se verifica si hay un error (campo vacio)
+            if (this.validarRegistro() || this.proceso == true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
@@ -106693,8 +106693,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
         /**Metodo para actualizar  */
-        actualizarProspecto: function actualizarProspecto() {
-            if (this.validarProspecto() || this.proceso == true) //Se verifica si hay un error (campo vacio)
+        registrarSimulacion: function registrarSimulacion() {
+            if (this.validarRegistro() || this.proceso == true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
@@ -106760,23 +106760,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 console.log(error);
             });
         },
-        validarProspecto: function validarProspecto() {
+        validarRegistro: function validarRegistro() {
             this.errorProspecto = 0;
             this.errorMostrarMsjProspecto = [];
 
-            if (this.nombre == '' || this.apellidos == '') this.errorMostrarMsjProspecto.push("El nombre del prospecto no puede ir vacio.");
-            if (this.sexo == '') this.errorMostrarMsjProspecto.push("Seleccionar el sexo del prospecto.");
-            if (this.celular == '') this.errorMostrarMsjProspecto.push("Ingresar numero de celular.");
-            if (this.email == '') this.errorMostrarMsjProspecto.push("Ingresar email personal.");
-            if (this.empresa == '') this.errorMostrarMsjProspecto.push("Seleccionar empresa.");
-            if (this.fecha_nac == '') this.errorMostrarMsjProspecto.push("Ingresar fecha de nacimiento.");
-            if (this.rfc == '') this.errorMostrarMsjProspecto.push("Ingresar RFC.");
-            if (this.nss == '') this.errorMostrarMsjProspecto.push("Ingresar numero de seguro social.");
-            if (this.tipo_casa == 0) this.errorMostrarMsjProspecto.push("Seleccionar tipo de casa.");
-            if (this.e_civil == 0) this.errorMostrarMsjProspecto.push("Seleccionar estado civil.");
-            if (this.proyecto_interes_id == 0) this.errorMostrarMsjProspecto.push("Seleccionar proyecto de interes.");
-            if (this.publicidad_id == 0) this.errorMostrarMsjProspecto.push("Seleccionar medio de publicidad.");
-            if (this.observacion == '') this.errorMostrarMsjProspecto.push("Escribir una observación.");
+            if (this.direccion == '' || this.cp == '' || this.colonia == "") this.errorMostrarMsjProspecto.push("Completar el domicilio del prospecto");
+            if (this.ciudad == '' || this.estado == '') this.errorMostrarMsjProspecto.push("Seleccionar Ciudad y estado del prospecto");
+            if (this.tipo_economia == '' || this.puesto == '') this.errorMostrarMsjProspecto.push("Completar datos para lugar de trabajo.");
+            if (this.dep_economicos == '') this.errorMostrarMsjProspecto.push("Ingresar numero de dependientes económicos.");
+            if (this.nombre_referencia1 == '' || this.nombre_referencia2 == '' || this.telefono_referencia1 == '' || this.telefono_referencia2 == '' || this.celular_referencia1 == '' || this.celular_referencia2 == '') this.errorMostrarMsjProspecto.push("Completar datos para referencias personales.");
+            if (this.etapa == '' || this.manzana == '' || this.lote == '') this.errorMostrarMsjProspecto.push("Seleccionar lote de interes.");
+            if (this.tipo_credito == 0 || this.inst_financiera == '') this.errorMostrarMsjProspecto.push("Seleccionar credito a solicitar");
+            if (this.num_habitantes == 0 || this.rang0_10 + this.rang11_20 + this.rang21 == 0) this.errorMostrarMsjProspecto.push("Ingresar numero de habitantes.");
+            if (this.num_habitantes < this.rang0_10 + this.rang11_20 + this.rang21) this.errorMostrarMsjProspecto.push("Verificar total de habitantes.");
 
             if (this.errorMostrarMsjProspecto.length) //Si el mensaje tiene almacenado algo en el array
                 this.errorProspecto = 1;
@@ -106839,15 +106835,26 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.e_civil = 0;
             this.tipo_casa = 0;
             this.coacreditado = 0;
-            this.publicidad_id = 0;
             this.proyecto_interes_id = 0;
             this.empresa = '';
             this.observacion = '';
-            this.lugar_contacto = 0;
             this.puesto = '';
             this.dep_economicos = '';
+            this.direccion = '';
+            this.colonia = '';
+            this.estado = '';
+            this.ciudad = '';
+            this.tipo_economia = 0;
 
             this.nombre_coa = '';
+            this.n_completo_coa = '';
+            this.nacionalidad_coa = '';
+            this.direccion_coa = '';
+            this.cp_coa = '';
+            this.colonia_coa = '';
+            this.estado_coa = '';
+            this.ciudad_coa = '';
+            this.empresa_coa = '';
             this.parentesco_coa = '';
             this.apellidos_coa = '';
             this.telefono_coa = '';
@@ -106865,11 +106872,34 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.conyugeNom = '';
             this.proceso = false;
 
+            this.nombre_referencia1 = '';
+            this.telefono_referencia1 = '';
+            this.celular_referencia1 = '';
+            this.nombre_referencia2 = '';
+            this.telefono_referencia2 = '';
+            this.celular_referencia2 = '';
+
+            this.etapa = '';
+            this.manzana = '';
+            this.lote = '';
+            this.paquete_id = 0;
+            this.tipo_credito = 0;
+            this.inst_financiera = '';
+
+            this.mascotas = 0;
+            this.num_habitantes = 0;
+            this.num_perros = 0;
+            this.rang0_10 = 0;
+            this.rang11_20 = 0;
+            this.rang21 = 0;
+            this.num_vehiculos = 0;
+
             this.errorProspecto = 0;
             this.errorMostrarMsjProspecto = [];
         },
         ocultarDetalle: function ocultarDetalle() {
             this.listado = 1;
+            this.limpiarDatos();
         },
         actualizarProspectoBTN: function actualizarProspectoBTN(prospecto) {
 
@@ -106922,9 +106952,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.rang21 = 0;
             this.num_habitantes = 0;
             this.valHab = 0;
+            this.selectEtapa(this.proyecto_interes_id);
 
             this.id = prospecto['id'];
             this.listado = 3;
+
             /* })
              .catch(function (error) {
                  console.log(error);
@@ -107769,8 +107801,8 @@ var render = function() {
                                         {
                                           name: "model",
                                           rawName: "v-model",
-                                          value: _vm.direccion_coa,
-                                          expression: "direccion_coa"
+                                          value: _vm.direccion,
+                                          expression: "direccion"
                                         }
                                       ],
                                       staticClass: "form-control",
@@ -107778,14 +107810,13 @@ var render = function() {
                                         type: "text",
                                         placeholder: "Direccion"
                                       },
-                                      domProps: { value: _vm.direccion_coa },
+                                      domProps: { value: _vm.direccion },
                                       on: {
                                         input: function($event) {
                                           if ($event.target.composing) {
                                             return
                                           }
-                                          _vm.direccion_coa =
-                                            $event.target.value
+                                          _vm.direccion = $event.target.value
                                         }
                                       }
                                     })
@@ -107904,11 +107935,9 @@ var render = function() {
                                         }
                                       },
                                       [
-                                        _c(
-                                          "option",
-                                          { attrs: { value: "0" } },
-                                          [_vm._v("Seleccione")]
-                                        ),
+                                        _c("option", { attrs: { value: "" } }, [
+                                          _vm._v("Seleccione")
+                                        ]),
                                         _vm._v(" "),
                                         _vm._l(_vm.arrayColonias, function(
                                           colonias
@@ -107988,11 +108017,9 @@ var render = function() {
                                         }
                                       },
                                       [
-                                        _c(
-                                          "option",
-                                          { attrs: { value: "0" } },
-                                          [_vm._v("Seleccione")]
-                                        ),
+                                        _c("option", { attrs: { value: "" } }, [
+                                          _vm._v("Seleccione")
+                                        ]),
                                         _vm._v(" "),
                                         _vm._l(_vm.arrayEstados, function(
                                           estados
@@ -108069,11 +108096,9 @@ var render = function() {
                                         }
                                       },
                                       [
-                                        _c(
-                                          "option",
-                                          { attrs: { value: "0" } },
-                                          [_vm._v("Seleccione")]
-                                        ),
+                                        _c("option", { attrs: { value: "" } }, [
+                                          _vm._v("Seleccione")
+                                        ]),
                                         _vm._v(" "),
                                         _vm._l(_vm.arrayCiudades, function(
                                           ciudades
@@ -108944,55 +108969,6 @@ var render = function() {
                                       }
                                     })
                                   ])
-                                ]),
-                                _vm._v(" "),
-                                _c("div", { staticClass: "col-md-10" }, [
-                                  _c("div", { staticClass: "form-group" }, [
-                                    _c("label", { attrs: { for: "" } }, [
-                                      _vm._v("Observaciones "),
-                                      _c(
-                                        "span",
-                                        {
-                                          directives: [
-                                            {
-                                              name: "show",
-                                              rawName: "v-show",
-                                              value: _vm.observacion == "",
-                                              expression: "observacion==''"
-                                            }
-                                          ],
-                                          staticStyle: { color: "red" }
-                                        },
-                                        [_vm._v("(*)")]
-                                      )
-                                    ]),
-                                    _vm._v(" "),
-                                    _c("textarea", {
-                                      directives: [
-                                        {
-                                          name: "model",
-                                          rawName: "v-model",
-                                          value: _vm.observacion,
-                                          expression: "observacion"
-                                        }
-                                      ],
-                                      staticClass: "form-control",
-                                      attrs: {
-                                        rows: "3",
-                                        cols: "30",
-                                        placeholder: "Observaciones"
-                                      },
-                                      domProps: { value: _vm.observacion },
-                                      on: {
-                                        input: function($event) {
-                                          if ($event.target.composing) {
-                                            return
-                                          }
-                                          _vm.observacion = $event.target.value
-                                        }
-                                      }
-                                    })
-                                  ])
                                 ])
                               ]
                             )
@@ -109517,6 +109493,14 @@ var render = function() {
                                                         _c(
                                                           "option",
                                                           {
+                                                            attrs: { value: "" }
+                                                          },
+                                                          [_vm._v("Seleccione")]
+                                                        ),
+                                                        _vm._v(" "),
+                                                        _c(
+                                                          "option",
+                                                          {
                                                             attrs: {
                                                               value: "0"
                                                             }
@@ -109678,7 +109662,30 @@ var render = function() {
                                                     _c(
                                                       "label",
                                                       { attrs: { for: "" } },
-                                                      [_vm._v("Colonia")]
+                                                      [
+                                                        _vm._v("Colonia"),
+                                                        _c(
+                                                          "span",
+                                                          {
+                                                            directives: [
+                                                              {
+                                                                name: "show",
+                                                                rawName:
+                                                                  "v-show",
+                                                                value:
+                                                                  _vm.colonia_coa ==
+                                                                  "",
+                                                                expression:
+                                                                  "colonia_coa==''"
+                                                              }
+                                                            ],
+                                                            staticStyle: {
+                                                              color: "red"
+                                                            }
+                                                          },
+                                                          [_vm._v("(*)")]
+                                                        )
+                                                      ]
                                                     ),
                                                     _vm._v(" "),
                                                     _c(
@@ -109726,9 +109733,7 @@ var render = function() {
                                                         _c(
                                                           "option",
                                                           {
-                                                            attrs: {
-                                                              value: "0"
-                                                            }
+                                                            attrs: { value: "" }
                                                           },
                                                           [_vm._v("Seleccione")]
                                                         ),
@@ -109838,7 +109843,7 @@ var render = function() {
                                                 [
                                                   _c(
                                                     "option",
-                                                    { attrs: { value: "0" } },
+                                                    { attrs: { value: "" } },
                                                     [_vm._v("Seleccione")]
                                                   ),
                                                   _vm._v(" "),
@@ -109934,7 +109939,7 @@ var render = function() {
                                                 [
                                                   _c(
                                                     "option",
-                                                    { attrs: { value: "0" } },
+                                                    { attrs: { value: "" } },
                                                     [_vm._v("Seleccione")]
                                                   ),
                                                   _vm._v(" "),
@@ -110284,10 +110289,40 @@ var render = function() {
                                   )
                                 ]),
                                 _vm._v(" "),
+                                _c("div", { staticClass: "col-md-12" }, [
+                                  _c(
+                                    "div",
+                                    { staticClass: "form-group" },
+                                    [
+                                      _c("center", [
+                                        _c("h5", [_vm._v("Primera referencia")])
+                                      ])
+                                    ],
+                                    1
+                                  )
+                                ]),
+                                _vm._v(" "),
                                 _c("div", { staticClass: "col-md-4" }, [
                                   _c("div", { staticClass: "form-group" }, [
                                     _c("label", { attrs: { for: "" } }, [
-                                      _vm._v("Nombre")
+                                      _vm._v("Nombre "),
+                                      _c(
+                                        "span",
+                                        {
+                                          directives: [
+                                            {
+                                              name: "show",
+                                              rawName: "v-show",
+                                              value:
+                                                _vm.nombre_referencia1 == "",
+                                              expression:
+                                                "nombre_referencia1==''"
+                                            }
+                                          ],
+                                          staticStyle: { color: "red" }
+                                        },
+                                        [_vm._v("(*)")]
+                                      )
                                     ]),
                                     _vm._v(" "),
                                     _c("input", {
@@ -110323,7 +110358,24 @@ var render = function() {
                                 _c("div", { staticClass: "col-md-4" }, [
                                   _c("div", { staticClass: "form-group" }, [
                                     _c("label", { attrs: { for: "" } }, [
-                                      _vm._v("Telefono")
+                                      _vm._v("Telefono "),
+                                      _c(
+                                        "span",
+                                        {
+                                          directives: [
+                                            {
+                                              name: "show",
+                                              rawName: "v-show",
+                                              value:
+                                                _vm.telefono_referencia1 == "",
+                                              expression:
+                                                "telefono_referencia1==''"
+                                            }
+                                          ],
+                                          staticStyle: { color: "red" }
+                                        },
+                                        [_vm._v("(*)")]
+                                      )
                                     ]),
                                     _vm._v(" "),
                                     _c("input", {
@@ -110359,7 +110411,24 @@ var render = function() {
                                 _c("div", { staticClass: "col-md-4" }, [
                                   _c("div", { staticClass: "form-group" }, [
                                     _c("label", { attrs: { for: "" } }, [
-                                      _vm._v("Celular")
+                                      _vm._v("Celular "),
+                                      _c(
+                                        "span",
+                                        {
+                                          directives: [
+                                            {
+                                              name: "show",
+                                              rawName: "v-show",
+                                              value:
+                                                _vm.celular_referencia1 == "",
+                                              expression:
+                                                "celular_referencia1==''"
+                                            }
+                                          ],
+                                          staticStyle: { color: "red" }
+                                        },
+                                        [_vm._v("(*)")]
+                                      )
                                     ]),
                                     _vm._v(" "),
                                     _c("input", {
@@ -110408,7 +110477,24 @@ var render = function() {
                                 _c("div", { staticClass: "col-md-4" }, [
                                   _c("div", { staticClass: "form-group" }, [
                                     _c("label", { attrs: { for: "" } }, [
-                                      _vm._v("Nombre")
+                                      _vm._v("Nombre "),
+                                      _c(
+                                        "span",
+                                        {
+                                          directives: [
+                                            {
+                                              name: "show",
+                                              rawName: "v-show",
+                                              value:
+                                                _vm.nombre_referencia2 == "",
+                                              expression:
+                                                "nombre_referencia2==''"
+                                            }
+                                          ],
+                                          staticStyle: { color: "red" }
+                                        },
+                                        [_vm._v("(*)")]
+                                      )
                                     ]),
                                     _vm._v(" "),
                                     _c("input", {
@@ -110444,7 +110530,24 @@ var render = function() {
                                 _c("div", { staticClass: "col-md-4" }, [
                                   _c("div", { staticClass: "form-group" }, [
                                     _c("label", { attrs: { for: "" } }, [
-                                      _vm._v("Telefono")
+                                      _vm._v("Telefono "),
+                                      _c(
+                                        "span",
+                                        {
+                                          directives: [
+                                            {
+                                              name: "show",
+                                              rawName: "v-show",
+                                              value:
+                                                _vm.telefono_referencia2 == "",
+                                              expression:
+                                                "telefono_referencia2==''"
+                                            }
+                                          ],
+                                          staticStyle: { color: "red" }
+                                        },
+                                        [_vm._v("(*)")]
+                                      )
                                     ]),
                                     _vm._v(" "),
                                     _c("input", {
@@ -110480,7 +110583,24 @@ var render = function() {
                                 _c("div", { staticClass: "col-md-4" }, [
                                   _c("div", { staticClass: "form-group" }, [
                                     _c("label", { attrs: { for: "" } }, [
-                                      _vm._v("Celular")
+                                      _vm._v("Celular "),
+                                      _c(
+                                        "span",
+                                        {
+                                          directives: [
+                                            {
+                                              name: "show",
+                                              rawName: "v-show",
+                                              value:
+                                                _vm.celular_referencia2 == "",
+                                              expression:
+                                                "celular_referencia2==''"
+                                            }
+                                          ],
+                                          staticStyle: { color: "red" }
+                                        },
+                                        [_vm._v("(*)")]
+                                      )
                                     ]),
                                     _vm._v(" "),
                                     _c("input", {
@@ -110666,8 +110786,8 @@ var render = function() {
                                             {
                                               name: "show",
                                               rawName: "v-show",
-                                              value: _vm.etapa == 0,
-                                              expression: "etapa==0"
+                                              value: _vm.etapa == "",
+                                              expression: "etapa==''"
                                             }
                                           ],
                                           staticStyle: { color: "red" }
@@ -110718,15 +110838,24 @@ var render = function() {
                                           }
                                         }
                                       },
-                                      _vm._l(_vm.arrayEtapas, function(etapas) {
-                                        return _c("option", {
-                                          key: etapas.etapa,
-                                          domProps: {
-                                            value: etapas.etapa,
-                                            textContent: _vm._s(etapas.etapa)
-                                          }
+                                      [
+                                        _c("option", { attrs: { value: "" } }, [
+                                          _vm._v(" Seleccione ")
+                                        ]),
+                                        _vm._v(" "),
+                                        _vm._l(_vm.arrayEtapas, function(
+                                          etapas
+                                        ) {
+                                          return _c("option", {
+                                            key: etapas.etapa,
+                                            domProps: {
+                                              value: etapas.etapa,
+                                              textContent: _vm._s(etapas.etapa)
+                                            }
+                                          })
                                         })
-                                      })
+                                      ],
+                                      2
                                     )
                                   ])
                                 ]),
@@ -110735,6 +110864,10 @@ var render = function() {
                                 _vm._v(" "),
                                 _c("div", { staticClass: "col-md-2" }, [
                                   _c("div", { staticClass: "form-group" }, [
+                                    _c("option", { attrs: { value: "" } }, [
+                                      _vm._v(" Seleccione ")
+                                    ]),
+                                    _vm._v(" "),
                                     _c("label", { attrs: { for: "" } }, [
                                       _vm._v("Manzana"),
                                       _c(
@@ -110744,8 +110877,8 @@ var render = function() {
                                             {
                                               name: "show",
                                               rawName: "v-show",
-                                              value: _vm.manzana == 0,
-                                              expression: "manzana==0"
+                                              value: _vm.manzana == "",
+                                              expression: "manzana==''"
                                             }
                                           ],
                                           staticStyle: { color: "red" }
@@ -110823,8 +110956,8 @@ var render = function() {
                                             {
                                               name: "show",
                                               rawName: "v-show",
-                                              value: _vm.lote == 0,
-                                              expression: "lote==0"
+                                              value: _vm.lote == "",
+                                              expression: "lote==''"
                                             }
                                           ],
                                           staticStyle: { color: "red" }
@@ -110874,15 +111007,24 @@ var render = function() {
                                           }
                                         }
                                       },
-                                      _vm._l(_vm.arrayLotes, function(lotes) {
-                                        return _c("option", {
-                                          key: lotes.id,
-                                          domProps: {
-                                            value: lotes.id,
-                                            textContent: _vm._s(lotes.num_lote)
-                                          }
+                                      [
+                                        _c("option", { attrs: { value: "" } }, [
+                                          _vm._v(" Seleccione ")
+                                        ]),
+                                        _vm._v(" "),
+                                        _vm._l(_vm.arrayLotes, function(lotes) {
+                                          return _c("option", {
+                                            key: lotes.id,
+                                            domProps: {
+                                              value: lotes.id,
+                                              textContent: _vm._s(
+                                                lotes.num_lote
+                                              )
+                                            }
+                                          })
                                         })
-                                      })
+                                      ],
+                                      2
                                     )
                                   ])
                                 ]),
@@ -112120,7 +112262,7 @@ var render = function() {
                                 attrs: { type: "button" },
                                 on: {
                                   click: function($event) {
-                                    _vm.actualizarProspecto()
+                                    _vm.registrarSimulacion()
                                   }
                                 }
                               },

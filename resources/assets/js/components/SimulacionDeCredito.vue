@@ -92,7 +92,6 @@
                         </div>
                     </template>
                     
-
      <!-- Div Card Body para actualizar -->
                     <template v-else-if="listado == 3">
                         <div class="card-body"> 
@@ -164,7 +163,7 @@
                                             <div class="col-md-3">
                                                     <div class="form-group">
                                                 <label for="">Direccion<span style="color:red;" v-show="direccion==''">(*)</span></label>
-                                                <input type="text" class="form-control"  v-model="direccion_coa" placeholder="Direccion">
+                                                <input type="text" class="form-control"  v-model="direccion" placeholder="Direccion">
                                                 </div>
                                             </div>
 
@@ -179,7 +178,7 @@
                                                     <div class="form-group">
                                                 <label for="">Colonia<span style="color:red;" v-show="colonia==''">(*)</span></label>
                                                 <select class="form-control" v-model="colonia">
-                                                        <option value="0">Seleccione</option>
+                                                        <option value="">Seleccione</option>
                                                         <option v-for="colonias in arrayColonias" :key="colonias.colonia " :value="colonias.colonia" v-text="colonias.colonia"></option>
                                                     </select>
                                             </div>
@@ -190,7 +189,7 @@
                                                     <div class="form-group">
                                                 <label for="">Estado <span style="color:red;" v-show="estado==''">(*)</span></label>
                                                     <select class="form-control" v-model="estado" @click="selectCiudades(estado,0)" >
-                                                        <option value="0">Seleccione</option>
+                                                        <option value="">Seleccione</option>
                                                         <option v-for="estados in arrayEstados" :key="estados.estado" :value="estados.estado" v-text="estados.estado"></option>    
                                                 </select>
                                                     </div>
@@ -202,7 +201,7 @@
                                                     <div class="form-group">
                                                 <label for="">Ciudad <span style="color:red;" v-show="ciudad==''">(*)</span></label>
                                                     <select class="form-control" v-model="ciudad" >
-                                                        <option value="0">Seleccione</option>
+                                                        <option value="">Seleccione</option>
                                                         <option v-for="ciudades in arrayCiudades" :key="ciudades.municipio" :value="ciudades.municipio" v-text="ciudades.municipio"></option>    
                                                 </select>
                                                     </div>
@@ -349,14 +348,6 @@
                                                                 </div>
                                                             </div>
 
-                                                        
-                                                            <div class="col-md-10">
-                                                                <div class="form-group">
-                                                                    <label for="">Observaciones <span style="color:red;" v-show="observacion==''">(*)</span></label>
-                                                                    <textarea rows="3" cols="30" v-model="observacion" class="form-control" placeholder="Observaciones"></textarea>
-                                                                </div>
-                                                            </div>
-
                                                     </div>
                                     </div>
                                 </div>
@@ -432,6 +423,7 @@
                                                         <div class="form-group">
                                                     <label for="">Nacionalidad</label>
                                                     <select class="form-control" v-model="nacionalidad_coa" >
+                                                            <option value="">Seleccione</option>
                                                             <option value="0">Mexicana</option>
                                                             <option value="1">Extranjera</option>    
                                                     </select>
@@ -454,9 +446,9 @@
 
                                                 <div class="col-md-2" v-if="coacreditado==true">
                                                         <div class="form-group">
-                                                    <label for="">Colonia</label>
+                                                    <label for="">Colonia<span style="color:red;" v-show="colonia_coa==''">(*)</span></label>
                                                     <select class="form-control" v-model="colonia_coa">
-                                                            <option value="0">Seleccione</option>
+                                                            <option value="">Seleccione</option>
                                                             <option v-for="colonia in arrayColoniasCoa" :key="colonia.colonia " :value="colonia.colonia" v-text="colonia.colonia"></option>
                                                         </select>
                                                 </div>
@@ -467,7 +459,7 @@
                                                         <div class="form-group">
                                                     <label for="">Estado <span style="color:red;" v-show="estado_coa==''">(*)</span></label>
                                                         <select class="form-control" v-model="estado_coa" @click="selectCiudades(estado_coa,1)" >
-                                                            <option value="0">Seleccione</option>
+                                                            <option value="">Seleccione</option>
                                                             <option v-for="estado in arrayEstados" :key="estado.estado " :value="estado.estado" v-text="estado.estado"></option>    
                                                     </select>
                                                         </div>
@@ -479,7 +471,7 @@
                                                         <div class="form-group">
                                                     <label for="">Ciudad <span style="color:red;" v-show="ciudad_coa==''">(*)</span></label>
                                                         <select class="form-control" v-model="ciudad_coa" >
-                                                            <option value="0">Seleccione</option>
+                                                            <option value="">Seleccione</option>
                                                             <option v-for="ciudades in arrayCiudadesCoa" :key="ciudades.municipio" :value="ciudades.municipio" v-text="ciudades.municipio"></option>    
                                                     </select>
                                                         </div>
@@ -547,11 +539,16 @@
                                                     <center> <h3></h3> </center>
                                                     </div>
                                                     </div> 
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <center> <h5>Primera referencia</h5> </center>
+                                                    </div>
+                                                </div> 
 
 
                                                 <div class="col-md-4">
                                                         <div class="form-group">
-                                                    <label for="">Nombre</label>
+                                                    <label for="">Nombre <span style="color:red;" v-show="nombre_referencia1==''">(*)</span></label>
                                                     <input type="text" class="form-control"  v-model="nombre_referencia1" placeholder="Nombre">
                                                 </div>
                                                 </div>
@@ -559,7 +556,7 @@
 
                                                 <div class="col-md-4">
                                                         <div class="form-group">
-                                                    <label for="">Telefono</label>
+                                                    <label for="">Telefono <span style="color:red;" v-show="telefono_referencia1==''">(*)</span></label>
                                                     <input type="text" class="form-control"  v-model="telefono_referencia1" placeholder="Telefono">
                                                 </div>
                                                 </div>
@@ -567,7 +564,7 @@
                                                 
                                                 <div class="col-md-4">
                                                         <div class="form-group">
-                                                    <label for="">Celular</label>
+                                                    <label for="">Celular <span style="color:red;" v-show="celular_referencia1==''">(*)</span></label>
                                                     <input type="text" class="form-control"  v-model="celular_referencia1" placeholder="Celular">
                                                 </div>
                                                 </div>
@@ -580,7 +577,7 @@
 
                                                 <div class="col-md-4">
                                                         <div class="form-group">
-                                                    <label for="">Nombre</label>
+                                                    <label for="">Nombre <span style="color:red;" v-show="nombre_referencia2==''">(*)</span></label>
                                                     <input type="text" class="form-control"  v-model="nombre_referencia2" placeholder="Nombre">
                                                 </div>
                                                 </div>
@@ -588,7 +585,7 @@
 
                                                 <div class="col-md-4">
                                                         <div class="form-group">
-                                                    <label for="">Telefono</label>
+                                                    <label for="">Telefono <span style="color:red;" v-show="telefono_referencia2==''">(*)</span></label>
                                                     <input type="text" class="form-control"  v-model="telefono_referencia2" placeholder="Telefono">
                                                 </div>
                                                 </div>
@@ -596,7 +593,7 @@
                                                 
                                                 <div class="col-md-4">
                                                         <div class="form-group">
-                                                    <label for="">Celular</label>
+                                                    <label for="">Celular <span style="color:red;" v-show="celular_referencia2==''">(*)</span></label>
                                                     <input type="text" class="form-control"  v-model="celular_referencia2" placeholder="Celular">
                                                 </div>
                                                 </div>
@@ -640,7 +637,7 @@
                                                 
                                                 <div class="col-md-1">
                                                         <div class="form-group">
-                                                            <label for="">Etapa<span style="color:red;" v-show="etapa==0">(*)</span></label>     
+                                                            <label for="">Etapa<span style="color:red;" v-show="etapa==''">(*)</span></label>     
                                                         </div>
                                                     </div>
 
@@ -648,6 +645,7 @@
                                                 <div class="col-md-2">
                                                         <div class="form-group">
                                                             <select class="form-control" v-model="etapa" @click="selectManzana(etapa),selectPaquetes(etapa)">
+                                                                    <option value=''> Seleccione </option>
                                                                     <option v-for="etapas in arrayEtapas" :key="etapas.etapa" :value="etapas.etapa" v-text="etapas.etapa"></option>
                                                             </select>
                                                         </div>
@@ -660,7 +658,8 @@
                                                     
                                                     <div class="col-md-2">
                                                         <div class="form-group">
-                                                            <label for="">Manzana<span style="color:red;" v-show="manzana==0">(*)</span></label>
+                                                            <option value=''> Seleccione </option>
+                                                            <label for="">Manzana<span style="color:red;" v-show="manzana==''">(*)</span></label>
                                                         </div>
                                                     </div>
 
@@ -675,7 +674,7 @@
 
                                                     <div class="col-md-1">
                                                         <div class="form-group">
-                                                            <label for="">Lote<span style="color:red;" v-show="lote==0">(*)</span></label>
+                                                            <label for="">Lote<span style="color:red;" v-show="lote==''">(*)</span></label>
                                                         </div>
                                                     </div>
 
@@ -683,6 +682,7 @@
                                                     <div class="col-md-2">
                                                         <div class="form-group">
                                                             <select class="form-control" v-model="lote" @click="mostrarDatosLote(lote)">
+                                                                    <option value=''> Seleccione </option>
                                                                     <option v-for="lotes in arrayLotes" :key="lotes.id" :value="lotes.id" v-text="lotes.num_lote"></option>
                                                             </select>
                                                         </div>
@@ -997,7 +997,7 @@
                                             </div>
                                             <div class="col-md-12">
                                                 <button type="button" class="btn btn-secondary" @click="ocultarDetalle()"> Cerrar </button>
-                                                <button type="button" class="btn btn-primary" @click="actualizarProspecto()"> Enviar </button>
+                                                <button type="button" class="btn btn-primary" @click="registrarSimulacion()"> Enviar </button>
                                             </div>
                                         </div>
                                     </div>
@@ -1259,7 +1259,7 @@
                     console.log(error);
                 });
             },
-             selectEmpresaVueselect(search, loading){
+            selectEmpresaVueselect(search, loading){
                 let me = this;
                 loading(true)
 
@@ -1322,7 +1322,7 @@
                 });
             },
 
-              selectPaquetes(etapa){
+            selectPaquetes(etapa){
                 let me = this;
                 me.arrayPaquetes=[];
                 var url = '/select_paquetes?buscar=' + etapa;
@@ -1336,7 +1336,7 @@
                 });
             },
             
-              datosPaquetes(paquete){
+            datosPaquetes(paquete){
                 let me = this;
                 me.precioVenta = me.precioVenta - me.costoPaquete;
                 if(paquete!=0){
@@ -1374,31 +1374,31 @@
                 });
             },
 
-           mostrarDatosLote(lote){
-               let me = this;
+            mostrarDatosLote(lote){
+                let me = this;
                 me.arrayDatosLotes=[];
                 var url = '/select_datos_lotes_disp?buscar=' + lote;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
-                     me.arrayDatosLotes = respuesta.lotes;
-                     me.modelo = me.arrayDatosLotes[0]['modelo'];
-                     me.superficie = me.arrayDatosLotes[0]['terreno'];
-                     me.precioBase = me.arrayDatosLotes[0]['precio_base'];
-                     me.precioExcedente = me.arrayDatosLotes[0]['excedente_terreno'];
-                     me.precioVenta = me.arrayDatosLotes[0]['precio_venta'];
-                     me.promocion = me.arrayDatosLotes[0]['promocion'];
-                     me.descripcionPromo = me.arrayDatosLotes[0]['descripcionPromo'];
-                     me.descuentoPromo = me.arrayDatosLotes[0]['descuentoPromo'];
-                     me.terreno_tam_excedente= me.arrayDatosLotes[0]['terreno_tam_excedente'];
+                        me.arrayDatosLotes = respuesta.lotes;
+                        me.modelo = me.arrayDatosLotes[0]['modelo'];
+                        me.superficie = me.arrayDatosLotes[0]['terreno'];
+                        me.precioBase = me.arrayDatosLotes[0]['precio_base'];
+                        me.precioExcedente = me.arrayDatosLotes[0]['excedente_terreno'];
+                        me.precioVenta = me.arrayDatosLotes[0]['precio_venta'];
+                        me.promocion = me.arrayDatosLotes[0]['promocion'];
+                        me.descripcionPromo = me.arrayDatosLotes[0]['descripcionPromo'];
+                        me.descuentoPromo = me.arrayDatosLotes[0]['descuentoPromo'];
+                        me.terreno_tam_excedente= me.arrayDatosLotes[0]['terreno_tam_excedente'];
 
-                     me.precioVenta = me.precioVenta - me.descuentoPromo;
-                  
+                        me.precioVenta = me.precioVenta - me.descuentoPromo;
+                    
                     
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
-               
+                
 
             },
             LimpiarMascotas(){
@@ -1567,7 +1567,7 @@
             },
             /**Metodo para registrar  */
             registrarProspecto(){
-                if(this.validarProspecto() || this.proceso==true) //Se verifica si hay un error (campo vacio)
+                if(this.validarRegistro() || this.proceso==true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
@@ -1678,8 +1678,8 @@
             },
 
                /**Metodo para actualizar  */
-            actualizarProspecto(){
-                if(this.validarProspecto() || this.proceso==true) //Se verifica si hay un error (campo vacio)
+            registrarSimulacion(){
+                if(this.validarRegistro() || this.proceso==true) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
@@ -1745,36 +1745,29 @@
                     console.log(error);
                 });
             },
-            validarProspecto(){
+            validarRegistro(){
                 this.errorProspecto=0;
                 this.errorMostrarMsjProspecto=[];
 
-                if(this.nombre=='' || this.apellidos=='') 
-                    this.errorMostrarMsjProspecto.push("El nombre del prospecto no puede ir vacio.");
-                if(this.sexo=='') 
-                    this.errorMostrarMsjProspecto.push("Seleccionar el sexo del prospecto.");
-                if(this.celular=='') 
-                    this.errorMostrarMsjProspecto.push("Ingresar numero de celular.");
-                if(this.email=='') 
-                    this.errorMostrarMsjProspecto.push("Ingresar email personal.");
-                if(this.empresa=='') 
-                    this.errorMostrarMsjProspecto.push("Seleccionar empresa.");
-                if(this.fecha_nac=='') 
-                    this.errorMostrarMsjProspecto.push("Ingresar fecha de nacimiento.");
-                if(this.rfc=='') 
-                    this.errorMostrarMsjProspecto.push("Ingresar RFC.");
-                if(this.nss=='') 
-                    this.errorMostrarMsjProspecto.push("Ingresar numero de seguro social.");
-                if(this.tipo_casa==0) 
-                    this.errorMostrarMsjProspecto.push("Seleccionar tipo de casa.");
-                if(this.e_civil==0) 
-                    this.errorMostrarMsjProspecto.push("Seleccionar estado civil.");
-                if(this.proyecto_interes_id==0) 
-                    this.errorMostrarMsjProspecto.push("Seleccionar proyecto de interes.");
-                if(this.publicidad_id==0) 
-                    this.errorMostrarMsjProspecto.push("Seleccionar medio de publicidad.");
-                if(this.observacion=='') 
-                    this.errorMostrarMsjProspecto.push("Escribir una observación.");
+                if(this.direccion=='' || this.cp=='' || this.colonia=="") 
+                    this.errorMostrarMsjProspecto.push("Completar el domicilio del prospecto");
+                if(this.ciudad=='' || this.estado=='') 
+                    this.errorMostrarMsjProspecto.push("Seleccionar Ciudad y estado del prospecto");
+                if(this.tipo_economia=='' || this.puesto=='') 
+                    this.errorMostrarMsjProspecto.push("Completar datos para lugar de trabajo.");
+                if(this.dep_economicos=='') 
+                    this.errorMostrarMsjProspecto.push("Ingresar numero de dependientes económicos.");
+                if(this.nombre_referencia1=='' || this.nombre_referencia2=='' || this.telefono_referencia1 == '' 
+                        || this.telefono_referencia2 == '' || this.celular_referencia1 == '' || this.celular_referencia2=='') 
+                    this.errorMostrarMsjProspecto.push("Completar datos para referencias personales.");
+                if(this.etapa=='' || this.manzana=='' || this.lote == '') 
+                    this.errorMostrarMsjProspecto.push("Seleccionar lote de interes.");
+                if(this.tipo_credito==0 || this.inst_financiera=='') 
+                    this.errorMostrarMsjProspecto.push("Seleccionar credito a solicitar");
+                if(this.num_habitantes==0 || (this.rang0_10+this.rang11_20+this.rang21 == 0) ) 
+                    this.errorMostrarMsjProspecto.push("Ingresar numero de habitantes.");
+                if(this.num_habitantes<(this.rang0_10+this.rang11_20+this.rang21) ) 
+                    this.errorMostrarMsjProspecto.push("Verificar total de habitantes.");
 
                 if(this.errorMostrarMsjProspecto.length)//Si el mensaje tiene almacenado algo en el array
                     this.errorProspecto = 1;
@@ -1846,15 +1839,27 @@
                 this.e_civil= 0;
                 this.tipo_casa=0;
                 this.coacreditado= 0;
-                this.publicidad_id= 0;
                 this.proyecto_interes_id= 0;
                 this.empresa= '';
                 this.observacion='';
-                this.lugar_contacto= 0;
                 this.puesto='';
                 this.dep_economicos='';
+                this.direccion='';
+                this.colonia='';
+                this.estado='';
+                this.ciudad='';
+                this.tipo_economia=0;
+
 
                 this.nombre_coa='';
+                this.n_completo_coa='';
+                this.nacionalidad_coa='';
+                this.direccion_coa='';
+                this.cp_coa='';
+                this.colonia_coa='';
+                this.estado_coa='';
+                this.ciudad_coa='';
+                this.empresa_coa='';
                 this.parentesco_coa='';
                 this.apellidos_coa='';
                 this.telefono_coa = '';
@@ -1872,12 +1877,35 @@
                 this.conyugeNom = '';
                 this.proceso=false;
 
+                this.nombre_referencia1='';
+                this.telefono_referencia1='';
+                this.celular_referencia1='';
+                this.nombre_referencia2='';
+                this.telefono_referencia2='';
+                this.celular_referencia2='';
+
+                this.etapa='';
+                this.manzana='';
+                this.lote='';
+                this.paquete_id=0;
+                this.tipo_credito=0;
+                this.inst_financiera='';
+
+                this.mascotas=0;
+                this.num_habitantes=0;
+                this.num_perros=0;
+                this.rang0_10=0;
+                this.rang11_20=0;
+                this.rang21=0;
+                this.num_vehiculos=0;
+
 
                 this.errorProspecto=0;
                 this.errorMostrarMsjProspecto=[];
             },
             ocultarDetalle(){
                 this.listado=1;
+                this.limpiarDatos();
             },
             actualizarProspectoBTN(prospecto){
               
@@ -1931,9 +1959,11 @@
                     this.rang21=0;
                     this.num_habitantes=0;
                     this.valHab=0;
+                    this.selectEtapa(this.proyecto_interes_id);
                     
                     this.id=prospecto['id'];
                     this.listado=3;
+
                /* })
                 .catch(function (error) {
                     console.log(error);
