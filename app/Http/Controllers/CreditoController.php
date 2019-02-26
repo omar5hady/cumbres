@@ -7,6 +7,7 @@ use App\Dato_extra;
 use App\Credito;
 use App\Personal;
 use App\Cliente;
+use App\Inst_seleccionada;
 use DB;
 
 class CreditoController extends Controller
@@ -85,6 +86,13 @@ class CreditoController extends Controller
         $datos_extra->silla_ruedas = $request->silla_ruedas;
         $datos_extra->num_vehiculos = $request->num_vehiculos;
         $datos_extra->save();
+
+        $inst_seleccionada = new Inst_seleccionada();
+        $inst_seleccionada->credito_id = $credito->id;
+        $inst_seleccionada->tipo_credito = $request->tipo_credito;
+        $inst_seleccionada->institucion = $request->inst_financiera;
+        $inst_seleccionada->elegido = 1;
+        $inst_seleccionada->save();
         
         DB::commit();
 

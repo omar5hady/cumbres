@@ -557,7 +557,7 @@
                                                 <div class="col-md-4">
                                                         <div class="form-group">
                                                     <label for="">Telefono <span style="color:red;" v-show="telefono_referencia1==''">(*)</span></label>
-                                                    <input type="text" class="form-control"  v-model="telefono_referencia1" placeholder="Telefono">
+                                                    <input type="text"  maxlength="7" pattern="\d*" class="form-control"  v-model="telefono_referencia1" placeholder="Telefono">
                                                 </div>
                                                 </div>
 
@@ -565,7 +565,7 @@
                                                 <div class="col-md-4">
                                                         <div class="form-group">
                                                     <label for="">Celular <span style="color:red;" v-show="celular_referencia1==''">(*)</span></label>
-                                                    <input type="text" class="form-control"  v-model="celular_referencia1" placeholder="Celular">
+                                                    <input type="text" maxlength="10"  pattern="\d*" class="form-control"  v-model="celular_referencia1" placeholder="Celular">
                                                 </div>
                                                 </div>
 
@@ -586,7 +586,7 @@
                                                 <div class="col-md-4">
                                                         <div class="form-group">
                                                     <label for="">Telefono <span style="color:red;" v-show="telefono_referencia2==''">(*)</span></label>
-                                                    <input type="text" class="form-control"  v-model="telefono_referencia2" placeholder="Telefono">
+                                                    <input type="text" maxlength="7" pattern="\d*" class="form-control"  v-model="telefono_referencia2" placeholder="Telefono">
                                                 </div>
                                                 </div>
 
@@ -594,7 +594,7 @@
                                                 <div class="col-md-4">
                                                         <div class="form-group">
                                                     <label for="">Celular <span style="color:red;" v-show="celular_referencia2==''">(*)</span></label>
-                                                    <input type="text" class="form-control"  v-model="celular_referencia2" placeholder="Celular">
+                                                    <input type="text" maxlength="10" pattern="\d*" class="form-control"  v-model="celular_referencia2" placeholder="Celular">
                                                 </div>
                                                 </div>
 
@@ -1647,7 +1647,9 @@
                     'ama_casa':this.ama_casa,
                     'discapacidad':this.discapacidad,
                     'silla_ruedas':this.silla_ruedas,
-                    'num_vehiculos':this.num_vehiculos,
+                    'tipo_credito':this.tipo_credito,
+                    'inst_financiera':this.inst_financiera
+                    
                 }).then(function (response){
                     me.proceso=false;
                     me.actualizarDatosProspecto();

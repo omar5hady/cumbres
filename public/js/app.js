@@ -106658,7 +106658,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 'ama_casa': this.ama_casa,
                 'discapacidad': this.discapacidad,
                 'silla_ruedas': this.silla_ruedas,
-                'num_vehiculos': this.num_vehiculos
+                'tipo_credito': this.tipo_credito,
+                'inst_financiera': this.inst_financiera
+
             }).then(function (response) {
                 me.proceso = false;
                 me.actualizarDatosProspecto();
@@ -110297,6 +110299,8 @@ var render = function() {
                                       staticClass: "form-control",
                                       attrs: {
                                         type: "text",
+                                        maxlength: "7",
+                                        pattern: "\\d*",
                                         placeholder: "Telefono"
                                       },
                                       domProps: {
@@ -110350,6 +110354,8 @@ var render = function() {
                                       staticClass: "form-control",
                                       attrs: {
                                         type: "text",
+                                        maxlength: "10",
+                                        pattern: "\\d*",
                                         placeholder: "Celular"
                                       },
                                       domProps: {
@@ -110469,6 +110475,8 @@ var render = function() {
                                       staticClass: "form-control",
                                       attrs: {
                                         type: "text",
+                                        maxlength: "7",
+                                        pattern: "\\d*",
                                         placeholder: "Telefono"
                                       },
                                       domProps: {
@@ -110522,6 +110530,8 @@ var render = function() {
                                       staticClass: "form-control",
                                       attrs: {
                                         type: "text",
+                                        maxlength: "10",
+                                        pattern: "\\d*",
                                         placeholder: "Celular"
                                       },
                                       domProps: {
