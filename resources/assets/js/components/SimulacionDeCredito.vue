@@ -110,7 +110,7 @@
                                                     <i class="icon-pencil"></i>
                                                 </button>
 
-                                                <button title="Simulaciones" type="button" class="btn btn-warning btn-sm" @click="listarSimulaciones(prospecto.id)">
+                                                <button v-if="prospecto.simulacion!=0" title="Simulaciones" type="button" class="btn btn-warning btn-sm" @click="listarSimulaciones(prospecto.id)">
                                                     <i class="icon-eye"></i>
                                                 </button>
                                             </td>

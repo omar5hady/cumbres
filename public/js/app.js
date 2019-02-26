@@ -108301,22 +108301,24 @@ var render = function() {
                                   [_c("i", { staticClass: "icon-pencil" })]
                                 ),
                                 _vm._v(" "),
-                                _c(
-                                  "button",
-                                  {
-                                    staticClass: "btn btn-warning btn-sm",
-                                    attrs: {
-                                      title: "Simulaciones",
-                                      type: "button"
-                                    },
-                                    on: {
-                                      click: function($event) {
-                                        _vm.listarSimulaciones(prospecto.id)
-                                      }
-                                    }
-                                  },
-                                  [_c("i", { staticClass: "icon-eye" })]
-                                )
+                                prospecto.simulacion != 0
+                                  ? _c(
+                                      "button",
+                                      {
+                                        staticClass: "btn btn-warning btn-sm",
+                                        attrs: {
+                                          title: "Simulaciones",
+                                          type: "button"
+                                        },
+                                        on: {
+                                          click: function($event) {
+                                            _vm.listarSimulaciones(prospecto.id)
+                                          }
+                                        }
+                                      },
+                                      [_c("i", { staticClass: "icon-eye" })]
+                                    )
+                                  : _vm._e()
                               ]),
                               _vm._v(" "),
                               _c("td", {
