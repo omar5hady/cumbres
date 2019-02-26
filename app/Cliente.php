@@ -38,4 +38,8 @@ class Cliente extends Model
     public function Apartado(){
         return $this->hasMany('App\Apartado');
     }
+
+    public function Credito(){
+        return $this->hasMany('App\Credito');
+    }
 }

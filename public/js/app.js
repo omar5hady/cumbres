@@ -106312,7 +106312,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 from++;
             }
             return pagesArray;
+        },
+
+        totalHabitantes: function totalHabitantes() {
+            var resultado_habitantes = 0;
+            resultado_habitantes = parseFloat(resultado_habitantes) + parseInt(this.rang0_10) + parseInt(this.rang11_20) + parseInt(this.rang21);
+            return resultado_habitantes;
         }
+
     },
 
     methods: {
@@ -106581,113 +106588,26 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         },
 
         /**Metodo para registrar  */
-        registrarProspecto: function registrarProspecto() {
-            if (this.validarRegistro() || this.proceso == true) //Se verifica si hay un error (campo vacio)
-                {
-                    return;
-                }
-
-            this.proceso = true;
-
-            var me = this;
+        actualizarDatosProspecto: function actualizarDatosProspecto() {
             //Con axios se llama el metodo store del controller
-            axios.post('/clientes/registrar', {
-                'clasificacion': this.clasificacion,
-                'nombre': this.nombre,
-                'apellidos': this.apellidos,
-                'telefono': this.telefono,
-                'celular': this.celular,
-                'email': this.email,
-                'email_institucional': this.email_inst,
-                'nss': this.nss,
-                'sexo': this.sexo,
-                'f_nacimiento': this.fecha_nac,
-                'curp': this.curp,
-                'rfc': this.rfc,
-                'homoclave': this.homoclave,
-                'edo_civil': this.e_civil,
-                'tipo_casa': this.tipo_casa,
-                'coacreditado': this.coacreditado,
-                'publicidad_id': this.publicidad_id,
-                'proyecto_interes_id': this.proyecto_interes_id,
-                'empresa': this.empresa,
-                'observacion': this.observacion,
-                'lugar_contacto': this.lugar_contacto,
+            axios.put('/creditos/actualizarProspecto', {
+                'id': this.id,
+                'direccion': this.direccion,
+                'cp': this.cp,
+                'colonia': this.colonia,
+                'ciudad': this.ciudad,
+                'estado': this.estado,
+                'nacionalidad': this.nacionalidad,
+                'puesto': this.puesto,
 
-                'nombre_coa': this.nombre_coa,
-                'parentesco_coa': this.parentesco_coa,
-                'apellidos_coa': this.apellidos_coa,
-                'telefono_coa': this.telefono_coa,
-                'celular_coa': this.celular_coa,
-                'email_coa': this.email_coa,
-                'email_institucional_coa': this.email_institucional_coa,
-                'nss_coa': this.nss_coa,
-                'sexo_coa': this.sexo_coa,
-                'f_nacimiento_coa': this.fecha_nac_coa,
-                'curp_coa': this.curp_coa,
-                'rfc_coa': this.rfc_coa,
-                'homoclave_coa': this.homoclave_coa,
-                'edo_civil_coa': this.e_civil_coa,
-                'tipo_casa_coa': this.tipo_casa_coa
-            }).then(function (response) {
-                me.proceso = false;
-                me.listado = 1;
-                me.limpiarDatos();
-                me.listarProspectos(1, '', 'ini_obras.clave'); //se enlistan nuevamente los registros
-                //Se muestra mensaje Success
-                swal({
-                    position: 'top-end',
-                    type: 'success',
-                    title: 'Etapa agregada correctamente',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-            }).catch(function (error) {
-                console.log(error);
-            });
-        },
-        registrarCoacreditado: function registrarCoacreditado() {
-            if (this.validarCoacreditado() || this.proceso == true) //Se verifica si hay un error (campo vacio)
-                {
-                    return;
-                }
+                'direccion_coa': this.direccion_coa,
+                'colonia_coa': this.colonia_coa,
+                'cp_coa': this.cp_coa,
+                'ciudad_coa': this.ciudad_coa,
+                'estado_coa': this.estado_coa,
+                'empresa_coa': this.empresa_coa,
+                'nacionalidad_coa': this.nacionalidad_coa
 
-            this.proceso = true;
-
-            var me = this;
-            //Con axios se llama el metodo store del controller
-            axios.post('/clientes/registrar_coacreditado', {
-                'clasificacion': this.clasificacion,
-                'nombre': this.nombre_coa,
-                'apellidos': this.apellidos_coa,
-                'telefono': this.telefono_coa,
-                'celular': this.celular_coa,
-                'email': this.email_coa,
-                'email_institucional': this.email_institucional_coa,
-                'nss': this.nss_coa,
-                'sexo': this.sexo_coa,
-                'f_nacimiento': this.fecha_nac_coa,
-                'curp': this.curp_coa,
-                'rfc': this.rfc_coa,
-                'homoclave': this.homoclave_coa,
-                'edo_civil': this.e_civil_coa,
-                'tipo_casa': this.tipo_casa_coa,
-                'coacreditado': 0,
-                'proyecto_interes_id': this.proyecto_interes_id,
-                'lugar_contacto': this.lugar_contacto
-            }).then(function (response) {
-                me.proceso = false;
-                me.cerrarModal();
-                //Se muestra mensaje Success
-                swal({
-                    position: 'top-end',
-                    type: 'success',
-                    title: 'Coacreditado agregada correctamente',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-            }).catch(function (error) {
-                console.log(error);
             });
         },
 
@@ -106703,47 +106623,45 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             var me = this;
             //Con axios se llama el metodo store de FraccionaminetoController
-            axios.put('/clientes/actualizar', {
-                'id': this.id,
-                'clasificacion': this.clasificacion,
-                'nombre': this.nombre,
-                'apellidos': this.apellidos,
-                'telefono': this.telefono,
-                'celular': this.celular,
-                'email': this.email,
-                'email_institucional': this.email_inst,
-                'nss': this.nss,
-                'sexo': this.sexo,
-                'f_nacimiento': this.fecha_nac,
-                'curp': this.curp,
-                'rfc': this.rfc,
-                'homoclave': this.homoclave,
-                'edo_civil': this.e_civil,
-                'tipo_casa': this.tipo_casa,
-                'coacreditado': this.coacreditado,
-                'publicidad_id': this.publicidad_id,
-                'proyecto_interes_id': this.proyecto_interes_id,
-                'empresa': this.empresa,
-                'observacion': this.observacion,
-                'lugar_contacto': this.lugar_contacto,
-
-                'nombre_coa': this.nombre_coa,
-                'parentesco_coa': this.parentesco_coa,
-                'apellidos_coa': this.apellidos_coa,
-                'telefono_coa': this.telefono_coa,
-                'celular_coa': this.celular_coa,
-                'email_coa': this.email_coa,
-                'email_institucional_coa': this.email_institucional_coa,
-                'nss_coa': this.nss_coa,
-                'sexo_coa': this.sexo_coa,
-                'f_nacimiento_coa': this.fecha_nac_coa,
-                'curp_coa': this.curp_coa,
-                'rfc_coa': this.rfc_coa,
-                'homoclave_coa': this.homoclave_coa,
-                'edo_civil_coa': this.e_civil_coa,
-                'tipo_casa_coa': this.tipo_casa_coa
+            axios.post('/creditos/registrar', {
+                'prospecto_id': this.id,
+                'dep_economicos': this.dep_economicos,
+                'tipo_economia': this.tipo_economia,
+                'nombre_referencia1': this.nombre_referencia1,
+                'telefono_referencia1': this.telefono_referencia1,
+                'celular_referencia1': this.celular_referencia1,
+                'nombre_referencia2': this.nombre_referencia2,
+                'telefono_referencia2': this.telefono_referencia2,
+                'celular_referencia2': this.celular_referencia2,
+                'etapa': this.etapa,
+                'manzana': this.manzana,
+                'lote': this.lote,
+                'modelo': this.modelo,
+                'precioBase': this.precioBase,
+                'superficie': this.superficie,
+                'terreno_tam_excedente': this.terreno_tam_excedente,
+                'precioExcedente': this.precioExcedente,
+                'promocion': this.promocion,
+                'descripcionPromo': this.descripcionPromo,
+                'descuentoPromo': this.descuentoPromo,
+                'paquete_id': this.paquete_id,
+                'descripcionPaquete': this.descripcionPaquete,
+                'costoPaquete': this.costoPaquete,
+                'precioVenta': this.precioVenta,
+                'plazo_credito': this.plazo_credito,
+                'monto_credito': this.monto_credito,
+                'mascotas': this.mascotas,
+                'num_perros': this.num_perros,
+                'rang0_10': this.rang0_10,
+                'rang11_20': this.rang11_20,
+                'rang21': this.rang21,
+                'ama_casa': this.ama_casa,
+                'discapacidad': this.discapacidad,
+                'silla_ruedas': this.silla_ruedas,
+                'num_vehiculos': this.num_vehiculos
             }).then(function (response) {
                 me.proceso = false;
+                me.actualizarDatosProspecto();
                 me.listado = 1;
                 me.limpiarDatos();
                 me.listarProspectos(1, '', 'ini_obras.clave'); //se enlistan nuevamente los registros
@@ -106752,7 +106670,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 swal({
                     position: 'top-end',
                     type: 'success',
-                    title: 'Prospecto actualizado correctamente',
+                    title: 'Simulacion enviada correctamente',
                     showConfirmButton: false,
                     timer: 1500
                 });
@@ -106771,8 +106689,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             if (this.nombre_referencia1 == '' || this.nombre_referencia2 == '' || this.telefono_referencia1 == '' || this.telefono_referencia2 == '' || this.celular_referencia1 == '' || this.celular_referencia2 == '') this.errorMostrarMsjProspecto.push("Completar datos para referencias personales.");
             if (this.etapa == '' || this.manzana == '' || this.lote == '') this.errorMostrarMsjProspecto.push("Seleccionar lote de interes.");
             if (this.tipo_credito == 0 || this.inst_financiera == '') this.errorMostrarMsjProspecto.push("Seleccionar credito a solicitar");
-            if (this.num_habitantes == 0 || this.rang0_10 + this.rang11_20 + this.rang21 == 0) this.errorMostrarMsjProspecto.push("Ingresar numero de habitantes.");
-            if (this.num_habitantes < this.rang0_10 + this.rang11_20 + this.rang21) this.errorMostrarMsjProspecto.push("Verificar total de habitantes.");
 
             if (this.errorMostrarMsjProspecto.length) //Si el mensaje tiene almacenado algo en el array
                 this.errorProspecto = 1;
@@ -106807,15 +106723,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 evt.preventDefault();;
             } else {
                 return true;
-            }
-        },
-        validarHab: function validarHab() {
-            var sum = parseInt(this.rang0_10) + parseInt(this.rang11_20) + parseInt(this.rang21);
-
-            if (parseInt(this.num_habitantes) < sum) {
-                this.valHab = 1;
-            } else {
-                this.valHab = 0;
             }
         },
         limpiarDatos: function limpiarDatos() {
@@ -111751,99 +111658,29 @@ var render = function() {
                                 _vm._v(" "),
                                 _vm._m(30),
                                 _vm._v(" "),
-                                _c("div", { staticClass: "col-md-12" }, [
-                                  _c("h6", [
-                                    _vm._v("# Habitantes en el domicilio "),
-                                    _c(
-                                      "span",
-                                      {
-                                        directives: [
-                                          {
-                                            name: "show",
-                                            rawName: "v-show",
-                                            value: _vm.valHab == 1,
-                                            expression: "valHab==1"
-                                          }
-                                        ],
-                                        staticStyle: { color: "red" }
-                                      },
-                                      [_vm._v("Validar numero de habitantes")]
-                                    )
-                                  ])
-                                ]),
+                                _vm._m(31),
                                 _vm._v(" "),
                                 _c("div", { staticClass: "col-md-2" }, [
                                   _c("div", { staticClass: "form-group" }, [
                                     _c("label", { attrs: { for: "" } }, [
-                                      _vm._v("# Total "),
-                                      _c(
-                                        "span",
-                                        {
-                                          directives: [
-                                            {
-                                              name: "show",
-                                              rawName: "v-show",
-                                              value: _vm.valHab == 1,
-                                              expression: "valHab==1"
-                                            }
-                                          ],
-                                          staticStyle: { color: "red" }
-                                        },
-                                        [_vm._v("(*)")]
-                                      )
+                                      _vm._v("# Total  ")
                                     ]),
                                     _vm._v(" "),
-                                    _c("input", {
-                                      directives: [
-                                        {
-                                          name: "model",
-                                          rawName: "v-model",
-                                          value: _vm.num_habitantes,
-                                          expression: "num_habitantes"
-                                        }
-                                      ],
-                                      staticClass: "form-control",
-                                      attrs: {
-                                        type: "text",
-                                        maxlength: "2",
-                                        pattern: "\\d*"
-                                      },
-                                      domProps: { value: _vm.num_habitantes },
-                                      on: {
-                                        keypress: function($event) {
-                                          _vm.isNumber($event), _vm.validarHab()
-                                        },
-                                        input: function($event) {
-                                          if ($event.target.composing) {
-                                            return
-                                          }
-                                          _vm.num_habitantes =
-                                            $event.target.value
-                                        }
-                                      }
-                                    })
+                                    _c("label", { attrs: { for: "" } }, [
+                                      _vm._v(
+                                        _vm._s(
+                                          (_vm.total_habitantes =
+                                            _vm.totalHabitantes)
+                                        )
+                                      )
+                                    ])
                                   ])
                                 ]),
                                 _vm._v(" "),
                                 _c("div", { staticClass: "col-md-3" }, [
                                   _c("div", { staticClass: "form-group" }, [
                                     _c("label", { attrs: { for: "" } }, [
-                                      _vm._v("Entre 0-10 años de edad "),
-                                      _c(
-                                        "span",
-                                        {
-                                          directives: [
-                                            {
-                                              name: "show",
-                                              rawName: "v-show",
-                                              value: _vm.valHab == 1,
-                                              expression: "valHab==1"
-                                            }
-                                          ],
-                                          staticStyle: { color: "red" }
-                                        },
-                                        [_vm._v("(*)")]
-                                      )
+                                      _vm._v("Entre 0-10 años de edad  ")
                                     ]),
                                     _vm._v(" "),
                                     _c("input", {
@@ -111864,7 +111701,7 @@ var render = function() {
                                       domProps: { value: _vm.rang0_10 },
                                       on: {
                                         keypress: function($event) {
-                                          _vm.isNumber($event), _vm.validarHab()
+                                          _vm.isNumber($event)
                                         },
                                         input: function($event) {
                                           if ($event.target.composing) {
@@ -111880,22 +111717,7 @@ var render = function() {
                                 _c("div", { staticClass: "col-md-3" }, [
                                   _c("div", { staticClass: "form-group" }, [
                                     _c("label", { attrs: { for: "" } }, [
-                                      _vm._v("Entre 11-20 años de edad "),
-                                      _c(
-                                        "span",
-                                        {
-                                          directives: [
-                                            {
-                                              name: "show",
-                                              rawName: "v-show",
-                                              value: _vm.valHab == 1,
-                                              expression: "valHab==1"
-                                            }
-                                          ],
-                                          staticStyle: { color: "red" }
-                                        },
-                                        [_vm._v("(*)")]
-                                      )
+                                      _vm._v("Entre 11-20 años de edad  ")
                                     ]),
                                     _vm._v(" "),
                                     _c("input", {
@@ -111916,7 +111738,7 @@ var render = function() {
                                       domProps: { value: _vm.rang11_20 },
                                       on: {
                                         keypress: function($event) {
-                                          _vm.isNumber($event), _vm.validarHab()
+                                          _vm.isNumber($event)
                                         },
                                         input: function($event) {
                                           if ($event.target.composing) {
@@ -111932,22 +111754,7 @@ var render = function() {
                                 _c("div", { staticClass: "col-md-3" }, [
                                   _c("div", { staticClass: "form-group" }, [
                                     _c("label", { attrs: { for: "" } }, [
-                                      _vm._v("Mayores a 21 años de edad "),
-                                      _c(
-                                        "span",
-                                        {
-                                          directives: [
-                                            {
-                                              name: "show",
-                                              rawName: "v-show",
-                                              value: _vm.valHab == 1,
-                                              expression: "valHab==1"
-                                            }
-                                          ],
-                                          staticStyle: { color: "red" }
-                                        },
-                                        [_vm._v("(*)")]
-                                      )
+                                      _vm._v("Mayores a 21 años de edad  ")
                                     ]),
                                     _vm._v(" "),
                                     _c("input", {
@@ -111968,7 +111775,7 @@ var render = function() {
                                       domProps: { value: _vm.rang21 },
                                       on: {
                                         keypress: function($event) {
-                                          _vm.isNumber($event), _vm.validarHab()
+                                          _vm.isNumber($event)
                                         },
                                         input: function($event) {
                                           if ($event.target.composing) {
@@ -111985,7 +111792,7 @@ var render = function() {
                                 _vm.e_civil == 2 ||
                                 _vm.e_civil == 5
                                   ? _c("div", { staticClass: "col-md-3" }, [
-                                      _vm._m(31)
+                                      _vm._m(32)
                                     ])
                                   : _vm._e(),
                                 _vm._v(" "),
@@ -112047,9 +111854,9 @@ var render = function() {
                                     ])
                                   : _vm._e(),
                                 _vm._v(" "),
-                                _vm._m(32),
-                                _vm._v(" "),
                                 _vm._m(33),
+                                _vm._v(" "),
+                                _vm._m(34),
                                 _vm._v(" "),
                                 _c("div", { staticClass: "col-md-2" }, [
                                   _c(
@@ -112164,9 +111971,9 @@ var render = function() {
                                     ])
                                   : _vm._e(),
                                 _vm._v(" "),
-                                _vm._m(34),
-                                _vm._v(" "),
                                 _vm._m(35),
+                                _vm._v(" "),
+                                _vm._m(36),
                                 _vm._v(" "),
                                 _c("div", { staticClass: "col-md-2" }, [
                                   _c("div", { staticClass: "form-group" }, [
@@ -112347,7 +112154,7 @@ var render = function() {
                               "table table-bordered table-striped table-sm"
                           },
                           [
-                            _vm._m(36),
+                            _vm._m(37),
                             _vm._v(" "),
                             _c(
                               "tbody",
@@ -112772,6 +112579,14 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "col-md-12" }, [_c("h6")])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-md-12" }, [
+      _c("h6", [_vm._v("# Habitantes en el domicilio  ")])
+    ])
   },
   function() {
     var _vm = this

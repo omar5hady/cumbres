@@ -264,6 +264,12 @@ Route::group(['middleware' => ['auth']],function(){
     Route::put('/avance/actualizar','AvanceController@update');
     Route::get('/avances/resume_excel/{fraccionamiento}','AvanceController@exportExcel');
 
+    
+    /**********************************RUTAS SIMULACION*************************** */
+    
+    Route::put('/creditos/actualizarProspecto','CreditoController@updateDatosCliente');
+    Route::post('/creditos/registrar','CreditoController@store');
+
     });
 
 
