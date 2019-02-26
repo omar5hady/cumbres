@@ -9,7 +9,65 @@
                 <div class="card scroll-box">
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Simulacion de credito
+                        <button type="button" @click="ocultarDetalle()" class="btn btn-secondary" v-if="listado==0">
+                            <i class="icon-back"></i>&nbsp;Regresasr
+                        </button>
                     </div>
+
+                    <!----------------- Listado de Simulaciones de Credito ------------------------------>
+                    <!-- Div Card Body para listar -->
+                     <template v-if="listado == 0">
+                        <div class="card-body"> 
+                            <div class="form-group row">
+                                <div class="col-md-8">
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th># Folio</th>
+                                            <th>Cliente</th>
+                                            <th>Proyecto</th>
+                                            <th># Lote</th>
+                                            <th>Modelo</th>
+                                            <th>Precio Venta</th>
+                                            <th>Credito Solicitado</th>
+                                            <th>Plazo</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="prospecto in arraySimulaciones" :key="prospecto.id">
+                                            <td v-text="prospecto.id"></td>
+                                            <td v-text="prospecto.nombre + ' ' + prospecto.apellidos "></td>
+                                            <td v-text="prospecto.proyecto"></td>
+                                            <td v-text="prospecto.num_lote"></td>
+                                            <td v-text="prospecto.modelo"></td>
+                                            <td v-text="'$'+formatNumber(prospecto.precio_venta)"></td>
+                                            <td v-text="'$'+formatNumber(prospecto.credito_solic)"></td>
+                                            <td v-text="prospecto.plazo + ' años'"></td>
+                                        </tr>                               
+                                    </tbody>
+                                </table>
+                            </div>
+                            <nav>
+                                <!--Botones de paginacion -->
+                                <ul class="pagination">
+                                    <li class="page-item" v-if="pagination.current_page > 1">
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,criterio)">Ant</a>
+                                    </li>
+                                    <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,criterio)" v-text="page"></a>
+                                    </li>
+                                    <li class="page-item" v-if="pagination.current_page < pagination.last_page">
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,criterio)">Sig</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </template>
+
+
                     <!-- Div Card Body para listar -->
                      <template v-if="listado == 1">
                         <div class="card-body"> 
@@ -48,10 +106,12 @@
                                     <tbody>
                                         <tr v-for="prospecto in arrayProspectos" :key="prospecto.id">
                                             <td>
-                                            
-                                         
                                                 <button title="Editar" type="button" class="btn btn-warning btn-sm" @click="actualizarProspectoBTN(prospecto)">
                                                     <i class="icon-pencil"></i>
+                                                </button>
+
+                                                <button title="Simulaciones" type="button" class="btn btn-warning btn-sm" @click="listarSimulaciones(prospecto.id)">
+                                                    <i class="icon-eye"></i>
                                                 </button>
                                             </td>
                                             <td v-text="prospecto.nombre + ' ' + prospecto.apellidos "></td>
@@ -75,20 +135,6 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <nav>
-                                <!--Botones de paginacion -->
-                                <ul class="pagination">
-                                    <li class="page-item" v-if="pagination.current_page > 1">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,criterio)">Ant</a>
-                                    </li>
-                                    <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,criterio)" v-text="page"></a>
-                                    </li>
-                                    <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,criterio)">Sig</a>
-                                    </li>
-                                </ul>
-                            </nav>
                         </div>
                     </template>
                     
@@ -481,7 +527,7 @@
                                                 <div class="col-md-3" v-if="coacreditado==true">
                                                         <div class="form-group">
                                                     <label for="">Celular</label>
-                                                    <input type="text" class="form-control" disabled v-model="celular_coa" placeholder="Celular">
+                                                    <input type="text" maxlength="8" pattern="\d*" class="form-control" disabled v-model="celular_coa" placeholder="Celular">
                                                 </div>
                                                 </div>
 
@@ -489,7 +535,7 @@
                                                 <div class="col-md-3" v-if="coacreditado==true">
                                                         <div class="form-group">
                                                     <label for="">Telefono</label>
-                                                    <input type="text" class="form-control" disabled v-model="telefono_coa" placeholder="Telefono">
+                                                    <input type="text" maxlength="7" pattern="\d*" class="form-control" disabled v-model="telefono_coa" placeholder="Telefono">
                                                 </div>
                                                 </div>
 
@@ -520,6 +566,7 @@
                                                             :onChange="getDatosEmpresa"
                                                         >
                                                         </v-select>
+                                                    <input type="text" v-if="empresa_coa != 0 || empresa_coa != ''" class="form-control" disabled v-model="empresa_coa">
                                                 </div>
                                                 </div>  
                                         </div>
@@ -907,8 +954,9 @@
                                                     </div>
                                                     <div class="col-md-2" >
                                                         <div class="form-group">
-                                                        <label for=""># Total  </label>
-                                                        <label for="">{{total_habitantes = totalHabitantes}}</label>
+                                                        <label for=""><strong># Total: </strong>  </label>
+                                                        <h6></h6>
+                                                        <label for="">{{total_habitantes = totalHabitantes}} habitantes</label>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3" >
@@ -1143,6 +1191,7 @@
                 arrayDatosLotes: [],
                 arrayPaquetes: [],
                 arrayDatosPaquetes: [],
+                arraySimulaciones:[],
 
                 proyecto_interes_id: 0,
                 etapa: '',
@@ -1266,6 +1315,18 @@
                 .catch(function (error) {
                     console.log(error);
                 });
+            },
+             listarSimulaciones(buscar){
+                let me = this;
+                var url = '/simulaciones_credito?prospecto_id=' + buscar;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arraySimulaciones = respuesta.creditos;
+                    me.listado=0;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                })
             },
             selectEmpresaVueselect(search, loading){
                 let me = this;
@@ -1648,7 +1709,8 @@
                     'discapacidad':this.discapacidad,
                     'silla_ruedas':this.silla_ruedas,
                     'tipo_credito':this.tipo_credito,
-                    'inst_financiera':this.inst_financiera
+                    'inst_financiera':this.inst_financiera,
+                    'num_vehiculos':this.num_vehiculos
                     
                 }).then(function (response){
                     me.proceso=false;
@@ -1812,6 +1874,7 @@
 
                 this.errorProspecto=0;
                 this.errorMostrarMsjProspecto=[];
+                this.arraySimulaciones=[];
             },
             ocultarDetalle(){
                 this.listado=1;
@@ -1830,6 +1893,11 @@
 
                     this.nombre= prospecto['nombre'];
                     this.apellidos= prospecto['apellidos'];
+                    this.direccion=prospecto['direccion'];
+                    this.cp = prospecto['cp'];
+                    this.colonia=prospecto['colonia'];
+                    this.estado=prospecto['estado'];
+                    this.ciudad=prospecto['ciudad'];
                     this.sexo= prospecto['sexo'];
                     this.telefono= prospecto['telefono'];
                     this.celular= prospecto['celular'];
@@ -1863,6 +1931,12 @@
                     this.nacionalidad = prospecto['nacionalidad'];
                     this.nacionalidad_coa = prospecto['nacionalidad_coa'];
                     this.puesto = prospecto['puesto'];
+                    this.ciudad_coa = prospecto['ciudad_coa'];
+                    this.estado_coa = prospecto['estado_coa'];
+                    this.cp_coa = prospecto['cp_coa'];
+                    this.direccion_coa = prospecto['direccion_coa'];
+                    this.colonia_coa = prospecto['colonia_coa'];
+                    this.empresa_coa = prospecto['empresa_coa'];
                     this.dep_economicos='';
                     this.rang0_10=0;
                     this.rang11_20=0;
