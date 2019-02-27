@@ -15,6 +15,8 @@ class CreditoController extends Controller
 {
 
     public function indexCreditos(Request $request){
+        if (!$request->ajax()) return redirect('/');
+
         $creditos = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
             ->select('creditos.id','creditos.prospecto_id','creditos.num_dep_economicos','creditos.tipo_economia',
                 'creditos.nombre_primera_ref','creditos.telefono_primera_ref','creditos.celular_primera_ref',
@@ -100,6 +102,7 @@ class CreditoController extends Controller
     }
 
     public function updateDatosCliente(Request $request){
+            if (!$request->ajax()) return redirect('/');
 
            //datos del cliente que se guardan en la tabla personal
            $personal = Personal::findOrFail($request->id);
@@ -127,65 +130,65 @@ class CreditoController extends Controller
 
     public function store (Request $request)
     {
+        if (!$request->ajax()) return redirect('/');
+        try{
+            DB::beginTransaction();
+            $credito = new Credito();
+            $credito->prospecto_id = $request->prospecto_id;
+            $credito->num_dep_economicos = $request->dep_economicos;
+            $credito->tipo_economia = $request->tipo_economia;
+            $credito->nombre_primera_ref = $request->nombre_referencia1;
+            $credito->telefono_primera_ref = $request->telefono_referencia1;
+            $credito->celular_primera_ref = $request->celular_referencia1;
+            $credito->nombre_segunda_ref = $request->nombre_referencia2;
+            $credito->telefono_segunda_ref = $request->telefono_referencia2;
+            $credito->celular_segunda_ref = $request->celular_referencia2;
+            $credito->etapa = $request->etapa;
+            $credito->manzana = $request->manzana;
+            $credito->num_lote = $request->lote;
+            $credito->modelo = $request->modelo;
+            $credito->precio_base = $request->precioBase;
+            $credito->superficie = $request->superficie;
+            $credito->terreno_excedente = $request->terreno_tam_excedente;
+            $credito->precio_terreno_excedente = $request->precioExcedente;
+            $credito->promocion = $request->promocion;
+            $credito->descripcion_promocion = $request->descripcionPromo;
+            $credito->descuento_promocion = $request->descuentoPromo;
+            $credito->paquete = $request->paquete_id; //
+            $credito->descripcion_paquete = $request->descripcionPaquete;
+            $credito->costo_paquete = $request->costoPaquete;
+            $credito->precio_venta = $request->precioVenta;
+            $credito->plazo = $request->plazo_credito;
+            $credito->credito_solic = $request->monto_credito;
+            $credito->save();
 
-    try{
-        DB::beginTransaction();
-        $credito = new Credito();
-        $credito->prospecto_id = $request->prospecto_id;
-        $credito->num_dep_economicos = $request->dep_economicos;
-        $credito->tipo_economia = $request->tipo_economia;
-        $credito->nombre_primera_ref = $request->nombre_referencia1;
-        $credito->telefono_primera_ref = $request->telefono_referencia1;
-        $credito->celular_primera_ref = $request->celular_referencia1;
-        $credito->nombre_segunda_ref = $request->nombre_referencia2;
-        $credito->telefono_segunda_ref = $request->telefono_referencia2;
-        $credito->celular_segunda_ref = $request->celular_referencia2;
-        $credito->etapa = $request->etapa;
-        $credito->manzana = $request->manzana;
-        $credito->num_lote = $request->lote;
-        $credito->modelo = $request->modelo;
-        $credito->precio_base = $request->precioBase;
-        $credito->superficie = $request->superficie;
-        $credito->terreno_excedente = $request->terreno_tam_excedente;
-        $credito->precio_terreno_excedente = $request->precioExcedente;
-        $credito->promocion = $request->promocion;
-        $credito->descripcion_promocion = $request->descripcionPromo;
-        $credito->descuento_promocion = $request->descuentoPromo;
-        $credito->paquete = $request->paquete_id; //
-        $credito->descripcion_paquete = $request->descripcionPaquete;
-        $credito->costo_paquete = $request->costoPaquete;
-        $credito->precio_venta = $request->precioVenta;
-        $credito->plazo = $request->plazo_credito;
-        $credito->credito_solic = $request->monto_credito;
-        $credito->save();
+            $datos_extra = new Dato_extra();
+            $datos_extra->id = $credito->id;
+            $datos_extra->mascota = $request->mascotas;
+            $datos_extra->num_perros = $request->num_perros;
+            $datos_extra->rang010 = $request->rang0_10;
+            $datos_extra->rang1120 = $request->rang11_20;
+            $datos_extra->rang21 = $request->rang21;
+            $datos_extra->ama_casa = $request->ama_casa;
+            $datos_extra->persona_discap = $request->discapacidad;
+            $datos_extra->silla_ruedas = $request->silla_ruedas;
+            $datos_extra->num_vehiculos = $request->num_vehiculos;
+            $datos_extra->save();
 
-        $datos_extra = new Dato_extra();
-        $datos_extra->id = $credito->id;
-        $datos_extra->mascota = $request->mascotas;
-        $datos_extra->num_perros = $request->num_perros;
-        $datos_extra->rang010 = $request->rang0_10;
-        $datos_extra->rang1120 = $request->rang11_20;
-        $datos_extra->rang21 = $request->rang21;
-        $datos_extra->ama_casa = $request->ama_casa;
-        $datos_extra->persona_discap = $request->discapacidad;
-        $datos_extra->silla_ruedas = $request->silla_ruedas;
-        $datos_extra->num_vehiculos = $request->num_vehiculos;
-        $datos_extra->save();
-
-        $inst_seleccionada = new Inst_seleccionada();
-        $inst_seleccionada->credito_id = $credito->id;
-        $inst_seleccionada->tipo_credito = $request->tipo_credito;
-        $inst_seleccionada->institucion = $request->inst_financiera;
-        $inst_seleccionada->elegido = 1;
-        $inst_seleccionada->save();
-        
-        DB::commit();
-
+            $inst_seleccionada = new Inst_seleccionada();
+            $inst_seleccionada->credito_id = $credito->id;
+            $inst_seleccionada->tipo_credito = $request->tipo_credito;
+            $inst_seleccionada->institucion = $request->inst_financiera;
+            $inst_seleccionada->elegido = 1;
+            $inst_seleccionada->save();
             
- 
-    } catch (Exception $e){
-        DB::rollBack();
-    }  
+            DB::commit();
+
+                
+    
+        } catch (Exception $e){
+            DB::rollBack();
+        }  
         
 
     }

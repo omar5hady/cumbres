@@ -128,7 +128,7 @@
             </template>
             
             <template v-if="menu==61">
-                <simulacion></simulacion>
+                <simulacion rol-id="{{Auth::user()->rol_id}}"></simulacion>
             </template>
             
             @elseif(Auth::user()->rol_id == 2) <!--Vendedor -->
@@ -142,7 +142,7 @@
                 <prospectos></prospectos>
             </template>
             <template v-if="menu==61">
-                <simulacion></simulacion>
+                <simulacion rol-id="{{Auth::user()->rol_id}}"></simulacion>
             </template>
             <template v-if="menu==59">
                 <lote-disponible rol-id="{{Auth::user()->rol_id}}"></lote-disponible>

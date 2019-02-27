@@ -107022,9 +107022,21 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+    props: {
+        rolId: { type: String }
+    },
     data: function data() {
         var _ref;
 
@@ -117035,7 +117047,13 @@ var render = function() {
                                       ])
                                     ]),
                                     _vm._v(" "),
-                                    _vm._m(63),
+                                    _vm.rolId == "1"
+                                      ? _c("div", { staticClass: "col-md-3" }, [
+                                          _vm._m(63)
+                                        ])
+                                      : _vm._e(),
+                                    _vm._v(" "),
+                                    _vm._m(64),
                                     _vm._v(" "),
                                     _vm.inst_financiera != ""
                                       ? _c("div", { staticClass: "col-md-2" }, [
@@ -117116,7 +117134,7 @@ var render = function() {
                                             "div",
                                             { staticClass: "form-group" },
                                             [
-                                              _vm._m(64),
+                                              _vm._m(65),
                                               _vm._v(" "),
                                               _c("h6", {
                                                 domProps: {
@@ -117139,7 +117157,7 @@ var render = function() {
                           ]),
                           _vm._v(" "),
                           _c("div", { staticClass: "card mb-0" }, [
-                            _vm._m(65),
+                            _vm._m(66),
                             _vm._v(" "),
                             _c(
                               "div",
@@ -117173,7 +117191,7 @@ var render = function() {
                                       )
                                     ]),
                                     _vm._v(" "),
-                                    _vm._m(66),
+                                    _vm._m(67),
                                     _vm._v(" "),
                                     _c("div", { staticClass: "col-md-2" }, [
                                       _c(
@@ -117284,13 +117302,13 @@ var render = function() {
                                         ])
                                       : _vm._e(),
                                     _vm._v(" "),
-                                    _vm._m(67),
-                                    _vm._v(" "),
                                     _vm._m(68),
+                                    _vm._v(" "),
+                                    _vm._m(69),
                                     _vm._v(" "),
                                     _c("div", { staticClass: "col-md-2" }, [
                                       _c("div", { staticClass: "form-group" }, [
-                                        _vm._m(69),
+                                        _vm._m(70),
                                         _vm._v(" "),
                                         _c("h6"),
                                         _vm._v(" "),
@@ -117424,7 +117442,7 @@ var render = function() {
                                     _vm.e_civil == 2 ||
                                     _vm.e_civil == 5
                                       ? _c("div", { staticClass: "col-md-3" }, [
-                                          _vm._m(70)
+                                          _vm._m(71)
                                         ])
                                       : _vm._e(),
                                     _vm._v(" "),
@@ -117491,9 +117509,9 @@ var render = function() {
                                         ])
                                       : _vm._e(),
                                     _vm._v(" "),
-                                    _vm._m(71),
-                                    _vm._v(" "),
                                     _vm._m(72),
+                                    _vm._v(" "),
+                                    _vm._m(73),
                                     _vm._v(" "),
                                     _c("div", { staticClass: "col-md-2" }, [
                                       _c(
@@ -117616,9 +117634,9 @@ var render = function() {
                                         ])
                                       : _vm._e(),
                                     _vm._v(" "),
-                                    _vm._m(73),
-                                    _vm._v(" "),
                                     _vm._m(74),
+                                    _vm._v(" "),
+                                    _vm._m(75),
                                     _vm._v(" "),
                                     _c("div", { staticClass: "col-md-2" }, [
                                       _c("div", { staticClass: "form-group" }, [
@@ -117758,7 +117776,7 @@ var render = function() {
                               "table table-bordered table-striped table-sm"
                           },
                           [
-                            _vm._m(75),
+                            _vm._m(76),
                             _vm._v(" "),
                             _c(
                               "tbody",
@@ -118533,6 +118551,25 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "col-md-12" }, [_c("h6")])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "form-group" }, [
+      _c("h6", [_c("br")]),
+      _vm._v(" "),
+      _c(
+        "button",
+        { staticClass: "btn btn-success", attrs: { type: "button" } },
+        [
+          _c("i", { staticClass: "icon-plus" }),
+          _vm._v(
+            " Nuevo\n                                                        "
+          )
+        ]
+      )
+    ])
   },
   function() {
     var _vm = this

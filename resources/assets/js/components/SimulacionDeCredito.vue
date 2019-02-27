@@ -1735,6 +1735,15 @@
                                                         </div>
                                                     </div>
 
+                                                    <div class="col-md-3" v-if="rolId == '1'">
+                                                        <div class="form-group">
+                                                            <h6><br></h6>
+                                                            <button type="button" class="btn btn-success">
+                                                                <i class="icon-plus"></i> Nuevo
+                                                            </button>
+                                                        </div>
+                                                    </div>
+
                                                     <div class="col-md-12">
                                                         <div class="form-group">
                                                             <h6></h6>
@@ -1950,6 +1959,9 @@
 <script>
     import vSelect from 'vue-select';
     export default {
+        props:{
+            rolId:{type: String}
+        },
         data(){
             return{
                 proceso:false,
@@ -2498,9 +2510,7 @@
                     'nacionalidad_coa':this.nacionalidad_coa
                     
                 })
-            },
-
-        
+            },    
 
                /**Metodo para actualizar  */
             registrarSimulacion(){
