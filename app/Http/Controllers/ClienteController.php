@@ -503,20 +503,7 @@ class ClienteController extends Controller
             ->where($criterio, 'like', '%'. $buscar . '%')
             ->orderBy('personal.apellidos', 'desc')
             ->orderBy('personal.nombre', 'desc')
-            ->paginate(3);
-            }
-
-            foreach($personas as $index => $persona) {                
-                $institucion=[];
-                $institucion=Credito::select('id')
-                    ->where('prospecto_id','=',$persona->id)->get();
-                if(sizeof($prospecto) > 0){
-                    $persona->simulacion=$institucion[0]->id;
-                }
-                else{
-                    $persona->simulacion=0;
-                }
-                
+            ->paginate(6);
             }
         }
          
