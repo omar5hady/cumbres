@@ -107031,6 +107031,90 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -107069,6 +107153,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             lugar_contacto: 0,
             conyugeNom: '',
             tipo_credito: 0,
+            tipo_credito2: 0,
             tipo_economia: 0,
             estado: '',
             ciudad: '',
@@ -107076,6 +107161,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             colonia: '',
             direccion: '',
             inst_financiera: '',
+            inst_financiera2: '',
             nacionalidad: 0,
 
             nombre_coa: '',
@@ -107116,16 +107202,17 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             arrayPaquetes: [],
             arrayDatosPaquetes: [],
             arraySimulaciones: [],
+            arrayTiposCreditos: [],
 
             proyecto_interes_id: 0
-        }, _defineProperty(_ref, 'proyecto', ''), _defineProperty(_ref, 'etapa', ''), _defineProperty(_ref, 'manzana', ''), _defineProperty(_ref, 'lote', ''), _defineProperty(_ref, 'num_lote', ''), _defineProperty(_ref, 'modelo', ''), _defineProperty(_ref, 'superficie', ''), _defineProperty(_ref, 'precioBase', 0), _defineProperty(_ref, 'precioExcedente', 0), _defineProperty(_ref, 'precioVenta', 0), _defineProperty(_ref, 'promocion', ''), _defineProperty(_ref, 'descripcionPromo', ''), _defineProperty(_ref, 'descuentoPromo', 0), _defineProperty(_ref, 'paquete_id', 0), _defineProperty(_ref, 'descripcionPaquete', ''), _defineProperty(_ref, 'costoPaquete', 0), _defineProperty(_ref, 'paquete', ''), _defineProperty(_ref, 'nombre_referencia1', ''), _defineProperty(_ref, 'telefono_referencia1', ''), _defineProperty(_ref, 'celular_referencia1', ''), _defineProperty(_ref, 'nombre_referencia2', ''), _defineProperty(_ref, 'telefono_referencia2', ''), _defineProperty(_ref, 'celular_referencia2', ''), _defineProperty(_ref, 'modal3', 0), _defineProperty(_ref, 'listado', 1), _defineProperty(_ref, 'tituloModal3', ''), _defineProperty(_ref, 'tipoAccion', 0), _defineProperty(_ref, 'errorProspecto', 0), _defineProperty(_ref, 'errorMostrarMsjProspecto', []), _defineProperty(_ref, 'errorCoacreditado', 0), _defineProperty(_ref, 'errorMostrarMsjCoacreditado', []), _defineProperty(_ref, 'pagination', {
+        }, _defineProperty(_ref, 'proyecto', ''), _defineProperty(_ref, 'etapa', ''), _defineProperty(_ref, 'manzana', ''), _defineProperty(_ref, 'lote', ''), _defineProperty(_ref, 'num_lote', ''), _defineProperty(_ref, 'modelo', ''), _defineProperty(_ref, 'superficie', ''), _defineProperty(_ref, 'precioBase', 0), _defineProperty(_ref, 'precioExcedente', 0), _defineProperty(_ref, 'precioVenta', 0), _defineProperty(_ref, 'promocion', ''), _defineProperty(_ref, 'descripcionPromo', ''), _defineProperty(_ref, 'descuentoPromo', 0), _defineProperty(_ref, 'paquete_id', 0), _defineProperty(_ref, 'descripcionPaquete', ''), _defineProperty(_ref, 'costoPaquete', 0), _defineProperty(_ref, 'paquete', ''), _defineProperty(_ref, 'nombre_referencia1', ''), _defineProperty(_ref, 'telefono_referencia1', ''), _defineProperty(_ref, 'celular_referencia1', ''), _defineProperty(_ref, 'nombre_referencia2', ''), _defineProperty(_ref, 'telefono_referencia2', ''), _defineProperty(_ref, 'celular_referencia2', ''), _defineProperty(_ref, 'modal3', 0), _defineProperty(_ref, 'modal2', 0), _defineProperty(_ref, 'listado', 1), _defineProperty(_ref, 'tituloModal3', ''), _defineProperty(_ref, 'tipoAccion', 0), _defineProperty(_ref, 'errorProspecto', 0), _defineProperty(_ref, 'errorMostrarMsjProspecto', []), _defineProperty(_ref, 'errorCoacreditado', 0), _defineProperty(_ref, 'errorMostrarMsjCoacreditado', []), _defineProperty(_ref, 'pagination', {
             'total': 0,
             'current_page': 0,
             'per_page': 0,
             'last_page': 0,
             'from': 0,
             'to': 0
-        }), _defineProperty(_ref, 'offset', 3), _defineProperty(_ref, 'criterio', 'personal.nombre'), _defineProperty(_ref, 'buscar', ''), _defineProperty(_ref, 'arrayCoacreditados', []), _defineProperty(_ref, 'arrayProspectos', []), _defineProperty(_ref, 'arrayFraccionamientos', []), _defineProperty(_ref, 'arrayLugarContacto', []), _defineProperty(_ref, 'arrayFraccionamientos2', []), _defineProperty(_ref, 'arrayObservacion', []), _defineProperty(_ref, 'fraccionamiento', ''), _defineProperty(_ref, 'mascotas', 0), _defineProperty(_ref, 'num_perros', 0), _defineProperty(_ref, 'num_habitantes', 0), _defineProperty(_ref, 'rang0_10', 0), _defineProperty(_ref, 'rang11_20', 0), _defineProperty(_ref, 'rang21', 0), _defineProperty(_ref, 'valHab', 0), _defineProperty(_ref, 'num_vehiculos', 0), _defineProperty(_ref, 'silla_ruedas', 0), _defineProperty(_ref, 'discapacidad', 0), _defineProperty(_ref, 'terreno_tam_excedente', 0), _defineProperty(_ref, 'plazo_credito', 0), _defineProperty(_ref, 'monto_credito', 0), _ref;
+        }), _defineProperty(_ref, 'offset', 3), _defineProperty(_ref, 'criterio', 'personal.nombre'), _defineProperty(_ref, 'buscar', ''), _defineProperty(_ref, 'arrayCoacreditados', []), _defineProperty(_ref, 'arrayProspectos', []), _defineProperty(_ref, 'arrayFraccionamientos', []), _defineProperty(_ref, 'arrayLugarContacto', []), _defineProperty(_ref, 'arrayFraccionamientos2', []), _defineProperty(_ref, 'arrayObservacion', []), _defineProperty(_ref, 'fraccionamiento', ''), _defineProperty(_ref, 'mascotas', 0), _defineProperty(_ref, 'num_perros', 0), _defineProperty(_ref, 'num_habitantes', 0), _defineProperty(_ref, 'num_folio', 0), _defineProperty(_ref, 'rang0_10', 0), _defineProperty(_ref, 'rang11_20', 0), _defineProperty(_ref, 'rang21', 0), _defineProperty(_ref, 'valHab', 0), _defineProperty(_ref, 'num_vehiculos', 0), _defineProperty(_ref, 'silla_ruedas', 0), _defineProperty(_ref, 'discapacidad', 0), _defineProperty(_ref, 'terreno_tam_excedente', 0), _defineProperty(_ref, 'plazo_credito', 0), _defineProperty(_ref, 'monto_credito', 0), _ref;
     },
 
     components: {
@@ -107540,6 +107627,36 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 console.log(error);
             });
         },
+        registrarCreditoSelect: function registrarCreditoSelect() {
+            if (this.proceso == true) //Se verifica si hay un error (campo vacio)
+                {
+                    return;
+                }
+
+            this.proceso = true;
+
+            var me = this;
+            //Con axios se llama el metodo store de FraccionaminetoController
+            axios.post('/creditos_select/registrar', {
+                'credito_id': this.num_folio,
+                'tipo_credito': this.tipo_credito2,
+                'institucion': this.inst_financiera2
+            }).then(function (response) {
+                me.proceso = false;
+                me.listado = 5;
+
+                //Se muestra mensaje Success
+                swal({
+                    position: 'top-end',
+                    type: 'success',
+                    title: 'Credito agregado correctamente',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
         validarRegistro: function validarRegistro() {
             this.errorProspecto = 0;
             this.errorMostrarMsjProspecto = [];
@@ -107590,6 +107707,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         mostrarDetalle: function mostrarDetalle() {
             var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
 
+            this.num_folio = data['id'];
             this.nombre = data['nombre'];
             this.apellidos = data['apellidos'];
             this.sexo = data['sexo'];
@@ -107620,6 +107738,27 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             this.nombre_referencia2 = data['nombre_segunda_ref'];
             this.telefono_referencia2 = data['telefono_segunda_ref'];
             this.celular_referencia2 = data['celular_segunda_ref'];
+
+            this.coacreditado = data['coacreditado'];
+            this.nombre_coa = data['nombre_coa'];
+            this.apellidos_coa = data['apellidos_coa'];
+            this.conyugeNom = this.nombre_coa + ' ' + this.apellidos_coa;
+            this.fecha_nac_coa = data['f_nacimiento_coa'];
+            this.rfc_coa = data['rfc_coa'];
+            this.homoclave_coa = data['homoclave_coa'];
+            this.curp_coa = data['curp_coa'];
+            this.nss_coa = data['nss_coa'];
+            this.nacionalidad_coa = data['nacionalidad_coa'];
+            this.direccion_coa = data['direccion_coa'];
+            this.cp_coa = data['cp_coa'];
+            this.colonia_coa = data['colonia_coa'];
+            this.estado_coa = data['estado_coa'];
+            this.ciudad_coa = data['ciudad_coa'];
+            this.celular_coa = data['celular_coa'];
+            this.telefono_coa = data['telefono_coa'];
+            this.email_coa = data['email_coa'];
+            this.email_institucional_coa = data['email_institucional_coa'];
+            this.empresa_coa = data['empresa_coa'];
 
             this.proyecto = data['proyecto'];
             this.etapa = data['etapa'];
@@ -107809,28 +107948,25 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
              });*/
         },
         cerrarModal: function cerrarModal() {
-            this.modal = 0;
-            this.nombre_coa = '';
-            this.parentesco_coa = '';
-            this.apellidos_coa = '';
-            this.telefono_coa = '';
-            this.celular_coa = '';
-            this.email_coa = '';
-            this.email_institucional_coa = '';
-            this.nss_coa = '';
-            this.sexo_coa = '';
-            this.fecha_nac_coa = '';
-            this.curp_coa = '';
-            this.rfc_coa = '';
-            this.homoclave_coa = '';
-            this.e_civil_coa = 0;
-            this.tipo_casa_coa = 0;
-            this.errorCoacreditado = 0;
-            this.errorMostrarMsjCoacreditado = [];
+            this.modal2 = 0;
+            this.tituloModal3 = '';
         },
         cerrarModal3: function cerrarModal3() {
             this.modal3 = 0;
             this.tituloModal3 = '';
+        },
+        abrirModal: function abrirModal() {
+            var me = this;
+            me.arrayTiposCreditos = [];
+            var url = '/select_tipcreditos_simulacion?simulacion_id=' + this.num_folio;
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayTiposCreditos = respuesta.creditos_select;
+                me.modal2 = 1;
+                me.tituloModal3 = 'Añadir tipo de credito';
+            }).catch(function (error) {
+                console.log(error);
+            });
         },
         abrirModal3: function abrirModal3(prospectos, accion, prospecto) {
             switch (prospectos) {
@@ -113209,6 +113345,28 @@ var render = function() {
               : _vm.listado == 5
                 ? [
                     _c("div", { staticClass: "card-body" }, [
+                      _c("div", { staticClass: "col-md-12" }, [
+                        _c(
+                          "div",
+                          { staticClass: "form-group" },
+                          [
+                            _c("center", [
+                              _vm.listado == 5
+                                ? _c("h6", {
+                                    attrs: { align: "right" },
+                                    domProps: {
+                                      textContent: _vm._s(
+                                        "# Folio: " + _vm.num_folio
+                                      )
+                                    }
+                                  })
+                                : _vm._e()
+                            ])
+                          ],
+                          1
+                        )
+                      ]),
+                      _vm._v(" "),
                       _c(
                         "div",
                         { attrs: { id: "accordion", role: "tablist" } },
@@ -117049,7 +117207,35 @@ var render = function() {
                                     _vm._v(" "),
                                     _vm.rolId == "1"
                                       ? _c("div", { staticClass: "col-md-3" }, [
-                                          _vm._m(63)
+                                          _c(
+                                            "div",
+                                            { staticClass: "form-group" },
+                                            [
+                                              _vm._m(63),
+                                              _vm._v(" "),
+                                              _c(
+                                                "button",
+                                                {
+                                                  staticClass:
+                                                    "btn btn-success",
+                                                  attrs: { type: "button" },
+                                                  on: {
+                                                    click: function($event) {
+                                                      _vm.abrirModal()
+                                                    }
+                                                  }
+                                                },
+                                                [
+                                                  _c("i", {
+                                                    staticClass: "icon-plus"
+                                                  }),
+                                                  _vm._v(
+                                                    " Nuevo\n                                                        "
+                                                  )
+                                                ]
+                                              )
+                                            ]
+                                          )
                                         ])
                                       : _vm._e(),
                                     _vm._v(" "),
@@ -117834,6 +118020,278 @@ var render = function() {
           ]
         )
       ]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "modal animated fadeIn",
+        class: { mostrar: _vm.modal2 },
+        staticStyle: { display: "none" },
+        attrs: {
+          tabindex: "-1",
+          role: "dialog",
+          "aria-labelledby": "myModalLabel",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c(
+          "div",
+          {
+            staticClass: "modal-dialog modal-primary modal-lg",
+            attrs: { role: "document" }
+          },
+          [
+            _c("div", { staticClass: "modal-content" }, [
+              _c("div", { staticClass: "modal-header" }, [
+                _c("h4", {
+                  staticClass: "modal-title",
+                  domProps: { textContent: _vm._s(_vm.tituloModal3) }
+                }),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "close",
+                    attrs: { type: "button", "aria-label": "Close" },
+                    on: {
+                      click: function($event) {
+                        _vm.cerrarModal()
+                      }
+                    }
+                  },
+                  [
+                    _c("span", { attrs: { "aria-hidden": "true" } }, [
+                      _vm._v("×")
+                    ])
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-body" }, [
+                _c(
+                  "form",
+                  {
+                    staticClass: "form-horizontal",
+                    attrs: {
+                      action: "",
+                      method: "post",
+                      enctype: "multipart/form-data"
+                    }
+                  },
+                  [
+                    _c("div", { staticClass: "modal-body" }, [
+                      _c("div", { staticClass: "form-group row" }, [
+                        _c(
+                          "label",
+                          {
+                            staticClass: "col-md-3 form-control-label",
+                            attrs: { for: "text-input" }
+                          },
+                          [_vm._v("Tipo de Credito")]
+                        ),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "col-md-6" }, [
+                          _c(
+                            "select",
+                            {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.tipo_credito2,
+                                  expression: "tipo_credito2"
+                                }
+                              ],
+                              staticClass: "form-control",
+                              on: {
+                                click: function($event) {
+                                  _vm.selectInstitucion(_vm.tipo_credito2)
+                                },
+                                change: function($event) {
+                                  var $$selectedVal = Array.prototype.filter
+                                    .call($event.target.options, function(o) {
+                                      return o.selected
+                                    })
+                                    .map(function(o) {
+                                      var val =
+                                        "_value" in o ? o._value : o.value
+                                      return val
+                                    })
+                                  _vm.tipo_credito2 = $event.target.multiple
+                                    ? $$selectedVal
+                                    : $$selectedVal[0]
+                                }
+                              }
+                            },
+                            [
+                              _c("option", { attrs: { value: "0" } }, [
+                                _vm._v("Seleccione")
+                              ]),
+                              _vm._v(" "),
+                              _vm._l(_vm.arrayCreditos, function(creditos) {
+                                return _c("option", {
+                                  key: creditos.nombre,
+                                  domProps: {
+                                    value: creditos.nombre,
+                                    textContent: _vm._s(creditos.nombre)
+                                  }
+                                })
+                              })
+                            ],
+                            2
+                          )
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "form-group row" }, [
+                        _c(
+                          "label",
+                          {
+                            staticClass: "col-md-3 form-control-label",
+                            attrs: { for: "text-input" }
+                          },
+                          [_vm._v("Institucion Financiera")]
+                        ),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "col-md-6" }, [
+                          _c(
+                            "select",
+                            {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.inst_financiera2,
+                                  expression: "inst_financiera2"
+                                }
+                              ],
+                              staticClass: "form-control",
+                              on: {
+                                change: function($event) {
+                                  var $$selectedVal = Array.prototype.filter
+                                    .call($event.target.options, function(o) {
+                                      return o.selected
+                                    })
+                                    .map(function(o) {
+                                      var val =
+                                        "_value" in o ? o._value : o.value
+                                      return val
+                                    })
+                                  _vm.inst_financiera2 = $event.target.multiple
+                                    ? $$selectedVal
+                                    : $$selectedVal[0]
+                                }
+                              }
+                            },
+                            [
+                              _c("option", { attrs: { value: "" } }, [
+                                _vm._v("Seleccione")
+                              ]),
+                              _vm._v(" "),
+                              _vm._l(_vm.arrayInstituciones, function(
+                                institucion
+                              ) {
+                                return _c("option", {
+                                  key: institucion.institucion_fin,
+                                  domProps: {
+                                    value: institucion.institucion_fin,
+                                    textContent: _vm._s(
+                                      institucion.institucion_fin
+                                    )
+                                  }
+                                })
+                              })
+                            ],
+                            2
+                          )
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "form-group row" }, [
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-primary",
+                            attrs: { type: "button" },
+                            on: {
+                              click: function($event) {
+                                _vm.registrarCreditoSelect()
+                              }
+                            }
+                          },
+                          [_vm._v("Guardar")]
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "table",
+                        {
+                          staticClass:
+                            "table table-bordered table-striped table-sm"
+                        },
+                        [
+                          _vm._m(77),
+                          _vm._v(" "),
+                          _c(
+                            "tbody",
+                            _vm._l(_vm.arrayTiposCreditos, function(
+                              tipoCredito
+                            ) {
+                              return _c("tr", { key: tipoCredito.id }, [
+                                _c(
+                                  "td",
+                                  [
+                                    tipoCredito.elegido == 1
+                                      ? [_vm._m(78, true)]
+                                      : [_vm._m(79, true)]
+                                  ],
+                                  2
+                                ),
+                                _vm._v(" "),
+                                _c("td", {
+                                  domProps: {
+                                    textContent: _vm._s(
+                                      tipoCredito.tipo_credito
+                                    )
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("td", {
+                                  domProps: {
+                                    textContent: _vm._s(tipoCredito.institucion)
+                                  }
+                                })
+                              ])
+                            })
+                          )
+                        ]
+                      )
+                    ])
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "modal-footer" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-secondary",
+                    attrs: { type: "button" },
+                    on: {
+                      click: function($event) {
+                        _vm.cerrarModal()
+                      }
+                    }
+                  },
+                  [_vm._v("Cerrar")]
+                )
+              ])
+            ])
+          ]
+        )
+      ]
     )
   ])
 }
@@ -118556,20 +119014,7 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "form-group" }, [
-      _c("h6", [_c("br")]),
-      _vm._v(" "),
-      _c(
-        "button",
-        { staticClass: "btn btn-success", attrs: { type: "button" } },
-        [
-          _c("i", { staticClass: "icon-plus" }),
-          _vm._v(
-            " Nuevo\n                                                        "
-          )
-        ]
-      )
-    ])
+    return _c("h6", [_c("br")])
   },
   function() {
     var _vm = this
@@ -118696,6 +119141,43 @@ var staticRenderFns = [
         _c("th", [_vm._v("Fecha")])
       ])
     ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", { attrs: { width: "10%" } }, [_vm._v("Opciones")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Tipo de Credito")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Institucion Financiera")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "button",
+      {
+        staticClass: "btn btn-success btn-sm",
+        attrs: { disabled: "", type: "button" }
+      },
+      [_c("i", { staticClass: "fa fa-check fa-md" })]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "button",
+      { staticClass: "btn btn-primary btn-sm", attrs: { type: "button" } },
+      [_c("i", { staticClass: "fa fa-exchange fa-md" })]
+    )
   }
 ]
 render._withStripped = true

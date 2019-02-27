@@ -15,7 +15,7 @@ class CreditoController extends Controller
 {
 
     public function indexCreditos(Request $request){
-        if (!$request->ajax()) return redirect('/');
+        //if (!$request->ajax()) return redirect('/');
 
         $creditos = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
             ->select('creditos.id','creditos.prospecto_id','creditos.num_dep_economicos','creditos.tipo_economia',
@@ -42,7 +42,8 @@ class CreditoController extends Controller
                                  'clientes.f_nacimiento_coa','clientes.rfc_coa','clientes.homoclave_coa','clientes.direccion_coa',
                                  'clientes.cp_coa','clientes.colonia_coa','clientes.estado_coa','clientes.ciudad_coa','clientes.celular_coa',
                                  'clientes.telefono_coa','clientes.email_coa','clientes.email_institucional_coa',
-                                 'clientes.empresa_coa','fraccionamientos.nombre as proyecto')
+                                 'clientes.empresa_coa','fraccionamientos.nombre as proyecto','clientes.curp_coa','clientes.nss_coa',
+                                 'clientes.nacionalidad_coa')
                         ->where('clientes.id','=',$credito->prospecto_id)->get();
                     
                     $institucion=[];
@@ -77,9 +78,12 @@ class CreditoController extends Controller
                         $credito->apellidos_coa = $prospecto[0]->apellidos_coa;
                         $credito->f_nacimiento_coa = $prospecto[0]->f_nacimiento_coa;
                         $credito->rfc_coa = $prospecto[0]->rfc_coa;
+                        $credito->curp_coa = $prospecto[0]->curp_coa;
+                        $credito->nss_coa = $prospecto[0]->nss_coa;
                         $credito->homoclave_coa = $prospecto[0]->homoclave_coa;
                         $credito->direccion_coa = $prospecto[0]->direccion_coa;
                         $credito->cp_coa = $prospecto[0]->cp_coa;
+                        $credito->nacionalidad_coa = $prospecto[0]->nacionalidad_coa;
                         $credito->colonia_coa = $prospecto[0]->colonia_coa;
                         $credito->estado_coa = $prospecto[0]->estado_coa;
                         $credito->ciudad_coa = $prospecto[0]->ciudad_coa;
@@ -189,7 +193,22 @@ class CreditoController extends Controller
         } catch (Exception $e){
             DB::rollBack();
         }  
-        
 
+    }
+    public function selectTipCreditosSimulacion(Request $request){
+        $simulacion= $request->simulacion_id;
+        $creditos = Inst_seleccionada::select('id','tipo_credito','institucion','elegido')
+        ->where('credito_id','=',$simulacion)->get();
+
+        return ['creditos_select' => $creditos];
+    }
+
+    public function storeCreditoSelect(Request $request){
+        $inst_seleccionada = new Inst_seleccionada();
+        $inst_seleccionada->credito_id = $request->credito_id;
+        $inst_seleccionada->tipo_credito = $request->tipo_credito;
+        $inst_seleccionada->institucion = $request->institucion;
+        $inst_seleccionada->elegido = 0;
+        $inst_seleccionada->save();
     }
 }

@@ -1055,6 +1055,11 @@
     <!-- Div Card Body para mostrar detalle de simulacion -->
                     <template v-else-if="listado == 5">
                         <div class="card-body"> 
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <center> <h6 align="right" v-if="listado==5" v-text="'# Folio: '+ num_folio"></h6> </center>
+                                </div>
+                            </div> 
 
                             <!-- Acordeon -->
                             <div id="accordion" role="tablist">
@@ -1738,7 +1743,7 @@
                                                     <div class="col-md-3" v-if="rolId == '1'">
                                                         <div class="form-group">
                                                             <h6><br></h6>
-                                                            <button type="button" class="btn btn-success">
+                                                            <button @click="abrirModal()" type="button" class="btn btn-success">
                                                                 <i class="icon-plus"></i> Nuevo
                                                             </button>
                                                         </div>
@@ -1947,6 +1952,85 @@
                 </div>
                 <!-- /.modal-dialog -->
             </div>
+
+               <!--Inicio del modal Tipos de credito-->
+            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" v-text="tituloModal3"></h4>
+                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+                            <div class="modal-body">
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Tipo de Credito</label>
+                                    <div class="col-md-6">
+                                        <select class="form-control" v-model="tipo_credito2" @click="selectInstitucion(tipo_credito2)" >
+                                            <option value="0">Seleccione</option>
+                                            <option v-for="creditos in arrayCreditos" :key="creditos.nombre" :value="creditos.nombre" v-text="creditos.nombre"></option>   
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Institucion Financiera</label>
+                                    <div class="col-md-6">
+                                        <select class="form-control" v-model="inst_financiera2" >
+                                            <option value="">Seleccione</option>
+                                            <option v-for="institucion in arrayInstituciones" :key="institucion.institucion_fin" :value="institucion.institucion_fin" v-text="institucion.institucion_fin"></option>      
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <button type="button" class="btn btn-primary" @click="registrarCreditoSelect()" >Guardar</button>
+                                </div>
+                            
+                            <table class="table table-bordered table-striped table-sm">
+                                    <thead>
+                                        <tr>
+
+                                            <th width="10%">Opciones</th>
+                                            <th>Tipo de Credito</th>
+                                            <th>Institucion Financiera</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="tipoCredito in arrayTiposCreditos" :key="tipoCredito.id">
+                                             <td>
+                                                <template v-if="tipoCredito.elegido==1">
+                                                     <button disabled type="button" class="btn btn-success btn-sm">
+                                                        <i class="fa fa-check fa-md"></i>
+                                                    </button>
+                                                </template>
+                                                <template v-else>
+                                                    <button type="button" class="btn btn-primary btn-sm">
+                                                        <i class="fa fa-exchange fa-md"></i>
+                                                    </button>
+                                                </template>
+                                            </td>
+                                            <td v-text="tipoCredito.tipo_credito" ></td>
+                                            <td v-text="tipoCredito.institucion" ></td>
+                                        </tr>                               
+                                    </tbody>
+                                </table>
+                            </div>
+                                
+                            </form>
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                        </div>
+                    </div>
+                      <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
             
 
         </main>
@@ -1992,6 +2076,7 @@
                 lugar_contacto: 0,
                 conyugeNom: '',
                 tipo_credito: 0,
+                tipo_credito2: 0,
                 tipo_economia: 0,
                 estado: '',
                 ciudad:'',
@@ -1999,6 +2084,7 @@
                 colonia:'',
                 direccion: '',
                 inst_financiera:'',
+                inst_financiera2:'',
                 nacionalidad:0,
 
                 nombre_coa:'',
@@ -2041,6 +2127,7 @@
                 arrayPaquetes: [],
                 arrayDatosPaquetes: [],
                 arraySimulaciones:[],
+                arrayTiposCreditos:[],
 
                 proyecto_interes_id: 0,
                 proyecto:'',
@@ -2072,6 +2159,7 @@
 
              
                 modal3: 0,
+                modal2: 0,
                 listado:1,
                 tituloModal3 : '',
                 tipoAccion: 0,
@@ -2100,6 +2188,7 @@
                 mascotas:0,
                 num_perros:0,
                 num_habitantes:0,
+                num_folio:0,
                 rang0_10:0,
                 rang11_20:0,
                 rang21:0,
@@ -2583,6 +2672,38 @@
                     console.log(error);
                 });
             },
+
+            registrarCreditoSelect(){
+                if(this.proceso==true) //Se verifica si hay un error (campo vacio)
+                {
+                    return;
+                }
+
+                this.proceso=true;
+
+                let me = this;
+                //Con axios se llama el metodo store de FraccionaminetoController
+                axios.post('/creditos_select/registrar',{
+                    'credito_id':this.num_folio,
+                    'tipo_credito':this.tipo_credito2,
+                    'institucion':this.inst_financiera2                    
+                }).then(function (response){
+                    me.proceso=false;
+                    me.listado=5;
+                    
+                    //Se muestra mensaje Success
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Credito agregado correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
             validarRegistro(){
                 this.errorProspecto=0;
                 this.errorMostrarMsjProspecto=[];
@@ -2647,6 +2768,7 @@
                 }
             },
             mostrarDetalle(data = []){
+                this.num_folio= data['id'];
                 this.nombre = data['nombre'];
                 this.apellidos = data['apellidos'];
                 this.sexo = data['sexo'];
@@ -2677,6 +2799,28 @@
                 this.nombre_referencia2 = data['nombre_segunda_ref'];
                 this.telefono_referencia2 = data['telefono_segunda_ref'];
                 this.celular_referencia2 = data['celular_segunda_ref'];
+
+                this.coacreditado = data['coacreditado'];
+                this.nombre_coa = data['nombre_coa'];
+                this.apellidos_coa = data['apellidos_coa'];
+                this.conyugeNom = this.nombre_coa + ' ' + this.apellidos_coa;
+                this.fecha_nac_coa = data['f_nacimiento_coa'];
+                this.rfc_coa = data['rfc_coa'];
+                this.homoclave_coa = data['homoclave_coa'];
+                this.curp_coa = data['curp_coa'];
+                this.nss_coa = data['nss_coa'];
+                this.nacionalidad_coa = data['nacionalidad_coa'];
+                this.direccion_coa = data['direccion_coa'];
+                this.cp_coa = data['cp_coa'];
+                this.colonia_coa = data['colonia_coa'];
+                this.estado_coa = data['estado_coa'];
+                this.ciudad_coa = data['ciudad_coa'];
+                this.celular_coa = data['celular_coa'];
+                this.telefono_coa = data['telefono_coa'];
+                this.email_coa = data['email_coa'];
+                this.email_institucional_coa = data['email_institucional_coa'];
+                this.empresa_coa = data['empresa_coa'];
+
 
                 this.proyecto = data['proyecto'];
                 this.etapa = data['etapa'];
@@ -2874,24 +3018,8 @@
             },
 
             cerrarModal(){
-                this.modal = 0;
-                this.nombre_coa='';
-                this.parentesco_coa='';
-                this.apellidos_coa='';
-                this.telefono_coa = '';
-                this.celular_coa = '';
-                this.email_coa='';
-                this.email_institucional_coa='';
-                this.nss_coa='';
-                this.sexo_coa='';
-                this.fecha_nac_coa= '';
-                this.curp_coa='';
-                this.rfc_coa='';
-                this.homoclave_coa= '';
-                this.e_civil_coa= 0;
-                this.tipo_casa_coa=0;
-                this.errorCoacreditado=0;
-                this.errorMostrarMsjCoacreditado=[];
+                this.modal2=0;
+                this.tituloModal3 = '';
             },
 
              cerrarModal3(){
@@ -2900,6 +3028,22 @@
               
             },
             
+            abrirModal(){
+                let me = this;
+                me.arrayTiposCreditos=[];
+                var url = '/select_tipcreditos_simulacion?simulacion_id=' + this.num_folio;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayTiposCreditos = respuesta.creditos_select;
+                    me.modal2=1;
+                    me.tituloModal3 = 'Añadir tipo de credito';
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+
+                
+            },
   
              abrirModal3(prospectos,accion,prospecto){
              switch(prospectos){
