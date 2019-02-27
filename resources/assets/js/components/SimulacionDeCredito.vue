@@ -67,7 +67,6 @@
                         </div>
                     </template>
 
-
                     <!-- Div Card Body para listar -->
                      <template v-if="listado == 1">
                         <div class="card-body"> 
@@ -2036,6 +2035,7 @@
                 etapa: '',
                 manzana: '',
                 lote: '',
+                num_lote:'',
                 modelo: '',
                 superficie: '',
                 precioBase: 0,
@@ -2300,6 +2300,7 @@
                         me.descripcionPromo = me.arrayDatosLotes[0]['descripcionPromo'];
                         me.descuentoPromo = me.arrayDatosLotes[0]['descuentoPromo'];
                         me.terreno_tam_excedente= me.arrayDatosLotes[0]['terreno_tam_excedente'];
+                        me.num_lote = me.arrayDatosLotes[0]['num_lote'];
 
                         me.precioVenta = me.precioVenta - me.descuentoPromo;
                     
@@ -2526,7 +2527,7 @@
                     'celular_referencia2':this.celular_referencia2,
                     'etapa':this.etapa,
                     'manzana':this.manzana,
-                    'lote':this.lote,
+                    'lote':this.num_lote,
                     'modelo':this.modelo,
                     'precioBase':this.precioBase,
                     'superficie':this.superficie,
@@ -2655,6 +2656,7 @@
                 this.tipo_economia = data['tipo_economia'];
                 this.empresa = data['empresa'];
                 this.puesto = data['puesto'];
+                this.email_inst = data['email_institucional'];
                 this.tipo_casa = data['tipo_casa'];
                 this.e_civil = data['edo_civil'];
                 this.dep_economicos = data['num_dep_economicos']

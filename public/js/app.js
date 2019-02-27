@@ -107022,7 +107022,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -107107,7 +107106,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             arraySimulaciones: [],
 
             proyecto_interes_id: 0
-        }, _defineProperty(_ref, 'proyecto', ''), _defineProperty(_ref, 'etapa', ''), _defineProperty(_ref, 'manzana', ''), _defineProperty(_ref, 'lote', ''), _defineProperty(_ref, 'modelo', ''), _defineProperty(_ref, 'superficie', ''), _defineProperty(_ref, 'precioBase', 0), _defineProperty(_ref, 'precioExcedente', 0), _defineProperty(_ref, 'precioVenta', 0), _defineProperty(_ref, 'promocion', ''), _defineProperty(_ref, 'descripcionPromo', ''), _defineProperty(_ref, 'descuentoPromo', 0), _defineProperty(_ref, 'paquete_id', 0), _defineProperty(_ref, 'descripcionPaquete', ''), _defineProperty(_ref, 'costoPaquete', 0), _defineProperty(_ref, 'paquete', ''), _defineProperty(_ref, 'nombre_referencia1', ''), _defineProperty(_ref, 'telefono_referencia1', ''), _defineProperty(_ref, 'celular_referencia1', ''), _defineProperty(_ref, 'nombre_referencia2', ''), _defineProperty(_ref, 'telefono_referencia2', ''), _defineProperty(_ref, 'celular_referencia2', ''), _defineProperty(_ref, 'modal3', 0), _defineProperty(_ref, 'listado', 1), _defineProperty(_ref, 'tituloModal3', ''), _defineProperty(_ref, 'tipoAccion', 0), _defineProperty(_ref, 'errorProspecto', 0), _defineProperty(_ref, 'errorMostrarMsjProspecto', []), _defineProperty(_ref, 'errorCoacreditado', 0), _defineProperty(_ref, 'errorMostrarMsjCoacreditado', []), _defineProperty(_ref, 'pagination', {
+        }, _defineProperty(_ref, 'proyecto', ''), _defineProperty(_ref, 'etapa', ''), _defineProperty(_ref, 'manzana', ''), _defineProperty(_ref, 'lote', ''), _defineProperty(_ref, 'num_lote', ''), _defineProperty(_ref, 'modelo', ''), _defineProperty(_ref, 'superficie', ''), _defineProperty(_ref, 'precioBase', 0), _defineProperty(_ref, 'precioExcedente', 0), _defineProperty(_ref, 'precioVenta', 0), _defineProperty(_ref, 'promocion', ''), _defineProperty(_ref, 'descripcionPromo', ''), _defineProperty(_ref, 'descuentoPromo', 0), _defineProperty(_ref, 'paquete_id', 0), _defineProperty(_ref, 'descripcionPaquete', ''), _defineProperty(_ref, 'costoPaquete', 0), _defineProperty(_ref, 'paquete', ''), _defineProperty(_ref, 'nombre_referencia1', ''), _defineProperty(_ref, 'telefono_referencia1', ''), _defineProperty(_ref, 'celular_referencia1', ''), _defineProperty(_ref, 'nombre_referencia2', ''), _defineProperty(_ref, 'telefono_referencia2', ''), _defineProperty(_ref, 'celular_referencia2', ''), _defineProperty(_ref, 'modal3', 0), _defineProperty(_ref, 'listado', 1), _defineProperty(_ref, 'tituloModal3', ''), _defineProperty(_ref, 'tipoAccion', 0), _defineProperty(_ref, 'errorProspecto', 0), _defineProperty(_ref, 'errorMostrarMsjProspecto', []), _defineProperty(_ref, 'errorCoacreditado', 0), _defineProperty(_ref, 'errorMostrarMsjCoacreditado', []), _defineProperty(_ref, 'pagination', {
             'total': 0,
             'current_page': 0,
             'per_page': 0,
@@ -107293,6 +107292,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 me.descripcionPromo = me.arrayDatosLotes[0]['descripcionPromo'];
                 me.descuentoPromo = me.arrayDatosLotes[0]['descuentoPromo'];
                 me.terreno_tam_excedente = me.arrayDatosLotes[0]['terreno_tam_excedente'];
+                me.num_lote = me.arrayDatosLotes[0]['num_lote'];
 
                 me.precioVenta = me.precioVenta - me.descuentoPromo;
             }).catch(function (error) {
@@ -107482,7 +107482,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 'celular_referencia2': this.celular_referencia2,
                 'etapa': this.etapa,
                 'manzana': this.manzana,
-                'lote': this.lote,
+                'lote': this.num_lote,
                 'modelo': this.modelo,
                 'precioBase': this.precioBase,
                 'superficie': this.superficie,
@@ -107597,6 +107597,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             this.tipo_economia = data['tipo_economia'];
             this.empresa = data['empresa'];
             this.puesto = data['puesto'];
+            this.email_inst = data['email_institucional'];
             this.tipo_casa = data['tipo_casa'];
             this.e_civil = data['edo_civil'];
             this.dep_economicos = data['num_dep_economicos'];
