@@ -34,6 +34,7 @@
                                             <th>Precio Venta</th>
                                             <th>Credito Solicitado</th>
                                             <th>Plazo</th>
+                                            <th>Status</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -46,6 +47,15 @@
                                             <td v-text="'$'+formatNumber(prospecto.precio_venta)"></td>
                                             <td v-text="'$'+formatNumber(prospecto.credito_solic)"></td>
                                             <td v-text="prospecto.plazo + ' años'"></td>
+                                            <td v-if="prospecto.status == '1'">
+                                                <span class="badge badge-warning">Pendiente</span>
+                                            </td>
+                                            <td v-if="prospecto.status == '0'">
+                                                <span class="badge badge-danger">Rechazado</span>
+                                            </td>
+                                            <td v-if="prospecto.status == '2'">
+                                                <span class="badge badge-success">Aprobado</span>
+                                            </td>
                                         </tr>                               
                                     </tbody>
                                 </table>
@@ -1058,6 +1068,9 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <center> <h6 align="right" v-if="listado==5" v-text="'# Folio: '+ num_folio"></h6> </center>
+                                    <center> <h5 style="color:orange;" align="right" v-if="listado==5 && status==1" v-text="' Pendiente '"></h5> </center>
+                                    <center> <h5 style="color:red;" align="right" v-if="listado==5 && status==0" v-text="' Rechazado '"></h5> </center>
+                                    <center> <h5 style="color:green;" align="right" v-if="listado==5 && status==2" v-text="' Aceptado '"></h5> </center>
                                 </div>
                             </div> 
 
@@ -1894,9 +1907,15 @@
                                 </div>
                                 <!--- Botones y div para errores -->
                                 <div class="card-body">
-                                        <div class="form-group">
-                                            <div class="col-md-12">
+                                        <div class="form-group row">
+                                            <div class="col-md-10">
                                                 <button type="button" class="btn btn-secondary" @click="ocultarDetalle()"> Cerrar </button>
+                                            </div>
+                                            <div class="col-md-1" v-if="rolId==1">
+                                                <button type="button" class="btn btn-danger" @click="rechazarSimulacion()"> Rechazar </button>
+                                            </div>
+                                            <div class="col-md-1" v-if="rolId==1">
+                                                <button type="button" class="btn btn-success" @click="aceptarSimulacion()"> Aprobar </button>
                                             </div>
                                         </div>
                                     </div>
@@ -2050,6 +2069,7 @@
             return{
                 proceso:false,
                 id:0,
+                prospecto_id:0,
                 clasificacion:1,
                 dep_economicos:'',
                 nombre:'',
@@ -2147,6 +2167,7 @@
                 descripcionPaquete: '',
                 costoPaquete: 0,
                 paquete:'',
+                status:'',
                 
 
                 nombre_referencia1: '',
@@ -2259,6 +2280,7 @@
             },
              listarSimulaciones(buscar){
                 let me = this;
+                this.prospecto_id = buscar;
                 var url = '/simulaciones_credito?prospecto_id=' + buscar;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
@@ -2648,6 +2670,46 @@
                     
                 })
             },    
+            aceptarSimulacion(){
+                let me = this;
+                //Con axios se llama el metodo update de DepartamentoController
+                axios.put('/creditos/aceptar',{
+                    'id': this.num_folio
+                }).then(function (response){
+                    me.listarSimulaciones(me.prospecto_id);
+                    me.limpiarDatos();
+                    //window.alert("Cambios guardados correctamente");
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Solicitud aceptada',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            }, 
+            rechazarSimulacion(){
+                let me = this;
+                //Con axios se llama el metodo update de DepartamentoController
+                axios.put('/creditos/rechazar',{
+                    'id': this.num_folio
+                }).then(function (response){
+                    me.listarSimulaciones(me.prospecto_id);
+                    me.limpiarDatos();
+                    //window.alert("Cambios guardados correctamente");
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Solicitud rechazada',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            }, 
 
                /**Metodo para actualizar  */
             registrarSimulacion(){
@@ -2840,6 +2902,7 @@
                 this.tipo_casa = data['tipo_casa'];
                 this.e_civil = data['edo_civil'];
                 this.dep_economicos = data['num_dep_economicos']
+                this.status = data['status'];
                 
                 this.nombre_referencia1 = data['nombre_primera_ref'];
                 this.telefono_referencia1 = data['telefono_primera_ref'];

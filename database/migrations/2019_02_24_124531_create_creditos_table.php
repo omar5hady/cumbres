@@ -41,6 +41,8 @@ class CreateCreditosTable extends Migration
             $table->double('precio_venta')->nullable();
             $table->integer('plazo')->nullable();
             $table->double('credito_solic')->nullable();
+            $table->boolean('status')->default(1)->nullable();
+
             $table->timestamps();
             
             $table->foreign('prospecto_id')->references('id')->on('clientes')->onDelete('cascade');

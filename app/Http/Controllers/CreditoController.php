@@ -27,7 +27,7 @@ class CreditoController extends Controller
                 'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
                 'datos_extra.mascota','datos_extra.num_perros','datos_extra.rang010','datos_extra.rang1120',
                 'datos_extra.rang21','datos_extra.ama_casa','datos_extra.persona_discap','datos_extra.silla_ruedas',
-                'datos_extra.num_vehiculos','creditos.costo_paquete')
+                'datos_extra.num_vehiculos','creditos.costo_paquete','creditos.status')
                 ->where('creditos.prospecto_id','=',$request->prospecto_id)->get();
         
                 foreach($creditos as $index => $credito) {
@@ -228,8 +228,18 @@ class CreditoController extends Controller
             $seleccion->save();
         }
 
-        
+    }
 
+    public function rechazarSolicitud(Request $request){
+        $simulacion = Credito::findOrFail($request->id);
+        $simulacion->status=0;
+        $simulacion->save();
+    }
+
+    public function aceptarSolicitud(Request $request){
+        $simulacion = Credito::findOrFail($request->id);
+        $simulacion->status=2;
+        $simulacion->save();
     }
 
 }

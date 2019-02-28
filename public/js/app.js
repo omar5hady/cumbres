@@ -107115,6 +107115,25 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -107127,6 +107146,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         return _ref = {
             proceso: false,
             id: 0,
+            prospecto_id: 0,
             clasificacion: 1,
             dep_economicos: '',
             nombre: '',
@@ -107205,7 +107225,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             arrayTiposCreditos: [],
 
             proyecto_interes_id: 0
-        }, _defineProperty(_ref, 'proyecto', ''), _defineProperty(_ref, 'etapa', ''), _defineProperty(_ref, 'manzana', ''), _defineProperty(_ref, 'lote', ''), _defineProperty(_ref, 'num_lote', ''), _defineProperty(_ref, 'modelo', ''), _defineProperty(_ref, 'superficie', ''), _defineProperty(_ref, 'precioBase', 0), _defineProperty(_ref, 'precioExcedente', 0), _defineProperty(_ref, 'precioVenta', 0), _defineProperty(_ref, 'promocion', ''), _defineProperty(_ref, 'descripcionPromo', ''), _defineProperty(_ref, 'descuentoPromo', 0), _defineProperty(_ref, 'paquete_id', 0), _defineProperty(_ref, 'descripcionPaquete', ''), _defineProperty(_ref, 'costoPaquete', 0), _defineProperty(_ref, 'paquete', ''), _defineProperty(_ref, 'nombre_referencia1', ''), _defineProperty(_ref, 'telefono_referencia1', ''), _defineProperty(_ref, 'celular_referencia1', ''), _defineProperty(_ref, 'nombre_referencia2', ''), _defineProperty(_ref, 'telefono_referencia2', ''), _defineProperty(_ref, 'celular_referencia2', ''), _defineProperty(_ref, 'modal3', 0), _defineProperty(_ref, 'modal2', 0), _defineProperty(_ref, 'listado', 1), _defineProperty(_ref, 'tituloModal3', ''), _defineProperty(_ref, 'tipoAccion', 0), _defineProperty(_ref, 'errorProspecto', 0), _defineProperty(_ref, 'errorMostrarMsjProspecto', []), _defineProperty(_ref, 'errorCoacreditado', 0), _defineProperty(_ref, 'errorMostrarMsjCoacreditado', []), _defineProperty(_ref, 'pagination', {
+        }, _defineProperty(_ref, 'proyecto', ''), _defineProperty(_ref, 'etapa', ''), _defineProperty(_ref, 'manzana', ''), _defineProperty(_ref, 'lote', ''), _defineProperty(_ref, 'num_lote', ''), _defineProperty(_ref, 'modelo', ''), _defineProperty(_ref, 'superficie', ''), _defineProperty(_ref, 'precioBase', 0), _defineProperty(_ref, 'precioExcedente', 0), _defineProperty(_ref, 'precioVenta', 0), _defineProperty(_ref, 'promocion', ''), _defineProperty(_ref, 'descripcionPromo', ''), _defineProperty(_ref, 'descuentoPromo', 0), _defineProperty(_ref, 'paquete_id', 0), _defineProperty(_ref, 'descripcionPaquete', ''), _defineProperty(_ref, 'costoPaquete', 0), _defineProperty(_ref, 'paquete', ''), _defineProperty(_ref, 'status', ''), _defineProperty(_ref, 'nombre_referencia1', ''), _defineProperty(_ref, 'telefono_referencia1', ''), _defineProperty(_ref, 'celular_referencia1', ''), _defineProperty(_ref, 'nombre_referencia2', ''), _defineProperty(_ref, 'telefono_referencia2', ''), _defineProperty(_ref, 'celular_referencia2', ''), _defineProperty(_ref, 'modal3', 0), _defineProperty(_ref, 'modal2', 0), _defineProperty(_ref, 'listado', 1), _defineProperty(_ref, 'tituloModal3', ''), _defineProperty(_ref, 'tipoAccion', 0), _defineProperty(_ref, 'errorProspecto', 0), _defineProperty(_ref, 'errorMostrarMsjProspecto', []), _defineProperty(_ref, 'errorCoacreditado', 0), _defineProperty(_ref, 'errorMostrarMsjCoacreditado', []), _defineProperty(_ref, 'pagination', {
             'total': 0,
             'current_page': 0,
             'per_page': 0,
@@ -107270,6 +107290,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         },
         listarSimulaciones: function listarSimulaciones(buscar) {
             var me = this;
+            this.prospecto_id = buscar;
             var url = '/simulaciones_credito?prospecto_id=' + buscar;
             axios.get(url).then(function (response) {
                 var respuesta = response.data;
@@ -107591,6 +107612,46 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
             });
         },
+        aceptarSimulacion: function aceptarSimulacion() {
+            var me = this;
+            //Con axios se llama el metodo update de DepartamentoController
+            axios.put('/creditos/aceptar', {
+                'id': this.num_folio
+            }).then(function (response) {
+                me.listarSimulaciones(me.prospecto_id);
+                me.limpiarDatos();
+                //window.alert("Cambios guardados correctamente");
+                swal({
+                    position: 'top-end',
+                    type: 'success',
+                    title: 'Solicitud aceptada',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        rechazarSimulacion: function rechazarSimulacion() {
+            var me = this;
+            //Con axios se llama el metodo update de DepartamentoController
+            axios.put('/creditos/rechazar', {
+                'id': this.num_folio
+            }).then(function (response) {
+                me.listarSimulaciones(me.prospecto_id);
+                me.limpiarDatos();
+                //window.alert("Cambios guardados correctamente");
+                swal({
+                    position: 'top-end',
+                    type: 'success',
+                    title: 'Solicitud rechazada',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
 
 
         /**Metodo para actualizar  */
@@ -107766,6 +107827,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             this.tipo_casa = data['tipo_casa'];
             this.e_civil = data['edo_civil'];
             this.dep_economicos = data['num_dep_economicos'];
+            this.status = data['status'];
 
             this.nombre_referencia1 = data['nombre_primera_ref'];
             this.telefono_referencia1 = data['telefono_primera_ref'];
@@ -108182,7 +108244,37 @@ var render = function() {
                                       prospecto.plazo + " años"
                                     )
                                   }
-                                })
+                                }),
+                                _vm._v(" "),
+                                prospecto.status == "1"
+                                  ? _c("td", [
+                                      _c(
+                                        "span",
+                                        { staticClass: "badge badge-warning" },
+                                        [_vm._v("Pendiente")]
+                                      )
+                                    ])
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                prospecto.status == "0"
+                                  ? _c("td", [
+                                      _c(
+                                        "span",
+                                        { staticClass: "badge badge-danger" },
+                                        [_vm._v("Rechazado")]
+                                      )
+                                    ])
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                prospecto.status == "2"
+                                  ? _c("td", [
+                                      _c(
+                                        "span",
+                                        { staticClass: "badge badge-success" },
+                                        [_vm._v("Aprobado")]
+                                      )
+                                    ])
+                                  : _vm._e()
                               ]
                             )
                           })
@@ -113408,6 +113500,42 @@ var render = function() {
                                     }
                                   })
                                 : _vm._e()
+                            ]),
+                            _vm._v(" "),
+                            _c("center", [
+                              _vm.listado == 5 && _vm.status == 1
+                                ? _c("h5", {
+                                    staticStyle: { color: "orange" },
+                                    attrs: { align: "right" },
+                                    domProps: {
+                                      textContent: _vm._s(" Pendiente ")
+                                    }
+                                  })
+                                : _vm._e()
+                            ]),
+                            _vm._v(" "),
+                            _c("center", [
+                              _vm.listado == 5 && _vm.status == 0
+                                ? _c("h5", {
+                                    staticStyle: { color: "red" },
+                                    attrs: { align: "right" },
+                                    domProps: {
+                                      textContent: _vm._s(" Rechazado ")
+                                    }
+                                  })
+                                : _vm._e()
+                            ]),
+                            _vm._v(" "),
+                            _c("center", [
+                              _vm.listado == 5 && _vm.status == 2
+                                ? _c("h5", {
+                                    staticStyle: { color: "green" },
+                                    attrs: { align: "right" },
+                                    domProps: {
+                                      textContent: _vm._s(" Aceptado ")
+                                    }
+                                  })
+                                : _vm._e()
                             ])
                           ],
                           1
@@ -117914,8 +118042,8 @@ var render = function() {
                           ]),
                           _vm._v(" "),
                           _c("div", { staticClass: "card-body" }, [
-                            _c("div", { staticClass: "form-group" }, [
-                              _c("div", { staticClass: "col-md-12" }, [
+                            _c("div", { staticClass: "form-group row" }, [
+                              _c("div", { staticClass: "col-md-10" }, [
                                 _c(
                                   "button",
                                   {
@@ -117929,7 +118057,43 @@ var render = function() {
                                   },
                                   [_vm._v(" Cerrar ")]
                                 )
-                              ])
+                              ]),
+                              _vm._v(" "),
+                              _vm.rolId == 1
+                                ? _c("div", { staticClass: "col-md-1" }, [
+                                    _c(
+                                      "button",
+                                      {
+                                        staticClass: "btn btn-danger",
+                                        attrs: { type: "button" },
+                                        on: {
+                                          click: function($event) {
+                                            _vm.rechazarSimulacion()
+                                          }
+                                        }
+                                      },
+                                      [_vm._v(" Rechazar ")]
+                                    )
+                                  ])
+                                : _vm._e(),
+                              _vm._v(" "),
+                              _vm.rolId == 1
+                                ? _c("div", { staticClass: "col-md-1" }, [
+                                    _c(
+                                      "button",
+                                      {
+                                        staticClass: "btn btn-success",
+                                        attrs: { type: "button" },
+                                        on: {
+                                          click: function($event) {
+                                            _vm.aceptarSimulacion()
+                                          }
+                                        }
+                                      },
+                                      [_vm._v(" Aprobar ")]
+                                    )
+                                  ])
+                                : _vm._e()
                             ])
                           ])
                         ]
@@ -118409,7 +118573,9 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Credito Solicitado")]),
         _vm._v(" "),
-        _c("th", [_vm._v("Plazo")])
+        _c("th", [_vm._v("Plazo")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Status")])
       ])
     ])
   },
