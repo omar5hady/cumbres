@@ -211,4 +211,25 @@ class CreditoController extends Controller
         $inst_seleccionada->elegido = 0;
         $inst_seleccionada->save();
     }
+
+    public function seleccionarCredito(Request $request){
+        if(!$request->ajax())return redirect('/');
+        $inst_seleccionada = Inst_seleccionada::findOrFail($request->id);
+        $inst_seleccionada->elegido = 1;
+        $inst_seleccionada->save();
+
+        $simulacion= $request->simulacion_id;
+        $seleccionados =  Inst_seleccionada::select('id','elegido')
+                                             ->where('credito_id','=',$simulacion)
+                                             ->where('id','!=',$request->id)
+                                             ->get();
+        foreach($seleccionados as $index => $seleccion) {
+            $seleccion->elegido = 0;
+            $seleccion->save();
+        }
+
+        
+
+    }
+
 }

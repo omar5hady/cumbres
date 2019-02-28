@@ -107293,6 +107293,41 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 console.log(error);
             });
         },
+        seleccionarCredito: function seleccionarCredito(id, institucion, tipo_credito) {
+            var _this = this;
+
+            swal({
+                title: 'Esta seguro desea asignar este credito?',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Aceptar!',
+                cancelButtonText: 'Cancelar',
+                confirmButtonClass: 'btn btn-success',
+                cancelButtonClass: 'btn btn-danger',
+                buttonsStyling: false,
+                reverseButtons: true
+            }).then(function (result) {
+                if (result.value) {
+                    var me = _this;
+
+                    axios.put('/creditos/seleccionar', {
+                        'id': id,
+                        'simulacion_id': _this.num_folio
+                    }).then(function (response) {
+                        me.listarCreditos();
+                        me.tipo_credito = tipo_credito;
+                        me.inst_financiera = institucion;
+                        swal('Activado!', 'El registro ha sido activado con éxito.', 'success');
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                } else if (
+                // Read more about handling dismissals
+                result.dismiss === swal.DismissReason.cancel) {}
+            });
+        },
         getDatosEmpresa: function getDatosEmpresa(val1) {
             var me = this;
             me.loading = true;
@@ -107644,7 +107679,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             }).then(function (response) {
                 me.proceso = false;
                 me.listado = 5;
-
+                me.listarCreditos();
                 //Se muestra mensaje Success
                 swal({
                     position: 'top-end',
@@ -107954,6 +107989,18 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         cerrarModal3: function cerrarModal3() {
             this.modal3 = 0;
             this.tituloModal3 = '';
+        },
+        listarCreditos: function listarCreditos() {
+            var me = this;
+            var url = '/select_tipcreditos_simulacion?simulacion_id=' + this.num_folio;
+            axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.arrayTiposCreditos = respuesta.creditos_select;
+                // me.modal2=1;
+                // me.tituloModal3 = 'Añadir tipo de credito';
+            }).catch(function (error) {
+                console.log(error);
+            });
         },
         abrirModal: function abrirModal() {
             var me = this;
@@ -118245,7 +118292,31 @@ var render = function() {
                                   [
                                     tipoCredito.elegido == 1
                                       ? [_vm._m(78, true)]
-                                      : [_vm._m(79, true)]
+                                      : [
+                                          _c(
+                                            "button",
+                                            {
+                                              staticClass:
+                                                "btn btn-primary btn-sm",
+                                              attrs: { type: "button" },
+                                              on: {
+                                                click: function($event) {
+                                                  _vm.seleccionarCredito(
+                                                    tipoCredito.id,
+                                                    tipoCredito.institucion,
+                                                    tipoCredito.tipo_credito
+                                                  )
+                                                }
+                                              }
+                                            },
+                                            [
+                                              _c("i", {
+                                                staticClass:
+                                                  "fa fa-exchange fa-md"
+                                              })
+                                            ]
+                                          )
+                                        ]
                                   ],
                                   2
                                 ),
@@ -119167,16 +119238,6 @@ var staticRenderFns = [
         attrs: { disabled: "", type: "button" }
       },
       [_c("i", { staticClass: "fa fa-check fa-md" })]
-    )
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "button",
-      { staticClass: "btn btn-primary btn-sm", attrs: { type: "button" } },
-      [_c("i", { staticClass: "fa fa-exchange fa-md" })]
     )
   }
 ]

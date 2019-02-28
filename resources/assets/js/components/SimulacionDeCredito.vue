@@ -2008,7 +2008,7 @@
                                                     </button>
                                                 </template>
                                                 <template v-else>
-                                                    <button type="button" class="btn btn-primary btn-sm">
+                                                    <button @click="seleccionarCredito(tipoCredito.id,tipoCredito.institucion,tipoCredito.tipo_credito)" type="button" class="btn btn-primary btn-sm">
                                                         <i class="fa fa-exchange fa-md"></i>
                                                     </button>
                                                 </template>
@@ -2284,6 +2284,54 @@
                     console.log(error);
                 });
             },
+
+
+            
+            seleccionarCredito(id,institucion,tipo_credito){
+        
+                swal({
+                title: 'Esta seguro desea asignar este credito?',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Aceptar!',
+                cancelButtonText: 'Cancelar',
+                confirmButtonClass: 'btn btn-success',
+                cancelButtonClass: 'btn btn-danger',
+                buttonsStyling: false,
+                reverseButtons: true
+                }).then((result) => {
+                if (result.value) {
+                    let me = this;
+
+                    axios.put('/creditos/seleccionar',{
+                        'id': id,
+                        'simulacion_id': this.num_folio
+                    }).then(function (response) {
+                        me.listarCreditos();     
+                        me.tipo_credito = tipo_credito;
+                        me.inst_financiera = institucion;
+                        swal(
+                        'Activado!',
+                        'El registro ha sido activado con éxito.',
+                        'success'
+                        )
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                    
+                    
+                } else if (
+                    // Read more about handling dismissals
+                    result.dismiss === swal.DismissReason.cancel
+                ) {
+                    
+                }
+                }) 
+            },
+
+
             getDatosEmpresa(val1){
                 let me = this;
                 me.loading = true;
@@ -2690,7 +2738,7 @@
                 }).then(function (response){
                     me.proceso=false;
                     me.listado=5;
-                    
+                    me.listarCreditos();
                     //Se muestra mensaje Success
                     swal({
                         position: 'top-end',
@@ -3026,6 +3074,21 @@
                 this.modal3 = 0;
                 this.tituloModal3 = '';
               
+            },
+
+            listarCreditos(){
+                let me = this;
+                var url = '/select_tipcreditos_simulacion?simulacion_id=' + this.num_folio;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayTiposCreditos = respuesta.creditos_select;
+                    // me.modal2=1;
+                    // me.tituloModal3 = 'Añadir tipo de credito';
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+
             },
             
             abrirModal(){

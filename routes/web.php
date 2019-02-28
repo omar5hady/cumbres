@@ -271,6 +271,8 @@ Route::group(['middleware' => ['auth']],function(){
     Route::post('/creditos/registrar','CreditoController@store');
 
     Route::post('/creditos_select/registrar','CreditoController@storeCreditoSelect');
+    Route::put('/creditos/seleccionar','CreditoController@seleccionarCredito');
+    
 
     });
 
