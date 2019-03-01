@@ -18,6 +18,25 @@
                         <div class="card-body"> 
                             <div class="form-group row">
                                 <div class="col-md-8">
+                                       <div class="input-group">
+                                        <!--Criterios para el listado de busqueda -->
+                                        <select class="form-control col-md-4" v-model="criterio" @click="limpiarBusqueda()">
+                                            <option value="creditos.id"># Folio</option>
+                                            <option value="personal.nombre">Cliente</option>
+                                            <option value="v.nombre">Vendedor</option>
+                                            <option value="clientes.proyecto_interes_id">Proyecto</option>
+                                            <option value="inst_seleccionadas.tipo_credito">Tipo de credito</option>
+                                        </select>
+                                          <select class="form-control" v-if="criterio=='clientes.proyecto_interes_id'" v-model="buscar" >
+                                        <option value="">Seleccione</option>
+                                        <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                                         </select>
+                                    <input v-if="criterio=='clientes.proyecto_interes_id'" type="text"  v-model="b_etapa" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Etapa">
+                                    <input v-if="criterio=='clientes.proyecto_interes_id'" type="text"  v-model="b_manzana" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Manzana">
+                                    <input v-if="criterio=='clientes.proyecto_interes_id'" type="text"  v-model="b_lote" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="# Lote">
+                                        <input  v-else type="text" v-model="buscar" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control">
+                                        <button type="submit" @click="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    </div>
                                 </div>
                             </div>
                             <div class="table-responsive">
@@ -162,6 +181,7 @@
             return{
                 arraySimulaciones:[],
                 arrayObservacion:[],
+                arrayFraccionamientos: [],
              
                 modal3: 0,
                 modal2: 0,
@@ -180,7 +200,10 @@
                 },
                 offset : 3,
                 criterio : 'personal.nombre', 
-                buscar : ''
+                buscar : '',
+                b_etapa: '',
+                b_manzana: '',
+                b_lote: ''
                
             }
         },
@@ -216,9 +239,9 @@
         },
        
         methods : {
-             listarSimulaciones(){
+             listarSimulaciones(page, buscar, b_etapa, b_manzana,b_lote,criterio){
                 let me = this;
-                var url = '/historial_simulaciones_credito';
+                var url = '/historial_simulaciones_credito?page=' + page + '&buscar=' + buscar + '&b_etapa=' +b_etapa+ '&b_manzana=' + b_manzana + '&b_lote='+ b_lote + '&criterio=' + criterio;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arraySimulaciones = respuesta.creditos.data;
@@ -252,6 +275,19 @@
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
                 me.listarProspectos(page,buscar,criterio);
+            },
+            
+            selectFraccionamientos(){
+                let me = this;
+                me.arrayFraccionamientos=[];
+                var url = '/select_fraccionamiento';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayFraccionamientos = respuesta.fraccionamientos;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
             },
   
             aceptarSimulacion(){
@@ -358,9 +394,9 @@
 
            
         },
-        mounted() {
-            //this.listarProspectos(1,this.buscar,this.criterio);           
-            this.listarSimulaciones();
+        mounted() {          
+            this.listarSimulaciones(1,this.buscar,this.b_etapa,this.b_manzana,this.b_lote,this.criterio);
+            this.selectFraccionamientos();
         }
     }
 </script>
