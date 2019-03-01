@@ -59,6 +59,7 @@ Vue.component('prospectos', require('./components/Prospectos.vue'));
 Vue.component('institucion-financiamiento', require('./components/InstitucionFinanciamiento.vue'));
 Vue.component('tipo-credito', require('./components/TipoCredito.vue'));
 Vue.component('simulacion', require('./components/SimulacionDeCredito.vue'));
+Vue.component('historialsim', require('./components/HistorialSimulacion.vue'));
 
 const app = new Vue({
     el: '#app',

@@ -10,7 +10,7 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Simulacion de credito
                         <button type="button" @click="ocultarDetalle()" class="btn btn-secondary" v-if="listado==0">
-                            <i class="icon-back"></i>&nbsp;Regresasr
+                            <i class="icon-back"></i>&nbsp;Regresar
                         </button>
                     </div>
 

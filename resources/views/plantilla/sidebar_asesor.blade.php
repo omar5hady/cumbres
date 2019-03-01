@@ -33,6 +33,9 @@
                     <li @click="menu=61" class="nav-item">
                         <a class="nav-link" href="#"><i class="icon-notebook"></i> Simulacion de credito</a>
                     </li>
+                    <li @click="menu=62" class="nav-item">
+                        <a class="nav-link" href="#"><i class="icon-notebook"></i> Historial de simulaciones</a>
+                    </li>
                 </ul>
             </li>
             <li class="nav-item nav-dropdown">

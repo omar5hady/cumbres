@@ -267,6 +267,7 @@ Route::group(['middleware' => ['auth']],function(){
     
     /**********************************RUTAS SIMULACION*************************** */
     Route::get('/simulaciones_credito','CreditoController@indexCreditos');
+    Route::get('/historial_simulaciones_credito','CreditoController@indexHistorial');
     Route::put('/creditos/actualizarProspecto','CreditoController@updateDatosCliente');
     Route::post('/creditos/registrar','CreditoController@store');
     Route::put('/creditos/aceptar','CreditoController@aceptarSolicitud');

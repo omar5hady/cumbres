@@ -131,6 +131,10 @@
                 <simulacion rol-id="{{Auth::user()->rol_id}}"></simulacion>
             </template>
             
+            <template v-if="menu==62">
+                <historialsim rol-id="{{Auth::user()->rol_id}}"></historialsim>
+            </template>
+            
             @elseif(Auth::user()->rol_id == 2) <!--Vendedor -->
             <template v-if="menu==13">
                 <empresa></empresa>
@@ -146,6 +150,9 @@
             </template>
             <template v-if="menu==59">
                 <lote-disponible rol-id="{{Auth::user()->rol_id}}"></lote-disponible>
+            </template>
+            <template v-if="menu==62">
+                <historialsim rol-id="{{Auth::user()->rol_id}}"></historialsim>
             </template>
                 
             @elseif(Auth::user()->rol_id == 3)

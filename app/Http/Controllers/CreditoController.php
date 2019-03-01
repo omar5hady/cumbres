@@ -242,4 +242,31 @@ class CreditoController extends Controller
         $simulacion->save();
     }
 
+
+    public function indexHistorial(Request $request){
+        $creditos = Credito::join('datos_extra','creditos.id','=','datos_extra.id')
+        ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+        ->join('personal','creditos.prospecto_id','=','personal.id')
+        ->join('clientes','creditos.prospecto_id','=','clientes.id')
+        ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
+        ->select('creditos.id','creditos.prospecto_id','creditos.num_dep_economicos','creditos.tipo_economia',
+            'creditos.nombre_primera_ref','creditos.telefono_primera_ref','creditos.celular_primera_ref',
+            'creditos.nombre_segunda_ref','creditos.telefono_segunda_ref','creditos.celular_segunda_ref',
+            'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','creditos.precio_base',
+            'creditos.superficie','creditos.terreno_excedente','creditos.precio_terreno_excedente',
+            'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
+            'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
+            'datos_extra.mascota','datos_extra.num_perros','datos_extra.rang010','datos_extra.rang1120',
+            'datos_extra.rang21','datos_extra.ama_casa','datos_extra.persona_discap','datos_extra.silla_ruedas',
+            'datos_extra.num_vehiculos','creditos.costo_paquete','creditos.status','inst_seleccionadas.tipo_credito',
+            'inst_seleccionadas.institucion','personal.nombre','personal.apellidos','fraccionamientos.nombre as proyecto')
+            ->where('creditos.status','!=','1')
+            ->where('inst_seleccionadas.elegido','=','1')
+            ->get();
+    
+
+    
+    return['creditos' => $creditos];
+    }
+
 }
