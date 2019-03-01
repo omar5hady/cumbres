@@ -649,5 +649,17 @@ class ClienteController extends Controller
 
         return ['personas' => $personas];
     }
+
+    public function storeObservacion(Request $request)
+    {
+        if (!$request->ajax()) return redirect('/');
+         
+            $observacion = new Cliente_observacion();
+            $observacion->cliente_id = $request->cliente_id;
+            $observacion->comentario = $request->observacion;
+            $observacion->usuario = Auth::user()->usuario;
+            $observacion->save();         
+         
+    }
     
 }

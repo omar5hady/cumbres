@@ -75,6 +75,7 @@ Route::group(['middleware' => ['auth']],function(){
     Route::get('/clientes_simulacion','ClienteController@clientesSimulacion');
     Route::get('/clientes/obtenerDatos','ClienteController@obtenerDatos');
     Route::post('/clientes/registrar','ClienteController@store');
+    Route::post('/clientes/storeObservacion','ClienteController@storeObservacion');
     Route::post('/clientes/registrar_coacreditado','ClienteController@storeCoacreditado');
     Route::put('/clientes/actualizar','ClienteController@update');
     Route::get('/clientes/observacion','ClienteController@listarObservacion');

@@ -21,11 +21,12 @@
                                 </div>
                             </div>
                             <div class="table-responsive">
-                                <table class="table table-bordered table-striped table-sm">
+                                <table class="table2 table-bordered table-striped table-sm">
                                     <thead>
                                         <tr>
                                             <th># Folio</th>
                                             <th>Cliente</th>
+                                            <th>Vendedor</th>
                                             <th>Proyecto</th>
                                             <th>Etapa</th>
                                             <th>Manzana</th>
@@ -42,26 +43,27 @@
                                     </thead>
                                     <tbody>
                                         <tr v-for="prospecto in arraySimulaciones" :key="prospecto.id">
-                                            <td v-text="prospecto.id"></td>
-                                            <td v-text="prospecto.nombre + ' ' + prospecto.apellidos "></td>
-                                            <td v-text="prospecto.proyecto"></td>
-                                            <td v-text="prospecto.etapa"></td>
-                                            <td v-text="prospecto.manzana"></td>
-                                            <td v-text="prospecto.num_lote"></td>
-                                            <td v-text="prospecto.modelo"></td>
-                                            <td v-text="'$'+formatNumber(prospecto.precio_venta)"></td>
-                                            <td v-text="'$'+formatNumber(prospecto.credito_solic)"></td>
-                                            <td v-text="prospecto.plazo + ' años'"></td>
-                                            <td v-text="prospecto.institucion"></td>
-                                            <td v-text="prospecto.tipo_credito"></td>
-                                            <td v-if="prospecto.status == '0'">
+                                            <td class="td2" v-text="prospecto.id"></td>
+                                            <td class="td2" v-text="prospecto.nombre + ' ' + prospecto.apellidos "></td>
+                                            <td class="td2" v-text="prospecto.vendedor_nombre + ' ' + prospecto.vendedor_apellidos "></td>
+                                            <td class="td2" v-text="prospecto.proyecto"></td>
+                                            <td class="td2" v-text="prospecto.etapa"></td>
+                                            <td class="td2" v-text="prospecto.manzana"></td>
+                                            <td class="td2" v-text="prospecto.num_lote"></td>
+                                            <td class="td2" v-text="prospecto.modelo"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(prospecto.precio_venta)"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(prospecto.credito_solic)"></td>
+                                            <td class="td2" v-text="prospecto.plazo + ' años'"></td>
+                                            <td class="td2" v-text="prospecto.institucion"></td>
+                                            <td class="td2" v-text="prospecto.tipo_credito"></td>
+                                            <td class="td2" v-if="prospecto.status == '0'">
                                                 <span class="badge badge-danger">Rechazado</span>
                                             </td>
-                                            <td v-if="prospecto.status == '2'">
+                                            <td class="td2" v-if="prospecto.status == '2'">
                                                 <span class="badge badge-success">Aprobado</span>
                                             </td>
-                                            <td>
-                                                 <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" @click="abrirModal3('prospecto','ver_todo'),listarObservacion(1,prospecto.prospecto_id)">Ver todos</button> 
+                                            <td class="td2">
+                                                 <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" @click="abrirModal3('prospecto','ver_todo',prospecto.prospecto_id),listarObservacion(1,prospecto.prospecto_id)">Ver todos</button> 
                                             </td>
                                         </tr>                               
                                     </tbody>
@@ -102,9 +104,18 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-
-                                
+                            
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Nueva observación</label>
+                                    <div class="col-md-9">
+                                        <textarea rows="1" cols="30" class="form-control" v-model="observacion" placeholder="Observaciones"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-md-12">
+                                        <button class="btn btn-primary" @click="registrarObservacion()">Guardar</button>
+                                    </div>
+                                </div>
                                 <table class="table table-bordered table-striped table-sm" v-if="tipoAccion == 4">
                                     <thead>
                                         <tr>
@@ -123,7 +134,7 @@
                                     </tbody>
                                 </table>
                                 
-                            </form>
+                            
                         </div>
                         <!-- Botones del modal -->
                         <div class="modal-footer">
@@ -155,6 +166,8 @@
                 modal3: 0,
                 modal2: 0,
                 listado:1,
+                prospecto_id:0,
+                observacion:'',
                 tituloModal3 : '',
                 tipoAccion: 0,
                 pagination : {
@@ -291,6 +304,28 @@
                     return true;
                 }
             },
+            registrarObservacion(){
+
+                let me = this;
+                //Con axios se llama el metodo store de FraccionaminetoController
+                axios.post('/clientes/storeObservacion',{
+                    'cliente_id':this.prospecto_id,
+                    'observacion':this.observacion                 
+                }).then(function (response){
+                    me.listarObservacion(1,me.prospecto_id);
+                    me.observacion='';
+                    //Se muestra mensaje Success
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Observacion agregada correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
 
 
              cerrarModal3(){
@@ -299,7 +334,7 @@
               
             },
             
-            abrirModal3(prospectos,accion){
+            abrirModal3(prospectos,accion,id){
              switch(prospectos){
                     case "prospecto":
                     {
@@ -310,6 +345,7 @@
                                 this.modal3 =1;
                                 this.tituloModal3='Consulta Observaciones';
                                 this.tipoAccion= 4;
+                                this.prospecto_id = id;
                                 break;  
                             }
                             
@@ -358,5 +394,43 @@
         .btnagregar{
         margin-top: 2rem;
         }
+    .table2 {
+    margin: auto;
+    border-collapse: collapse;
+    overflow-x: auto;
+    display: block;
+    width: fit-content;
+    max-width: 100%;
+    box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
+    }
+
+    .td2, .th2 {
+    border: solid rgb(200, 200, 200) 1px;
+    padding: .5rem;
+    }
+
+    /*th {
+    text-align: left;
+    background-color: rgb(190, 220, 250);
+    text-transform: uppercase;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: rgb(50, 50, 100) solid 2px;
+    border-top: none;
+    }*/
+
+    .td2 {
+    white-space: nowrap;
+    border-bottom: none;
+    color: rgb(20, 20, 20);
+    }
+
+    .td2:first-of-type, th:first-of-type {
+    border-left: none;
+    }
+
+    .td2:last-of-type, th:last-of-type {
+    border-right: none;
+    } 
     }
 </style>
