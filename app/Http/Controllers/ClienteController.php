@@ -352,7 +352,7 @@ class ClienteController extends Controller
 
         $buscar = $request->buscar;
         $observacion = Cliente_observacion::select('comentario','usuario','created_at')
-                    ->where('cliente_id','=', $buscar)->orderBy('created_at','desc')->paginate(20);
+                    ->where('cliente_id','=', $buscar)->orderBy('created_at','desc')->paginate(40);
 
         return [
             'pagination' => [

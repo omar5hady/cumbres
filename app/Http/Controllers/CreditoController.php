@@ -259,14 +259,23 @@ class CreditoController extends Controller
             'datos_extra.mascota','datos_extra.num_perros','datos_extra.rang010','datos_extra.rang1120',
             'datos_extra.rang21','datos_extra.ama_casa','datos_extra.persona_discap','datos_extra.silla_ruedas',
             'datos_extra.num_vehiculos','creditos.costo_paquete','creditos.status','inst_seleccionadas.tipo_credito',
-            'inst_seleccionadas.institucion','personal.nombre','personal.apellidos','fraccionamientos.nombre as proyecto')
+            'inst_seleccionadas.institucion','personal.nombre','personal.apellidos','fraccionamientos.nombre as proyecto',
+            'clientes.id as prospecto_id')
             ->where('creditos.status','!=','1')
             ->where('inst_seleccionadas.elegido','=','1')
-            ->get();
+            ->orderBy('id','desc')->paginate(8);
     
 
     
-    return['creditos' => $creditos];
+    return[
+        'pagination' => [
+            'total'         => $creditos->total(),
+            'current_page'  => $creditos->currentPage(),
+            'per_page'      => $creditos->perPage(),
+            'last_page'     => $creditos->lastPage(),
+            'from'          => $creditos->firstItem(),
+            'to'            => $creditos->lastItem(),
+        ],'creditos' => $creditos];
     }
 
 }
