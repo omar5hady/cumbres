@@ -9,6 +9,8 @@ use App\Personal;
 use App\Cliente;
 use App\Inst_seleccionada;
 use DB;
+use App\User;
+use App\Notifications\NotifyAdmin;
 
 class CreditoController extends Controller
 
@@ -185,6 +187,21 @@ class CreditoController extends Controller
             $inst_seleccionada->institucion = $request->inst_financiera;
             $inst_seleccionada->elegido = 1;
             $inst_seleccionada->save();
+
+            $numSimulacionesPendientes= DB::table('creditos')->where('status','=','1')->count();
+            $arregloSimPendientes = [
+                'pendientes' => [
+                    'numero' => $numSimulacionesPendientes,
+                    'msj' => 'Simulaciones pendientes'
+                ]
+            ];
+
+            $users = User::all()->where('rol_id','=','1');
+
+            foreach($users as $notificar){
+                User::findOrFail($notificar->id)->notify(new NotifyAdmin($arregloSimPendientes));
+            }
+
             
             DB::commit();
 

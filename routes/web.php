@@ -23,6 +23,9 @@ Route::group(['middleware' => ['guest']],function(){
 // rutas usuarios autenticados
 Route::group(['middleware' => ['auth']],function(){
 
+    //Notificaciones
+    Route::post('/notification/get','NotificationController@get');
+
     //para desloguearse
     Route::post('/logout','Auth\LoginController@logout')->name('logout');
 
@@ -333,3 +336,4 @@ Route::group(['middleware' => ['auth']],function(){
     
 });
 
+// clave pusher: p3TvG4EPftYJPU7

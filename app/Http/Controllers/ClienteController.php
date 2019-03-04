@@ -10,6 +10,7 @@ use Auth;
 use App\Cliente_observacion;
 use Illuminate\Support\Facades\DB;
 
+
 class ClienteController extends Controller
 {
     public function index(Request $request)

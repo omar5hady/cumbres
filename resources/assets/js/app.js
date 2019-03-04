@@ -6,11 +6,13 @@
  */
 
 require('./bootstrap');
-
+window.$ = window.jQuery = require('jquery');
 window.Vue = require('vue');
 
 
 import VueCurrencyFilter from 'vue-currency-filter'
+import Axios from 'axios';
+import Echo from 'laravel-echo';
 
 Vue.use(VueCurrencyFilter, {
   symbol: '$', // El símbolo, por ejemplo €
@@ -61,9 +63,27 @@ Vue.component('tipo-credito', require('./components/TipoCredito.vue'));
 Vue.component('simulacion', require('./components/SimulacionDeCredito.vue'));
 Vue.component('historialsim', require('./components/HistorialSimulacion.vue'));
 
+Vue.component('notification', require('./components/Notification.vue'));
+
 const app = new Vue({
     el: '#app',
     data :{
-        menu:0
+        menu:0,
+        notifications:[]
+    },
+    created(){
+      let me = this;
+      axios.post('notification/get').then(function(response){
+        // console.log(response.data);
+        me.notifications=response.data;
+      }).catch(function(error){
+        console.log(error);
+      });
+
+      var userId = $('meta[name="userId"]').attr('content');
+      Echo.private('App.User.'+userId).notification((notification) => {
+        me.notifications.unshift(notification);
+      });
+
     }
 });
