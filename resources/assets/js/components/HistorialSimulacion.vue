@@ -369,6 +369,13 @@
                 this.tituloModal3 = '';
               
             },
+            limpiarBusqueda(){
+                let me=this;
+                me.buscar= "";
+                me.b_etapa='';
+                me.b_manzana='';
+                me.b_lote='';
+            },
             
             abrirModal3(prospectos,accion,id){
              switch(prospectos){

@@ -27,7 +27,7 @@
                                             <option value="personal.rfc">RFC</option>
                                             <option value="clientes.curp">CURP</option>
                                             <option value="clientes.nss">NSS</option>
-                                            <option value="clientes.proyecto">Proyecto</option>
+                                            <option value="fraccionamientos.nombre">Proyecto</option>
                                         </select>
                                         <input  type="text" v-model="buscar" @keyup.enter="listarProspectos(1,buscar,criterio)" class="form-control">
                                         <button type="submit" @click="listarProspectos(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>

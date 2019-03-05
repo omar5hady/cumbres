@@ -2493,6 +2493,11 @@
                     this.silla_ruedas=0;
             },
 
+            limpiarBusqueda(){
+                let me=this;
+                me.buscar= "";
+            },
+
             selectLugarContacto(){
                 let me = this;
                 me.arrayLugarContacto=[];
