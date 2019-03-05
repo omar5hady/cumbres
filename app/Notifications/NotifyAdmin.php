@@ -6,6 +6,8 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Messages\BroadcastMessage;
+
 
 class NotifyAdmin extends Notification
 {
@@ -41,12 +43,12 @@ class NotifyAdmin extends Notification
     }
 
     public function toBroadcast($notifiable){
-        return [
-            'data' => [
+        return new BroadcastMessage([
+             'data' => [
                 'datos' => $this->GlobalDatos 
             ]
            
-        ];
+        ]);
     }
 
     /**

@@ -81,7 +81,8 @@ const app = new Vue({
       });
 
       var userId = $('meta[name="userId"]').attr('content');
-      window.Echo.private('App.User.'+userId).notification((notification) => {
+
+      window.Echo.private('App.User.'+userId).listen(('PackageNotification'),(e) => {
         me.notifications.unshift(notification);
       });
 

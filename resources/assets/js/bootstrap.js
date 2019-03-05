@@ -55,5 +55,6 @@ window.Echo = new Echo({
     encrypted: true
 });
 
+
 //Date & time format
 window.moment = require('moment');
