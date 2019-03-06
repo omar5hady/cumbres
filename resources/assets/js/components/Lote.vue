@@ -519,7 +519,7 @@
                 });
             },
 
-        selectFraccionamientosConLote(){
+            selectFraccionamientosConLote(){
                 let me = this;
                 me.arrayFraccionamientosLote=[];
                 var url = '/select_fraccionamientoLote';
