@@ -11,25 +11,25 @@
                 <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-energy"></i> Administración </a>
                 <ul class="nav-dropdown-items">
                     <li @click="menu=11" class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-bag"></i> Departamentos</a>
+                        <a class="nav-link" href="#"><i class="fa fa-object-group"></i> Departamentos</a>
                     </li>
                     <li @click="menu=12" class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-bag"></i> Personas</a>
+                        <a class="nav-link" href="#"><i class="fa fa-vcard"></i> Personas</a>
                     </li>
                     <li @click="menu=13" class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-bag"></i> Empresas</a>
+                        <a class="nav-link" href="#"><i class="fa fa-industry"></i> Empresas</a>
                     </li>
                     <li @click="menu=14" class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-bag"></i> Medios Publicitarios</a>
+                        <a class="nav-link" href="#"><i class="fa fa-bullhorn"></i> Medios Publicitarios</a>
                     </li>
                     <li @click="menu=15" class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-bag"></i> Lugares de contacto</a>
+                        <a class="nav-link" href="#"><i class="fa fa-street-view"></i> Lugares de contacto</a>
                     </li>
                     <li @click="menu=16" class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-bag"></i> Instituciones de financiamiento</a>
+                        <a class="nav-link" href="#"><i class="fa fa-building-o"></i> Instituciones de financiamiento</a>
                     </li>
                     <li @click="menu=17" class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-bag"></i> Tipos de crédito</a>
+                        <a class="nav-link" href="#"><i class="fa fa-credit-card"></i> Tipos de crédito</a>
                     </li>
                 </ul>
             </li>
@@ -60,39 +60,39 @@
                 </ul>
             </li>
             <li class="nav-item nav-dropdown">
-                <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-energy"></i> Precios </a>
+                <a class="nav-link nav-dropdown-toggle" href="#"><i class="fa fa-money"></i> Precios </a>
                 <ul class="nav-dropdown-items">
                     <li @click="menu=21" class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-bag"></i> Precios de etapa</a>
+                        <a class="nav-link" href="#"><i class="fa fa-usd"></i> Precios de etapa</a>
                     </li>
                     <li @click="menu=22" class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-bag"></i> Sobreprecios</a>
+                        <a class="nav-link" href="#"><i class="fa fa-plus-square-o"></i> Sobreprecios</a>
                     </li>
                     <li @click="menu=23" class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-bag"></i> Paquetes</a>
+                        <a class="nav-link" href="#"><i class="fa fa-shopping-bag"></i> Paquetes</a>
                     </li>
                     <li @click="menu=24" class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-bag"></i> Promociones</a>
+                        <a class="nav-link" href="#"><i class="fa fa-percent"></i> Promociones</a>
                     </li>
                 </ul>
             </li>
             <li class="nav-item nav-dropdown">
-                <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-wallet"></i> Obra</a>
+                <a class="nav-link nav-dropdown-toggle" href="#"><i class="fa fa-plug"></i> Obra</a>
                 <ul class="nav-dropdown-items">
                     <li @click="menu=50" class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-wallet"></i> Contratistas</a>
+                        <a class="nav-link" href="#"><i class="fa fa-handshake-o"></i> Contratistas</a>
                     </li>
                     <li @click="menu=51 "class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-notebook"></i> Inicio de obra</a>
+                        <a class="nav-link" href="#"><i class="fa fa-play-circle"></i> Inicio de obra</a>
                     </li>
                     <li @click="menu=54 "class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-notebook"></i> Aviso de obra</a>
+                        <a class="nav-link" href="#"><i class="fa fa-newspaper-o"></i> Aviso de obra</a>
                     </li>
                     <li @click="menu=52 "class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-notebook"></i> Partidas</a>
+                        <a class="nav-link" href="#"><i class="fa fa-star-half"></i> Partidas</a>
                     </li>
                     <li @click="menu=53 "class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-notebook"></i> Avance</a>
+                        <a class="nav-link" href="#"><i class="fa fa-star-half-o"></i> Avance</a>
                     </li>
                 </ul>
             </li>
@@ -100,16 +100,16 @@
                 <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-basket"></i> Asesores</a>
                 <ul class="nav-dropdown-items">
                     <li @click="menu=59" class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-basket-loaded"></i> Lotes Disponibles</a>
+                        <a class="nav-link" href="#"><i class="fa fa-circle-o-notch fa-spin"></i> Lotes Disponibles</a>
                     </li>
                     <li @click="menu=60" class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-basket-loaded"></i> Mis prospectos</a>
+                        <a class="nav-link" href="#"><i class="fa fa-group"></i> Mis prospectos</a>
                     </li>
                     <li @click="menu=61" class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-notebook"></i> Simulacion de credito</a>
+                        <a class="nav-link" href="#"><i class="fa fa-calculator"></i> Simulacion de credito</a>
                     </li>
                     <li @click="menu=62" class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-notebook"></i> Historial de simulaciones</a>
+                        <a class="nav-link" href="#"><i class="fa fa-archive"></i> Historial de simulaciones</a>
                     </li>
                 </ul>
             </li>

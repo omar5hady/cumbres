@@ -11,10 +11,10 @@
                 <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-energy"></i> Administración </a>
                 <ul class="nav-dropdown-items">
                     <li @click="menu=13" class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-bag"></i> Empresas</a>
+                        <a class="nav-link" href="#"><i class="fa fa-industry"></i> Empresas</a>
                     </li>
                     <li @click="menu=14" class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-bag"></i> Medios Publicitarios</a>
+                        <a class="nav-link" href="#"><i class="fa fa-bullhorn"></i> Medios Publicitarios</a>
                     </li>
                 </ul>
             </li>
@@ -25,16 +25,16 @@
                 <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-basket"></i> Ventas</a>
                 <ul class="nav-dropdown-items">
                     <li @click="menu=59" class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-basket-loaded"></i> Lotes Disponibles</a>
+                        <a class="nav-link" href="#"><i class="fa fa-circle-o-notch fa-spin"></i> Lotes Disponibles</a>
                     </li>
                     <li @click="menu=60" class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-basket-loaded"></i> Mis prospectos</a>
+                        <a class="nav-link" href="#"><i class="fa fa-group"></i> Mis prospectos</a>
                     </li>
                     <li @click="menu=61" class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-notebook"></i> Simulacion de credito</a>
+                        <a class="nav-link" href="#"><i class="fa fa-calculator"></i> Simulacion de credito</a>
                     </li>
                     <li @click="menu=62" class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-notebook"></i> Historial de simulaciones</a>
+                        <a class="nav-link" href="#"><i class="fa fa-archive"></i> Historial de simulaciones</a>
                     </li>
                 </ul>
             </li>

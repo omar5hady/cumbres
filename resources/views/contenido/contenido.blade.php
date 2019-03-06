@@ -2,9 +2,9 @@
 @section('contenido')
 
 
-@if(Auth::check())
+    @if(Auth::check())
 
-            @if(Auth::user()->rol_id == 1)
+        @if(Auth::user()->rol_id == 1)
             <template v-if="menu==0">
                 <h1>Escritorio</h1>
             </template>
@@ -122,7 +122,7 @@
             <template v-if="menu==59">
                 <lote-disponible rol-id="{{Auth::user()->rol_id}}"></lote-disponible>
             </template>
-   
+
             <template v-if="menu==60">
                 <prospectos></prospectos>
             </template>
@@ -134,8 +134,8 @@
             <template v-if="menu==62">
                 <historialsim rol-id="{{Auth::user()->rol_id}}"></historialsim>
             </template>
-            
-            @elseif(Auth::user()->rol_id == 2) <!--Vendedor -->
+        
+        @elseif(Auth::user()->rol_id == 2) <!--Vendedor -->
             <template v-if="menu==13">
                 <empresa></empresa>
             </template>
@@ -154,16 +154,60 @@
             <template v-if="menu==62">
                 <historialsim rol-id="{{Auth::user()->rol_id}}"></historialsim>
             </template>
-                
-            @elseif(Auth::user()->rol_id == 3)
-                
-            @elseif(Auth::user()->rol_id == 4)
-                
-            @elseif(Auth::user()->rol_id == 5)
-                
+            
+        @elseif(Auth::user()->rol_id == 3) <!--Gerente proyectos -->
+            <template v-if="menu==1">
+                <fraccionamiento></fraccionamiento>
+            </template>
 
-            @endif
+            <template v-if="menu==3">
+                <modelo></modelo>
+            </template>
+
+            <template v-if="menu==4">
+                <lote></lote>
+            </template>
+
+            <template v-if="menu==6">
+            <licencias></licencias>
+            </template>
+
+            <template v-if="menu==7">
+            <actadeterminacion></actadeterminacion>
+            </template>
+
+            <template v-if="menu==71">
+                <rol></rol>
+            </template>
+
+            <template v-if="menu==72">
+                <usuario></usuario>
+            </template>
+
+        @elseif(Auth::user()->rol_id == 4) <!--Gerente ventas -->
+            
+        @elseif(Auth::user()->rol_id == 5) <!--Gerente obra y construccion -->
+            <template v-if="menu==50">
+                <contratistas></contratistas>
+            </template>
+
+            <template v-if="menu==51">
+                <iniobra></iniobra>
+            </template>
+            <template v-if="menu==52">
+                <partidas></partidas>
+            </template>
+
+            <template v-if="menu==53">
+                <avance></avance>
+            </template>
+
+            <template v-if="menu==54">
+                <aviso-obra></aviso-obra>
+            </template>           
+
         @endif
+    @endif
 
        
 @endsection
