@@ -67,6 +67,7 @@ Route::group(['middleware' => ['auth']],function(){
     
     ///////////////////        RUTAS Usuarios    //////////////////////////////////
     Route::get('/usuarios','UserController@index');
+    Route::get('/usuario/datos','UserController@obtenerDatos');
     Route::post('/usuarios/registrar','UserController@store');
     Route::post('/usuarios/asignar','UserController@asignar');
     Route::put('/usuarios/actualizar','UserController@update');

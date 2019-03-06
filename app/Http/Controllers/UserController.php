@@ -210,4 +210,12 @@ class UserController extends Controller
 
         return['vendedores' => $personas];
     }
+
+    public function obtenerDatos(Request $request){
+        $usuario = User::join('personal','users.id','=','personal.id')
+            ->select('users.usuario',DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"))
+            ->where('users.id','=',$request->id)->get();
+
+        return['usuario' => $usuario];
+    }
 }

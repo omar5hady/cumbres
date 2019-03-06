@@ -4,6 +4,10 @@
 
     @if(Auth::check())
 
+        <template v-if="menu==100">
+            <perfil-user user-id="{{Auth::user()->id}}"></perfil-user>
+        </template>
+
         @if(Auth::user()->rol_id == 1)
             <template v-if="menu==0">
                 <h1>Escritorio</h1>

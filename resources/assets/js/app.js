@@ -64,6 +64,7 @@ Vue.component('simulacion', require('./components/SimulacionDeCredito.vue'));
 Vue.component('historialsim', require('./components/HistorialSimulacion.vue'));
 
 Vue.component('notification', require('./components/Notification.vue'));
+Vue.component('perfil-user', require('./components/Perfil.vue'));
 
 const app = new Vue({
     el: '#app',
