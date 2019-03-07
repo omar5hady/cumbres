@@ -2778,7 +2778,7 @@
                     'credito_id':this.num_folio,
                     'tipo_credito':this.tipo_credito2,
                     'institucion':this.inst_financiera2,
-                    'monto_crediito':this.monto_credito2,
+                    'monto_credito':this.monto_credito2,
                     'plazo_credito':this.plazo_credito2
                 }).then(function (response){
                     me.proceso=false;

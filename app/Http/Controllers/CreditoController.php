@@ -227,7 +227,7 @@ class CreditoController extends Controller
         $inst_seleccionada->institucion = $request->institucion;
         $inst_seleccionada->elegido = 0;
         $inst_seleccionada->plazo_credito = $request->plazo_credito;
-        $inst_seleccionada->monto_crediito = $request->monto_crediito;
+        $inst_seleccionada->monto_credito = $request->monto_credito;
         $inst_seleccionada->save();
     }
 
@@ -243,7 +243,7 @@ class CreditoController extends Controller
         $credito->plazo = $inst_seleccionada->plazo_credito;
         $credito->credito_solic = $inst_seleccionada->monto_credito;
         $credito->save();
-        
+
         $seleccionados =  Inst_seleccionada::select('id','elegido')
                                              ->where('credito_id','=',$simulacion)
                                              ->where('id','!=',$request->id)

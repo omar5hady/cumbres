@@ -23,7 +23,7 @@ class CreateInstSeleccionadasTable extends Migration
             $table->date('fecha_ingreso')->nullable();
             $table->date('fecha_respuesta')->nullable();
             $table->integer('plazo_credito')->nullable();
-            $table->double('monto_crediito')->nullable();
+            $table->double('monto_credito')->nullable();
             $table->timestamps();
             
             $table->foreign('credito_id')->references('id')->on('creditos')->onDelete('cascade');
