@@ -613,7 +613,7 @@
                                                 <div class="col-md-4">
                                                         <div class="form-group">
                                                     <label for="">Telefono <span style="color:red;" v-show="telefono_referencia1==''">(*)</span></label>
-                                                    <input type="text"  maxlength="7" pattern="\d*" class="form-control"  v-model="telefono_referencia1" placeholder="Telefono">
+                                                    <input type="text"  maxlength="10" pattern="\d*" class="form-control"  v-model="telefono_referencia1" placeholder="Telefono">
                                                 </div>
                                                 </div>
 
@@ -642,7 +642,7 @@
                                                 <div class="col-md-4">
                                                         <div class="form-group">
                                                     <label for="">Telefono <span style="color:red;" v-show="telefono_referencia2==''">(*)</span></label>
-                                                    <input type="text" maxlength="7" pattern="\d*" class="form-control"  v-model="telefono_referencia2" placeholder="Telefono">
+                                                    <input type="text" maxlength="10" pattern="\d*" class="form-control"  v-model="telefono_referencia2" placeholder="Telefono">
                                                 </div>
                                                 </div>
 

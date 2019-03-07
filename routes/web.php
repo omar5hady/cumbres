@@ -161,6 +161,7 @@ Route::group(['middleware' => ['auth']],function(){
     Route::get('/lote_aviso','LoteController@indexIniObra');
     Route::put('/lotes/enviarAviObra','LoteController@enviarAviso');
     Route::get('/lotes/export_excel/{fraccionamiento_id}','LoteController@excelLotes');
+    Route::get('/lotes/resume_excel_lotes_disp','LoteController@exportExcelLotesDisp');
     
     ////////////////////        RUTAS APARTADOS    /////////////////////////////////
     Route::post('/apartado/registrar','ApartadoController@store');
@@ -176,7 +177,6 @@ Route::group(['middleware' => ['auth']],function(){
     ///////////////////       RUTAS LICENCIA-ACTA  ////////////////////////////////////
     Route::get('/acta_terminacion','LicenciasController@indexActa');
     Route::put('/acta_terminacion/actualizar','LicenciasController@updateActas');
-    Route::get('/licencias/resume','LicenciasController@resumeLicencias');
     Route::get('/licencias/resume_excel','LicenciasController@exportExcel');
     Route::post('/formSubmitActa/{id}','LicenciasController@formSubmitActa'); //carga de acta
     Route::get('/downloadActa/{fileName}' , 'LicenciasController@downloadFileActa'); //descarga de acta

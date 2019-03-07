@@ -24,7 +24,7 @@ class CreatePersonalTable extends Migration
             $table->string('direccion',80)->nullable();
             $table->string('colonia',80)->nullable();
             $table->integer('cp')->nullable();
-            $table->string('telefono',8)->nullable();
+            $table->string('telefono',10)->nullable();
             $table->string('ext',3)->nullable();
             $table->string('celular',10);
             $table->string('email',40);

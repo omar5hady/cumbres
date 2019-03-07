@@ -452,7 +452,7 @@
                             case 'registrar':
                             {
                                 this.modal = 1;
-                                this.tituloModal = 'Registrar Departamento';
+                                this.tituloModal = 'Registrar paquete';
                                 this.fraccionamiento_id =0;
                                 this.etapa_id =0;
                                 this.nombre = '';
@@ -467,7 +467,7 @@
                             {
                                 //console.log(data);
                                 this.modal =1;
-                                this.tituloModal='Actualizar Departamento';
+                                this.tituloModal='Actualizar paquete';
                                 this.tipoAccion=2;
                                 this.id=data['id'];
                                 this.fraccionamiento_id=data['fraccionamiento_id'];

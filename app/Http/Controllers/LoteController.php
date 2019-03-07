@@ -965,4 +965,111 @@ class LoteController extends Controller
     }
 
 
+    public function exportExcelLotesDisp(Request $request)
+    {
+        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+        ->join('licencias','lotes.id','=','licencias.id')
+        ->join('etapas','lotes.etapa_id','=','etapas.id')
+        ->join('modelos','lotes.modelo_id','=','modelos.id')
+        ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
+                    'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
+                    'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
+                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
+                    'lotes.sobreprecio', 'lotes.precio_base','lotes.excedente_terreno','lotes.apartado')
+                    ->where('lotes.habilitado','=',1)
+                    ->orderBy('fraccionamientos.nombre','DESC')
+                    ->orderBy('lotes.etapa_servicios','DESC')->get();
+
+                   
+
+        
+            return Excel::create('Relacion lotes disponibles', function($excel) use ($lotes){
+                $excel->sheet('lotes', function($sheet) use ($lotes){
+                    
+                    $sheet->row(1, [
+                        'Proyecto', 'Manzana', '# Lote', '% Avance', 'Modelo', 'Calle',
+                        '# Oficial', 'Terreno', 'Construccion','Precio base','Terreno excedente',
+                        'Sobreprecios','Precio venta','Promocion','Fecha de termino', 'Canal de venta'
+                    ]);
+
+
+                    $sheet->cells('A1:P1', function ($cells) {
+                        $cells->setBackground('#052154');
+                        $cells->setFontColor('#ffffff');
+                        // Set font family
+                        $cells->setFontFamily('Calibri');
+
+                        // Set font size
+                        $cells->setFontSize(13);
+
+                        // Set font weight to bold
+                        $cells->setFontWeight('bold');
+                        $cells->setAlignment('center');
+                    });
+
+                    
+                    $cont=1;
+                    
+                    $sheet->setColumnFormat(array(
+                        'J' => '$#,##0.00',
+                        'K' => '$#,##0.00',
+                        'L' => '$#,##0.00',
+                        'M' => '$#,##0.00',
+                    ));
+
+                    
+
+                    foreach($lotes as $index => $lote) {
+                        setlocale(LC_TIME,'es');
+                        $mesAño = new Carbon($lote->fecha_fin);
+                        $lote->fecha_fin = $mesAño->formatLocalized('%B %Y');
+                        $lote->precio_venta= $lote->sobreprecio + $lote->precio_base + $lote->excedente_terreno;
+                        $promocion=[];
+                        $promocion = Lote_promocion::join('promociones','lotes_promocion.promocion_id','=','promociones.id')
+                            ->select('promociones.nombre','promociones.v_ini','promociones.v_fin','promociones.id')
+                            ->where('lotes_promocion.lote_id','=',$lote->id)
+                            ->where('promociones.v_fin','>',Carbon::today()->format('ymd'))->get();
+                        if(sizeof($promocion) > 0){
+                            // $lote->v_iniPromo = $promocion[0]->v_ini;
+                            // $lote->v_finPromo = $promocion[0]->v_fin;
+                            $lote->promocion = $promocion[0]->nombre;
+                        }
+                        else
+                            $lote->promocion = 'Sin Promoción';
+
+
+                        $cont++;
+                        
+                        $sheet->row($index+2, [
+                            $lote->proyecto, 
+                            $lote->manzana,
+                            $lote->num_lote.'-'.$lote->sublote, 
+                            $lote->avance, 
+                            $lote->modelo, 
+                            $lote->calle,
+                            $lote->numero.'-'.$lote->interior,
+                            $lote->terreno,
+                            $lote->construccion,
+                            $lote->precio_base,
+                            $lote->excedente_terreno,
+                            $lote->sobreprecio,
+                            $lote->precio_venta,
+                            $lote->promocion,
+                            $lote->fecha_fin,
+                           
+                        ]);	
+                    }
+
+
+                    $num='A1:P' . $cont;
+                    $sheet->setBorder($num, 'thin');
+                });
+            }
+            
+            )->download('xls');
+        
+      
+    }
+
+
 }

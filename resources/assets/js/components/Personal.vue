@@ -180,7 +180,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Telefono</label>
                                     <div class="col-md-5">
-                                        <input type="text" pattern="\d*" maxlength="7" v-on:keypress="isNumber($event)" class="form-control" v-model="telefono"  placeholder="Telefono" :disabled="tipoAccion == 3">
+                                        <input type="text" pattern="\d*" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" v-model="telefono"  placeholder="Telefono" :disabled="tipoAccion == 3">
                                     </div>
                                 </div>
 
@@ -604,8 +604,8 @@
                 if(!this.rfc || this.rfc.length<10)
                     this.errorMostrarMsjPersonal.push("El RFC no debe ir vacio (10 caracteres)");
                 
-                if(!this.telefono || this.celular.length<10)
-                    this.errorMostrarMsjPersonal.push("El número de celular debe ser de 10 digitos");
+                if(!this.telefono)
+                    this.errorMostrarMsjPersonal.push("Capturar numero telefonico");
 
                 if(this.errorMostrarMsjPersonal.length)//Si el mensaje tiene almacenado algo en el array
                     this.errorPersonal = 1;
