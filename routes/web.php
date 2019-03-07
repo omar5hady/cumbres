@@ -280,6 +280,7 @@ Route::group(['middleware' => ['auth']],function(){
 
     Route::post('/creditos_select/registrar','CreditoController@storeCreditoSelect');
     Route::put('/creditos/seleccionar','CreditoController@seleccionarCredito');
+    Route::put('/creditos_select/actualizar','CreditoController@updateDatosCredito');
     
 
     });

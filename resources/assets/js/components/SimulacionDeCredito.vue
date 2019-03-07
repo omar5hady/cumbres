@@ -2109,7 +2109,7 @@
                                  <!-- Div para mostrar los errores -->
                                 <div v-show="errorInstSelec" class="form-group row div-error">
                                     <div class="text-center text-error">
-                                        <div v-for="error in errorMostrarMsjInstSelec" :key="error" v-text="error">
+                                        <div v-for="error in errorMostrarMsjInstSelect" :key="error" v-text="error">
 
                                         </div>
                                     </div>
@@ -2121,7 +2121,7 @@
                         <!-- Botones del modal -->
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal4()">Cerrar</button>
-                            <button type="button" class="btn btn-success" >Guardar cambios</button>
+                            <button type="button" class="btn btn-success" @click="actualizarDatosCredito()" >Guardar cambios</button>
                         </div>
                     </div>
                       <!-- /.modal-content -->
@@ -2208,7 +2208,7 @@
                 direccion_coa:'',
                 colonia_coa:'',
                 empresa_coa:'',
-
+                inst_seleccionada_id: 0,
              
 
                 arrayEmpresa: [],
@@ -2269,9 +2269,10 @@
                 errorProspecto : 0,
                 errorMostrarMsjProspecto : [],
                 errorInstSelec : 0,
-                errorMostrarMsjInstSelec : [],
+                errorMostrarMsjInstSelect : [],
                 errorCoacreditado : 0,
                 errorMostrarMsjCoacreditado : [],
+
                 pagination : {
                     'total' : 0,         
                     'current_page' : 0,
@@ -2938,8 +2939,8 @@
                 this.errorInstSelec=0;
                 this.errorMostrarMsjInstSelect=[];
 
-                if(this.dep_economicos=='') 
-                    this.errorMostrarMsjInstSelect.push("Ingresar numero de dependientes económicos.");
+                if(this.observacion=='') 
+                    this.errorMostrarMsjInstSelect.push("Ingresar una observacion");
                 
                 if(this.errorMostrarMsjInstSelect.length)//Si el mensaje tiene almacenado algo en el array
                     this.errorInstSelec = 1;
@@ -3224,6 +3225,42 @@
                 this.observacion=''
             },
 
+            actualizarDatosCredito(){
+                if(this.validarInstSelect()) //Se verifica si hay un error (campo vacio)
+                {
+                    return;
+                }
+
+
+                 let me = this;
+                //Con axios se llama el metodo update de DepartamentoController
+                axios.put('/creditos_select/actualizar',{
+                    'id': this.inst_seleccionada_id,
+                    'fecha_ingreso': this.fecha_ingreso,
+                    'plazo_credito': this.plazo_credito2,
+                    'monto_credito': this.monto_credito2,
+                    'status': this.status_credito,
+                    'observacion': this.observacion
+
+                }).then(function (response){
+                  
+                    me.modal4 = 0;
+                    me.modal2=1;
+                    me.limpiarDatos();
+                    //window.alert("Cambios guardados correctamente");
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Cambios guardados',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+
+            },
+
             listarCreditos(){
                 let me = this;
                 var url = '/select_tipcreditos_simulacion?simulacion_id=' + this.num_folio;
@@ -3264,6 +3301,7 @@
                 this.plazo_credito2 = data['plazo_credito'];
                 this.status_credito = data['status'];
                 this.fecha_ingreso = data['fecha_ingreso'];
+                this.inst_seleccionada_id = data['id'];
                 this.modal2=0;
                 
             },

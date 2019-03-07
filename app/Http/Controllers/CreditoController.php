@@ -11,6 +11,8 @@ use App\Inst_seleccionada;
 use DB;
 use App\User;
 use App\Notifications\NotifyAdmin;
+use App\Obs_inst_selec;
+use Auth;
 
 class CreditoController extends Controller
 
@@ -230,6 +232,34 @@ class CreditoController extends Controller
         $inst_seleccionada->plazo_credito = $request->plazo_credito;
         $inst_seleccionada->monto_credito = $request->monto_credito;
         $inst_seleccionada->save();
+    }
+
+    public function updateDatosCredito(Request $request){
+        if (!$request->ajax()) return redirect('/');
+        try{
+            DB::beginTransaction();
+        $inst_seleccionada = Inst_seleccionada::findOrFail($request->id);
+        $inst_seleccionada->fecha_ingreso = $request->fecha_ingreso;
+        // $inst_seleccionada->fecha_respuesta = $request->fecha_respuesta;
+        $inst_seleccionada->status = $request->status;
+        $inst_seleccionada->plazo_credito = $request->plazo_credito;
+        $inst_seleccionada->monto_credito = $request->monto_credito;
+        $inst_seleccionada->save();
+
+        $observacion = new Obs_inst_selec();
+        $observacion->inst_selec_id = $inst_seleccionada->id;
+        $observacion->comentario = $request->observacion;
+        $observacion->usuario = Auth::user()->usuario;
+        $observacion->save();
+             
+        DB::commit();
+
+                
+    
+    } catch (Exception $e){
+        DB::rollBack();
+    }  
+
     }
 
     public function seleccionarCredito(Request $request){
