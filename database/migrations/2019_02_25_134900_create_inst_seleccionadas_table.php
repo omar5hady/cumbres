@@ -19,8 +19,12 @@ class CreateInstSeleccionadasTable extends Migration
             $table->string('tipo_credito')->nullable();
             $table->string('institucion')->nullable();
             $table->boolean('elegido')->default(0)->nullable();
+            $table->boolean('status')->default(1)->nullable();
+            $table->date('fecha_ingreso')->nullable();
+            $table->date('fecha_respuesta')->nullable();
+            $table->integer('plazo_credito')->nullable();
+            $table->double('monto_crediito')->nullable();
             $table->timestamps();
-
             
             $table->foreign('credito_id')->references('id')->on('creditos')->onDelete('cascade');
         });

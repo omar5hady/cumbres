@@ -2026,8 +2026,8 @@
                                                         <i class="fa fa-check fa-md"></i>
                                                     </button>
                                                 </template>
-                                                <template v-else>
-                                                    <button @click="seleccionarCredito(tipoCredito.id,tipoCredito.institucion,tipoCredito.tipo_credito)" type="button" class="btn btn-primary btn-sm">
+                                                <template v-else> 
+                                                    <button @click="seleccionarCredito(tipoCredito.id, tipoCredito.institucion, tipoCredito.tipo_credito, tipoCredito.monto_credito, tipoCredito.plazo_credito)" type="button" class="btn btn-primary btn-sm">
                                                         <i class="fa fa-exchange fa-md"></i>
                                                     </button>
                                                 </template>
@@ -2219,7 +2219,9 @@
                 discapacidad:0,
                 terreno_tam_excedente:0,
                 plazo_credito:0,
-                monto_credito:0
+                monto_credito:0,
+                plazo_credito2:0,
+                monto_credito2:0
                 
             }
         },
@@ -2306,10 +2308,7 @@
                     console.log(error);
                 });
             },
-
-
-            
-            seleccionarCredito(id,institucion,tipo_credito){
+            seleccionarCredito(id,institucion,tipo_credito,monto,plazo){
         
                 swal({
                 title: 'Esta seguro desea asignar este credito?',
@@ -2334,6 +2333,8 @@
                         me.listarCreditos();     
                         me.tipo_credito = tipo_credito;
                         me.inst_financiera = institucion;
+                        me.monto_credito=monto;
+                        me.plazo_credito=plazo;
                         swal(
                         'Activado!',
                         'El registro ha sido activado con éxito.',
@@ -2352,15 +2353,12 @@
                 }
                 }) 
             },
-
-
             getDatosEmpresa(val1){
                 let me = this;
                 me.loading = true;
                 me.empresa_coa = val1.nombre;
                
             }, 
-
             selectFraccionamientos(){
                 let me = this;
                 me.arrayFraccionamientos=[];
@@ -2373,7 +2371,6 @@
                     console.log(error);
                 });
             },
-
             selectEtapa(fraccionamiento){
                 let me = this;
                 me.arrayEtapas=[];
@@ -2387,7 +2384,6 @@
                     console.log(error);
                 });
             },
-            
             selectManzana(etapa){
                 let me = this;
                 me.arrayManzanas=[];
@@ -2401,7 +2397,6 @@
                     console.log(error);
                 });
             },
-
             selectPaquetes(etapa){
                 let me = this;
                 me.arrayPaquetes=[];
@@ -2415,7 +2410,6 @@
                     console.log(error);
                 });
             },
-            
             datosPaquetes(paquete){
                 let me = this;
                 me.precioVenta = me.precioVenta - me.costoPaquete;
@@ -2440,7 +2434,6 @@
                     me.costoPaquete=0;
                 }
             },
-            
             selectLotes(manzana){
                 let me = this;
                 me.arrayLotes=[];
@@ -2454,7 +2447,6 @@
                     console.log(error);
                 });
             },
-
             mostrarDatosLote(lote){
                 let me = this;
                 me.arrayDatosLotes=[];
@@ -2492,12 +2484,10 @@
                 if(this.discapacidad=="0")
                     this.silla_ruedas=0;
             },
-
             limpiarBusqueda(){
                 let me=this;
                 me.buscar= "";
             },
-
             selectLugarContacto(){
                 let me = this;
                 me.arrayLugarContacto=[];
@@ -2523,7 +2513,6 @@
                     console.log(error);
                 });
             },
-           
             selectFraccionamientos2(){
                 let me = this;
                 me.arrayFraccionamientos2=[];
@@ -2536,8 +2525,6 @@
                     console.log(error);
                 });
             },
-
-
             selectEstados(){
                 let me = this;
                 me.arrayEstados=[];
@@ -2552,8 +2539,6 @@
                     console.log(error);
                 });
             },
-
-            
             selectCiudades(estado,coacreditado){
                 let me = this;
                 var url = '/select_ciudades?buscar='+estado;
@@ -2572,13 +2557,10 @@
                     console.log(error);
                 });
             },
-
-
             formatNumber(value) {
                 let val = (value/1).toFixed(2)
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             },
-
             selectColonias(cp,coacreditado){
                 let me = this;
                 me.arrayColonias=[];
@@ -2598,9 +2580,6 @@
                     console.log(error);
                 });
             },
-
-
-
             listarObservacion(page, buscar){
                 let me = this;
                 var url = '/clientes/observacion?page=' + page + '&buscar=' + buscar ;
@@ -2615,7 +2594,6 @@
                 });
                 
             },
-
             selectCreditos(){
                 let me = this;
                 me.arrayCreditos=[];
@@ -2628,7 +2606,6 @@
                     console.log(error);
                 });
             },
-
             selectInstitucion(credito){
                 let me = this;
                 if(me.tipo_credito==0){
@@ -2644,7 +2621,6 @@
                     console.log(error);
                 });
             },
-
             cambiarPagina(page, buscar, criterio){
                 let me = this;
                 //Actualiza la pagina actual
@@ -2801,7 +2777,9 @@
                 axios.post('/creditos_select/registrar',{
                     'credito_id':this.num_folio,
                     'tipo_credito':this.tipo_credito2,
-                    'institucion':this.inst_financiera2                    
+                    'institucion':this.inst_financiera2,
+                    'monto_crediito':this.monto_credito2,
+                    'plazo_credito':this.plazo_credito2
                 }).then(function (response){
                     me.proceso=false;
                     me.listado=5;
@@ -3167,6 +3145,8 @@
                     var respuesta = response.data;
                     me.arrayTiposCreditos = respuesta.creditos_select;
                     me.modal2=1;
+                    me.monto_credito2 = me.monto_credito;
+                    me.plazo_credito2 = me.plazo_credito;
                     me.tituloModal3 = 'Añadir tipo de credito';
                 })
                 .catch(function (error) {
