@@ -1928,7 +1928,7 @@
             </div>
            
 
-               <!--Inicio del modal observaciones-->
+            <!--Inicio del modal observaciones-->
             <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal3}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
                 <div class="modal-dialog modal-primary modal-lg" role="document">
                     <div class="modal-content">
@@ -1972,7 +1972,7 @@
                 <!-- /.modal-dialog -->
             </div>
 
-               <!--Inicio del modal Tipos de credito-->
+            <!--Inicio del modal Tipos de credito-->
             <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
                 <div class="modal-dialog modal-primary modal-lg" role="document">
                     <div class="modal-content">
@@ -2013,7 +2013,7 @@
                                     <thead>
                                         <tr>
 
-                                            <th width="10%">Opciones</th>
+                                            <th width="14%">Opciones</th>
                                             <th>Tipo de Credito</th>
                                             <th>Institucion Financiera</th>
                                         </tr>
@@ -2031,6 +2031,9 @@
                                                         <i class="fa fa-exchange fa-md"></i>
                                                     </button>
                                                 </template>
+                                                    <button @click="abrirModal4(tipoCredito)" type="button" class="btn btn-danger btn-sm">
+                                                        <i class="icon-pencil"></i>
+                                                    </button>
                                             </td>
                                             <td v-text="tipoCredito.tipo_credito" ></td>
                                             <td v-text="tipoCredito.institucion" ></td>
@@ -2044,6 +2047,81 @@
                         <!-- Botones del modal -->
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                        </div>
+                    </div>
+                      <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+
+            <!--Inicio del modal Editar tipo credito-->
+            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal4}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" v-text="tituloModal4"></h4>
+                            <button type="button" class="close" @click="cerrarModal4()" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+                            <div class="modal-body">
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Plazo (años)</label>
+                                    <div class="col-md-4">
+                                        <input type="text" maxlength="2" v-model="plazo_credito2" pattern="\d*" v-on:keypress="isNumber($event)" class="form-control" placeholder="Plazo">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Monto</label>
+                                    <div class="col-md-4">
+                                        <input type="text" maxlength="9" v-model="monto_credito2" pattern="\d*" v-on:keypress="isNumber($event)" class="form-control" placeholder="Monto">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Fecha de ingreso</label>
+                                    <div class="col-md-6">
+                                        <input type="date" v-model="fecha_ingreso" class="form-control" placeholder="Fecha ingreso">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Estatus</label>
+                                    <div class="col-md-6">
+                                        <select class="form-control" v-model="status_credito">
+                                            <option value="1">Pendiente</option>
+                                            <option value="0">Rechazar</option>
+                                            <option value="2">Aceptar</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Observación </label>
+                                    <div class="col-md-6">
+                                        <textarea rows="3" cols="30" v-model="observacion" class="form-control" placeholder="Observación"></textarea>
+                                    </div>
+                                </div>
+
+                                 <!-- Div para mostrar los errores -->
+                                <div v-show="errorInstSelec" class="form-group row div-error">
+                                    <div class="text-center text-error">
+                                        <div v-for="error in errorMostrarMsjInstSelec" :key="error" v-text="error">
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                                
+                            </form>
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal4()">Cerrar</button>
+                            <button type="button" class="btn btn-success" >Guardar cambios</button>
                         </div>
                     </div>
                       <!-- /.modal-content -->
@@ -2106,6 +2184,7 @@
                 inst_financiera:'',
                 inst_financiera2:'',
                 nacionalidad:0,
+                observacion:'',
 
                 nombre_coa:'',
                 parentesco_coa:'',
@@ -2168,6 +2247,8 @@
                 costoPaquete: 0,
                 paquete:'',
                 status:'',
+                status_credito:'',
+                fecha_ingreso:'',
                 
 
                 nombre_referencia1: '',
@@ -2178,14 +2259,17 @@
                 telefono_referencia2: '',
                 celular_referencia2: '',
 
-             
+                modal4: 0,
                 modal3: 0,
                 modal2: 0,
                 listado:1,
                 tituloModal3 : '',
+                tituloModal4 : '',
                 tipoAccion: 0,
                 errorProspecto : 0,
                 errorMostrarMsjProspecto : [],
+                errorInstSelec : 0,
+                errorMostrarMsjInstSelec : [],
                 errorCoacreditado : 0,
                 errorMostrarMsjCoacreditado : [],
                 pagination : {
@@ -2850,7 +2934,18 @@
 
                 return this.errorCoacreditado;
             },
+            validarInstSelect(){
+                this.errorInstSelec=0;
+                this.errorMostrarMsjInstSelect=[];
 
+                if(this.dep_economicos=='') 
+                    this.errorMostrarMsjInstSelect.push("Ingresar numero de dependientes económicos.");
+                
+                if(this.errorMostrarMsjInstSelect.length)//Si el mensaje tiene almacenado algo en el array
+                    this.errorInstSelec = 1;
+
+                return this.errorInstSelec;
+            },
             isNumber: function(evt) {
                 evt = (evt) ? evt : window.event;
                 var charCode = (evt.which) ? evt.which : evt.keyCode;
@@ -3113,13 +3208,20 @@
 
             cerrarModal(){
                 this.modal2=0;
+                this.inst_financiera2='';
+                this.tipo_credito2='';
                 this.tituloModal3 = '';
             },
 
-             cerrarModal3(){
+            cerrarModal3(){
                 this.modal3 = 0;
                 this.tituloModal3 = '';
-              
+            },
+
+            cerrarModal4(){
+                this.modal4 = 0;
+                this.modal2=1;
+                this.observacion=''
             },
 
             listarCreditos(){
@@ -3153,6 +3255,16 @@
                     console.log(error);
                 });
 
+                
+            },
+            abrirModal4(data=[]){
+                this.modal4=1;
+                this.tituloModal4='Editar credito: '+data['tipo_credito']+'-'+data['institucion'];
+                this.monto_credito2 = data['monto_credito'];
+                this.plazo_credito2 = data['plazo_credito'];
+                this.status_credito = data['status'];
+                this.fecha_ingreso = data['fecha_ingreso'];
+                this.modal2=0;
                 
             },
   

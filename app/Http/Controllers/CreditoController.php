@@ -214,7 +214,8 @@ class CreditoController extends Controller
     }
     public function selectTipCreditosSimulacion(Request $request){
         $simulacion= $request->simulacion_id;
-        $creditos = Inst_seleccionada::select('id','tipo_credito','institucion','elegido','monto_credito','plazo_credito')
+        $creditos = Inst_seleccionada::select('id','tipo_credito','institucion','elegido','monto_credito','plazo_credito',
+                        'status','fecha_ingreso','fecha_respuesta')
         ->where('credito_id','=',$simulacion)->get();
 
         return ['creditos_select' => $creditos];
