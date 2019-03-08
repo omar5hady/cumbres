@@ -13,6 +13,7 @@ use App\User;
 use App\Notifications\NotifyAdmin;
 use App\Obs_inst_selec;
 use Auth;
+use Carbon\Carbon;
 
 class CreditoController extends Controller
 
@@ -257,8 +258,12 @@ class CreditoController extends Controller
             DB::beginTransaction();
         $inst_seleccionada = Inst_seleccionada::findOrFail($request->id);
         $inst_seleccionada->fecha_ingreso = $request->fecha_ingreso;
-        // $inst_seleccionada->fecha_respuesta = $request->fecha_respuesta;
         $inst_seleccionada->status = $request->status;
+        if($inst_seleccionada->status == 0 || $inst_seleccionada->status == 2 ){
+            $inst_seleccionada->fecha_respuesta = Carbon::now();
+            }else{
+                $inst_seleccionada->fecha_respuesta = '';
+            }
         $inst_seleccionada->plazo_credito = $request->plazo_credito;
         $inst_seleccionada->monto_credito = $request->monto_credito;
         $inst_seleccionada->save();

@@ -2027,6 +2027,8 @@
                                             <th>Institucion Financiera</th>
                                             <th>Fecha ingreso</th>
                                             <th>Ultimo comentario</th>
+                                            <th>Status</th>
+                                            <th>Fecha de respuesta</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -2052,6 +2054,18 @@
                                                 <td class="td2" v-else>No se han ingresado los documentos</td>
                                             <td class="td2" @click="abrirModal5(),listarObservacionIntSelect(tipoCredito.id)" v-if="tipoCredito.observacion" v-text="tipoCredito.observacion+'. ('+tipoCredito.obs_user + ' - ' + this.moment(tipoCredito.obs_fecha.date,'YYYY-MM-DD hh:mm:ss').locale('es').fromNow() +') '"></td>
                                             <td class="td2" v-else></td>
+                                              <td class="td2" v-if="tipoCredito.status == '0'">
+                                                <span class="badge badge-danger">Rechazado</span>
+                                            </td>
+                                               <td class="td2" v-if="tipoCredito.status == '2'">
+                                                <span class="badge badge-success">Aceptado</span>
+                                            </td>
+                                               <td class="td2" v-if="tipoCredito.status == '1'">
+                                                <span class="badge badge-warning">Pendiente</span>
+                                            </td>
+                                            <td class="td2" v-if="tipoCredito.fecha_respuesta" v-text="this.moment(tipoCredito.fecha_respuesta).locale('es').format('DD/MMMM/YYYY')" ></td>
+                                            <td class="td2" v-else>Espera de respuesta</td>
+
                                         </tr>                               
                                     </tbody>
                                 </table>
