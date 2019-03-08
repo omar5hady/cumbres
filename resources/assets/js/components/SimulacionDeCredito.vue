@@ -1762,6 +1762,15 @@
                                                         </div>
                                                     </div>
 
+                                                    <div class="col-md-3" v-if="rolId == '2'">
+                                                        <div class="form-group">
+                                                            <h6><br></h6>
+                                                            <button @click="abrirModal()" type="button" class="btn btn-default">
+                                                                <i class="icon-eye"></i> Ver creditos
+                                                            </button>
+                                                        </div>
+                                                    </div>
+
                                                     <div class="col-md-12">
                                                         <div class="form-group">
                                                             <h6></h6>
@@ -1985,7 +1994,7 @@
                         <div class="modal-body">
                             <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
                             <div class="modal-body">
-                                <div class="form-group row">
+                                <div class="form-group row" v-if="rolId == '1'">
                                     <label class="col-md-3 form-control-label" for="text-input">Tipo de Credito</label>
                                     <div class="col-md-6">
                                         <select class="form-control" v-model="tipo_credito2" @click="selectInstitucion(tipo_credito2)" >
@@ -1995,7 +2004,7 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group row">
+                                <div class="form-group row" v-if="rolId == '1'">
                                     <label class="col-md-3 form-control-label" for="text-input">Institucion Financiera</label>
                                     <div class="col-md-6">
                                         <select class="form-control" v-model="inst_financiera2" >
@@ -2005,7 +2014,7 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group row">
+                                <div class="form-group row" v-if="rolId == '1'">
                                     <button type="button" class="btn btn-primary" @click="registrarCreditoSelect()" >Guardar</button>
                                 </div>
                             
@@ -2013,7 +2022,7 @@
                                     <thead>
                                         <tr>
 
-                                            <th width="14%">Opciones</th>
+                                            <th width="14%" v-if="rolId == '1'">Opciones</th>
                                             <th>Tipo de Credito</th>
                                             <th>Institucion Financiera</th>
                                             <th>Fecha ingreso</th>
@@ -2022,7 +2031,7 @@
                                     </thead>
                                     <tbody>
                                         <tr v-for="tipoCredito in arrayTiposCreditos" :key="tipoCredito.id">
-                                             <td class="td2">
+                                             <td class="td2" v-if="rolId == '1'">
                                                 <template v-if="tipoCredito.elegido==1">
                                                      <button disabled type="button" class="btn btn-success btn-sm">
                                                         <i class="fa fa-check fa-md"></i>
@@ -2041,7 +2050,7 @@
                                             <td class="td2" v-text="tipoCredito.institucion" ></td>
                                                 <td class="td2" v-if="tipoCredito.fecha_ingreso" v-text="this.moment(tipoCredito.fecha_ingreso).locale('es').format('DD/MMMM/YYYY')" ></td>
                                                 <td class="td2" v-else>No se han ingresado los documentos</td>
-                                            <td class="td2" v-if="tipoCredito.observacion" v-text="tipoCredito.observacion+'. ('+tipoCredito.obs_user + ' - ' + this.moment(tipoCredito.obs_fecha.date,'YYYY-MM-DD hh:mm:ss').locale('es').fromNow() +') '"></td>
+                                            <td class="td2" @click="abrirModal5(),listarObservacionIntSelect(tipoCredito.id)" v-if="tipoCredito.observacion" v-text="tipoCredito.observacion+'. ('+tipoCredito.obs_user + ' - ' + this.moment(tipoCredito.obs_fecha.date,'YYYY-MM-DD hh:mm:ss').locale('es').fromNow() +') '"></td>
                                             <td class="td2" v-else></td>
                                         </tr>                               
                                     </tbody>
@@ -2128,6 +2137,50 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal4()">Cerrar</button>
                             <button type="button" class="btn btn-success" @click="actualizarDatosCredito()" >Guardar cambios</button>
+                        </div>
+                    </div>
+                      <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+
+            <!--Inicio del modal observaciones de creditos-->
+            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal5}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Historial de Observaciones</h4>
+                            <button type="button" class="close" @click="cerrarModal5()" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+
+                                
+                                <table class="table table-bordered table-striped table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Usuario</th>
+                                            <th>Observacion</th>
+                                            <th>Fecha</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="observacion in arrayObservacionCreditos" :key="observacion.id">
+                                            
+                                            <td v-text="observacion.usuario" ></td>
+                                            <td v-text="observacion.comentario" ></td>
+                                            <td v-text="observacion.created_at"></td>
+                                        </tr>                               
+                                    </tbody>
+                                </table>
+                                
+                            </form>
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal5()">Cerrar</button>
                         </div>
                     </div>
                       <!-- /.modal-content -->
@@ -2265,6 +2318,7 @@
                 telefono_referencia2: '',
                 celular_referencia2: '',
 
+                modal5: 0,
                 modal4: 0,
                 modal3: 0,
                 modal2: 0,
@@ -2296,6 +2350,7 @@
                 arrayLugarContacto: [],
                 arrayFraccionamientos2 : [],
                 arrayObservacion: [],
+                arrayObservacionCreditos: [],
                 fraccionamiento:'',
                 mascotas:0,
                 num_perros:0,
@@ -2371,7 +2426,7 @@
                     console.log(error);
                 });
             },
-             listarSimulaciones(buscar){
+            listarSimulaciones(buscar){
                 let me = this;
                 this.prospecto_id = buscar;
                 var url = '/simulaciones_credito?prospecto_id=' + buscar;
@@ -2677,6 +2732,20 @@
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayObservacion = respuesta.observacion.data;
+                    me.pagination = respuesta.pagination;
+                    console.log(url);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+                
+            },
+            listarObservacionIntSelect(buscar){
+                let me = this;
+                var url = '/inst_select/observacion?page=' + 1 + '&buscar=' + buscar ;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayObservacionCreditos = respuesta.observacion.data;
                     me.pagination = respuesta.pagination;
                     console.log(url);
                 })
@@ -3300,6 +3369,7 @@
 
                 
             },
+            
             abrirModal4(data=[]){
                 this.modal4=1;
                 this.tituloModal4='Editar credito: '+data['tipo_credito']+'-'+data['institucion'];
@@ -3311,27 +3381,39 @@
                 this.modal2=0;
                 
             },
-  
-             abrirModal3(prospectos,accion,prospecto){
-             switch(prospectos){
-                    case "prospecto":
-                    {
-                        switch(accion){
-                         
-                             case 'ver_todo':
-                            {
-                                this.modal3 =1;
-                                this.tituloModal3='Consulta Observaciones';
-                                this.tipoAccion= 4;
-                                break;  
-                            }
-                            
-                        }
-                    }
-                 
-             }
+
+            abrirModal5(){
+                this.modal5=1;
+                this.modal2=0;
                 
-         },
+            },
+
+            cerrarModal5(){
+                this.modal5=0;
+                this.modal2=1;
+            },
+  
+            abrirModal3(prospectos,accion,prospecto){
+                switch(prospectos){
+                        case "prospecto":
+                        {
+                            switch(accion){
+                            
+                                case 'ver_todo':
+                                {
+                                    this.modal3 =1;
+                                    this.tituloModal3='Consulta Observaciones';
+                                    this.tipoAccion= 4;
+                                    break;  
+                                }
+                                
+                            }
+                        }
+                    
+                }
+                
+            },
+            
 
            
         },

@@ -29,7 +29,7 @@ class ObservacionInstSeleccionadaController extends Controller
     public function store(Request $request)
     {
         if(!$request->ajax())return redirect('/');
-        $observacion = new Observacion_institucion_seleccionada();
+        $observacion = new Obs_inst_selec();
         $observacion->inst_selec_id = $request->institucion_seleccionada_id;
         $observacion->comentario = $request->comentario;
         $observacion->usuario = Auth::user()->usuario;
@@ -41,7 +41,7 @@ class ObservacionInstSeleccionadaController extends Controller
 
     public function index(Request $request){
         $buscar = $request->buscar;
-        $observacion = Observacion_institucion_seleccionada::select('comentario','usuario','created_at')
+        $observacion = Obs_inst_selec::select('comentario','usuario','created_at')
                     ->where('inst_selec_id','=', $buscar)->orderBy('created_at','desc')->paginate(20);
 
         return [
