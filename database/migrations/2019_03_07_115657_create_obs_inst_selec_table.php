@@ -18,6 +18,7 @@ class CreateObsInstSelecTable extends Migration
             $table->unsignedInteger('inst_selec_id');
             $table->text('comentario');
             $table->string('usuario',50);
+            $table->timestamps();
 
             $table->foreign('inst_selec_id')->references('id')->on('inst_seleccionadas')->onDelete('cascade');
         });

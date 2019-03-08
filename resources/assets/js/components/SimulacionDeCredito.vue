@@ -2009,18 +2009,20 @@
                                     <button type="button" class="btn btn-primary" @click="registrarCreditoSelect()" >Guardar</button>
                                 </div>
                             
-                            <table class="table table-bordered table-striped table-sm">
+                            <table class="table2 table-bordered table-striped table-sm">
                                     <thead>
                                         <tr>
 
                                             <th width="14%">Opciones</th>
                                             <th>Tipo de Credito</th>
                                             <th>Institucion Financiera</th>
+                                            <th>Fecha ingreso</th>
+                                            <th>Ultimo comentario</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr v-for="tipoCredito in arrayTiposCreditos" :key="tipoCredito.id">
-                                             <td>
+                                             <td class="td2">
                                                 <template v-if="tipoCredito.elegido==1">
                                                      <button disabled type="button" class="btn btn-success btn-sm">
                                                         <i class="fa fa-check fa-md"></i>
@@ -2035,8 +2037,12 @@
                                                         <i class="icon-pencil"></i>
                                                     </button>
                                             </td>
-                                            <td v-text="tipoCredito.tipo_credito" ></td>
-                                            <td v-text="tipoCredito.institucion" ></td>
+                                            <td class="td2" v-text="tipoCredito.tipo_credito" ></td>
+                                            <td class="td2" v-text="tipoCredito.institucion" ></td>
+                                                <td class="td2" v-if="tipoCredito.fecha_ingreso" v-text="this.moment(tipoCredito.fecha_ingreso).locale('es').format('DD/MMMM/YYYY')" ></td>
+                                                <td class="td2" v-else>No se han ingresado los documentos</td>
+                                            <td class="td2" v-if="tipoCredito.observacion" v-text="tipoCredito.observacion+'. ('+tipoCredito.obs_user + ' - ' + this.moment(tipoCredito.obs_fecha.date,'YYYY-MM-DD hh:mm:ss').locale('es').fromNow() +') '"></td>
+                                            <td class="td2" v-else></td>
                                         </tr>                               
                                     </tbody>
                                 </table>
@@ -3380,6 +3386,35 @@
         margin-top: 2rem;
         }
     }
+
+    .table2 {
+    margin: auto;
+    border-collapse: collapse;
+    overflow-x: auto;
+    display: block;
+    width: fit-content;
+    max-width: 100%;
+    box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
+    }
+
+    .td2, .th2 {
+    border: solid rgb(200, 200, 200) 1px;
+    padding: .5rem;
+    }
+
+    .td2 {
+    white-space: nowrap;
+    border-bottom: none;
+    color: rgb(20, 20, 20);
+    }
+
+    .td2:first-of-type, th:first-of-type {
+    border-left: none;
+    }
+
+    .td2:last-of-type, th:last-of-type {
+    border-right: none;
+    } 
    
 
 </style>

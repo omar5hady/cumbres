@@ -10,7 +10,6 @@ class Obs_inst_selec extends Model
     protected $primaryKey = 'id'; //Referenciar la llave primaria
     protected $fillable = ['inst_selec_id','comentario','usuario'];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
     
-    public $timestamps = false;
     public function inst_seleccionada(){
         return $this->belongsTo('App\inst_seleccionada');
     }

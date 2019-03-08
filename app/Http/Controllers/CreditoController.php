@@ -220,6 +220,23 @@ class CreditoController extends Controller
                         'status','fecha_ingreso','fecha_respuesta')
         ->where('credito_id','=',$simulacion)->get();
 
+        foreach($creditos as $index => $credito) {
+            $observacion = Obs_inst_selec::
+            select('comentario','usuario','created_at')
+                    ->where('inst_selec_id','=', $credito->id)->orderBy('created_at','desc')
+                    ->first();
+            if($observacion){
+                $credito->observacion = $observacion->comentario;
+                $credito->obs_user = $observacion->usuario;
+                $credito->obs_fecha = $observacion->created_at;
+            }
+            else{
+                $credito->observacion = '';
+                $credito->obs_user = '';
+                $credito->obs_fecha = '';
+            }
+        }
+
         return ['creditos_select' => $creditos];
     }
 
