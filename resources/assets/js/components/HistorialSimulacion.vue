@@ -73,8 +73,8 @@
                                             <td class="td2" v-text="'$'+formatNumber(prospecto.precio_venta)"></td>
                                             <td class="td2" v-text="'$'+formatNumber(prospecto.credito_solic)"></td>
                                             <td class="td2" v-text="prospecto.plazo + ' años'"></td>
-                                            <td class="td2" v-text="prospecto.institucion"></td>
-                                            <td class="td2" v-text="prospecto.tipo_credito"></td>
+                                            <td class="td2" v-text="prospecto.institucion" @click="listarObservacionIntSelect(prospecto.inst_credito),abrirModal5()"></td>
+                                            <td class="td2" v-text="prospecto.tipo_credito" @click="listarObservacionIntSelect(prospecto.inst_credito),abrirModal5()"></td>
                                             <td class="td2" v-if="prospecto.status == '0'">
                                                 <span class="badge badge-danger">Rechazado</span>
                                             </td>
@@ -165,6 +165,51 @@
                 <!-- /.modal-dialog -->
             </div>
 
+
+            <!--Inicio del modal observaciones de creditos-->
+            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal5}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Historial de Observaciones</h4>
+                            <button type="button" class="close" @click="cerrarModal5()" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+
+                                
+                                <table class="table table-bordered table-striped table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Usuario</th>
+                                            <th>Observacion</th>
+                                            <th>Fecha</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="observacion in arrayObservacionCreditos" :key="observacion.id">
+                                            
+                                            <td v-text="observacion.usuario" ></td>
+                                            <td v-text="observacion.comentario" ></td>
+                                            <td v-text="observacion.created_at"></td>
+                                        </tr>                               
+                                    </tbody>
+                                </table>
+                                
+                            </form>
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal5()">Cerrar</button>
+                        </div>
+                    </div>
+                      <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+
         </main>
 </template>
 
@@ -182,9 +227,11 @@
                 arraySimulaciones:[],
                 arrayObservacion:[],
                 arrayFraccionamientos: [],
+                arrayObservacionCreditos: [],
              
                 modal3: 0,
                 modal2: 0,
+                modal5: 0,
                 listado:1,
                 prospecto_id:0,
                 observacion:'',
@@ -268,7 +315,20 @@
                 });
                 
             },
-
+            listarObservacionIntSelect(buscar){
+                let me = this;
+                var url = '/inst_select/observacion?page=' + 1 + '&buscar=' + buscar ;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayObservacionCreditos = respuesta.observacion.data;
+                    me.pagination = respuesta.pagination;
+                    console.log(url);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+                
+            },
             cambiarPagina(page, buscar, criterio){
                 let me = this;
                 //Actualiza la pagina actual
@@ -377,6 +437,12 @@
                 me.b_lote='';
             },
             
+            abrirModal5(){
+                this.modal5=1;
+            },
+            cerrarModal5(){
+                this.modal5=0;
+            },
             abrirModal3(prospectos,accion,id){
              switch(prospectos){
                     case "prospecto":

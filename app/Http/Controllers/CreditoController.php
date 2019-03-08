@@ -342,7 +342,7 @@ class CreditoController extends Controller
                 'creditos.superficie','creditos.terreno_excedente','creditos.precio_terreno_excedente',
                 'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
                 'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
-                'creditos.costo_paquete','creditos.status','inst_seleccionadas.tipo_credito',
+                'creditos.costo_paquete','creditos.status','inst_seleccionadas.tipo_credito','inst_seleccionadas.id as inst_credito',
                 'inst_seleccionadas.institucion','personal.nombre','personal.apellidos','fraccionamientos.nombre as proyecto',
                 'clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos')
                 ->where('creditos.status','!=','1')

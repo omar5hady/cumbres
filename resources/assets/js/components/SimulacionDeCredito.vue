@@ -3335,7 +3335,6 @@
                   
                     me.modal4 = 0;
                     me.modal2=1;
-                    me.limpiarDatos();
                     //window.alert("Cambios guardados correctamente");
                     swal({
                         position: 'top-end',
