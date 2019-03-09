@@ -56,6 +56,7 @@ Vue.component('avance', require('./components/Avance.vue'));
 Vue.component('rol', require('./components/Rol.vue'));
 Vue.component('usuario', require('./components/Usuarios.vue'));
 Vue.component('medio-publicitario', require('./components/MedioPublicitario.vue'));
+Vue.component('servicio', require('./components/Servicio.vue'));
 Vue.component('lugar-contacto', require('./components/LugarContacto.vue'));
 Vue.component('prospectos', require('./components/Prospectos.vue'));
 Vue.component('institucion-financiamiento', require('./components/InstitucionFinanciamiento.vue'));

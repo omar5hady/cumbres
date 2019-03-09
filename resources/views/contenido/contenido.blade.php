@@ -78,6 +78,10 @@
                 <tipo-credito></tipo-credito>
             </template>
 
+            <template v-if="menu==18">
+                <servicio></servicio>
+            </template>
+
             <template v-if="menu==20">
                 <h1>Contenido del menu 20</h1>
             </template>

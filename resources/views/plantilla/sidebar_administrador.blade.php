@@ -25,6 +25,9 @@
                     <li @click="menu=15" class="nav-item">
                         <a class="nav-link" href="#"><i class="fa fa-street-view"></i> Lugares de contacto</a>
                     </li>
+                    <li @click="menu=18" class="nav-item">
+                        <a class="nav-link" href="#"><i class="fa fa-credit-card"></i> Servicios</a>
+                    </li>
                     <li @click="menu=16" class="nav-item">
                         <a class="nav-link" href="#"><i class="fa fa-building-o"></i> Instituciones de financiamiento</a>
                     </li>

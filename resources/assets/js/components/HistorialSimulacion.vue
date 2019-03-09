@@ -37,6 +37,7 @@
                                         <input  v-else type="text" v-model="buscar" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control">
                                         <button type="submit" @click="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                     </div>
+                                    <button type="submit" @click="abrirPDF()" class="btn btn-primary"><i class="fa fa-search"></i> Abrir</button>
                                 </div>
                             </div>
                             <div class="table-responsive">
@@ -370,6 +371,9 @@
                     console.log(error);
                 });
             }, 
+            abrirPDF(){
+                window.open('pdf/CUENTA-BANCOMER.pdf', '_blank');
+            },
             rechazarSimulacion(){
                 let me = this;
                 //Con axios se llama el metodo update de DepartamentoController

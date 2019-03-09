@@ -220,6 +220,12 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/paquete/registrar','PaqueteController@store');
         Route::put('/paquete/actualizar','PaqueteController@update');
         Route::delete('/paquete/eliminar','PaqueteController@destroy');
+
+    ////////////////////        RUTAS Servicios   /////////////////////////////////
+        Route::get('/servicio','ServicioController@index');
+        Route::post('/servicio/registrar','ServicioController@store');
+        Route::put('/servicio/actualizar','ServicioController@update');
+        Route::delete('/servicio/eliminar','ServicioController@destroy');
         
     ////////////////////        RUTAS PROMOCIONES    /////////////////////////////////
         Route::get('/promocion','PromocionController@index');
