@@ -71,7 +71,7 @@ class ServicioController extends Controller
         $servicios = Servicio::orderBy('descripcion','asc')->take(1)->get();
 
 
-            $pdf = \PDF::loadview('pdf.cartaDeServicios',['servicios' => $servicios]);
+            $pdf = \PDF::loadview('pdf.serviciosDeTelecom',['servicios' => $servicios]);
             return $pdf->stream('servicios.pdf');
             // return ['cabecera' => $cabecera];
      }
