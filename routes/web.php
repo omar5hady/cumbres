@@ -226,6 +226,10 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/servicio/registrar','ServicioController@store');
         Route::put('/servicio/actualizar','ServicioController@update');
         Route::delete('/servicio/eliminar','ServicioController@destroy');
+    
+    ////////////////////        RUTAS Servicios Etapas  /////////////////////////////////
+        Route::post('/servicio_etapa/registrar','ServEtapaController@store');
+        Route::delete('/servicio_etapa/eliminar','ServEtapaController@destroy');
         
     ////////////////////        RUTAS PROMOCIONES    /////////////////////////////////
         Route::get('/promocion','PromocionController@index');
@@ -337,7 +341,9 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/select_datos_lotes_disp','LoteController@select_datos_lotes_disp');
         Route::get('/select_paquetes','PaqueteController@select_paquetes');
         Route::get('/select_datos_paquetes','PaqueteController@select_datos_paquetes');
+        Route::get('/select_servicios','ServicioController@selectServicio');
         Route::get('/select_tipcreditos_simulacion','CreditoController@selectTipCreditosSimulacion');
+        Route::get('/servicios_etapas','ServEtapaController@index');
         
     
     

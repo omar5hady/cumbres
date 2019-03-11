@@ -34,6 +34,9 @@
                     <li @click="menu=17" class="nav-item">
                         <a class="nav-link" href="#"><i class="fa fa-credit-card"></i> Tipos de crédito</a>
                     </li>
+                    <li @click="menu=19" class="nav-item">
+                        <a class="nav-link" href="#"><i class="fa fa-credit-card"></i> Asignar Servicios</a>
+                    </li>
                 </ul>
             </li>
             <li class="nav-item nav-dropdown">

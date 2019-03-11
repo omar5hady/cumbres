@@ -55,4 +55,13 @@ class ServicioController extends Controller
         $servicios = Servicio::findOrFail($request->id);
         $servicios->delete();
     }
+
+    public function selectServicio(Request $request)
+    {
+        if(!$request->ajax())return redirect('/');
+        $servicios = Servicio::select('id','descripcion')
+        ->orderBy('descripcion', 'asc')->get();
+ 
+        return ['servicios' => $servicios];
+    }
 }

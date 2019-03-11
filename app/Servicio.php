@@ -12,4 +12,8 @@ class Servicio extends Model
     
     public $timestamps = false;
 
+    public function serv_etapa(){
+        return $this->hasMany('App\Serv_etapa');
+    }
+
 }
