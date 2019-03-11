@@ -64,4 +64,15 @@ class ServicioController extends Controller
  
         return ['servicios' => $servicios];
     }
+
+    public function servicioPdf(Request $request)
+    {
+        
+        $servicios = Servicio::orderBy('descripcion','asc')->take(1)->get();
+
+
+            $pdf = \PDF::loadview('pdf.cartaDeServicios',['servicios' => $servicios]);
+            return $pdf->stream('servicios.pdf');
+            // return ['cabecera' => $cabecera];
+     }
 }

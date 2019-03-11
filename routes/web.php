@@ -293,7 +293,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/creditos_select/actualizar','CreditoController@updateDatosCredito');
         Route::get('/inst_select/observacion','ObservacionInstSeleccionadaController@index');
     
-
+        Route::get('/servicios/pdf/','ServicioController@servicioPdf')->name('servicios.pdf');
     });
 
 
