@@ -115,7 +115,10 @@
                         <a class="nav-link" href="#"><i class="fa fa-calculator"></i> Simulacion de credito</a>
                     </li>
                     <li @click="menu=62" class="nav-item">
-                        <a class="nav-link" href="#"><i class="fa fa-archive"></i> Historial de simulaciones</a>
+                        <a class="nav-link" href="#"><i class="fa fa-archive"></i> Hist. de simulaciones</a>
+                    </li>
+                    <li @click="menu=63" class="nav-item">
+                        <a class="nav-link" href="#"><i class="fa fa-archive"></i> Hist. creditos</a>
                     </li>
                 </ul>
             </li>

@@ -287,6 +287,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/creditos/registrar','CreditoController@store');
         Route::put('/creditos/aceptar','CreditoController@aceptarSolicitud');
         Route::put('/creditos/rechazar','CreditoController@rechazarSolicitud');
+        Route::get('/historial_creditos','CreditoController@HistorialDeCreditos');
 
         Route::post('/creditos_select/registrar','CreditoController@storeCreditoSelect');
         Route::put('/creditos/seleccionar','CreditoController@seleccionarCredito');

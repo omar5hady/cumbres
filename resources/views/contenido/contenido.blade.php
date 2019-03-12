@@ -146,6 +146,10 @@
             <template v-if="menu==62">
                 <historialsim rol-id="{{Auth::user()->rol_id}}"></historialsim>
             </template>
+
+            <template v-if="menu==63">
+                <historialcreditos rol-id="{{Auth::user()->rol_id}}"></historialcreditos>
+            </template>
         
         @elseif(Auth::user()->rol_id == 2) <!--Vendedor -->
             <template v-if="menu==13">

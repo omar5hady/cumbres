@@ -36,6 +36,7 @@
                     <li @click="menu=62" class="nav-item">
                         <a class="nav-link" href="#"><i class="fa fa-archive"></i> Historial de simulaciones</a>
                     </li>
+                    
                 </ul>
             </li>
             <li class="nav-item nav-dropdown">
