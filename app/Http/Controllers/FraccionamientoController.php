@@ -24,10 +24,10 @@ class FraccionamientoController extends Controller
         $criterio = $request->criterio;
         
         if($buscar==''){
-            $fraccionamientos = Fraccionamiento::orderBy('id','desc')->paginate(5);
+            $fraccionamientos = Fraccionamiento::orderBy('id','desc')->paginate(8);
         }
         else{
-            $fraccionamientos = Fraccionamiento::where($criterio, 'like', '%'. $buscar . '%')->orderBy('id','desc')->paginate(5);
+            $fraccionamientos = Fraccionamiento::where($criterio, 'like', '%'. $buscar . '%')->orderBy('id','desc')->paginate(8);
         }
 
         return [

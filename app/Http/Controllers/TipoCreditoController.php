@@ -16,10 +16,10 @@ class TipoCreditoController extends Controller
         $criterio = $request->criterio;
         
         if($buscar==''){
-            $Tipos_creditos = Tipo_credito::orderBy('nombre','asc')->paginate(9);
+            $Tipos_creditos = Tipo_credito::orderBy('nombre','asc')->paginate(8);
         }
         else{
-            $Tipos_creditos = Tipo_credito::where($criterio, 'like', '%'. $buscar . '%')->orderBy('nombre','asc')->paginate(9);
+            $Tipos_creditos = Tipo_credito::where($criterio, 'like', '%'. $buscar . '%')->orderBy('nombre','asc')->paginate(8);
         }
 
         return [

@@ -22,7 +22,7 @@ class PrecioEtapaController extends Controller
             ->select('fraccionamientos.nombre as fraccionamiento','etapas.num_etapa as etapas', 
                     'precios_etapas.precio_excedente','precios_etapas.id',
                     'precios_etapas.etapa_id','precios_etapas.fraccionamiento_id' )
-                ->orderBy('id','precios_etapas.fraccionamiento_id')->paginate(5);
+                ->orderBy('id','precios_etapas.fraccionamiento_id')->paginate(8);
         }
        else{
         $precios_etapas = Precio_etapa::join('fraccionamientos','precios_etapas.fraccionamiento_id','=','fraccionamientos.id')
@@ -31,7 +31,7 @@ class PrecioEtapaController extends Controller
                 'precios_etapas.precio_excedente','precios_etapas.id',
                 'precios_etapas.etapa_id','precios_etapas.fraccionamiento_id' )
             ->where($criterio, 'like', '%'. $buscar . '%')
-            ->orderBy('id','precios_etapas.fraccionamiento_id')->paginate(5);
+            ->orderBy('id','precios_etapas.fraccionamiento_id')->paginate(8);
         }
 
         return [

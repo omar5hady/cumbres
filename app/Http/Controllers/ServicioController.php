@@ -13,10 +13,10 @@ class ServicioController extends Controller
         $criterio = $request->criterio;
         
         if($buscar==''){
-            $servicios = Servicio::orderBy('descripcion','asc')->paginate(5);
+            $servicios = Servicio::orderBy('descripcion','asc')->paginate(8);
         }
         else{
-            $servicios = Servicio::where($criterio, 'like', '%'. $buscar . '%')->orderBy('id','asc')->paginate(5);
+            $servicios = Servicio::where($criterio, 'like', '%'. $buscar . '%')->orderBy('id','asc')->paginate(8);
         }
 
         return [

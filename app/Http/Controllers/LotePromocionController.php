@@ -19,7 +19,7 @@ class LotePromocionController extends Controller
             ->select('lotes.num_lote as lote','promociones.nombre as promocion', 'lotes.manzana as manzana',
                     'lotes_promocion.id','lotes_promocion.lote_id','lotes_promocion.promocion_id')
             ->where('lotes_promocion.promocion_id', '=', $promocion_id)
-            ->orderBy('lotes_promocion.id', 'promociones.nombre')->paginate(5);
+            ->orderBy('lotes_promocion.id', 'promociones.nombre')->paginate(8);
         
             
         return [

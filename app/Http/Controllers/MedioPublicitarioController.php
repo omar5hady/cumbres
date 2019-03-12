@@ -16,10 +16,10 @@ class MedioPublicitarioController extends Controller
         $criterio = $request->criterio;
         
         if($buscar==''){
-            $medios_publicitarios = Medio_publicitario::orderBy('nombre','desc')->paginate(9);
+            $medios_publicitarios = Medio_publicitario::orderBy('nombre','desc')->paginate(8);
         }
         else{
-            $medios_publicitarios = Medio_publicitario::where($criterio, 'like', '%'. $buscar . '%')->orderBy('nombre','desc')->paginate(9);
+            $medios_publicitarios = Medio_publicitario::where($criterio, 'like', '%'. $buscar . '%')->orderBy('nombre','desc')->paginate(8);
         }
 
         return [

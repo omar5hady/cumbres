@@ -43,7 +43,7 @@ class ClienteController extends Controller
             ->where('vendedor_id','=',Auth::user()->id)
             ->orderBy('personal.apellidos', 'desc')
             ->orderBy('personal.nombre', 'desc')
-            ->paginate(6);
+            ->paginate(8);
         }
         else{
 
@@ -72,7 +72,7 @@ class ClienteController extends Controller
                 ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
                 ->orderBy('personal.apellidos', 'desc')
                 ->orderBy('personal.nombre', 'desc')
-               ->paginate(6);
+               ->paginate(8);
             }
 
             else{
@@ -99,7 +99,7 @@ class ClienteController extends Controller
             ->where($criterio, 'like', '%'. $buscar . '%')
             ->orderBy('personal.apellidos', 'desc')
             ->orderBy('personal.nombre', 'desc')
-           ->paginate(3);
+           ->paginate(8);
             }
         }
          
@@ -444,7 +444,7 @@ class ClienteController extends Controller
                 ->where('clientes.clasificacion','=','2')
                 ->orderBy('personal.apellidos', 'desc')
                 ->orderBy('personal.nombre', 'desc')
-                ->paginate(6);
+                ->paginate(8);
             }
             else{
 
@@ -476,7 +476,7 @@ class ClienteController extends Controller
                     ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
                     ->orderBy('personal.apellidos', 'desc')
                     ->orderBy('personal.nombre', 'desc')
-                ->paginate(6);
+                ->paginate(8);
                 }
 
                 else{
@@ -506,7 +506,7 @@ class ClienteController extends Controller
                 ->where($criterio, 'like', '%'. $buscar . '%')
                 ->orderBy('personal.apellidos', 'desc')
                 ->orderBy('personal.nombre', 'desc')
-                ->paginate(6);
+                ->paginate(8);
                 }
             }
         }
@@ -538,7 +538,7 @@ class ClienteController extends Controller
                     ->where('clientes.clasificacion','=','2')
                     ->orderBy('personal.apellidos', 'desc')
                     ->orderBy('personal.nombre', 'desc')
-                    ->paginate(6);
+                    ->paginate(8);
                 }
                 else{
 
@@ -570,7 +570,7 @@ class ClienteController extends Controller
                         ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
                         ->orderBy('personal.apellidos', 'desc')
                         ->orderBy('personal.nombre', 'desc')
-                    ->paginate(6);
+                    ->paginate(8);
                     }
 
                     else{
@@ -600,7 +600,7 @@ class ClienteController extends Controller
                     ->where($criterio, 'like', '%'. $buscar . '%')
                     ->orderBy('personal.apellidos', 'desc')
                     ->orderBy('personal.nombre', 'desc')
-                    ->paginate(6);
+                    ->paginate(8);
                     }
                 }
             }

@@ -28,7 +28,7 @@ class UserController extends Controller
             'users.condicion','users.rol_id','roles.nombre as rol')
             ->orderBy('users.condicion', 'desc')
             ->orderBy('personal.id', 'desc')
-            ->paginate(3);
+            ->paginate(8);
         }
         else{
             $personas = User::join('personal','users.id','=','personal.id')
@@ -42,7 +42,7 @@ class UserController extends Controller
             ->where($criterio, 'like', '%'. $buscar . '%')
             ->orderBy('users.condicion', 'desc')
             ->orderBy('personal.id', 'desc')
-           ->paginate(3);
+           ->paginate(8);
         }
          
  

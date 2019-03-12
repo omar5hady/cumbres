@@ -48,7 +48,7 @@
                             </div>
                         </div>
                         <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-sm">
+                            <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
                                     <tr>
                                         <th>
@@ -73,11 +73,11 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="lote in arrayLote" :key="lote.id">
-                                        <td>
+                                        <td class="td2">
                                         <input type="checkbox"  @click="select" :id="lote.id" :value="lote.id" v-model="lotes_ini" >
                                         </td>
 
-                                        <td>
+                                        <td class="td2">
                                             <button type="button" @click="abrirModal('lote','actualizar',lote)" class="btn btn-warning btn-sm">
                                             <i class="icon-pencil"></i>
                                             </button>
@@ -86,26 +86,26 @@
                                             </button>
                                         </td>
 
-                                        <td v-text="lote.proyecto"></td>
-                                        <td>
+                                        <td class="td2" v-text="lote.proyecto"></td>
+                                        <td class="td2">
                                             <span v-if = "lote.etapas!='Sin Asignar'" class="badge badge-success" v-text="lote.etapas"></span>
                                             <span v-else class="badge badge-danger"> Por Asignar </span>
                                         </td> 
-                                        <td v-text="lote.etapa_servicios"></td>
-                                        <td v-text="lote.manzana"></td>
-                                        <td v-text="lote.num_lote"></td>
-                                        <td v-text="lote.sublote"></td>
-                                        <td>
+                                        <td class="td2" v-text="lote.etapa_servicios"></td>
+                                        <td class="td2" v-text="lote.manzana"></td>
+                                        <td class="td2" v-text="lote.num_lote"></td>
+                                        <td class="td2" v-text="lote.sublote"></td>
+                                        <td class="td2">
                                             <span v-if = "lote.modelo!='Por Asignar'" class="badge badge-success" v-text="lote.modelo"></span>
                                             <span v-else class="badge badge-danger"> Por Asignar </span>
                                         </td> 
-                                        <td v-text="lote.calle"></td>
-                                        <td v-text="lote.numero"></td>
-                                        <td v-text="lote.interior"></td>
-                                        <td v-text="lote.terreno"></td>
-                                        <td v-text="lote.construccion"></td>
-                                        <td v-text="lote.credito_puente"></td>
-                                        <td>
+                                        <td class="td2" v-text="lote.calle"></td>
+                                        <td class="td2" v-text="lote.numero"></td>
+                                        <td class="td2" v-text="lote.interior"></td>
+                                        <td class="td2" v-text="lote.terreno"></td>
+                                        <td class="td2" v-text="lote.construccion"></td>
+                                        <td class="td2" v-text="lote.credito_puente"></td>
+                                        <td class="td2">
                                             <span v-if = "lote.casa_muestra==0 && lote.lote_comercial==0 && lote.habilitado==1" class="badge badge-success">Activo</span>
                                             <span v-else class="badge badge-danger">Inactivo</span>
                                         </td> 
@@ -880,4 +880,42 @@
         color: red !important;
         font-weight: bold;
     }
+    .table2 {
+    margin: auto;
+    border-collapse: collapse;
+    overflow-x: auto;
+    display: block;
+    width: fit-content;
+    max-width: 100%;
+    box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
+    }
+
+    .td2, .th2 {
+    border: solid rgb(200, 200, 200) 1px;
+    padding: .5rem;
+    }
+
+    /*th {
+    text-align: left;
+    background-color: rgb(190, 220, 250);
+    text-transform: uppercase;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: rgb(50, 50, 100) solid 2px;
+    border-top: none;
+    }*/
+
+    .td2 {
+    white-space: nowrap;
+    border-bottom: none;
+    color: rgb(20, 20, 20);
+    }
+
+    .td2:first-of-type, th:first-of-type {
+    border-left: none;
+    }
+
+    .td2:last-of-type, th:last-of-type {
+    border-right: none;
+    } 
 </style>

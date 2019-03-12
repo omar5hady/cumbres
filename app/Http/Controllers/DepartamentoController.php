@@ -25,10 +25,10 @@ class DepartamentoController extends Controller
         $criterio = $request->criterio;
         
         if($buscar==''){
-            $departamentos = Departamento::orderBy('id_departamento','desc')->paginate(5);
+            $departamentos = Departamento::orderBy('id_departamento','desc')->paginate(8);
         }
         else{
-            $departamentos = Departamento::where($criterio, 'like', '%'. $buscar . '%')->orderBy('id_departamento','desc')->paginate(5);
+            $departamentos = Departamento::where($criterio, 'like', '%'. $buscar . '%')->orderBy('id_departamento','desc')->paginate(8);
         }
 
         return [

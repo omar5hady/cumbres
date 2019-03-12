@@ -43,7 +43,7 @@
                             </div>
                         </div>
                         <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-sm">
+                            <table class="table 2 table-bordered table-striped table-sm">
                                 <thead>
                                     <tr>
                                         
@@ -65,7 +65,7 @@
                                 <tbody>
                                     <tr v-on:dblclick="abrirModal2('lote','ver',act_terminacion)" v-for="act_terminacion in arrayActaDeTerminacion" :key="act_terminacion.id">
                                         
-                                        <td >
+                                        <td class="td2">
                                             <button title="Editar" type="button" @click="abrirModal('lote','actualizar',act_terminacion)" class="btn btn-warning btn-sm">
                                             <i class="icon-pencil"></i>
                                             </button>
@@ -73,35 +73,35 @@
                                             <i class="icon-cloud-upload"></i>
                                             </button>
                                         </td>
-                                        <td v-text="act_terminacion.proyecto"></td>
-                                        <td v-text="act_terminacion.manzana"></td>
-                                        <td v-text="act_terminacion.num_lote"></td>
-                                        <td v-text="act_terminacion.terreno"></td>
-                                        <td v-text="act_terminacion.construccion"></td>
-                                        <td>
+                                        <td class="td2" v-text="act_terminacion.proyecto"></td>
+                                        <td class="td2" v-text="act_terminacion.manzana"></td>
+                                        <td class="td2" v-text="act_terminacion.num_lote"></td>
+                                        <td class="td2" v-text="act_terminacion.terreno"></td>
+                                        <td class="td2" v-text="act_terminacion.construccion"></td>
+                                        <td class="td2">
                                             <span v-if = "act_terminacion.perito!='Sin Asignar  '" class="badge badge-success" v-text="'Arq. '+act_terminacion.perito"></span>
                                             <span v-else class="badge badge-danger"> Por Asignar </span>
                                         </td>
                                         
                                         <!--Modelo-->
-                                        <td>
+                                        <td class="td2">
                                             <span v-if = "act_terminacion.modelo!='Por Asignar' && act_terminacion.cambios==0" class="badge badge-success" v-text="act_terminacion.modelo"></span>
                                             <span v-if = "act_terminacion.modelo=='Por Asignar'" class="badge badge-danger">Por Asignar</span>
                                             <span v-if = "act_terminacion.cambios==1" class="badge badge-warning" v-text="act_terminacion.modelo"></span>
                                         </td>
 
                                         <!--Avance-->
-                                        <td v-text="act_terminacion.avance + '%'"></td>
+                                        <td class="td2" v-text="act_terminacion.avance + '%'"></td>
 
                                         <!-- Fecha Ingreso -->
-                                        <td v-if="!act_terminacion.term_ingreso" v-text="''"></td>
-                                        <td v-else v-text="this.moment(act_terminacion.term_ingreso).locale('es').format('DD/MMM/YYYY')"></td>
+                                        <td class="td2" v-if="!act_terminacion.term_ingreso" v-text="''"></td>
+                                        <td class="td2" v-else v-text="this.moment(act_terminacion.term_ingreso).locale('es').format('DD/MMM/YYYY')"></td>
                                         <!-- Fecha Salida -->
-                                        <td v-if="!act_terminacion.term_salida" v-text="''"></td>
-                                        <td v-else v-text="this.moment(act_terminacion.term_salida).locale('es').format('DD/MMM/YYYY')"></td>
+                                        <td class="td2" v-if="!act_terminacion.term_salida" v-text="''"></td>
+                                        <td class="td2" v-else v-text="this.moment(act_terminacion.term_salida).locale('es').format('DD/MMM/YYYY')"></td>
                                         
-                                        <td  v-if="!act_terminacion.foto_acta" v-text="act_terminacion.num_acta"></td>
-                                        <td v-else style="width:7%"><a class="btn btn-default btn-sm"  v-text="act_terminacion.num_acta" v-bind:href="'/downloadActa/'+act_terminacion.foto_acta"></a></td>
+                                        <td class="td2"  v-if="!act_terminacion.foto_acta" v-text="act_terminacion.num_acta"></td>
+                                        <td class="td2" v-else style="width:7%"><a class="btn btn-default btn-sm"  v-text="act_terminacion.num_acta" v-bind:href="'/downloadActa/'+act_terminacion.foto_acta"></a></td>
                                     </tr>                               
                                 </tbody>
                             </table>
@@ -1007,6 +1007,44 @@
         color: red !important;
         font-weight: bold;
     }
+    .table2 {
+    margin: auto;
+    border-collapse: collapse;
+    overflow-x: auto;
+    display: block;
+    width: fit-content;
+    max-width: 100%;
+    box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
+    }
+
+    .td2, .th2 {
+    border: solid rgb(200, 200, 200) 1px;
+    padding: .5rem;
+    }
+
+    /*th {
+    text-align: left;
+    background-color: rgb(190, 220, 250);
+    text-transform: uppercase;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: rgb(50, 50, 100) solid 2px;
+    border-top: none;
+    }*/
+
+    .td2 {
+    white-space: nowrap;
+    border-bottom: none;
+    color: rgb(20, 20, 20);
+    }
+
+    .td2:first-of-type, th:first-of-type {
+    border-left: none;
+    }
+
+    .td2:last-of-type, th:last-of-type {
+    border-right: none;
+    } 
     
     input[type=number]::-webkit-inner-spin-button, 
     input[type=number]::-webkit-outer-spin-button { 

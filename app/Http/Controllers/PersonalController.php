@@ -31,7 +31,7 @@ class PersonalController extends Controller
                 'personal.empresa_id','empresas.nombre as empresa',
                 'departamento.id_departamento')
                 ->where('personal.nombre','!=','Sin Asignar')
-                ->orderBy('id','desc')->paginate(5);
+                ->orderBy('id','desc')->paginate(8);
         }
         else{
             if($criterio == 'id_departamento'){
@@ -44,7 +44,7 @@ class PersonalController extends Controller
                     'personal.empresa_id','empresas.nombre as empresa',
                     'departamento.id_departamento')
                     ->where($criterio, '=', $buscar )
-                    ->where('personal.nombre','!=','Sin Asignar')->orderBy('id','desc')->paginate(5);
+                    ->where('personal.nombre','!=','Sin Asignar')->orderBy('id','desc')->paginate(8);
             }
             else{
                 $Personales = Personal::join('departamento','personal.departamento_id','=','departamento.id_departamento')
@@ -56,7 +56,7 @@ class PersonalController extends Controller
                     'personal.empresa_id','empresas.nombre as empresa',
                     'departamento.id_departamento')
                     ->where($criterio, 'like', '%'. $buscar . '%')
-                    ->where('personal.nombre','!=','Sin Asignar')->orderBy('id','desc')->paginate(5);
+                    ->where('personal.nombre','!=','Sin Asignar')->orderBy('id','desc')->paginate(8);
             }
         }
 

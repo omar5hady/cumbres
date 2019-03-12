@@ -26,7 +26,7 @@ class TerrenoController extends Controller
             ->select('fraccionamientos.nombre as fraccionamiento','etapas.num_etapa as etapas','terrenos.manzana_id',
                      'terrenos.num_lote','empresas.nombre as empresa','terrenos.calle','terrenos.numero','terrenos.interior',
                      'terrenos.terreno','terrenos.id')
-                ->orderBy('id','terrenos.fraccionamiento_id')->paginate(5);
+                ->orderBy('id','terrenos.fraccionamiento_id')->paginate(8);
         }
         else{
             $terrenos = Terreno::join('fraccionamientos','terrenos.fraccionamiento_id','=','fraccionamientos.id')
@@ -36,7 +36,7 @@ class TerrenoController extends Controller
                      'terrenos.num_lote','empresas.nombre as empresa','terrenos.calle','terrenos.numero','terrenos.interior',
                      'terrenos.terreno','terrenos.id')  
             ->where($criterio, 'like', '%'. $buscar . '%')
-                ->orderBy('id','terrenos.fraccionamiento_id')->paginate(5);
+                ->orderBy('id','terrenos.fraccionamiento_id')->paginate(8);
         }
 
         return [
