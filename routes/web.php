@@ -294,6 +294,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/inst_select/observacion','ObservacionInstSeleccionadaController@index');
     
         Route::get('/servicios/pdf/','ServicioController@servicioPdf')->name('servicios.pdf');
+        Route::get('/cartaServicios/pdf/','ServicioController@cartaDeServicioPdf')->name('CartaDeservicios.pdf');
     });
 
 
