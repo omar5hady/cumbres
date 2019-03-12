@@ -95,6 +95,8 @@ class UserController extends Controller
             if($user->rol_id == 2){
                 $vendedor = new Vendedor();
                 $vendedor->id = $persona->id;
+                $vendedor->tipo = $request->tipo_vendedor;
+                $vendedor->inmobiliaria = $request->inmobiliaria;
                 $vendedor->save();
             }
 
@@ -147,6 +149,8 @@ class UserController extends Controller
                 if($request->rol_id == 2){
                     $vendedor = new Vendedor();
                     $vendedor->id = $Persona->id;
+                    $vendedor->tipo = $request->tipo_vendedor;
+                    $vendedor->inmobiliaria = $request->inmobiliaria;
                     $vendedor->save();
                 }
             }

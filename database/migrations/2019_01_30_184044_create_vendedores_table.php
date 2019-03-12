@@ -18,6 +18,8 @@ class CreateVendedoresTable extends Migration
             $table->foreign('id')->references('id')->on('personal')->onDelete('cascade');
             $table->integer('supervisor_id')->unsigned()->nullable();;
             $table->foreign('supervisor_id')->references('id')->on('personal');
+            $table->string('inmobiliaria',50)->nullable();
+            $table->boolean('tipo')->default(0);
             $table->timestamps();
         });
     }

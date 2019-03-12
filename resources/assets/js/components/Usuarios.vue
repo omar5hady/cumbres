@@ -236,6 +236,23 @@
                                     </div>
                                 </div>
 
+                                <div class="form-group row" v-if="rol_id==2">
+                                    <label class="col-md-3 form-control-label" for="text-input">Tipo</label>
+                                    <div class="col-md-6">
+                                       <select class="form-control" v-model="tipo_vendedor" >
+                                            <option value="0">Interno</option>
+                                            <option value="1">Externo</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row" v-if="tipo_vendedor==1 && rol_id==2">
+                                    <label class="col-md-3 form-control-label" for="text-input">Inmobiliaria</label>
+                                    <div class="col-md-9">
+                                        <input type="text" v-model="inmobiliaria" class="form-control" placeholder="Inmobiliaria" >
+                                    </div>
+                                </div>
+
                                 <div class="form-group row" v-if="tipoAccion > 1">
                                     <label class="col-md-3 form-control-label" for="text-input">Estatus</label>
                                     <div class="col-md-5">
@@ -307,6 +324,8 @@
                 celular: 0,
                 email: '',
                 activo: 1, 
+                tipo_vendedor:0,
+                inmobiliaria:'',
                 arrayPersonal : [],
                 arrayPersonas : [],
                 arrayDepartamentos: [],
@@ -510,7 +529,9 @@
                     'usuario': this.usuario,
                     'password': this.password,
                     'rol_id' : this.rol_id,
-                    'condicion':this.condicion 
+                    'condicion':this.condicion,
+                    'tipo_vendedor':this.tipo_vendedor,
+                    'inmobiliaria':this.inmobiliaria 
                     
                 }).then(function (response){
                     me.proceso=false;
@@ -562,7 +583,9 @@
                     'usuario': this.usuario,
                     'password': this.password,
                     'rol_id' : this.rol_id,
-                    'condicion':this.condicion 
+                    'condicion':this.condicion,
+                    'tipo_vendedor':this.tipo_vendedor,
+                    'inmobiliaria':this.inmobiliaria
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal();
@@ -790,6 +813,9 @@
                 this.condicion = 1;
                 this.errorPersonal = 0;
                 this.errorMostrarMsjPersonal = [];
+                this.inmobiliaria='',
+                this.tipo_vendedor=0
+            
 
             },
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
@@ -820,6 +846,8 @@
                                 this.password='';
                                 this.condicion=1;
                                 this.rol_id=0;
+                                this.inmobiliaria='';
+                                this.tipo_vendedor=0;
 
                                 this.activo='1';
                                 this.tipoAccion = 3;
@@ -852,6 +880,8 @@
                                 this.password=data['password'];
                                 this.condicion=data['condicion'];
                                 this.tipoAccion = 2;
+                                this.inmobiliaria='';
+                                this.tipo_vendedor=0;
                                 break;
                             }
                             case 'Asignar':
