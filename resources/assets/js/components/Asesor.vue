@@ -4,13 +4,14 @@
             <ol class="breadcrumb">
                   <li class="breadcrumb-item"><strong><a style="color:#FFFFFF;" href="/">Home</a></strong></li>
             </ol>
-            <div class="container-fluid">
+            <!--- Listado para Asesores-->
+            <div class="container-fluid" v-if="listadoProspectos==0">
                 <!-- Ejemplo de tabla Listado -->
                 <div class="card scroll-box">
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Mis Asesores
                         <!--   Boton Nuevo    -->
-                        <button type="button" @click="abrirModal('Personal','registrar')" class="btn btn-secondary">
+                        <button type="button" @click="abrirModal('Personal','registrar')" class="btn btn-success">
                             <i class="icon-plus"></i>&nbsp;Nuevo
                         </button>
                         <!---->
@@ -20,14 +21,19 @@
                             <div class="col-md-6">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-5" @click="selectDepartamento(),limpiarBusqueda()"  v-model="criterio">
+                                    <select class="form-control col-md-5" @click="limpiarBusqueda()"  v-model="criterio">
                                       <option value="personal.nombre">Nombre</option>
                                       <option value="users.usuario">Usuario</option>
                                       <option value="vendedores.tipo">Tipo</option>
+                                      <option value="vendedores.inmobiliaria">Inmobiliaria</option>
                                     </select>
                                     
                                  
-                                    <input type="text" v-model="buscar" @keyup.enter="listarPersonal(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">                                     
+                                    <select class="form-control col-md-5"  v-if="criterio=='vendedores.tipo'" v-model="buscar" @keyup.enter="listarPersonal(1,buscar,criterio)" >
+                                        <option value="0" >Interno</option>
+                                        <option value="1" >Externo</option>
+                                    </select>
+                                    <input v-else type="text" v-model="buscar" @keyup.enter="listarPersonal(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">                                     
                                     <button type="submit" @click="listarPersonal(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
@@ -46,7 +52,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="Personal in arrayPersonal" :key="Personal.id">
+                                    <tr v-for="Personal in arrayPersonal" :key="Personal.id"  @dblclick="mostrarProspectos(Personal.nombre, Personal.id)">
                                         <td width="10%">
                                             <button type="button" @click="abrirModal('Personal','actualizar',Personal)" class="btn btn-warning btn-sm">
                                             <i class="icon-pencil"></i>
@@ -91,6 +97,87 @@
                                 </li>
                                 <li class="page-item" v-if="pagination.current_page < pagination.last_page">
                                     <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,criterio)">Sig</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+                <!-- Fin ejemplo de tabla Listado -->
+            </div>
+            <!--- Listado para Prospectos segun asesor-->
+            <div class="container-fluid" v-if="listadoProspectos==1">
+                <!-- Ejemplo de tabla Listado -->
+                <div class="card scroll-box">
+                    <div class="card-header">
+                        <i class="fa fa-align-justify"></i> 
+                        <strong><label v-text="'  Prospectos de: '+ asesor"></label></strong>
+                        <!--   Boton Nuevo    -->
+                        &nbsp;
+                        <button type="button" @click="regresarAsesores()" class="btn btn-secondary">
+                            <i class="icon-action-undo"></i>&nbsp;Regresar
+                        </button>
+                        <!---->
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group row">
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <!--Criterios para el listado de busqueda -->
+                                    <select class="form-control col-md-5" @click="limpiarBusqueda()"  v-model="criterio2">
+                                      <option value="personal.nombre">Nombre</option>
+                                      <option value="personal.rfc">RFC</option>
+                                      <option value="personal.id"># Identificador</option>
+                                    </select>
+                                    
+                                 
+                                    <input type="text" v-model="buscar2" @keyup.enter="listarProspectos(1,buscar2,criterio2,id_vendedor)" class="form-control" placeholder="Texto a buscar">                                     
+                                    <button type="submit" @click="listarProspectos(1,buscar2,criterio2,id_vendedor)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Opciones</th>
+                                        <th># Id.</th>
+                                        <th>Nombre</th>
+                                        <th>Correo</th>
+                                        <th>Celular</th>
+                                        <th>RFC</th>
+                                        <th>Observaciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="Personal in arrayProspectos" :key="Personal.id">
+                                        <td width="10%">
+                                            <button type="button" @click="abrirModalCambio(Personal)" class="btn btn-warning btn-sm">
+                                            <i class="fa fa-exchange"></i>
+                                            </button>
+                                        </td>
+                                        <td v-text="Personal.id" ></td>
+                                        <td v-text="Personal.nombre + ' ' + Personal.apellidos" ></td>
+                                        <td v-text="Personal.email"></td>
+                                        <td v-text="Personal.celular"></td>
+                                        <td v-text="Personal.rfc"></td>
+                                        <td>
+                                            <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" @click="abrirModal3('prospecto','ver_todo',Personal.id),listarObservacion(1,Personal.id)">Ver todas</button> 
+                                        </td>
+                                    </tr>                               
+                                </tbody>
+                            </table>
+                        </div>
+                        <nav>
+                            <!--Botones de paginacion -->
+                            <ul class="pagination">
+                                <li class="page-item" v-if="pagination2.current_page > 1">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination2.current_page - 1,buscar2,criterio2)">Ant</a>
+                                </li>
+                                <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar2,criterio2)" v-text="page"></a>
+                                </li>
+                                <li class="page-item" v-if="pagination2.current_page < pagination2.last_page">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination2.current_page + 1,buscar2,criterio2)">Sig</a>
                                 </li>
                             </ul>
                         </nav>
@@ -193,16 +280,6 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group row" v-if="tipoAccion == 1">
-                                    <label class="col-md-3 form-control-label" for="text-input">Personal</label>
-                                    <div class="col-md-6">
-                                          <select class="form-control" v-model="id_persona">
-                                            <option value="0">Seleccione</option>
-                                            <option v-for="personal in arrayPersonas" :key="personal.personalId" :value="personal.personalId" v-text="personal.nombre"></option>
-                                        </select>
-                                    </div>
-                                </div>
-
 
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Usuario</label>
@@ -252,7 +329,6 @@
                             <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
                             <button type="button" v-if="tipoAccion==3" class="btn btn-primary" @click="registrarPersonal()">Guardar</button>
                             <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarPersonal()">Actualizar</button>
-                            <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="asignarUsuario()">Asignar</button>
                         </div>
                     </div>
                     <!-- /.modal-content -->
@@ -260,6 +336,98 @@
                 <!-- /.modal-dialog -->
             </div>
             <!--Fin del modal-->
+
+            <!--Inicio del modal agregar/actualizar-->
+            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" v-text="'Reasignar cliente a: ' + tituloModal2"></h4>
+                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+
+                                    <!--Criterios para el listado de busqueda -->
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Asesor</label>
+                                    <div class="col-md-6">
+                                        <select class="form-control" v-model="asesor_id" >
+                                            <option value="0">Seleccione</option>
+                                            <option v-for="asesor in arrayAsesores" :key="asesor.id" :value="asesor.id" v-text="asesor.nombre + ' '+ asesor.apellidos"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
+                            <button type="button" class="btn btn-primary" @click="asignarProspecto(asesor_id,prospecto_id)">Reasignar </button>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!--Fin del modal-->
+
+               <!--Inicio del modal observaciones-->
+            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal3}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" v-text="tituloModal3"></h4>
+                            <button type="button" class="close" @click="cerrarModal3()" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Nueva observación</label>
+                                    <div class="col-md-9">
+                                        <textarea rows="1" cols="30" class="form-control" v-model="observacion" placeholder="Observaciones"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-md-12">
+                                        <button class="btn btn-primary" @click="registrarObservacion()">Guardar</button>
+                                    </div>
+                                </div>
+                                <table class="table table-bordered table-striped table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Usuario</th>
+                                            <th>Observacion</th>
+                                            <th>Fecha</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="observacion in arrayObservacion" :key="observacion.id">
+                                            
+                                            <td v-text="observacion.usuario" ></td>
+                                            <td v-text="observacion.comentario" ></td>
+                                            <td v-text="observacion.created_at"></td>
+                                        </tr>                               
+                                    </tbody>
+                                </table>
+                                
+                            
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal3()">Cerrar</button>
+                        </div>
+                    </div>
+                      <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
 
 
             
@@ -275,9 +443,13 @@
     export default {
         data(){
             return{
+                listadoProspectos:0,
                 proceso:false,
+                asesor:'',
                 id:0,
-                id_persona:0,
+                id_vendedor:0,
+                prospecto_id:0,
+                asesor_id:0,
                 usuario: '',
                 password: '',
                 condicion: 1,
@@ -291,6 +463,7 @@
                 homoclave : '',
                 colonia : '',
                 direccion : '',
+                observacion:'',
                 cp: 0,
                 telefono: 0,
                 ext: 0,
@@ -300,12 +473,15 @@
                 tipo_vendedor:0,
                 inmobiliaria:'',
                 arrayPersonal : [],
-                arrayPersonas : [],
-                arrayDepartamentos: [],
-                arrayRoles: [],
-                arrayEmpresas: [],
+                arrayProspectos : [],
+                arrayAsesores : [],
+                arrayObservacion : [],
                 modal : 0,
+                modal2 : 0,
+                modal3 : 0,
                 tituloModal : '',
+                tituloModal2 : '',
+                tituloModal3 : '',
                 tipoAccion: 0,
                 errorPersonal : 0,
                 errorMostrarMsjPersonal : [],
@@ -317,10 +493,21 @@
                     'from' : 0,
                     'to' : 0,
                 },
+                pagination2 : {
+                    'total' : 0,         
+                    'current_page' : 0,
+                    'per_page' : 0,
+                    'last_page' : 0,
+                    'from' : 0,
+                    'to' : 0,
+                },
                 offset : 3,
                 criterio : 'personal.nombre', 
                 buscar : '',
+                buscar2 : '',
+                criterio2 : 'personal.nombre',
                 arrayColonias : []
+
             }
         },
         computed:{
@@ -349,8 +536,35 @@
                     from++;
                 }
                 return pagesArray;
+            },
+            isActived2: function(){
+                return this.pagination2.current_page;
+            },
+            //Calcula los elementos de la paginación
+            pagesNumber2:function(){
+                if(!this.pagination2.to){
+                    return [];
+                }
+
+                var from = this.pagination2.current_page - this.offset;
+                if(from < 1){
+                    from = 1;
+                }
+
+                var to = from + (this.offset * 2);
+                if(to >= this.pagination2.last_page){
+                    to = this.pagination2.last_page;
+                }
+
+                var pagesArray = [];
+                while(from <= to){
+                    pagesArray.push(from);
+                    from++;
+                }
+                return pagesArray;
             }
         },
+        
         methods : {
             /**Metodo para mostrar los registros */
             listarPersonal(page, buscar, criterio){
@@ -365,6 +579,31 @@
                     console.log(error);
                 });
             },
+            listarProspectos(page, buscar, criterio,vendedor){
+                let me = this;
+                var url = '/asesores/clientes?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio + '&vendedor=' + vendedor;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayProspectos = respuesta.personas.data;
+                    me.pagination2 = respuesta.pagination;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            listarObservacion(page, buscar){
+                let me = this;
+                var url = '/clientes/observacion?page=' + page + '&buscar=' + buscar ;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayObservacion = respuesta.observacion.data;
+                    console.log(url);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+                
+            },
             selectColonias(buscar){
                 let me = this;
                 me.arrayColonias=[];
@@ -377,47 +616,21 @@
                     console.log(error);
                 });
             },
-            selectDepartamento(){
-                let me = this;
-                me.arrayDepartamentos=[];
-                var url = '/select_departamentos';
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayDepartamentos = respuesta.departamentos;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-              
-            },
-              selectRoles(){
-                let me = this;
-                me.arrayRoles=[];
-                var url = '/select_roles';
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayRoles = respuesta.roles;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-              
-            },
 
-             selectPersonas(){
+            selectAsesores(){
                 let me = this;
-                me.arrayPersonas=[];
-                var url = '/select_personas_sin_user';
+                me.arrayAsesores=[];
+                var url = '/select/asesores';
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
-                    me.arrayPersonas = respuesta.personas;
+                    me.arrayAsesores = respuesta.personas;
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
               
             },
-             limpiarBusqueda(){
+            limpiarBusqueda(){
                 let me=this;
                 me.buscar= "";
             },
@@ -441,37 +654,25 @@
                 //Envia la petición para visualizar la data de esta pagina
                 me.listarPersonal(page,buscar,criterio);
             },
-            asignarUsuario(){
-                if(this.validarUsuario() || this.proceso==true) //Se verifica si hay un error (campo vacio)
-                {
-                    return;
-                }
-                this.proceso=true;
-                  let me = this;
-                //Con axios se llama el metodo store de PersonalController
-                axios.post('/usuarios/asignar',{
-                    'id_persona' : this.id_persona,
-                    'usuario': this.usuario,
-                    'password': this.password,
-                    'rol_id' : this.rol_id,
-                    'condicion':this.condicion 
-                    
-                }).then(function (response){
-                    me.proceso=false;
-                    me.cerrarModal(); //al guardar el registro se cierra el modal
-                    me.listarPersonal(1,'','Personal'); //se enlistan nuevamente los registros
-                    //Se muestra mensaje Success
-                    swal({
-                        position: 'top-end',
-                        type: 'success',
-                        title: 'Usuario y rol asignado correctamente',
-                        showConfirmButton: false,
-                        timer: 1500
-                        })
-                }).catch(function (error){
-                
-                    console.log(error);
-                });
+             cambiarPagina2(page, buscar, criterio){
+                let me = this;
+                //Actualiza la pagina actual
+                me.pagination2.current_page = page;
+                //Envia la petición para visualizar la data de esta pagina
+                me.listarPersonal(page,buscar,criterio);
+            },
+            mostrarProspectos(nombre,id){
+                this.id_vendedor = id;
+                this.listarProspectos(1,this.buscar2,this.criterio2,id)
+                this.listadoProspectos=1;
+                this.asesor = nombre;
+            },
+            regresarAsesores(){
+                this.listadoProspectos=0;
+                this.asesor='';
+                this.arrayProspectos=[];
+                this.buscar2='';
+                this.criterio2='personal.nombre';
             },
             /**Metodo para registrar  */
             registrarPersonal(){
@@ -524,6 +725,28 @@
                         title: 'Oops...',
                         text: 'El RFC que ha ingresado ya se encuentra registrado!',
                         })
+                    console.log(error);
+                });
+            },
+            registrarObservacion(){
+
+                let me = this;
+                //Con axios se llama el metodo store de FraccionaminetoController
+                axios.post('/clientes/storeObservacion',{
+                    'cliente_id':this.prospecto_id,
+                    'observacion':this.observacion                 
+                }).then(function (response){
+                    me.listarObservacion(1,me.prospecto_id);
+                    me.observacion='';
+                    //Se muestra mensaje Success
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Observacion agregada correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
                     console.log(error);
                 });
             },
@@ -599,6 +822,47 @@
                         swal(
                         'Desactivado!',
                         'El registro ha sido desactivado con éxito.',
+                        'success'
+                        )
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                    
+                    
+                } else if (
+                    // Read more about handling dismissals
+                    result.dismiss === swal.DismissReason.cancel
+                ) {
+                    
+                }
+                }) 
+            },
+            asignarProspecto(asesor,prospecto){
+               swal({
+                title: 'Esta seguro de reasignar a este cliente?',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Aceptar!',
+                cancelButtonText: 'Cancelar',
+                confirmButtonClass: 'btn btn-success',
+                cancelButtonClass: 'btn btn-danger',
+                buttonsStyling: false,
+                reverseButtons: true
+                }).then((result) => {
+                if (result.value) {
+                    let me = this;
+
+                    axios.put('/cliente/reasignar',{
+                        'id': prospecto,
+                        'asesor_id':asesor
+                    }).then(function (response) {
+                        me.listarProspectos(1,'','personal.nombre',me.id_vendedor);
+                        me.cerrarModal();
+                        swal(
+                        'Hecho!',
+                        'El cliente ha sido reasignado con éxito.',
                         'success'
                         )
                     }).catch(function (error) {
@@ -735,26 +999,6 @@
 
                 return this.errorPersonal;
             },
-            validarUsuario(){
-                this.errorPersonal=0;
-                this.errorMostrarMsjPersonal=[];
-
-                if(!this.id_persona)
-                    this.errorMostrarMsjPersonal.push("Seleccionar la persona");
-                if(!this.usuario)
-                    this.errorMostrarMsjPersonal.push("Ingresar nombre de usuario");
-                
-                if(!this.password)
-                    this.errorMostrarMsjPersonal.push("Ingresar contraseña");
-
-                if(!this.rol_id)
-                    this.errorMostrarMsjPersonal.push("Seleccionar rol");
-
-                if(this.errorMostrarMsjPersonal.length)//Si el mensaje tiene almacenado algo en el array
-                    this.errorPersonal = 1;
-
-                return this.errorPersonal;
-            },
             isNumber: function(evt) {
                 evt = (evt) ? evt : window.event;
                 var charCode = (evt.which) ? evt.which : evt.keyCode;
@@ -780,16 +1024,22 @@
                 this.celular='';
                 this.email='';
                 this.activo=1;
-                this.id_persona = 0;
                 this.password = '';
                 this.usuario = '';
                 this.condicion = 1;
                 this.errorPersonal = 0;
                 this.errorMostrarMsjPersonal = [];
-                this.inmobiliaria='',
-                this.tipo_vendedor=0
+                this.inmobiliaria='';
+                this.tipo_vendedor=0;
+                this.tituloModal2='';
+                this.modal2=0;
+                this.arrayAsesores=[];
             
 
+            },
+            cerrarModal3(){
+                this.modal3 = 0;
+                this.tituloModal3 = '';
             },
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
             abrirModal(modelo, accion,data =[]){
@@ -857,28 +1107,37 @@
                                 this.tipo_vendedor=0;
                                 break;
                             }
-                            case 'Asignar':
-                            {
-                                //console.log(data);
-                                this.modal =1;
-                                this.tituloModal='Asignar rol';
-                                this.id_persona = 0;
-                                this.usuario='';
-                                this.password='';
-                                this.condicion=1;
-                                this.rol_id=2;
-                                this.tipoAccion = 1;
-                                break;
-                            }
                         }
                     }
                 }
-                this.selectDepartamento();
-                this.selectEmpresa();
                 this.selectColonias(this.cp);
-                this.selectRoles();
-                this.selectPersonas();
-            }
+            },
+            abrirModal3(prospectos,accion,id){
+             switch(prospectos){
+                    case "prospecto":
+                    {
+                        switch(accion){
+                         
+                            case 'ver_todo':
+                            {
+                                this.modal3 =1;
+                                this.tituloModal3='Consulta Observaciones';
+                                this.prospecto_id = id;
+                                break;  
+                            }
+                            
+                        }
+                    }
+                 
+             }
+            },
+            abrirModalCambio(data=[]){
+                this.selectAsesores();
+                this.tituloModal2 = data['nombre'] + ' ' + data['apellidos'];
+                this.modal2=1;
+                this.prospecto_id = data['id'];
+            },
+            
         },
         mounted() {
             this.listarPersonal(1,this.buscar,this.criterio);

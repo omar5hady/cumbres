@@ -280,4 +280,18 @@ class UserController extends Controller
 
         return['usuario' => $usuario];
     }
+
+    public function selectAsesores(Request $request)
+    {
+            $personas = User::join('personal','users.id','=','personal.id')
+            ->join('vendedores','personal.id','=','vendedores.id')
+            ->select('personal.id','personal.nombre','personal.apellidos')
+            ->where('vendedores.supervisor_id','=',Auth::user()->id)
+            ->where('users.condicion','=',1)
+            ->orWhere('vendedores.tipo','=',1)
+            ->orderBy('personal.id', 'desc')
+            ->get();
+    
+        return ['personas' => $personas];
+    }
 }

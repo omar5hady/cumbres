@@ -76,6 +76,9 @@ Route::group(['middleware' => ['auth']],function(){
 
     ////////////////// VENDEDORES //////////////////////////////////////////
         Route::get('/asesores','UserController@indexAsesores');
+        Route::get('/asesores/clientes','ClienteController@indexProspectos');
+        Route::get('/select/asesores','UserController@selectAsesores');
+        Route::put('/cliente/reasignar','ClienteController@asignarCliente');
 
     ///////////////////        RUTAS Prospectos    //////////////////////////////////
         Route::get('/clientes','ClienteController@index');
