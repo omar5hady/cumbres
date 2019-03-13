@@ -201,6 +201,9 @@
             </template>
 
         @elseif(Auth::user()->rol_id == 4) <!--Gerente ventas -->
+            <template v-if="menu==73">
+                <asesores></asesores>
+            </template>
             
         @elseif(Auth::user()->rol_id == 5) <!--Gerente obra y construccion -->
             <template v-if="menu==50">

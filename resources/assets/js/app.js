@@ -65,6 +65,7 @@ Vue.component('tipo-credito', require('./components/TipoCredito.vue'));
 Vue.component('simulacion', require('./components/SimulacionDeCredito.vue'));
 Vue.component('historialsim', require('./components/HistorialSimulacion.vue'));
 Vue.component('historialcreditos', require('./components/HistorialDeCreditos.vue'));
+Vue.component('asesores', require('./components/Asesor.vue'));
 
 Vue.component('notification', require('./components/Notification.vue'));
 Vue.component('perfil-user', require('./components/Perfil.vue'));

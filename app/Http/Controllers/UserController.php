@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\User;
 use App\Personal;
 use App\Vendedor;
+use Auth;
 use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
@@ -39,6 +40,62 @@ class UserController extends Controller
             'personal.celular','personal.activo','personal.empresa_id','personal.apellidos',
             'personal.email','users.usuario','users.password',
             'users.condicion','users.rol_id','roles.nombre as rol')        
+            ->where($criterio, 'like', '%'. $buscar . '%')
+            ->orderBy('users.condicion', 'desc')
+            ->orderBy('personal.id', 'desc')
+           ->paginate(8);
+        }
+         
+ 
+        return [
+            'pagination' => [
+                'total'        => $personas->total(),
+                'current_page' => $personas->currentPage(),
+                'per_page'     => $personas->perPage(),
+                'last_page'    => $personas->lastPage(),
+                'from'         => $personas->firstItem(),
+                'to'           => $personas->lastItem(),
+            ],
+            'personas' => $personas
+        ];
+    }
+
+    public function indexAsesores(Request $request)
+    {
+        //if (!$request->ajax()) return redirect('/');
+ 
+        $buscar = $request->buscar;
+        $criterio = $request->criterio;
+         
+        if ($buscar==''){
+            $personas = User::join('personal','users.id','=','personal.id')
+            ->join('roles','users.rol_id','=','roles.id')
+            ->join('vendedores','personal.id','=','vendedores.id')
+            ->select('personal.id','personal.nombre','personal.rfc','personal.f_nacimiento',
+            'personal.direccion','personal.telefono','personal.departamento_id',
+            'personal.colonia','personal.ext','personal.homoclave','personal.cp',
+            'personal.celular','personal.activo','personal.empresa_id','personal.apellidos',
+            'personal.email','users.usuario','users.password',
+            'users.condicion','users.rol_id','roles.nombre as rol','vendedores.inmobiliaria','vendedores.tipo')
+            ->where('vendedores.supervisor_id','=',Auth::user()->id)
+            ->orWhere('vendedores.tipo','=',1)
+            ->orderBy('users.condicion', 'desc')
+            ->orderBy('personal.id', 'desc')
+            ->paginate(8);
+        }
+        else{
+            $personas = User::join('personal','users.id','=','personal.id')
+            ->join('roles','users.rol_id','=','roles.id')
+            ->join('vendedores','personal.id','=','vendedores.id')
+            ->select('personal.id','personal.nombre','personal.rfc','personal.f_nacimiento',
+            'personal.direccion','personal.telefono','personal.departamento_id',
+            'personal.colonia','personal.ext','personal.homoclave','personal.cp',
+            'personal.celular','personal.activo','personal.empresa_id','personal.apellidos',
+            'personal.email','users.usuario','users.password',
+            'users.condicion','users.rol_id','roles.nombre as rol','vendedores.inmobiliaria','vendedores.tipo')   
+            ->where('vendedores.supervisor_id','=',Auth::user()->id)
+            ->where($criterio, 'like', '%'. $buscar . '%')
+            ->orWhere('vendedores.tipo','=',1)
             ->where($criterio, 'like', '%'. $buscar . '%')
             ->orderBy('users.condicion', 'desc')
             ->orderBy('personal.id', 'desc')
@@ -97,6 +154,7 @@ class UserController extends Controller
                 $vendedor->id = $persona->id;
                 $vendedor->tipo = $request->tipo_vendedor;
                 $vendedor->inmobiliaria = $request->inmobiliaria;
+                $vendedor->supervisor_id = Auth::user()->id;
                 $vendedor->save();
             }
 

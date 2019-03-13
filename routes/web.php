@@ -74,6 +74,9 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/usuarios/activar','UserController@activar');
         Route::put('/usuarios/desactivar','UserController@desactivar');
 
+    ////////////////// VENDEDORES //////////////////////////////////////////
+        Route::get('/asesores','UserController@indexAsesores');
+
     ///////////////////        RUTAS Prospectos    //////////////////////////////////
         Route::get('/clientes','ClienteController@index');
         Route::get('/clientes_simulacion','ClienteController@clientesSimulacion');
