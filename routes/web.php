@@ -302,6 +302,8 @@ Route::group(['middleware' => ['auth']],function(){
     
         Route::get('/servicios/pdf/','ServicioController@servicioPdf')->name('servicios.pdf');
         Route::get('/cartaServicios/pdf/','ServicioController@cartaDeServicioPdf')->name('CartaDeservicios.pdf');
+
+        Route::post('/users/foto/{id}','UserController@updateProfile');
     });
 
 
