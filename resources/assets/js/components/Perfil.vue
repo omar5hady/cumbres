@@ -42,7 +42,8 @@
 
                         <div class="form-group row">
                             <div class="col-md-6">
-                                <img :src="'img/avatars/'+foto_user" class="img-avatar" rounded="circle" width="250" height="300"  />
+                                <img v-if="url" :src="url" class="img-avatar" rounded="circle" width="250" height="250"  />
+                                <img v-else :src="'/img/avatars/'+foto_user" class="img-avatar" rounded="circle" width="250" height="250"  />
                             </div>
                         </div>
 
@@ -84,10 +85,12 @@
                password:'',
                nombre:'',
                foto_user: '',
-               arrayUsuario: []
+               arrayUsuario: [],
+               url: null,
 
             }
         },
+        
         methods : {
 
             onImageChange(e){
@@ -95,7 +98,7 @@
                 console.log(e.target.files[0]);
 
                 this.foto_user = e.target.files[0];
-
+                this.url = URL.createObjectURL(this.foto_user);
             },
 
             formSubmit(e) {
