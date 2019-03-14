@@ -118,74 +118,92 @@
                         </button>
                         <!---->
                     </div>
-                    <div class="card-body">
-                        <div class="form-group row">
-                            <div class="col-md-6">
-                                <div class="input-group">
-                                    <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-5" @click="limpiarBusqueda()"  v-model="criterio2">
-                                      <option value="personal.nombre">Nombre</option>
-                                      <option value="personal.rfc">RFC</option>
-                                      <option value="personal.id"># Identificador</option>
-                                    </select>
+                    <template v-if="listadoProspectos==1">
+                        <div class="card-body">
+                            <div class="form-group row">
+                                <div class="col-md-6">
+                                    <div class="input-group">
+                                        <!--Criterios para el listado de busqueda -->
+                                        <select class="form-control col-md-5" @click="limpiarBusqueda()"  v-model="criterio2">
+                                        <option value="personal.nombre">Nombre</option>
+                                        <option value="personal.rfc">RFC</option>
+                                        <option value="personal.id"># Identificador</option>
+                                        </select>
+                                        
                                     
-                                 
-                                    <input type="text" v-model="buscar2" @keyup.enter="listarProspectos(1,buscar2,criterio2,id_vendedor)" class="form-control" placeholder="Texto a buscar">                                     
-                                    <button type="submit" @click="listarProspectos(1,buscar2,criterio2,id_vendedor)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                        <input type="text" v-model="buscar2" @keyup.enter="listarProspectos(1,buscar2,criterio2,id_vendedor)" class="form-control" placeholder="Texto a buscar">                                     
+                                        <button type="submit" @click="listarProspectos(1,buscar2,criterio2,id_vendedor)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    </div>
                                 </div>
                             </div>
+                            <div class="table-responsive">
+                                <table class="table2 table-bordered table-striped table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Opciones</th>
+                                            <th># Id.</th>
+                                            <th>Nombre</th>
+                                            <th>Lugar de contacto</th>
+                                            <th>Proyecto de interes</th>
+                                            <th>Correo</th>
+                                            <th>Celular</th>
+                                            <th>RFC</th>
+                                            <th>Empresa donde trabaja</th>
+                                            <th>Clasificación</th>
+                                            <th>Observaciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="Personal in arrayProspectos" :key="Personal.id" @dblclick="abrirModal4('ver',Personal)">
+                                            <td class="td2" width="10%">
+                                                <button type="button" @click="abrirModalCambio(Personal)" class="btn btn-primary btn-sm">
+                                                    <i class="fa fa-exchange"></i>
+                                                </button>
+                                                <button type="button" @click="abrirModal4('actualizar',Personal)" class="btn btn-warning btn-sm">
+                                                    <i class="fa fa-pencil"></i>
+                                                </button>
+                                            </td>
+                                            <td class="td2" v-text="Personal.id" ></td>
+                                            <td class="td2" v-text="Personal.nombre + ' ' + Personal.apellidos" ></td>
+                                            <td class="td2" v-text="Personal.lugar_contacto"></td>
+                                            <td class="td2" v-text="Personal.proyecto"></td>
+                                            <td class="td2" v-text="Personal.email"></td>
+                                            <td class="td2" v-text="Personal.celular"></td>
+                                            <td class="td2" v-text="Personal.rfc"></td>
+                                            <td class="td2" v-text="Personal.empresa"></td>
+                                                <td class="td2" v-if="Personal.clasificacion==1" > No viable</td>
+                                                <td class="td2" v-if="Personal.clasificacion==2" > Tipo A</td>
+                                                <td class="td2" v-if="Personal.clasificacion==3" > Tipo B</td>
+                                                <td class="td2" v-if="Personal.clasificacion==4" > Tipo C</td>
+                                                <td class="td2" v-if="Personal.clasificacion==5" > Ventas</td>
+                                                <td class="td2" v-if="Personal.clasificacion==6" > Cancelado</td>
+                                            <td class="td2">
+                                                <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" @click="abrirModal3('prospecto','ver_todo',Personal.id),listarObservacion(1,Personal.id)">Ver todas</button> 
+                                            </td>
+                                        </tr>                               
+                                    </tbody>
+                                </table>
+                            </div>
+                            <nav>
+                                <!--Botones de paginacion -->
+                                <ul class="pagination">
+                                    <li class="page-item" v-if="pagination2.current_page > 1">
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination2.current_page - 1,buscar2,criterio2)">Ant</a>
+                                    </li>
+                                    <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar2,criterio2)" v-text="page"></a>
+                                    </li>
+                                    <li class="page-item" v-if="pagination2.current_page < pagination2.last_page">
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination2.current_page + 1,buscar2,criterio2)">Sig</a>
+                                    </li>
+                                </ul>
+                            </nav>
                         </div>
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th>Opciones</th>
-                                        <th># Id.</th>
-                                        <th>Nombre</th>
-                                        <th>Correo</th>
-                                        <th>Celular</th>
-                                        <th>RFC</th>
-                                        <th>Observaciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="Personal in arrayProspectos" :key="Personal.id">
-                                        <td width="10%">
-                                            <button type="button" @click="abrirModalCambio(Personal)" class="btn btn-warning btn-sm">
-                                            <i class="fa fa-exchange"></i>
-                                            </button>
-                                        </td>
-                                        <td v-text="Personal.id" ></td>
-                                        <td v-text="Personal.nombre + ' ' + Personal.apellidos" ></td>
-                                        <td v-text="Personal.email"></td>
-                                        <td v-text="Personal.celular"></td>
-                                        <td v-text="Personal.rfc"></td>
-                                        <td>
-                                            <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" @click="abrirModal3('prospecto','ver_todo',Personal.id),listarObservacion(1,Personal.id)">Ver todas</button> 
-                                        </td>
-                                    </tr>                               
-                                </tbody>
-                            </table>
-                        </div>
-                        <nav>
-                            <!--Botones de paginacion -->
-                            <ul class="pagination">
-                                <li class="page-item" v-if="pagination2.current_page > 1">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination2.current_page - 1,buscar2,criterio2)">Ant</a>
-                                </li>
-                                <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar2,criterio2)" v-text="page"></a>
-                                </li>
-                                <li class="page-item" v-if="pagination2.current_page < pagination2.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination2.current_page + 1,buscar2,criterio2)">Sig</a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
+                    </template>
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
-            <!--Inicio del modal agregar/actualizar-->
+            <!--Inicio del modal agregar/actualizar Asesor-->
             <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
                 <div class="modal-dialog modal-primary modal-lg" role="document">
                     <div class="modal-content">
@@ -197,9 +215,6 @@
                         </div>
                         <div class="modal-body">
                             <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-
-                                    <!--Criterios para el listado de busqueda -->
-
 
                                   <div class="form-group row" v-if="tipoAccion > 1">
                                     <label class="col-md-3 form-control-label" for="text-input">Apellidos</label>
@@ -337,7 +352,7 @@
             </div>
             <!--Fin del modal-->
 
-            <!--Inicio del modal agregar/actualizar-->
+            <!--Inicio del modal asignar prospecto-->
             <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
                 <div class="modal-dialog modal-primary modal-lg" role="document">
                     <div class="modal-content">
@@ -429,6 +444,185 @@
                 <!-- /.modal-dialog -->
             </div>
 
+            <!--Inicio del modal actualizar/ver Prospecto-->
+            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal4}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" v-text="tituloModal"></h4>
+                            <button type="button" class="close" @click="cerrarModal4()" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+
+                                  <div class="form-group row">
+                                    <label class="col-md-2 form-control-label" for="text-input">Apellidos</label>
+                                    <div class="col-md-4">
+                                        <input type="text" :disabled="tipoAccion==2" v-model="apellidosProspecto" class="form-control" placeholder="Apellidos" >
+                                    </div>
+                                    <label class="col-md-2 form-control-label" for="text-input">Nombre</label>
+                                    <div class="col-md-4">
+                                        <input type="text" :disabled="tipoAccion==2" v-model="nombreProspecto" class="form-control" placeholder="Apellidos" >
+                                    </div>
+                                </div>
+                                 
+                                <div class="form-group row">
+                                    <label class="col-md-2 form-control-label" for="text-input">Clasificación</label>
+                                    <div class="col-md-3">
+                                        <select :disabled="tipoAccion==2" class="form-control" v-model="clasificacionProspecto" >
+                                            <option value="1">No viable</option>
+                                            <option value="2">Tipo A</option>
+                                            <option value="3">Tipo B</option>
+                                            <option value="4">Tipo C</option>
+                                            <option value="5">Ventas</option>
+                                            <option value="6">Cancelado</option>                               
+                                        </select>
+                                    </div>
+                                    <label class="col-md-1 form-control-label" for="text-input">Sexo</label>
+                                    <div class="col-md-3">
+                                        <select :disabled="tipoAccion==2" class="form-control" v-model="sexoProspecto" >
+                                            <option value="">Seleccione</option>
+                                            <option value="F">Femenino</option>
+                                            <option value="M">Masculino</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-2 form-control-label" for="text-input">Direccion</label>
+                                    <div class="col-md-6">
+                                        <input :disabled="tipoAccion==2" type="text" style="text-transform:uppercase" v-model="direccionProspecto" class="form-control" placeholder="RFC" >
+                                    </div>
+                                    <label class="col-md-1 form-control-label" for="text-input">C.P. </label>
+                                    <div class="col-md-3" >
+                                        <input :disabled="tipoAccion==2" type="text" style="text-transform:uppercase" pattern="\d*" maxlength="5" v-on:keypress="isNumber($event)" @keyup="selectColonias(cpProspecto)" v-model="cpProspecto" class="form-control" placeholder="Codigo Postal" >
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    
+                                    <label class="col-md-2 form-control-label" for="text-input">Colonia</label>
+                                    <div class="col-md-4">
+                                        <select :disabled="tipoAccion==2" class="form-control" v-model="coloniaProspecto" >
+                                            <option value="">Seleccione</option>
+                                            <option v-for="colonias in arrayColonias" :key="colonias.colonia" :value="colonias.colonia" v-text="colonias.colonia"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-2 form-control-label" for="text-input">Telefono</label>
+                                    <div class="col-md-4">
+                                        <input :disabled="tipoAccion==2" type="text" v-on:keypress="isNumber($event)" pattern="\d*" maxlength="10" v-model="telefonoProspecto" class="form-control" placeholder="Telefono" >
+                                    </div>
+
+                                    <label class="col-md-2 form-control-label" for="text-input">Celular</label>
+                                    <div class="col-md-4">
+                                        <input :disabled="tipoAccion==2" type="text" v-on:keypress="isNumber($event)" pattern="\d*" maxlength="10" v-model="celProspecto" class="form-control" placeholder="Celular" >
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-2 form-control-label" for="text-input">Email</label>
+                                    <div class="col-md-4">
+                                        <input :disabled="tipoAccion==2" type="text" class="form-control" v-model="correoProspecto"  placeholder="Email" >
+                                    </div>
+                                    <label class="col-md-2 form-control-label" for="text-input">Email Inst.</label>
+                                    <div class="col-md-4">
+                                        <input :disabled="tipoAccion==2" type="text" class="form-control" v-model="correo_instProspecto"  placeholder="Email" >
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-2 form-control-label" for="text-input">F. Nacimiento</label>
+                                    <div class="col-md-3">
+                                        <input :disabled="tipoAccion==2" type="date" class="form-control"  v-model="fecha_nacProspecto" >
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-2 form-control-label" for="text-input">RFC</label>
+                                    <div class="col-md-4">
+                                        <input :disabled="tipoAccion==2" type="text" maxlength="10" style="text-transform:uppercase" v-model="rfcProspecto" class="form-control" placeholder="RFC" >
+                                    </div>
+                                    <div class="col-md-2" >
+                                        <input :disabled="tipoAccion==2" type="text" maxlength="3" style="text-transform:uppercase" v-model="homoclaveProspecto" class="form-control" placeholder="Homoclave" >
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-2 form-control-label" for="text-input">CURP</label>
+                                    <div class="col-md-4">
+                                        <input :disabled="tipoAccion==2" type="text" maxlength="13" style="text-transform:uppercase" v-model="curpProspecto" class="form-control" placeholder="CURP" >
+                                    </div>
+                                    <label class="col-md-1 form-control-label" for="text-input">NSS</label>
+                                    <div class="col-md-4" >
+                                        <input :disabled="tipoAccion==2" type="text" v-on:keypress="isNumber($event)" pattern="\d*" maxlength="11" style="text-transform:uppercase" v-model="nssProspecto" class="form-control" placeholder="Homoclave" >
+                                    </div>
+                                </div>
+                            
+                                <div class="form-group row">
+                                    <label class="col-md-2 form-control-label" for="text-input">Edo. Civil</label>
+                                    <div class="col-md-4">
+                                        <select :disabled="tipoAccion==2" class="form-control" v-model="e_civilProspecto" >
+                                            <option value="0">Seleccione</option> 
+                                            <option value="1">Casado - separacion de bienes</option> 
+                                            <option value="2">Casado - sociedad conyugal</option> 
+                                            <option value="3">Divorciado</option> 
+                                            <option value="4">Soltero</option> 
+                                            <option value="5">Union libre</option>
+                                            <option value="6">Viudo</option> 
+                                            <option value="7">Otro</option>    
+                                        </select>
+                                    </div>
+
+                                    <label class="col-md-2 form-control-label" for="text-input">Vive en casa</label>
+                                    <div class="col-md-4">
+                                        <select :disabled="tipoAccion==2" class="form-control" v-model="tipo_casaProspecto" >
+                                            <option value="0">Seleccione</option>  
+                                            <option value="De familiares">De familiares</option>
+                                            <option value="Prestada">Prestada</option>
+                                            <option value="Propia">Propia</option>
+                                            <option value="Rentada">Rentada</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-4 form-control-label" for="text-input">Proyecto en el que esta interesado</label>
+                                    <div class="col-md-4">
+                                        <select :disabled="tipoAccion==2" class="form-control" v-model="ProyectoProspecto" >
+                                            <option value="0">Seleccione</option>
+                                            <option v-for="proyecto in arrayProyectos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group row">
+                                    <label class="col-md-4 form-control-label" for="text-input">Medio donde se entero de nostros</label>
+                                    <div class="col-md-4">
+                                        <select :disabled="tipoAccion==2" class="form-control" v-model="publicidad_id" >
+                                            <option value="0">Seleccione</option>
+                                            <option v-for="medios in arrayMediosPublicidad" :key="medios.id" :value="medios.id" v-text="medios.nombre"></option>    
+                                        </select>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal4()">Cerrar</button>
+                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
+                            <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="actualizarProspecto()">Actualizar</button>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!--Fin del modal-->
+
 
             
 
@@ -471,14 +665,39 @@
                 email: '',
                 activo: 1, 
                 tipo_vendedor:0,
+
+                nombreProspecto:'',
+                apellidosProspecto:'',
+                clasificacionProspecto:'',
+                sexoProspecto:'',
+                direccionProspecto:'',
+                cpProspecto:'',
+                coloniaProspecto:'',
+                telefonoProspecto:'',
+                celProspecto:'',
+                correoProspecto:'',
+                correo_instProspecto:'',
+                fecha_nacProspecto:'',
+                rfcProspecto:'',
+                nssProspecto:'',
+                curpProspecto:'',
+                homoclaveProspecto:'',
+                e_civilProspecto: 0,
+                tipo_casaProspecto: 0,
+                ProyectoProspecto: 0,
+                publicidad_id:0,
+
                 inmobiliaria:'',
                 arrayPersonal : [],
                 arrayProspectos : [],
                 arrayAsesores : [],
                 arrayObservacion : [],
+                arrayProyectos:[],
+                arrayMediosPublicidad:[],
                 modal : 0,
                 modal2 : 0,
                 modal3 : 0,
+                modal4 : 0,
                 tituloModal : '',
                 tituloModal2 : '',
                 tituloModal3 : '',
@@ -616,7 +835,30 @@
                     console.log(error);
                 });
             },
-
+            selectMedioPublicidad(){
+                let me = this;
+                me.arrayMediosPublicidad=[];
+                var url = '/select_medio_publicidad';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayMediosPublicidad = respuesta.medios_publicitarios;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+             selectFraccionamientos(){
+                let me = this;
+                me.arrayProyectos=[];
+                var url = '/select_fraccionamiento';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayProyectos = respuesta.fraccionamientos;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
             selectAsesores(){
                 let me = this;
                 me.arrayAsesores=[];
@@ -791,6 +1033,57 @@
                         position: 'top-end',
                         type: 'success',
                         title: 'Cambios guardados correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+            /**Metodo para actualizar  */
+            actualizarProspecto(){
+                /*if(this.proceso==true) //Se verifica si hay un error (campo vacio)
+                {
+                    return;
+                }
+
+                this.proceso=true;*/
+
+                let me = this;
+                //Con axios se llama el metodo store de FraccionaminetoController
+                axios.put('/clientes/actualizar2',{
+                    'id':this.prospecto_id,
+                    'clasificacion':this.clasificacionProspecto,
+                    'nombre':this.nombreProspecto,
+                    'apellidos':this.apellidosProspecto,
+                    'telefono':this.telefonoProspecto ,
+                    'celular':this.celProspecto ,
+                    'email':this.correoProspecto,
+                    'email_institucional':this.correo_instProspecto,
+                    'nss':this.nssProspecto,
+                    'sexo':this.sexoProspecto,
+                    'f_nacimiento':this.fecha_nacProspecto,
+                    'curp':this.curpProspecto,
+                    'rfc':this.rfcProspecto,
+                    'homoclave':this.homoclaveProspecto,
+                    'edo_civil':this.e_civilProspecto,
+                    'tipo_casa':this.tipo_casaProspecto,
+                    'publicidad_id':this.publicidad_id,
+                    'proyecto_interes_id':this.ProyectoProspecto,
+                    'direccion':this.direccionProspecto,
+                    'colonia':this.coloniaProspecto,
+                    'cp':this.cpProspecto
+
+                }).then(function (response){
+                    me.proceso=false;
+                    me.cerrarModal4();
+                    me.listarProspectos(1,'','personal.nombre',me.id_vendedor);
+                    
+                    //Se muestra mensaje Success
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Prospecto actualizado correctamente',
                         showConfirmButton: false,
                         timer: 1500
                         })
@@ -1041,6 +1334,30 @@
                 this.modal3 = 0;
                 this.tituloModal3 = '';
             },
+            cerrarModal4(){
+                this.modal4=0;
+                this.prospecto_id=0;
+                this.nombreProspecto='';
+                this.apellidosProspecto='';
+                this.clasificacionProspecto='';
+                this.sexoProspecto='';
+                this.direccionProspecto='';
+                this.cpProspecto='';
+                this.coloniaProspecto='';
+                this.telefonoProspecto='';
+                this.celProspecto='';
+                this.correoProspecto='';
+                this.correo_instProspecto='';
+                this.fecha_nacProspecto='';
+                this.rfcProspecto='';
+                this.homoclaveProspecto='';
+                this.e_civilProspecto= 0;
+                this.tipo_casaProspecto= 0;
+                this.ProyectoProspecto= 0;
+                this.publicidad_id=0;
+                this.nssProspecto='';
+                this.curpProspecto='';
+            },
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
             abrirModal(modelo, accion,data =[]){
                 switch(modelo){
@@ -1137,6 +1454,47 @@
                 this.modal2=1;
                 this.prospecto_id = data['id'];
             },
+            abrirModal4(accion,data=[]){
+                this.selectMedioPublicidad();
+                this.selectFraccionamientos();
+                this.selectColonias(data['cp']);
+
+                this.prospecto_id=data['id'];
+                this.nombreProspecto=data['nombre'];
+                this.apellidosProspecto=data['apellidos'];
+                this.clasificacionProspecto=data['clasificacion'];
+                this.sexoProspecto=data['sexo'];
+                this.direccionProspecto=data['direccion'];
+                this.cpProspecto=data['cp'];
+                this.coloniaProspecto=data['colonia'];
+                this.telefonoProspecto=data['telefono'];
+                this.celProspecto=data['celular'];
+                this.correoProspecto=data['email'];
+                this.correo_instProspecto=data['email_institucional'];
+                this.fecha_nacProspecto=data['f_nacimiento'];
+                this.rfcProspecto=data['rfc'];
+                this.homoclaveProspecto=data['homoclave'];
+                this.e_civilProspecto= data['edo_civil'];
+                this.tipo_casaProspecto= data['tipo_casa'];
+                this.ProyectoProspecto= data['proyecto_interes_id'];
+                this.publicidad_id= data['publicidad_id'];
+                this.nssProspecto=data['nss'];
+                this.curpProspecto=data['curp'];
+                switch(accion){
+                    case "actualizar":{
+                        this.tituloModal='Editar Prospecto ';
+                        this.tipoAccion=1;
+                        this.modal4=1;
+                        break;
+                    }
+                    case "ver":{
+                        this.tituloModal='Datos del Prospecto ';
+                        this.tipoAccion=2;
+                        this.modal4=1;
+                        break;
+                    }
+                }
+            }
             
         },
         mounted() {
@@ -1171,6 +1529,35 @@
         color: red !important;
         font-weight: bold;
     }
+
+    .table2 {
+    margin: auto;
+    border-collapse: collapse;
+    overflow-x: auto;
+    display: block;
+    width: fit-content;
+    max-width: 100%;
+    box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
+    }
+
+    .td2, .th2 {
+    border: solid rgb(200, 200, 200) 1px;
+    padding: .5rem;
+    }
+
+    .td2 {
+    white-space: nowrap;
+    border-bottom: none;
+    color: rgb(20, 20, 20);
+    }
+
+    .td2:first-of-type, th:first-of-type {
+    border-left: none;
+    }
+
+    .td2:last-of-type, th:last-of-type {
+    border-right: none;
+    } 
 
 input[type=number]::-webkit-inner-spin-button, 
 input[type=number]::-webkit-outer-spin-button { 

@@ -88,6 +88,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/clientes/storeObservacion','ClienteController@storeObservacion');
         Route::post('/clientes/registrar_coacreditado','ClienteController@storeCoacreditado');
         Route::put('/clientes/actualizar','ClienteController@update');
+        Route::put('/clientes/actualizar2','ClienteController@updateProspecto');
         Route::get('/clientes/observacion','ClienteController@listarObservacion');
         Route::put('/clientes/desactivar','ClienteController@desactivar');
         Route::put('/clientes/activar','ClienteController@activar');
@@ -302,8 +303,6 @@ Route::group(['middleware' => ['auth']],function(){
     
         Route::get('/servicios/pdf/','ServicioController@servicioPdf')->name('servicios.pdf');
         Route::get('/cartaServicios/pdf/','ServicioController@cartaDeServicioPdf')->name('CartaDeservicios.pdf');
-
-        Route::post('/users/foto/{id}','UserController@updateProfile');
     });
 
 
