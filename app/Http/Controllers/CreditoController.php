@@ -8,6 +8,7 @@ use App\Credito;
 use App\Personal;
 use App\Cliente;
 use App\Inst_seleccionada;
+use App\Vendedor;
 use DB;
 use App\User;
 use App\Notifications\NotifyAdmin;
@@ -139,11 +140,12 @@ class CreditoController extends Controller
 
     public function store (Request $request)
     {
+        $prospecto=$request->prospecto_id;
         if (!$request->ajax()) return redirect('/');
         try{
             DB::beginTransaction();
             $credito = new Credito();
-            $credito->prospecto_id = $request->prospecto_id;
+            $credito->prospecto_id = $prospecto;
             $credito->num_dep_economicos = $request->dep_economicos;
             $credito->tipo_economia = $request->tipo_economia;
             $credito->nombre_primera_ref = $request->nombre_referencia1;
@@ -199,15 +201,15 @@ class CreditoController extends Controller
                 ]
             ];
 
-            $users = User::all()->where('rol_id','=','1');
+            $users = User::select('id')->where('rol_id','=','1')
+                ->orWhere('rol_id','=','6')
+                ->orWhere('rol_id','=','4')->get();
 
             foreach($users as $notificar){
                 User::findOrFail($notificar->id)->notify(new NotifyAdmin($arregloSimPendientes));
             }
-
             
             DB::commit();
-
                 
     
         } catch (Exception $e){

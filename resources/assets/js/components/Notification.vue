@@ -11,9 +11,27 @@
             </div>
             <div v-if="notifications.length">
             <li v-for="item in listar" :key="item.id">
+            <a v-if="rolId=='1' || rolId=='6' || rolId=='4'" class="dropdown-item" href="#">
+                <i class="fa fa-calculator text-danger"></i>{{item.pendientes.msj}} 
+                <span class="badge badge-danger rounded">  {{item.pendientes.numero}}</span>
+            </a>
             <a class="dropdown-item" href="#">
-                <i class="fa fa-envelope-o"></i> {{item.pendientes.msj}}
-                <span class="badge badge-success">{{item.pendientes.numero}}</span>
+            <div class="message">
+                <div class="py-3 mr-3 float-left">
+                    <div class="avatar">
+                        <img class="img-avatar" src="img/avatars/6.jpg" alt="admin@bootstrapmaster.com">
+                        <span class="avatar-status badge-success"></span>
+                    </div>
+                </div>
+                <div>
+                    <small class="text-muted">John Doe</small>
+                    <small class="text-muted float-right mt-1">Just now</small>
+                </div>
+                <div class="text-truncate font-weight-bold">
+                    <span class="fa fa-exclamation text-danger"></span> Important message
+                </div>
+                        <div class="small text-muted text-truncate">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt...</div>
+            </div>
             </a>
            
             </li>
@@ -27,7 +45,10 @@
 
 <script>
 export default {
-  props: ['notifications'],
+  props: {
+        notifications:{type: Array},
+        rolId:{type: String},
+  },
   data(){
      return{
          arrayNotificaciones: []

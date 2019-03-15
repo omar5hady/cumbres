@@ -243,7 +243,7 @@
             </template>  
         
         @elseif(Auth::user()->rol_id == 6) <!--Admin ventas -->
-        <template v-if="menu==0">
+            <template v-if="menu==0">
                 <h1>Escritorio</h1>
             </template>
 

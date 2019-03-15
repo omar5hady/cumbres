@@ -36,7 +36,7 @@
             </li>
         </ul>
         <ul class="nav navbar-nav ml-auto">
-        <notification :notifications="notifications"></notification>
+        <notification rol-id="{{Auth::user()->rol_id}}" :notifications="notifications"></notification>
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                     <img src="img/avatars/{{Auth::user()->foto_user}}" class="img-avatar">
