@@ -46,7 +46,7 @@
                             <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
                                     <tr>
-                                        <th v-if="rolId == '1'">Opciones</th>
+                                        <th v-if="rolId != '2'">Opciones</th>
                                         <th>Proyecto</th>
                                         <th>Manzana</th>
                                         <th># Lote</th>
@@ -68,7 +68,7 @@
                                 <tbody>
                                     <tr v-for="lote in arrayLote" :key="lote.id">
                                          
-                                        <td class="td2" v-if="rolId == '1'" style="width:5%">
+                                        <td class="td2" v-if="rolId != '2'" style="width:5%">
                                             <button v-if="lote.apartado == 0" title="Apartar" type="button" @click="abrirModal('lote','apartar',lote)" class="btn btn-warning btn-sm">
                                             <i class="icon-lock"></i>
                                             </button>

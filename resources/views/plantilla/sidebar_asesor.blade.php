@@ -5,7 +5,7 @@
                 <a class="nav-link active" href="#"><i class="icon-speedometer"></i> Escritorio</a>
             </li>
             <li class="nav-title">
-                Mantenimiento
+            <strong>ASESOR VENTAS</strong> 
             </li>
             <li class="nav-item nav-dropdown">
                 <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-energy"></i> Administración </a>

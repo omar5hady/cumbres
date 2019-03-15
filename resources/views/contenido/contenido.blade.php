@@ -204,6 +204,23 @@
             <template v-if="menu==73">
                 <asesores></asesores>
             </template>
+            <template v-if="menu==59">
+                <lote-disponible rol-id="{{Auth::user()->rol_id}}"></lote-disponible>
+            </template>
+
+
+            <template v-if="menu==61">
+                <simulacion rol-id="{{Auth::user()->rol_id}}"></simulacion>
+            </template>
+            
+            <template v-if="menu==62">
+                <historialsim rol-id="{{Auth::user()->rol_id}}"></historialsim>
+            </template>
+
+            <template v-if="menu==63">
+                <historialcreditos rol-id="{{Auth::user()->rol_id}}"></historialcreditos>
+            </template>
+
             
         @elseif(Auth::user()->rol_id == 5) <!--Gerente obra y construccion -->
             <template v-if="menu==50">
@@ -296,6 +313,7 @@
                 <lote-disponible rol-id="{{Auth::user()->rol_id}}"></lote-disponible>
             </template>
 
+
             <template v-if="menu==61">
                 <simulacion rol-id="{{Auth::user()->rol_id}}"></simulacion>
             </template>
@@ -311,6 +329,8 @@
             <template v-if="menu==73">
                 <asesores></asesores>
             </template>
+
+
         @endif
     @endif
 

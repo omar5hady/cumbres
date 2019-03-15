@@ -5,7 +5,7 @@
                 <a class="nav-link active" href="#"><i class="icon-speedometer"></i> Escritorio</a>
             </li>
             <li class="nav-title">
-                Mantenimiento
+                <strong>ADMIN. VENTAS</strong> 
             </li>
             <li class="nav-item nav-dropdown">
                 <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-energy"></i> Administración </a>
@@ -68,13 +68,10 @@
                 </ul>
             </li>
             <li class="nav-item nav-dropdown">
-                <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-basket"></i> Asesores</a>
+                <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-basket"></i> Ventas</a>
                 <ul class="nav-dropdown-items">
                     <li @click="menu=59" class="nav-item">
                         <a class="nav-link" href="#"><i class="fa fa-circle-o-notch fa-spin"></i> Lotes Disponibles</a>
-                    </li>
-                    <li @click="menu=60" class="nav-item">
-                        <a class="nav-link" href="#"><i class="fa fa-group"></i> Mis prospectos</a>
                     </li>
                     <li @click="menu=61" class="nav-item">
                         <a class="nav-link" href="#"><i class="fa fa-calculator"></i> Simulacion de credito</a>

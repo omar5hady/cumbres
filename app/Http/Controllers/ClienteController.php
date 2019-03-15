@@ -555,7 +555,7 @@ class ClienteController extends Controller
             }
         }
         else{
-            if($rol == 1){
+            if($rol == 1 || $rol==4 || $rol==6){
                 if ($buscar==''){
                     $personas = Cliente::join('personal','clientes.id','=','personal.id')
                     ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
