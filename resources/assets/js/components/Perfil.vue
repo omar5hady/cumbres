@@ -113,6 +113,7 @@
                 let me = this;
                 axios.post('/users/foto/'+this.userId ,formData)
                 .then(function (response) {
+                    location.reload();
                     currentObj.success = response.data.success;
                     swal({
                         position: 'top-end',

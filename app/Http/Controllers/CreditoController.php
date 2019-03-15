@@ -194,10 +194,14 @@ class CreditoController extends Controller
             $inst_seleccionada->save();
 
             $numSimulacionesPendientes= DB::table('creditos')->where('status','=','1')->count();
+            $imagenUsuario = DB::table('users')->select('foto_user','usuario')->where('id','=',Auth::user()->id)->get();
+            $fecha = Carbon::now();
             $arregloSimPendientes = [
                 'pendientes' => [
-                    'numero' => $numSimulacionesPendientes,
-                    'msj' => 'Simulaciones pendientes'
+                    'usuario' => $imagenUsuario[0]->usuario,
+                    'foto' => $imagenUsuario[0]->foto_user,
+                    'fecha' => $fecha,
+                    'msj' => 'Creó una nueva simulacion'
                 ]
             ];
 

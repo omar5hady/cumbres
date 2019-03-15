@@ -11,26 +11,26 @@
             </div>
             <div v-if="notifications.length">
             <li v-for="item in listar" :key="item.id">
-            <a v-if="rolId=='1' || rolId=='6' || rolId=='4'" class="dropdown-item" href="#">
+            <!-- <a v-if="rolId=='1' || rolId=='6' || rolId=='4'" class="dropdown-item" href="#">
                 <i class="fa fa-calculator text-danger"></i>{{item.pendientes.msj}} 
                 <span class="badge badge-danger rounded">  {{item.pendientes.numero}}</span>
-            </a>
-            <a class="dropdown-item" href="#">
+            </a> -->
+            <a v-if="rolId=='1' || rolId=='6' || rolId=='4'" class="dropdown-item dropdown-item2" href="">
             <div class="message">
                 <div class="py-3 mr-3 float-left">
                     <div class="avatar">
-                        <img class="img-avatar" src="img/avatars/6.jpg" alt="admin@bootstrapmaster.com">
+                        <img class="img-avatar" :src="'img/avatars/'+item.pendientes.foto" alt="admin@bootstrapmaster.com">
                         <span class="avatar-status badge-success"></span>
                     </div>
                 </div>
                 <div>
-                    <small class="text-muted">John Doe</small>
-                    <small class="text-muted float-right mt-1">Just now</small>
+                    <small class="text-muted">{{item.pendientes.usuario}}</small>
+                    <small class="text-muted float-right mt-1" v-text="this.moment(item.pendientes.fecha.date,'YYYY-MM-DD hh:mm:ss').locale('es').fromNow()"></small>
                 </div>
-                <div class="text-truncate font-weight-bold">
-                    <span class="fa fa-exclamation text-danger"></span> Important message
+                <div class="font-weight-bold">
+                    <span class="fa fa-exclamation text-danger"></span> Nueva simulacion
                 </div>
-                        <div class="small text-muted text-truncate">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt...</div>
+                        <div class="small text-truncate">Creó una nueva simulacion</div>
             </div>
             </a>
            
@@ -77,4 +77,9 @@ export default {
   }  
 }
 </script>
+<style>
+.app-header.navbar .dropdown-item2 {
+    min-width: 300px;
+}
+</style>
 
