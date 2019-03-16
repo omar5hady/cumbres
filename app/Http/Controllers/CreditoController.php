@@ -193,7 +193,6 @@ class CreditoController extends Controller
             $inst_seleccionada->elegido = 1;
             $inst_seleccionada->save();
 
-            $numSimulacionesPendientes= DB::table('creditos')->where('status','=','1')->count();
             $imagenUsuario = DB::table('users')->select('foto_user','usuario')->where('id','=',Auth::user()->id)->get();
             $fecha = Carbon::now();
             $arregloSimPendientes = [
@@ -318,12 +317,47 @@ class CreditoController extends Controller
         $simulacion = Credito::findOrFail($request->id);
         $simulacion->status=0;
         $simulacion->save();
+
+        $cliente = Cliente::select('vendedor_id')->where('id','=',$simulacion->prospecto_id)->get();
+
+        $imagenUsuario = DB::table('users')->select('foto_user','usuario')->where('id','=',Auth::user()->id)->get();
+            $fecha = Carbon::now();
+            $msj = "Se ha rechazado el credito # " . $simulacion->id;
+            $arregloAceptado = [
+                'creditoRechazado' => [
+                    'usuario' => $imagenUsuario[0]->usuario,
+                    'foto' => $imagenUsuario[0]->foto_user,
+                    'fecha' => $fecha,
+                    'msj' => $msj
+                ]
+            ];
+
+            User::findOrFail($cliente[0]->vendedor_id)->notify(new NotifyAdmin($arregloAceptado));
     }
 
     public function aceptarSolicitud(Request $request){
         $simulacion = Credito::findOrFail($request->id);
         $simulacion->status=2;
         $simulacion->save();
+
+        $cliente = Cliente::select('vendedor_id')->where('id','=',$simulacion->prospecto_id)->get();
+
+        $imagenUsuario = DB::table('users')->select('foto_user','usuario')->where('id','=',Auth::user()->id)->get();
+            $fecha = Carbon::now();
+            $msj = "Se ha aprobado el credito # " . $simulacion->id;
+            $arregloAceptado = [
+                'creditoStatus' => [
+                    'usuario' => $imagenUsuario[0]->usuario,
+                    'foto' => $imagenUsuario[0]->foto_user,
+                    'fecha' => $fecha,
+                    'msj' => $msj
+                ]
+            ];
+
+            User::findOrFail($cliente[0]->vendedor_id)->notify(new NotifyAdmin($arregloAceptado));
+            
+        
+
     }
 
 

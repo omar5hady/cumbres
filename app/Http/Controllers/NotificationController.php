@@ -17,8 +17,10 @@ class NotificationController extends Controller
             if($fechaActual != $notification->created_at->toDateString()){
                 $notification->markAsRead();
             }
+            $notification->markAsRead();
         }
 
         return Auth::user()->unreadNotifications;
     }
+
 }
