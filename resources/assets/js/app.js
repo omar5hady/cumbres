@@ -69,6 +69,7 @@ Vue.component('asesores', require('./components/Asesor.vue'));
 
 Vue.component('notification', require('./components/Notification.vue'));
 Vue.component('perfil-user', require('./components/Perfil.vue'));
+Vue.component('listar-notifications', require('./components/ListarNotifications.vue'));
 
 const app = new Vue({
     el: '#app',

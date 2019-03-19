@@ -75,7 +75,10 @@
             </li>
             </div>
             <div v-else>
-                <a><span>No tiene notificaciones</span></a>
+                <a class="dropdown-item text-center"><span>No tiene notificaciones</span></a>
+            </div>
+            <div>
+              <a class="dropdown-item text-center" @click="$root.$data.menu=101" href=""><i class="fa fa-user"></i> Ver mas...</a>
             </div>
         </div>
     </li>
@@ -86,10 +89,12 @@ export default {
   props: {
         notifications:{type: Array},
         rolId:{type: String},
+       
   },
   data(){
      return{
-         arrayNotificaciones: []
+         arrayNotificaciones: [],
+       
      }
   },
   computed:{
@@ -112,7 +117,8 @@ export default {
 
             }
         }
-    }  
+    },
+       
 }
 </script>
 <style>

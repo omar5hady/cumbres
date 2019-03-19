@@ -7,6 +7,9 @@
         <template v-if="menu==100">
             <perfil-user user-id="{{Auth::user()->id}}"></perfil-user>
         </template>
+        <template v-if="menu==101">
+            <listar-notifications user-id="{{Auth::user()->id}}"></listar-notifications>
+        </template>
 
         @if(Auth::user()->rol_id == 1)
             <template v-if="menu==0">

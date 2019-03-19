@@ -15,6 +15,7 @@ use App\Notifications\NotifyAdmin;
 use App\Obs_inst_selec;
 use Auth;
 use Carbon\Carbon;
+use Excel;
 
 class CreditoController extends Controller
 
@@ -728,6 +729,102 @@ class CreditoController extends Controller
             'from'          => $Historialcreditos->firstItem(),
             'to'            => $Historialcreditos->lastItem(),
         ],'Historialcreditos' => $Historialcreditos];
+    }
+
+    public function ExportarHistorialSimulacion (){
+        $creditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+        ->join('personal','creditos.prospecto_id','=','personal.id')
+        ->join('clientes','creditos.prospecto_id','=','clientes.id')
+        ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
+        ->join('personal as v','clientes.vendedor_id','v.id')
+        ->select('creditos.id','creditos.prospecto_id','creditos.num_dep_economicos','creditos.tipo_economia',
+            'creditos.nombre_primera_ref','creditos.telefono_primera_ref','creditos.celular_primera_ref',
+            'creditos.nombre_segunda_ref','creditos.telefono_segunda_ref','creditos.celular_segunda_ref',
+            'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','creditos.precio_base',
+            'creditos.superficie','creditos.terreno_excedente','creditos.precio_terreno_excedente',
+            'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
+            'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
+            'creditos.costo_paquete','creditos.status','inst_seleccionadas.tipo_credito','inst_seleccionadas.id as inst_credito',
+            'inst_seleccionadas.institucion','personal.nombre','personal.apellidos','fraccionamientos.nombre as proyecto',
+            'clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos')
+            ->where('creditos.status','!=','1')
+            ->where('inst_seleccionadas.elegido','=','1')
+            ->orderBy('id','desc')->get();
+
+                   
+
+        
+            return Excel::create('Historial de simulaciones', function($excel) use ($creditos){
+                $excel->sheet('creditos', function($sheet) use ($creditos){
+                    
+                    $sheet->row(1, [
+                        '# Folio', 'Cliente', 'Vendedor', 'Proyecto', 'Etapa', 'Manazana',
+                        '# Lote', 'Modelo', 'Precio venta','Credito solicitado','Plazo',
+                        'Institucion','Tipo de credito','Status'
+                    ]);
+
+
+                    $sheet->cells('A1:N1', function ($cells) {
+                        $cells->setBackground('#052154');
+                        $cells->setFontColor('#ffffff');
+                        // Set font family
+                        $cells->setFontFamily('Calibri');
+
+                        // Set font size
+                        $cells->setFontSize(13);
+
+                        // Set font weight to bold
+                        $cells->setFontWeight('bold');
+                        $cells->setAlignment('center');
+                    });
+
+                    
+                    $cont=1;
+                    
+                    $sheet->setColumnFormat(array(
+                        'J' => '$#,##0.00',
+                        'I' => '$#,##0.00',
+                    ));
+
+                    
+
+                    foreach($creditos as $index => $credito) {
+                        if($credito->status == 2){
+                            $status = 'Aprobado';
+                        } else {
+                            $status = 'Rechazado';
+                        }
+                       
+                        $cont++;
+                        
+                        $sheet->row($index+2, [
+                            $credito->id,
+                            $credito->nombre.' '.$credito->apellidos,
+                            $credito->vendedor_nombre.' '.$credito->vendedor_apellidos,
+                            $credito->proyecto,
+                            $credito->etapa,
+                            $credito->manzana,
+                            $credito->num_lote,
+                            $credito->modelo,
+                            $credito->precio_venta,
+                            $credito->credito_solic,
+                            $credito->plazo.' '.'Años',
+                            $credito->institucion,
+                            $credito->tipo_credito,
+                            $status,
+                           
+                        ]);	
+                    }
+
+
+                    $num='A1:N' . $cont;
+                    $sheet->setBorder($num, 'thin');
+                });
+            }
+            
+            )->download('xls');
+        
+      
     }
 
 }

@@ -9,7 +9,9 @@
                 <div class="card scroll-box">
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Historial de simulaciones de credito
-                
+                        <a class="btn btn-success" v-bind:href="'/historial_simulaciones/descargar'">
+                            <i class="fa fa-file-text"></i>&nbsp; Excel
+                        </a>
                     </div>
 
                     <!----------------- Listado de Simulaciones de Credito ------------------------------>
@@ -37,7 +39,7 @@
                                         <input  v-else type="text" v-model="buscar" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control">
                                         <button type="submit" @click="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                     </div>
-                                    <button type="submit" @click="abrirPDF()" class="btn btn-primary"><i class="fa fa-search"></i> Abrir</button>
+                                   
                                 </div>
                             </div>
                             <div class="table-responsive">

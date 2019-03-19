@@ -23,4 +23,11 @@ class NotificationController extends Controller
         return Auth::user()->unreadNotifications;
     }
 
+    public function getListado(){
+        $notificaciones = Notification::select('data')
+                                       ->where('notifiable_id','=',Auth::user()->id)
+                                       ->take(10)->get();
+        return ['notificaciones' => $notificaciones];
+    }
+
 }
