@@ -197,11 +197,12 @@ class CreditoController extends Controller
             $imagenUsuario = DB::table('users')->select('foto_user','usuario')->where('id','=',Auth::user()->id)->get();
             $fecha = Carbon::now();
             $arregloSimPendientes = [
-                'pendientes' => [
+                'notificacion' => [
                     'usuario' => $imagenUsuario[0]->usuario,
                     'foto' => $imagenUsuario[0]->foto_user,
                     'fecha' => $fecha,
-                    'msj' => 'Creó una nueva simulacion'
+                    'msj' => 'Creó una nueva simulacion',
+                    'titulo' => 'Nueva simulacion'
                 ]
             ];
 
@@ -325,11 +326,12 @@ class CreditoController extends Controller
             $fecha = Carbon::now();
             $msj = "Se ha rechazado el credito # " . $simulacion->id;
             $arregloAceptado = [
-                'creditoRechazado' => [
+                'notificacion' => [
                     'usuario' => $imagenUsuario[0]->usuario,
                     'foto' => $imagenUsuario[0]->foto_user,
                     'fecha' => $fecha,
-                    'msj' => $msj
+                    'msj' => $msj,
+                    'titulo' => 'Rechazado'
                 ]
             ];
 
@@ -347,11 +349,12 @@ class CreditoController extends Controller
             $fecha = Carbon::now();
             $msj = "Se ha aprobado el credito # " . $simulacion->id;
             $arregloAceptado = [
-                'creditoStatus' => [
+                'notificacion' => [
                     'usuario' => $imagenUsuario[0]->usuario,
                     'foto' => $imagenUsuario[0]->foto_user,
                     'fecha' => $fecha,
-                    'msj' => $msj
+                    'msj' => $msj,
+                    'titulo' => 'Aprobado'
                 ]
             ];
 

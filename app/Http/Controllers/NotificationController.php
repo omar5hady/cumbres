@@ -24,10 +24,12 @@ class NotificationController extends Controller
     }
 
     public function getListado(){
-        $notificaciones = Notification::select('data')
-                                       ->where('notifiable_id','=',Auth::user()->id)
-                                       ->take(10)->get();
-        return ['notificaciones' => $notificaciones];
+        // $notificaciones = Notification::select('data')
+        //                                ->where('notifiable_id','=',Auth::user()->id)
+        //                                ->take(10)->get();
+        // return response()->json($notificaciones);
+
+        return Auth::user()->readNotifications;
     }
 
 }

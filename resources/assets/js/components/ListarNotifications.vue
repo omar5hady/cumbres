@@ -14,30 +14,27 @@
                         <div class="list-group">
         <div v-if="arrayNotificaciones.length">
             <li v-for="item in arrayNotificaciones" :key="item.id">
-                        <a class="list-group-item list-group-item-action flex-column align-items-start active" href="#">
-                        <div class="d-flex w-100 justify-content-between">
-                        <h5 class="mb-1">List group item heading</h5>
-                        <small>3 days ago</small>
+                        <a class="list-group-item list-group-item-action flex-column align-items-start active">
+                            <div class="message">
+                                <div class="py-1 mr-5 float-left">
+                                    <div class="avatar avatar2">
+                                        <img class="img-avatar img-avatar2" :src="'img/avatars/'+item.data.datos.notificacion.foto" alt="admin@bootstrapmaster.com">
+                                        <span class="avatar-status badge-success"></span>
+                                    </div>
+                                </div>    
+                        <div>
+                          
+                        <small class="text-muted">{{item.data.datos.notificacion.usuario}}</small>
+                        <small class="text-muted float-right mt-1" v-text="this.moment(item.data.datos.notificacion.fecha.date,'YYYY-MM-DD hh:mm:ss').locale('es').fromNow()"></small>
                         </div>
-                        <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
-                        <small>Donec id elit non mi porta.</small>
-                        </a>
-                        <a class="list-group-item list-group-item-action flex-column align-items-start" href="#">
-                        <div class="d-flex w-100 justify-content-between">
-                        <h5 class="mb-1">List group item heading</h5>
-                        <small class="text-muted">3 days ago</small>
+                        <div class="font-weight-bold">
+                        <span class="fa fa-exclamation text-danger"></span>{{item.data.datos.notificacion.titulo}}
                         </div>
-                        <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
-                        <small class="text-muted">Donec id elit non mi porta.</small>
+                        <div class="small text-truncate">{{item.data.datos.notificacion.msj}}</div>
+                       
+                            </div>
                         </a>
-                        <a class="list-group-item list-group-item-action flex-column align-items-start" href="#">
-                        <div class="d-flex w-100 justify-content-between">
-                        <h5 class="mb-1">List group item heading</h5>
-                        <small class="text-muted">3 days ago</small>
-                        </div>
-                        <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
-                        <small class="text-muted">Donec id elit non mi porta.</small>
-                        </a>
+                        
             </li>
         </div>
                         </div>
@@ -52,16 +49,18 @@
 export default {
     data() {
         return {
-            arrayNotificaciones : []
+            arrayNotificaciones : [],
+            
         }
     },
     methods: {
           listarNotificaciones(){
                 let me = this;
+                me.arrayNotificaciones = [];
                 var url = '/notification/getListado';
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
-                    me.arrayNotificaciones = respuesta.notificaciones.data;
+                    me.arrayNotificaciones = respuesta;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -75,3 +74,9 @@ export default {
 
 }
 </script>
+<style>
+    .avatar2 .img-avatar2 {
+        width: 60px;
+        height: 60px;
+    }
+</style>
