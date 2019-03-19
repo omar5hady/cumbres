@@ -1,5 +1,5 @@
 <template>
-        <li class="nav-item d-md-down-none">
+        <li class="nav-item ">
         <a class="nav-link" href="#" data-toggle="dropdown">
             <i class="icon-bell"></i>
             <span v-if="notifications.length>0" class="badge badge-pill badge-danger">1</span>
