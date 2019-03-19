@@ -15,20 +15,25 @@
                             <div v-if="arrayNotificaciones.length">
                                 <a v-for="item in arrayNotificaciones.slice(0,10)" :key="item.id" class="list-group-item list-group-item-action flex-column align-items-start">
                                     <div class="message">
-                                        <div class="py-1 mr-5 float-left">
+                                        
+                                        <div class="py-2 mr-3 float-left">
                                             <div class="avatar avatar2">
                                                 <img class="img-avatar img-avatar2" :src="'img/avatars/'+item.data.datos.notificacion.foto" alt="admin@bootstrapmaster.com">
                                                 <span class="avatar-status badge-success"></span>
                                             </div>
                                         </div>    
                                         <div>    
-                                            <small class="text-muted">{{item.data.datos.notificacion.usuario}}</small>
-                                            <small class="text-muted float-right mt-1" v-text="this.moment(item.data.datos.notificacion.fecha.date,'YYYY-MM-DD hh:mm:ss').locale('es').fromNow()"></small>
+                                            <small class="text-muted">{{item.data.datos.notificacion.usuario}}: &nbsp;</small>
+                                            <small class="text-muted mt-1" v-text="this.moment(item.data.datos.notificacion.fecha.date,'YYYY-MM-DD hh:mm:ss').locale('es').fromNow()"></small>
                                         </div>
-                                        <div class="font-weight-bold">
-                                            <span class="fa fa-exclamation text-danger"></span>{{item.data.datos.notificacion.titulo}}
+                                        <div>
+                                            <div class="font-weight-bold">
+                                                <span class="fa fa-exclamation text-danger"></span>{{item.data.datos.notificacion.titulo}}
+                                                <small class="text-muted mt-1">&nbsp;{{item.data.datos.notificacion.msj}}</small>
+                                            </div>
+                                            
                                         </div>
-                                        <div class="small text-truncate">{{item.data.datos.notificacion.msj}}</div>
+                                        
                                     </div>
                                 </a>         
                             </div>
@@ -71,7 +76,7 @@ export default {
 </script>
 <style>
     .avatar2 .img-avatar2 {
-        width: 60px;
-        height: 60px;
+        width: 35px;
+        height: 35px;
     }
 </style>
