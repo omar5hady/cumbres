@@ -55,4 +55,8 @@ class lote extends Model
         return $this->hasMany('App\Apartado');
     }
 
+    public function Credito(){
+        return $this->hasMany('App\Credito');
+    }
+
 }

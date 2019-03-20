@@ -722,7 +722,7 @@
                                                     
                                                     <div class="col-md-3">
                                                         <div class="form-group">
-                                                            <select class="form-control" v-model="manzana" @click="selectLotes(manzana)">
+                                                            <select class="form-control" v-model="manzana" @click="selectLotes(manzana, etapa)">
                                                                     <option v-for="manzanas in arrayManzanas" :key="manzanas.manzana" :value="manzanas.manzana" v-text="manzanas.manzana"></option>
                                                             </select>
                                                         </div>
@@ -2594,10 +2594,10 @@
                     me.costoPaquete=0;
                 }
             },
-            selectLotes(manzana){
+            selectLotes(manzana,etapa){
                 let me = this;
                 me.arrayLotes=[];
-                var url = '/select_lotes_disp?buscar=' + manzana;
+                var url = '/select_lotes_disp?buscar=' + manzana + '&buscar2=' + etapa;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                      me.arrayLotes = respuesta.lotes_disp;
@@ -2916,7 +2916,8 @@
                     'silla_ruedas':this.silla_ruedas,
                     'tipo_credito':this.tipo_credito,
                     'inst_financiera':this.inst_financiera,
-                    'num_vehiculos':this.num_vehiculos
+                    'num_vehiculos':this.num_vehiculos,
+                    'lote_id':this.lote
                     
                 }).then(function (response){
                     me.proceso=false;
@@ -3438,7 +3439,7 @@
             this.selectManzana(this.etapa);
             this.selectPaquetes(this.etapa);
             this.datosPaquetes(this.paquete_id);
-            this.selectLotes(this.manzana);
+            this.selectLotes(this.manzana, this.etapa);
             this.mostrarDatosLote(this.lote);
             this.selectLugarContacto();
             this.selectCreditos();

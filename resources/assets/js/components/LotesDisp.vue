@@ -48,6 +48,7 @@
                                     <tr>
                                         <th v-if="rolId != '2'">Opciones</th>
                                         <th>Proyecto</th>
+                                        <th>Etapa</th>
                                         <th>Manzana</th>
                                         <th># Lote</th>
                                         <th>% Avance</th>
@@ -79,6 +80,7 @@
                                         </td>
                                         
                                         <td class="td2" style="width:20%" v-text="lote.proyecto"></td>
+                                        <td class="td2" style="width:20%" v-text="lote.etapa"></td>
                                         <td class="td2" v-text="lote.manzana"></td>
                                             <td v-if="!lote.sublote" v-text="lote.num_lote"></td>
                                             <td v-else v-text="lote.num_lote + '-' + lote.sublote"></td>

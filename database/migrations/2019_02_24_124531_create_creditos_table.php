@@ -42,10 +42,12 @@ class CreateCreditosTable extends Migration
             $table->integer('plazo')->nullable();
             $table->double('credito_solic')->nullable();
             $table->boolean('status')->default(1)->nullable();
+            $table->unsignedInteger('lote_id')->nullable();
 
             $table->timestamps();
             
             $table->foreign('prospecto_id')->references('id')->on('clientes')->onDelete('cascade');
+            $table->foreign('lote_id')->references('id')->on('lotes')->onDelete('cascade');
         });
     }
 

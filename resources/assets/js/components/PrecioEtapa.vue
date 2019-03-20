@@ -103,7 +103,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
                                     <div class="col-md-6">
-                                       <select class="form-control" v-model="fraccionamiento_id" @click="selectEtapa(fraccionamiento_id)" >
+                                       <select class="form-control" v-model="fraccionamiento_id" @click="selectEtapa(fraccionamiento_id), selectModelos(fraccionamiento_id)" >
                                             <option value="0">Seleccione</option>
                                             <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                         </select>
@@ -113,7 +113,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Etapa</label>
                                     <div class="col-md-6">
-                                       <select class="form-control" v-model="etapa_id" @click="selectModelos(fraccionamiento_id,etapa_id)" >
+                                       <select class="form-control" v-model="etapa_id" @click="selectPrecioEtapa(fraccionamiento_id,etapa_id)" >
                                             <option value="0">Seleccione</option>
                                             <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                         </select>
@@ -125,7 +125,7 @@
                                     <div class="col-md-6">
                                        <select class="form-control" v-model="modelo_id">
                                             <option value="0">Seleccione</option>
-                                            <option v-for="modelos in arrayModelos" :key="modelos.modelo_id" :value="modelos.modelo_id" v-text="modelos.nombre"></option>
+                                            <option v-for="modelos in arrayModelos" :key="modelos.id" :value="modelos.id" v-text="modelos.nombre"></option>
                                         </select>
                                     </div>
                                 </div>
@@ -276,14 +276,14 @@
                     console.log(error);
                 });
             },
-            selectModelos(buscar1, buscar2){
+            selectModelos(buscar1){
                 let me = this;
 
                 me.arrayModelos=[];
-                var url = '/select_modelos_etapa?buscar1=' + buscar1 + '&buscar2='+ buscar2;
+                var url = '/select_modelo_proyecto?buscar=' + buscar1;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
-                    me.arrayModelos = respuesta.lotes;
+                    me.arrayModelos = respuesta.modelos;
                     var results = me.arrayModelos[1].modelo_id;
                     //me.modelo_id = results;
                 })
@@ -533,13 +533,13 @@
                 }
                 this.selectFraccionamientos();
                 this.selectEtapa(this.fraccionamiento_id);
-                this.selectModelos(this.fraccionamiento_id, this.etapa_id);
+                this.selectModelos(this.fraccionamiento_id);
             }
         },
         mounted() {
             this.selectFraccionamientos();
             this.selectEtapa(this.fraccionamiento_id);
-            this.selectModelos(this.fraccionamiento_id, this.etapa_id);
+            this.selectModelos(this.fraccionamiento_id);
             this.listarPrecioModelo(1,this.buscar);
         }
     }

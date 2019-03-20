@@ -742,7 +742,7 @@ class LoteController extends Controller
                             'lotes.sobreprecio', 'lotes.precio_base','lotes.excedente_terreno','lotes.apartado')
                             ->where('lotes.habilitado','=',1)
                             ->where($criterio, 'like', '%'. $buscar . '%')
-                            ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                            ->where('etapas.num_etapa', 'like', '%'. $buscar2 . '%')
                             ->orderBy('fraccionamientos.nombre','DESC')
                             ->orderBy('lotes.etapa_servicios','DESC')->paginate(8);
                     }
@@ -758,7 +758,7 @@ class LoteController extends Controller
                             'lotes.sobreprecio', 'lotes.precio_base','lotes.excedente_terreno','lotes.apartado')
                             ->where('lotes.habilitado','=',1)
                             ->where($criterio, 'like', '%'. $buscar . '%')
-                            ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                            ->where('etapas.num_etapa', 'like', '%'. $buscar2 . '%')
                             ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
                             ->orderBy('fraccionamientos.nombre','DESC')
                             ->orderBy('lotes.etapa_servicios','DESC')->paginate(8);
@@ -815,7 +815,7 @@ class LoteController extends Controller
                             ->where('lotes.habilitado','=',1)
                             ->where('lotes.apartado','=',0)
                             ->where($criterio, 'like', '%'. $buscar . '%')
-                            ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                            ->where('etapas.num_etapa', 'like', '%'. $buscar2 . '%')
                             ->orderBy('fraccionamientos.nombre','DESC')
                             ->orderBy('lotes.etapa_servicios','DESC')->paginate(8);
                     }
@@ -832,7 +832,7 @@ class LoteController extends Controller
                             ->where('lotes.habilitado','=',1)
                             ->where('lotes.apartado','=',0)
                             ->where($criterio, 'like', '%'. $buscar . '%')
-                            ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
+                            ->where('etapas.num_etapa', 'like', '%'. $buscar2 . '%')
                             ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
                             ->orderBy('fraccionamientos.nombre','DESC')
                             ->orderBy('lotes.etapa_servicios','DESC')->paginate(8);
@@ -897,6 +897,7 @@ class LoteController extends Controller
                     ->where('lotes.habilitado','=',1)
                     ->where('lotes.apartado','=',0)
                     ->where('etapas.num_etapa','=',$etapa)
+                    ->distinct()
                     ->orderBy('lotes.manzana','DESC')
                     ->get();
         return ['lotes_manzanas' => $lotes_manzanas];
@@ -906,11 +907,14 @@ class LoteController extends Controller
     {
         
         $manzana = $request->buscar;
-        $lotes_disp = Lote::select('num_lote','id')
-                    ->where('habilitado','=',1)
-                    ->where('apartado','=',0)
-                    ->where('manzana','=',$manzana)
-                    ->orderBy('num_lote','DESC')
+        $etapa = $request->buscar2;
+        $lotes_disp = Lote::join('etapas','lotes.etapa_id','=','etapas.id')
+                    ->select('lotes.num_lote','lotes.id')
+                    ->where('lotes.habilitado','=',1)
+                    ->where('lotes.apartado','=',0)
+                    ->where('etapas.num_etapa', 'like', '%'. $etapa .'%' )
+                    ->where('lotes.manzana','=',$manzana)
+                    ->orderBy('lotes.num_lote','DESC')
                     ->get();
         return ['lotes_disp' => $lotes_disp];
     }

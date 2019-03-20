@@ -55,6 +55,16 @@ class Handler extends ExceptionHandler
                 return response()->view('errors.' . '500', [], 500);
             }
         }
+
+        if ($e instanceof ModelNotFoundException) {
+            $e = new NotFoundHttpException($e->getMessage(), $e);
+        }
+    
+        if ($e instanceof TokenMismatchException) {
+    
+            return redirect(route('/'))->with('message', 'You page session expired. Please try again');
+        }
+
         return parent::render($request, $exception);
     }
 }

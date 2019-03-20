@@ -172,6 +172,7 @@ class CreditoController extends Controller
             $credito->precio_venta = $request->precioVenta;
             $credito->plazo = $request->plazo_credito;
             $credito->credito_solic = $request->monto_credito;
+            $credito->lote_id = $request->lote_id;
             $credito->save();
 
             $datos_extra = new Dato_extra();
