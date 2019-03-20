@@ -11,6 +11,10 @@
             <listar-notifications user-id="{{Auth::user()->id}}"></listar-notifications>
         </template>
 
+        <template v-if="menu==90">
+            <datos-extra></datos-extra>
+        </template>
+
         @if(Auth::user()->rol_id == 1)
             <template v-if="menu==0">
                 <h1>Escritorio</h1>
