@@ -20,18 +20,21 @@ class EstadisticasController extends Controller
                     DB::raw('SUM(datos_extra.rang1120) as sum1120'),
                     DB::raw('SUM(datos_extra.rang21) as sum21'))
                 ->where('lotes.fraccionamiento_id',$proyecto)
+                ->where('creditos.status','=',2)
                 ->get();
         
         $discapacitados = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
                 ->join('lotes','creditos.lote_id','=','lotes.id')
                 ->where('lotes.fraccionamiento_id',$proyecto)
                 ->where('datos_extra.persona_discap','=',1)
+                ->where('creditos.status','=',2)
                 ->get()->count();
         
         $silla_ruedas = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
                 ->join('lotes','creditos.lote_id','=','lotes.id')
                 ->where('lotes.fraccionamiento_id',$proyecto)
                 ->where('datos_extra.silla_ruedas','=',1)
+                ->where('creditos.status','=',2)
                 ->get()->count();
 
         
@@ -39,6 +42,7 @@ class EstadisticasController extends Controller
                 ->join('lotes','creditos.lote_id','=','lotes.id')
                 ->where('lotes.fraccionamiento_id',$proyecto)
                 ->where('datos_extra.mascota','=',0)
+                ->where('creditos.status','=',2)
                 ->get()->count();
 
         $mascotas = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
@@ -50,6 +54,7 @@ class EstadisticasController extends Controller
                             DB::raw('SUM(datos_extra.num_perros) as perros')
                         )
                 ->where('lotes.fraccionamiento_id',$proyecto)
+                ->where('creditos.status','=',2)
                 ->get();
 
         
