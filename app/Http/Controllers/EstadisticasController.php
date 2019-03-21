@@ -22,24 +22,50 @@ class EstadisticasController extends Controller
                 ->where('lotes.fraccionamiento_id',$proyecto)
                 ->get();
         
+        $discapacitados = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
+                ->join('lotes','creditos.lote_id','=','lotes.id')
+                ->where('lotes.fraccionamiento_id',$proyecto)
+                ->where('datos_extra.persona_discap','=',1)
+                ->get()->count();
+        
+        $silla_ruedas = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
+                ->join('lotes','creditos.lote_id','=','lotes.id')
+                ->where('lotes.fraccionamiento_id',$proyecto)
+                ->where('datos_extra.silla_ruedas','=',1)
+                ->get()->count();
+
+        
         $SinMascotas = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-        ->join('lotes','creditos.lote_id','=','lotes.id')
-        ->where('lotes.fraccionamiento_id',$proyecto)
-        ->where('datos_extra.mascota','=',0)
-        ->get()->count();
+                ->join('lotes','creditos.lote_id','=','lotes.id')
+                ->where('lotes.fraccionamiento_id',$proyecto)
+                ->where('datos_extra.mascota','=',0)
+                ->get()->count();
 
         $mascotas = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-        ->join('lotes','creditos.lote_id','=','lotes.id')
-        ->select(DB::raw('SUM(datos_extra.mascota) as sumMascota'),
-                    DB::raw('SUM(datos_extra.num_perros) as perros'))
-        ->where('lotes.fraccionamiento_id',$proyecto)
-        ->get();
+                ->join('lotes','creditos.lote_id','=','lotes.id')
+                ->select(
+                            DB::raw('SUM(datos_extra.ama_casa) as totalAmaCasa'),
+                            DB::raw('SUM(datos_extra.num_vehiculos) as totalAutos'),
+                            DB::raw('SUM(datos_extra.mascota) as sumMascota'),
+                            DB::raw('SUM(datos_extra.num_perros) as perros')
+                        )
+                ->where('lotes.fraccionamiento_id',$proyecto)
+                ->get();
 
+        
         $mascotas[0]->sin_mascotas = $SinMascotas;
-        $mascotas[0]->promedioPerros = $mascotas[0]->perros/($mascotas[0]->sin_mascotas + $mascotas[0]->sumMascota);
+        $totalPersonas = $mascotas[0]->sin_mascotas + $mascotas[0]->sumMascota;
+        $sinDiscap =$totalPersonas - $discapacitados;
+        $mascotas[0]->promedioPerros = $mascotas[0]->perros/$totalPersonas;
+        $promedioAutos = $mascotas[0]->totalAutos/$totalPersonas;
+        $promedioAmasCasa = $mascotas[0]->totalAmaCasa/$totalPersonas;
  
 
-        return ['edades'=>$edades,'mascotas'=>$mascotas];      
- 
+        return ['edades'=>$edades,'mascotas'=>$mascotas, 
+                'discap'=>$discapacitados, 
+                'sinDiscap'=> $sinDiscap,
+                'silla_ruedas'=>$silla_ruedas,
+                'promedioAutos'=>$promedioAutos,
+                'promedioAmasCasa'=>$promedioAmasCasa];      
     }
 }
