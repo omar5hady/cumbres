@@ -20,8 +20,8 @@ class CreatePreciosEtapasTable extends Migration
             $table->double('precio_excedente',10,2);
             $table->timestamps();
 
-            $table->foreign('fraccionamiento_id')->references('id')->on('fraccionamientos');
-            $table->foreign('etapa_id')->references('id')->on('etapas'); 
+            $table->foreign('fraccionamiento_id')->references('id')->on('fraccionamientos')->onDelete('cascade');
+            $table->foreign('etapa_id')->references('id')->on('etapas')->onDelete('cascade'); 
         });
     }
 

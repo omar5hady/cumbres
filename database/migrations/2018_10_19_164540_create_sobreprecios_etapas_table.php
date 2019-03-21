@@ -20,7 +20,7 @@ class CreateSobrepreciosEtapasTable extends Migration
             $table->double('sobreprecio',10,2);
             $table->timestamps();
 
-            $table->foreign('etapa_id')->references('id')->on('etapas');
+            $table->foreign('etapa_id')->references('id')->on('etapas')->onDelete('cascade');
             $table->foreign('sobreprecio_id')->references('id')->on('sobreprecios');
         });
     }

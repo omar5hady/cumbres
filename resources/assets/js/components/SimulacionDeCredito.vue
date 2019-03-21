@@ -147,7 +147,7 @@
                         </div>
                     </template>
                     
-     <!-- Div Card Body para actualizar -->
+     <!-- Div Card Body para registrar simulacion -->
                     <template v-else-if="listado == 3">
                         <div class="card-body"> 
 
@@ -761,6 +761,13 @@
                                                         <div class="form-group">
                                                             <label style="color:#2271b3;" for=""><strong> Precio base </strong></label>
                                                             <p v-text="'$'+formatNumber(precioBase)"></p>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-3" v-if="precioBase!=''">
+                                                        <div class="form-group">
+                                                            <label style="color:#2271b3;" for=""><strong> Precio obra extra </strong></label>
+                                                            <p v-text="'$'+formatNumber(precioObraExtra)"></p>
                                                         </div>
                                                     </div>
 
@@ -1636,11 +1643,19 @@
                                                         </div>
                                                     </div>
 
+                                                    <div class="col-md-3" v-if="precioBase!=''">
+                                                        <div class="form-group">
+                                                            <label style="color:#2271b3;" for=""><strong> Precio obra extra </strong></label>
+                                                            <p v-text="'$'+formatNumber(precioObraExtra)"></p>
+                                                        </div>
+                                                    </div>
+
                                                      <div class="col-md-12" v-if="precioBase!=''">
                                                         <div class="form-group">
                                                             <h6></h6>
                                                         </div>
                                                     </div>
+                                                    
 
                                                     <div class="col-md-3" v-if="superficie!=''">
                                                         <div class="form-group">
@@ -1677,7 +1692,7 @@
                                                         </div>
                                                     </div> 
 
-                                                    <div class="col-md-3" v-if="descripcionPromo!=''" >
+                                                    <div class="col-md-3" v-if="descripcionPromo" >
                                                         <div class="form-group">
                                                             <label style="color:#2271b3;" for=""><strong> Descripcion de la promocion </strong></label>
                                                             <p v-text="descripcionPromo"></p>
@@ -1695,14 +1710,14 @@
                                                         <h6></h6>
                                                     </div>
 
-                                                    <div class="col-md-3">
+                                                    <div class="col-md-3" v-if="paquete">
                                                         <div class="form-group">
                                                             <label for="">Paquete</label>
                                                             <input disabled type="text" class="form-control" v-model="paquete">
                                                         </div>
                                                     </div> 
 
-                                                    <div class="col-md-3" v-if="descripcionPaquete!=''">
+                                                    <div class="col-md-3" v-if="descripcionPaquete">
                                                         <div class="form-group">
                                                             <label style="color:#2271b3;" for=""><strong> Descripcion del paquete </strong></label>
                                                             <p v-text="descripcionPaquete"></p>
@@ -2312,6 +2327,7 @@
                 precioBase: 0,
                 precioExcedente: 0,
                 precioVenta: 0,
+                precioObraExtra:0,
                 promocion: '',
                 descripcionPromo: '',
                 descuentoPromo: 0,
@@ -2624,6 +2640,7 @@
                         me.descuentoPromo = me.arrayDatosLotes[0]['descuentoPromo'];
                         me.terreno_tam_excedente= me.arrayDatosLotes[0]['terreno_tam_excedente'];
                         me.num_lote = me.arrayDatosLotes[0]['num_lote'];
+                        me.precioObraExtra = me.arrayDatosLotes[0]['obra_extra'];
 
                         me.precioVenta = me.precioVenta - me.descuentoPromo;
                     
@@ -2917,7 +2934,8 @@
                     'tipo_credito':this.tipo_credito,
                     'inst_financiera':this.inst_financiera,
                     'num_vehiculos':this.num_vehiculos,
-                    'lote_id':this.lote
+                    'lote_id':this.lote,
+                    'precio_obra_extra':this.precioObraExtra
                     
                 }).then(function (response){
                     me.proceso=false;
@@ -3109,7 +3127,10 @@
                 this.modelo = data['modelo'];
                 this.superficie = data['superficie'];
                 this.terreno_tam_excedente = data['terreno_excedente'];
+                this.precioBase = data['precio_base'];
                 this.precioExcedente = data['precio_terreno_excedente'];
+                this.precioObraExtra = data['precio_obra_extra'];
+                this.precioVenta = data['precio_venta'];
                 this.promocion = data['promocion'];
                 this.descripcionPromo = data['descripcion_promocion'];
                 this.descuentoPromo = data['descuento_promocion'];

@@ -59,6 +59,7 @@
                                         <th>Construc. m&sup2;</th>
                                         <th>Precio Base</th>
                                         <th>Terreno Excedente</th>
+                                        <th>Obra extra</th>
                                         <th>Sobreprecios</th>
                                         <th>Precio venta</th>
                                         <th>Promoción</th>
@@ -95,6 +96,7 @@
                                         <td class="td2" v-text="lote.construccion"></td>
                                         <td class="td2" v-text="'$'+formatNumber(lote.precio_base)"></td>
                                         <td class="td2" v-text="'$'+formatNumber(lote.excedente_terreno)"></td>
+                                        <td class="td2" v-text="'$'+formatNumber(lote.obra_extra)"></td>
                                         <td class="td2" v-text="'$'+formatNumber(lote.sobreprecio)"></td>
                                         <td class="td2" style="width:20%" v-text="'$'+formatNumber(lote.precio_venta)"></td>
                                         <td class="td2" v-text="lote.promocion"></td>

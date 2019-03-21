@@ -32,6 +32,7 @@ class CreateCreditosTable extends Migration
             $table->float('superficie')->nullable();
             $table->float('terreno_excedente')->nullable();
             $table->double('precio_terreno_excedente')->nullable();
+            $table->double('precio_obra_extra')->nullable();
             $table->string('promocion')->nullable();
             $table->text('descripcion_promocion')->nullable();
             $table->double('descuento_promocion')->nullable();

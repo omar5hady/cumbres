@@ -28,7 +28,7 @@ class CreditoController extends Controller
             ->select('creditos.id','creditos.prospecto_id','creditos.num_dep_economicos','creditos.tipo_economia',
                 'creditos.nombre_primera_ref','creditos.telefono_primera_ref','creditos.celular_primera_ref',
                 'creditos.nombre_segunda_ref','creditos.telefono_segunda_ref','creditos.celular_segunda_ref',
-                'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','creditos.precio_base',
+                'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','creditos.precio_base','creditos.precio_obra_extra',
                 'creditos.superficie','creditos.terreno_excedente','creditos.precio_terreno_excedente',
                 'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
                 'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
@@ -163,6 +163,7 @@ class CreditoController extends Controller
             $credito->superficie = $request->superficie;
             $credito->terreno_excedente = $request->terreno_tam_excedente;
             $credito->precio_terreno_excedente = $request->precioExcedente;
+            $credito->precio_obra_extra = $request->precio_obra_extra;
             $credito->promocion = $request->promocion;
             $credito->descripcion_promocion = $request->descripcionPromo;
             $credito->descuento_promocion = $request->descuentoPromo;
