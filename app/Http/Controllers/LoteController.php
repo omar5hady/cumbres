@@ -21,6 +21,7 @@ use File;
 use DB;
 use Carbon\Carbon;
 use App\Apartado;
+use Auth;
 
 class LoteController extends Controller
 {
@@ -773,6 +774,7 @@ class LoteController extends Controller
                 ->join('licencias','lotes.id','=','licencias.id')
                 ->join('etapas','lotes.etapa_id','=','etapas.id')
                 ->join('modelos','lotes.modelo_id','=','modelos.id')
+                ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
                 ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
                             'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
                             'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
@@ -780,6 +782,8 @@ class LoteController extends Controller
                             'lotes.sobreprecio', 'lotes.precio_base','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra')
                             ->where('lotes.habilitado','=',1)
                             ->where('lotes.apartado','=',0)
+                            ->orWhere('lotes.habilitado','=',1)
+                            ->where('apartados.vendedor_id','=',Auth::user()->id)
                             ->orderBy('fraccionamientos.nombre','DESC')
                             ->orderBy('lotes.etapa_servicios','DESC')->paginate(8);  
             }
@@ -790,6 +794,7 @@ class LoteController extends Controller
                     ->join('licencias','lotes.id','=','licencias.id')
                     ->join('etapas','lotes.etapa_id','=','etapas.id')
                     ->join('modelos','lotes.modelo_id','=','modelos.id')
+                    ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
                     ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
                                 'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
                                 'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
@@ -797,6 +802,9 @@ class LoteController extends Controller
                                 'lotes.sobreprecio', 'lotes.precio_base','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra')
                                 ->where('lotes.habilitado','=',1)
                                 ->where('lotes.apartado','=',0)
+                                ->where($criterio, 'like', '%'. $buscar . '%')
+                                ->orWhere('lotes.habilitado','=',1)
+                                ->where('apartados.vendedor_id','=',Auth::user()->id)
                                 ->where($criterio, 'like', '%'. $buscar . '%')
                                 ->orderBy('fraccionamientos.nombre','DESC')
                                 ->orderBy('lotes.etapa_servicios','DESC')->paginate(8);
@@ -808,6 +816,7 @@ class LoteController extends Controller
                 ->join('licencias','lotes.id','=','licencias.id')
                 ->join('etapas','lotes.etapa_id','=','etapas.id')
                 ->join('modelos','lotes.modelo_id','=','modelos.id')
+                ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
                 ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
                             'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
                             'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
@@ -815,6 +824,10 @@ class LoteController extends Controller
                             'lotes.sobreprecio', 'lotes.precio_base','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra')
                             ->where('lotes.habilitado','=',1)
                             ->where('lotes.apartado','=',0)
+                            ->where($criterio, 'like', '%'. $buscar . '%')
+                            ->where('etapas.num_etapa', 'like', '%'. $buscar2 . '%')
+                            ->orWhere('lotes.habilitado','=',1)
+                            ->where('apartados.vendedor_id','=',Auth::user()->id)
                             ->where($criterio, 'like', '%'. $buscar . '%')
                             ->where('etapas.num_etapa', 'like', '%'. $buscar2 . '%')
                             ->orderBy('fraccionamientos.nombre','DESC')
@@ -825,6 +838,7 @@ class LoteController extends Controller
                 ->join('licencias','lotes.id','=','licencias.id')
                 ->join('etapas','lotes.etapa_id','=','etapas.id')
                 ->join('modelos','lotes.modelo_id','=','modelos.id')
+                ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
                 ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapa','lotes.manzana','lotes.num_lote','lotes.sublote',
                             'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
                             'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
@@ -832,6 +846,11 @@ class LoteController extends Controller
                             'lotes.sobreprecio', 'lotes.precio_base','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra')
                             ->where('lotes.habilitado','=',1)
                             ->where('lotes.apartado','=',0)
+                            ->where($criterio, 'like', '%'. $buscar . '%')
+                            ->where('etapas.num_etapa', 'like', '%'. $buscar2 . '%')
+                            ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
+                            ->orWhere('lotes.habilitado','=',1)
+                            ->where('apartados.vendedor_id','=',Auth::user()->id)
                             ->where($criterio, 'like', '%'. $buscar . '%')
                             ->where('etapas.num_etapa', 'like', '%'. $buscar2 . '%')
                             ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
@@ -878,9 +897,13 @@ class LoteController extends Controller
         
         $fraccionamiento = $request->buscar;
         $lotes_etapas = Lote::join('etapas','lotes.etapa_id','=','etapas.id')
+                    ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
                     ->select('etapas.num_etapa as etapa')
                     ->where('lotes.habilitado','=',1)
                     ->where('lotes.apartado','=',0)
+                    ->where('lotes.fraccionamiento_id','=',$fraccionamiento)
+                    ->orWhere('lotes.habilitado','=',1)
+                    ->where('apartados.vendedor_id','=',Auth::user()->id)
                     ->where('lotes.fraccionamiento_id','=',$fraccionamiento)
                     ->orderBy('etapas.num_etapa','DESC')
                     ->distinct()
@@ -894,9 +917,13 @@ class LoteController extends Controller
         
         $etapa = $request->buscar;
         $lotes_manzanas = Lote::join('etapas','lotes.etapa_id','=','etapas.id')
+                    ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
                     ->select('lotes.manzana')
                     ->where('lotes.habilitado','=',1)
                     ->where('lotes.apartado','=',0)
+                    ->where('etapas.num_etapa','=',$etapa)
+                    ->orWhere('lotes.habilitado','=',1)
+                    ->where('apartados.vendedor_id','=',Auth::user()->id)
                     ->where('etapas.num_etapa','=',$etapa)
                     ->distinct()
                     ->orderBy('lotes.manzana','DESC')
@@ -910,9 +937,14 @@ class LoteController extends Controller
         $manzana = $request->buscar;
         $etapa = $request->buscar2;
         $lotes_disp = Lote::join('etapas','lotes.etapa_id','=','etapas.id')
+                    ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
                     ->select('lotes.num_lote','lotes.id')
                     ->where('lotes.habilitado','=',1)
                     ->where('lotes.apartado','=',0)
+                    ->where('etapas.num_etapa', 'like', '%'. $etapa .'%' )
+                    ->where('lotes.manzana','=',$manzana)
+                    ->orWhere('lotes.habilitado','=',1)
+                    ->where('apartados.vendedor_id','=',Auth::user()->id)
                     ->where('etapas.num_etapa', 'like', '%'. $etapa .'%' )
                     ->where('lotes.manzana','=',$manzana)
                     ->orderBy('lotes.num_lote','DESC')
@@ -934,8 +966,6 @@ class LoteController extends Controller
                     'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
                     'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
                     'lotes.sobreprecio', 'lotes.precio_base','lotes.excedente_terreno','lotes.apartado','modelos.terreno as terreno_modelo')
-                    ->where('lotes.habilitado','=',1)
-                    ->where('lotes.apartado','=',0)
                     ->where('lotes.id','=',$buscar)
                     ->orderBy('fraccionamientos.nombre','DESC')
                     ->orderBy('lotes.etapa_servicios','DESC')->get();
