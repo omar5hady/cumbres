@@ -1716,6 +1716,7 @@
                                                             <input disabled type="text" class="form-control" v-model="paquete">
                                                         </div>
                                                     </div> 
+                                                    
 
                                                     <div class="col-md-3" v-if="descripcionPaquete">
                                                         <div class="form-group">
@@ -2434,11 +2435,11 @@
             },
 
             
-        totalHabitantes: function(){
-            var resultado_habitantes =0;
-                resultado_habitantes = parseFloat(resultado_habitantes) + parseInt(this.rang0_10)+parseInt(this.rang11_20)+parseInt(this.rang21); 
-            return resultado_habitantes;
-        },
+            totalHabitantes: function(){
+                var resultado_habitantes =0;
+                    resultado_habitantes = parseFloat(resultado_habitantes) + parseInt(this.rang0_10)+parseInt(this.rang11_20)+parseInt(this.rang21); 
+                return resultado_habitantes;
+            },
 
         },
        

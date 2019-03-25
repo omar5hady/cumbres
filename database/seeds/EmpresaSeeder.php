@@ -23,5 +23,16 @@ class EmpresaSeeder extends Seeder
             'telefono' => '8330307',
             'ext' => ''
         ]);
+        Empresa::create([
+            'id' => 2,
+            'nombre' => 'Negocio propio',
+            'direccion' => '#',
+            'cp' => '78000',
+            'colonia' => 'Centro',
+            'estado' => 'San Luis Potosí',
+            'ciudad' => 'San Luis Potosí',
+            'telefono' => '8888888',
+            'ext' => ''
+        ]);
     }
 }

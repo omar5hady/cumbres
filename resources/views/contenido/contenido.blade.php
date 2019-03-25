@@ -157,6 +157,10 @@
             <template v-if="menu==63">
                 <historialcreditos rol-id="{{Auth::user()->rol_id}}"></historialcreditos>
             </template>
+
+            <template v-if="menu==80">
+                <crear-contrato><crear-contrato/>
+            </template>
         
         @elseif(Auth::user()->rol_id == 2) <!--Vendedor -->
             <template v-if="menu==13">

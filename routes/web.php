@@ -144,6 +144,7 @@ Route::group(['middleware' => ['auth']],function(){
     
     ////////////////////        RUTAS EMPRESA     /////////////////////////////////
         Route::get('/empresa','EmpresaController@index');
+        Route::get('/empresa/datos','EmpresaController@getDatosEmpresa');
         Route::post('/empresa/registrar','EmpresaController@store');
         Route::put('/empresa/actualizar','EmpresaController@update');
         Route::delete('/empresa/eliminar','EmpresaController@destroy');
@@ -306,6 +307,10 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/servicios/pdf/','ServicioController@servicioPdf')->name('servicios.pdf');
         Route::get('/cartaServicios/pdf/','ServicioController@cartaDeServicioPdf')->name('CartaDeservicios.pdf');
         Route::post('/users/foto/{id}','UserController@updateProfile');
+
+        /**************************** RUTAS MODULO CONTRATOS  ***************************/
+        Route::get('/creditos_aprobados','ContratoController@indexCreditosAprobados');
+        Route::get('/credito/datos_credito','ContratoController@getDatosCredito');
 
         /************************** RUTAS ESTADISTICAS ***************************/
         Route::get('/estadisticas/datos_extra','EstadisticasController@estad_datos_extra');

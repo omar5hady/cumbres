@@ -103,7 +103,7 @@
                 </ul>
             </li>
             <li class="nav-item nav-dropdown">
-                <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-basket"></i> Asesores</a>
+                <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-basket"></i> Ventas</a>
                 <ul class="nav-dropdown-items">
                     <li @click="menu=59" class="nav-item">
                         <a class="nav-link" href="#"><i class="fa fa-circle-o-notch fa-spin"></i> Lotes Disponibles</a>
@@ -119,6 +119,9 @@
                     </li>
                     <li @click="menu=63" class="nav-item">
                         <a class="nav-link" href="#"><i class="fa fa-archive"></i> Hist. creditos</a>
+                    </li>
+                    <li @click="menu=80" class="nav-item">
+                        <a class="nav-link" href="#"><i class="fa fa-archive"></i> Realizar contrato</a>
                     </li>
                 </ul>
             </li>
