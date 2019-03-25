@@ -65,13 +65,11 @@ class ServicioController extends Controller
         return ['servicios' => $servicios];
     }
 
-    public function servicioPdf(Request $request)
+    public function servicioTelecomPdf(Request $request)
     {
         
         $servicios = Servicio::orderBy('descripcion','asc')->take(1)->get();
-
-
-            $pdf = \PDF::loadview('pdf.serviciosDeTelecom',['servicios' => $servicios]);
+            $pdf = \PDF::loadview('pdf.contratos.serviciosDeTelecom',['servicios' => $servicios]);
             return $pdf->stream('servicios.pdf');
             // return ['cabecera' => $cabecera];
      }
@@ -82,7 +80,18 @@ class ServicioController extends Controller
          $servicios = Servicio::orderBy('descripcion','asc')->take(1)->get();
  
  
-             $pdf = \PDF::loadview('pdf.cartaDeServicios',['servicios' => $servicios]);
+             $pdf = \PDF::loadview('pdf.contratos.cartaDeServicios',['servicios' => $servicios]);
+             return $pdf->stream('CartaDeservicios.pdf');
+             // return ['cabecera' => $cabecera];
+      }
+
+     public function contratoCompraVentaPdf(Request $request)
+     {
+         
+         $servicios = Servicio::orderBy('descripcion','asc')->take(1)->get();
+ 
+ 
+             $pdf = \PDF::loadview('pdf.contratos.contratoCompraVenta',['servicios' => $servicios]);
              return $pdf->stream('CartaDeservicios.pdf');
              // return ['cabecera' => $cabecera];
       }

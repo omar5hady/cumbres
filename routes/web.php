@@ -304,8 +304,10 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/creditos_select/actualizar','CreditoController@updateDatosCredito');
         Route::get('/inst_select/observacion','ObservacionInstSeleccionadaController@index');
     
-        Route::get('/servicios/pdf/','ServicioController@servicioPdf')->name('servicios.pdf');
+        Route::get('/serviciosTelecom/pdf/','ServicioController@servicioTelecomPdf')->name('servicios.pdf');
         Route::get('/cartaServicios/pdf/','ServicioController@cartaDeServicioPdf')->name('CartaDeservicios.pdf');
+        Route::get('/contratoCompraVenta/pdf/','ServicioController@contratoCompraVentaPdf')->name('contratoCompraVenta.pdf');
+        
         Route::post('/users/foto/{id}','UserController@updateProfile');
 
         /**************************** RUTAS MODULO CONTRATOS  ***************************/
