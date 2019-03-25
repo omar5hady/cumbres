@@ -144,6 +144,7 @@ class ClienteController extends Controller
             $cliente->tipo_casa = $request->tipo_casa;
             $cliente->email_institucional = $request->email_institucional;
             $cliente->lugar_contacto = $request->lugar_contacto;
+            $cliente->lugar_nacimiento = $request->lugar_nacimiento;
             $cliente->proyecto_interes_id = $request->proyecto_interes_id;
             $cliente->publicidad_id = $request->publicidad_id;
             $cliente->edo_civil = $request->edo_civil;
@@ -176,6 +177,7 @@ class ClienteController extends Controller
             $cliente->celular_coa = $request->celular_coa;
             $cliente->email_coa = $request->email_coa;
             $cliente->parentesco_coa = $request->parentesco_coa;
+            $cliente->lugar_nacimiento_coa = $request->lugar_nacimiento;
             $cliente->save();
 
             $observacion = new Cliente_observacion();
@@ -227,6 +229,7 @@ class ClienteController extends Controller
             $cliente->empresa = $request->empresa;
             $cliente->coacreditado = $request->coacreditado;
             $cliente->clasificacion = $request->clasificacion;
+            $cliente->lugar_nacimiento = $request->lugar_nacimiento;
             
             $cliente->save();
 
@@ -281,6 +284,7 @@ class ClienteController extends Controller
             $cliente->edo_civil = $request->edo_civil;
             $cliente->nss = $request->nss;
             $cliente->curp = $request->curp;
+            $cliente->lugar_nacimiento = $request->lugar_nacimiento;
             if($request->vendedor_id == NULL)
             $cliente->vendedor_id = Auth::user()->id;
             else{
@@ -307,6 +311,7 @@ class ClienteController extends Controller
             $cliente->direccion_coa = $request->direccion_coa;
             $cliente->colonia_coa = $request->colonia_coa;
             $cliente->cp_coa = $request->cp_coa;
+            $cliente->lugar_nacimiento_coa = $request->lugar_nacimiento_coa;
             $cliente->telefono_coa = $request->telefono_coa;
             $cliente->ext_coa = $request->ext_coa;
             $cliente->celular_coa = $request->celular_coa;
@@ -384,7 +389,7 @@ class ClienteController extends Controller
         $coacreditados = Cliente::join('personal','clientes.id','=','personal.id')
         ->select('personal.nombre','personal.apellidos','personal.id','personal.rfc','personal.homoclave','personal.f_nacimiento',
             'personal.telefono','personal.celular','personal.email','clientes.sexo',
-            'clientes.email_institucional','clientes.edo_civil','clientes.nss','clientes.curp','clientes.tipo_casa',
+            'clientes.email_institucional','clientes.edo_civil','clientes.nss','clientes.curp','clientes.tipo_casa','clientes.lugar_nacimiento',
             DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"))
         ->where('vendedor_id','=',Auth::user()->id)
         ->where('nombre','like','%'.$filtro.'%')
@@ -680,12 +685,13 @@ class ClienteController extends Controller
         'clientes.sexo','clientes.tipo_casa','clientes.email_institucional','clientes.lugar_contacto',
         'clientes.proyecto_interes_id','clientes.publicidad_id','clientes.edo_civil','clientes.nss',
         'clientes.curp','clientes.vendedor_id','clientes.empresa','clientes.coacreditado','clientes.clasificacion',
+        'clientes.lugar_nacimiento',
         
         'clientes.sexo_coa', 'clientes.tipo_casa_coa','clientes.email_institucional_coa','clientes.empresa_coa',
         'clientes.edo_civil_coa','clientes.nss_coa','clientes.curp_coa','clientes.nombre_coa','clientes.apellidos_coa',
         'clientes.f_nacimiento_coa', 'clientes.rfc_coa','clientes.homoclave_coa','clientes.direccion_coa','clientes.colonia_coa',
         'clientes.cp_coa','clientes.telefono_coa','clientes.ext_coa','clientes.celular_coa','clientes.email_coa','clientes.parentesco_coa',
-        'clientes.nombre_coa','clientes.apellidos_coa',
+        'clientes.nombre_coa','clientes.apellidos_coa','clientes.lugar_nacimiento_coa',
         DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS n_completo_coa"),
         'medios_publicitarios.nombre as publicidad','fraccionamientos.nombre as proyecto')
         ->where('personal.id','=',$id)

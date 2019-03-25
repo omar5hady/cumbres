@@ -193,6 +193,20 @@
                                 </div>
                                 </div>
 
+                                
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="">Lugar de nacimiento <span style="color:red;" v-show="lugar_nacimiento==''">(*)</span></label>
+                                        <select class="form-control" v-model="lugar_nacimiento">
+                                            <option value="">Seleccione</option>
+                                            <option v-for="estados in arrayEstados" :key="estados.estado" :value="estados.estado" v-text="estados.estado"></option>    
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                </div>
+
                                  <div class="col-md-3">
                                      <div class="form-group">
                                     <label for="">CURP</label>
@@ -469,6 +483,19 @@
                                 </div>
                                 </div>
 
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="">Lugar de nacimiento <span style="color:red;" v-show="lugar_nacimiento==''">(*)</span></label>
+                                        <select class="form-control" v-model="lugar_nacimiento">
+                                            <option value="">Seleccione</option>
+                                            <option v-for="estados in arrayEstados" :key="estados.estado" :value="estados.estado" v-text="estados.estado"></option>    
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                </div>
+
                                  <div class="col-md-3">
                                      <div class="form-group">
                                     <label for="">CURP</label>
@@ -742,6 +769,14 @@
                                 </div>
                                 </div>
 
+                                <div class="form-group row">
+                                    <label for="">Lugar de nacimiento <span style="color:red;" v-show="lugar_nacimiento_coa==''">(*)</span></label>
+                                    <select class="form-control" v-model="lugar_nacimiento_coa">
+                                        <option value="">Seleccione</option>
+                                        <option v-for="estados in arrayEstados" :key="estados.estado" :value="estados.estado" v-text="estados.estado"></option>    
+                                    </select>
+                                </div>
+
                                <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">CURP</label>
                                        <div class="col-md-4">
@@ -905,6 +940,7 @@
                 empresa: '',
                 observacion:'',
                 lugar_contacto: 0,
+                lugar_nacimiento:'',
                 conyugeNom: '',
 
 
@@ -922,11 +958,13 @@
                 rfc_coa:'',
                 homoclave_coa: '',
                 e_civil_coa: 0,
+                lugar_nacimiento_coa:'',
                 tipo_casa_coa:0,
 
 
                 arrayEmpresa: [],
                 arrayMediosPublicidad:[],
+                arrayEstados:[],
 
                 modal : 0,
                 modal3: 0,
@@ -1019,7 +1057,20 @@
                     console.log(error);
                 });
             },
-
+            selectEstados(){
+                let me = this;
+                me.arrayEstados=[];
+                
+                var url = '/select_estados';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayEstados = respuesta.estados;
+                    
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
             selectLugarContacto(){
                 let me = this;
                 me.arrayLugarContacto=[];
@@ -1130,6 +1181,7 @@
                 me.nss_coa = val1.nss;
                 me.homoclave_coa = val1.homoclave;
                 me.tipo_casa_coa = val1.tipo_casa;
+                me.lugar_nacimiento_coa = val1.lugar_nacimiento;
             },
 
             listarObservacion(page, buscar){
@@ -1187,6 +1239,7 @@
                     'empresa':this.empresa,
                     'observacion':this.observacion,
                     'lugar_contacto':this.lugar_contacto,
+                    'lugar_nacimiento': this.lugar_nacimiento,
 
                     'nombre_coa':this.nombre_coa,
                     'parentesco_coa':this.parentesco_coa,
@@ -1203,6 +1256,7 @@
                     'homoclave_coa':this.homoclave_coa,
                     'edo_civil_coa':this.e_civil_coa,
                     'tipo_casa_coa':this.tipo_casa_coa,
+                    'lugar_nacimiento_coa': this.lugar_nacimiento_coa,
                 }).then(function (response){
                     me.proceso=false;
                     me.listado=1;
@@ -1250,6 +1304,7 @@
                     'coacreditado':0,
                     'proyecto_interes_id':this.proyecto_interes_id,
                     'lugar_contacto':this.lugar_contacto,
+                    'lugar_nacimiento':this.lugar_nacimiento_coa,
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal();
@@ -1300,6 +1355,7 @@
                     'empresa':this.empresa,
                     'observacion':this.observacion,
                     'lugar_contacto':this.lugar_contacto,
+                    'lugar_nacimiento': this.lugar_nacimiento,
 
                     'nombre_coa':this.nombre_coa,
                     'parentesco_coa':this.parentesco_coa,
@@ -1316,6 +1372,7 @@
                     'homoclave_coa':this.homoclave_coa,
                     'edo_civil_coa':this.e_civil_coa,
                     'tipo_casa_coa':this.tipo_casa_coa,
+                    'lugar_nacimiento_coa': this.lugar_nacimiento_coa,
                 }).then(function (response){
                     me.proceso=false;
                     me.listado=1;
@@ -1513,6 +1570,7 @@
                 this.empresa= '';
                 this.observacion='';
                 this.lugar_contacto= 0;
+                this.lugar_nacimiento='';
 
                 this.nombre_coa='';
                 this.parentesco_coa='';
@@ -1521,6 +1579,7 @@
                 this.celular_coa = '';
                 this.email_coa='';
                 this.email_institucional_coa='';
+                this.lugar_nacimiento_coa='';
                 this.nss_coa='';
                 this.sexo_coa='';
                 this.fecha_nac_coa= '';
@@ -1564,6 +1623,7 @@
                     me.email = me.arrayDatosProspecto[0]['email'];
                     me.empresa=me.arrayDatosProspecto[0]['empresa'];
                     me.fecha_nac=me.arrayDatosProspecto[0]['f_nacimiento'];
+                    me.lugar_nacimiento =me.arrayDatosProspecto[0]['lugar_nacimiento'];
                     me.curp=me.arrayDatosProspecto[0]['curp'];
                     me.rfc=me.arrayDatosProspecto[0]['rfc'];
                     me.homoclave=me.arrayDatosProspecto[0]['homoclave'];
@@ -1579,7 +1639,9 @@
                     me.conyugeNom = me.arrayDatosProspecto[0]['n_completo_coa'];
                     me.nombre_coa = me.arrayDatosProspecto[0]['nombre_coa'];
                     me.apellidos_coa = me.arrayDatosProspecto[0]['apellidos_coa'];
+                    me.lugar_nacimiento_coa =me.arrayDatosProspecto[0]['lugar_nacimiento_coa'];
                     me.proyecto = me.arrayDatosProspecto[0]['proyecto'];
+
                     
                     
                     me.id=id;
@@ -1610,6 +1672,7 @@
                 this.tipo_casa_coa=0;
                 this.errorCoacreditado=0;
                 this.errorMostrarMsjCoacreditado=[];
+                this.lugar_nacimiento_coa='';
             },
 
              cerrarModal3(){
@@ -1665,6 +1728,7 @@
                                 this.e_civil_coa= 0;
                                 this.tipo_casa_coa=0;
                                 this.tipoAccion = 1;
+                                this.lugar_nacimiento_coa='';
                                 break;
                             }
                             
@@ -1680,6 +1744,7 @@
             this.selectMedioPublicidad();
             this.selectFraccionamientos();
             this.selectLugarContacto();
+            this.selectEstados();
           
         }
     }

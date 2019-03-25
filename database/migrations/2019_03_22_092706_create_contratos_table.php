@@ -24,6 +24,7 @@ class CreateContratosTable extends Migration
             $table->double('prima_unica')->default(0)->nullable();
             $table->double('escrituras')->default(0)->nullable();
             $table->double('credito_neto')->default(0)->nullable();
+            $table->double('monto_total_credito')->default(0)->nullable();
             $table->double('total_pagar')->default(0)->nullable();
             $table->boolean('status')->default(1)->nullable();
             $table->date('fecha')->nullable();

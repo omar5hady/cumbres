@@ -901,7 +901,7 @@
 
                                                     <div class="col-md-3" v-if="precioVenta!=''">
                                                         <div class="form-group">
-                                                            <h5 style="color:#2271b3;" for=""><strong> Precio de venta: </strong></h5>
+                                                            <h5 style="color:#2271b3;" for=""><strong> Valor Total de la Casa: </strong></h5>
                                                         </div>
                                                     </div> 
                                                     <div class="col-md-3" v-if="precioVenta!=''">
@@ -910,7 +910,7 @@
                                                         </div>
                                                     </div> 
 
-                                                    <div class="col-md-12" >
+                                                    <div class="col-md-12" ><hr>
                                                         <h6></h6>
                                                     </div>
 
@@ -988,6 +988,34 @@
                                                         </div>
                                                     </div> 
 
+                                                    <div class="col-md-3" v-if="tipo_credito=='Alia2' || tipo_credito=='Respalda2'">
+                                                        <div class="form-group">
+                                                        <label for="">Fovissste</label>
+                                                            <input type="text" pattern="\d*" v-model="fovissste" maxlength="9" v-on:keypress="isNumber($event)" class="form-control" >
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-3" v-if="tipo_credito=='Cofinavit'">
+                                                        <div class="form-group">
+                                                        <label for="">Infonavit</label>
+                                                            <input type="text" pattern="\d*" v-model="infonavit" maxlength="9" v-on:keypress="isNumber($event)" class="form-control" >
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-3" v-if="fovissste!=0">
+                                                        <div class="form-group">
+                                                            <h6 style="color:#2271b3;" for=""><strong> Fovissste </strong></h6>
+                                                            <h6 v-text="'$'+formatNumber(fovissste)"></h6>
+                                                        </div>
+                                                    </div> 
+
+                                                    <div class="col-md-3" v-if="infonavit!=0">
+                                                        <div class="form-group">
+                                                            <h6 style="color:#2271b3;" for=""><strong> Infonavit </strong></h6>
+                                                            <h6 v-text="'$'+formatNumber(infonavit)"></h6>
+                                                        </div>
+                                                    </div>
+
                                                     <div class="col-md-12">
                                                         <div class="form-group">
                                                             <h6></h6>
@@ -1028,6 +1056,17 @@
                                                         </div>
                                                     </div> 
 
+                                                    <div class="col-md-3" v-if="inst_financiera!=''"><hr>
+                                                        <div class="form-group">
+                                                            <h5 style="color:#2271b3;" for=""><strong> Credito Neto {{inst_financiera}}: </strong></h5>
+                                                        </div>
+                                                    </div> 
+                                                    <div class="col-md-3" v-if="inst_financiera!=''"><hr>
+                                                        <div class="form-group">
+                                                            <h5><strong>${{ formatNumber(credito_neto=totalCreditoSolic)}}</strong></h5>
+                                                        </div>
+                                                    </div> 
+
                                                     <div class="col-md-12">
                                                         <div class="form-group">
                                                             <h6></h6>
@@ -1048,26 +1087,111 @@
                                                         </div>
                                                     </div> 
 
-                                                    <div class="col-md-12">
+                                                    <div class="col-md-3" v-if="inst_financiera!=''">
+                                                        <div class="form-group">
+                                                            <h5 style="color:#2271b3;" for=""><strong> Monto Neto Credito: </strong></h5>
+                                                        </div>
+                                                    </div> 
+                                                    <div class="col-md-3" v-if="inst_financiera!=''">
+                                                        <div class="form-group">
+                                                            <h5><strong>${{ formatNumber(monto_total_credito=netoCredito)}}</strong></h5>
+                                                        </div>
+                                                    </div> 
+
+                                                    <div class="col-md-12"><hr>
                                                         <div class="form-group">
                                                             <h6></h6>
                                                         </div>
                                                     </div>
 
-                                                     <div class="col-md-2" >
+                                                     <div class="col-md-3" >
                                                         <h6></h6>
                                                     </div>
 
                                                     <div class="col-md-3" v-if="inst_financiera!=''">
                                                         <div class="form-group">
-                                                            <h5 style="color:#2271b3;" for=""><strong> Credito Neto: </strong></h5>
+                                                            <h4 style="color:#2271b3;" for=""><strong> Total a pagar: </strong></h4>
                                                         </div>
                                                     </div> 
                                                     <div class="col-md-3" v-if="inst_financiera!=''">
                                                         <div class="form-group">
-                                                            <h5><strong>${{ formatNumber(credito_neto=totalCreditoSolic)}}</strong></h5>
+                                                            <h4><strong>${{ formatNumber(total_pagar=totalPagar)}}</strong></h4>
                                                         </div>
                                                     </div> 
+                                                    
+                                                    <div class="col-md-6"> <hr>
+                                                        <div class="form-group">
+                                                            <center> <h4>Pagos</h4> </center>
+                                                        </div>
+                                                    </div> 
+
+                                                    <div class="col-md-6"> <hr>
+                                                        <div class="form-group">
+                                                            <center> <h6>Restante: </h6> </center>
+                                                            <center> <h6><strong>${{ formatNumber(restante=totalRestante)}}</strong></h6> </center>
+                                                        </div>
+                                                    </div> 
+
+                                                    <div class="col-md-3" v-if="inst_financiera!=''">
+                                                        <div class="form-group">
+                                                        <label for="">Monto pago</label>
+                                                            <input type="text" pattern="\d*" v-model="monto_pago" maxlength="9" v-on:keypress="isNumber($event)" class="form-control" >
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="col-md-2" v-if="monto_pago!=''">
+                                                        <div class="form-group">
+                                                            <h6 style="color:#2271b3;" for=""><strong> Monto pago </strong></h6>
+                                                            <h6><strong>${{ formatNumber(monto_pago)}}</strong></h6>
+                                                        </div>
+                                                    </div> 
+                                                    
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                             <label for="">Fecha del pago</label>
+                                                            <input type="date" v-model="fecha_pago" class="form-control" >
+                                                        </div>
+                                                    </div> 
+
+                                                    <div class="col-md-1">
+                                                        <div class="form-group" v-if="restante>0">
+                                                            <button @click="agregarPago()" class="btn btn-success form-control btnagregar"><i class="icon-plus"></i></button>
+                                                        </div>
+                                                    </div>
+                                                
+
+                        <div class="col-md-6">
+                            <div class="form-group row" v-if="arrayPagos.length">
+                                <div class="table-responsive col-md-12">
+                                    <table class="table table-bordered table-striped table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Opciones</th>
+                                                <th># Pago</th>
+                                                <th>Fecha de pago</th>
+                                                <th>Monto</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody >
+                                            <tr v-for="(pago,index) in arrayPagos" :key="pago.fecha_pago">
+                                                <td>
+                                                    <button @click="eliminarPago(index)" type="button" class="btn btn-danger btn-sm">
+                                                        <i class="icon-close"></i>
+                                                    </button>
+                                                </td>
+                                                <td v-text="'Pago no. ' + parseInt(index+1)"></td>
+                                                <td v-text="this.moment(pago.fecha_pago).locale('es').format('DD/MMM/YYYY')"></td>
+                                                
+                                                <td>
+                                                    {{ pago.monto_pago | currency}}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                                                    
                                                     
                                             </div>
                                     </div>
@@ -1121,6 +1245,7 @@
                 arrayDatosSimulacion:[],
                 arrayFraccionamientos: [],
                 arryaEmpresas:[],
+                arrayPagos:[],
 
                 /// variables datos del prospecto //
                     nombre:'',
@@ -1233,9 +1358,13 @@
                         avaluo_cliente:0,
                         total_pagar:0,
                         infonavit:0,
-                        fovisste:0,
+                        fovissste:0,
+                        monto_total_credito:0,
              
                 prospecto_id:0,
+                restante:0,
+                monto_pago:0,
+                fecha_pago:'',
                 arrayEstados: [],
                 arrayCiudadesCoa: [],
                 arrayCiudades:[],
@@ -1295,11 +1424,35 @@
             },
 
             //Calculos 
+            totalRestante: function(){
+            var totalRestante =0.0;
+            for(var i=0;i<this.arrayPagos.length;i++){
+                totalRestante += parseFloat(this.arrayPagos[i].monto_pago)
+            }
+            totalRestante = this.total_pagar - totalRestante;
+            return totalRestante;
+        },
+
             totalCreditoSolic: function(){
                 var total_credito =0;
                     total_credito = parseFloat(this.monto_credito) - parseInt(this.comision_apertura)-parseInt(this.investigacion)+parseInt(this.avaluo)-parseInt(this.prima_unica)-parseInt(this.escrituras); 
                 return total_credito;
             },
+
+            netoCredito: function(){
+                var neto_credito =0;
+                    neto_credito = parseFloat(this.infonavit) + parseInt(this.fovissste) + parseInt(this.credito_neto); 
+                return neto_credito;
+            },
+
+            totalPagar: function(){
+                let me = this;
+                var total_pago =0;
+                    total_pago =parseInt(this.precioVenta) - parseFloat(this.monto_total_credito); 
+                    me.restante = total_pago;
+                return total_pago;
+            },
+
 
         },
        
@@ -1583,6 +1736,33 @@
 
                 this.getDatosEmpresa(this.empresa,0);
                 this.getDatosEmpresa(this.empresa_coa,1);
+            },
+
+            agregarPago(){
+                let me = this;
+                if(me.monto_pago == 0 || me.monto_pago=='' || me.fecha_pago==''){
+
+                }else{
+                    if(me.monto_pago > me.restante){
+                         swal({
+                        type: 'error',
+                        title: 'Error',
+                        text: 'El monto supera al restante',
+                        })
+                    }else{
+                    me.arrayPagos.push({
+                    monto_pago: me.monto_pago,
+                    fecha_pago: me.fecha_pago,
+                    });
+                    me.fecha_pago = '';
+                    me.monto_pago = 0;
+                    }
+                }
+
+            },
+            eliminarPago(index){
+                let me = this;
+                me.arrayPagos.splice(index,1);
             },
   
             isNumber: function(evt) {

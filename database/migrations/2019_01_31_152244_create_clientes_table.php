@@ -28,6 +28,7 @@ class CreateClientesTable extends Migration
             $table->string('empresa')->nullable();
             $table->boolean('coacreditado')->default(0); //TinyInt
             $table->boolean('clasificacion')->default(1);
+            $table->string('lugar_nacimiento',80)->nullable();
             $table->string('estado',80)->nullable();
             $table->string('ciudad',80)->nullable();
             $table->string('puesto',25)->nullable();
