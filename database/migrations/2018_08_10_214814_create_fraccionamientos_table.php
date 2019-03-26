@@ -23,6 +23,7 @@ class CreateFraccionamientosTable extends Migration
             $table->string('ciudad',100)->nullable();
             $table->string('archivo_planos')->nullable();
             $table->string('archivo_escrituras')->nullable();
+            $table->string('plantilla_telecom',100)->nullable();
             $table->string('delegacion')->nullable();
             $table->integer('cp')->nullable();
 

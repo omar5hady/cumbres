@@ -75,7 +75,9 @@
             @elseif(Auth::user()->rol_id == 5)
                 @include('plantilla.sidebar_gerente_obra')
             @elseif(Auth::user()->rol_id == 6)
-                @include('plantilla.sidebar_administrador_ventas')
+                @include('plantilla.sidebar_administrador_ventas')               
+            @elseif(Auth::user()->rol_id == 7)
+                @include('plantilla.sidebar_publicidad')
 
             @endif
         @endif

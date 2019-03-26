@@ -7,6 +7,7 @@ use App\Fraccionamiento; //Importar el modelo
 use App\Etapa;
 use App\Modelo;
 use App\Lote;
+use File;
 
 class FraccionamientoController extends Controller
 {
@@ -261,6 +262,46 @@ class FraccionamientoController extends Controller
           
           $pathtoFile = public_path().'/files/fraccionamientos/escrituras/'.$fileName;
           return response()->download($pathtoFile);
+      }
+
+      public function uploadPlantillaTelecom (Request $request, $id){
+
+        $plantillaAnterior = Fraccionamiento::select('plantilla_telecom','id')
+                                            ->where('id','=',$id)
+                                            ->get();
+
+  if($plantillaAnterior->isEmpty()==1){
+        $fileName = uniqid().'.'.$request->plantilla_telecom->getClientOriginalExtension();
+        $moved =  $request->plantilla_telecom->move(public_path('/files/fraccionamientos/plantillasTelecom/'), $fileName);
+
+        if($moved){
+            if(!$request->ajax())return redirect('/');
+            $plantillaTelecom = Fraccionamiento::findOrFail($request->id);
+            $plantillaTelecom->plantilla_telecom = $fileName;
+            $plantillaTelecom->id = $id;
+            $plantillaTelecom->save(); //Insert
+    
+            }
+        return back();
+      }
+    else{
+        $pathAnterior = public_path().'/files/fraccionamientos/plantillasTelecom/'.$plantillaAnterior[0]->plantilla_telecom;
+        File::delete($pathAnterior); 
+        
+        $fileName = uniqid().'.'.$request->plantilla_telecom->getClientOriginalExtension();
+        $moved =  $request->plantilla_telecom->move(public_path('/files/fraccionamientos/plantillasTelecom/'), $fileName);
+
+        if($moved){
+            if(!$request->ajax())return redirect('/');
+            $plantillaTelecom = Fraccionamiento::findOrFail($request->id);
+            $plantillaTelecom->plantilla_telecom = $fileName;
+            $plantillaTelecom->id = $id;
+            $plantillaTelecom->save(); //Insert
+    
+            }
+        return back();
+
+    }
       }
 
 }

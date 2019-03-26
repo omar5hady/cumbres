@@ -74,6 +74,8 @@ Vue.component('listar-notifications', require('./components/ListarNotifications.
 Vue.component('datos-extra', require('./components/EstaditicaDatosExtra.vue'));
 Vue.component('crear-contrato', require('./components/Contrato.vue'));
 
+Vue.component('publicidad-fraccionamiento', require('./components/PublicidadFraccionamiento.vue'));
+Vue.component('publicidad-etapa', require('./components/PublicidadEtapa.vue'));
 
 const app = new Vue({
     el: '#app',

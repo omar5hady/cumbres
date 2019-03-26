@@ -10,7 +10,7 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Modelos
                         <!--   Boton Nuevo    -->
-                        <button type="button" @click="abrirModal('modelo','registrar')" class="btn btn-secondary">
+                        <button v-if="rolId != '7'" type="button" @click="abrirModal('modelo','registrar')" class="btn btn-secondary">
                             <i class="icon-plus"></i>&nbsp;Nuevo
                         </button>
                         <!---->
@@ -53,10 +53,10 @@
                                 <tbody>
                                     <tr v-for="modelo in arrayModelo" :key="modelo.id">
                                         <td style="width:12%">
-                                            <button title="Editar" type="button" @click="abrirModal('modelo','actualizar',modelo)" class="btn btn-warning btn-sm">
+                                            <button v-if="rolId != '7'" title="Editar" type="button" @click="abrirModal('modelo','actualizar',modelo)" class="btn btn-warning btn-sm">
                                             <i class="icon-pencil"></i>
                                             </button>
-                                            <button title="Borrar" type="button" class="btn btn-danger btn-sm" @click="eliminarModelo(modelo)">
+                                            <button v-if="rolId != '7'" title="Borrar" type="button" class="btn btn-danger btn-sm" @click="eliminarModelo(modelo)">
                                             <i class="icon-trash"></i>
                                             </button>
                                             <button title="Subir archivo" type="button" @click="abrirModal('modelo','subirArchivo',modelo)" class="btn btn-default btn-sm">
@@ -71,6 +71,7 @@
                                         <td v-text="modelo.terreno"></td>
                                         <td v-text="modelo.construccion"></td>
                                         <td style="width:7%" v-if = "modelo.archivo"><a class="btn btn-default btn-sm" v-bind:href="'/downloadModelo/'+modelo.archivo"><i class="icon-cloud-download"></i></a></td>
+                                        <td v-else></td>
                                     </tr>                               
                                 </tbody>
                             </table>  

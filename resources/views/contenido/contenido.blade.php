@@ -341,6 +341,39 @@
                 <asesores></asesores>
             </template>
 
+    @elseif(Auth::user()->rol_id == 7) <!--publicidad -->
+            <template v-if="menu==0">
+                <h1>Escritorio</h1>
+            </template>
+
+            <template v-if="menu==110">
+                <publicidad-fraccionamiento></publicidad-fraccionamiento>
+            </template>
+
+            <template v-if="menu==111">
+                <publicidad-etapa></publicidad-etapa>
+            </template>
+
+            <template v-if="menu==112">
+                <modelo rol-id="{{Auth::user()->rol_id}}"></modelo>
+            </template>
+
+            <template v-if="menu==14">
+                <medio-publicitario></medio-publicitario>
+            </template>
+            <template v-if="menu==15">
+                <lugar-contacto></lugar-contacto>
+            </template>
+        
+            <template v-if="menu==18">
+                <servicio></servicio>
+            </template>
+
+            <template v-if="menu==19">
+                <asignar-servicio></asignar-servicio>
+            </template>
+
+
 
         @endif
     @endif
