@@ -638,7 +638,7 @@
                 formData.append('foto_predial', this.foto_predial);
                 axios.post('/formSubmitPredial/'+this.id, formData)
                 .then(function (response) {
-                    me.proceso=false;
+                   
                     currentObj.success = response.data.success;
                     swal({
                         position: 'top-end',

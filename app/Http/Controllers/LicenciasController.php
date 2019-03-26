@@ -9,6 +9,7 @@ use DB;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Excel;
+use File;
 
 class LicenciasController extends Controller
 {
@@ -579,44 +580,44 @@ class LicenciasController extends Controller
 
     //funciones para carga y descarga de la licencia
 
-    public function formSubmit(Request $request, $id)
+public function formSubmit(Request $request, $id)
     {
-        $licenciaAnterior = Licencia::select('foto_lic')
+        $licenciaAnterior = Licencia::select('foto_lic','id')
                                     ->where('id','=',$id)
                                     ->get();
 
-  if($imgAnterior->isEmpty()==1){
-        $fileName = uniqid().'.'.$request->foto_lic->getClientOriginalExtension();
-        $moved =  $request->foto_lic->move(public_path('/files/licencias'), $fileName);
+            if($licenciaAnterior->isEmpty()==1){
+                    $fileName = uniqid().'.'.$request->foto_lic->getClientOriginalExtension();
+                    $moved =  $request->foto_lic->move(public_path('/files/licencias'), $fileName);
 
-        if($moved){
-            if(!$request->ajax())return redirect('/');
-            $licencias = Licencia::findOrFail($request->id);
-            $licencias->foto_lic = $fileName;
-            $licencias->id = $id;
-            $licencias->save(); //Insert
-    
-            }
-        
-        return response()->json(['success'=>'You have successfully upload file.']);
-  }else{
-    $pathAnterior = public_path().'/files/licencias/'.$licenciaAnterior[0]->foto_lic;
-    File::delete($pathAnterior); 
+                    if($moved){
+                        if(!$request->ajax())return redirect('/');
+                        $licencias = Licencia::findOrFail($request->id);
+                        $licencias->foto_lic = $fileName;
+                        $licencias->id = $id;
+                        $licencias->save(); //Insert
 
-    $fileName = uniqid().'.'.$request->foto_lic->getClientOriginalExtension();
-    $moved =  $request->foto_lic->move(public_path('/files/licencias'), $fileName);
+                        }
+                    return back();
+                    
+                }else{
+                $pathAnterior = public_path().'/files/licencias/'.$licenciaAnterior[0]->foto_lic;
+                File::delete($pathAnterior); 
 
-    if($moved){
-        if(!$request->ajax())return redirect('/');
-        $licencias = Licencia::findOrFail($request->id);
-        $licencias->foto_lic = $fileName;
-        $licencias->id = $id;
-        $licencias->save(); //Insert
+                $fileName = uniqid().'.'.$request->foto_lic->getClientOriginalExtension();
+                $moved =  $request->foto_lic->move(public_path('/files/licencias'), $fileName);
 
-        }
-    
-    return response()->json(['success'=>'You have successfully upload file.']);
-  }
+                if($moved){
+                    if(!$request->ajax())return redirect('/');
+                    $licencias = Licencia::findOrFail($request->id);
+                    $licencias->foto_lic = $fileName;
+                    $licencias->id = $id;
+                    $licencias->save(); //Insert
+
+                    }
+                    return back();
+
+                }
  }
 
     public function downloadFile($fileName){
@@ -630,7 +631,10 @@ class LicenciasController extends Controller
 
     public function formSubmitActa(Request $request, $id)
     {
-
+        $actaAnterior = Licencia::select('foto_acta','id')
+                                    ->where('id','=',$id)
+                                    ->get();
+    if($actaAnterior->isEmpty()==1){
         $fileName = time().'.'.$request->foto_acta->getClientOriginalExtension();
         $moved =  $request->foto_acta->move(public_path('/files/actas'), $fileName);
 
@@ -643,8 +647,26 @@ class LicenciasController extends Controller
     
             }
         
-    	return response()->json(['success'=>'You have successfully upload file.']);
+        return back();
+    }else{
+                $pathAnterior = public_path().'/files/actas/'.$actaAnterior[0]->foto_acta;
+                File::delete($pathAnterior); 
+
+                $fileName = time().'.'.$request->foto_acta->getClientOriginalExtension();
+                $moved =  $request->foto_acta->move(public_path('/files/actas'), $fileName);
+        
+                if($moved){
+                    if(!$request->ajax())return redirect('/');
+                    $actas = Licencia::findOrFail($request->id);
+                    $actas->foto_acta = $fileName;
+                    $actas->id = $id;
+                    $actas->save(); //Insert
+            
+                    }
+                
+                return back();
     }
+}
 
     public function downloadFileActa($fileName){
         
@@ -656,7 +678,10 @@ class LicenciasController extends Controller
 
         public function formSubmitPredial(Request $request, $id)
         {
-    
+            $predialAnterior = Licencia::select('foto_predial','id')
+                                        ->where('id','=',$id)
+                                        ->get();
+      if($predialAnterior->isEmpty()==1){
             $fileName = time().'.'.$request->foto_predial->getClientOriginalExtension();
             $moved =  $request->foto_predial->move(public_path('/files/prediales'), $fileName);
     
@@ -669,7 +694,25 @@ class LicenciasController extends Controller
         
                 }
             
-            return response()->json(['success'=>'You have successfully upload file.']);
+            return back();
+      }else{
+        $pathAnterior = public_path().'/files/prediales/'.$predialAnterior[0]->foto_predial;
+        File::delete($pathAnterior); 
+       
+        $fileName = time().'.'.$request->foto_predial->getClientOriginalExtension();
+        $moved =  $request->foto_predial->move(public_path('/files/prediales'), $fileName);
+
+        if($moved){
+            if(!$request->ajax())return redirect('/');
+            $predial = Licencia::findOrFail($request->id);
+            $predial->foto_predial = $fileName;
+            $predial->id = $id;
+            $predial->save(); //Insert
+    
+            }
+        
+        return back();
+      }
         }
     
         public function downloadFilePredial($fileName){
