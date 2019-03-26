@@ -4,11 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Credito;
+use App\Contrato;
+use App\Pago_contrato;
 use DB;
 use Auth;
 use Carbon\Carbon;
 use App\Inst_seleccionada;
 use App\Cliente;
+use App\Personal;
 
 class ContratoController extends Controller
 {
@@ -33,6 +36,7 @@ class ContratoController extends Controller
                         'clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos')
                 ->where('creditos.status','=','2')
                 ->where('inst_seleccionadas.elegido','=','1')
+                ->where('creditos.contrato','=','0')
                 ->orderBy('id','desc')->paginate(8);
         }
         else{
@@ -53,9 +57,11 @@ class ContratoController extends Controller
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->where('creditos.status','=','2')
                         ->where('inst_seleccionadas.elegido','=','1')
+                        ->where('creditos.contrato','=','0')
                         ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
                         ->where('creditos.status','=','2')
                         ->where('inst_seleccionadas.elegido','=','1')
+                        ->where('creditos.contrato','=','0')
                         ->orderBy('id','desc')->paginate(8);
                     break;
                 }
@@ -75,9 +81,11 @@ class ContratoController extends Controller
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->where('creditos.status','=','2')
                         ->where('inst_seleccionadas.elegido','=','1')
+                        ->where('creditos.contrato','=','0')
                         ->orWhere('v.apellidos', 'like', '%'. $buscar . '%')
                         ->where('creditos.status','=','2')
                         ->where('inst_seleccionadas.elegido','=','1')
+                        ->where('creditos.contrato','=','0')
                         ->orderBy('id','desc')->paginate(8);
                     break;
                 }
@@ -97,6 +105,7 @@ class ContratoController extends Controller
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->where('creditos.status','=','2')
                         ->where('inst_seleccionadas.elegido','=','1')
+                        ->where('creditos.contrato','=','0')
                         ->orderBy('id','desc')->paginate(8);
                     break;
                 }
@@ -115,6 +124,7 @@ class ContratoController extends Controller
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->where('creditos.status','=','2')
                         ->where('inst_seleccionadas.elegido','=','1')
+                        ->where('creditos.contrato','=','0')
                         ->orderBy('id','desc')->paginate(8);
                     break;
                 }
@@ -137,6 +147,7 @@ class ContratoController extends Controller
                             ->where('creditos.etapa','=',$b_etapa)
                             ->where('creditos.manzana', '=', $b_manzana)
                             ->where('creditos.num_lote','=',$b_lote)
+                            ->where('creditos.contrato','=','0')
                             ->orderBy('id','desc')->paginate(8);
                     
                     }
@@ -157,6 +168,7 @@ class ContratoController extends Controller
                                 ->where('clientes.proyecto_interes_id', '=',  $buscar)
                                 ->where('creditos.etapa','like','%'.$b_etapa.'%')
                                 ->where('creditos.manzana', '=', $b_manzana)
+                                ->where('creditos.contrato','=','0')
                                 ->orderBy('id','desc')->paginate(8);
                         }
                         else{
@@ -175,6 +187,7 @@ class ContratoController extends Controller
                                     ->where('inst_seleccionadas.elegido','=','1')
                                     ->where('clientes.proyecto_interes_id', '=',  $buscar)
                                     ->where('creditos.etapa','like','%'.$b_etapa.'%')
+                                    ->where('creditos.contrato','=','0')
                                     ->orderBy('id','desc')->paginate(8);
                             }
                             else{
@@ -193,6 +206,7 @@ class ContratoController extends Controller
                                         ->where('inst_seleccionadas.elegido','=','1')
                                         ->where('clientes.proyecto_interes_id', '=',  $buscar)
                                         ->where('creditos.manzana', '=', $b_manzana)
+                                        ->where('creditos.contrato','=','0')
                                         ->orderBy('id','desc')->paginate(8);
                                 }
                                 else{
@@ -211,6 +225,7 @@ class ContratoController extends Controller
                                             ->where('inst_seleccionadas.elegido','=','1')
                                             ->where('clientes.proyecto_interes_id', '=',  $buscar)
                                             ->where('creditos.num_lote','=',$b_lote)
+                                            ->where('creditos.contrato','=','0')
                                             ->orderBy('id','desc')->paginate(8);
                                     }
                                     else{
@@ -227,6 +242,7 @@ class ContratoController extends Controller
                                             ->where('creditos.status','=','2')
                                             ->where('inst_seleccionadas.elegido','=','1')
                                             ->where('clientes.proyecto_interes_id', '=',  $buscar)
+                                            ->where('creditos.contrato','=','0')
                                             ->orderBy('id','desc')->paginate(8);
                                     }
                                 }
@@ -336,4 +352,121 @@ class ContratoController extends Controller
         
         return['creditos' => $creditos];
     }
+
+    public function updateDatosCredito(Request $request){
+        if (!$request->ajax()) return redirect('/');
+
+       //datos del cliente que se guardan en la tabla personal
+       $personal = Personal::findOrFail($request->prospecto_id);
+       $personal->apellidos = $request->apellidos;
+       $personal->nombre = $request->nombre;
+       $personal->f_nacimiento = $request->f_nacimiento;
+       $personal->rfc = $request->rfc;
+       $personal->homoclave = $request->homoclave;
+       $personal->direccion = $request->direccion;
+       $personal->cp = $request->cp;
+       $personal->colonia = $request->colonia; 
+       $personal->telefono = $request->telefono;
+       $personal->celular = $request->celular;
+       $personal->email = $request->email;
+
+       $cliente = Cliente::findOrFail($request->prospecto_id);
+       $cliente->sexo = $request->sexo;
+       $cliente->email_institucional = $request->email_institucional;
+       $cliente->edo_civil = $request->edo_civil;
+       $cliente->nss = $request->nss;
+       $cliente->curp = $request->curp;
+       $cliente->empresa = $request->empresa;
+       $cliente->coacreditado = $request->coacreditado;
+       $cliente->ciudad = $request->ciudad;
+       $cliente->estado = $request->estado;
+       $cliente->nacionalidad = $request->nacionalidad;
+       $cliente->puesto = $request->puesto;
+       $cliente->sexo_coa = $request->sexo_coa;
+       $cliente->direccion_coa = $request->direccion_coa;
+       $cliente->email_institucional_coa = $request->email_institucional_coa;
+       $cliente->edo_civil_coa = $request->edo_civil_coa;
+       $cliente->nss_coa = $request->nss_coa;
+       $cliente->curp_coa = $request->curp_coa;
+       $cliente->nombre_coa = $request->nombre_coa;
+       $cliente->apellidos_coa = $request->apellidos_coa;
+       $cliente->f_nacimiento_coa = $request->f_nacimiento_coa;
+       $cliente->colonia_coa = $request->colonia_coa;
+       $cliente->cp_coa = $request->cp_coa;
+       $cliente->rfc_coa = $request->rfc_coa;
+       $cliente->homoclave_coa = $request->homoclave_coa;
+       $cliente->ciudad_coa = $request->ciudad_coa;
+       $cliente->estado_coa = $request->estado_coa;
+       $cliente->empresa_coa = $request->empresa_coa;
+       $cliente->nacionalidad_coa = $request->nacionalidad_coa;
+       $cliente->telefono_coa = $request->telefono_coa;
+       $cliente->celular_coa = $request->celular_coa;
+       $cliente->email_coa = $request->email_coa;
+       $cliente->parentesco_coa = $request->parentesco_coa;
+
+       $credito = Credito::findOrFail($request->id);
+       $credito->num_dep_economicos =  $request->num_dep_economicos;
+       
+       $personal->save();
+       $cliente->save();
+
+    }
+
+    public function store(Request $request){
+        if (!$request->ajax()) return redirect('/');
+
+        $id = $request->id;
+ 
+        try{
+            DB::beginTransaction(); 
+            $contrato = new Contrato();
+            $contrato->id = $request->id;
+            $contrato->infonavit = $request->infonavit;
+            $contrato->fovisste = $request->fovisste;
+            $contrato->comision_apertura = $request->comision_apertura;
+            $contrato->investigacion = $request->investigacion;
+            $contrato->avaluo = $request->avaluo;
+            $contrato->prima_unica = $request->prima_unica;
+            $contrato->escrituras = $request->escrituras;
+            $contrato->credito_neto = $request->credito_neto;
+            $contrato->avaluo_cliente = $request->avaluo_cliente;
+            $contrato->fecha = $request->fecha;
+            $contrato->direccion_empresa = $request->direccion_empresa;
+            $contrato->cp_empresa = $request->cp_empresa;
+            $contrato->colonia_empresa = $request->colonia_empresa;
+            $contrato->estado_empresa = $request->estado_empresa;
+            $contrato->ciudad_empresa = $request->ciudad_empresa;
+            $contrato->telefono_empresa = $request->telefono_empresa;
+            $contrato->ext_empresa = $request->ext_empresa;
+            $contrato->direccion_empresa_coa = $request->direccion_empresa_coa;
+            $contrato->cp_empresa_coa = $request->cp_empresa_coa;
+            $contrato->colonia_empresa_coa = $request->colonia_empresa_coa;
+            $contrato->estado_empresa_coa = $request->estado_empresa_coa;
+            $contrato->ciudad_empresa_coa = $request->ciudad_empresa_coa;
+            $contrato->telefono_empresa_coa = $request->telefono_empresa_coa;
+            $contrato->ext_empresa_coa = $request->ext_empresa_coa;
+            $contrato->total_pagar = $request->total_pagar;
+            $contrato->monto_total_credito = $request->monto_total_credito;
+            $contrato->enganche_total = $request->enganche_total;
+            $contrato->save();
+ 
+            $pagos = $request->data;//Array de detalles
+            //Recorro todos los elementos
+ 
+            foreach($pagos as $ep=>$det)
+            {
+                $pagos = new Pago_contrato();
+                $pagos->contrato_id = $id;
+                $pagos->num_pago = $ep;
+                $pagos->monto_pago = $det['monto_pago'];
+                $pagos->fecha_pago = $det['fecha_pago'];
+                $pagos->save();
+            }          
+ 
+            DB::commit();
+        } catch (Exception $e){
+            DB::rollBack();
+        }
+    }
+
 }

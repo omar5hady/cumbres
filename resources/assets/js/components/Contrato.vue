@@ -225,7 +225,7 @@
                                             </div>
                                             </div>
 
-                                            <div class="col-md-2" v-if="coacreditado==true">
+                                            <div class="col-md-2">
                                                     <div class="form-group">
                                                 <label for="">Nacionalidad</label>
                                                 <select class="form-control" v-model="nacionalidad" >
@@ -412,14 +412,21 @@
                                                     </div>
                                                 </div>   
 
-                                                <div class="col-md-4" v-if="coacreditado==true">
+                                                <div class="col-md-3" v-if="coacreditado==true">
                                                     <div class="form-group">
-                                                        <label for=""> Nombre completo del conyuge </label>
-                                                        <input type="text" v-if="conyugeNom != null" class="form-control" v-model="conyugeNom">
+                                                        <label for=""> Nombre del conyuge </label>
+                                                        <input type="text" v-if="nombre_coa != null" class="form-control" v-model="nombre_coa">
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-4" v-if="coacreditado==true">
+                                                <div class="col-md-3" v-if="coacreditado==true">
+                                                    <div class="form-group">
+                                                        <label for="">Apellidos del conyuge </label>
+                                                        <input type="text" v-if="apellidos_coa != null" class="form-control" v-model="apellidos_coa">
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-2" v-if="coacreditado==true">
                                                         <div class="form-group">
                                                     <label for="">Parentesco </label>
                                                     <input type="text" class="form-control" v-model="parentesco_coa" placeholder="Parentesco">
@@ -961,10 +968,21 @@
                                                         </div>
                                                     </div>
 
-                                                    <div class="col-md-3" v-if="comision_apertura!=0">
+                                                    <div class="col-md-3" >
                                                         <div class="form-group">
                                                             <h6 style="color:#2271b3;" for=""><strong> Comisión por apertura </strong></h6>
                                                             <h6 v-text="'$'+formatNumber(comision_apertura)"></h6>
+                                                        </div>
+                                                    </div> 
+
+                                                    <div class="col-md-3" v-if="inst_financiera!=''"><hr>
+                                                        <div class="form-group">
+                                                            <h5 style="color:#2271b3;" for=""><strong> Credito Neto {{inst_financiera}}: </strong></h5>
+                                                        </div>
+                                                    </div> 
+                                                    <div class="col-md-3" v-if="inst_financiera!=''"><hr>
+                                                        <div class="form-group">
+                                                            <h5><strong>${{ formatNumber(credito_neto=totalCreditoSolic)}}</strong></h5>
                                                         </div>
                                                     </div> 
 
@@ -981,7 +999,7 @@
                                                         </div>
                                                     </div>
 
-                                                    <div class="col-md-3" v-if="investigacion!=0">
+                                                    <div class="col-md-3">
                                                         <div class="form-group">
                                                             <h6 style="color:#2271b3;" for=""><strong> Investigación </strong></h6>
                                                             <h6 v-text="'$'+formatNumber(investigacion)"></h6>
@@ -1024,15 +1042,26 @@
 
                                                     <div class="col-md-3" v-if="inst_financiera!=''">
                                                         <div class="form-group">
-                                                        <label for="">Avaluo</label>
+                                                        <label for="">Avaluo por parte del banco</label>
                                                             <input type="text" pattern="\d*" v-model="avaluo" maxlength="9" v-on:keypress="isNumber($event)" class="form-control" >
                                                         </div>
                                                     </div>
 
-                                                    <div class="col-md-3" v-if="avaluo!=0">
+                                                    <div class="col-md-3" > 
                                                         <div class="form-group">
-                                                            <h6 style="color:#2271b3;" for=""><strong> Avaluo </strong></h6>
+                                                            <h6 style="color:#2271b3;" for=""><strong> Avaluo banco</strong></h6>
                                                             <h6 v-text="'$'+formatNumber(avaluo)"></h6>
+                                                        </div>
+                                                    </div> 
+
+                                                    <div class="col-md-3" v-if="inst_financiera!=''"><hr>
+                                                        <div class="form-group">
+                                                            <h5 style="color:#2271b3;" for=""><strong> Monto Neto Credito: </strong></h5>
+                                                        </div>
+                                                    </div> 
+                                                    <div class="col-md-3" v-if="inst_financiera!=''"><hr>
+                                                        <div class="form-group">
+                                                            <h5><strong>${{ formatNumber(monto_total_credito=netoCredito)}}</strong></h5>
                                                         </div>
                                                     </div> 
 
@@ -1049,23 +1078,24 @@
                                                         </div>
                                                     </div>
 
-                                                    <div class="col-md-3" v-if="prima_unica!=0">
+                                                    <div class="col-md-3" >
                                                         <div class="form-group">
                                                             <h6 style="color:#2271b3;" for=""><strong> Prima unica </strong></h6>
                                                             <h6 v-text="'$'+formatNumber(prima_unica)"></h6>
                                                         </div>
                                                     </div> 
 
-                                                    <div class="col-md-3" v-if="inst_financiera!=''"><hr>
+                                                    <div class="col-md-3" v-if="inst_financiera!=''">
                                                         <div class="form-group">
-                                                            <h5 style="color:#2271b3;" for=""><strong> Credito Neto {{inst_financiera}}: </strong></h5>
+                                                            <h4 style="color:#2271b3;" for=""><strong> Total a pagar: </strong></h4>
                                                         </div>
                                                     </div> 
-                                                    <div class="col-md-3" v-if="inst_financiera!=''"><hr>
+                                                    <div class="col-md-3" v-if="inst_financiera!=''">
                                                         <div class="form-group">
-                                                            <h5><strong>${{ formatNumber(credito_neto=totalCreditoSolic)}}</strong></h5>
+                                                            <h4><strong>${{ formatNumber(total_pagar=totalPagar)}}</strong></h4>
                                                         </div>
                                                     </div> 
+
 
                                                     <div class="col-md-12">
                                                         <div class="form-group">
@@ -1080,21 +1110,24 @@
                                                         </div>
                                                     </div>
 
-                                                    <div class="col-md-3" v-if="escrituras!=0">
+                                                    <div class="col-md-3">
                                                         <div class="form-group">
                                                             <h6 style="color:#2271b3;" for=""><strong> Gastos de escrituración </strong></h6>
                                                             <h6 v-text="'$'+formatNumber(escrituras)"></h6>
                                                         </div>
                                                     </div> 
 
-                                                    <div class="col-md-3" v-if="inst_financiera!=''">
+                                                    <div class="col-md-3" v-if="inst_financiera!=''"><hr>
                                                         <div class="form-group">
-                                                            <h5 style="color:#2271b3;" for=""><strong> Monto Neto Credito: </strong></h5>
+                                                        <label for="">Avaluo por parte del cliente</label>
+                                                            <input type="text" pattern="\d*" v-model="avaluo_cliente" maxlength="9" v-on:keypress="isNumber($event)" class="form-control" >
                                                         </div>
-                                                    </div> 
-                                                    <div class="col-md-3" v-if="inst_financiera!=''">
+                                                    </div>
+
+                                                    <div class="col-md-3" v-if="avaluo_cliente"><hr>
                                                         <div class="form-group">
-                                                            <h5><strong>${{ formatNumber(monto_total_credito=netoCredito)}}</strong></h5>
+                                                            <h6 style="color:#2271b3;" for=""><strong> Avaluo cliente</strong></h6>
+                                                            <h6 v-text="'$'+formatNumber(avaluo_cliente)"></h6>
                                                         </div>
                                                     </div> 
 
@@ -1110,14 +1143,33 @@
 
                                                     <div class="col-md-3" v-if="inst_financiera!=''">
                                                         <div class="form-group">
-                                                            <h4 style="color:#2271b3;" for=""><strong> Total a pagar: </strong></h4>
+                                                            <h4 style="color:#2271b3;" for=""><strong> Enganche total: </strong></h4>
                                                         </div>
                                                     </div> 
                                                     <div class="col-md-3" v-if="inst_financiera!=''">
                                                         <div class="form-group">
-                                                            <h4><strong>${{ formatNumber(total_pagar=totalPagar)}}</strong></h4>
+                                                            <h4><strong>${{ formatNumber(enganche_total=totalEnganche)}}</strong></h4>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-12"><hr>
+                                                        <div class="form-group">
+                                                            <h6></h6>
+                                                        </div>
+                                                    </div>
+
+                                                     <div class="col-md-3">
+                                                        <div class="form-group">
+                                                             <label for="">Fecha del contrato</label>
+                                                            <input type="date" v-model="fecha_contrato" class="form-control" >
                                                         </div>
                                                     </div> 
+
+                                                    <div class="col-md-12"><hr>
+                                                        <div class="form-group">
+                                                            <h6></h6>
+                                                        </div>
+                                                    </div>
                                                     
                                                     <div class="col-md-6"> <hr>
                                                         <div class="form-group">
@@ -1210,7 +1262,7 @@
                                             </div>
                                             <div class="col-md-12">
                                                 <button type="button" class="btn btn-secondary" @click="ocultarDetalle()"> Cerrar </button>
-                                                <button type="button" class="btn btn-primary" @click="registrarSimulacion()"> Enviar </button>
+                                                <button type="button" class="btn btn-primary" @click="crearContrato()"> Enviar </button>
                                             </div>
                                         </div>
                                     </div>
@@ -1240,6 +1292,7 @@
         data(){
             return{
                 id:0,
+                proceso:false,
 
                 arraySimulaciones:[],
                 arrayDatosSimulacion:[],
@@ -1349,22 +1402,24 @@
                     monto_credito:'',
 
                     /// Credito datos extra //
-                        comision_apertura:0,
-                        investigacion:0,
-                        avaluo:0,
-                        prima_unica:0,
-                        escrituras:0,
-                        credito_neto:0,
-                        avaluo_cliente:0,
+                        comision_apertura:'0',
+                        investigacion:'0',
+                        avaluo:'0',
+                        prima_unica:'0',
+                        escrituras:'0',
+                        credito_neto:'0',
+                        avaluo_cliente:'0',
                         total_pagar:0,
-                        infonavit:0,
-                        fovissste:0,
+                        enganche_total:0,
+                        infonavit:'0',
+                        fovissste:'0',
                         monto_total_credito:0,
              
                 prospecto_id:0,
                 restante:0,
                 monto_pago:0,
                 fecha_pago:'',
+                fecha_contrato:'',
                 arrayEstados: [],
                 arrayCiudadesCoa: [],
                 arrayCiudades:[],
@@ -1425,13 +1480,13 @@
 
             //Calculos 
             totalRestante: function(){
-            var totalRestante =0.0;
-            for(var i=0;i<this.arrayPagos.length;i++){
-                totalRestante += parseFloat(this.arrayPagos[i].monto_pago)
-            }
-            totalRestante = this.total_pagar - totalRestante;
-            return totalRestante;
-        },
+                var totalRestante =0.0;
+                for(var i=0;i<this.arrayPagos.length;i++){
+                    totalRestante += parseFloat(this.arrayPagos[i].monto_pago)
+                }
+                totalRestante = this.enganche_total - totalRestante;
+                return totalRestante;
+            },
 
             totalCreditoSolic: function(){
                 var total_credito =0;
@@ -1449,15 +1504,22 @@
                 let me = this;
                 var total_pago =0;
                     total_pago =parseInt(this.precioVenta) - parseFloat(this.monto_total_credito); 
-                    me.restante = total_pago;
                 return total_pago;
+            },
+
+            totalEnganche: function(){
+                let me = this;
+                var total_engache =0;
+                    total_engache =parseInt(this.total_pagar) + parseFloat(this.avaluo_cliente); 
+                    me.restante = total_engache;
+                return total_engache;
             },
 
 
         },
        
         methods : {
-             listarSimulaciones(page, buscar, b_etapa, b_manzana,b_lote,criterio){
+            listarSimulaciones(page, buscar, b_etapa, b_manzana,b_lote,criterio){
                 let me = this;
                 var url = '/creditos_aprobados?page=' + page + '&buscar=' + buscar + '&b_etapa=' +b_etapa+ '&b_manzana=' + b_manzana + '&b_lote='+ b_lote + '&criterio=' + criterio;
                 axios.get(url).then(function (response) {
@@ -1638,7 +1700,8 @@
             },
 
             mostrarDetalle(data = []){
-                this.num_folio= data['id'];
+                this.prospecto_id = data['prospecto_id'];
+                this.id= data['id'];
                 this.nombre = data['nombre'];
                 this.apellidos = data['apellidos'];
                 this.sexo = data['sexo'];
@@ -1764,6 +1827,191 @@
                 let me = this;
                 me.arrayPagos.splice(index,1);
             },
+
+            validarRegistro(){
+                this.errorContrato=0;
+                this.errorMostrarMsjContrato=[];
+
+                //////////////// VALIDACIONES /////////////////
+                /************* Datos personales del cliente *******************/
+                    if(this.direccion=='' || this.cp=='' || this.colonia=="" || !this.direccion || !this.cp || !this.colonia) 
+                        this.errorMostrarMsjContrato.push("Completar el domicilio del cliente");
+                    if(this.ciudad=='' || this.estado=='' || !this.ciudad || !this.estado) 
+                        this.errorMostrarMsjContrato.push("Seleccionar Ciudad y estado del cliente");
+                    if(this.fecha_nac=='') 
+                        this.errorMostrarMsjContrato.push("Ingresar fecha de nacimiento del cliente");
+                    if(this.curp=='' || this.curp.length <18) 
+                        this.errorMostrarMsjContrato.push("La Curp no es valida");
+                    if(this.rfc=='' || this.rfc.length <10 || this.homoclave=='' || this.homoclave.length<3) 
+                        this.errorMostrarMsjContrato.push("El RFC no es valido");
+                    if(this.nss=='' || this.nss.length <11) 
+                        this.errorMostrarMsjContrato.push("El NSS no es valido");
+                /************* Datos del trabajo *******************/
+                    if(this.tipo_economia=='' || this.empresa=='' || this.puesto=='' || this.direccion_empresa==''
+                        || this.cp_empresa=='' || this.colonia_empresa=='' || this.estado_empresa=='' 
+                        || this.ciudad_empresa=='' || this.telefono_empresa=='' || !this.empresa ) 
+                        this.errorMostrarMsjContrato.push("Completar datos del lugar de trabajo");
+                    if(this.e_civil=='' || !this.e_civil) 
+                        this.errorMostrarMsjContrato.push("Seleccionar estado civil del cliente");
+                    if(this.dep_economicos=='' || !this.dep_economicos) 
+                        this.errorMostrarMsjContrato.push("Ingresar el numero de dependientes economicos");
+                /************* Datos del coacreditado *******************/
+                    if(this.coacreditado == true){
+                        if(this.nombre_coa=='' || this.apellidos_coa=='') 
+                            this.errorMostrarMsjContrato.push("Ingresar el nombre del cónyuge");
+                        if(this.parentesco_coa=='') 
+                            this.errorMostrarMsjContrato.push("Ingresar el parentesco del cónyuge");
+                        if(this.fecha_nac_coa=='') 
+                            this.errorMostrarMsjContrato.push("Ingresar la fecha de nacimiento del cónyuge");
+                        if(this.rfc_coa=='' || this.rfc_coa.length <10 || this.homoclave_coa=='' || this.homoclave_coa.length<3) 
+                            this.errorMostrarMsjContrato.push("El RFC del cónyuge no es valido");
+                        if(this.curp_coa=='' || this.curp_coa.length <18) 
+                            this.errorMostrarMsjContrato.push("La Curp del cónyuge no es valida");
+                        if(this.nss_coa=='' || this.nss_coa.length <11) 
+                            this.errorMostrarMsjContrato.push("El NSS no es valido");
+                        if(this.direccion_coa=='' || this.cp_coa=='' || this.colonia_coa=="") 
+                            this.errorMostrarMsjContrato.push("Completar el domicilio del cónyuge");
+                        if(this.ciudad_coa=='' || this.estado_coa=='') 
+                            this.errorMostrarMsjContrato.push("Seleccionar Ciudad y estado del cónyuge");
+                        if(this.celular_coa=='' || this.telefono_coa=='' || this.email_coa=='') 
+                            this.errorMostrarMsjContrato.push("Completar medios de contacto del cónyuge");
+                        /************* Datos del trabajo *******************/
+                        if(this.empresa_coa=='') 
+                            this.errorMostrarMsjContrato.push("Completar datos del lugar de trabajo para el cónyuge");
+                    }
+                /************* Referencias personales *******************/
+                    if(this.nombre_referencia1=='' || this.telefono_referencia1=='' || this.celular_referencia1=='' 
+                        || this.nombre_referencia2=='' || this.telefono_referencia2=='' || this.celular_referencia2==''
+                        ||!this.nombre_referencia1 || !this.telefono_referencia1 || !this.celular_referencia1 
+                        || !this.nombre_referencia2 || !this.telefono_referencia2 || !this.celular_referencia2) 
+                            this.errorMostrarMsjContrato.push("Completar datos de referencias personales");
+                /************* Datos economicos *******************/
+                if(this.comision_apertura=='' || this.investigacion == '' || this.avaluo == '' || this.prima_unica == '' || this.escrituras == '' || this.fovissste == '' || this.infonavit == '' || this.avaluo_cliente == '') 
+                    this.errorMostrarMsjContrato.push("Verificar datos economicos (No deben quedar campos vacios)");
+                if(this.restante>0) 
+                    this.errorMostrarMsjContrato.push("Ingresar pago para el monto restante");
+                if(this.fecha_contrato=='') 
+                    this.errorMostrarMsjContrato.push("Ingresar fecha del contrato");
+               
+                if(this.errorMostrarMsjContrato.length)//Si el mensaje tiene almacenado algo en el array
+                    this.errorContrato = 1;
+
+                return this.errorContrato;
+            },
+
+            crearContrato(){
+                if(this.validarRegistro() || this.proceso==true) //Se verifica si hay un error (campo vacio)
+                {
+                    return;
+                }
+
+                this.proceso=true;
+
+                let me = this;
+                //Con axios se llama el metodo store de FraccionaminetoController
+                axios.post('/contrato/registrar',{
+                    'id': this.id,
+                    'infonavit':this.infonavit,
+                    'fovisste':this.fovissste,
+                    'comision_apertura':this.comision_apertura,
+                    'investigacion':this.investigacion,
+                    'avaluo':this.avaluo,
+                    'prima_unica':this.prima_unica,
+                    'escrituras':this.escrituras,
+                    'credito_neto':this.credito_neto,
+                    'avaluo_cliente':this.avaluo_cliente,
+                    'fecha':this.fecha_contrato,
+                    'direccion_empresa': this.direccion_empresa,
+                    'cp_empresa': this.cp_empresa,
+                    'colonia_empresa': this.colonia_empresa,
+                    'estado_empresa':this.estado_empresa,
+                    'ciudad_empresa':this.ciudad_empresa,
+                    'telefono_empresa':this.telefono_empresa,
+                    'ext_empresa':this.ext_empresa,
+                    'direccion_empresa_coa':this.direccion_empresa_coa,
+                    'cp_empresa_coa':this.cp_empresa_coa,
+                    'colonia_empresa_coa':this.colonia_empresa_coa,
+                    'estado_empresa_coa':this.estado_empresa_coa,
+                    'ciudad_empresa_coa':this.ciudad_empresa_coa,
+                    'telefono_empresa_coa':this.telefono_empresa_coa,
+                    'ext_empresa_coa':this.ext_empresa_coa,
+                    'total_pagar':this.total_pagar,
+                    'monto_total_credito':this.monto_total_credito,
+                    'enganche_total':this.enganche_total,
+
+                    'data':this.arrayPagos,
+                    
+                }).then(function (response){
+                    me.proceso=false;
+                    me.actualizarDatosProspecto();
+                    me.listado=1;
+                    me.limpiarDatos();
+                    me.listarSimulaciones(1,me.buscar,me.b_etapa,me.b_manzana,me.b_lote,me.criterio);
+                    
+                    //Se muestra mensaje Success
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Contrato creado correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
+            actualizarDatosProspecto(){
+                //Con axios se llama el metodo store del controller
+                axios.put('/contrato/actualizarCredito',{
+                   'prospecto_id':this.prospecto_id,
+                   'apellidos':this.apellidos,
+                   'nombre':this.nombre,
+                   'f_nacimiento':this.fecha_nac,
+                   'rfc':this.rfc,
+                   'homoclave':this.homoclave,
+                   'direccion':this.direccion,
+                   'cp':this.cp,
+                   'colonia':this.colonia,
+                   'telefono':this.telefono,
+                   'celular':this.celular,
+                   'email':this.email,
+                   'sexo':this.sexo,
+                   'email_institucional':this.email_inst,
+                   'edo_civil':this.e_civil,
+                   'nss':this.nss,
+                   'curp':this.curp,
+                   'empresa':this.empresa,
+                   'coacreditado':this.coacreditado,
+                   'ciudad':this.ciudad,
+                   'estado':this.estado,
+                   'nacionalidad':this.nacionalidad,
+                   'puesto':this.puesto,
+                   'sexo_coa':this.sexo_coa,
+                   'direccion_coa':this.direccion_coa,
+                   'email_institucional_coa':this.email_institucional_coa,
+                   'edo_civil_coa':this.e_civil_coa,
+                   'nss_coa':this.nss_coa,
+                   'curp_coa':this.curp_coa,
+                   'nombre_coa':this.nombre_coa,
+                   'apellidos_coa':this.apellidos_coa,
+                   'f_nacimiento_coa':this.fecha_nac_coa,
+                   'colonia_coa':this.colonia_coa,
+                   'cp_coa':this.cp_coa,
+                   'rfc_coa':this.rfc_coa,
+                   'homoclave_coa':this.homoclave_coa,
+                   'ciudad_coa':this.ciudad_coa,
+                   'estado_coa':this.estado_coa,
+                   'empresa_coa':this.empresa_coa,
+                   'nacionalidad_coa':this.nacionalidad_coa,
+                   'telefono_coa':this.telefono_coa,
+                   'celular_coa':this.celular_coa,
+                   'email_coa':this.email_coa,
+                   'parentesco_coa':this.parentesco_coa,
+                   'id':this.id,
+                   'num_dep_economicos':this.dep_economicos,
+                })
+            },
   
             isNumber: function(evt) {
                 evt = (evt) ? evt : window.event;
@@ -1773,6 +2021,153 @@
                 } else {
                     return true;
                 }
+            },
+
+            limpiarDatos(){
+                me.id=0;
+                me.proceso=false;
+
+                me.arrayDatosSimulacion=[];
+                me.arryaEmpresas=[];
+                me.arrayPagos=[];
+
+                /// variables datos del prospecto //
+                    me.nombre='';
+                    me.apellidos='';
+                    me.sexo='';
+                    me.telefono = '';
+                    me.celular = '';
+                    me.email='';
+                    me.estado= '';
+                    me.ciudad='';
+                    me.cp='';
+                    me.colonia='';
+                    me.direccion= '';
+                    me.fecha_nac= '';
+                    me.curp='';
+                    me.rfc='';
+                    me.homoclave= '';
+                    me.nss='';
+                    me.nacionalidad=0;
+                    
+                    me.tipo_economia= 0;
+                    me.empresa= '';
+                    me.puesto='';
+                    me.e_civil= 0;
+                    me.email_inst='';
+                    me.direccion_empresa='';
+                    me.cp_empresa='';
+                    me.colonia_empresa='';
+                    me.estado_empresa='';
+                    me.ciudad_empresa='';
+                    me.dep_economicos='';
+                    me.telefono_empresa='';
+                    me.ext_empresa='';
+
+                // variables coacreditado //
+                    me.conyugeNom='';
+                    me.coacreditado= 0;
+                    me.nombre_coa='';
+                    me.parentesco_coa='';
+                    me.apellidos_coa='';
+                    me.telefono_coa = '';
+                    me.celular_coa = '';
+                    me.email_coa='';
+                    me.email_institucional_coa='';
+                    me.nss_coa='';
+                    me.sexo_coa='';
+                    me.fecha_nac_coa= '';
+                    me.curp_coa='';
+                    me.rfc_coa='';
+                    me.homoclave_coa= '';
+                    me.e_civil_coa= 0;
+                    me.tipo_casa_coa=0;
+                    me.estado_coa= '';
+                    me.ciudad_coa= '';
+                    me.cp_coa='';
+                    me.nacionalidad_coa=0;
+                    me.direccion_coa='';
+                    me.colonia_coa='';
+                    me.empresa_coa='';
+                    me.direccion_empresa_coa='';
+                    me.cp_empresa_coa='';
+                    me.colonia_empresa_coa='';
+                    me.estado_empresa_coa='';
+                    me.ciudad_empresa_coa='';
+                    me.telefono_empresa_coa='';
+                    me.ext_empresa_coa='';
+
+
+                /// variables referencias //
+                    me.nombre_referencia1='';
+                    me.telefono_referencia1='';
+                    me.celular_referencia1='';
+                    me.nombre_referencia2='';
+                    me.telefono_referencia2='';
+                    me.celular_referencia2='';
+
+                /// variables datos economicos //
+                    me.proyecto_interes_id= 0;
+                    me.proyecto='';
+                    me.etapa= '';
+                    me.manzana= '';
+                    me.lote= '';
+                    me.num_lote='';
+                    me.modelo= '';
+                    me.superficie= '';
+                    me.precioBase= 0;
+                    me.precioExcedente= 0;
+                    me.precioVenta= 0;
+                    me.precioObraExtra=0;
+                    me.promocion= '';
+                    me.descripcionPromo= '';
+                    me.descuentoPromo= 0;
+                    me.paquete_id= 0;
+                    me.descripcionPaquete= '';
+                    me.costoPaquete= 0;
+                    me.paquete='';
+                    me.terreno_tam_excedente=0;
+                    me.tipo_credito='';
+                    me.inst_financiera='';
+                    me.plazo_credito='';
+                    me.monto_credito='';
+
+                    /// Credito datos extra //
+                        me.comision_apertura='0';
+                        me.investigacion='0';
+                        me.avaluo='0';
+                        me.prima_unica='0';
+                        me.escrituras='0';
+                        me.credito_neto='0';
+                        me.avaluo_cliente='0';
+                        me.total_pagar=0;
+                        me.enganche_total=0;
+                        me.infonavit='0';
+                        me.fovissste='0';
+                        me.monto_total_credito=0;
+             
+                me.prospecto_id=0;
+                me.restante=0;
+                me.monto_pago=0;
+                me.fecha_pago='';
+                me.fecha_contrato='';
+                me.arrayEstados= [];
+                me.arrayCiudadesCoa= [];
+                me.arrayCiudades=[];
+                me.arrayColoniasCoa= [];
+                me.arrayColonias= [];
+                me.arrayPaquetes= [];
+                me.arrayDatosPaquetes= [];
+
+                me.errorContrato = 0;
+                me.errorMostrarMsjContrato = [];
+
+                me.criterio = 'personal.nombre'; 
+                me.buscar = '';
+                me.b_etapa= '';
+                me.b_manzana= '';
+                me.b_lote= '';
+
             },
 
             limpiarBusqueda(){
@@ -1835,16 +2230,6 @@
     border: solid rgb(200, 200, 200) 1px;
     padding: .5rem;
     }
-
-    /*th {
-    text-align: left;
-    background-color: rgb(190, 220, 250);
-    text-transform: uppercase;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-    border-bottom: rgb(50, 50, 100) solid 2px;
-    border-top: none;
-    }*/
 
     .td2 {
     white-space: nowrap;
