@@ -92,7 +92,7 @@ class ServicioController extends Controller
  
  
              $pdf = \PDF::loadview('pdf.contratos.contratoCompraVenta',['servicios' => $servicios]);
-             return $pdf->stream('CartaDeservicios.pdf');
+             return $pdf->stream('ContratoCompraVenta.pdf');
              // return ['cabecera' => $cabecera];
       }
 }

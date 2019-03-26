@@ -581,8 +581,12 @@ class LicenciasController extends Controller
 
     public function formSubmit(Request $request, $id)
     {
+        $licenciaAnterior = Licencia::select('foto_lic')
+                                    ->where('id','=',$id)
+                                    ->get();
 
-        $fileName = time().'.'.$request->foto_lic->getClientOriginalExtension();
+  if($imgAnterior->isEmpty()==1){
+        $fileName = uniqid().'.'.$request->foto_lic->getClientOriginalExtension();
         $moved =  $request->foto_lic->move(public_path('/files/licencias'), $fileName);
 
         if($moved){
@@ -594,8 +598,26 @@ class LicenciasController extends Controller
     
             }
         
-    	return response()->json(['success'=>'You have successfully upload file.']);
-    }
+        return response()->json(['success'=>'You have successfully upload file.']);
+  }else{
+    $pathAnterior = public_path().'/files/licencias/'.$licenciaAnterior[0]->foto_lic;
+    File::delete($pathAnterior); 
+
+    $fileName = uniqid().'.'.$request->foto_lic->getClientOriginalExtension();
+    $moved =  $request->foto_lic->move(public_path('/files/licencias'), $fileName);
+
+    if($moved){
+        if(!$request->ajax())return redirect('/');
+        $licencias = Licencia::findOrFail($request->id);
+        $licencias->foto_lic = $fileName;
+        $licencias->id = $id;
+        $licencias->save(); //Insert
+
+        }
+    
+    return response()->json(['success'=>'You have successfully upload file.']);
+  }
+ }
 
     public function downloadFile($fileName){
         
