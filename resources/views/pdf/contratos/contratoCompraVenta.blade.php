@@ -21,7 +21,8 @@ body {
 .table-cell { display: table-cell; padding: 0.5em; font-size: 7pt; }
 
 .table-cell2 { display: table-cell; padding-left: 5em;  font-size: 7pt; }
-.table-cell3 { display: table-cell; padding: 0em; font-size: 11pt; }
+.table-cell3 { display: table-cell; padding: 0em; font-size: 10pt; }
+.table3 { display: table; width:100%; border-collapse: collapse; table-layout: fixed; }
 </style>
 <body>
 <div style="margin-right: 100px;  margin-top: -40px; position: absolute;">
@@ -298,26 +299,32 @@ body {
 
 <br>
 
-<div class="table">
+<div class="table3">
 <div class="table-row">
-      <div class="table-cell3"><b>TRANSFERENCIA A NOMBRE DE: </div>
-      <div class="table-cell3"><b>GRUPO CONSTRUCTOR CUMBRES S.A DE C.V</div>
+      <div colspan="2" class="table-cell3"><b>TRANSFERENCIA A NOMBRE DE: </div>
+      <div colspan="2" class="table-cell3"><b>GRUPO CONSTRUCTOR CUMBRES S.A DE C.V</div>
     </div>
     <div class="table-row">
       <div class="table-cell3"><b>BANCO:</div>
+      <div class="table-cell3"></div>
       <div class="table-cell3"><b>BANCOMER</div>
+      <div class="table-cell3"></div>
     </div>
-    <div class="table-row">
-      <div class="table-cell3"><b>NO. DE CUENTA</div>
+    <div class="table-row"> 
+      <div class="table-cell3"><b>NO. DE CUENTA:</div>
+      <div class="table-cell3"></div>
       <div class="table-cell3"><b>0107059795</div>
+      <div class="table-cell3"></div>
     </div>
     <div class="table-row">
-      <div class="table-cell3"><b>CLABE PARA TRANSFERENCIA</div>
-      <div class="table-cell3"><b>012700001070597953</div>
+      <div colspan="2" class="table-cell3"><b>CLABE PARA TRANSFERENCIA:</div>
+      <div colspan="2" class="table-cell3"><b>012700001070597953</div>
     </div>
     <div class="table-row">
       <div class="table-cell3"><b>RFC:</div>
+      <div class="table-cell3"></div>
       <div class="table-cell3"><b>GCC000106QS6</div>
+      <div class="table-cell3"></div>
     </div>
   </div>
 
