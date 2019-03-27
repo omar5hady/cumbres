@@ -23,18 +23,19 @@
                                             <option value="creditos.id"># Folio</option>
                                             <option value="personal.nombre">Cliente</option>
                                             <option value="v.nombre">Vendedor</option>
-                                            <option value="clientes.proyecto_interes_id">Proyecto</option>
-                                            <option value="inst_seleccionadas.tipo_credito">Tipo de credito</option>
+                                            <option value="creditos.fraccionamiento">Proyecto</option>
+                                            <option value="contratos.fecha">Fecha</option>
                                         </select>
-                                          <select class="form-control" v-if="criterio2=='clientes.proyecto_interes_id'" v-model="buscar2" >
-                                        <option value="">Seleccione</option>
-                                        <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                                          <select class="form-control" v-if="criterio2=='creditos.fraccionamiento'" v-model="buscar2" >
+                                            <option value="">Seleccione</option>
+                                            <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id" :value="proyecto.nombre" v-text="proyecto.nombre"></option>
                                          </select>
-                                    <input v-if="criterio=='clientes.proyecto_interes_id'" type="text"  v-model="b_etapa2" @keyup.enter="listarSimulaciones(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="Etapa">
-                                    <input v-if="criterio=='clientes.proyecto_interes_id'" type="text"  v-model="b_manzana2" @keyup.enter="listarSimulaciones(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="Manzana">
-                                    <input v-if="criterio=='clientes.proyecto_interes_id'" type="text"  v-model="b_lote2" @keyup.enter="listarSimulaciones(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="# Lote">
-                                        <input  v-else type="text" v-model="buscar" @keyup.enter="listarSimulaciones(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control">
-                                        <button type="submit" @click="listarSimulaciones(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <input v-if="criterio2=='creditos.fraccionamiento'" type="text"  v-model="b_etapa2" @keyup.enter="listarContratos(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="Etapa">
+                                    <input v-if="criterio2=='creditos.fraccionamiento'" type="text"  v-model="b_manzana2" @keyup.enter="listarContratos(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="Manzana">
+                                    <input v-if="criterio2=='creditos.fraccionamiento'" type="text"  v-model="b_lote2" @keyup.enter="listarContratos(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="# Lote">
+                                        <input  v-if="criterio2=='contratos.fecha'" type="date" v-model="buscar2" @keyup.enter="listarContratos(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control">
+                                        <input  v-if="criterio2=='personal.nombre' || criterio2=='v.nombre' || criterio2=='creditos.id'" type="text" v-model="buscar2" @keyup.enter="listarContratos(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control">
+                                        <button type="submit" @click="listarContratos(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                     </div>
                                    
                                 </div>
@@ -43,7 +44,7 @@
                                 <table class="table2 table-bordered table-striped table-sm">
                                     <thead>
                                         <tr>
-                                            <th># Folio</th>
+                                            <th># Contrato</th>
                                             <th>Cliente</th>
                                             <th>Vendedor</th>
                                             <th>Proyecto</th>
@@ -51,31 +52,32 @@
                                             <th>Manzana</th>
                                             <th># Lote</th>
                                             <th>Modelo</th>
-                                            <th>Precio Venta</th>
-                                            <th>Credito Solicitado</th>
-                                            <th>Plazo</th>
-                                            <th>Institucion</th>
-                                            <th>Tipo de credito</th>
+                                            <th>Fecha del contrato</th>
                                             <th>Status</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="prospecto in arraySimulaciones" :key="prospecto.id" v-on:dblclick="obtenerDatosCredito(prospecto.id)">
-                                            <td class="td2" v-text="prospecto.id"></td>
-                                            <td class="td2" v-text="prospecto.nombre + ' ' + prospecto.apellidos "></td>
-                                            <td class="td2" v-text="prospecto.vendedor_nombre + ' ' + prospecto.vendedor_apellidos "></td>
-                                            <td class="td2" v-text="prospecto.proyecto"></td>
-                                            <td class="td2" v-text="prospecto.etapa"></td>
-                                            <td class="td2" v-text="prospecto.manzana"></td>
-                                            <td class="td2" v-text="prospecto.num_lote"></td>
-                                            <td class="td2" v-text="prospecto.modelo"></td>
-                                            <td class="td2" v-text="'$'+formatNumber(prospecto.precio_venta)"></td>
-                                            <td class="td2" v-text="'$'+formatNumber(prospecto.credito_solic)"></td>
-                                            <td class="td2" v-text="prospecto.plazo + ' años'"></td>
-                                            <td class="td2" v-text="prospecto.institucion"></td>
-                                            <td class="td2" v-text="prospecto.tipo_credito"></td>
-                                            <td class="td2" v-if="prospecto.status == '2'">
-                                                <span class="badge badge-success">Aprobado</span>
+                                        <tr v-for="contrato in arrayContratos" :key="contrato.id">
+                                            <td class="td2" v-text="contrato.id"></td>
+                                            <td class="td2" v-text="contrato.nombre + ' ' + contrato.apellidos "></td>
+                                            <td class="td2" v-text="contrato.vendedor_nombre + ' ' + contrato.vendedor_apellidos "></td>
+                                            <td class="td2" v-text="contrato.fraccionamiento"></td>
+                                            <td class="td2" v-text="contrato.etapa"></td>
+                                            <td class="td2" v-text="contrato.manzana"></td>
+                                            <td class="td2" v-text="contrato.num_lote"></td>
+                                            <td class="td2" v-text="contrato.modelo"></td>
+                                            <td class="td2" v-text="this.moment(contrato.fecha).locale('es').format('DD/MMM/YYYY')"></td>
+                                            <td class="td2" v-if="contrato.status == '0'">
+                                                <span class="badge badge-danger">Cancelado</span>
+                                            </td>
+                                            <td class="td2" v-if="contrato.status == '1'">
+                                                <span class="badge badge-warning">Pendiente</span>
+                                            </td>
+                                            <td class="td2" v-if="contrato.status == '2'">
+                                                <span class="badge badge-danger">No firmado</span>
+                                            </td>
+                                            <td class="td2" v-if="contrato.status == '3'">
+                                                <span class="badge badge-success">Firmado</span>
                                             </td>
                                         </tr>                               
                                     </tbody>
@@ -84,14 +86,14 @@
                             <nav>
                                 <!--Botones de paginacion -->
                                 <ul class="pagination">
-                                    <li class="page-item" v-if="pagination.current_page > 1">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,criterio)">Ant</a>
+                                    <li class="page-item" v-if="pagination2.current_page > 1">
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page - 1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)">Ant</a>
                                     </li>
-                                    <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,criterio)" v-text="page"></a>
+                                    <li class="page-item" v-for="page2 in pagesNumber2" :key="page2" :class="[page2 == isActived ? 'active' : '']">
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina2(page2,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" v-text="page2"></a>
                                     </li>
-                                    <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,criterio)">Sig</a>
+                                    <li class="page-item" v-if="pagination2.current_page < pagination2.last_page">
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page + 1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)">Sig</a>
                                     </li>
                                 </ul>
                             </nav>
@@ -110,16 +112,16 @@
                                             <option value="creditos.id"># Folio</option>
                                             <option value="personal.nombre">Cliente</option>
                                             <option value="v.nombre">Vendedor</option>
-                                            <option value="clientes.proyecto_interes_id">Proyecto</option>
+                                            <option value="creditos.fraccionamiento">Proyecto</option>
                                             <option value="inst_seleccionadas.tipo_credito">Tipo de credito</option>
                                         </select>
-                                          <select class="form-control" v-if="criterio=='clientes.proyecto_interes_id'" v-model="buscar" >
+                                          <select class="form-control" v-if="criterio=='creditos.fraccionamiento'" v-model="buscar" >
                                         <option value="">Seleccione</option>
-                                        <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                                        <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.nombre" :value="fraccionamientos.nombre" v-text="fraccionamientos.nombre"></option>
                                          </select>
-                                    <input v-if="criterio=='clientes.proyecto_interes_id'" type="text"  v-model="b_etapa" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Etapa">
-                                    <input v-if="criterio=='clientes.proyecto_interes_id'" type="text"  v-model="b_manzana" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Manzana">
-                                    <input v-if="criterio=='clientes.proyecto_interes_id'" type="text"  v-model="b_lote" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="# Lote">
+                                    <input v-if="criterio=='creditos.fraccionamiento'" type="text"  v-model="b_etapa" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Etapa">
+                                    <input v-if="criterio=='creditos.fraccionamiento'" type="text"  v-model="b_manzana" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Manzana">
+                                    <input v-if="criterio=='creditos.fraccionamiento'" type="text"  v-model="b_lote" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="# Lote">
                                         <input  v-else type="text" v-model="buscar" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control">
                                         <button type="submit" @click="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                     </div>
@@ -172,13 +174,13 @@
                                 <!--Botones de paginacion -->
                                 <ul class="pagination">
                                     <li class="page-item" v-if="pagination.current_page > 1">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,criterio)">Ant</a>
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,b_etapa,b_manzana,b_lote,criterio)">Ant</a>
                                     </li>
                                     <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,criterio)" v-text="page"></a>
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,b_etapa,b_manzana,b_lote,criterio)" v-text="page"></a>
                                     </li>
                                     <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,criterio)">Sig</a>
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,b_etapa,b_manzana,b_lote,criterio)">Sig</a>
                                     </li>
                                 </ul>
                             </nav>
@@ -812,7 +814,7 @@
 
                                                     <div class="col-md-2">
                                                         <div class="form-group">
-                                                            <label for=""><strong> Proyecto en el que esta interesado </strong> </label>
+                                                            <label for=""><strong> Proyecto </strong> </label>
                                                         </div>
                                                     </div>
 
@@ -1382,6 +1384,7 @@
                 proceso:false,
 
                 arraySimulaciones:[],
+                arrayContratos:[],
                 arrayDatosSimulacion:[],
                 arrayFraccionamientos: [],
                 arryaEmpresas:[],
@@ -1527,19 +1530,37 @@
                     'from' : 0,
                     'to' : 0,
                 },
+                pagination2 : {
+                    'total' : 0,         
+                    'current_page' : 0,
+                    'per_page' : 0,
+                    'last_page' : 0,
+                    'from' : 0,
+                    'to' : 0,
+                },
                 offset : 3,
+                offset2 : 3,
                 criterio : 'personal.nombre', 
                 buscar : '',
                 b_etapa: '',
                 b_manzana: '',
                 b_lote: '',
-                listado:1,
+                criterio2 : 'personal.nombre', 
+                buscar2 : '',
+                b_etapa2: '',
+                b_manzana2: '',
+                b_lote2: '',
+                listado:0,
                
             }
         },
         computed:{
             isActived: function(){
                 return this.pagination.current_page;
+            },
+
+            isActived2: function(){
+                return this.pagination2.current_page;
             },
 
             //Calcula los elementos de la paginación
@@ -1564,6 +1585,29 @@
                     from++;
                 }
                 return pagesArray;
+            },
+
+            pagesNumber2:function(){
+                if(!this.pagination2.to){
+                    return [];
+                }
+
+                var from = this.pagination2.current_page - this.offset2;
+                if(from < 1){
+                    from = 1;
+                }
+
+                var to = from + (this.offset2 * 2);
+                if(to >= this.pagination2.last_page){
+                    to = this.pagination2.last_page;
+                }
+
+                var pagesArray2 = [];
+                while(from <= to){
+                    pagesArray2.push(from);
+                    from++;
+                }
+                return pagesArray2;
             },
 
             //Calculos 
@@ -1619,6 +1663,18 @@
                     console.log(error);
                 })
             },
+            listarContratos(page, buscar, b_etapa, b_manzana,b_lote,criterio){
+                let me = this;
+                var url = '/contratos?page=' + page + '&buscar=' + buscar + '&b_etapa=' +b_etapa+ '&b_manzana=' + b_manzana + '&b_lote='+ b_lote + '&criterio=' + criterio;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayContratos = respuesta.contratos.data;
+                    me.pagination2 = respuesta.pagination;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                })
+            },
             obtenerDatosCredito(buscar){
                 let me = this;
                 var url = '/credito/datos_credito?folio=' + buscar;
@@ -1635,12 +1691,20 @@
                 let val = (value/1).toFixed(2)
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             },
-            cambiarPagina(page, buscar, criterio){
+            cambiarPagina(page, buscar, b_etapa, b_manzana,b_lote,criterio){
                 let me = this;
                 //Actualiza la pagina actual
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
-                me.listarProspectos(page,buscar,criterio);
+                me.listarSimulaciones(page,buscar, b_etapa, b_manzana,b_lote,criterio);
+            },
+
+            cambiarPagina2(page, buscar, b_etapa, b_manzana,b_lote,criterio){
+                let me = this;
+                //Actualiza la pagina actual
+                me.pagination2.current_page = page;
+                //Envia la petición para visualizar la data de esta pagina
+                me.listarContratos(page,buscar, b_etapa, b_manzana,b_lote,criterio);
             },
             
             selectFraccionamientos(){
@@ -2268,11 +2332,17 @@
                 me.b_etapa='';
                 me.b_manzana='';
                 me.b_lote='';
+                me.buscar2= "";
+                me.b_etapa2='';
+                me.b_manzana2='';
+                me.b_lote2='';
+                
             },
 
            
         },
         mounted() {          
+            this.listarContratos(1,this.buscar,this.b_etapa,this.b_manzana,this.b_lote,this.criterio);
             this.listarSimulaciones(1,this.buscar,this.b_etapa,this.b_manzana,this.b_lote,this.criterio);
             this.selectFraccionamientos();
         }

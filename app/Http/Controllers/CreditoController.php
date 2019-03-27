@@ -640,15 +640,15 @@ class CreditoController extends Controller
 
         }
     
-    return[
-        'pagination' => [
-            'total'         => $creditos->total(),
-            'current_page'  => $creditos->currentPage(),
-            'per_page'      => $creditos->perPage(),
-            'last_page'     => $creditos->lastPage(),
-            'from'          => $creditos->firstItem(),
-            'to'            => $creditos->lastItem(),
-        ],'creditos' => $creditos];
+        return[
+            'pagination' => [
+                'total'         => $creditos->total(),
+                'current_page'  => $creditos->currentPage(),
+                'per_page'      => $creditos->perPage(),
+                'last_page'     => $creditos->lastPage(),
+                'from'          => $creditos->firstItem(),
+                'to'            => $creditos->lastItem(),
+            ],'creditos' => $creditos];
     }
 
     public function HistorialDeCreditos (Request $request){
@@ -716,22 +716,21 @@ class CreditoController extends Controller
             ->where($criterio,'like','%'.$buscar.'%')
             ->orderBy('id','desc')->paginate(8);
         }
-    return[
-        'pagination' => [
-            'total'         => $Historialcreditos->total(),
-            'current_page'  => $Historialcreditos->currentPage(),
-            'per_page'      => $Historialcreditos->perPage(),
-            'last_page'     => $Historialcreditos->lastPage(),
-            'from'          => $Historialcreditos->firstItem(),
-            'to'            => $Historialcreditos->lastItem(),
-        ],'Historialcreditos' => $Historialcreditos];
+        return[
+            'pagination' => [
+                'total'         => $Historialcreditos->total(),
+                'current_page'  => $Historialcreditos->currentPage(),
+                'per_page'      => $Historialcreditos->perPage(),
+                'last_page'     => $Historialcreditos->lastPage(),
+                'from'          => $Historialcreditos->firstItem(),
+                'to'            => $Historialcreditos->lastItem(),
+            ],'Historialcreditos' => $Historialcreditos];
     }
 
     public function ExportarHistorialSimulacion (){
         $creditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
         ->join('personal','creditos.prospecto_id','=','personal.id')
         ->join('clientes','creditos.prospecto_id','=','clientes.id')
-        ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
         ->join('personal as v','clientes.vendedor_id','v.id')
         ->select('creditos.id','creditos.prospecto_id','creditos.num_dep_economicos','creditos.tipo_economia',
             'creditos.nombre_primera_ref','creditos.telefono_primera_ref','creditos.celular_primera_ref',
@@ -741,7 +740,7 @@ class CreditoController extends Controller
             'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
             'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
             'creditos.costo_paquete','creditos.status','inst_seleccionadas.tipo_credito','inst_seleccionadas.id as inst_credito',
-            'inst_seleccionadas.institucion','personal.nombre','personal.apellidos','fraccionamientos.nombre as proyecto',
+            'inst_seleccionadas.institucion','personal.nombre','personal.apellidos', 'creditos.fraccionamiento as proyecto',
             'clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos')
             ->where('creditos.status','!=','1')
             ->where('inst_seleccionadas.elegido','=','1')

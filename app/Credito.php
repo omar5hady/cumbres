@@ -28,6 +28,10 @@ class Credito extends Model
         return $this->hasOne('App/Dato_extra');
     }
 
+    public function contrato(){
+        return $this->hasOne('App/Contrato');
+    }
+
     public function inst_seleccionadas(){
         return $this->hasMany('App/inst_seleccionada');
     }

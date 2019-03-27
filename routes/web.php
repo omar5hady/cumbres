@@ -316,6 +316,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/users/foto/{id}','UserController@updateProfile');
 
         /**************************** RUTAS MODULO CONTRATOS  ***************************/
+        Route::get('/contratos','ContratoController@indexContrato');
         Route::get('/creditos_aprobados','ContratoController@indexCreditosAprobados');
         Route::get('/credito/datos_credito','ContratoController@getDatosCredito');
         Route::post('/contrato/registrar','ContratoController@store');
