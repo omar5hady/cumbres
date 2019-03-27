@@ -135,6 +135,9 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/etapa/registrar','EtapaController@store');
         Route::put('/etapa/actualizar','EtapaController@update');
         Route::delete('/etapa/eliminar','EtapaController@destroy');
+
+        Route::post('/formSubmitReglamento/{id}','EtapaController@uploadReglamento');
+        Route::post('/formSubmitCartaServicios/{id}','EtapaController@uploadPlantillaCartaServicios');
         
     ///////////////////     RUTAS PERSONAL      ////////////////////////////////////
         Route::get('/personal','PersonalController@index');

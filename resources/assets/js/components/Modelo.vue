@@ -224,6 +224,10 @@
 
 <script>
     export default {
+         props:{
+            rolId:{type: String}
+        },
+		
         data(){
             return{
                 proceso : false,

@@ -20,7 +20,8 @@ class CreateEtapasTable extends Migration
             $table->date('f_ini')->nullable();
             $table->date('f_fin')->nullable();
             $table->unsignedInteger('personal_id');
-                                
+            $table->string('archivo_reglamento',100)->nullable();
+            $table->string('plantilla_carta_servicios',100)->nullable();                    
             $table->timestamps();
 
             $table->foreign('fraccionamiento_id')->references('id')->on('fraccionamientos');

@@ -316,7 +316,7 @@
                                 this.num_etapa = data['num_etapa'];
                                 this.id=data['id'];
                                 this.archivo_reglamento=data['archivo_reglamento'];
-                                this.archivo_plantilla_servicio=data['plantilla_servicios'];
+                                this.archivo_plantilla_servicio=data['plantilla_carta_servicios'];
                                 this.tipoAccion = 1;
                                 break;
                             }

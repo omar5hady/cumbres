@@ -192,4 +192,76 @@ class EtapaController extends Controller
         ->where('num_etapa', '!=', 'Sin Asignar' )->get();
         return['etapas' => $etapas];
     }
+    public function uploadReglamento (Request $request, $id){
+        $ultimoReglamento = Etapa::select('archivo_reglamento','id')
+                                 ->where('id','=',$id)
+                                 ->get();
+
+        if($ultimoReglamento->isEmpty()==1){
+            $fileName = uniqid().'.'.$request->archivo_reglamento->getClientOriginalExtension();
+            $moved =  $request->archivo_reglamento->move(public_path('/files/etapas/reglamentos/'), $fileName);
+    
+            if($moved){
+                if(!$request->ajax())return redirect('/');
+                $reglamentoEtapa = Etapa::findOrFail($request->id);
+                $reglamentoEtapa->archivo_reglamento = $fileName;
+                $reglamentoEtapa->id = $id;
+                $reglamentoEtapa->save(); //Insert
+        
+                }
+            return back();
+            }else{
+                $pathAnterior = public_path().'/files/etapas/reglamentos/'.$ultimoReglamento[0]->archivo_reglamento;
+                File::delete($pathAnterior);
+                $fileName = uniqid().'.'.$request->archivo_reglamento->getClientOriginalExtension();
+                $moved =  $request->archivo_reglamento->move(public_path('/files/etapas/reglamentos/'), $fileName);
+        
+                if($moved){
+                    if(!$request->ajax())return redirect('/');
+                    $reglamentoEtapa = Etapa::findOrFail($request->id);
+                    $reglamentoEtapa->archivo_reglamento = $fileName;
+                    $reglamentoEtapa->id = $id;
+                    $reglamentoEtapa->save(); //Insert
+            
+                    }
+                return back();
+            }
+    }
+
+    public function uploadPlantillaCartaServicios (Request $request, $id){
+        $ultimaPlantilla = Etapa::select('plantilla_carta_servicios','id')
+                                 ->where('id','=',$id)
+                                 ->get();
+
+        if($ultimaPlantilla->isEmpty()==1){
+            $fileName = uniqid().'.'.$request->plantilla_carta_servicios->getClientOriginalExtension();
+            $moved =  $request->plantilla_carta_servicios->move(public_path('/files/etapas/plantillasCartaServicios/'), $fileName);
+    
+            if($moved){
+                if(!$request->ajax())return redirect('/');
+                $plantillaCartaServicios = Etapa::findOrFail($request->id);
+                $plantillaCartaServicios->plantilla_carta_servicios = $fileName;
+                $plantillaCartaServicios->id = $id;
+                $plantillaCartaServicios->save(); //Insert
+        
+                }
+            return back();
+            }else{
+                $pathAnterior = public_path().'/files/etapas/plantillasCartaServicios/'.$ultimaPlantilla[0]->plantilla_carta_servicios;
+                File::delete($pathAnterior);
+
+                $fileName = uniqid().'.'.$request->plantilla_carta_servicios->getClientOriginalExtension();
+                $moved =  $request->plantilla_carta_servicios->move(public_path('/files/etapas/plantillasCartaServicios/'), $fileName);
+    
+            if($moved){
+                if(!$request->ajax())return redirect('/');
+                $plantillaCartaServicios = Etapa::findOrFail($request->id);
+                $plantillaCartaServicios->plantilla_carta_servicios = $fileName;
+                $plantillaCartaServicios->id = $id;
+                $plantillaCartaServicios->save(); //Insert
+        
+                }
+            return back();
+        }
+    }
 }
