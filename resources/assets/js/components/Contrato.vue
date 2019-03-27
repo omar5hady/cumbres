@@ -11,6 +11,93 @@
                         <i class="fa fa-align-justify"></i> Contratos
                     </div>
 
+            <!----------------- Listado Contratos ------------------------------>
+                    <!-- Div Card Body para listar -->
+                     <template v-if="listado == 0">
+                        <div class="card-body"> 
+                            <div class="form-group row">
+                                <div class="col-md-8">
+                                       <div class="input-group">
+                                        <!--Criterios para el listado de busqueda -->
+                                        <select class="form-control col-md-4" v-model="criterio2" @click="limpiarBusqueda()">
+                                            <option value="creditos.id"># Folio</option>
+                                            <option value="personal.nombre">Cliente</option>
+                                            <option value="v.nombre">Vendedor</option>
+                                            <option value="clientes.proyecto_interes_id">Proyecto</option>
+                                            <option value="inst_seleccionadas.tipo_credito">Tipo de credito</option>
+                                        </select>
+                                          <select class="form-control" v-if="criterio2=='clientes.proyecto_interes_id'" v-model="buscar2" >
+                                        <option value="">Seleccione</option>
+                                        <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                                         </select>
+                                    <input v-if="criterio=='clientes.proyecto_interes_id'" type="text"  v-model="b_etapa2" @keyup.enter="listarSimulaciones(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="Etapa">
+                                    <input v-if="criterio=='clientes.proyecto_interes_id'" type="text"  v-model="b_manzana2" @keyup.enter="listarSimulaciones(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="Manzana">
+                                    <input v-if="criterio=='clientes.proyecto_interes_id'" type="text"  v-model="b_lote2" @keyup.enter="listarSimulaciones(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="# Lote">
+                                        <input  v-else type="text" v-model="buscar" @keyup.enter="listarSimulaciones(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control">
+                                        <button type="submit" @click="listarSimulaciones(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    </div>
+                                   
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table2 table-bordered table-striped table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th># Folio</th>
+                                            <th>Cliente</th>
+                                            <th>Vendedor</th>
+                                            <th>Proyecto</th>
+                                            <th>Etapa</th>
+                                            <th>Manzana</th>
+                                            <th># Lote</th>
+                                            <th>Modelo</th>
+                                            <th>Precio Venta</th>
+                                            <th>Credito Solicitado</th>
+                                            <th>Plazo</th>
+                                            <th>Institucion</th>
+                                            <th>Tipo de credito</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="prospecto in arraySimulaciones" :key="prospecto.id" v-on:dblclick="obtenerDatosCredito(prospecto.id)">
+                                            <td class="td2" v-text="prospecto.id"></td>
+                                            <td class="td2" v-text="prospecto.nombre + ' ' + prospecto.apellidos "></td>
+                                            <td class="td2" v-text="prospecto.vendedor_nombre + ' ' + prospecto.vendedor_apellidos "></td>
+                                            <td class="td2" v-text="prospecto.proyecto"></td>
+                                            <td class="td2" v-text="prospecto.etapa"></td>
+                                            <td class="td2" v-text="prospecto.manzana"></td>
+                                            <td class="td2" v-text="prospecto.num_lote"></td>
+                                            <td class="td2" v-text="prospecto.modelo"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(prospecto.precio_venta)"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(prospecto.credito_solic)"></td>
+                                            <td class="td2" v-text="prospecto.plazo + ' años'"></td>
+                                            <td class="td2" v-text="prospecto.institucion"></td>
+                                            <td class="td2" v-text="prospecto.tipo_credito"></td>
+                                            <td class="td2" v-if="prospecto.status == '2'">
+                                                <span class="badge badge-success">Aprobado</span>
+                                            </td>
+                                        </tr>                               
+                                    </tbody>
+                                </table>
+                            </div>
+                            <nav>
+                                <!--Botones de paginacion -->
+                                <ul class="pagination">
+                                    <li class="page-item" v-if="pagination.current_page > 1">
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,criterio)">Ant</a>
+                                    </li>
+                                    <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,criterio)" v-text="page"></a>
+                                    </li>
+                                    <li class="page-item" v-if="pagination.current_page < pagination.last_page">
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,criterio)">Sig</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </template>
+
             <!----------------- Listado de Simulaciones de Credito Aprobadas ------------------------------>
                     <!-- Div Card Body para listar -->
                      <template v-if="listado == 1">
@@ -1400,6 +1487,7 @@
                     inst_financiera:'',
                     plazo_credito:'',
                     monto_credito:'',
+                    lote_id:'',
 
                     /// Credito datos extra //
                         comision_apertura:'0',
@@ -1726,6 +1814,7 @@
                 this.e_civil = data['edo_civil'];
                 this.dep_economicos = data['num_dep_economicos']
                 this.status = data['status'];
+                this.lote_id = data['lote_id'];
                 
                 this.nombre_referencia1 = data['nombre_primera_ref'];
                 this.telefono_referencia1 = data['telefono_primera_ref'];
@@ -1754,6 +1843,7 @@
                 this.email_coa = data['email_coa'];
                 this.email_institucional_coa = data['email_institucional_coa'];
                 this.empresa_coa = data['empresa_coa'];
+                this.parentesco_coa = data['parentesco_coa'];
 
 
                 this.proyecto = data['proyecto'];
@@ -1938,6 +2028,7 @@
                     'total_pagar':this.total_pagar,
                     'monto_total_credito':this.monto_total_credito,
                     'enganche_total':this.enganche_total,
+                    'lote_id': this.lote_id,
 
                     'data':this.arrayPagos,
                     
@@ -2010,6 +2101,7 @@
                    'parentesco_coa':this.parentesco_coa,
                    'id':this.id,
                    'num_dep_economicos':this.dep_economicos,
+                   'lote_id': this.lote_id,
                 })
             },
   

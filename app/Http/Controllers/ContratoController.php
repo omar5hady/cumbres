@@ -12,6 +12,8 @@ use Carbon\Carbon;
 use App\Inst_seleccionada;
 use App\Cliente;
 use App\Personal;
+use App\Licencia;
+use App\Lote;
 
 class ContratoController extends Controller
 {
@@ -274,7 +276,7 @@ class ContratoController extends Controller
                 'etapa','manzana','num_lote','modelo','precio_base','precio_obra_extra',
                 'superficie','terreno_excedente','precio_terreno_excedente',
                 'promocion','descripcion_promocion','descuento_promocion','paquete',
-                'descripcion_paquete','precio_venta','plazo','credito_solic',
+                'descripcion_paquete','precio_venta','plazo','credito_solic','lote_id',
                 'costo_paquete','status')
                 ->where('id','=',$folio)->get();
         
@@ -289,7 +291,7 @@ class ContratoController extends Controller
                                  'clientes.edo_civil','clientes.coacreditado','clientes.nombre_coa','clientes.apellidos_coa',
                                  'clientes.f_nacimiento_coa','clientes.rfc_coa','clientes.homoclave_coa','clientes.direccion_coa',
                                  'clientes.cp_coa','clientes.colonia_coa','clientes.estado_coa','clientes.ciudad_coa','clientes.celular_coa',
-                                 'clientes.telefono_coa','clientes.email_coa','clientes.email_institucional_coa',
+                                 'clientes.telefono_coa','clientes.email_coa','clientes.email_institucional_coa','clientes.parentesco_coa',
                                  'clientes.empresa_coa','fraccionamientos.nombre as proyecto','clientes.curp_coa','clientes.nss_coa',
                                  'clientes.nacionalidad_coa')
                         ->where('clientes.id','=',$credito->prospecto_id)->get();
@@ -406,7 +408,13 @@ class ContratoController extends Controller
 
        $credito = Credito::findOrFail($request->id);
        $credito->num_dep_economicos =  $request->num_dep_economicos;
+       $credito->contrato = 1;
        
+       $lote = Lote::findOrFail($request->lote_id);
+       $lote->contrato = 1;
+
+       $lote->save();
+       $credito->save();
        $personal->save();
        $cliente->save();
 
@@ -416,6 +424,8 @@ class ContratoController extends Controller
         if (!$request->ajax()) return redirect('/');
 
         $id = $request->id;
+        $lote = Licencia::select('avance')
+                            ->where('id','=',$request->lote_id)->get();
  
         try{
             DB::beginTransaction(); 
@@ -448,6 +458,7 @@ class ContratoController extends Controller
             $contrato->total_pagar = $request->total_pagar;
             $contrato->monto_total_credito = $request->monto_total_credito;
             $contrato->enganche_total = $request->enganche_total;
+            $contrato->avance_lote = $lote[0]->avance;
             $contrato->save();
  
             $pagos = $request->data;//Array de detalles

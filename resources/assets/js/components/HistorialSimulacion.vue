@@ -26,16 +26,16 @@
                                             <option value="creditos.id"># Folio</option>
                                             <option value="personal.nombre">Cliente</option>
                                             <option value="v.nombre">Vendedor</option>
-                                            <option value="clientes.proyecto_interes_id">Proyecto</option>
+                                            <option value="creditos.fraccionamiento">Proyecto</option>
                                             <option value="inst_seleccionadas.tipo_credito">Tipo de credito</option>
                                         </select>
-                                          <select class="form-control" v-if="criterio=='clientes.proyecto_interes_id'" v-model="buscar" >
+                                          <select class="form-control" v-if="criterio=='creditos.fraccionamiento'" v-model="buscar" >
                                         <option value="">Seleccione</option>
-                                        <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                                        <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.nombre" :value="fraccionamientos.nombre" v-text="fraccionamientos.nombre"></option>
                                          </select>
-                                    <input v-if="criterio=='clientes.proyecto_interes_id'" type="text"  v-model="b_etapa" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Etapa">
-                                    <input v-if="criterio=='clientes.proyecto_interes_id'" type="text"  v-model="b_manzana" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Manzana">
-                                    <input v-if="criterio=='clientes.proyecto_interes_id'" type="text"  v-model="b_lote" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="# Lote">
+                                    <input v-if="criterio=='creditos.fraccionamiento'" type="text"  v-model="b_etapa" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Etapa">
+                                    <input v-if="criterio=='creditos.fraccionamiento'" type="text"  v-model="b_manzana" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Manzana">
+                                    <input v-if="criterio=='creditos.fraccionamiento'" type="text"  v-model="b_lote" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="# Lote">
                                         <input  v-else type="text" v-model="buscar" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control">
                                         <button type="submit" @click="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                     </div>
@@ -68,7 +68,7 @@
                                             <td class="td2" v-text="prospecto.id"></td>
                                             <td class="td2" v-text="prospecto.nombre + ' ' + prospecto.apellidos "></td>
                                             <td class="td2" v-text="prospecto.vendedor_nombre + ' ' + prospecto.vendedor_apellidos "></td>
-                                            <td class="td2" v-text="prospecto.proyecto"></td>
+                                            <td class="td2" v-text="prospecto.fraccionamiento"></td>
                                             <td class="td2" v-text="prospecto.etapa"></td>
                                             <td class="td2" v-text="prospecto.manzana"></td>
                                             <td class="td2" v-text="prospecto.num_lote"></td>

@@ -32,6 +32,7 @@ class CreateLotesTable extends Migration
             $table->boolean('ini_obra')->default(0);
             $table->boolean('habilitado')->default(0);
             $table->integer('apartado')->default(0);
+            $table->boolean('contrato')->default(0);
             $table->string('comentarios')->nullable();
             $table->string('clv_catastral',13)->nullable();
             $table->integer('etapa_servicios')->nullable();

@@ -29,6 +29,7 @@ class CreateContratosTable extends Migration
             $table->double('enganche_total')->default(0)->nullable();
             $table->boolean('status')->default(1)->nullable();
             $table->date('fecha')->nullable();
+            $table->integer('avance_lote')->nullable()->default(0); 
 
             $table->string('direccion_empresa',80)->nullable();
             $table->integer('cp_empresa')->nullable();

@@ -41,7 +41,7 @@
                                         <tr v-for="prospecto in arraySimulaciones" :key="prospecto.id" @dblclick="mostrarDetalle(prospecto)">
                                             <td v-text="prospecto.id"></td>
                                             <td v-text="prospecto.nombre + ' ' + prospecto.apellidos "></td>
-                                            <td v-text="prospecto.proyecto"></td>
+                                            <td v-text="prospecto.fraccionamiento"></td>
                                             <td v-text="prospecto.num_lote"></td>
                                             <td v-text="prospecto.modelo"></td>
                                             <td v-text="'$'+formatNumber(prospecto.precio_venta)"></td>
@@ -1574,7 +1574,7 @@
                                                     
                                                     <div class="col-md-3">
                                                         <div class="form-group">
-                                                            <input disabled type="text" class="form-control" v-model="proyecto">
+                                                            <input disabled type="text" class="form-control" v-model="fraccionamiento">
                                                         </div>
                                                     </div>
                                 
@@ -2642,6 +2642,7 @@
                         me.terreno_tam_excedente= me.arrayDatosLotes[0]['terreno_tam_excedente'];
                         me.num_lote = me.arrayDatosLotes[0]['num_lote'];
                         me.precioObraExtra = me.arrayDatosLotes[0]['obra_extra'];
+                        me.fraccionamiento = me.arrayDatosLotes[0]['proyecto'];
 
                         me.precioVenta = me.precioVenta - me.descuentoPromo;
                     
@@ -2936,7 +2937,8 @@
                     'inst_financiera':this.inst_financiera,
                     'num_vehiculos':this.num_vehiculos,
                     'lote_id':this.lote,
-                    'precio_obra_extra':this.precioObraExtra
+                    'precio_obra_extra':this.precioObraExtra,
+                    'fraccionamiento':this.fraccionamiento
                     
                 }).then(function (response){
                     me.proceso=false;
@@ -3151,6 +3153,7 @@
                 this.discapacidad = data['persona_discap'];
                 this.silla_ruedas = data['silla_ruedas'];
                 this.num_vehiculos = data['num_vehiculos'];
+                this.fraccionamiento = data['fraccionamiento'];
                  
 
 

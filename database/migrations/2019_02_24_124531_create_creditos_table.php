@@ -24,6 +24,7 @@ class CreateCreditosTable extends Migration
             $table->string('nombre_segunda_ref')->nullable();
             $table->string('telefono_segunda_ref')->nullable();
             $table->string('celular_segunda_ref')->nullable();
+            $table->string('fraccionamiento')->nullable();
             $table->string('etapa')->nullable();
             $table->string('manzana')->nullable();
             $table->string('num_lote')->nullable();
