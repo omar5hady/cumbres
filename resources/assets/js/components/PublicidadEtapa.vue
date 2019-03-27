@@ -54,8 +54,10 @@
                                         <td v-text="etapa.fraccionamiento"></td>
                                         <td v-text="etapa.f_ini"></td>
                                         <td v-text="etapa.f_fin"></td>
-                                        <td></td>
-                                        <td></td>
+                                        <td  v-if = "etapa.archivo_reglamento"><a class="btn btn-success btn-sm" v-bind:href="'/downloadReglamento/'+etapa.archivo_reglamento"><i class="fa fa-download fa-spin"></i></a></td>
+                                        <td v-else></td>
+                                        <td style="width:7%" v-if = "etapa.plantilla_carta_servicios"><a class="btn btn-success btn-sm" v-bind:href="'/downloadPlantilla/cartaServicios/'+etapa.plantilla_carta_servicios"><i class="fa fa-download fa-spin"></i></a></td>
+                                        <td v-else></td>
                                     </tr>                               
                                 </tbody>
                             </table>

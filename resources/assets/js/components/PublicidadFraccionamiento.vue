@@ -55,7 +55,8 @@
                                         <td v-if="fraccionamiento.tipo_proyecto==1" v-text="'Lotificación'"></td>
                                         <td v-if="fraccionamiento.tipo_proyecto==2" v-text="'Departamento'"></td>
                                         <td v-if="fraccionamiento.tipo_proyecto==3" v-text="'Terreno'"></td>
-                                        <td></td>
+                                        <td v-if = "fraccionamiento.plantilla_telecom"><a class="btn btn-success btn-sm" v-bind:href="'/downloadPlantilla/ServiciosTelecom/'+fraccionamiento.plantilla_telecom"><i class="fa fa-download fa-spin"></i></a></td>
+                                        <td v-else></td>
                                         
                                     </tr>                               
                                 </tbody>

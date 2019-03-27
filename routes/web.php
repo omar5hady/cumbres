@@ -129,7 +129,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/downloadEscrituras/{fileName}' , 'FraccionamientoController@downloadFileEscrituras'); //descarga de escrituras
 
         Route::post('/formSubmitTelecom/{id}','FraccionamientoController@uploadPlantillaTelecom');
-    
+        Route::get('/downloadPlantilla/ServiciosTelecom/{fileName}' , 'FraccionamientoController@downloadPlantillaTelecom');
+
     /////////////////////   RUTAS ETAPAS        //////////////////////////////////////
         Route::get('/etapa','EtapaController@index');
         Route::post('/etapa/registrar','EtapaController@store');
@@ -138,6 +139,9 @@ Route::group(['middleware' => ['auth']],function(){
 
         Route::post('/formSubmitReglamento/{id}','EtapaController@uploadReglamento');
         Route::post('/formSubmitCartaServicios/{id}','EtapaController@uploadPlantillaCartaServicios');
+        Route::get('/downloadReglamento/{fileName}' , 'EtapaController@downloadReglamento');
+        Route::get('/downloadPlantilla/cartaServicios/{fileName}' , 'EtapaController@downloadPlantillaCartaServicios');
+
         
     ///////////////////     RUTAS PERSONAL      ////////////////////////////////////
         Route::get('/personal','PersonalController@index');

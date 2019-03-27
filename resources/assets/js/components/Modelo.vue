@@ -47,7 +47,7 @@
                                         <th>Modelo</th>
                                         <th>Terreno mts&sup2;</th>
                                         <th>Construcción mts&sup2;</th>
-                                        <th>Descarga</th>
+                                        <th>Catalogo de especificaciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -59,7 +59,7 @@
                                             <button v-if="rolId != '7'" title="Borrar" type="button" class="btn btn-danger btn-sm" @click="eliminarModelo(modelo)">
                                             <i class="icon-trash"></i>
                                             </button>
-                                            <button title="Subir archivo" type="button" @click="abrirModal('modelo','subirArchivo',modelo)" class="btn btn-default btn-sm">
+                                            <button title="Subir catalogo de especificaciones" type="button" @click="abrirModal('modelo','subirArchivo',modelo)" class="btn btn-default btn-sm">
                                             <i class="icon-cloud-upload"></i>
                                             </button>
                                         </td>
@@ -545,7 +545,7 @@
                             case 'subirArchivo':
                             {
                                 this.modal2 =1;
-                                this.tituloModal2='Subir Archivo';
+                                this.tituloModal2='Subir Archivo (Pdf)';
                                 this.tipoAccion=3;
                                 this.id=data['id'];
                                 this.nombre=data['nombre'];

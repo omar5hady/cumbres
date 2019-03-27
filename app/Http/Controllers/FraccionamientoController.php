@@ -304,4 +304,9 @@ class FraccionamientoController extends Controller
     }
       }
 
+      public function downloadPlantillaTelecom ($fileName){
+        $pathtoFile = public_path().'/files/fraccionamientos/plantillasTelecom/'.$fileName;
+        return response()->download($pathtoFile);
+    }
+
 }

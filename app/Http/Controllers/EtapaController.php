@@ -7,6 +7,7 @@ use App\Etapa; //Importar el modelo
 use App\Precio_etapa; //Importar el modelo
 use App\Sobreprecio_etapa; //Importar el modelo
 use DB;
+use File;
 
 class EtapaController extends Controller
 {
@@ -30,7 +31,8 @@ class EtapaController extends Controller
                 ->select('etapas.num_etapa','etapas.f_ini',
                     'etapas.f_fin','etapas.id','etapas.personal_id', 
                     DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS name"),
-                    'etapas.fraccionamiento_id','fraccionamientos.nombre as fraccionamiento')
+                    'etapas.fraccionamiento_id','fraccionamientos.nombre as fraccionamiento','etapas.archivo_reglamento',
+                    'etapas.plantilla_carta_servicios')
                     ->where('etapas.num_etapa','!=','Sin Asignar')
                     ->orderBy('id','name')->paginate(8);
         }
@@ -42,7 +44,8 @@ class EtapaController extends Controller
                     ->select('etapas.num_etapa','etapas.f_ini',
                         'etapas.f_fin','etapas.id','etapas.personal_id', 
                         DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS name"),
-                        'etapas.fraccionamiento_id','fraccionamientos.nombre as fraccionamiento')
+                        'etapas.fraccionamiento_id','fraccionamientos.nombre as fraccionamiento','etapas.archivo_reglamento',
+                        'etapas.plantilla_carta_servicios')
                         ->whereBetween($criterio, [$buscar,$buscar2])
                         ->where('etapas.num_etapa','!=','Sin Asignar')
                         ->orderBy('id','name')->paginate(8);
@@ -53,7 +56,8 @@ class EtapaController extends Controller
                     ->select('etapas.num_etapa','etapas.f_ini',
                         'etapas.f_fin','etapas.id','etapas.personal_id', 
                         DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS name"),
-                        'etapas.fraccionamiento_id','fraccionamientos.nombre as fraccionamiento')
+                        'etapas.fraccionamiento_id','fraccionamientos.nombre as fraccionamiento','etapas.archivo_reglamento',
+                        'etapas.plantilla_carta_servicios')
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->where('etapas.num_etapa','!=','Sin Asignar')
                         ->orderBy('id','name')->paginate(8);
@@ -263,5 +267,15 @@ class EtapaController extends Controller
                 }
             return back();
         }
+    }
+
+    public function downloadReglamento ($fileName){
+        $pathtoFile = public_path().'/files/etapas/reglamentos/'.$fileName;
+        return response()->download($pathtoFile);
+    }
+
+    public function downloadPlantillaCartaServicios ($fileName){
+        $pathtoFile = public_path().'/files/etapas/plantillasCartaServicios/'.$fileName;
+        return response()->download($pathtoFile);
     }
 }
