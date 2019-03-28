@@ -46,6 +46,7 @@ class CreateContratosTable extends Migration
             $table->string('ciudad_empresa_coa',80)->nullable();
             $table->string('telefono_empresa_coa',10)->nullable();
             $table->string('ext_empresa_coa',3)->nullable();
+            $table->string('observacion')->nullable();
             
             
             $table->foreign('id')->references('id')->on('creditos');

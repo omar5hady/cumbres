@@ -38,9 +38,20 @@ class ContratoController extends Controller
                 'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
                 'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
                 'creditos.costo_paquete','inst_seleccionadas.tipo_credito','inst_seleccionadas.id as inst_credito',
-                'inst_seleccionadas.institucion','personal.nombre','personal.apellidos','creditos.fraccionamiento',
-                'clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos',
-                'contratos.infonavit','contratos.fovisste','contratos.comision_apertura',
+                'creditos.precio_obra_extra','creditos.fraccionamiento as proyecto',
+
+                'inst_seleccionadas.institucion','personal.nombre','personal.apellidos', 'personal.telefono','personal.celular',
+                'personal.email','personal.direccion','personal.cp','personal.colonia','personal.f_nacimiento','personal.rfc','personal.homoclave',
+                'creditos.fraccionamiento','clientes.id as prospecto_id','clientes.edo_civil','clientes.nss','clientes.curp','clientes.empresa',
+                'clientes.coacreditado','clientes.estado','clientes.ciudad','clientes.puesto','clientes.nacionalidad','clientes.sexo',
+                'clientes.sexo_coa','clientes.email_institucional_coa','clientes.empresa_coa','clientes.edo_civil_coa',
+                'clientes.nss_coa','clientes.curp_coa','clientes.nombre_coa','clientes.apellidos_coa','clientes.f_nacimiento_coa',
+                'clientes.nacionalidad_coa','clientes.rfc_coa','clientes.homoclave_coa','clientes.direccion_coa',
+                'clientes.colonia_coa','clientes.ciudad_coa','clientes.estado_coa','clientes.cp_coa','clientes.telefono_coa',
+                'clientes.ext_coa','clientes.celular_coa','clientes.email_coa','clientes.parentesco_coa', 'clientes.lugar_nacimiento_coa',
+                'v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos',
+
+                'contratos.infonavit','contratos.fovisste','contratos.comision_apertura','clientes.lugar_nacimiento',
                 'contratos.investigacion','contratos.avaluo','contratos.prima_unica','contratos.escrituras',
                 'contratos.credito_neto','contratos.status','contratos.avaluo_cliente','contratos.fecha',
                 'contratos.direccion_empresa','contratos.cp_empresa','contratos.colonia_empresa',
@@ -48,7 +59,7 @@ class ContratoController extends Controller
                 'contratos.ext_empresa','contratos.direccion_empresa_coa','contratos.cp_empresa_coa',
                 'contratos.colonia_empresa_coa','contratos.estado_empresa_coa','contratos.ciudad_empresa_coa',
                 'contratos.telefono_empresa_coa','contratos.ext_empresa_coa','contratos.total_pagar',
-                'contratos.monto_total_credito','contratos.enganche_total','contratos.avance_lote')
+                'contratos.monto_total_credito','contratos.enganche_total','contratos.avance_lote','contratos.observacion')
                 ->where('inst_seleccionadas.elegido','=','1')
                 ->orderBy('id','desc')->paginate(8);
         }
@@ -69,9 +80,20 @@ class ContratoController extends Controller
                         'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
                         'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
                         'creditos.costo_paquete','inst_seleccionadas.tipo_credito','inst_seleccionadas.id as inst_credito',
-                        'inst_seleccionadas.institucion','personal.nombre','personal.apellidos','creditos.fraccionamiento',
-                        'clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos',
-                        'contratos.infonavit','contratos.fovisste','contratos.comision_apertura',
+                        'creditos.precio_obra_extra','creditos.fraccionamiento as proyecto',
+
+                        'inst_seleccionadas.institucion','personal.nombre','personal.apellidos', 'personal.telefono','personal.celular',
+                        'personal.email','personal.direccion','personal.cp','personal.colonia','personal.f_nacimiento','personal.rfc','personal.homoclave',
+                        'creditos.fraccionamiento','clientes.id as prospecto_id','clientes.edo_civil','clientes.nss','clientes.curp','clientes.empresa',
+                        'clientes.coacreditado','clientes.estado','clientes.ciudad','clientes.puesto','clientes.nacionalidad','clientes.sexo',
+                        'clientes.sexo_coa','clientes.email_institucional_coa','clientes.empresa_coa','clientes.edo_civil_coa',
+                        'clientes.nss_coa','clientes.curp_coa','clientes.nombre_coa','clientes.apellidos_coa','clientes.f_nacimiento_coa',
+                        'clientes.nacionalidad_coa','clientes.rfc_coa','clientes.homoclave_coa','clientes.direccion_coa',
+                        'clientes.colonia_coa','clientes.ciudad_coa','clientes.estado_coa','clientes.cp_coa','clientes.telefono_coa',
+                        'clientes.ext_coa','clientes.celular_coa','clientes.email_coa','clientes.parentesco_coa', 'clientes.lugar_nacimiento_coa',
+                        'v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos',
+
+                        'contratos.infonavit','contratos.fovisste','contratos.comision_apertura','clientes.lugar_nacimiento',
                         'contratos.investigacion','contratos.avaluo','contratos.prima_unica','contratos.escrituras',
                         'contratos.credito_neto','contratos.status','contratos.avaluo_cliente','contratos.fecha',
                         'contratos.direccion_empresa','contratos.cp_empresa','contratos.colonia_empresa',
@@ -79,7 +101,7 @@ class ContratoController extends Controller
                         'contratos.ext_empresa','contratos.direccion_empresa_coa','contratos.cp_empresa_coa',
                         'contratos.colonia_empresa_coa','contratos.estado_empresa_coa','contratos.ciudad_empresa_coa',
                         'contratos.telefono_empresa_coa','contratos.ext_empresa_coa','contratos.total_pagar',
-                        'contratos.monto_total_credito','contratos.enganche_total','contratos.avance_lote')
+                        'contratos.monto_total_credito','contratos.enganche_total','contratos.avance_lote','contratos.observacion')
                     
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->where('inst_seleccionadas.elegido','=','1')
@@ -103,9 +125,20 @@ class ContratoController extends Controller
                         'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
                         'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
                         'creditos.costo_paquete','inst_seleccionadas.tipo_credito','inst_seleccionadas.id as inst_credito',
-                        'inst_seleccionadas.institucion','personal.nombre','personal.apellidos','creditos.fraccionamiento',
-                        'clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos',
-                        'contratos.infonavit','contratos.fovisste','contratos.comision_apertura',
+                        'creditos.precio_obra_extra','creditos.fraccionamiento as proyecto',
+
+                        'inst_seleccionadas.institucion','personal.nombre','personal.apellidos', 'personal.telefono','personal.celular',
+                        'personal.email','personal.direccion','personal.cp','personal.colonia','personal.f_nacimiento','personal.rfc','personal.homoclave',
+                        'creditos.fraccionamiento','clientes.id as prospecto_id','clientes.edo_civil','clientes.nss','clientes.curp','clientes.empresa',
+                        'clientes.coacreditado','clientes.estado','clientes.ciudad','clientes.puesto','clientes.nacionalidad','clientes.sexo',
+                        'clientes.sexo_coa','clientes.email_institucional_coa','clientes.empresa_coa','clientes.edo_civil_coa',
+                        'clientes.nss_coa','clientes.curp_coa','clientes.nombre_coa','clientes.apellidos_coa','clientes.f_nacimiento_coa',
+                        'clientes.nacionalidad_coa','clientes.rfc_coa','clientes.homoclave_coa','clientes.direccion_coa',
+                        'clientes.colonia_coa','clientes.ciudad_coa','clientes.estado_coa','clientes.cp_coa','clientes.telefono_coa',
+                        'clientes.ext_coa','clientes.celular_coa','clientes.email_coa','clientes.parentesco_coa', 'clientes.lugar_nacimiento_coa',
+                        'v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos',
+
+                        'contratos.infonavit','contratos.fovisste','contratos.comision_apertura','clientes.lugar_nacimiento',
                         'contratos.investigacion','contratos.avaluo','contratos.prima_unica','contratos.escrituras',
                         'contratos.credito_neto','contratos.status','contratos.avaluo_cliente','contratos.fecha',
                         'contratos.direccion_empresa','contratos.cp_empresa','contratos.colonia_empresa',
@@ -113,7 +146,7 @@ class ContratoController extends Controller
                         'contratos.ext_empresa','contratos.direccion_empresa_coa','contratos.cp_empresa_coa',
                         'contratos.colonia_empresa_coa','contratos.estado_empresa_coa','contratos.ciudad_empresa_coa',
                         'contratos.telefono_empresa_coa','contratos.ext_empresa_coa','contratos.total_pagar',
-                        'contratos.monto_total_credito','contratos.enganche_total','contratos.avance_lote')
+                        'contratos.monto_total_credito','contratos.enganche_total','contratos.avance_lote','contratos.observacion')
                     
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->where('inst_seleccionadas.elegido','=','1')
@@ -137,9 +170,20 @@ class ContratoController extends Controller
                         'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
                         'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
                         'creditos.costo_paquete','inst_seleccionadas.tipo_credito','inst_seleccionadas.id as inst_credito',
-                        'inst_seleccionadas.institucion','personal.nombre','personal.apellidos','creditos.fraccionamiento',
-                        'clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos',
-                        'contratos.infonavit','contratos.fovisste','contratos.comision_apertura',
+                        'creditos.precio_obra_extra','creditos.fraccionamiento as proyecto',
+
+                        'inst_seleccionadas.institucion','personal.nombre','personal.apellidos', 'personal.telefono','personal.celular',
+                        'personal.email','personal.direccion','personal.cp','personal.colonia','personal.f_nacimiento','personal.rfc','personal.homoclave',
+                        'creditos.fraccionamiento','clientes.id as prospecto_id','clientes.edo_civil','clientes.nss','clientes.curp','clientes.empresa',
+                        'clientes.coacreditado','clientes.estado','clientes.ciudad','clientes.puesto','clientes.nacionalidad','clientes.sexo',
+                        'clientes.sexo_coa','clientes.email_institucional_coa','clientes.empresa_coa','clientes.edo_civil_coa',
+                        'clientes.nss_coa','clientes.curp_coa','clientes.nombre_coa','clientes.apellidos_coa','clientes.f_nacimiento_coa',
+                        'clientes.nacionalidad_coa','clientes.rfc_coa','clientes.homoclave_coa','clientes.direccion_coa',
+                        'clientes.colonia_coa','clientes.ciudad_coa','clientes.estado_coa','clientes.cp_coa','clientes.telefono_coa',
+                        'clientes.ext_coa','clientes.celular_coa','clientes.email_coa','clientes.parentesco_coa', 'clientes.lugar_nacimiento_coa',
+                        'v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos',
+
+                        'contratos.infonavit','contratos.fovisste','contratos.comision_apertura','clientes.lugar_nacimiento',
                         'contratos.investigacion','contratos.avaluo','contratos.prima_unica','contratos.escrituras',
                         'contratos.credito_neto','contratos.status','contratos.avaluo_cliente','contratos.fecha',
                         'contratos.direccion_empresa','contratos.cp_empresa','contratos.colonia_empresa',
@@ -147,7 +191,7 @@ class ContratoController extends Controller
                         'contratos.ext_empresa','contratos.direccion_empresa_coa','contratos.cp_empresa_coa',
                         'contratos.colonia_empresa_coa','contratos.estado_empresa_coa','contratos.ciudad_empresa_coa',
                         'contratos.telefono_empresa_coa','contratos.ext_empresa_coa','contratos.total_pagar',
-                        'contratos.monto_total_credito','contratos.enganche_total','contratos.avance_lote')
+                        'contratos.monto_total_credito','contratos.enganche_total','contratos.avance_lote','contratos.observacion')
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->where('inst_seleccionadas.elegido','=','1')
                         ->orderBy('id','desc')->paginate(8);
@@ -168,9 +212,20 @@ class ContratoController extends Controller
                         'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
                         'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
                         'creditos.costo_paquete','inst_seleccionadas.tipo_credito','inst_seleccionadas.id as inst_credito',
-                        'inst_seleccionadas.institucion','personal.nombre','personal.apellidos','creditos.fraccionamiento',
-                        'clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos',
-                        'contratos.infonavit','contratos.fovisste','contratos.comision_apertura',
+                        'creditos.precio_obra_extra','creditos.fraccionamiento as proyecto',
+
+                        'inst_seleccionadas.institucion','personal.nombre','personal.apellidos', 'personal.telefono','personal.celular',
+                        'personal.email','personal.direccion','personal.cp','personal.colonia','personal.f_nacimiento','personal.rfc','personal.homoclave',
+                        'creditos.fraccionamiento','clientes.id as prospecto_id','clientes.edo_civil','clientes.nss','clientes.curp','clientes.empresa',
+                        'clientes.coacreditado','clientes.estado','clientes.ciudad','clientes.puesto','clientes.nacionalidad','clientes.sexo',
+                        'clientes.sexo_coa','clientes.email_institucional_coa','clientes.empresa_coa','clientes.edo_civil_coa',
+                        'clientes.nss_coa','clientes.curp_coa','clientes.nombre_coa','clientes.apellidos_coa','clientes.f_nacimiento_coa',
+                        'clientes.nacionalidad_coa','clientes.rfc_coa','clientes.homoclave_coa','clientes.direccion_coa',
+                        'clientes.colonia_coa','clientes.ciudad_coa','clientes.estado_coa','clientes.cp_coa','clientes.telefono_coa',
+                        'clientes.ext_coa','clientes.celular_coa','clientes.email_coa','clientes.parentesco_coa', 'clientes.lugar_nacimiento_coa',
+                        'v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos',
+
+                        'contratos.infonavit','contratos.fovisste','contratos.comision_apertura','clientes.lugar_nacimiento',
                         'contratos.investigacion','contratos.avaluo','contratos.prima_unica','contratos.escrituras',
                         'contratos.credito_neto','contratos.status','contratos.avaluo_cliente','contratos.fecha',
                         'contratos.direccion_empresa','contratos.cp_empresa','contratos.colonia_empresa',
@@ -178,7 +233,7 @@ class ContratoController extends Controller
                         'contratos.ext_empresa','contratos.direccion_empresa_coa','contratos.cp_empresa_coa',
                         'contratos.colonia_empresa_coa','contratos.estado_empresa_coa','contratos.ciudad_empresa_coa',
                         'contratos.telefono_empresa_coa','contratos.ext_empresa_coa','contratos.total_pagar',
-                        'contratos.monto_total_credito','contratos.enganche_total','contratos.avance_lote')
+                        'contratos.monto_total_credito','contratos.enganche_total','contratos.avance_lote','contratos.observacion')
 
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->where('inst_seleccionadas.elegido','=','1')
@@ -200,9 +255,20 @@ class ContratoController extends Controller
                         'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
                         'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
                         'creditos.costo_paquete','inst_seleccionadas.tipo_credito','inst_seleccionadas.id as inst_credito',
-                        'inst_seleccionadas.institucion','personal.nombre','personal.apellidos','creditos.fraccionamiento',
-                        'clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos',
-                        'contratos.infonavit','contratos.fovisste','contratos.comision_apertura',
+                        'creditos.precio_obra_extra','creditos.fraccionamiento as proyecto',
+
+                        'inst_seleccionadas.institucion','personal.nombre','personal.apellidos', 'personal.telefono','personal.celular',
+                        'personal.email','personal.direccion','personal.cp','personal.colonia','personal.f_nacimiento','personal.rfc','personal.homoclave',
+                        'creditos.fraccionamiento','clientes.id as prospecto_id','clientes.edo_civil','clientes.nss','clientes.curp','clientes.empresa',
+                        'clientes.coacreditado','clientes.estado','clientes.ciudad','clientes.puesto','clientes.nacionalidad','clientes.sexo',
+                        'clientes.sexo_coa','clientes.email_institucional_coa','clientes.empresa_coa','clientes.edo_civil_coa',
+                        'clientes.nss_coa','clientes.curp_coa','clientes.nombre_coa','clientes.apellidos_coa','clientes.f_nacimiento_coa',
+                        'clientes.nacionalidad_coa','clientes.rfc_coa','clientes.homoclave_coa','clientes.direccion_coa',
+                        'clientes.colonia_coa','clientes.ciudad_coa','clientes.estado_coa','clientes.cp_coa','clientes.telefono_coa',
+                        'clientes.ext_coa','clientes.celular_coa','clientes.email_coa','clientes.parentesco_coa', 'clientes.lugar_nacimiento_coa',
+                        'v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos',
+
+                        'contratos.infonavit','contratos.fovisste','contratos.comision_apertura','clientes.lugar_nacimiento',
                         'contratos.investigacion','contratos.avaluo','contratos.prima_unica','contratos.escrituras',
                         'contratos.credito_neto','contratos.status','contratos.avaluo_cliente','contratos.fecha',
                         'contratos.direccion_empresa','contratos.cp_empresa','contratos.colonia_empresa',
@@ -210,7 +276,7 @@ class ContratoController extends Controller
                         'contratos.ext_empresa','contratos.direccion_empresa_coa','contratos.cp_empresa_coa',
                         'contratos.colonia_empresa_coa','contratos.estado_empresa_coa','contratos.ciudad_empresa_coa',
                         'contratos.telefono_empresa_coa','contratos.ext_empresa_coa','contratos.total_pagar',
-                        'contratos.monto_total_credito','contratos.enganche_total','contratos.avance_lote')
+                        'contratos.monto_total_credito','contratos.enganche_total','contratos.avance_lote','contratos.observacion')
 
                         ->where($criterio, '=', $buscar )
                         ->where('inst_seleccionadas.elegido','=','1')
@@ -233,9 +299,20 @@ class ContratoController extends Controller
                             'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
                             'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
                             'creditos.costo_paquete','inst_seleccionadas.tipo_credito','inst_seleccionadas.id as inst_credito',
-                            'inst_seleccionadas.institucion','personal.nombre','personal.apellidos','creditos.fraccionamiento',
-                            'clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos',
-                            'contratos.infonavit','contratos.fovisste','contratos.comision_apertura',
+                            'creditos.precio_obra_extra','creditos.fraccionamiento as proyecto',
+
+                            'inst_seleccionadas.institucion','personal.nombre','personal.apellidos', 'personal.telefono','personal.celular',
+                            'personal.email','personal.direccion','personal.cp','personal.colonia','personal.f_nacimiento','personal.rfc','personal.homoclave',
+                            'creditos.fraccionamiento','clientes.id as prospecto_id','clientes.edo_civil','clientes.nss','clientes.curp','clientes.empresa',
+                            'clientes.coacreditado','clientes.estado','clientes.ciudad','clientes.puesto','clientes.nacionalidad','clientes.sexo',
+                            'clientes.sexo_coa','clientes.email_institucional_coa','clientes.empresa_coa','clientes.edo_civil_coa',
+                            'clientes.nss_coa','clientes.curp_coa','clientes.nombre_coa','clientes.apellidos_coa','clientes.f_nacimiento_coa',
+                            'clientes.nacionalidad_coa','clientes.rfc_coa','clientes.homoclave_coa','clientes.direccion_coa',
+                            'clientes.colonia_coa','clientes.ciudad_coa','clientes.estado_coa','clientes.cp_coa','clientes.telefono_coa',
+                            'clientes.ext_coa','clientes.celular_coa','clientes.email_coa','clientes.parentesco_coa', 'clientes.lugar_nacimiento_coa',
+                            'v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos',
+
+                            'contratos.infonavit','contratos.fovisste','contratos.comision_apertura','clientes.lugar_nacimiento',
                             'contratos.investigacion','contratos.avaluo','contratos.prima_unica','contratos.escrituras',
                             'contratos.credito_neto','contratos.status','contratos.avaluo_cliente','contratos.fecha',
                             'contratos.direccion_empresa','contratos.cp_empresa','contratos.colonia_empresa',
@@ -243,7 +320,7 @@ class ContratoController extends Controller
                             'contratos.ext_empresa','contratos.direccion_empresa_coa','contratos.cp_empresa_coa',
                             'contratos.colonia_empresa_coa','contratos.estado_empresa_coa','contratos.ciudad_empresa_coa',
                             'contratos.telefono_empresa_coa','contratos.ext_empresa_coa','contratos.total_pagar',
-                            'contratos.monto_total_credito','contratos.enganche_total','contratos.avance_lote')
+                            'contratos.monto_total_credito','contratos.enganche_total','contratos.avance_lote','contratos.observacion')
                             ->where('inst_seleccionadas.elegido','=','1')
                             ->where('creditos.fraccionamiento', '=',  $buscar)
                             ->where('creditos.etapa','=',$b_etapa)
@@ -267,9 +344,20 @@ class ContratoController extends Controller
                                 'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
                                 'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
                                 'creditos.costo_paquete','inst_seleccionadas.tipo_credito','inst_seleccionadas.id as inst_credito',
-                                'inst_seleccionadas.institucion','personal.nombre','personal.apellidos','creditos.fraccionamiento',
-                                'clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos',
-                                'contratos.infonavit','contratos.fovisste','contratos.comision_apertura',
+                                'creditos.precio_obra_extra','creditos.fraccionamiento as proyecto',
+
+                                'inst_seleccionadas.institucion','personal.nombre','personal.apellidos', 'personal.telefono','personal.celular',
+                                'personal.email','personal.direccion','personal.cp','personal.colonia','personal.f_nacimiento','personal.rfc','personal.homoclave',
+                                'creditos.fraccionamiento','clientes.id as prospecto_id','clientes.edo_civil','clientes.nss','clientes.curp','clientes.empresa',
+                                'clientes.coacreditado','clientes.estado','clientes.ciudad','clientes.puesto','clientes.nacionalidad','clientes.sexo',
+                                'clientes.sexo_coa','clientes.email_institucional_coa','clientes.empresa_coa','clientes.edo_civil_coa',
+                                'clientes.nss_coa','clientes.curp_coa','clientes.nombre_coa','clientes.apellidos_coa','clientes.f_nacimiento_coa',
+                                'clientes.nacionalidad_coa','clientes.rfc_coa','clientes.homoclave_coa','clientes.direccion_coa',
+                                'clientes.colonia_coa','clientes.ciudad_coa','clientes.estado_coa','clientes.cp_coa','clientes.telefono_coa',
+                                'clientes.ext_coa','clientes.celular_coa','clientes.email_coa','clientes.parentesco_coa', 'clientes.lugar_nacimiento_coa',
+                                'v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos',
+
+                                'contratos.infonavit','contratos.fovisste','contratos.comision_apertura','clientes.lugar_nacimiento',
                                 'contratos.investigacion','contratos.avaluo','contratos.prima_unica','contratos.escrituras',
                                 'contratos.credito_neto','contratos.status','contratos.avaluo_cliente','contratos.fecha',
                                 'contratos.direccion_empresa','contratos.cp_empresa','contratos.colonia_empresa',
@@ -277,7 +365,7 @@ class ContratoController extends Controller
                                 'contratos.ext_empresa','contratos.direccion_empresa_coa','contratos.cp_empresa_coa',
                                 'contratos.colonia_empresa_coa','contratos.estado_empresa_coa','contratos.ciudad_empresa_coa',
                                 'contratos.telefono_empresa_coa','contratos.ext_empresa_coa','contratos.total_pagar',
-                                'contratos.monto_total_credito','contratos.enganche_total','contratos.avance_lote')
+                                'contratos.monto_total_credito','contratos.enganche_total','contratos.avance_lote','contratos.observacion')
                                 ->where('inst_seleccionadas.elegido','=','1')
                                 ->where('creditos.fraccionamiento', '=',  $buscar)
                                 ->where('creditos.etapa','like','%'.$b_etapa.'%')
@@ -299,9 +387,20 @@ class ContratoController extends Controller
                                     'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
                                     'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
                                     'creditos.costo_paquete','inst_seleccionadas.tipo_credito','inst_seleccionadas.id as inst_credito',
-                                    'inst_seleccionadas.institucion','personal.nombre','personal.apellidos','creditos.fraccionamiento',
-                                    'clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos',
-                                    'contratos.infonavit','contratos.fovisste','contratos.comision_apertura',
+                                    'creditos.precio_obra_extra','creditos.fraccionamiento as proyecto',
+
+                                    'inst_seleccionadas.institucion','personal.nombre','personal.apellidos', 'personal.telefono','personal.celular',
+                                    'personal.email','personal.direccion','personal.cp','personal.colonia','personal.f_nacimiento','personal.rfc','personal.homoclave',
+                                    'creditos.fraccionamiento','clientes.id as prospecto_id','clientes.edo_civil','clientes.nss','clientes.curp','clientes.empresa',
+                                    'clientes.coacreditado','clientes.estado','clientes.ciudad','clientes.puesto','clientes.nacionalidad','clientes.sexo',
+                                    'clientes.sexo_coa','clientes.email_institucional_coa','clientes.empresa_coa','clientes.edo_civil_coa',
+                                    'clientes.nss_coa','clientes.curp_coa','clientes.nombre_coa','clientes.apellidos_coa','clientes.f_nacimiento_coa',
+                                    'clientes.nacionalidad_coa','clientes.rfc_coa','clientes.homoclave_coa','clientes.direccion_coa',
+                                    'clientes.colonia_coa','clientes.ciudad_coa','clientes.estado_coa','clientes.cp_coa','clientes.telefono_coa',
+                                    'clientes.ext_coa','clientes.celular_coa','clientes.email_coa','clientes.parentesco_coa', 'clientes.lugar_nacimiento_coa',
+                                    'v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos',
+
+                                    'contratos.infonavit','contratos.fovisste','contratos.comision_apertura','clientes.lugar_nacimiento',
                                     'contratos.investigacion','contratos.avaluo','contratos.prima_unica','contratos.escrituras',
                                     'contratos.credito_neto','contratos.status','contratos.avaluo_cliente','contratos.fecha',
                                     'contratos.direccion_empresa','contratos.cp_empresa','contratos.colonia_empresa',
@@ -309,7 +408,7 @@ class ContratoController extends Controller
                                     'contratos.ext_empresa','contratos.direccion_empresa_coa','contratos.cp_empresa_coa',
                                     'contratos.colonia_empresa_coa','contratos.estado_empresa_coa','contratos.ciudad_empresa_coa',
                                     'contratos.telefono_empresa_coa','contratos.ext_empresa_coa','contratos.total_pagar',
-                                    'contratos.monto_total_credito','contratos.enganche_total','contratos.avance_lote')
+                                    'contratos.monto_total_credito','contratos.enganche_total','contratos.avance_lote','contratos.observacion')
                                     ->where('inst_seleccionadas.elegido','=','1')
                                     ->where('creditos.fraccionamiento', '=',  $buscar)
                                     ->where('creditos.etapa','like','%'.$b_etapa.'%')
@@ -330,9 +429,20 @@ class ContratoController extends Controller
                                         'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
                                         'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
                                         'creditos.costo_paquete','inst_seleccionadas.tipo_credito','inst_seleccionadas.id as inst_credito',
-                                        'inst_seleccionadas.institucion','personal.nombre','personal.apellidos','creditos.fraccionamiento',
-                                        'clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos',
-                                        'contratos.infonavit','contratos.fovisste','contratos.comision_apertura',
+                                        'creditos.precio_obra_extra','creditos.fraccionamiento as proyecto',
+                        
+                                        'inst_seleccionadas.institucion','personal.nombre','personal.apellidos', 'personal.telefono','personal.celular',
+                                        'personal.email','personal.direccion','personal.cp','personal.colonia','personal.f_nacimiento','personal.rfc','personal.homoclave',
+                                        'creditos.fraccionamiento','clientes.id as prospecto_id','clientes.edo_civil','clientes.nss','clientes.curp','clientes.empresa',
+                                        'clientes.coacreditado','clientes.estado','clientes.ciudad','clientes.puesto','clientes.nacionalidad','clientes.sexo',
+                                        'clientes.sexo_coa','clientes.email_institucional_coa','clientes.empresa_coa','clientes.edo_civil_coa',
+                                        'clientes.nss_coa','clientes.curp_coa','clientes.nombre_coa','clientes.apellidos_coa','clientes.f_nacimiento_coa',
+                                        'clientes.nacionalidad_coa','clientes.rfc_coa','clientes.homoclave_coa','clientes.direccion_coa',
+                                        'clientes.colonia_coa','clientes.ciudad_coa','clientes.estado_coa','clientes.cp_coa','clientes.telefono_coa',
+                                        'clientes.ext_coa','clientes.celular_coa','clientes.email_coa','clientes.parentesco_coa', 'clientes.lugar_nacimiento_coa',
+                                        'v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos',
+                        
+                                        'contratos.infonavit','contratos.fovisste','contratos.comision_apertura','clientes.lugar_nacimiento',
                                         'contratos.investigacion','contratos.avaluo','contratos.prima_unica','contratos.escrituras',
                                         'contratos.credito_neto','contratos.status','contratos.avaluo_cliente','contratos.fecha',
                                         'contratos.direccion_empresa','contratos.cp_empresa','contratos.colonia_empresa',
@@ -340,7 +450,7 @@ class ContratoController extends Controller
                                         'contratos.ext_empresa','contratos.direccion_empresa_coa','contratos.cp_empresa_coa',
                                         'contratos.colonia_empresa_coa','contratos.estado_empresa_coa','contratos.ciudad_empresa_coa',
                                         'contratos.telefono_empresa_coa','contratos.ext_empresa_coa','contratos.total_pagar',
-                                        'contratos.monto_total_credito','contratos.enganche_total','contratos.avance_lote')
+                                        'contratos.monto_total_credito','contratos.enganche_total','contratos.avance_lote','contratos.observacion')
                                         ->where('inst_seleccionadas.elegido','=','1')
                                         ->where('creditos.fraccionamiento', '=',  $buscar)
                                         ->where('creditos.manzana', '=', $b_manzana)
@@ -361,9 +471,20 @@ class ContratoController extends Controller
                                             'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
                                             'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
                                             'creditos.costo_paquete','inst_seleccionadas.tipo_credito','inst_seleccionadas.id as inst_credito',
-                                            'inst_seleccionadas.institucion','personal.nombre','personal.apellidos','creditos.fraccionamiento',
-                                            'clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos',
-                                            'contratos.infonavit','contratos.fovisste','contratos.comision_apertura',
+                                            'creditos.precio_obra_extra','creditos.fraccionamiento as proyecto',
+
+                                            'inst_seleccionadas.institucion','personal.nombre','personal.apellidos', 'personal.telefono','personal.celular',
+                                            'personal.email','personal.direccion','personal.cp','personal.colonia','personal.f_nacimiento','personal.rfc','personal.homoclave',
+                                            'creditos.fraccionamiento','clientes.id as prospecto_id','clientes.edo_civil','clientes.nss','clientes.curp','clientes.empresa',
+                                            'clientes.coacreditado','clientes.estado','clientes.ciudad','clientes.puesto','clientes.nacionalidad','clientes.sexo',
+                                            'clientes.sexo_coa','clientes.email_institucional_coa','clientes.empresa_coa','clientes.edo_civil_coa',
+                                            'clientes.nss_coa','clientes.curp_coa','clientes.nombre_coa','clientes.apellidos_coa','clientes.f_nacimiento_coa',
+                                            'clientes.nacionalidad_coa','clientes.rfc_coa','clientes.homoclave_coa','clientes.direccion_coa',
+                                            'clientes.colonia_coa','clientes.ciudad_coa','clientes.estado_coa','clientes.cp_coa','clientes.telefono_coa',
+                                            'clientes.ext_coa','clientes.celular_coa','clientes.email_coa','clientes.parentesco_coa', 'clientes.lugar_nacimiento_coa',
+                                            'v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos',
+
+                                            'contratos.infonavit','contratos.fovisste','contratos.comision_apertura','clientes.lugar_nacimiento',
                                             'contratos.investigacion','contratos.avaluo','contratos.prima_unica','contratos.escrituras',
                                             'contratos.credito_neto','contratos.status','contratos.avaluo_cliente','contratos.fecha',
                                             'contratos.direccion_empresa','contratos.cp_empresa','contratos.colonia_empresa',
@@ -371,7 +492,7 @@ class ContratoController extends Controller
                                             'contratos.ext_empresa','contratos.direccion_empresa_coa','contratos.cp_empresa_coa',
                                             'contratos.colonia_empresa_coa','contratos.estado_empresa_coa','contratos.ciudad_empresa_coa',
                                             'contratos.telefono_empresa_coa','contratos.ext_empresa_coa','contratos.total_pagar',
-                                            'contratos.monto_total_credito','contratos.enganche_total','contratos.avance_lote')
+                                            'contratos.monto_total_credito','contratos.enganche_total','contratos.avance_lote','contratos.observacion')
                                             ->where('inst_seleccionadas.elegido','=','1')
                                             ->where('creditos.fraccionamiento', '=',  $buscar)
                                             ->where('creditos.num_lote','=',$b_lote)
@@ -391,9 +512,20 @@ class ContratoController extends Controller
                                             'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
                                             'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
                                             'creditos.costo_paquete','inst_seleccionadas.tipo_credito','inst_seleccionadas.id as inst_credito',
-                                            'inst_seleccionadas.institucion','personal.nombre','personal.apellidos','creditos.fraccionamiento',
-                                            'clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos',
-                                            'contratos.infonavit','contratos.fovisste','contratos.comision_apertura',
+                                            'creditos.precio_obra_extra','creditos.fraccionamiento as proyecto',
+
+                                            'inst_seleccionadas.institucion','personal.nombre','personal.apellidos', 'personal.telefono','personal.celular',
+                                            'personal.email','personal.direccion','personal.cp','personal.colonia','personal.f_nacimiento','personal.rfc','personal.homoclave',
+                                            'creditos.fraccionamiento','clientes.id as prospecto_id','clientes.edo_civil','clientes.nss','clientes.curp','clientes.empresa',
+                                            'clientes.coacreditado','clientes.estado','clientes.ciudad','clientes.puesto','clientes.nacionalidad','clientes.sexo',
+                                            'clientes.sexo_coa','clientes.email_institucional_coa','clientes.empresa_coa','clientes.edo_civil_coa',
+                                            'clientes.nss_coa','clientes.curp_coa','clientes.nombre_coa','clientes.apellidos_coa','clientes.f_nacimiento_coa',
+                                            'clientes.nacionalidad_coa','clientes.rfc_coa','clientes.homoclave_coa','clientes.direccion_coa',
+                                            'clientes.colonia_coa','clientes.ciudad_coa','clientes.estado_coa','clientes.cp_coa','clientes.telefono_coa',
+                                            'clientes.ext_coa','clientes.celular_coa','clientes.email_coa','clientes.parentesco_coa', 'clientes.lugar_nacimiento_coa',
+                                            'v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos',
+
+                                            'contratos.infonavit','contratos.fovisste','contratos.comision_apertura','clientes.lugar_nacimiento',
                                             'contratos.investigacion','contratos.avaluo','contratos.prima_unica','contratos.escrituras',
                                             'contratos.credito_neto','contratos.status','contratos.avaluo_cliente','contratos.fecha',
                                             'contratos.direccion_empresa','contratos.cp_empresa','contratos.colonia_empresa',
@@ -401,7 +533,7 @@ class ContratoController extends Controller
                                             'contratos.ext_empresa','contratos.direccion_empresa_coa','contratos.cp_empresa_coa',
                                             'contratos.colonia_empresa_coa','contratos.estado_empresa_coa','contratos.ciudad_empresa_coa',
                                             'contratos.telefono_empresa_coa','contratos.ext_empresa_coa','contratos.total_pagar',
-                                            'contratos.monto_total_credito','contratos.enganche_total','contratos.avance_lote')
+                                            'contratos.monto_total_credito','contratos.enganche_total','contratos.avance_lote','contratos.observacion')
                                             ->where('inst_seleccionadas.elegido','=','1')
                                             ->where('creditos.fraccionamiento', '=',  $buscar)
                                             ->orderBy('id','desc')->paginate(8);
@@ -856,6 +988,7 @@ class ContratoController extends Controller
             $contrato->monto_total_credito = $request->monto_total_credito;
             $contrato->enganche_total = $request->enganche_total;
             $contrato->avance_lote = $lote[0]->avance;
+            $contrato->observacion = $request->observacion;
             $contrato->save();
  
             $pagos = $request->data;//Array de detalles
@@ -875,6 +1008,13 @@ class ContratoController extends Controller
         } catch (Exception $e){
             DB::rollBack();
         }
+    }
+
+    public function listarPagos(Request $request){
+        $pagos = Pago_contrato::select('id','num_pago','monto_pago','fecha_pago')
+            ->where('contrato_id','=',$request->contrato_id)->get();
+        
+        return ['pagos' => $pagos];
     }
 
 }

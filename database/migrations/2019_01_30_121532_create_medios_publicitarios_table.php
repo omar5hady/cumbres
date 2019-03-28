@@ -17,6 +17,7 @@ class CreateMediosPublicitariosTable extends Migration
             $table->increments('id');
             $table->string('nombre');
         });
+        DB::table('medios_publicitarios')->insert(array('id'=>'1','nombre'=>'Recomendado'));
     }
 
     /**

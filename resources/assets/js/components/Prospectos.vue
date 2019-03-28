@@ -282,13 +282,23 @@
                                     </div>
                                 </div>
 
+                                <div class="col-md-12">
+                                </div>
+
                                  <div class="col-md-3">
                                      <div class="form-group">
                                   <label for="">Medio donde se entero de nosotros <span style="color:red;" v-show="publicidad_id==0">(*)</span></label>
-                                    <select class="form-control" v-model="publicidad_id" >
+                                    <select class="form-control" v-model="publicidad_id" @click="nombre_recomendado=''" >
                                             <option value="0">Seleccione</option>
                                             <option v-for="medios in arrayMediosPublicidad" :key="medios.id" :value="medios.id" v-text="medios.nombre"></option>    
                                     </select>
+                                </div>
+                                </div>
+
+                                <div class="col-md-4" v-if="publicidad_id == 1">
+                                     <div class="form-group">
+                                    <label for="">Nombre de la persona que te recomendo </label>
+                                     <input type="text" class="form-control" v-model="nombre_recomendado" placeholder="Nombre">
                                 </div>
                                 </div>
 
@@ -936,6 +946,7 @@
                 coacreditado: 0,
                 publicidad_id: 0,
                 proyecto_interes_id: 0,
+                nombre_recomendado:'',
                 proyecto: '',
                 empresa: '',
                 observacion:'',
@@ -1257,6 +1268,7 @@
                     'edo_civil_coa':this.e_civil_coa,
                     'tipo_casa_coa':this.tipo_casa_coa,
                     'lugar_nacimiento_coa': this.lugar_nacimiento_coa,
+                    'nombre_recomendado':this.nombre_recomendado,
                 }).then(function (response){
                     me.proceso=false;
                     me.listado=1;
@@ -1356,6 +1368,7 @@
                     'observacion':this.observacion,
                     'lugar_contacto':this.lugar_contacto,
                     'lugar_nacimiento': this.lugar_nacimiento,
+                    'nombre_recomendado':this.nombre_recomendado,
 
                     'nombre_coa':this.nombre_coa,
                     'parentesco_coa':this.parentesco_coa,

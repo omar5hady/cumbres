@@ -9,6 +9,13 @@
                 <div class="card scroll-box">
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Contratos
+                        <!--   Boton agregar    -->
+                        <button type="button" @click="mostrarCreditosAprobados()" class="btn btn-primary" v-if="listado==0">
+                            <i class="icon-plus"></i>&nbsp;Nuevo
+                        </button>
+                        <button type="button" @click="listado=0" class="btn btn-success" v-if="listado==1">
+                            <i class="fa fa-mail-reply"></i>&nbsp;Regresar
+                        </button>
                     </div>
 
             <!----------------- Listado Contratos ------------------------------>
@@ -57,7 +64,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="contrato in arrayContratos" :key="contrato.id">
+                                        <tr v-for="contrato in arrayContratos" :key="contrato.id" v-on:dblclick="verContrato(contrato)">
                                             <td class="td2" v-text="contrato.id"></td>
                                             <td class="td2" v-text="contrato.nombre + ' ' + contrato.apellidos "></td>
                                             <td class="td2" v-text="contrato.vendedor_nombre + ' ' + contrato.vendedor_apellidos "></td>
@@ -187,9 +194,9 @@
                         </div>
                     </template>
 
-            <!----------------- Listado de Simulaciones de Credito Aprobadas ------------------------------>
+            <!----------------- Vista para crear un contrato ------------------------------>
                     <!-- Div Card Body para registrar simulacion -->
-                    <template v-else-if="listado == 3">
+                    <template v-else-if="listado == 3 || listado == 4">
                         <div class="card-body"> 
 
                             <!-- Acordeon -->
@@ -212,7 +219,7 @@
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                 <label for="">Nombre <span style="color:red;" v-show="nombre==''">(*)</span> </label>
-                                                <input type="text"  class="form-control" v-model="nombre" placeholder="Nombre">
+                                                <input type="text" :readonly="listado==4"  class="form-control" v-model="nombre" placeholder="Nombre">
                                                 </div>
                                             </div> 
 
@@ -220,14 +227,14 @@
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                 <label for="">Apellidos <span style="color:red;" v-show="apellidos==''">(*)</span></label>
-                                                <input type="text"  class="form-control" v-model="apellidos" placeholder="Apellidos">
+                                                <input type="text" :readonly="listado==4" class="form-control" v-model="apellidos" placeholder="Apellidos">
                                             </div>
                                             </div>
 
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                 <label for="">Sexo <span style="color:red;" v-show="sexo==''">(*)</span></label>
-                                                <select  class="form-control" v-model="sexo" >
+                                                <select :disabled="listado==4" class="form-control" v-model="sexo" >
                                                         <option value="">Seleccione</option>
                                                         <option value="F">Femenino</option>
                                                         <option value="M">Masculino</option>
@@ -238,45 +245,46 @@
                                                 <div class="col-md-4">
                                                 <div class="form-group">
                                                 <label for="">Telefono </label>
-                                                <input  type="text" maxlength="7" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="telefono" placeholder="Telefono">
+                                                <input  type="text" :readonly="listado==4" maxlength="7" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="telefono" placeholder="Telefono">
                                             </div>
                                             </div>
 
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                 <label for="">Celular <span style="color:red;" v-show="celular==''">(*)</span></label>
-                                                <input  type="text" pattern="\d*" maxlength="10" class="form-control" v-on:keypress="isNumber($event)" v-model="celular" placeholder="Celular">
+                                                <input  type="text" :readonly="listado==4" pattern="\d*" maxlength="10" class="form-control" v-on:keypress="isNumber($event)" v-model="celular" placeholder="Celular">
                                             </div>
                                                 </div>
 
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                 <label for="">Email personal <span style="color:red;" v-show="email==''">(*)</span></label>
-                                                <input  type="text" class="form-control" v-model="email" placeholder="E-mail">
+                                                <input  type="text" :readonly="listado==4" class="form-control" v-model="email" placeholder="E-mail">
                                             </div>
                                                 </div>
 
                                             <div class="col-md-3">
                                                     <div class="form-group">
                                                 <label for="">Direccion<span style="color:red;" v-show="direccion==''">(*)</span></label>
-                                                <input type="text" class="form-control"  v-model="direccion" placeholder="Direccion">
+                                                <input type="text" :readonly="listado==4" class="form-control"  v-model="direccion" placeholder="Direccion">
                                                 </div>
                                             </div>
 
                                             <div class="col-md-1">
                                                     <div class="form-group">
                                                 <label for="">C.P<span style="color:red;" v-show="cp==''">(*)</span></label>
-                                                <input type="text" class="form-control"  pattern="\d*" maxlength="5" v-on:keypress="isNumber($event)" @keyup="selectColonias(cp,0)"  v-model="cp" placeholder="C.Postal">
+                                                <input type="text" :readonly="listado==4" class="form-control"  pattern="\d*" maxlength="5" v-on:keypress="isNumber($event)" @keyup="selectColonias(cp,0)"  v-model="cp" placeholder="C.Postal">
                                             </div>
                                             </div>
 
                                             <div class="col-md-2">
                                                     <div class="form-group">
                                                 <label for="">Colonia<span style="color:red;" v-show="colonia==''">(*)</span></label>
-                                                <select class="form-control" v-model="colonia">
-                                                        <option value="">Seleccione</option>
-                                                        <option v-for="colonias in arrayColonias" :key="colonias.colonia " :value="colonias.colonia" v-text="colonias.colonia"></option>
-                                                    </select>
+                                                <select class="form-control" v-if="listado==3" v-model="colonia">
+                                                    <option value="">Seleccione</option>
+                                                    <option v-for="colonias in arrayColonias" :key="colonias.colonia " :value="colonias.colonia" v-text="colonias.colonia"></option>
+                                                </select>
+                                                <input type="text" v-if="listado==4" class="form-control" :readonly="listado==4" v-model="colonia">
                                             </div>
                                             </div>
 
@@ -284,10 +292,11 @@
                                             <div class="col-md-3">
                                                     <div class="form-group">
                                                 <label for="">Estado <span style="color:red;" v-show="estado==''">(*)</span></label>
-                                                    <select class="form-control" v-model="estado" @click="selectCiudades(estado,0)" >
+                                                    <select class="form-control" v-if="listado==3" v-model="estado" @click="selectCiudades(estado,0)" >
                                                         <option value="">Seleccione</option>
                                                         <option v-for="estados in arrayEstados" :key="estados.estado" :value="estados.estado" v-text="estados.estado"></option>    
-                                                </select>
+                                                    </select>
+                                                    <input type="text" v-if="listado==4" class="form-control" :readonly="listado==4" v-model="estado">
                                                     </div>
                                                 </div>
 
@@ -295,11 +304,12 @@
                                                     
                                             <div class="col-md-3">
                                                     <div class="form-group">
-                                                <label for="">Ciudad <span style="color:red;" v-show="ciudad==''">(*)</span></label>
-                                                    <select class="form-control" v-model="ciudad" >
-                                                        <option value="">Seleccione</option>
-                                                        <option v-for="ciudades in arrayCiudades" :key="ciudades.municipio" :value="ciudades.municipio" v-text="ciudades.municipio"></option>    
-                                                </select>
+                                                        <label for="">Ciudad <span style="color:red;" v-show="ciudad==''">(*)</span></label>
+                                                        <select class="form-control" v-if="listado==3" v-model="ciudad" >
+                                                            <option value="">Seleccione</option>
+                                                            <option v-for="ciudades in arrayCiudades" :key="ciudades.municipio" :value="ciudades.municipio" v-text="ciudades.municipio"></option>    
+                                                        </select>
+                                                        <input type="text" v-if="listado==4" class="form-control" :readonly="listado==4" v-model="ciudad">
                                                     </div>
                                                 </div>
 
@@ -310,14 +320,14 @@
                                                 <div class="col-md-2">
                                                 <div class="form-group">
                                                 <label for="">Fecha de nacimiento <span style="color:red;" v-show="fecha_nac==''">(*)</span></label>
-                                                <input  type="date" class="form-control"  v-model="fecha_nac" >
+                                                <input :readonly="listado==4" type="date" class="form-control"  v-model="fecha_nac" >
                                             </div>
                                             </div>
 
                                             <div class="col-md-2">
                                                     <div class="form-group">
                                                 <label for="">Nacionalidad</label>
-                                                <select class="form-control" v-model="nacionalidad" >
+                                                <select :readonly="listado==4" class="form-control" v-model="nacionalidad" >
                                                         <option value="0">Mexicana</option>
                                                         <option value="1">Extranjera</option>    
                                                 </select>
@@ -327,21 +337,21 @@
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                 <label for="">CURP</label>
-                                                <input  type="text" maxlength="18" class="form-control"  v-model="curp" placeholder="CURP">
+                                                <input :readonly="listado==4" type="text" maxlength="18" class="form-control"  v-model="curp" placeholder="CURP">
                                             </div>
                                                 </div>
 
                                                 <div class="col-md-2">
                                                 <div class="form-group">
                                                     <label for="">RFC <span style="color:red;" v-show="rfc==''">(*)</span></label>
-                                                    <input type="text" maxlength="10" class="form-control"  v-model="rfc" placeholder="RFC">
+                                                    <input :readonly="listado==4" type="text" maxlength="10" class="form-control"  v-model="rfc" placeholder="RFC">
                                                 </div>
                                                 </div>
                                                     
                                             <div align="left" class="col-md-1">
                                                 <div class="form-group">
                                                 <label for="">Homoclave</label>
-                                                        <input type="text" maxlength="3" class="form-control"  v-model="homoclave" placeholder="AA0">
+                                                        <input :readonly="listado==4" type="text" maxlength="3" class="form-control"  v-model="homoclave" placeholder="AA0">
                                                 </div>
                                             </div>
 
@@ -349,7 +359,7 @@
                                             <div class="col-md-2">
                                                     <div class="form-group">
                                                 <label for="">NSS <span style="color:red;" v-show="nss==''">(*)</span></label>
-                                                <input type="text" maxlength="11" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="nss" placeholder="NSS">
+                                                <input :readonly="listado==4" type="text" maxlength="11" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="nss" placeholder="NSS">
                                             </div>
                                             </div>                           
                                             
@@ -366,7 +376,7 @@
                                             <div class="col-md-3">
                                                 <div class="form-group">
                                                 <label for="">Tipo de economia <span style="color:red;" v-show="tipo_economia==0">(*)</span></label>
-                                                    <select class="form-control" v-model="tipo_economia" >
+                                                    <select :disabled="listado==4" class="form-control" v-model="tipo_economia" >
                                                         <option value="0">Seleccione</option>  
                                                         <option value="Formal">Formal</option>
                                                         <option value="Informal">Informal</option>
@@ -378,59 +388,60 @@
                                             <div class="col-md-6" v-if="tipo_economia!=0">
                                                 <div class="form-group">
                                                     <label for="">Empresa <span style="color:red;" v-show="empresa==0">(*)</span></label>
-                                                        <select class="form-control" v-model="empresa" @click="getDatosEmpresa(empresa,0)">
-                                                                <option value="">Seleccione</option>
-                                                                <option v-for="empresas in arryaEmpresas" :key="empresas.nombre" :value="empresas.nombre" v-text="empresas.nombre"></option>    
+                                                        <select v-if="listado==3" class="form-control" v-model="empresa" @click="getDatosEmpresa(empresa,0)">
+                                                            <option value="">Seleccione</option>
+                                                            <option v-for="empresas in arryaEmpresas" :key="empresas.nombre" :value="empresas.nombre" v-text="empresas.nombre"></option>    
                                                         </select>
+                                                        <input type="text" v-if="listado==4" class="form-control" :readonly="listado==4" v-model="empresa">
                                                 </div>
                                             </div>
 
                                                 <div class="col-md-3" v-if="tipo_economia=='Formal' ||tipo_economia=='Mixta'">
                                                     <div class="form-group">
-                                                    <label for="">Puesto <span style="color:red;" v-show="!puesto || puesto==''">(*)</span></label>
-                                                            <input type="text" class="form-control"  v-model="puesto">
-                                                </div>
+                                                        <label for="">Puesto <span style="color:red;" v-show="!puesto || puesto==''">(*)</span></label>
+                                                        <input :readonly="listado==4" type="text" class="form-control"  v-model="puesto">
+                                                    </div>
                                                 </div>
 
-                                                    <div class="col-md-3" v-if="tipo_economia=='Informal'">
+                                                <div class="col-md-3" v-if="tipo_economia=='Informal'">
                                                     <div class="form-group">
-                                                    <label for="">Giro del negocio <span style="color:red;" v-show="!puesto || puesto==''">(*)</span></label>
-                                                            <input type="text" class="form-control"  v-model="puesto">
-                                                </div>
+                                                        <label for="">Giro del negocio <span style="color:red;" v-show="!puesto || puesto==''">(*)</span></label>
+                                                        <input :readonly="listado==4" type="text" class="form-control"  v-model="puesto">
+                                                    </div>
                                                 </div>
 
                                             
                                             <div class="col-md-3" v-if="tipo_economia!=0">
                                                 <div class="form-group">
                                                     <label for="">Domicilio de empresa <span style="color:red;" v-show="empresa==0">(*)</span></label>
-                                                        <input v-if="empresa != null" type="text" class="form-control" v-model="direccion_empresa">
-                                                </div>
+                                                        <input :readonly="listado==4" v-if="empresa != null" type="text" class="form-control" v-model="direccion_empresa">
+                                                    </div>
                                             </div>
                                             <div class="col-md-1" v-if="tipo_economia!=0">
                                                 <div class="form-group">
                                                     <label for="">CP <span style="color:red;" v-show="empresa==0">(*)</span></label>
-                                                        <input v-if="empresa != null" type="text" class="form-control"  v-model="cp_empresa">
+                                                        <input :readonly="listado==4" v-if="empresa != null" type="text" class="form-control"  v-model="cp_empresa">
                                                 </div>
                                             </div>
 
                                             <div class="col-md-2" v-if="tipo_economia!=0">
                                                 <div class="form-group">
                                                     <label for="">Colonia <span style="color:red;" v-show="empresa==0">(*)</span></label>
-                                                        <input v-if="empresa != null" type="text" class="form-control"  v-model="colonia_empresa">
+                                                        <input :readonly="listado==4" v-if="empresa != null" type="text" class="form-control"  v-model="colonia_empresa">
                                                 </div>
                                             </div>
 
                                             <div class="col-md-3" v-if="tipo_economia!=0">
                                                 <div class="form-group">
                                                     <label for="">Estado <span style="color:red;" v-show="empresa==0">(*)</span></label>
-                                                        <input v-if="empresa != null" type="text" class="form-control"  v-model="estado_empresa">
+                                                        <input :readonly="listado==4" v-if="empresa != null" type="text" class="form-control"  v-model="estado_empresa">
                                                 </div>
                                             </div>
 
                                             <div class="col-md-3" v-if="tipo_economia!=0">
                                                 <div class="form-group">
                                                     <label for="">Ciudad <span style="color:red;" v-show="empresa==0">(*)</span></label>
-                                                        <input v-if="empresa != null" type="text" class="form-control"  v-model="ciudad_empresa">
+                                                        <input :readonly="listado==4" v-if="empresa != null" type="text" class="form-control"  v-model="ciudad_empresa">
                                                 </div>
                                             </div>
 
@@ -438,21 +449,21 @@
                                             <div class="col-md-3" v-if="tipo_economia!=0">
                                                         <div class="form-group">
                                                     <label for="">Email institucional </label>
-                                                    <input type="text" class="form-control" v-model="email_inst" placeholder="E-mail">
+                                                    <input :readonly="listado==4" type="text" class="form-control" v-model="email_inst" placeholder="E-mail">
                                                 </div>
                                             </div>
 
                                             <div class="col-md-3" v-if="tipo_economia!=0">
                                                 <div class="form-group">
                                                     <label for="">Telefono de la empresa </label>
-                                                    <input type="text" class="form-control" v-model="telefono_empresa" placeholder="Telefono">
+                                                    <input :readonly="listado==4" type="text" class="form-control" v-model="telefono_empresa" placeholder="Telefono">
                                                 </div>
                                             </div>
 
                                             <div class="col-md-2" v-if="tipo_economia!=0">
                                                 <div class="form-group">
                                                     <label for=""> Ext. </label>
-                                                    <input type="text" class="form-control" v-model="ext_empresa" placeholder="Ext">
+                                                    <input :readonly="listado==4" type="text" class="form-control" v-model="ext_empresa" placeholder="Ext">
                                                 </div>
                                             </div>
                                         </div>  
@@ -463,7 +474,7 @@
                                                             <div class="col-md-3">
                                                             <div class="form-group">
                                                             <label for="">Estado civil <span style="color:red;" v-show="e_civil==0">(*)</span></label>
-                                                                <select class="form-control" v-model="e_civil" >
+                                                                <select :disabled="listado==4" class="form-control" v-model="e_civil" >
                                                                     <option value="0">Seleccione</option> 
                                                                     <option value="1">Casado - separacion de bienes</option> 
                                                                     <option value="2">Casado - sociedad conyugal</option> 
@@ -479,7 +490,7 @@
                                                             <div class="col-md-3">
                                                                 <div class="form-group">
                                                                     <label for=""># Dependientes económicos<span style="color:red;" v-show="dep_economicos==''">(*)</span></label>
-                                                                    <input type="text" class="form-control" v-model="dep_economicos">
+                                                                    <input :readonly="listado==4" type="text" class="form-control" v-model="dep_economicos">
                                                                 </div>
                                                             </div>
 
@@ -504,21 +515,21 @@
                                                 <div class="col-md-3" v-if="coacreditado==true">
                                                     <div class="form-group">
                                                         <label for=""> Nombre del conyuge </label>
-                                                        <input type="text" v-if="nombre_coa != null" class="form-control" v-model="nombre_coa">
+                                                        <input :readonly="listado==4" type="text" v-if="nombre_coa != null" class="form-control" v-model="nombre_coa">
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-3" v-if="coacreditado==true">
                                                     <div class="form-group">
                                                         <label for="">Apellidos del conyuge </label>
-                                                        <input type="text" v-if="apellidos_coa != null" class="form-control" v-model="apellidos_coa">
+                                                        <input :readonly="listado==4" type="text" v-if="apellidos_coa != null" class="form-control" v-model="apellidos_coa">
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-2" v-if="coacreditado==true">
                                                         <div class="form-group">
                                                     <label for="">Parentesco </label>
-                                                    <input type="text" class="form-control" v-model="parentesco_coa" placeholder="Parentesco">
+                                                    <input :readonly="listado==4" type="text" class="form-control" v-model="parentesco_coa" placeholder="Parentesco">
                                                 </div>
                                                 </div>
 
@@ -526,7 +537,7 @@
                                                 <div class="col-md-4" v-if="coacreditado==true">
                                                         <div class="form-group">
                                                     <label for="">Fecha de nacimiento </label>
-                                                    <input type="date" class="form-control" v-model="fecha_nac_coa" placeholder="fecha de nacimiento">
+                                                    <input :readonly="listado==4" type="date" class="form-control" v-model="fecha_nac_coa" placeholder="fecha de nacimiento">
                                                 </div>
                                                 </div>
 
@@ -534,14 +545,14 @@
                                                 <div class="col-md-2" v-if="coacreditado==true">
                                                         <div class="form-group">
                                                     <label for="">RFC</label>
-                                                    <input type="text" class="form-control" v-model="rfc_coa" placeholder="rfc">
+                                                    <input :readonly="listado==4" type="text" class="form-control" v-model="rfc_coa" placeholder="rfc">
                                                 </div>
                                                 </div>
 
                                                     <div class="col-md-2" v-if="coacreditado==true">
                                                         <div class="form-group">
                                                     <label for="">Homoclave</label>
-                                                    <input type="text" class="form-control" v-model="homoclave_coa" placeholder="homoclave">
+                                                    <input :readonly="listado==4" type="text" class="form-control" v-model="homoclave_coa" placeholder="homoclave">
                                                 </div>
                                                 </div>
 
@@ -549,7 +560,7 @@
                                                 <div class="col-md-3" v-if="coacreditado==true">
                                                         <div class="form-group">
                                                     <label for="">CURP </label>
-                                                    <input type="text" class="form-control" v-model="curp_coa" placeholder="CURP">
+                                                    <input :readonly="listado==4" type="text" class="form-control" v-model="curp_coa" placeholder="CURP">
                                                 </div>
                                                 </div>
 
@@ -557,14 +568,14 @@
                                                 <div class="col-md-2" v-if="coacreditado==true">
                                                         <div class="form-group">
                                                     <label for="">NSS</label>
-                                                    <input type="text" class="form-control" v-model="nss_coa" placeholder="NSS">
+                                                    <input :readonly="listado==4" type="text" class="form-control" v-model="nss_coa" placeholder="NSS">
                                                 </div>
                                                 </div>
 
                                                 <div class="col-md-3" v-if="coacreditado==true">
                                                         <div class="form-group">
                                                     <label for="">Nacionalidad</label>
-                                                    <select class="form-control" v-model="nacionalidad_coa" >
+                                                    <select :disabled="listado==4" class="form-control" v-model="nacionalidad_coa" >
                                                             <option value="">Seleccione</option>
                                                             <option value="0">Mexicana</option>
                                                             <option value="1">Extranjera</option>    
@@ -575,24 +586,25 @@
                                                 <div class="col-md-3" v-if="coacreditado==true">
                                                         <div class="form-group">
                                                     <label for="">Direccion</label>
-                                                    <input type="text" class="form-control"  v-model="direccion_coa" placeholder="Direccion">
+                                                    <input :readonly="listado==4" type="text" class="form-control"  v-model="direccion_coa" placeholder="Direccion">
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-1" v-if="coacreditado==true">
                                                         <div class="form-group">
                                                     <label for="">C.P</label>
-                                                    <input type="text" class="form-control"  pattern="\d*" maxlength="5" v-on:keypress="isNumber($event)" @keyup="selectColonias(cp_coa,1)"  v-model="cp_coa" placeholder="C.Postal">
+                                                    <input :readonly="listado==4" type="text" class="form-control"  pattern="\d*" maxlength="5" v-on:keypress="isNumber($event)" @keyup="selectColonias(cp_coa,1)"  v-model="cp_coa" placeholder="C.Postal">
                                                 </div>
                                                 </div>
 
                                                 <div class="col-md-2" v-if="coacreditado==true">
                                                         <div class="form-group">
                                                     <label for="">Colonia<span style="color:red;" v-show="colonia_coa==''">(*)</span></label>
-                                                    <select class="form-control" v-model="colonia_coa">
+                                                        <select v-if="listado==3" class="form-control" v-model="colonia_coa">
                                                             <option value="">Seleccione</option>
                                                             <option v-for="colonia in arrayColoniasCoa" :key="colonia.colonia " :value="colonia.colonia" v-text="colonia.colonia"></option>
                                                         </select>
+                                                        <input type="text" v-if="listado==4" class="form-control" :readonly="listado==4" v-model="colonia_coa">
                                                 </div>
                                                 </div>
 
@@ -600,10 +612,11 @@
                                                 <div class="col-md-3">
                                                         <div class="form-group">
                                                     <label for="">Estado <span style="color:red;" v-show="estado_coa==''">(*)</span></label>
-                                                        <select class="form-control" v-model="estado_coa" @click="selectCiudades(estado_coa,1)" >
+                                                        <select v-if="listado==3" class="form-control" v-model="estado_coa" @click="selectCiudades(estado_coa,1)" >
                                                             <option value="">Seleccione</option>
                                                             <option v-for="estado in arrayEstados" :key="estado.estado " :value="estado.estado" v-text="estado.estado"></option>    
-                                                    </select>
+                                                        </select>
+                                                        <input type="text" v-if="listado==4" class="form-control" :readonly="listado==4" v-model="estado_coa">
                                                         </div>
                                                     </div>
 
@@ -612,10 +625,11 @@
                                                 <div class="col-md-3">
                                                         <div class="form-group">
                                                     <label for="">Ciudad <span style="color:red;" v-show="ciudad_coa==''">(*)</span></label>
-                                                        <select class="form-control" v-model="ciudad_coa" >
+                                                        <select v-if="listado==3" class="form-control" v-model="ciudad_coa" >
                                                             <option value="">Seleccione</option>
                                                             <option v-for="ciudades in arrayCiudadesCoa" :key="ciudades.municipio" :value="ciudades.municipio" v-text="ciudades.municipio"></option>    
-                                                    </select>
+                                                        </select>
+                                                        <input type="text" v-if="listado==4" class="form-control" :readonly="listado==4" v-model="ciudad_coa">
                                                         </div>
                                                     </div>
                                                 
@@ -623,7 +637,7 @@
                                                 <div class="col-md-3" v-if="coacreditado==true">
                                                         <div class="form-group">
                                                     <label for="">Celular</label>
-                                                    <input type="text" maxlength="8" pattern="\d*" class="form-control" v-model="celular_coa" placeholder="Celular">
+                                                    <input :readonly="listado==4" type="text" maxlength="8" pattern="\d*" class="form-control" v-model="celular_coa" placeholder="Celular">
                                                 </div>
                                                 </div>
 
@@ -631,7 +645,7 @@
                                                 <div class="col-md-3" v-if="coacreditado==true">
                                                         <div class="form-group">
                                                     <label for="">Telefono</label>
-                                                    <input type="text" maxlength="7" pattern="\d*" class="form-control" v-model="telefono_coa" placeholder="Telefono">
+                                                    <input :readonly="listado==4" type="text" maxlength="7" pattern="\d*" class="form-control" v-model="telefono_coa" placeholder="Telefono">
                                                 </div>
                                                 </div>
 
@@ -639,7 +653,7 @@
                                                 <div class="col-md-3" v-if="coacreditado==true">
                                                         <div class="form-group">
                                                     <label for="">Email</label>
-                                                    <input type="text" class="form-control" v-model="email_coa" placeholder="Correo">
+                                                    <input :readonly="listado==4" type="text" class="form-control" v-model="email_coa" placeholder="Correo">
                                                 </div>
                                                 </div>
 
@@ -647,7 +661,7 @@
                                                 <div class="col-md-3" v-if="coacreditado==true">
                                                         <div class="form-group">
                                                     <label for="">Email institucional</label>
-                                                    <input type="text" class="form-control" v-model="email_institucional_coa" placeholder="Correo institucional">
+                                                    <input :readonly="listado==4" type="text" class="form-control" v-model="email_institucional_coa" placeholder="Correo institucional">
                                                 </div>
                                                 </div>
 
@@ -660,58 +674,59 @@
                                             <div class="col-md-6" v-if="coacreditado==true">
                                                 <div class="form-group">
                                                     <label for="">Empresa <span style="color:red;" v-show="empresa_coa==0">(*)</span></label>
-                                                        <select class="form-control" v-model="empresa_coa" @click="getDatosEmpresa(empresa_coa,1)">
+                                                        <select v-if="listado==3" class="form-control" v-model="empresa_coa" @click="getDatosEmpresa(empresa_coa,1)">
                                                                 <option value="">Seleccione</option>
                                                                 <option v-for="empresas in arryaEmpresas" :key="empresas.nombre" :value="empresas.nombre" v-text="empresas.nombre"></option>    
                                                         </select>
+                                                        <input type="text" v-if="listado==4" class="form-control" :readonly="listado==4" v-model="empresa_coa">
                                                 </div>
                                             </div>
 
                                             <div class="col-md-3" v-if="coacreditado==true">
                                                 <div class="form-group">
                                                     <label for="">Domicilio de empresa <span style="color:red;" v-show="empresa==0">(*)</span></label>
-                                                        <input v-if="empresa != null" type="text" class="form-control" v-model="direccion_empresa_coa">
+                                                        <input :readonly="listado==4" v-if="empresa != null" type="text" class="form-control" v-model="direccion_empresa_coa">
                                                 </div>
                                             </div>
                                             <div class="col-md-2" v-if="coacreditado==true">
                                                 <div class="form-group">
                                                     <label for="">CP <span style="color:red;" v-show="empresa==0">(*)</span></label>
-                                                        <input v-if="empresa != null" type="text" class="form-control"  v-model="cp_empresa_coa">
+                                                        <input :readonly="listado==4" v-if="empresa != null" type="text" class="form-control"  v-model="cp_empresa_coa">
                                                 </div>
                                             </div>
 
                                             <div class="col-md-2" v-if="coacreditado==true">
                                                 <div class="form-group">
                                                     <label for="">Colonia <span style="color:red;" v-show="empresa==0">(*)</span></label>
-                                                        <input v-if="empresa != null" type="text" class="form-control"  v-model="colonia_empresa_coa">
+                                                        <input :readonly="listado==4" v-if="empresa != null" type="text" class="form-control"  v-model="colonia_empresa_coa">
                                                 </div>
                                             </div>
 
                                             <div class="col-md-3" v-if="coacreditado==true">
                                                 <div class="form-group">
                                                     <label for="">Estado <span style="color:red;" v-show="empresa==0">(*)</span></label>
-                                                        <input v-if="empresa != null" type="text" class="form-control"  v-model="estado_empresa_coa">
+                                                        <input :readonly="listado==4" v-if="empresa != null" type="text" class="form-control"  v-model="estado_empresa_coa">
                                                 </div>
                                             </div>
 
                                             <div class="col-md-3" v-if="coacreditado==true">
                                                 <div class="form-group">
                                                     <label for="">Ciudad <span style="color:red;" v-show="empresa==0">(*)</span></label>
-                                                        <input v-if="empresa != null" type="text" class="form-control"  v-model="ciudad_empresa_coa">
+                                                        <input :readonly="listado==4" v-if="empresa != null" type="text" class="form-control"  v-model="ciudad_empresa_coa">
                                                 </div>
                                             </div>
 
                                             <div class="col-md-2" v-if="coacreditado==true">
                                                 <div class="form-group">
                                                     <label for="">Tel.  </label>
-                                                    <input type="text" class="form-control" v-model="telefono_empresa_coa" placeholder="Telefono">
+                                                    <input :readonly="listado==4" type="text" class="form-control" v-model="telefono_empresa_coa" placeholder="Telefono">
                                                 </div>
                                             </div>
 
                                             <div class="col-md-2" v-if="coacreditado==true">
                                                 <div class="form-group">
                                                     <label for=""> Ext. </label>
-                                                    <input type="text" class="form-control" v-model="ext_empresa_coa" placeholder="Ext">
+                                                    <input :readonly="listado==4" type="text" class="form-control" v-model="ext_empresa_coa" placeholder="Ext">
                                                 </div>
                                             </div>
                                                 
@@ -743,7 +758,7 @@
                                                 <div class="col-md-4">
                                                         <div class="form-group">
                                                     <label for="">Nombre <span style="color:red;" v-show="nombre_referencia1==''">(*)</span></label>
-                                                    <input type="text" class="form-control"  v-model="nombre_referencia1" placeholder="Nombre">
+                                                    <input :readonly="listado==4" type="text" class="form-control"  v-model="nombre_referencia1" placeholder="Nombre">
                                                 </div>
                                                 </div>
 
@@ -751,7 +766,7 @@
                                                 <div class="col-md-4">
                                                         <div class="form-group">
                                                     <label for="">Telefono <span style="color:red;" v-show="telefono_referencia1==''">(*)</span></label>
-                                                    <input type="text"  maxlength="10" pattern="\d*" class="form-control"  v-model="telefono_referencia1" placeholder="Telefono">
+                                                    <input :readonly="listado==4" type="text"  maxlength="10" pattern="\d*" class="form-control"  v-model="telefono_referencia1" placeholder="Telefono">
                                                 </div>
                                                 </div>
 
@@ -759,7 +774,7 @@
                                                 <div class="col-md-4">
                                                         <div class="form-group">
                                                     <label for="">Celular <span style="color:red;" v-show="celular_referencia1==''">(*)</span></label>
-                                                    <input type="text" maxlength="10"  pattern="\d*" class="form-control"  v-model="celular_referencia1" placeholder="Celular">
+                                                    <input :readonly="listado==4" type="text" maxlength="10"  pattern="\d*" class="form-control"  v-model="celular_referencia1" placeholder="Celular">
                                                 </div>
                                                 </div>
 
@@ -772,7 +787,7 @@
                                                 <div class="col-md-4">
                                                         <div class="form-group">
                                                     <label for="">Nombre <span style="color:red;" v-show="nombre_referencia2==''">(*)</span></label>
-                                                    <input type="text" class="form-control"  v-model="nombre_referencia2" placeholder="Nombre">
+                                                    <input :readonly="listado==4" type="text" class="form-control"  v-model="nombre_referencia2" placeholder="Nombre">
                                                 </div>
                                                 </div>
 
@@ -780,7 +795,7 @@
                                                 <div class="col-md-4">
                                                         <div class="form-group">
                                                     <label for="">Telefono <span style="color:red;" v-show="telefono_referencia2==''">(*)</span></label>
-                                                    <input type="text" maxlength="10" pattern="\d*" class="form-control"  v-model="telefono_referencia2" placeholder="Telefono">
+                                                    <input :readonly="listado==4" type="text" maxlength="10" pattern="\d*" class="form-control"  v-model="telefono_referencia2" placeholder="Telefono">
                                                 </div>
                                                 </div>
 
@@ -788,7 +803,7 @@
                                                 <div class="col-md-4">
                                                         <div class="form-group">
                                                     <label for="">Celular <span style="color:red;" v-show="celular_referencia2==''">(*)</span></label>
-                                                    <input type="text" maxlength="10" pattern="\d*" class="form-control"  v-model="celular_referencia2" placeholder="Celular">
+                                                    <input :readonly="listado==4" type="text" maxlength="10" pattern="\d*" class="form-control"  v-model="celular_referencia2" placeholder="Celular">
                                                 </div>
                                                 </div>
 
@@ -956,7 +971,7 @@
                                                         <h6></h6>
                                                     </div>
 
-                                                    <div class="col-md-3">
+                                                    <div class="col-md-3" v-if="listado==3">
                                                         <div class="form-group">
                                                             <label for="">Paquete</label>
                                                             <select class="form-control" v-model="paquete_id" @click="datosPaquetes(paquete_id)">
@@ -1050,7 +1065,7 @@
                                                         </div>
                                                     </div>
 
-                                                    <div class="col-md-3" v-if="inst_financiera!=''">
+                                                    <div class="col-md-3" v-if="inst_financiera!='' && listado==3">
                                                         <div class="form-group">
                                                         <label for="">Comisión por apertura</label>
                                                             <input type="text" pattern="\d*" v-model="comision_apertura" maxlength="9" v-on:keypress="isNumber($event)" class="form-control" >
@@ -1081,7 +1096,7 @@
                                                         </div>
                                                     </div>
 
-                                                    <div class="col-md-3" v-if="inst_financiera!=''">
+                                                    <div class="col-md-3" v-if="inst_financiera!=''&& listado==3">
                                                         <div class="form-group">
                                                         <label for="">Investigación</label>
                                                             <input type="text" pattern="\d*" v-model="investigacion" maxlength="9" v-on:keypress="isNumber($event)" class="form-control" >
@@ -1095,14 +1110,14 @@
                                                         </div>
                                                     </div> 
 
-                                                    <div class="col-md-3" v-if="tipo_credito=='Alia2' || tipo_credito=='Respalda2'">
+                                                    <div class="col-md-3" v-if="tipo_credito=='Alia2' && listado==3 || tipo_credito=='Respalda2' && listado==3">
                                                         <div class="form-group">
                                                         <label for="">Fovissste</label>
                                                             <input type="text" pattern="\d*" v-model="fovissste" maxlength="9" v-on:keypress="isNumber($event)" class="form-control" >
                                                         </div>
                                                     </div>
 
-                                                    <div class="col-md-3" v-if="tipo_credito=='Cofinavit'">
+                                                    <div class="col-md-3" v-if="tipo_credito=='Cofinavit' && listado==3">
                                                         <div class="form-group">
                                                         <label for="">Infonavit</label>
                                                             <input type="text" pattern="\d*" v-model="infonavit" maxlength="9" v-on:keypress="isNumber($event)" class="form-control" >
@@ -1129,7 +1144,7 @@
                                                         </div>
                                                     </div>
 
-                                                    <div class="col-md-3" v-if="inst_financiera!=''">
+                                                    <div class="col-md-3" v-if="inst_financiera!=''&& listado==3">
                                                         <div class="form-group">
                                                         <label for="">Avaluo por parte del banco</label>
                                                             <input type="text" pattern="\d*" v-model="avaluo" maxlength="9" v-on:keypress="isNumber($event)" class="form-control" >
@@ -1160,7 +1175,7 @@
                                                         </div>
                                                     </div>
 
-                                                    <div class="col-md-3" v-if="inst_financiera!=''">
+                                                    <div class="col-md-3" v-if="inst_financiera!='' && listado==3">
                                                         <div class="form-group">
                                                         <label for="">Prima unica</label>
                                                             <input type="text" pattern="\d*" v-model="prima_unica" maxlength="9" v-on:keypress="isNumber($event)" class="form-control" >
@@ -1192,7 +1207,7 @@
                                                         </div>
                                                     </div>
 
-                                                    <div class="col-md-3" v-if="inst_financiera!=''">
+                                                    <div class="col-md-3" v-if="inst_financiera!=''&& listado==3">
                                                         <div class="form-group">
                                                         <label for="">Gastos de escrituración</label>
                                                             <input type="text" pattern="\d*" v-model="escrituras" maxlength="9" v-on:keypress="isNumber($event)" class="form-control" >
@@ -1206,7 +1221,7 @@
                                                         </div>
                                                     </div> 
 
-                                                    <div class="col-md-3" v-if="inst_financiera!=''"><hr>
+                                                    <div class="col-md-3" v-if="inst_financiera!='' && listado==3" ><hr>
                                                         <div class="form-group">
                                                         <label for="">Avaluo por parte del cliente</label>
                                                             <input type="text" pattern="\d*" v-model="avaluo_cliente" maxlength="9" v-on:keypress="isNumber($event)" class="form-control" >
@@ -1249,10 +1264,17 @@
 
                                                      <div class="col-md-3">
                                                         <div class="form-group">
-                                                             <label for="">Fecha del contrato</label>
-                                                            <input type="date" v-model="fecha_contrato" class="form-control" >
+                                                            <label for="">Fecha del contrato</label>
+                                                            <input :readonly="listado==4" type="date" v-model="fecha_contrato" class="form-control" >
                                                         </div>
                                                     </div> 
+
+                                                    <div class="col-md-9">
+                                                        <div class="form-group">
+                                                            <label for="">Observaciones <span style="color:red;" v-show="observacion==''">(*)</span></label>
+                                                            <textarea :readonly="listado==4" rows="3" cols="30" v-model="observacion" class="form-control" placeholder="Observaciones"></textarea>
+                                                        </div>
+                                                    </div>
 
                                                     <div class="col-md-12"><hr>
                                                         <div class="form-group">
@@ -1266,37 +1288,43 @@
                                                         </div>
                                                     </div> 
 
-                                                    <div class="col-md-6"> <hr>
+                                                    <div class="col-md-6" v-if="listado==3"> <hr>
                                                         <div class="form-group">
                                                             <center> <h6>Restante: </h6> </center>
                                                             <center> <h6><strong>${{ formatNumber(restante=totalRestante)}}</strong></h6> </center>
                                                         </div>
                                                     </div> 
 
-                                                    <div class="col-md-3" v-if="inst_financiera!=''">
+                                                    <div class="col-md-3" v-if="inst_financiera!='' && listado==3">
                                                         <div class="form-group">
                                                         <label for="">Monto pago</label>
                                                             <input type="text" pattern="\d*" v-model="monto_pago" maxlength="9" v-on:keypress="isNumber($event)" class="form-control" >
                                                         </div>
                                                     </div>
                                                     
-                                                    <div class="col-md-2" v-if="monto_pago!=''">
+                                                    <div class="col-md-2" v-if="monto_pago!='' && listado==3">
                                                         <div class="form-group">
                                                             <h6 style="color:#2271b3;" for=""><strong> Monto pago </strong></h6>
                                                             <h6><strong>${{ formatNumber(monto_pago)}}</strong></h6>
                                                         </div>
                                                     </div> 
                                                     
-                                                    <div class="col-md-3">
+                                                    <div class="col-md-3" v-if="monto_pago!='' && listado==3">
                                                         <div class="form-group">
                                                              <label for="">Fecha del pago</label>
                                                             <input type="date" v-model="fecha_pago" class="form-control" >
                                                         </div>
                                                     </div> 
 
-                                                    <div class="col-md-1">
+                                                    <div class="col-md-1" v-if="monto_pago!='' && listado==3">
                                                         <div class="form-group" v-if="restante>0">
                                                             <button @click="agregarPago()" class="btn btn-success form-control btnagregar"><i class="icon-plus"></i></button>
+                                                        </div>
+                                                    </div>
+
+                                                     <div class="col-md-12" v-if="listado==4"><hr>
+                                                        <div class="form-group">
+                                                            <h6></h6>
                                                         </div>
                                                     </div>
                                                 
@@ -1307,7 +1335,7 @@
                                     <table class="table table-bordered table-striped table-sm">
                                         <thead>
                                             <tr>
-                                                <th>Opciones</th>
+                                                <th v-if="listado==3">Opciones</th>
                                                 <th># Pago</th>
                                                 <th>Fecha de pago</th>
                                                 <th>Monto</th>
@@ -1315,7 +1343,7 @@
                                         </thead>
                                         <tbody >
                                             <tr v-for="(pago,index) in arrayPagos" :key="pago.fecha_pago">
-                                                <td>
+                                                <td v-if="listado==3">
                                                     <button @click="eliminarPago(index)" type="button" class="btn btn-danger btn-sm">
                                                         <i class="icon-close"></i>
                                                     </button>
@@ -1331,8 +1359,7 @@
                                     </table>
                                 </div>
                             </div>
-                        </div>
-                                                    
+                        </div>                                                
                                                     
                                             </div>
                                     </div>
@@ -1350,8 +1377,8 @@
                                                 </div>
                                             </div>
                                             <div class="col-md-12">
-                                                <button type="button" class="btn btn-secondary" @click="ocultarDetalle()"> Cerrar </button>
-                                                <button type="button" class="btn btn-primary" @click="crearContrato()"> Enviar </button>
+                                                <button type="button" class="btn btn-secondary" @click="cerrarDetalle()"> Cerrar </button>
+                                                <button type="button" v-if="listado==3" class="btn btn-primary" @click="crearContrato()"> Enviar </button>
                                             </div>
                                         </div>
                                     </div>
@@ -1505,6 +1532,7 @@
                         infonavit:'0',
                         fovissste:'0',
                         monto_total_credito:0,
+                        observacion:'',
              
                 prospecto_id:0,
                 restante:0,
@@ -1706,7 +1734,18 @@
                 //Envia la petición para visualizar la data de esta pagina
                 me.listarContratos(page,buscar, b_etapa, b_manzana,b_lote,criterio);
             },
-            
+            listarPagos(id){
+                let me = this;
+                me.arrayPagos=[];
+                var url = '/contratos/pagos?contrato_id=' + id;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayPagos = respuesta.pagos;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
             selectFraccionamientos(){
                 let me = this;
                 me.arrayFraccionamientos=[];
@@ -1931,15 +1970,7 @@
                 this.inst_financiera = data['institucion'];
                 this.plazo_credito =data['plazo'];
                 this.monto_credito = data['credito_solic'];
-                this.mascotas = data['mascota'];
-                this.num_perros = data['num_perros'];
-                this.rang0_10 = data['rang010'];
-                this.rang11_20 = data['rang1120'];
-                this.rang21 = data['rang21'];
-                this.ama_casa = data['ama_casa'];
-                this.discapacidad = data['persona_discap'];
-                this.silla_ruedas = data['silla_ruedas'];
-                this.num_vehiculos = data['num_vehiculos'];
+               
 
                 this.listado=3;
 
@@ -1953,6 +1984,129 @@
 
                 this.getDatosEmpresa(this.empresa,0);
                 this.getDatosEmpresa(this.empresa_coa,1);
+            },
+
+            mostrarCreditosAprobados(){
+                this.listarSimulaciones(1,this.buscar,this.b_etapa,this.b_manzana,this.b_lote,this.criterio);
+                this.listado = 1;
+            },
+
+            cerrarDetalle(){
+                this.limpiarDatos();
+                this.listado = 0;
+            },
+
+            verContrato(data = []){
+                this.prospecto_id = data['prospecto_id'];
+                this.id= data['id'];
+                this.nombre = data['nombre'];
+                this.apellidos = data['apellidos'];
+                this.sexo = data['sexo'];
+                this.telefono = data['telefono'];
+                this.celular = data['celular'];
+                this.email = data['email'];
+                this.direccion = data['direccion'];
+                this.cp = data['cp'];
+                this.colonia = data['colonia'];
+                this.estado = data['estado'];
+                this.ciudad = data['ciudad'];
+                this.fecha_nac = data['f_nacimiento'];
+                this.curp = data['curp'];
+                this.rfc = data['rfc'];
+                this.homoclave = data['homoclave'];
+                this.nss = data['nss'];
+                this.tipo_economia = data['tipo_economia'];
+                this.empresa = data['empresa'];
+                this.direccion_empresa = data['direccion_empresa'];
+                this.cp_empresa = data['cp_empresa'];
+                this.colonia_empresa = data['colonia_empresa'];
+                this.estado_empresa = data['estado_empresa'];
+                this.ciudad_empresa = data['ciudad_empresa'];
+                this.telefono_empresa = data['telefono_empresa'];
+                this.ext_empresa = data['ext_empresa'];
+                this.puesto = data['puesto'];
+                this.email_inst = data['email_institucional'];
+                this.tipo_casa = data['tipo_casa'];
+                this.e_civil = data['edo_civil'];
+                this.dep_economicos = data['num_dep_economicos']
+                this.status = data['status'];
+                this.lote_id = data['lote_id'];
+                
+                this.nombre_referencia1 = data['nombre_primera_ref'];
+                this.telefono_referencia1 = data['telefono_primera_ref'];
+                this.celular_referencia1 = data['celular_primera_ref'];
+                this.nombre_referencia2 = data['nombre_segunda_ref'];
+                this.telefono_referencia2 = data['telefono_segunda_ref'];
+                this.celular_referencia2 = data['celular_segunda_ref'];
+
+                this.coacreditado = data['coacreditado'];
+                this.nombre_coa = data['nombre_coa'];
+                this.apellidos_coa = data['apellidos_coa'];
+                this.conyugeNom = this.nombre_coa + ' ' + this.apellidos_coa;
+                this.fecha_nac_coa = data['f_nacimiento_coa'];
+                this.rfc_coa = data['rfc_coa'];
+                this.homoclave_coa = data['homoclave_coa'];
+                this.curp_coa = data['curp_coa'];
+                this.nss_coa = data['nss_coa'];
+                this.nacionalidad_coa = data['nacionalidad_coa'];
+                this.direccion_coa = data['direccion_coa'];
+                this.cp_coa = data['cp_coa'];
+                this.colonia_coa = data['colonia_coa'];
+                this.estado_coa = data['estado_coa'];
+                this.ciudad_coa = data['ciudad_coa'];
+                this.celular_coa = data['celular_coa'];
+                this.telefono_coa = data['telefono_coa'];
+                this.email_coa = data['email_coa'];
+                this.email_institucional_coa = data['email_institucional_coa'];
+                this.empresa_coa = data['empresa_coa'];
+                this.parentesco_coa = data['parentesco_coa'];
+                this.direccion_empresa_coa = data['direccion_empresa_coa'];
+                this.cp_empresa_coa = data['cp_empresa_coa'];
+                this.colonia_empresa_coa = data['colonia_empresa_coa'];
+                this.estado_empresa_coa = data['estado_empresa_coa'];
+                this.ciudad_empresa_coa = data['ciudad_empresa_coa'];
+                this.telefono_empresa_coa = data['telefono_empresa_coa']
+                this.ext_empresa_coa = data['ext_empresa_coa'];
+
+
+                this.proyecto = data['proyecto'];
+                this.etapa = data['etapa'];
+                this.manzana = data['manzana'];
+                this.lote = data['num_lote'];
+                this.modelo = data['modelo'];
+                this.superficie = data['superficie'];
+                this.terreno_tam_excedente = data['terreno_excedente'];
+                this.precioBase = data['precio_base'];
+                this.precioExcedente = data['precio_terreno_excedente'];
+                this.precioObraExtra = data['precio_obra_extra'];
+                this.precioVenta = data['precio_venta'];
+                this.promocion = data['promocion'];
+                this.descripcionPromo = data['descripcion_promocion'];
+                this.descuentoPromo = data['descuento_promocion'];
+                this.paquete = data['paquete'];
+                this.descripcionPaquete = data['descripcion_paquete'];
+                this.costoPaquete = data['costo_paquete'];
+                this.tipo_credito = data['tipo_credito'];
+                this.inst_financiera = data['institucion'];
+                this.plazo_credito =data['plazo'];
+                this.monto_credito = data['credito_solic'];
+
+                this.infonavit = data['infonavit'];
+                this.fovissste = data['fovisste'];
+                this.comision_apertura = data['comision_apertura'];
+                this.investigacion = data['investigacion'];
+                this.avaluo = data['avaluo'];
+                this.prima_unica = data['prima_unica'];
+                this.escrituras = data['escrituras'];
+                this.credito_neto = data['credito_neto'];
+                this.avaluo_cliente = data['avaluo_cliente'];
+                this.fecha_contrato = data['fecha'];
+                this.total_pagar = data['total_pagar'];
+                this.monto_total_credito = data['monto_total_credito'];
+                this.enganche_total = data['enganche_total'];
+               
+                this.listarPagos(this.id);
+                this.listado=4;
             },
 
             agregarPago(){
@@ -2093,15 +2247,16 @@
                     'monto_total_credito':this.monto_total_credito,
                     'enganche_total':this.enganche_total,
                     'lote_id': this.lote_id,
+                    'observacion' : this.observacion,
 
                     'data':this.arrayPagos,
                     
                 }).then(function (response){
                     me.proceso=false;
                     me.actualizarDatosProspecto();
-                    me.listado=1;
                     me.limpiarDatos();
                     me.listarSimulaciones(1,me.buscar,me.b_etapa,me.b_manzana,me.b_lote,me.criterio);
+                    me.listado=0;
                     
                     //Se muestra mensaje Success
                     swal({
@@ -2180,6 +2335,7 @@
             },
 
             limpiarDatos(){
+                let me = this;
                 me.id=0;
                 me.proceso=false;
 
@@ -2252,6 +2408,7 @@
                     me.ciudad_empresa_coa='';
                     me.telefono_empresa_coa='';
                     me.ext_empresa_coa='';
+                    this.observacion='';
 
 
                 /// variables referencias //
@@ -2324,6 +2481,12 @@
                 me.b_manzana= '';
                 me.b_lote= '';
 
+                me.criterio2 = 'personal.nombre'; 
+                me.buscar2 = '';
+                me.b_etapa2= '';
+                me.b_manzana2= '';
+                me.b_lote2= '';
+
             },
 
             limpiarBusqueda(){
@@ -2343,7 +2506,6 @@
         },
         mounted() {          
             this.listarContratos(1,this.buscar,this.b_etapa,this.b_manzana,this.b_lote,this.criterio);
-            this.listarSimulaciones(1,this.buscar,this.b_etapa,this.b_manzana,this.b_lote,this.criterio);
             this.selectFraccionamientos();
         }
     }

@@ -230,6 +230,7 @@ class ClienteController extends Controller
             $cliente->coacreditado = $request->coacreditado;
             $cliente->clasificacion = $request->clasificacion;
             $cliente->lugar_nacimiento = $request->lugar_nacimiento;
+            $cliente->nombre_recomendado = $request->nombre_recomendado;
             
             $cliente->save();
 
@@ -284,6 +285,7 @@ class ClienteController extends Controller
             $cliente->edo_civil = $request->edo_civil;
             $cliente->nss = $request->nss;
             $cliente->curp = $request->curp;
+            $cliente->nombre_recomendado = $request->nombre_recomendado;
             $cliente->lugar_nacimiento = $request->lugar_nacimiento;
             if($request->vendedor_id == NULL)
             $cliente->vendedor_id = Auth::user()->id;

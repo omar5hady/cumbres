@@ -322,6 +322,7 @@ Route::group(['middleware' => ['auth']],function(){
         /**************************** RUTAS MODULO CONTRATOS  ***************************/
         Route::get('/contratos','ContratoController@indexContrato');
         Route::get('/creditos_aprobados','ContratoController@indexCreditosAprobados');
+        Route::get('/contratos/pagos','ContratoController@listarPagos');
         Route::get('/credito/datos_credito','ContratoController@getDatosCredito');
         Route::post('/contrato/registrar','ContratoController@store');
         Route::put('/contrato/actualizarCredito','ContratoController@updateDatosCredito');
