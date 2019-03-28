@@ -36,6 +36,7 @@
                     </li>
                     <li @click="menu=112" class="nav-item">
                         <a class="nav-link" href="#"><i class="icon-bag"></i> Modelos</a>
+                    
                 </ul>
             </li>
            
