@@ -33,6 +33,8 @@ class CreateClientesTable extends Migration
             $table->string('ciudad',80)->nullable();
             $table->string('puesto',25)->nullable();
             $table->boolean('nacionalidad')->default(0)->nullable();
+            $table->string('nombre_recomendado',80)->nullable();
+
 
             $table->char('sexo_coa',1)->nullable();
             $table->string('tipo_casa_coa',25)->nullable();
@@ -45,6 +47,7 @@ class CreateClientesTable extends Migration
             $table->string('apellidos_coa',70)->nullable();
             $table->date('f_nacimiento_coa')->nullable();
             $table->boolean('nacionalidad_coa')->nullable();
+            $table->string('lugar_nacimiento_coa',80)->nullable();
             $table->string('rfc_coa',10)->nullable();
             $table->string('homoclave_coa',3)->nullable();
             $table->string('direccion_coa',80)->nullable();

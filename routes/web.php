@@ -317,6 +317,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/serviciosTelecom/pdf/','ServicioController@servicioTelecomPdf')->name('servicios.pdf');
         Route::get('/cartaServicios/pdf/','ServicioController@cartaDeServicioPdf')->name('CartaDeservicios.pdf');
         Route::get('/contratoCompraVenta/pdf/','ServicioController@contratoCompraVentaPdf')->name('contratoCompraVenta.pdf');
+        Route::get('/pagareContrato/pdf/','ServicioController@pagareContratopdf')->name('pagare.pdf');
+
         
         Route::post('/users/foto/{id}','UserController@updateProfile');
 

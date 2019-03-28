@@ -549,7 +549,7 @@
                                             <option value="Modulo">Modulo</option>
                                             <option value="Pagina web">Pagina web</option>
                                             <option v-for="fraccionamientos in arrayFraccionamientos2" :key="fraccionamientos.id" :value="fraccionamientos.nombre" v-text="fraccionamientos.nombre"></option>
-                                            <option v-for="lugares in arrayLugarContacto" :key="lugares.id" :value="lugares.nombre" v-text="lugares.nombre"></option>
+                                            <!-- <option v-for="lugares in arrayLugarContacto" :key="lugares.id" :value="lugares.nombre" v-text="lugares.nombre"></option> -->
                                     </select>
                                     </div>
                                 </div>
@@ -592,6 +592,12 @@
                                 </div>
                                 </div>
 
+                                <div class="col-md-4" v-if="publicidad_id == 1">
+                                     <div class="form-group">
+                                    <label for="">Nombre de la persona que te recomendo </label>
+                                     <input type="text" class="form-control" v-model="nombre_recomendado" placeholder="Nombre">
+                                </div>
+                                </div>
 
                         </div>
 

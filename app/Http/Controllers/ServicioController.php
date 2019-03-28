@@ -95,4 +95,15 @@ class ServicioController extends Controller
              return $pdf->stream('ContratoCompraVenta.pdf');
              // return ['cabecera' => $cabecera];
       }
+
+      public function pagareContratopdf(Request $request)
+      {
+          
+          $servicios = Servicio::orderBy('descripcion','asc')->take(1)->get();
+  
+  
+              $pdf = \PDF::loadview('pdf.contratos.pagaresContratos',['servicios' => $servicios]);
+              return $pdf->stream('pagare.pdf');
+              // return ['cabecera' => $cabecera];
+       }
 }

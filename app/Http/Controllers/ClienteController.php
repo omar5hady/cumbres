@@ -145,6 +145,7 @@ class ClienteController extends Controller
             $cliente->email_institucional = $request->email_institucional;
             $cliente->lugar_contacto = $request->lugar_contacto;
             $cliente->lugar_nacimiento = $request->lugar_nacimiento;
+            $cliente->nombre_recomendado = $request->nombre_recomendado;
             $cliente->proyecto_interes_id = $request->proyecto_interes_id;
             $cliente->publicidad_id = $request->publicidad_id;
             $cliente->edo_civil = $request->edo_civil;
@@ -177,7 +178,7 @@ class ClienteController extends Controller
             $cliente->celular_coa = $request->celular_coa;
             $cliente->email_coa = $request->email_coa;
             $cliente->parentesco_coa = $request->parentesco_coa;
-            $cliente->lugar_nacimiento_coa = $request->lugar_nacimiento;
+            $cliente->lugar_nacimiento_coa = $request->lugar_nacimiento_coa;
             $cliente->save();
 
             $observacion = new Cliente_observacion();
