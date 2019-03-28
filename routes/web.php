@@ -130,6 +130,7 @@ Route::group(['middleware' => ['auth']],function(){
 
         Route::post('/formSubmitTelecom/{id}','FraccionamientoController@uploadPlantillaTelecom');
         Route::get('/downloadPlantilla/ServiciosTelecom/{fileName}' , 'FraccionamientoController@downloadPlantillaTelecom');
+        Route::post('/fraccionamiento/empresasTelecom/registrar/{id}','FraccionamientoController@registrarEmpresasTelecom');
 
     /////////////////////   RUTAS ETAPAS        //////////////////////////////////////
         Route::get('/etapa','EtapaController@index');

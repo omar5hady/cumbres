@@ -39,6 +39,8 @@
                                         <th>Opciones</th>
                                         <th>Fraccionamiento</th>
                                         <th>Tipo de proyecto</th>
+                                        <th>Empresa(s) de telecomunicacion</th>
+                                        <th>Empresa(s) de telecomunicacion satelital</th>
                                         <th>Plantilla servicios de telecomunicacion</th>
                                         
                                         
@@ -47,6 +49,9 @@
                                 <tbody>
                                     <tr v-for="fraccionamiento in arrayFraccionamiento" :key="fraccionamiento.id">
                                         <td>
+                                            <button title="Asignar servicios de telecomunicacion" type="button" @click="abrirModal('fraccionamiento','AsignarTelecom',fraccionamiento)" class="btn btn-warning btn-sm">
+                                            <i class="icon-pencil"></i>
+                                            </button>
                                             <button title="Subir formatos y reglamento" type="button" @click="abrirModal('fraccionamiento','subirArchivo',fraccionamiento)" class="btn btn-info btn-sm">
                                             <i class="icon-cloud-upload"></i>
                                             </button>
@@ -55,6 +60,8 @@
                                         <td v-if="fraccionamiento.tipo_proyecto==1" v-text="'Lotificación'"></td>
                                         <td v-if="fraccionamiento.tipo_proyecto==2" v-text="'Departamento'"></td>
                                         <td v-if="fraccionamiento.tipo_proyecto==3" v-text="'Terreno'"></td>
+                                        <td v-text="fraccionamiento.empresas_telecom"></td>
+                                        <td v-text="fraccionamiento.empresas_telecom_satelital"></td>
                                         <td v-if = "fraccionamiento.plantilla_telecom"><a class="btn btn-success btn-sm" v-bind:href="'/downloadPlantilla/ServiciosTelecom/'+fraccionamiento.plantilla_telecom"><i class="fa fa-download fa-spin"></i></a></td>
                                         <td v-else></td>
                                         
@@ -94,7 +101,7 @@
                         </div>
                         <div class="modal-body">
                      <div>
-                            <form  method="post" @submit="formSubmitTelecom" enctype="multipart/form-data">
+                            <form v-if="tipoAccion!=2" method="post" @submit="formSubmitTelecom" enctype="multipart/form-data">
 
                                     <strong>Sube aqui la plantilla para los servicios de telecomunicacion <u>794 x 986</u></strong>
 
@@ -104,12 +111,26 @@
                             </form>
                      </div>
 
-               
+                <form v-if="tipoAccion==2" action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Empresa(s) de telecomunicacion</label>
+                            <div class="col-md-9">
+                                <input type="text" v-model="empresas_telecom" class="form-control" placeholder="Empresa 1, Empresa 2, Empresa 3, Empresa 4">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Empresa(s) de telecomunicacion satelital</label>
+                            <div class="col-md-9">
+                                <input type="text" v-model="empresas_telecom_satelital" class="form-control" placeholder="Empresa 1, Empresa 2, Empresa 3, Empresa 4">
+                            </div>
+                        </div>
+                </form>
 
                         </div>
                         <!-- Botones del modal -->
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal4()">Cerrar</button>
+                            <button v-if="tipoAccion==2" type="button" class="btn btn-primary" @click="registrarEmpresasTelecom()">Guardar</button>
                          </div>
                     </div> 
                     <!-- /.modal-content -->
@@ -135,6 +156,8 @@
                 id:0,
                 nombre : '',
                 tipo_proyecto : 0,
+                empresas_telecom: '',
+                empresas_telecom_satelital: '',
                 archivo_plantilla_telecom: '',
                 arrayFraccionamiento : [],
                 modal4: 0,
@@ -156,6 +179,7 @@
             }
         },
         computed:{
+        
             isActived: function(){
                 return this.pagination.current_page;
             },
@@ -217,6 +241,35 @@
 
                 });
 
+            },
+             registrarEmpresasTelecom(){
+                if(this.proceso==true){
+                    return;
+                }
+             
+
+                this.proceso=true;
+                let me = this;
+                //Con axios se llama el metodo store de FraccionaminetoController
+                axios.post('/fraccionamiento/empresasTelecom/registrar/'+this.id,{
+                    'empresas_telecom': this.empresas_telecom,
+                    'empresas_telecom_satelital': this.empresas_telecom_satelital,
+                    
+                }).then(function (response){
+                    me.proceso=false;
+                    me.cerrarModal4(); //al guardar el registro se cierra el modal
+                    me.listarFraccionamiento(1,'','fraccionamiento'); //se enlistan nuevamente los registros
+                    //Se muestra mensaje Success
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Asignaciones realizadas correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
             },
 
 
@@ -282,6 +335,17 @@
                                 this.tituloModal4='Subir Archivos';
                                 this.id=data['id'];
                                 this.archivo_plantilla_telecom=data['plantilla_telecom'];
+                                this.tipoAccion = 1;
+                                break;
+                            }
+                            case 'AsignarTelecom':
+                            {
+                                this.modal4 =1;
+                                this.tituloModal4='Asignar empresas de telecomunicaciones';
+                                this.empresas_telecom =data['empresas_telecom'];
+                                this.empresas_telecom_satelital =data['empresas_telecom_satelital'];
+                                this.id=data['id'];
+                                this.tipoAccion = 2;
                                 break;
                             }
                         }

@@ -309,4 +309,22 @@ class FraccionamientoController extends Controller
         return response()->download($pathtoFile);
     }
 
+    public function registrarEmpresasTelecom(Request $request, $id){
+        $empresasAnteriores = Fraccionamiento::select('empresas_telecom','empresas_telecom_satelital')
+                                             ->where('id','=',$id)
+                                             ->get();
+        if($empresasAnteriores->isEmpty()==1){
+            $empresasTelecom = new Fraccionamiento();
+            $empresasTelecom->empresas_telecom = $request->empresas_telecom;
+            $empresasTelecom->empresas_telecom_satelital = $request->empresas_telecom_satelital;
+            $empresasTelecom->save();
+        }else{
+            $empresasTelecom = Fraccionamiento::findOrFail($request->id);
+            $empresasTelecom->empresas_telecom = $request->empresas_telecom;
+            $empresasTelecom->empresas_telecom_satelital = $request->empresas_telecom_satelital;
+            $empresasTelecom->save();
+        }
+        
+    }
+
 }
