@@ -33,7 +33,28 @@ class UsersSeeder extends Seeder
             'password' => bcrypt('admin123'),
             'condicion' => '1',
             'rol_id' => '1'
-            
+        ]);
+
+        Personal::create([
+            'id' => 3,
+            'departamento_id' => 7,
+            'Apellidos' => 'Ramos Vázquez',
+            'Nombre' => 'Jaime Omar',
+            'f_nacimiento' => '1991-12-11',
+            'rfc' => 'RAVJ911211C41',
+            'direccion' => '3a Priv. de Prol. Jaime Sordo #100',
+            'telefono' => '4448122539',
+            'celular' => '4444605232',
+            'email' => 'omar.ramos@grupocumbres.com',
+            'activo' => 1
+        ]);
+
+        User::create([
+            'id' => 3,
+            'usuario' => 'shady',
+            'password' => bcrypt('admin123'),
+            'condicion' => '1',
+            'rol_id' => '1'
         ]);
     }
 }
