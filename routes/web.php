@@ -69,11 +69,13 @@ Route::group(['middleware' => ['auth']],function(){
     ///////////////////        RUTAS Usuarios    //////////////////////////////////
         Route::get('/usuarios','UserController@index');
         Route::get('/usuario/datos','UserController@obtenerDatos');
+        Route::get('/usuario/privilegios','UserController@getPrivilegios');
         Route::post('/usuarios/registrar','UserController@store');
         Route::post('/usuarios/asignar','UserController@asignar');
         Route::put('/usuarios/actualizar','UserController@update');
         Route::put('/usuarios/activar','UserController@activar');
         Route::put('/usuarios/desactivar','UserController@desactivar');
+        Route::put('/usuarios/act_privilegios','UserController@updatePrivilegios');
 
     ////////////////// VENDEDORES //////////////////////////////////////////
         Route::get('/asesores','UserController@indexAsesores');

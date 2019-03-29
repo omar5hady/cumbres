@@ -10,88 +10,293 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Usuarios
                         <!--   Boton Nuevo    -->
-                        <button type="button" @click="abrirModal('Personal','registrar')" class="btn btn-secondary">
+                        <button type="button" @click="abrirModal('Personal','registrar')" class="btn btn-secondary" v-if="privilegios==0">
                             <i class="icon-plus"></i>&nbsp;Nuevo
                         </button>
-                        <button type="button" @click="abrirModal('Personal','Asignar')" class="btn btn-warning">
+                        <button type="button" @click="abrirModal('Personal','Asignar')" class="btn btn-warning" v-if="privilegios==0">
                             <i class="fa fa-user-plus"></i>&nbsp;Asignar rol
+                        </button>
+                        <button type="button" @click="cerrarPrivilegios()" class="btn btn-success" v-if="privilegios==1">
+                            <i class="fa fa-mail-reply"></i>&nbsp;Regresar
                         </button>
                         <!---->
                     </div>
-                    <div class="card-body">
-                        <div class="form-group row">
-                            <div class="col-md-6">
-                                <div class="input-group">
-                                    <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-5" @click="selectDepartamento(),limpiarBusqueda()"  v-model="criterio">
-                                      <option value="personal.nombre">Nombre</option>
-                                      <option value="users.usuario">Usuario</option>
-                                    </select>
+                    <template v-if="privilegios==0">
+                        <div class="card-body">
+                            <div class="form-group row">
+                                <div class="col-md-6">
+                                    <div class="input-group">
+                                        <!--Criterios para el listado de busqueda -->
+                                        <select class="form-control col-md-5" @click="selectDepartamento(),limpiarBusqueda()"  v-model="criterio">
+                                        <option value="personal.nombre">Nombre</option>
+                                        <option value="users.usuario">Usuario</option>
+                                        </select>
+                                        
                                     
-                                 
-                                    <input type="text" v-model="buscar" @keyup.enter="listarPersonal(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">                                     
-                                    <button type="submit" @click="listarPersonal(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                        <input type="text" v-model="buscar" @keyup.enter="listarPersonal(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">                                     
+                                        <button type="submit" @click="listarPersonal(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                        <th>Opciones</th>
-                                        <th>Nombre</th>
-                                        <th>Usuario</th>
-                                        <th>Rol</th>
-                                        <th>Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="Personal in arrayPersonal" :key="Personal.id">
-                                        <td width="10%">
-                                            <button type="button" @click="abrirModal('Personal','actualizar',Personal)" class="btn btn-warning btn-sm">
-                                            <i class="icon-pencil"></i>
-                                            </button>
-                                            <template v-if="Personal.condicion">
-                                                <button type="button" @click="desactivarPersonal(Personal.id)" class="btn btn-danger btn-sm">
-                                                <i class="fa fa-user-times"></i>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Opciones</th>
+                                            <th>Nombre</th>
+                                            <th>Usuario</th>
+                                            <th>Rol</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="Personal in arrayPersonal" :key="Personal.id" v-on:dblclick="getPrivilegios(Personal.id)">
+                                            <td width="10%">
+                                                <button type="button" @click="abrirModal('Personal','actualizar',Personal)" class="btn btn-warning btn-sm">
+                                                <i class="icon-pencil"></i>
                                                 </button>
-                                            </template>
-                                            <template v-else>
-                                                <button type="button" @click="activarPersonal(Personal.id)" class="btn btn-success btn-sm">
-                                                    <i class="icon-check"></i>
-                                                </button>
-                                            </template>
-                                      
-                                        </td>
-                                        <td v-text="Personal.nombre" ></td>
+                                                <template v-if="Personal.condicion">
+                                                    <button type="button" @click="desactivarPersonal(Personal.id)" class="btn btn-danger btn-sm">
+                                                    <i class="fa fa-user-times"></i>
+                                                    </button>
+                                                </template>
+                                                <template v-else>
+                                                    <button type="button" @click="activarPersonal(Personal.id)" class="btn btn-success btn-sm">
+                                                        <i class="icon-check"></i>
+                                                    </button>
+                                                </template>
                                         
-                                        <td v-text="Personal.usuario"></td>
-                                        <td v-text="Personal.rol"></td>
-                                        <td>
-                                            <span v-if = "Personal.condicion==1" class="badge badge-success">Activo</span>
-                                            <span v-if = "Personal.condicion==0" class="badge badge-danger">Inactivo</span>
-                                        </td>
-                                                           
-                                    
-                                    </tr>                               
-                                </tbody>
-                            </table>
+                                            </td>
+                                            <td v-text="Personal.nombre" ></td>
+                                            
+                                            <td v-text="Personal.usuario"></td>
+                                            <td v-text="Personal.rol"></td>
+                                            <td>
+                                                <span v-if = "Personal.condicion==1" class="badge badge-success">Activo</span>
+                                                <span v-if = "Personal.condicion==0" class="badge badge-danger">Inactivo</span>
+                                            </td>
+                                                            
+                                        
+                                        </tr>                               
+                                    </tbody>
+                                </table>
+                            </div>
+                            <nav>
+                                <!--Botones de paginacion -->
+                                <ul class="pagination">
+                                    <li class="page-item" v-if="pagination.current_page > 1">
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,criterio)">Ant</a>
+                                    </li>
+                                    <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,criterio)" v-text="page"></a>
+                                    </li>
+                                    <li class="page-item" v-if="pagination.current_page < pagination.last_page">
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,criterio)">Sig</a>
+                                    </li>
+                                </ul>
+                            </nav>
                         </div>
-                        <nav>
-                            <!--Botones de paginacion -->
-                            <ul class="pagination">
-                                <li class="page-item" v-if="pagination.current_page > 1">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,criterio)">Ant</a>
-                                </li>
-                                <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,criterio)" v-text="page"></a>
-                                </li>
-                                <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,criterio)">Sig</a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
+                    </template>
+                    <template v-if="privilegios==1">
+                        <div class="card-body"> 
+                            <div class="form-group row border">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                  <center> <h4>Privilegios</h4> </center>
+                                    </div>
+                                </div> 
+
+                                <!-- listado para privilegios del menu Administracion -->
+                                <div class="col-md-4" v-if="rol_id==1 || rol_id==4 || rol_id==6|| rol_id==7 || rol_id==8">
+                                    <div class="form-group row border">
+                                            <a class="nav-link nav-dropdown-toggle"><i class="icon-energy"></i><input @click="limpiarAdministracion()" v-model="administracion" type="checkbox" value="1"/> Modulo Administración </a>
+                                            <ul v-if="administracion==1" class="nav-dropdown-items">
+                                                <li class="nav-item" v-if="rol_id == 1 || rol_id == 6">
+                                                    <a class="nav-link"><i class="fa fa-object-group"></i> <input v-model="departamentos" type="checkbox" value="1"/> Departamentos</a>
+                                                </li>
+                                                <li class="nav-item" v-if="rol_id == 1 || rol_id == 6">
+                                                    <a class="nav-link"><i class="fa fa-vcard"></i> <input v-model="personas" type="checkbox" value="1"/> Personas</a>
+                                                </li>
+                                                <li class="nav-item" v-if="rol_id == 1 || rol_id==4 || rol_id == 6 || rol_id==8">
+                                                    <a class="nav-link"><i class="fa fa-industry"></i> <input v-model="empresas" type="checkbox" value="1"/> Empresas</a>
+                                                </li>
+                                                <li class="nav-item" v-if="rol_id == 1 || rol_id == 7">
+                                                    <a class="nav-link"><i class="fa fa-bullhorn"></i> <input v-model="medios_public" type="checkbox" value="1"/> Medios Publicitarios</a>
+                                                </li>
+                                                <li class="nav-item" v-if="rol_id == 1 || rol_id == 6 || rol_id == 7 || rol_id==8">
+                                                    <a class="nav-link"><i class="fa fa-street-view"></i> <input v-model="lugares_contacto" type="checkbox" value="1"/> Lugares de contacto</a>
+                                                </li>
+                                                <li class="nav-item" v-if="rol_id == 1 || rol_id == 7">
+                                                    <a class="nav-link"><i class="fa fa-credit-card"></i> <input v-model="servicios" type="checkbox" value="1"/> Servicios</a>
+                                                </li>
+                                                <li class="nav-item" v-if="rol_id!=7">
+                                                    <a class="nav-link"><i class="fa fa-building-o"></i> <input v-model="inst_financiamiento" type="checkbox" value="1"/> Instituciones de financiamiento</a>
+                                                </li>
+                                                <li class="nav-item" v-if="rol_id!=7">
+                                                    <a class="nav-link"><i class="fa fa-credit-card"></i> <input v-model="tipos_credito" type="checkbox" value="1"/> Tipos de crédito</a>
+                                                </li>
+                                                <li class="nav-item" v-if="rol_id == 1 || rol_id == 7">
+                                                    <a class="nav-link"><i class="fa fa-credit-card"></i> <input v-model="asig_servicios" type="checkbox" value="1"/> Asignar Servicios</a>
+                                                </li>
+                                                <li class="nav-item" v-if="rol_id!=7">
+                                                    <a class="nav-link"><i class="fa fa-user-circle-o"></i> <input v-model="mis_asesores" type="checkbox" value="1"/> Mis Asesores</a>
+                                                </li>
+                                            </ul>
+                                        
+                                    </div>
+                                </div> 
+
+                                <!-- listado para privilegios del menu Desarrollo -->
+                                <div class="col-md-4" v-if="rol_id==1 || rol_id==3 || rol_id==4 || rol_id==6 || rol_id==8 || rol_id==7">
+                                    <div class="form-group row border">
+                                            <a class="nav-link nav-dropdown-toggle"><i class="icon-home"></i> <input @click="limpiarDesarrollo()" v-model="desarrollo" type="checkbox" value="1"/> Modulo Desarrollo</a>
+                                                <ul class="nav-dropdown-items" v-if="desarrollo==1">
+                                                    <li class="nav-item" v-if="rol_id==1 || rol_id==3 || rol_id==4 || rol_id==6 || rol_id==8">
+                                                        <a class="nav-link"><i class="icon-bag"></i> <input v-model="fraccionamiento" type="checkbox" value="1"/> Fraccionamiento</a>
+                                                    </li>
+                                                    <li class="nav-item" v-if="rol_id==1 || rol_id==3 || rol_id==4 || rol_id==6 || rol_id==8">
+                                                        <a class="nav-link"><i class="icon-bag"></i> <input v-model="etapas" type="checkbox" value="1"/> Etapas</a>
+                                                    </li>
+                                                    <li class="nav-item" v-if="rol_id==1 || rol_id==3 || rol_id==4 || rol_id==6 || rol_id==8">
+                                                        <a class="nav-link"><i class="icon-bag"></i> <input v-model="modelos" type="checkbox" value="1"/> Modelos</a>
+                                                    </li>
+                                                    <li class="nav-item" v-if="rol_id==1 || rol_id==3 || rol_id==4 || rol_id==6 || rol_id==8">
+                                                        <a class="nav-link"><i class="icon-bag"></i> <input v-model="lotes" type="checkbox" value="1"/> Lotes</a>
+                                                    </li>
+                                                    <li class="nav-item" v-if="rol_id==1 || rol_id==3 || rol_id==4 || rol_id==6 || rol_id==8">
+                                                        <a class="nav-link"><i class="icon-bag"></i> <input v-model="asign_modelos" type="checkbox" value="1"/> Asignar Modelo</a>
+                                                    </li>
+                                                    <li class="nav-item" v-if="rol_id==1 || rol_id==3 || rol_id==4 || rol_id==6 || rol_id==8">
+                                                        <a class="nav-link"><i class="icon-bag"></i> <input v-model="licencias" type="checkbox" value="1"/> Licencias</a>
+                                                    </li>
+                                                    <li class="nav-item" v-if="rol_id==1 || rol_id==3 || rol_id==4 || rol_id==6 || rol_id==8">
+                                                        <a class="nav-link"><i class="icon-bag"></i> <input v-model="acta_terminacion" type="checkbox" value="1"/> Acta de terminacion</a>
+                                                    </li>
+                                                    <li class="nav-item" v-if="rol_id==1 || rol_id==7">
+                                                        <a class="nav-link"><i class="icon-bag"></i> <input v-model="p_fraccionamiento" type="checkbox" value="1"/> Publicidad-Fraccionamiento</a>
+                                                    </li>
+                                                    <li class="nav-item" v-if="rol_id==1 || rol_id==7">
+                                                        <a class="nav-link"><i class="icon-bag"></i> <input v-model="p_etapa" type="checkbox" value="1"/> Publicidad-Etapas</a>
+                                                    </li>
+                                                </ul>
+                                    </div>
+                                </div> 
+
+                                <!-- listado para privilegios del menu Ventas -->
+                                <div class="col-md-4"  v-if="rol_id==1 || rol_id==2 || rol_id==4 || rol_id==6 || rol_id==8">
+                                    <div class="form-group row border">
+                                            <a class="nav-link nav-dropdown-toggle"><i class="icon-basket"></i> <input @click="limpiarVentas()" v-model="ventas" type="checkbox" value="1"/> Modulo Ventas</a>
+                                                <ul class="nav-dropdown-items" v-if="ventas==1">
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="fa fa-circle-o-notch fa-spin"></i> <input v-model="lotes_disp" type="checkbox" value="1"/> Lotes Disponibles</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="fa fa-group"></i> <input v-model="mis_prospectos" type="checkbox" value="1"/> Mis prospectos</a>
+                                                    </li> 
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="fa fa-calculator"></i> <input v-model="simulacion_credito" type="checkbox" value="1"/> Simulacion de credito</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="fa fa-archive"></i> <input v-model="hist_simulaciones" type="checkbox" value="1"/> Hist. de simulaciones</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="fa fa-archive"></i> <input v-model="hist_creditos" type="checkbox" value="1"/> Hist. creditos</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="fa fa-archive"></i> <input v-model="contratos" type="checkbox" value="1"/> Realizar contrato</a>
+                                                    </li>
+                                                </ul>
+                                    </div>
+                                </div>
+
+                                <!-- listado para privilegios del menu Obra -->
+                                <div class="col-md-4" v-if="rol_id==1 || rol_id==6 || rol_id==5">
+                                    <div class="form-group row border">
+                                            <a class="nav-link nav-dropdown-toggle"><i class="fa fa-plug"></i> <input @click="limpiarObra()" v-model="obra" type="checkbox" value="1"/> Modulo Obra</a>
+                                                <ul class="nav-dropdown-items" v-if="obra==1">
+                                                    <li class="nav-item">
+                                                        <a class="nav-link" ><i class="fa fa-handshake-o"></i> <input v-model="contratistas" type="checkbox" value="1"/> Contratistas</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link" ><i class="fa fa-play-circle"></i> <input v-model="ini_obra" type="checkbox" value="1"/> Inicio de obra</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link" ><i class="fa fa-newspaper-o"></i> <input v-model="aviso_obra" type="checkbox" value="1"/> Aviso de obra</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link" ><i class="fa fa-star-half"></i> <input v-model="partidas" type="checkbox" value="1"/> Partidas</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link" ><i class="fa fa-star-half-o"></i> <input v-model="avance" type="checkbox" value="1"/> Avance</a>
+                                                    </li>
+                                                </ul>
+                                    </div>
+                                </div> 
+                                
+                                <!-- listado para privilegios del menu Reportes -->
+                                <div class="col-md-4">
+                                    <div class="form-group row border">
+                                            <a class="nav-link nav-dropdown-toggle"><i class="icon-people"></i> <input @click="limpiarReportes()" v-model="reportes" type="checkbox" value="1"/> Modulo Reportes</a>
+                                                <ul class="nav-dropdown-items" v-if="reportes==1">
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="icon-chart"></i> <input v-model="mejora" type="checkbox" value="1"/> Estadisticas Mejora</a>
+                                                    </li>
+                                                </ul>
+                                    </div>
+                                </div> 
+
+                                 <!-- listado para privilegios del menu Precios -->
+                                <div class="col-md-4" v-if="rol_id==1 || rol_id==6 || rol_id==4 || rol_id==8">
+                                    <div class="form-group row border">
+                                            <a class="nav-link nav-dropdown-toggle"><i class="fa fa-money"></i> <input @click="limpiarPrecios()" v-model="precios" type="checkbox" value="1"/> Modulo Precios</a>
+                                                <ul class="nav-dropdown-items" v-if="precios==1">
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="fa fa-usd"></i> <input v-model="precios_etapas" type="checkbox" value="1"/> Precios de etapa</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="fa fa-plus-square-o"></i> <input v-model="sobreprecios" type="checkbox" value="1"/> Sobreprecios</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="fa fa-shopping-bag"></i> <input v-model="paquetes" type="checkbox" value="1"/> Paquetes</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="fa fa-percent"></i> <input v-model="promociones" type="checkbox" value="1"/> Promociones</a>
+                                                    </li>
+                                                </ul>
+                                    </div>
+                                </div> 
+
+                                 <!-- listado para privilegios del menu Acceso -->
+                                <div class="col-md-4" v-if="rol_id==1 || rol_id==6">
+                                    <div class="form-group row border">
+                                            <a class="nav-link nav-dropdown-toggle"><i class="icon-people"></i> <input @click="limpiarAcceso()" v-model="acceso" type="checkbox" value="1"/> Modulo Acceso</a>
+                                                <ul class="nav-dropdown-items" v-if="acceso==1">
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="icon-user"></i> <input v-model="usuarios" type="checkbox" value="1"/> Usuarios</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="icon-user-following"></i> <input v-model="roles" type="checkbox" value="1"/> Roles</a>
+                                                    </li>
+                                                </ul>
+                                    </div>
+                                </div> 
+                               
+                                    
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <button type="button" class="btn btn-secondary" @click="cerrarPrivilegios()"> Cerrar </button>
+                                    <button type="button" class="btn btn-primary" @click="actualizarPrivilegios()"> Guardar </button>
+                                </div>
+                            </div>
+
+                                
+                                
+                            </div>
+
+                 
+
+                        </div>
+                    </template>
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
@@ -288,9 +493,6 @@
             </div>
             <!--Fin del modal-->
 
-
-            
-
         </main>
 </template>
 
@@ -302,6 +504,7 @@
     export default {
         data(){
             return{
+                privilegios:0,
                 proceso:false,
                 id:0,
                 id_persona:0,
@@ -336,6 +539,68 @@
                 tipoAccion: 0,
                 errorPersonal : 0,
                 errorMostrarMsjPersonal : [],
+
+                //privilegios
+                administracion:0,
+                desarrollo:0,
+                precios:0,
+                obra:0,
+                ventas:0,
+                acceso:0,
+                reportes:0,
+
+                    //Administracion
+                    departamentos:0,
+                    personas:0,
+                    empresas:0,
+                    medios_public:0,
+                    lugares_contacto:0,
+                    servicios:0,
+                    inst_financiamiento:0,
+                    tipos_credito:0,
+                    asig_servicios:0,
+                    mis_asesores:0,
+
+
+                    //Desarrollo
+                    fraccionamiento:0,
+                    etapas:0,
+                    modelos:0,
+                    lotes:0,
+                    asign_modelos:0,
+                    licencias:0,
+                    acta_terminacion:0,
+                    p_etapa:0,
+                    p_fraccionamiento:0,
+
+                    //Precios
+                    precios_etapas:0,
+                    sobreprecios:0,
+                    paquetes:0,
+                    promociones:0,
+
+                    //Obra
+                    contratistas:0,
+                    ini_obra:0,
+                    aviso_obra:0,
+                    partidas:0,
+                    avance:0,
+
+                    //Ventas
+                    lotes_disp:0,
+                    mis_prospectos:0,
+                    simulacion_credito:0,
+                    hist_simulaciones:0,
+                    hist_creditos:0,
+                    contratos:0,
+
+                    //Acceso
+                    usuarios:0,
+                    roles:0,
+
+                    //Reportes
+                    mejora:0,
+
                 pagination : {
                     'total' : 0,         
                     'current_page' : 0,
@@ -417,7 +682,7 @@
                 });
               
             },
-              selectRoles(){
+            selectRoles(){
                 let me = this;
                 me.arrayRoles=[];
                 var url = '/select_roles';
@@ -430,8 +695,66 @@
                 });
               
             },
+            limpiarAdministracion(){
+                //Administracion
+                this.departamentos=0;
+                this.personas=0;
+                this.empresas=0;
+                this.medios_public=0;
+                this.lugares_contacto=0;
+                this.servicios=0;
+                this.inst_financiamiento=0;
+                this.tipos_credito=0;
+                this.asig_servicios=0;
+                this.mis_asesores=0;
+            },
+            limpiarDesarrollo(){
+                //Desarrollo
+                this.fraccionamiento=0;
+                this.etapas=0;
+                this.modelos=0;
+                this.lotes=0;
+                this.asign_modelos=0;
+                this.licencias=0;
+                this.acta_terminacion=0;
+                this.p_etapa=0;
+                this.p_fraccionamiento=0;
+            },
+            limpiarPrecios(){
+                 //Precios
+                this.precios_etapas=0;
+                this.sobreprecios=0;
+                this.paquetes=0;
+                this.promociones=0;
+            },
+            limpiarObra(){
+                 //Obra
+                this.contratistas=0;
+                this.ini_obra=0;
+                this.aviso_obra=0;
+                this.partidas=0;
+                this.avance=0;
+            },
+            limpiarVentas(){
+                 //Ventas
+                this.lotes_disp=0;
+                this.mis_prospectos=0;
+                this.simulacion_credito=0;
+                this.hist_simulaciones=0;
+                this.hist_creditos=0;
+                this.contratos=0;
+            },
+            limpiarAcceso(){
+                 //Acceso
+                this.usuarios=0;
+                this.roles=0;
+            },
+            limpiarReportes(){
+                 //Reportes
+                this.mejora=0;
+            },
 
-             selectPersonas(){
+            selectPersonas(){
                 let me = this;
                 me.arrayPersonas=[];
                 var url = '/select_personas_sin_user';
@@ -444,7 +767,86 @@
                 });
               
             },
-             limpiarBusqueda(){
+            getPrivilegios(id){
+                let me = this;
+                var usuarios=[];
+                this.id=id;
+                var url = '/usuario/privilegios?id=' + id;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    usuarios = respuesta.privilegios;
+
+                    //privilegios
+                    me.administracion=usuarios[0].administracion;
+                    me.desarrollo=usuarios[0].desarrollo;
+                    me.precios=usuarios[0].precios;
+                    me.obra=usuarios[0].obra;
+                    me.ventas=usuarios[0].ventas;
+                    me.acceso=usuarios[0].acceso;
+                    me.reportes=usuarios[0].reportes;
+
+                    //Administracion
+                    me.departamentos=usuarios[0].departamentos;
+                    me.personas=usuarios[0].personas;
+                    me.empresas=usuarios[0].empresas;
+                    me.medios_public=usuarios[0].medios_public;
+                    me.lugares_contacto=usuarios[0].lugares_contacto;
+                    me.servicios=usuarios[0].servicios;
+                    me.inst_financiamiento=usuarios[0].inst_financiamiento;
+                    me.tipos_credito=usuarios[0].tipos_credito;
+                    me.asig_servicios=usuarios[0].asig_servicios;
+                    me.mis_asesores=usuarios[0].mis_asesores;
+
+
+                    //Desarrollo
+                    me.fraccionamiento=usuarios[0].fraccionamiento;
+                    me.etapas=usuarios[0].etapas;
+                    me.modelos=usuarios[0].modelos;
+                    me.lotes=usuarios[0].lotes;
+                    me.asign_modelos=usuarios[0].asign_modelos;
+                    me.licencias=usuarios[0].licencias;
+                    me.acta_terminacion=usuarios[0].acta_terminacion;
+                    me.p_etapa=usuarios[0].p_etapa;
+                    me.p_fraccionamiento=usuarios[0].p_fraccionamiento;
+
+                    //Precios
+                    me.precios_etapas=usuarios[0].precios_etapas;
+                    me.sobreprecios=usuarios[0].sobreprecios;
+                    me.paquetes=usuarios[0].paquetes;
+                    me.promociones=usuarios[0].promociones;
+
+                    //Obra
+                    me.contratistas=usuarios[0].contratistas;
+                    me.ini_obra=usuarios[0].ini_obra;
+                    me.aviso_obra=usuarios[0].aviso_obra;
+                    me.partidas=usuarios[0].partidas;
+                    me.avance=usuarios[0].avance;
+
+                    //Ventas
+                    me.lotes_disp=usuarios[0].lotes_disp;
+                    me.mis_prospectos=usuarios[0].mis_prospectos;
+                    me.simulacion_credito=usuarios[0].simulacion_credito;
+                    me.hist_simulaciones=usuarios[0].hist_simulaciones;
+                    me.hist_creditos=usuarios[0].hist_creditos;
+                    me.contratos=usuarios[0].contratos;
+
+                    //Acceso
+                    me.usuarios=usuarios[0].usuarios;
+                    me.roles=usuarios[0].roles;
+
+                    //Reportes
+                    me.mejora=usuarios[0].mejora;
+
+                    me.rol_id = usuarios[0].rol_id;
+
+                    me.privilegios=1;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+              
+            },
+            limpiarBusqueda(){
                 let me=this;
                 me.buscar= "";
             },
@@ -595,6 +997,78 @@
                         position: 'top-end',
                         type: 'success',
                         title: 'Cambios guardados correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+            actualizarPrivilegios(){
+                let me = this;
+                //Con axios se llama el metodo update de PersonalController
+                axios.put('/usuarios/act_privilegios',{
+                    'id':this.id,
+                    'administracion':this.administracion,
+                    'desarrollo':this.desarrollo,
+                    'precios':this.precios,
+                    'obra':this.obra,
+                    'ventas':this.ventas,
+                    'acceso':this.acceso,
+                    'reportes':this.reportes,
+                        //Administracion
+                    'departamentos':this.departamentos,
+                    'personas':this.personas,
+                    'empresas':this.empresas,
+                    'medios_public':this.medios_public,
+                    'lugares_contacto':this.lugares_contacto,
+                    'servicios':this.servicios,
+                    'inst_financiamiento':this.inst_financiamiento,
+                    'tipos_credito':this.tipos_credito,
+                    'asig_servicios':this.asig_servicios,
+                    'mis_asesores':this.mis_asesores,
+                        //Desarrollo
+                    'fraccionamiento':this.fraccionamiento,
+                    'etapas':this.etapas,
+                    'modelos':this.modelos,
+                    'lotes':this.lotes,
+                    'asign_modelos':this.asign_modelos,
+                    'licencias':this.licencias,
+                    'acta_terminacion':this.acta_terminacion,
+                    'p_etapa':this.p_etapa,
+                    'p_fraccionamiento':this.p_fraccionamiento,
+                        //Precios
+                    'precios_etapas':this.precios_etapas,
+                    'sobreprecios':this.sobreprecios,
+                    'paquetes':this.paquetes,
+                    'promociones':this.promociones,
+                        //Obra
+                    'contratistas':this.contratistas,
+                    'ini_obra':this.ini_obra,
+                    'aviso_obra':this.aviso_obra,
+                    'partidas':this.partidas,
+                    'avance':this.avance,
+                        //Ventas
+                    'lotes_disp':this.lotes_disp,
+                    'mis_prospectos':this.mis_prospectos,
+                    'simulacion_credito':this.simulacion_credito,
+                    'hist_simulaciones':this.hist_simulaciones,
+                    'hist_creditos':this.hist_creditos,
+                    'contratos':this.contratos,
+                        //Acceso
+                    'usuarios':this.usuarios,
+                    'roles':this.roles,
+                        //Reportes
+                    'mejora':this.mejora,
+
+                }).then(function (response){
+                    me.listarPersonal(1,'','nombre');
+                    me.cerrarPrivilegios();
+                    //window.alert("Cambios guardados correctamente");
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Privilegios asignados correctamente',
                         showConfirmButton: false,
                         timer: 1500
                         })
@@ -791,6 +1265,74 @@
                     return true;
                 }
             },
+            cerrarPrivilegios(){
+                let me = this;
+                //privilegios
+                me.administracion=0;
+                me.desarrollo=0;
+                me.precios=0;
+                me.obra=0;
+                me.ventas=0;
+                me.acceso=0;
+                me.reportes=0;
+                me.id=0;
+
+                    //Administracion
+                me.departamentos=0;
+                me.personas=0;
+                me.empresas=0;
+                me.medios_public=0;
+                me.lugares_contacto=0;
+                me.servicios=0;
+                me.inst_financiamiento=0;
+                me.tipos_credito=0;
+                me.asig_servicios=0;
+                me.mis_asesores=0;
+
+
+                    //Desarrollo
+                me.fraccionamiento=0;
+                me.etapas=0;
+                me.modelos=0;
+                me.lotes=0;
+                me.asign_modelos=0;
+                me.licencias=0;
+                me.acta_terminacion=0;
+                me.p_etapa=0;
+                me.p_fraccionamiento=0;
+
+                    //Precios
+                me.precios_etapas=0;
+                me.sobreprecios=0;
+                me.paquetes=0;
+                me.promociones=0;
+
+                    //Obra
+                me.contratistas=0;
+                me.ini_obra=0;
+                me.aviso_obra=0;
+                me.partidas=0;
+                me.avance=0;
+
+                    //Ventas
+                me.lotes_disp=0;
+                me.mis_prospectos=0;
+                me.simulacion_credito=0;
+                me.hist_simulaciones=0;
+                me.hist_creditos=0;
+                me.contratos=0;
+
+                    //Acceso
+                me.usuarios=0;
+                me.roles=0;
+
+                    //Reportes
+                me.mejora=0;
+
+                me.rol_id =0;
+
+                me.privilegios=0;
+            },
             cerrarModal(){
                 this.modal = 0;
                 this.departamento_id = '';
@@ -913,6 +1455,14 @@
     }
 </script>
 <style>
+    .row2 {
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+        margin-right: -15px;
+        margin-left: -5px;
+    }
     .form-control:disabled, .form-control[readonly] {
         background-color: rgba(0, 0, 0, 0.06);
         opacity: 1;

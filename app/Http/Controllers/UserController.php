@@ -120,6 +120,8 @@ class UserController extends Controller
     public function store(Request $request)
     {
         if (!$request->ajax()) return redirect('/');
+
+        $rol = $request->rol_id;
          
         try{
             DB::beginTransaction();
@@ -147,6 +149,191 @@ class UserController extends Controller
             $user->rol_id = $request->rol_id;          
  
             $user->id = $persona->id;
+
+            switch($rol){
+                case 1: // Administrador
+                {
+                    $user->administracion=1;
+                    $user->desarrollo=1;
+                    $user->precios=1;
+                    $user->obra=1;
+                    $user->ventas=1;
+                    $user->acceso=1;
+                    $user->reportes=1;
+                    //Administracion
+                    $user->departamentos=1;
+                    $user->personas=1;
+                    $user->empresas=1;
+                    $user->medios_public=1;
+                    $user->lugares_contacto=1;
+                    $user->servicios=1;
+                    $user->inst_financiamiento=1;
+                    $user->tipos_credito=1;
+                    $user->asig_servicios=1;
+                    $user->mis_asesores=0;
+                    //Desarrollo
+                    $user->fraccionamiento=1;
+                    $user->etapas=1;
+                    $user->modelos=1;
+                    $user->lotes=1;
+                    $user->asign_modelos=1;
+                    $user->licencias=1;
+                    $user->acta_terminacion=1;
+                    $user->p_etapa=0;
+                    $user->p_fraccionamiento=0;
+                    //Precios
+                    $user->precios_etapas=1;
+                    $user->sobreprecios=1;
+                    $user->paquetes=1;
+                    $user->promociones=1;
+                    //Obra
+                    $user->contratistas=1;
+                    $user->ini_obra=1;
+                    $user->aviso_obra=1;
+                    $user->partidas=1;
+                    $user->avance=1;
+                    //Ventas
+                    $user->lotes_disp=1;
+                    $user->mis_prospectos=0;
+                    $user->simulacion_credito=1;
+                    $user->hist_simulaciones=1;
+                    $user->hist_creditos=1;
+                    $user->contratos=1;
+                    //Acceso
+                    $user->usuarios=1;
+                    $user->roles=1;
+                    //Reportes
+                    $user->mejora=1;
+                    break;
+                }
+                case 2: //Asesor de ventas
+                {
+                    $user->administracion=1;
+                    $user->ventas=1;
+                    //Administracion
+                    $user->empresas=1;
+                    //Ventas
+                    $user->lotes_disp=1;
+                    $user->mis_prospectos=1;
+                    $user->simulacion_credito=1;
+                    break;
+                }
+                case 3: //Gerente de proyectos
+                {
+                    $user->desarrollo=1;
+                    //Desarrollo
+                    $user->fraccionamiento=1;
+                    $user->modelos=1;
+                    $user->lotes=1;
+                    $user->licencias=1;
+                    $user->acta_terminacion=1;
+                    break;
+                }
+                case 4: //Gerente de ventas
+                {
+                    $user->administracion=1;
+                    $user->ventas=1;
+                    $user->reportes=1;
+                    //Administracion
+                    $user->empresas=1;
+                    $user->inst_financiamiento=1;
+                    $user->tipos_credito=1;
+                    $user->mis_asesores=1;
+                    //Ventas
+                    $user->lotes_disp=1;
+                    $user->simulacion_credito=1;
+                    $user->hist_simulaciones=1;
+                    $user->contratos=1;
+                    //Reportes
+                    $user->mejora=1;
+                    break;
+                }
+                case 5: // Gerente de obra
+                {
+                    $user->obra=1;
+                    
+                    //Obra
+                    $user->contratistas=1;
+                    $user->aviso_obra=1;
+                    $user->partidas=1;
+                    $user->avance=1;
+                    break;
+                }
+                case 6: // Admin ventas
+                {
+                    $user->administracion=1;
+                    $user->desarrollo=1;
+                    $user->precios=1;
+                    $user->obra=1;
+                    $user->ventas=1;
+                    $user->acceso=1;
+                    $user->reportes=1;
+                    //Administracion
+                    $user->empresas=1;
+                    $user->personas=1;
+                    $user->inst_financiamiento=1;
+                    $user->tipos_credito=1;
+                    //Desarrollo
+                    $user->fraccionamiento=1;
+                    $user->etapas=1;
+                    $user->modelos=1;
+                    $user->asign_modelos=1;
+                    //Precios
+                    $user->precios_etapas=1;
+                    $user->sobreprecios=1;
+                    $user->paquetes=1;
+                    $user->promociones=1;
+                    //Obra
+                    $user->ini_obra=1;
+                    //Ventas
+                    $user->lotes_disp=1;
+                    $user->simulacion_credito=1;
+                    $user->hist_simulaciones=1;
+                    $user->hist_creditos=1;
+                    $user->contratos=1;
+                    //Acceso
+                    $user->usuarios=1;
+                    $user->roles=1;
+                    //Reportes
+                    $user->mejora=1;
+                    break;
+                }
+                case 7: // Publicidad
+                {
+                    $user->administracion=1;
+                    $user->desarrollo=1;
+                    $user->reportes=1;
+                    //Administracion
+                    $user->medios_public=1;
+                    $user->lugares_contacto=1;
+                    $user->servicios=1;
+                    $user->asig_servicios=1;
+                    //Desarrollo
+                    $user->modelos=1;
+                    $user->p_etapa=0;
+                    $user->p_fraccionamiento=0;
+                    //Reportes
+                    $user->mejora=1;
+                    break;
+                }
+                case 8: // Gestor ventas
+                {
+                    $user->administracion=1;
+                    $user->ventas=1;
+                    //Administracion
+                    $user->empresas=1;
+                    $user->inst_financiamiento=1;
+                    $user->tipos_credito=1;
+                    //Ventas
+                    $user->lotes_disp=1;
+                    $user->simulacion_credito=1;
+                    $user->hist_simulaciones=1;
+                    $user->hist_creditos=1;
+                    $user->contratos=1;
+                    break;
+                }
+                
+            }
  
             $user->save();
             
@@ -172,6 +359,8 @@ class UserController extends Controller
     public function update(Request $request)
     {
         if (!$request->ajax()) return redirect('/');
+
+        $rol= $request->rol_id;
          
         try{
             DB::beginTransaction();
@@ -218,6 +407,191 @@ class UserController extends Controller
             $user->password = bcrypt( $request->password);
             $user->condicion = '1';
             $user->rol_id = $request->rol_id;
+
+            switch($rol){
+                case 1: // Administrador
+                {
+                    $user->administracion=1;
+                    $user->desarrollo=1;
+                    $user->precios=1;
+                    $user->obra=1;
+                    $user->ventas=1;
+                    $user->acceso=1;
+                    $user->reportes=1;
+                    //Administracion
+                    $user->departamentos=1;
+                    $user->personas=1;
+                    $user->empresas=1;
+                    $user->medios_public=1;
+                    $user->lugares_contacto=1;
+                    $user->servicios=1;
+                    $user->inst_financiamiento=1;
+                    $user->tipos_credito=1;
+                    $user->asig_servicios=1;
+                    $user->mis_asesores=0;
+                    //Desarrollo
+                    $user->fraccionamiento=1;
+                    $user->etapas=1;
+                    $user->modelos=1;
+                    $user->lotes=1;
+                    $user->asign_modelos=1;
+                    $user->licencias=1;
+                    $user->acta_terminacion=1;
+                    $user->p_etapa=0;
+                    $user->p_fraccionamiento=0;
+                    //Precios
+                    $user->precios_etapas=1;
+                    $user->sobreprecios=1;
+                    $user->paquetes=1;
+                    $user->promociones=1;
+                    //Obra
+                    $user->contratistas=1;
+                    $user->ini_obra=1;
+                    $user->aviso_obra=1;
+                    $user->partidas=1;
+                    $user->avance=1;
+                    //Ventas
+                    $user->lotes_disp=1;
+                    $user->mis_prospectos=0;
+                    $user->simulacion_credito=1;
+                    $user->hist_simulaciones=1;
+                    $user->hist_creditos=1;
+                    $user->contratos=1;
+                    //Acceso
+                    $user->usuarios=1;
+                    $user->roles=1;
+                    //Reportes
+                    $user->mejora=1;
+                    break;
+                }
+                case 2: //Asesor de ventas
+                {
+                    $user->administracion=1;
+                    $user->ventas=1;
+                    //Administracion
+                    $user->empresas=1;
+                    //Ventas
+                    $user->lotes_disp=1;
+                    $user->mis_prospectos=1;
+                    $user->simulacion_credito=1;
+                    break;
+                }
+                case 3: //Gerente de proyectos
+                {
+                    $user->desarrollo=1;
+                    //Desarrollo
+                    $user->fraccionamiento=1;
+                    $user->modelos=1;
+                    $user->lotes=1;
+                    $user->licencias=1;
+                    $user->acta_terminacion=1;
+                    break;
+                }
+                case 4: //Gerente de ventas
+                {
+                    $user->administracion=1;
+                    $user->ventas=1;
+                    $user->reportes=1;
+                    //Administracion
+                    $user->empresas=1;
+                    $user->inst_financiamiento=1;
+                    $user->tipos_credito=1;
+                    $user->mis_asesores=1;
+                    //Ventas
+                    $user->lotes_disp=1;
+                    $user->simulacion_credito=1;
+                    $user->hist_simulaciones=1;
+                    $user->contratos=1;
+                    //Reportes
+                    $user->mejora=1;
+                    break;
+                }
+                case 5: // Gerente de obra
+                {
+                    $user->obra=1;
+                    
+                    //Obra
+                    $user->contratistas=1;
+                    $user->aviso_obra=1;
+                    $user->partidas=1;
+                    $user->avance=1;
+                    break;
+                }
+                case 6: // Admin ventas
+                {
+                    $user->administracion=1;
+                    $user->desarrollo=1;
+                    $user->precios=1;
+                    $user->obra=1;
+                    $user->ventas=1;
+                    $user->acceso=1;
+                    $user->reportes=1;
+                    //Administracion
+                    $user->empresas=1;
+                    $user->personas=1;
+                    $user->inst_financiamiento=1;
+                    $user->tipos_credito=1;
+                    //Desarrollo
+                    $user->fraccionamiento=1;
+                    $user->etapas=1;
+                    $user->modelos=1;
+                    $user->asign_modelos=1;
+                    //Precios
+                    $user->precios_etapas=1;
+                    $user->sobreprecios=1;
+                    $user->paquetes=1;
+                    $user->promociones=1;
+                    //Obra
+                    $user->ini_obra=1;
+                    //Ventas
+                    $user->lotes_disp=1;
+                    $user->simulacion_credito=1;
+                    $user->hist_simulaciones=1;
+                    $user->hist_creditos=1;
+                    $user->contratos=1;
+                    //Acceso
+                    $user->usuarios=1;
+                    $user->roles=1;
+                    //Reportes
+                    $user->mejora=1;
+                    break;
+                }
+                case 7: // Publicidad
+                {
+                    $user->administracion=1;
+                    $user->desarrollo=1;
+                    $user->reportes=1;
+                    //Administracion
+                    $user->medios_public=1;
+                    $user->lugares_contacto=1;
+                    $user->servicios=1;
+                    $user->asig_servicios=1;
+                    //Desarrollo
+                    $user->modelos=1;
+                    $user->p_etapa=0;
+                    $user->p_fraccionamiento=0;
+                    //Reportes
+                    $user->mejora=1;
+                    break;
+                }
+                case 8: // Gestor ventas
+                {
+                    $user->administracion=1;
+                    $user->ventas=1;
+                    //Administracion
+                    $user->empresas=1;
+                    $user->inst_financiamiento=1;
+                    $user->tipos_credito=1;
+                    //Ventas
+                    $user->lotes_disp=1;
+                    $user->simulacion_credito=1;
+                    $user->hist_simulaciones=1;
+                    $user->hist_creditos=1;
+                    $user->contratos=1;
+                    break;
+                }
+                
+            }
             $user->save();
 
  
@@ -231,6 +605,7 @@ class UserController extends Controller
 
     public function asignar(Request $request){
         if (!$request->ajax()) return redirect('/');
+        $rol = $request->rol_id;
         $user = new User();
         $user->id = $request->id_persona;
         $user->usuario = $request->usuario;
@@ -243,6 +618,191 @@ class UserController extends Controller
             $vendedor->id = $request->id_persona;
             $vendedor->save();
         }     
+
+        switch($rol){
+            case 1: // Administrador
+            {
+                $user->administracion=1;
+                $user->desarrollo=1;
+                $user->precios=1;
+                $user->obra=1;
+                $user->ventas=1;
+                $user->acceso=1;
+                $user->reportes=1;
+                //Administracion
+                $user->departamentos=1;
+                $user->personas=1;
+                $user->empresas=1;
+                $user->medios_public=1;
+                $user->lugares_contacto=1;
+                $user->servicios=1;
+                $user->inst_financiamiento=1;
+                $user->tipos_credito=1;
+                $user->asig_servicios=1;
+                $user->mis_asesores=0;
+                //Desarrollo
+                $user->fraccionamiento=1;
+                $user->etapas=1;
+                $user->modelos=1;
+                $user->lotes=1;
+                $user->asign_modelos=1;
+                $user->licencias=1;
+                $user->acta_terminacion=1;
+                $user->p_etapa=0;
+                $user->p_fraccionamiento=0;
+                //Precios
+                $user->precios_etapas=1;
+                $user->sobreprecios=1;
+                $user->paquetes=1;
+                $user->promociones=1;
+                //Obra
+                $user->contratistas=1;
+                $user->ini_obra=1;
+                $user->aviso_obra=1;
+                $user->partidas=1;
+                $user->avance=1;
+                //Ventas
+                $user->lotes_disp=1;
+                $user->mis_prospectos=0;
+                $user->simulacion_credito=1;
+                $user->hist_simulaciones=1;
+                $user->hist_creditos=1;
+                $user->contratos=1;
+                //Acceso
+                $user->usuarios=1;
+                $user->roles=1;
+                //Reportes
+                $user->mejora=1;
+                break;
+            }
+            case 2: //Asesor de ventas
+            {
+                $user->administracion=1;
+                $user->ventas=1;
+                //Administracion
+                $user->empresas=1;
+                //Ventas
+                $user->lotes_disp=1;
+                $user->mis_prospectos=0;
+                $user->simulacion_credito=1;
+                break;
+            }
+            case 3: //Gerente de proyectos
+            {
+                $user->desarrollo=1;
+                //Desarrollo
+                $user->fraccionamiento=1;
+                $user->modelos=1;
+                $user->lotes=1;
+                $user->licencias=1;
+                $user->acta_terminacion=1;
+                break;
+            }
+            case 4: //Gerente de ventas
+            {
+                $user->administracion=1;
+                $user->ventas=1;
+                $user->reportes=1;
+                //Administracion
+                $user->empresas=1;
+                $user->inst_financiamiento=1;
+                $user->tipos_credito=1;
+                $user->mis_asesores=0;
+                //Ventas
+                $user->lotes_disp=1;
+                $user->simulacion_credito=1;
+                $user->hist_simulaciones=1;
+                $user->contratos=1;
+                //Reportes
+                $user->mejora=1;
+                break;
+            }
+            case 5: // Gerente de obra
+            {
+                $user->obra=1;
+                
+                //Obra
+                $user->contratistas=1;
+                $user->aviso_obra=1;
+                $user->partidas=1;
+                $user->avance=1;
+                break;
+            }
+            case 6: // Admin ventas
+            {
+                $user->administracion=1;
+                $user->desarrollo=1;
+                $user->precios=1;
+                $user->obra=1;
+                $user->ventas=1;
+                $user->acceso=1;
+                $user->reportes=1;
+                //Administracion
+                $user->empresas=1;
+                $user->personas=1;
+                $user->inst_financiamiento=1;
+                $user->tipos_credito=1;
+                //Desarrollo
+                $user->fraccionamiento=1;
+                $user->etapas=1;
+                $user->modelos=1;
+                $user->asign_modelos=1;
+                //Precios
+                $user->precios_etapas=1;
+                $user->sobreprecios=1;
+                $user->paquetes=1;
+                $user->promociones=1;
+                //Obra
+                $user->ini_obra=1;
+                //Ventas
+                $user->lotes_disp=1;
+                $user->simulacion_credito=1;
+                $user->hist_simulaciones=1;
+                $user->hist_creditos=1;
+                $user->contratos=1;
+                //Acceso
+                $user->usuarios=1;
+                $user->roles=1;
+                //Reportes
+                $user->mejora=1;
+                break;
+            }
+            case 7: // Publicidad
+            {
+                $user->administracion=1;
+                $user->desarrollo=1;
+                $user->reportes=1;
+                //Administracion
+                $user->medios_public=1;
+                $user->lugares_contacto=1;
+                $user->servicios=1;
+                $user->asig_servicios=1;
+                //Desarrollo
+                $user->modelos=1;
+                $user->p_etapa=0;
+                $user->p_fraccionamiento=0;
+                //Reportes
+                $user->mejora=1;
+                break;
+            }
+            case 8: // Gestor ventas
+            {
+                $user->administracion=1;
+                $user->ventas=1;
+                //Administracion
+                $user->empresas=1;
+                $user->inst_financiamiento=1;
+                $user->tipos_credito=1;
+                //Ventas
+                $user->lotes_disp=1;
+                $user->simulacion_credito=1;
+                $user->hist_simulaciones=1;
+                $user->hist_creditos=1;
+                $user->contratos=1;
+                break;
+            }
+            
+        }
 
         $user->save();
     }
@@ -296,6 +856,90 @@ class UserController extends Controller
         return ['personas' => $personas];
     }
 
+    public function getPrivilegios(Request $request){
+        $privilegios=User::join('roles','users.rol_id','=','roles.id')
+                        ->select( 'users.administracion','users.desarrollo','users.precios','users.obra','users.ventas',
+                                'users.acceso','users.reportes','users.rol_id',
+                                //Administracion
+                                'users.departamentos','users.personas','users.empresas','users.medios_public','users.lugares_contacto','users.servicios',
+                                'users.inst_financiamiento','users.tipos_credito','users.asig_servicios','users.mis_asesores',
+                                //Desarrollo
+                                'users.fraccionamiento','users.etapas','users.modelos','users.lotes','users.asign_modelos','users.licencias',
+                                'users.acta_terminacion','users.p_etapa','users.p_fraccionamiento',
+                                //Precios
+                                'users.precios_etapas','users.sobreprecios','users.paquetes','users.promociones',
+                                //Obra
+                                'users.contratistas','users.ini_obra','users.aviso_obra','users.partidas','users.avance',
+                                //Ventas
+                                'users.lotes_disp','users.mis_prospectos','users.simulacion_credito','users.hist_simulaciones',
+                                'users.hist_creditos','users.contratos',
+                                //Acceso
+                                'users.usuarios','users.roles',
+                                //Reportes
+                                'users.mejora'
+                        )->where('users.id','=',$request->id)->get();
+            
+            return['privilegios' => $privilegios];
+                    
+    }
+
+    public function updatePrivilegios(Request $request){
+        if (!$request->ajax()) return redirect('/');
+        $user = User::findOrFail($request->id);
+        $user->administracion = $request->administracion;
+        $user->desarrollo = $request->desarrollo;
+        $user->precios = $request->precios;
+        $user->obra = $request->obra;
+        $user->ventas = $request->ventas;
+        $user->acceso = $request->acceso;
+        $user->reportes = $request->reportes;
+        //Administracion
+        $user->departamentos = $request->departamentos;
+        $user->personas = $request->personas;
+        $user->empresas = $request->empresas;
+        $user->medios_public = $request->medios_public;
+        $user->lugares_contacto = $request->lugares_contacto;
+        $user->servicios = $request->servicios;
+        $user->inst_financiamiento = $request->inst_financiamiento;
+        $user->tipos_credito = $request->tipos_credito;
+        $user->asig_servicios = $request->asig_servicios;
+        $user->mis_asesores = $request->mis_asesores;
+        //Desarrollo
+        $user->fraccionamiento = $request->fraccionamiento;
+        $user->etapas = $request->etapas;
+        $user->modelos = $request->modelos;
+        $user->lotes = $request->lotes;
+        $user->asign_modelos = $request->asign_modelos;
+        $user->licencias = $request->licencias;
+        $user->acta_terminacion = $request->acta_terminacion;
+        $user->p_etapa = $request->p_etapa;
+        $user->p_fraccionamiento = $request->p_fraccionamiento;
+        //Precios
+        $user->precios_etapas = $request->precios_etapas;
+        $user->sobreprecios = $request->sobreprecios;
+        $user->paquetes = $request->paquetes;
+        $user->promociones = $request->promociones;
+        //Obra
+        $user->contratistas = $request->contratistas;
+        $user->ini_obra = $request->ini_obra;
+        $user->aviso_obra = $request->aviso_obra;
+        $user->partidas = $request->partidas;
+        $user->avance = $request->avance;
+        //Ventas
+        $user->lotes_disp = $request->lotes_disp;
+        $user->mis_prospectos = $request->mis_prospectos;
+        $user->simulacion_credito = $request->simulacion_credito;
+        $user->hist_simulaciones = $request->hist_simulaciones;
+        $user->hist_creditos = $request->hist_creditos;
+        $user->contratos = $request->contratos;
+        //Acceso
+        $user->usuarios = $request->usuarios;
+        $user->roles = $request->roles;
+        //Reportes
+        $user->mejora = $request->mejora;
+        $user->save();
+    }
+
     public function updateProfile(Request $request, $id){
 
         $imgAnterior = User::select('foto_user','id')
@@ -303,38 +947,38 @@ class UserController extends Controller
                             ->where('id','=',$id)->get();
                             
 
-if($imgAnterior->isEmpty()==1){
-    $fileName = uniqid().'.'.$request->foto_user->getClientOriginalExtension();
-            $moved =  $request->foto_user->move(public_path('/img/avatars'), $fileName);
-    
-            if($moved){
-                if(!$request->ajax())return redirect('/');
-                $user = User::findOrFail($request->id);
-                $user->foto_user = $fileName;
-                $user->id = $id;
-                $user->save(); //Insert
+        if($imgAnterior->isEmpty()==1){
+            $fileName = uniqid().'.'.$request->foto_user->getClientOriginalExtension();
+                    $moved =  $request->foto_user->move(public_path('/img/avatars'), $fileName);
+            
+                    if($moved){
+                        if(!$request->ajax())return redirect('/');
+                        $user = User::findOrFail($request->id);
+                        $user->foto_user = $fileName;
+                        $user->id = $id;
+                        $user->save(); //Insert
+                    }
+                    return back();
+                
+            
+            }else{
+            
+                $pathAnterior = public_path().'/img/avatars/'.$imgAnterior[0]->foto_user;
+                File::delete($pathAnterior);     
+
+                $fileName = uniqid().'.'.$request->foto_user->getClientOriginalExtension();
+                $moved =  $request->foto_user->move(public_path('/img/avatars'), $fileName);
+
+                if($moved){
+                    if(!$request->ajax())return redirect('/');
+                    $user = User::findOrFail($request->id);
+                    $user->foto_user = $fileName;
+                    $user->id = $id;
+                    $user->save(); //Insert
+                }
+                return back();
+
             }
-            return back();
-        
-       
-    }else{
-       
-        $pathAnterior = public_path().'/img/avatars/'.$imgAnterior[0]->foto_user;
-        File::delete($pathAnterior);     
-
-        $fileName = uniqid().'.'.$request->foto_user->getClientOriginalExtension();
-        $moved =  $request->foto_user->move(public_path('/img/avatars'), $fileName);
-
-        if($moved){
-            if(!$request->ajax())return redirect('/');
-            $user = User::findOrFail($request->id);
-            $user->foto_user = $fileName;
-            $user->id = $id;
-            $user->save(); //Insert
-        }
-        return back();
-
+            
     }
-     
-}
 }
