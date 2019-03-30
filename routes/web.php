@@ -332,6 +332,9 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/contrato/registrar','ContratoController@store');
         Route::put('/contrato/actualizarCredito','ContratoController@updateDatosCredito');
 
+        Route::get('/contratoCompraVenta/pdf/{id}','ContratoController@contratoCompraVentaPdf')->name('contratoCompraVenta.pdf');
+
+
         /************************** RUTAS ESTADISTICAS ***************************/
         Route::get('/estadisticas/datos_extra','EstadisticasController@estad_datos_extra');
     });

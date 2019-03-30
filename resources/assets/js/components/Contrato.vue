@@ -1378,6 +1378,7 @@
                                             </div>
                                             <div class="col-md-12">
                                                 <button type="button" class="btn btn-secondary" @click="cerrarDetalle()"> Cerrar </button>
+                                                <a class="btn btn-info btn-sm" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+id">Imprimir contrato</a>
                                                 <button type="button" v-if="listado==3" class="btn btn-primary" @click="crearContrato()"> Enviar </button>
                                             </div>
                                         </div>
@@ -2104,6 +2105,7 @@
                 this.total_pagar = data['total_pagar'];
                 this.monto_total_credito = data['monto_total_credito'];
                 this.enganche_total = data['enganche_total'];
+           
                
                 this.listarPagos(this.id);
                 this.listado=4;

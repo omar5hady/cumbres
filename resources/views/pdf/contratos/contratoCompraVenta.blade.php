@@ -32,8 +32,8 @@ body {
     <div class="table1" style="margin-top: -12px;">
         <div class="table-row">
             <div  style="border: ridge #0B173B 1px; padding-right:-30px; color:white; font-size:10pt; background-color: #0B173B;" class="table-cell1">FECHA</div>
-            <div  style="border: ridge #000000 1px; color:black; " class="table-cell1">22 DE FEBRERO DE 2019</div>
-            <div  style="border: ridge #000000 1px; color:black; " class="table-cell1">#Ref: 124032 - 100%</div>
+            <div  style="border: ridge #000000 1px; color:black; " class="table-cell1">{{$contratos[0]->fecha}}</div>
+            <div  style="border: ridge #000000 1px; color:black; " class="table-cell1">#Ref: {{$contratos[0]->prospecto_id}} - {{$contratos[0]->avance_lote}}%</div>
         </div>
     </div>
 </div> 
@@ -41,11 +41,11 @@ body {
 <p align="left" style="border: ridge #0B173B 1px; font-size:10pt; color:white; margin-right: 470px; background-color: #0B173B;">DATOS DEL CREDITO</p>
     <div class="table1" style="border: ridge #0B173B 1px; color:black;  margin-top: -10px;">
         <div class="table-row">
-            <div class="table-cell1">TIPO DE CREDITO: <u>COFINAVIT</u> </div>
-            <div class="table-cell1">INSTITUCION: <u>SCOTIABANK</u> </div>
+            <div class="table-cell1">TIPO DE CREDITO: <u>{{$contratos[0]->tipo_credito}}</u> </div>
+            <div class="table-cell1">INSTITUCION: <u>{{$contratos[0]->institucion}}</u> </div>
         </div>
         <div class="table-row">
-            <div class="table-cell1">PLAZO: <u>20 AÑOS</u> </div>
+            <div class="table-cell1">PLAZO: <u>{{$contratos[0]->plazo}} Años</u> </div>
             <div class="table-cell1">DENOMINACION: <u>PESOS</u> </div>
         </div>
     </div>
@@ -55,17 +55,17 @@ body {
     <p align="left" style="border: ridge #0B173B 1px; font-size:10pt; color:white; margin-right: 450px; background-color: #0B173B;">DATOS DEL COMPRADOR</p>
         <div class="table" style="border: ridge #0B173B 1px; color:black; margin-top: -10px;">
                 <div class="table-row">
-                    <div colspan="4" class="table-cell">NOMBRE: <u>GOMEZ MARTINEZ JESUS</u></div>
+                    <div colspan="4" class="table-cell">NOMBRE: <u>{{$contratos[0]->apellidos}} {{$contratos[0]->nombre}}</u></div>
                 </div>
                 <div class="table-row">
-                    <div class="table-cell">N.S.S. <u>03162718728</u></div>
-                    <div class="table-cell">R.F.C. <u>GUVJ950207AC3</u></div>
-                    <div class="table-cell">C.U.R.P. <u>GUVJ950207HSPZRN06</u></div>
+                    <div class="table-cell">N.S.S. <u>{{$contratos[0]->nss}}</u></div>
+                    <div class="table-cell">R.F.C. <u>{{$contratos[0]->rfc}} - {{$contratos[0]->homoclave}}</u></div>
+                    <div class="table-cell">C.U.R.P. <u>{{$contratos[0]->curp}}</u></div>
                     <div class="table-cell"></div>
                 </div>
                 <div class="table-row">
-                    <div colspan="2" class="table-cell">LUGAR DE NACIMIENTO: <u>SAN LUIS POTOSI</u></div>
-                    <div class="table-cell">FECHA DE NACIMIENTO: <u>01-02-1990</u></div>
+                    <div colspan="2" class="table-cell">LUGAR DE NACIMIENTO: <u>{{$contratos[0]->lugar_nacimiento}}</u></div>
+                    <div class="table-cell">FECHA DE NACIMIENTO: <u>{{$contratos[0]->f_nacimiento}}</u></div>
                     <div class="table-cell"></div>
                 </div>
                 <div class="table-row">
@@ -74,42 +74,42 @@ body {
                     <div class="table-cell" colspan="2">REGIMEN DE MATRIMONIO: <u>SEPARACION DE BIENES</u></div> 
                 </div>
                 <div class="table-row">
-                    <div class="table-cell" colspan="2">DOMICILIO ACTUAL: <u>TROJES DE LA LOMA NO. 175 INT A</u></div>
-                    <div class="table-cell">COLONIA: <u>TROJES DEL SUR</u></div> 
+                    <div class="table-cell" colspan="2">DOMICILIO ACTUAL: <u>{{$contratos[0]->direccion}}</u></div>
+                    <div class="table-cell">COLONIA: <u>{{$contratos[0]->colonia}}</u></div> 
                     <div class="table-cell"></div>
                 </div>
                 <div class="table-row">
-                    <div class="table-cell">MUNICIPIO: <u>SAN LUIS POTOSI</u></div>
-                    <div class="table-cell">ESTADO: <u>SAN LUIS POTOSI</u></div> 
-                    <div class="table-cell">C.P. <u>78146</u></div> 
+                    <div class="table-cell">MUNICIPIO: <u>{{$contratos[0]->ciudad}}</u></div>
+                    <div class="table-cell">ESTADO: <u>{{$contratos[0]->estado}}</u></div> 
+                    <div class="table-cell">C.P. <u>{{$contratos[0]->cp}}</u></div> 
                     <div class="table-cell"></div>
                 </div>
                 <div class="table-row">
-                    <div class="table-cell">TELEFONO: <u>4448810923</u></div>
-                    <div class="table-cell">CELULAR: <u>4444444444</u></div> 
-                    <div colspan="2" class="table-cell">EMAIL PERSONAL: <u>OSOPARDO@GMAIL.COM</u></div>
+                    <div class="table-cell">TELEFONO: <u>{{$contratos[0]->telefono}}</u></div>
+                    <div class="table-cell">CELULAR: <u>{{$contratos[0]->celular}}</u></div> 
+                    <div colspan="2" class="table-cell">EMAIL PERSONAL: <u>{{$contratos[0]->email}}</u></div>
                 </div>
                 <div class="table-row">
-                    <div colspan="2" class="table-cell">EMPRESA: <u>MARTINREA INTERNACIONAL DE MEXICO S.A DE C.V.</u></div>
-                    <div colspan="2" class="table-cell">EMAIL EMPRESA: <u>OSOPARDO@GRUPOCUMBRES.COM</u></div>
+                    <div colspan="2" class="table-cell">EMPRESA: <u>{{$contratos[0]->empresa}}</u></div>
+                    <div colspan="2" class="table-cell">EMAIL EMPRESA: <u>{{$contratos[0]->email_institucional}}</u></div>
                 </div>
                 <div class="table-row">
-                    <div colspan="4" class="table-cell">DOMICILIO DE EMPRESA: <u>HOUSTON NO. 101. PARQUE INDUSTRIAL LOGISTIK. C.P. 79562 VILLA DE REYES, SLP</u></div>
+                    <div colspan="4" class="table-cell">DOMICILIO DE EMPRESA: <u>{{$contratos[0]->direccion_empresa}} {{$contratos[0]->colonia_empresa}}  C.P. {{$contratos[0]->cp_empresa}} {{$contratos[0]->ciudad_empresa}}, {{$contratos[0]->estado_empresa}}</u></div>
                 </div>
                 <div class="table-row">
-                    <div class="table-cell" colspan="2">OCUPACION: <u>TEC. DE ROBOTICA Y SOLDADURA</u></div>
-                    <div class="table-cell">TEL. DEL TRABAJO: <u>4444444444</u></div> 
-                    <div class="table-cell">EXTENSION: <u>180</u></div> 
+                    <div class="table-cell" colspan="2">OCUPACION: <u>{{$contratos[0]->puesto}}</u></div>
+                    <div class="table-cell">TEL. DEL TRABAJO: <u>{{$contratos[0]->telefono_empresa}}</u></div> 
+                    <div class="table-cell">EXTENSION: <u>{{$contratos[0]->ext_empresa}}</u></div> 
                 </div>
                 <div class="table-row">
-                    <div class="table-cell" colspan="2">NOMBRE DE REFERENCIA 1: <u>ALFREDO GOMEZ MARTINEZ</u></div>
-                    <div class="table-cell">TELEFONO: <u>4444444444</u></div> 
-                    <div class="table-cell">CELULAR: <u>4444444444</u></div> 
+                    <div class="table-cell" colspan="2">NOMBRE DE REFERENCIA 1: <u>{{$contratos[0]->nombre_primera_ref}}</u></div>
+                    <div class="table-cell">TELEFONO: <u>{{$contratos[0]->telefono_primera_ref}}</u></div> 
+                    <div class="table-cell">CELULAR: <u>{{$contratos[0]->celular_primera_ref}}</u></div> 
                 </div>
                 <div class="table-row">
-                    <div class="table-cell" colspan="2">NOMBRE DE REFERENCIA 2: <u>ALFREDO GOMEZ MARTINEZ</u></div>
-                    <div class="table-cell">TELEFONO: <u>4444444444</u></div> 
-                    <div class="table-cell">CELULAR: <u>4444444444</u></div> 
+                    <div class="table-cell" colspan="2">NOMBRE DE REFERENCIA 2: <u>{{$contratos[0]->nombre_segunda_ref}}</u></div>
+                    <div class="table-cell">TELEFONO: <u>{{$contratos[0]->telefono_segunda_ref}}</u></div> 
+                    <div class="table-cell">CELULAR: <u>{{$contratos[0]->celular_segunda_ref}}</u></div> 
                 </div>
         </div>
 </div>
@@ -117,36 +117,36 @@ body {
     <p align="left" style="border: ridge #0B173B 1px; font-size:10pt; color:white; margin-right: 350px; background-color: #0B173B;">DATOS DEL CONYUGE O COACREDITADO</p>        
         <div class="table" style="border: ridge #0B173B 1px; color:black; margin-top: -10px;">
                 <div class="table-row">
-                    <div colspan="2" class="table-cell">NOMBRE: <u>MA. GUADALUPE LOREDO DELGADO</u></div>
-                    <div class="table-cell">R.F.C. <u>GUVJ950207AC3</u></div>
-                    <div class="table-cell">C.U.R.P. <u>GUVJ950207HSPZRN06</u></div>  
+                    <div colspan="2" class="table-cell">NOMBRE: <u>{{$contratos[0]->nombre_coa}} {{$contratos[0]->apellidos_coa}}</u></div>
+                    <div class="table-cell">R.F.C. <u>{{$contratos[0]->rfc_coa}}</u></div>
+                    <div class="table-cell">C.U.R.P. <u>{{$contratos[0]->curp_coa}}</u></div>  
                 </div>
                 <div class="table-row">
-                    <div colspan="2" class="table-cell">LUGAR DE NACIMIENTO: <u>SAN LUIS POTOSI</u></div>
-                    <div class="table-cell">FECHA DE NACIMIENTO: <u>01-02-1990</u></div>
-                    <div class="table-cell">N.S.S. <u>03162718728</u></div>     
+                    <div colspan="2" class="table-cell">LUGAR DE NACIMIENTO: <u>{{$contratos[0]->lugar_nacimiento_coa}}</u></div>
+                    <div class="table-cell">FECHA DE NACIMIENTO: <u>{{$contratos[0]->f_nacimiento_coa}}</u></div>
+                    <div class="table-cell">N.S.S. <u>{{$contratos[0]->nss_coa}}</u></div>     
                 </div>
                 <div class="table-row">
-                    <div colspan="2" class="table-cell">DOMICILIO ACTUAL: <u>TROJES DE LA LOMA NO. 175 INT A</u></div>
-                    <div class="table-cell">COLONIA: <u>TROJES DEL SUR</u></div>
-                    <div class="table-cell">TELEFONO: <u>4448810923</u></div>
+                    <div colspan="2" class="table-cell">DOMICILIO ACTUAL: <u>{{$contratos[0]->direccion_coa}}</u></div>
+                    <div class="table-cell">COLONIA: <u>{{$contratos[0]->colonia_coa}}</u></div>
+                    <div class="table-cell">TELEFONO: <u>{{$contratos[0]->telefono_coa}}</u></div>
                 </div>
                 <div class="table-row">
                 
-                    <div class="table-cell">MUNICIPIO: <u>SAN LUIS POTOSI</u></div>
-                    <div class="table-cell">ESTADO: <u>SAN LUIS POTOSI</u></div>  
-                    <div class="table-cell">C.P. <u>78146</u></div> 
+                    <div class="table-cell">MUNICIPIO: <u>{{$contratos[0]->ciudad_coa}}</u></div>
+                    <div class="table-cell">ESTADO: <u>{{$contratos[0]->estado_coa}}</u></div>  
+                    <div class="table-cell">C.P. <u>{{$contratos[0]->cp_coa}}</u></div> 
                     <div class="table-cell"></div>
                 </div>
                 <div class="table-row">
-                    <div colspan="4" class="table-cell">EMPRESA DONDE TRABAJA: <u>MARTINREA INTERNACIONAL DE MEXICO S.A DE C.V.</u></div>
+                    <div colspan="4" class="table-cell">EMPRESA DONDE TRABAJA: <u>{{$contratos[0]->empresa_coa}}</u></div>
                 </div>
                 <div class="table-row">
-                    <div colspan="4" class="table-cell">DOMICILIO DE EMPRESA: <u>HOUSTON NO. 101. PARQUE INDUSTRIAL LOGISTIK. C.P. 79562 VILLA DE REYES, SLP</u></div>
+                    <div colspan="4" class="table-cell">DOMICILIO DE EMPRESA: <u>{{$contratos[0]->direccion_empresa_coa}} {{$contratos[0]->colonia_empresa_coa}}  C.P. {{$contratos[0]->cp_empresa_coa}} {{$contratos[0]->ciudad_empresa_coa}}, {{$contratos[0]->estado_empresa_coa}}</u></div>
                 </div>
                 <div class="table-row">
-                    <div colspan="2" class="table-cell">OCUPACION: <u>PROGRAMADOR DE ERIZOS</u></div>
-                    <div class="table-cell">TEL. DEL TRABAJO: <u>4444444444</u></div> 
+                    <div colspan="2" class="table-cell">OCUPACION: <u></u></div>
+                    <div class="table-cell">TEL. DEL TRABAJO: <u>{{$contratos[0]->telefono_empresa_coa}}</u></div> 
                     <div class="table-cell"></div> 
                 </div>
                 
@@ -159,25 +159,25 @@ body {
     <p align="left" style="border: ridge #0B173B 1px; font-size:10pt; color:white; margin-right: 450px; background-color: #0B173B;">DATOS DE LA VIVIENDA</p>        
         <div class="table" style="border: ridge #0B173B 1px; color:black; margin-top: -10px;">
                 <div class="table-row">
-                    <div class="table-cell">FRACCIONAMIENTO: <u>VALLE REAL 2</u></div>
-                    <div class="table-cell">MANZANA: <u>PRIVADA DEL HUERTO PRESIDENCIAL</u></div>
-                    <div class="table-cell">LOTE: <u>44</u></div>
+                    <div class="table-cell">FRACCIONAMIENTO: <u>{{$contratos[0]->proyecto}}</u></div>
+                    <div class="table-cell">MANZANA: <u>{{$contratos[0]->manzana}}</u></div>
+                    <div class="table-cell">LOTE: <u>{{$contratos[0]->num_lote}}</u></div>
                 </div>
                 <div class="table-row">
-                    <div class="table-cell">CALLE: <u>CALZADA DE LAS HACIENDAS</u></div>
-                    <div class="table-cell">NO. OFICIAL: <u>737 INT. 44</u></div>
-                    <div class="table-cell">MODELO: <u>SAN CARLOS</u></div>
+                    <div class="table-cell">CALLE: <u>{{$contratos[0]->calle}}</u></div>
+                    <div class="table-cell">NO. OFICIAL: <u>{{$contratos[0]->numero}} INT. {{$contratos[0]->interior}}</u></div>
+                    <div class="table-cell">MODELO: <u>{{$contratos[0]->modelo}}</u></div>
                 </div>
                 <div class="table-row">
-                    <div class="table-cell">SUPERFICIE DE TERRENO: <u>120.25 M2</u></div>
-                    <div class="table-cell">SUPERFICIE DE CONSTRUCCION: <u>172.01 M2</u></div>
+                    <div class="table-cell">SUPERFICIE DE TERRENO: <u>{{$contratos[0]->terreno}} M2</u></div>
+                    <div class="table-cell">SUPERFICIE DE CONSTRUCCION: <u>{{$contratos[0]->construccion}} M2</u></div>
                     <div class="table-cell"></div>
                 </div> 
                 <div class="table-row">
-                    <div colspan="3" class="table-cell">PAQUETE: </div>
+                    <div colspan="3" class="table-cell">PAQUETE: {{$contratos[0]->descripcion_paquete}} </div>
                 </div>     
                 <div class="table-row">
-                    <div colspan="3" class="table-cell">PROMOCION: </div>
+                    <div colspan="3" class="table-cell">PROMOCION: {{$contratos[0]->descripcion_promocion}} </div>
                 </div>                
         </div>
 </div>
@@ -190,71 +190,80 @@ body {
                     <div class="table-cell2">INFONAVIT: </div>
                     <div class="table-cell2"><u>$100,000</u></div>
                     <div class="table-cell2">PRECIO DE LA VIVIENDA: </div>
-                    <div class="table-cell2">$1,200,000</div>
+                    <div class="table-cell2">${{$contratos[0]->precio_base}}</div>
                 </div>
                  <div class="table-row">
-                    <div class="table-cell2">BANCOMER: </div>
-                    <div class="table-cell2">$950,000</div> 
-                    <div class="table-cell2"><u>5 M2</u> TERRENO EXCEDENTE: </div>
-                    <div class="table-cell2">$15,000</div>
+                    <div class="table-cell2">{{$contratos[0]->institucion}}: </div>
+                    <div class="table-cell2">${{$contratos[0]->credito_solic}}</div> 
+                    <div class="table-cell2"><u>{{$contratos[0]->terreno_excedente}} M2</u> TERRENO EXCEDENTE: </div>
+                    <div class="table-cell2">${{$contratos[0]->precio_terreno_excedente}}</div>
                 </div>
                 <div class="table-row">
                     <div class="table-cell2">COMISION X APERTURA: </div>
-                    <div class="table-cell2">$9500</div>
+                    <div class="table-cell2">${{$contratos[0]->comision_apertura}}</div>
                     <div class="table-cell2">OBRA EXTRA: </div>
-                    <div class="table-cell2">$8,000</div>
+                    <div class="table-cell2">${{$contratos[0]->precio_obra_extra}}</div>
                 </div>
                 <div class="table-row">
                     <div class="table-cell2">INVESTIGACION: </div>
-                    <div class="table-cell2">$700</div>
+                    <div class="table-cell2">${{$contratos[0]->investigacion}}</div>
                     <div class="table-cell2">SOBREPRECIO: </div>
-                    <div class="table-cell2">$10,000</div>
+                    <div class="table-cell2">${{$contratos[0]->sobreprecio}}</div>
                     
                 </div>
                 <div class="table-row">
                    <div class="table-cell2">AVALUO: </div>
-                    <div class="table-cell2">$2000</div>
+                    <div class="table-cell2">${{$contratos[0]->avaluo}}</div>
                     <div class="table-cell2">PAQUETE: </div>
-                    <div class="table-cell2">$12,240</div>
+                    <div class="table-cell2">${{$contratos[0]->costo_paquete}}</div>
                 </div>
                 
                 <div class="table-row">
                     <div class="table-cell2">PRIMA UNICA: </div>
-                    <div class="table-cell2">$0</div>
-                    <div class="table-cell2">VALOR TOTAL CASA: </div>
-                    <div class="table-cell2"><u>$1,245,240</u></div>
+                    <div class="table-cell2">${{$contratos[0]->prima_unica}}</div>
+                    <div class="table-cell2">PROMOCION: </div>
+                    <div class="table-cell2">${{$contratos[0]->descuento_promocion}}</div>
                 </div>
                 <div class="table-row">
                     <div class="table-cell2">GASTOS DE ESCRITURACION: </div>
-                    <div class="table-cell2">$0</div>            
-                    <div class="table-cell2">MONTO NETO CREDITO: </div>
-                    <div class="table-cell2"><u>$1,037,800</u></div>
+                    <div class="table-cell2">${{$contratos[0]->escrituras}}</div>
+                    <div class="table-cell2">VALOR TOTAL CASA: </div>
+                    <div class="table-cell2"><u>${{$contratos[0]->precio_venta}}</u></div>            
+
                 </div>
                 <div class="table-row">
-                    <div class="table-cell2">CREDITO NETO BANCOMER: </div>
-                    <div class="table-cell2"><u>$937,800</u></div>
-                    <div class="table-cell2"">TOTAL A PAGAR: </div>
-                    <div class="table-cell2""><u>$207,440</u></div>
+                    <div class="table-cell2">CREDITO NETO {{$contratos[0]->institucion}}: </div>
+                    <div class="table-cell2"><u>${{$contratos[0]->credito_neto}}</u></div>
+                    <div class="table-cell2">MONTO NETO CREDITO: </div>
+                    <div class="table-cell2"><u>${{$contratos[0]->monto_total_credito}}</u></div>
+
                 </div>           
                 <div class="table-row">
                     <div class="table-cell2"></div>
                     <div class="table-cell2"></div>
-                    <div class="table-cell2">AVALUO: </div>
-                    <div class="table-cell2">$0</div>
+                    <div class="table-cell2"">TOTAL A PAGAR: </div>
+                    <div class="table-cell2""><u>${{$contratos[0]->total_pagar}}</u></div>
+
                 </div>   
                 <div class="table-row">
                     <div class="table-cell2"></div>
                     <div class="table-cell2"></div>
+                    <div class="table-cell2">AVALUO: </div>
+                    <div class="table-cell2">${{$contratos[0]->avaluo_cliente}}</div>
+                </div>  
+                <div class="table-row">
+                    <div class="table-cell2"></div>
+                    <div class="table-cell2"></div>
                     <div class="table-cell2"><b> ENGANCHE TOTAL: </div>
-                    <div class="table-cell2"><b><u>$207,440</u></div>
-                </div>            
+                    <div class="table-cell2"><b><u>${{$contratos[0]->enganche_total}}</u></div>
+                </div>           
              </div>
         </div>
 
 <div style="position: static; margin-top: -2px;">          
         <div class="table" style="color:black; margin-top: -1px;">
                 <div class="table-row">
-                    <div class="table-cell">PAGO NO.1: <u>$20.00</u></div>
+                    <div class="table-cell">PAGO NO.1: <u>{{$contratos[0]->enganche_total}}</u></div>
                     <div class="table-cell">PAGO NO.2: <u>$1000.00</u></div>
                     <div class="table-cell"></div>
                     <div class="table-cell"></div>
@@ -262,7 +271,7 @@ body {
                     
                 </div>
                 <div class="table-row">
-                    <div colspan="2" class="table-cell">ASESOR DE VENTAS: <u>JOSE JUAN GUZMAN VARGAS</u></div>
+                    <div colspan="2" class="table-cell">ASESOR DE VENTAS: <u>{{$contratos[0]->vendedor_nombre}} {{$contratos[0]->vendedor_apellidos}}</u></div>
                     <div class="table-cell">FIRMA: ___________________</div>
                     <div colspan="2" class="table-cell">FIRMA DEL COMPRADOR: ___________________</div>
                 </div>

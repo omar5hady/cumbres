@@ -1017,4 +1017,81 @@ class ContratoController extends Controller
         return ['pagos' => $pagos];
     }
 
+    public function contratoCompraVentaPdf(Request $request, $id)
+    {
+        $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
+            ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+            ->join('personal','creditos.prospecto_id','=','personal.id')
+            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+            ->join('personal as v','clientes.vendedor_id','v.id')
+            ->join('lotes','creditos.lote_id','=','lotes.id')
+            ->select('creditos.id','creditos.prospecto_id','creditos.num_dep_economicos','creditos.tipo_economia',
+                'creditos.nombre_primera_ref','creditos.telefono_primera_ref','creditos.celular_primera_ref',
+                'creditos.nombre_segunda_ref','creditos.telefono_segunda_ref','creditos.celular_segunda_ref',
+                'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','creditos.precio_base',
+                'creditos.superficie','creditos.terreno_excedente','creditos.precio_terreno_excedente',
+                'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
+                'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
+                'creditos.costo_paquete','inst_seleccionadas.tipo_credito','inst_seleccionadas.id as inst_credito',
+                'creditos.precio_obra_extra','creditos.fraccionamiento as proyecto',
+
+                'lotes.calle','lotes.numero','lotes.interior','lotes.terreno','lotes.construccion','lotes.sobreprecio',
+
+                'inst_seleccionadas.institucion','personal.nombre','personal.apellidos', 'personal.telefono','personal.celular',
+                'personal.email','clientes.email_institucional','personal.direccion','personal.cp','personal.colonia','personal.f_nacimiento','personal.rfc','personal.homoclave',
+                'creditos.fraccionamiento','clientes.id as prospecto_id','clientes.edo_civil','clientes.nss','clientes.curp','clientes.empresa',
+                'clientes.coacreditado','clientes.estado','clientes.ciudad','clientes.puesto','clientes.nacionalidad','clientes.sexo',
+                'clientes.sexo_coa','clientes.email_institucional_coa','clientes.empresa_coa','clientes.edo_civil_coa',
+                'clientes.nss_coa','clientes.curp_coa','clientes.nombre_coa','clientes.apellidos_coa','clientes.f_nacimiento_coa',
+                'clientes.nacionalidad_coa','clientes.rfc_coa','clientes.homoclave_coa','clientes.direccion_coa',
+                'clientes.colonia_coa','clientes.ciudad_coa','clientes.estado_coa','clientes.cp_coa','clientes.telefono_coa',
+                'clientes.ext_coa','clientes.celular_coa','clientes.email_coa','clientes.parentesco_coa', 'clientes.lugar_nacimiento_coa',
+                'clientes.nombre_recomendado',
+                'v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos',
+
+                'contratos.infonavit','contratos.fovisste','contratos.comision_apertura','clientes.lugar_nacimiento',
+                'contratos.investigacion','contratos.avaluo','contratos.prima_unica','contratos.escrituras',
+                'contratos.credito_neto','contratos.status','contratos.avaluo_cliente','contratos.fecha',
+                'contratos.direccion_empresa','contratos.cp_empresa','contratos.colonia_empresa',
+                'contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
+                'contratos.ext_empresa','contratos.direccion_empresa_coa','contratos.cp_empresa_coa',
+                'contratos.colonia_empresa_coa','contratos.estado_empresa_coa','contratos.ciudad_empresa_coa',
+                'contratos.telefono_empresa_coa','contratos.ext_empresa_coa','contratos.total_pagar',
+                'contratos.monto_total_credito','contratos.enganche_total','contratos.avance_lote','contratos.observacion')
+                ->where('inst_seleccionadas.elegido','=','1')
+                ->where('contratos.id','=',$id)
+                ->orderBy('id','desc')->get();
+                
+                setlocale(LC_TIME, 'es');
+                $tiempo = new Carbon($contratos[0]->fecha);
+                $contratos[0]->fecha = $tiempo->formatLocalized('%d de %B de %Y');
+
+                $contratos[0]->precio_base = number_format((float)$contratos[0]->precio_base,2,'.',',');
+                $contratos[0]->credito_solic = number_format((float)$contratos[0]->credito_solic,2,'.',',');
+                $contratos[0]->precio_terreno_excedente = number_format((float)$contratos[0]->precio_terreno_excedente,2,'.',',');
+                $contratos[0]->comision_apertura = number_format((float)$contratos[0]->comision_apertura,2,'.',',');
+                $contratos[0]->precio_obra_extra = number_format((float)$contratos[0]->precio_obra_extra,2,'.',',');
+                $contratos[0]->investigacion = number_format((float)$contratos[0]->investigacion,2,'.',',');
+                $contratos[0]->sobreprecio = number_format((float)$contratos[0]->sobreprecio,2,'.',',');
+                $contratos[0]->avaluo = number_format((float)$contratos[0]->avaluo,2,'.',',');
+                $contratos[0]->costo_paquete = number_format((float)$contratos[0]->costo_paquete,2,'.',',');
+                $contratos[0]->prima_unica = number_format((float)$contratos[0]->prima_unica,2,'.',',');
+                $contratos[0]->descuento_promocion = number_format((float)$contratos[0]->descuento_promocion,2,'.',',');
+                $contratos[0]->escrituras = number_format((float)$contratos[0]->escrituras,2,'.',',');
+                $contratos[0]->precio_venta = number_format((float)$contratos[0]->precio_venta,2,'.',',');
+                $contratos[0]->credito_neto = number_format((float)$contratos[0]->credito_neto,2,'.',',');
+                $contratos[0]->monto_total_credito = number_format((float)$contratos[0]->monto_total_credito,2,'.',',');
+                $contratos[0]->total_pagar = number_format((float)$contratos[0]->total_pagar,2,'.',',');
+                $contratos[0]->avaluo_cliente = number_format((float)$contratos[0]->avaluo_cliente,2,'.',',');
+                $contratos[0]->enganche_total = number_format((float)$contratos[0]->enganche_total,2,'.',',');
+
+                $pagos = Pago_contrato::select('monto_pago','num_pago')->where('contrato_id','=',$id)->get();
+                
+
+            $pdf = \PDF::loadview('pdf.contratos.contratoCompraVenta',['contratos' => $contratos , 'pagos' => $pagos]);
+            return $pdf->stream('ContratoCompraVenta.pdf');
+            //  return ['contratos' => $contratos];
+     }
+
+
 }
