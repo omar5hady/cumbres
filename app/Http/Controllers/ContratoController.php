@@ -1025,6 +1025,7 @@ class ContratoController extends Controller
             ->join('clientes','creditos.prospecto_id','=','clientes.id')
             ->join('personal as v','clientes.vendedor_id','v.id')
             ->join('lotes','creditos.lote_id','=','lotes.id')
+            ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
             ->select('creditos.id','creditos.prospecto_id','creditos.num_dep_economicos','creditos.tipo_economia',
                 'creditos.nombre_primera_ref','creditos.telefono_primera_ref','creditos.celular_primera_ref',
                 'creditos.nombre_segunda_ref','creditos.telefono_segunda_ref','creditos.celular_segunda_ref',
@@ -1035,7 +1036,7 @@ class ContratoController extends Controller
                 'creditos.costo_paquete','inst_seleccionadas.tipo_credito','inst_seleccionadas.id as inst_credito',
                 'creditos.precio_obra_extra','creditos.fraccionamiento as proyecto',
 
-                'lotes.calle','lotes.numero','lotes.interior','lotes.terreno','lotes.construccion','lotes.sobreprecio',
+                'lotes.calle','lotes.numero','lotes.interior','lotes.terreno','lotes.construccion','lotes.sobreprecio','medios_publicitarios.nombre as medio_publicidad',
 
                 'inst_seleccionadas.institucion','personal.nombre','personal.apellidos', 'personal.telefono','personal.celular',
                 'personal.email','clientes.email_institucional','personal.direccion','personal.cp','personal.colonia','personal.f_nacimiento','personal.rfc','personal.homoclave',
@@ -1066,6 +1067,12 @@ class ContratoController extends Controller
                 $tiempo = new Carbon($contratos[0]->fecha);
                 $contratos[0]->fecha = $tiempo->formatLocalized('%d de %B de %Y');
 
+                $fecha_nac = new Carbon($contratos[0]->f_nacimiento);
+                $contratos[0]->f_nacimiento = $fecha_nac->formatLocalized('%d-%m-%Y');
+
+                $fecha_nac_coa = new Carbon($contratos[0]->f_nacimiento_coa);
+                $contratos[0]->f_nacimiento_coa = $fecha_nac_coa->formatLocalized('%d-%m-%Y');
+
                 $contratos[0]->precio_base = number_format((float)$contratos[0]->precio_base,2,'.',',');
                 $contratos[0]->credito_solic = number_format((float)$contratos[0]->credito_solic,2,'.',',');
                 $contratos[0]->precio_terreno_excedente = number_format((float)$contratos[0]->precio_terreno_excedente,2,'.',',');
@@ -1085,8 +1092,13 @@ class ContratoController extends Controller
                 $contratos[0]->avaluo_cliente = number_format((float)$contratos[0]->avaluo_cliente,2,'.',',');
                 $contratos[0]->enganche_total = number_format((float)$contratos[0]->enganche_total,2,'.',',');
 
-                $pagos = Pago_contrato::select('monto_pago','num_pago')->where('contrato_id','=',$id)->get();
+                $pagos = Pago_contrato::select('monto_pago','num_pago')->where('contrato_id','=',$id)->orderBy('fecha_pago','asc')->get();
+
+                for($i=0; $i<count($pagos); $i++){
+                $pagos[$i]->monto_pago = number_format((float)$pagos[$i]->monto_pago,2,'.',',');
+                }
                 
+
 
             $pdf = \PDF::loadview('pdf.contratos.contratoCompraVenta',['contratos' => $contratos , 'pagos' => $pagos]);
             return $pdf->stream('ContratoCompraVenta.pdf');
