@@ -144,6 +144,16 @@
                                         <a class="nav-link" href="#"><i class="icon-bag"></i> Etapas</a>
                                     </li>
                                 @endif
+                                @if(Auth::user()->p_fraccionamiento == 1)
+                                    <li @click="menu=110" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="icon-bag"></i> Fraccionamiento</a>
+                                    </li>
+                                @endif
+                                @if(Auth::user()->p_etapa == 1)
+                                    <li @click="menu=111" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="icon-bag"></i> Etapas</a>
+                                    </li>
+                                @endif
                                 @if(Auth::user()->modelos == 1)
                                     <li @click="menu=3" class="nav-item">
                                         <a class="nav-link" href="#"><i class="icon-bag"></i> Modelos</a>
@@ -169,16 +179,7 @@
                                         <a class="nav-link" href="#"><i class="icon-bag"></i> Acta de terminacion</a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->p_fraccionamiento == 1)
-                                    <li @click="menu=110" class="nav-item">
-                                        <a class="nav-link" href="#"><i class="icon-bag"></i> Fraccionamiento</a>
-                                    </li>
-                                @endif
-                                @if(Auth::user()->p_etapa == 1)
-                                    <li @click="menu=111" class="nav-item">
-                                        <a class="nav-link" href="#"><i class="icon-bag"></i> Etapas</a>
-                                    </li>
-                                @endif
+                                
                                 </ul>
                             </li>
                     @endif

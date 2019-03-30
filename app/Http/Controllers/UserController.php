@@ -310,8 +310,8 @@ class UserController extends Controller
                     $user->asig_servicios=1;
                     //Desarrollo
                     $user->modelos=1;
-                    $user->p_etapa=0;
-                    $user->p_fraccionamiento=0;
+                    $user->p_etapa=1;
+                    $user->p_fraccionamiento=1;
                     //Reportes
                     $user->mejora=1;
                     break;
@@ -568,8 +568,8 @@ class UserController extends Controller
                     $user->asig_servicios=1;
                     //Desarrollo
                     $user->modelos=1;
-                    $user->p_etapa=0;
-                    $user->p_fraccionamiento=0;
+                    $user->p_etapa=1;
+                    $user->p_fraccionamiento=1;
                     //Reportes
                     $user->mejora=1;
                     break;
