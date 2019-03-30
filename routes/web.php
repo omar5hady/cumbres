@@ -319,7 +319,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/serviciosTelecom/pdf/','ServicioController@servicioTelecomPdf')->name('servicios.pdf');
         Route::get('/cartaServicios/pdf/','ServicioController@cartaDeServicioPdf')->name('CartaDeservicios.pdf');
         Route::get('/contratoCompraVenta/pdf/','ServicioController@contratoCompraVentaPdf')->name('contratoCompraVenta.pdf');
-        Route::get('/pagareContrato/pdf/','ServicioController@pagareContratopdf')->name('pagare.pdf');
+        
 
         
         Route::post('/users/foto/{id}','UserController@updateProfile');
@@ -333,6 +333,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/contrato/actualizarCredito','ContratoController@updateDatosCredito');
 
         Route::get('/contratoCompraVenta/pdf/{id}','ContratoController@contratoCompraVentaPdf')->name('contratoCompraVenta.pdf');
+        Route::get('/pagareContrato/pdf/{id}','ContratoController@pagareContratopdf')->name('pagare.pdf');
 
 
         /************************** RUTAS ESTADISTICAS ***************************/

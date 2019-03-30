@@ -32,7 +32,7 @@ body {
     <div class="table1" style="margin-top: -12px;">
         <div class="table-row">
             <div  style="border: ridge #0B173B 1px; padding-right:-30px; color:white; font-size:10pt; background-color: #0B173B;" class="table-cell1">FECHA</div>
-            <div  style="border: ridge #000000 1px; color:black; " class="table-cell1">{{$contratos[0]->fecha}}</div>
+            <div  style="border: ridge #000000 1px; color:black; " class="table-cell1">{{strtoupper($contratos[0]->fecha)}}</div>
             <div  style="border: ridge #000000 1px; color:black; " class="table-cell1">#Ref: {{$contratos[0]->prospecto_id}} - {{$contratos[0]->avance_lote}}%</div>
         </div>
     </div>
@@ -219,7 +219,7 @@ body {
                     <div class="table-cell2">${{$contratos[0]->precio_base}}</div>
                 </div>
                  <div class="table-row">
-                    <div class="table-cell2">{{$contratos[0]->institucion}}: </div>
+                    <div class="table-cell2">{{strtoupper($contratos[0]->institucion)}}: </div>
                     <div class="table-cell2">${{$contratos[0]->credito_solic}}</div> 
                     <div class="table-cell2"><u>{{$contratos[0]->terreno_excedente}} M2</u> TERRENO EXCEDENTE: </div>
                     <div class="table-cell2">${{$contratos[0]->precio_terreno_excedente}}</div>
@@ -258,7 +258,7 @@ body {
 
                 </div>
                 <div class="table-row">
-                    <div class="table-cell2">CREDITO NETO {{$contratos[0]->institucion}}: </div>
+                    <div class="table-cell2">CREDITO NETO {{strtoupper($contratos[0]->institucion)}}: </div>
                     <div class="table-cell2"><u>${{$contratos[0]->credito_neto}}</u></div>
                     <div class="table-cell2">MONTO NETO CREDITO: </div>
                     <div class="table-cell2"><u>${{$contratos[0]->monto_total_credito}}</u></div>

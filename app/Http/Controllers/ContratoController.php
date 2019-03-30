@@ -14,6 +14,7 @@ use App\Cliente;
 use App\Personal;
 use App\Licencia;
 use App\Lote;
+use NumerosEnLetras;
 
 class ContratoController extends Controller
 {
@@ -1104,6 +1105,39 @@ class ContratoController extends Controller
             return $pdf->stream('ContratoCompraVenta.pdf');
             //  return ['contratos' => $contratos];
      }
+     
+     public function pagareContratopdf(Request $request,$id)
+     {
+
+        $cliente = Contrato::join('creditos','contratos.id','=','creditos.id')
+            ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+            ->join('personal','creditos.prospecto_id','=','personal.id')
+            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+            ->select('personal.nombre','personal.apellidos', 'personal.telefono','personal.celular',
+            'personal.email','personal.direccion','personal.cp','personal.colonia','clientes.estado','clientes.ciudad')
+            ->where('contratos.id','=',$id)->get();
+         
+             $pagos = Pago_contrato::select('monto_pago','num_pago','fecha_pago')->where('contrato_id','=',$id)->orderBy('fecha_pago','asc')->get();
+
+             setlocale(LC_TIME, 'es');
+
+
+
+             for($i=0; $i<count($pagos); $i++){
+                $pagos[$i]->monto_pago = number_format((float)$pagos[$i]->monto_pago,2,'.',',');
+                $tiempo = new Carbon($pagos[$i]->fecha_pago);
+                $pagos[$i]->fecha_pago = $tiempo->formatLocalized('%d de %B de %Y');
+                $pagos[$i]->montoPagoLetra = NumerosEnLetras::convertir($pagos[$i]->monto_pago,'Pesos',false,'Centavos');
+                }
+                 
+                $now= Carbon::now();
+                $pagos[0]->fecha_hoy = $now->formatLocalized('%d de %B de %Y');
+
+ 
+             $pdf = \PDF::loadview('pdf.contratos.pagaresContratos',['pagos' => $pagos , 'cliente' => $cliente]);
+             return $pdf->stream('pagare.pdf');
+             // return ['cabecera' => $cabecera];
+      }
 
 
 }

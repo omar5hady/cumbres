@@ -9,24 +9,29 @@
 <style type="text/css">
 
 body {
-    font-size: 7pt;
+    font-size: 8pt;
     font-family: sans-serif;
 }
 
 .table-row { display: table-row; }
-.table-cell1 { display: table-cell; padding: 0em; font-size: 7pt; }
+.table-cell1 { display: table-cell; padding: 0em; font-size: 8pt; }
 .table { display: table; width: 90%; border-collapse: collapse; table-layout: fixed; }
 
 
 </style>
 <body>
+@for($i=0; $i < count($pagos); $i++)
+<div style="clear:both;">
 
-<div>
-<div style="text-align: justify; position: absolute; margin:20px">
+    <div style="float: left; margin-top: 20px; margin-left: 50px;" >
+    <IMG SRC="img/contratos/logoContrato.jpg" width="110" height="110">
+    </div>
+
+<div style="text-align: justify; margin:60px">
         <div style="text-align: right; margin-bottom: 0em;  margin-top: 0em;">
-            <p style="margin-bottom: 0em;  margin-top: 0em;"> <strong> PAGARE NO. </strong> 1/2</p>
-            <p style="margin-bottom: 0em;  margin-top: 0em;"> <strong>BUENO POR </strong> $20,000</p>
-            <p style="margin-bottom: 0em;  margin-top: 0em;">EN SAN LUIS POTOSI, SAN LUIS POTOSI, A 18 DE MAYO DE 2018</p>
+            <p style="margin-bottom: 0em;  margin-top: 0em;"> <strong> PAGARE NO. </strong> {{$pagos[$i]->num_pago + 1}}/{{count($pagos)}}</p>
+            <p style="margin-bottom: 0em;  margin-top: 0em;"> <strong>BUENO POR </strong>${{$pagos[$i]->monto_pago}}</p>
+            <p style="margin-bottom: 0em;  margin-top: 0em;">EN SAN LUIS POTOSI, SAN LUIS POTOSI, A {{strtoupper($pagos[0]->fecha_hoy)}}</p>
         </div>
         <br>
         <br>
@@ -34,14 +39,15 @@ body {
         <br>
        
             <div>
-            <p style="margin-bottom: 0em;  margin-top: 0em;">DEBE(MOS) Y PAGARE(MOS) INCONDICIONALMENTE POR ESTE PAGARE A LA ORDEN DE GRUPO CONSTRUCTOR CUMBRES, S.A DE C.V., EN SAN LUIS POTOSI, SAN LUIS POTOSI, <strong> EL 19 DE MAYO DE 2018</strong></p>
+            <p style="margin-bottom: 0em;  margin-top: 0em;">DEBE(MOS) Y PAGARE(MOS) INCONDICIONALMENTE POR ESTE PAGARE A LA ORDEN DE GRUPO CONSTRUCTOR CUMBRES, S.A DE C.V., EN SAN LUIS POTOSI, SAN LUIS POTOSI, <strong> EL {{strtoupper($pagos[$i]->fecha_pago)}}</strong></p>
             <p style="margin-bottom: 0em;  margin-top: 0em;">LA CANTIDAD DE: </p>
-            <p style="margin-bottom: 0em;  margin-top: 0em;"><strong>$20,000.00 (VEINTE MIL PESOS 00/100 M.N.)</strong></p>
-            <p style="margin-bottom: 0em;  margin-top: 0em;">VALOR RECIBIDO A MI (NUESTRA) ENTERA SATISFACCION. ESTE PAGARE FORMA PARTE DE UNA SERIE NUMERADA DEL <strong>1</strong> AL <strong>2</strong> Y TODOS ESTAN SUJETOS A LA CONDICION DE QUE, AL NO PAGARSE CUALQUIERA
+            <p style="margin-bottom: 0em;  margin-top: 0em;"><strong>${{$pagos[$i]->monto_pago}} ({{strtoupper($pagos[$i]->montoPagoLetra)}} 00/100 M.N.)</strong></p>
+            <p style="margin-bottom: 0em;  margin-top: 0em;">VALOR RECIBIDO A MI (NUESTRA) ENTERA SATISFACCION. ESTE PAGARE FORMA PARTE DE UNA SERIE NUMERADA DEL <strong>{{$pagos[$i]->num_pago + 1}}</strong> AL <strong>{{count($pagos)}}</strong> Y TODOS ESTAN SUJETOS A LA CONDICION DE QUE, AL NO PAGARSE CUALQUIERA
                 DE ELLOS A SU VENCIMIENTO, SERAN EXIGIBLES TODOS LOS QUE LE SIGAN EN NUMERO, ADEMAS DE LOS YA VENCIDOS, DESDE LA FECHA DE VENCIMIENTO DE ESTE DOCUMENTO HASTA EL DIA DE SU LIQUIDACION,
                 CAUSARA INTERESES MORATORIOS AL TIPO DE <strong>5%</strong> MENSUAL, PAGADERO EN ESTA CIUDAD JUNTAMENTE CON EL PRINCIPAL.</p>
 
             </div>
+            <br>
             <br>
     <div class="table" style="text-align:left;">
         <div class="table-row">
@@ -49,33 +55,31 @@ body {
             
         </div>
         <div class="table-row">
-            <div colspan="4" class="table-cell1">NOMBRE: TOVAR AYALA PATRICIA SOLEDAD</div>
+            <div colspan="4" class="table-cell1">NOMBRE: {{strtoupper($cliente[0]->nombre)}} {{strtoupper($cliente[0]->apellidos)}}</div>
         </div>
 
         <div class="table-row">
-            <div colspan="4" class="table-cell1">DIRECCION: MANTA NO.628 LINDA VISTA</div>
+            <div colspan="4" class="table-cell1">DIRECCION: {{strtoupper($cliente[0]->direccion)}} {{strtoupper($cliente[0]->colonia)}}</div>
         </div>
         <div class="table-row">
-            <div colspan="2" class="table-cell1">CP: 07300 </div>
+            <div colspan="2" class="table-cell1">CP: {{$cliente[0]->cp}} </div>
             <div class="table-cell1"></div>
             <div class="table-cell1"></div> 
         </div>
         <div class="table-row">
-            <div class="table-cell1">TEL: 4444444444 </div>
+            <div class="table-cell1">TEL: {{$cliente[0]->telefono}}</div>
             <div class="table-cell1"></div>
             <div style="text-align:right;" class="table-cell1">FIRMA CLIENTE: </div>
             <div class="table-cell1">_____________________ </div> 
         </div>
         <div class="table-row">
-            <div colspan="4" class="table-cell1">GUSTAVO A.MADERO, DISTRITO FEDERAL </div> 
+            <div colspan="4" class="table-cell1">{{strtoupper($cliente[0]->ciudad)}}, {{strtoupper($cliente[0]->estado)}} </div> 
         </div>
     </div>   
 
     </div>
-    <div style="display: inline-block; float: left; margin-top: -40px; margin-left: 10px;" >
-    <IMG SRC="img/contratos/logoContrato.jpg" width="110" height="110">
-    </div>
+ 
 </div>
-
+@endfor
 </body>
 </html>
