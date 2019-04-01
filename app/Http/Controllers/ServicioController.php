@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Servicio;
+use App\Contrato;
+use Carbon\Carbon;
+use NumerosEnLetras;
 
 class ServicioController extends Controller
 {
@@ -65,36 +68,55 @@ class ServicioController extends Controller
         return ['servicios' => $servicios];
     }
 
-    public function servicioTelecomPdf(Request $request)
+    public function servicioTelecomPdf(Request $request, $id)
     {
-        
-        $servicios = Servicio::orderBy('descripcion','asc')->take(1)->get();
-            $pdf = \PDF::loadview('pdf.contratos.serviciosDeTelecom',['servicios' => $servicios]);
+        $serviciosTele = Contrato::join('creditos','contratos.id','=','creditos.id')
+        ->join('personal','creditos.prospecto_id','=','personal.id')
+        ->join('clientes','creditos.prospecto_id','=','clientes.id')
+        ->join('lotes','creditos.lote_id','=','lotes.id')
+        ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+        ->select('personal.nombre','personal.apellidos','creditos.fraccionamiento as proyecto','fraccionamientos.empresas_telecom',
+         'fraccionamientos.empresas_telecom_satelital','fraccionamientos.plantilla_telecom','creditos.manzana','creditos.num_lote')
+        ->where('contratos.id','=',$id)
+        ->get();
+
+            $pdf = \PDF::loadview('pdf.contratos.serviciosDeTelecom',['serviciosTele' => $serviciosTele]);
             return $pdf->stream('servicios.pdf');
             // return ['cabecera' => $cabecera];
      }
 
-     public function cartaDeServicioPdf(Request $request)
+     public function cartaDeServicioPdf(Request $request, $id)
      {
          
-         $servicios = Servicio::orderBy('descripcion','asc')->take(1)->get();
+         $datos = Contrato::join('creditos','contratos.id','=','creditos.id')
+         ->join('personal','creditos.prospecto_id','=','personal.id')
+         ->join('clientes','creditos.prospecto_id','=','clientes.id')
+         ->join('lotes','creditos.lote_id','=','lotes.id')
+         ->join('etapas','lotes.etapa_id','=','etapas.id')
+         ->select('personal.nombre','personal.apellidos','etapas.plantilla_carta_servicios','etapas.costo_mantenimiento')
+         ->where('contratos.id','=',$id)
+         ->get();
+
+         $servicios = Contrato::join('creditos','contratos.id','=','creditos.id')
+         ->join('lotes','creditos.lote_id','=','lotes.id')
+         ->join('etapas','lotes.etapa_id','=','etapas.id')
+         ->join('serv_etapas','etapas.id','=','serv_etapas.etapa_id')
+         ->join('servicios','serv_etapas.serv_id','=','servicios.id')
+         ->select('servicios.descripcion')
+         ->where('contratos.id','=',$id)
+         ->get();
+
+            setlocale(LC_TIME, 'es');
+            $now= Carbon::now();
+            $datos[0]->fecha_hoy = $now->formatLocalized('%d de %B de %Y');
  
+            $datos[0]->costoMantenimientoLetra = NumerosEnLetras::convertir($datos[0]->costo_mantenimiento,'Pesos',false,'Centavos');
  
-             $pdf = \PDF::loadview('pdf.contratos.cartaDeServicios',['servicios' => $servicios]);
+             $pdf = \PDF::loadview('pdf.contratos.cartaDeServicios',['datos' => $datos , 'servicios' => $servicios]);
              return $pdf->stream('CartaDeservicios.pdf');
              // return ['cabecera' => $cabecera];
       }
 
-     public function contratoCompraVentaPdf(Request $request)
-     {
-         
-         $servicios = Servicio::orderBy('descripcion','asc')->take(1)->get();
- 
- 
-             $pdf = \PDF::loadview('pdf.contratos.contratoCompraVenta',['servicios' => $servicios]);
-             return $pdf->stream('ContratoCompraVenta.pdf');
-             // return ['cabecera' => $cabecera];
-      }
 
      
 }

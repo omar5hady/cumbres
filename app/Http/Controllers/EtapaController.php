@@ -8,6 +8,7 @@ use App\Precio_etapa; //Importar el modelo
 use App\Sobreprecio_etapa; //Importar el modelo
 use DB;
 use File;
+use App\Contrato;
 
 class EtapaController extends Controller
 {
@@ -32,7 +33,7 @@ class EtapaController extends Controller
                     'etapas.f_fin','etapas.id','etapas.personal_id', 
                     DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS name"),
                     'etapas.fraccionamiento_id','fraccionamientos.nombre as fraccionamiento','etapas.archivo_reglamento',
-                    'etapas.plantilla_carta_servicios')
+                    'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento')
                     ->where('etapas.num_etapa','!=','Sin Asignar')
                     ->orderBy('id','name')->paginate(8);
         }
@@ -45,7 +46,7 @@ class EtapaController extends Controller
                         'etapas.f_fin','etapas.id','etapas.personal_id', 
                         DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS name"),
                         'etapas.fraccionamiento_id','fraccionamientos.nombre as fraccionamiento','etapas.archivo_reglamento',
-                        'etapas.plantilla_carta_servicios')
+                        'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento')
                         ->whereBetween($criterio, [$buscar,$buscar2])
                         ->where('etapas.num_etapa','!=','Sin Asignar')
                         ->orderBy('id','name')->paginate(8);
@@ -57,7 +58,7 @@ class EtapaController extends Controller
                         'etapas.f_fin','etapas.id','etapas.personal_id', 
                         DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS name"),
                         'etapas.fraccionamiento_id','fraccionamientos.nombre as fraccionamiento','etapas.archivo_reglamento',
-                        'etapas.plantilla_carta_servicios')
+                        'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento')
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->where('etapas.num_etapa','!=','Sin Asignar')
                         ->orderBy('id','name')->paginate(8);
@@ -277,5 +278,34 @@ class EtapaController extends Controller
     public function downloadPlantillaCartaServicios ($fileName){
         $pathtoFile = public_path().'/files/etapas/plantillasCartaServicios/'.$fileName;
         return response()->download($pathtoFile);
+    }
+
+    public function descargarReglamentoContrato (Request $request, $id)
+    {
+         $reglamento = Contrato::join('creditos','contratos.id','=','creditos.id')
+        ->join('lotes','creditos.lote_id','=','lotes.id')
+        ->join('etapas','lotes.etapa_id','=','etapas.id')
+        ->select('etapas.archivo_reglamento')
+        ->where('contratos.id','=',$id)->get();
+
+        $pathtoFile = public_path().'/files/etapas/reglamentos/'.$reglamento[0]->archivo_reglamento;
+        return response()->download($pathtoFile);
+    }
+
+    
+    public function registrarCostoMantenimiento(Request $request, $id){
+        $costoAnterior = Etapa::select('costo_mantenimiento')
+                                             ->where('id','=',$id)
+                                             ->get();
+        if($costoAnterior->isEmpty()==1){
+            $costoMantenimiento = new Etapa();
+            $costoMantenimiento->costo_mantenimiento = $request->costo_mantenimiento;
+            $costoMantenimiento->save();
+        }else{
+            $costoMantenimiento = Etapa::findOrFail($request->id);
+            $costoMantenimiento->costo_mantenimiento = $request->costo_mantenimiento;
+            $costoMantenimiento->save();
+        }
+        
     }
 }

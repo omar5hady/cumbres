@@ -18,6 +18,9 @@ body {
     font-size: 10pt;
     font-family: Gotham-Book, sans-serif;
 }
+ul{
+  text-align: left;
+}
 
 .table { display: table; width: 100%; border-collapse: collapse; }
 .table-row { display: table-row; }
@@ -25,11 +28,11 @@ body {
 </style>
 <body>
 <div style="margin-top: 0px; width: 100%; position: fixed; text-align: center;">
-<IMG SRC="img/servicios/CartaServiciosBoreal.png">
+<img src="files/etapas/plantillasCartaServicios/{{ $datos[0]->plantilla_carta_servicios }}">
 <div style="margin-top: 170px; position: absolute; width: 100%; left:60px; right:60px;">
 
-    <p align="right">México, San Luis Potosí, S.L.P, a <u>30 de noviembre del 2020.</u></p>
-    <p align="left">Bienvenido a la Familia Cumbres Sr (a) <u>Maria Antonieta de las nieves</u></p>
+    <p align="right">México, San Luis Potosí, S.L.P, a <u>{{$datos[0]->fecha_hoy}}</u></p>
+    <p align="left">Bienvenido a la Familia Cumbres Sr (a) <u>{{$datos[0]->nombre}} {{$datos[0]->apellidos}}</u></p>
     <p align="left">¡Muchas felicidades por tu nueva casa!</p>
 
     <p align="justify">&nbsp; &nbsp; Queremos informarte por la presente que para mantener la belleza, tranquilidad y seguridad de la privada
@@ -37,10 +40,14 @@ body {
                        privada tales como: 
     </p>
 
-    <p align="justify"> servicios
-    </p>
 
-    <p align="justify">&nbsp; &nbsp; La aportacion será de <strong>$1500 (Mil quinientos pesos)</strong> de forma mensual, como costo base;
+<ul>
+@for($i=0; $i<count($servicios);$i++)
+  <li>{{$servicios[$i]->descripcion}}</li>
+@endfor
+</ul>
+
+    <p align="justify">&nbsp; &nbsp; La aportacion será de <strong>${{$datos[0]->costo_mantenimiento}} ({{$datos[0]->costoMantenimientoLetra}} MXN)</strong> de forma mensual, como costo base;
                       cabe destacar que las cuotas pueden actualizarse conforme a los requerimientos de los costos de los servicios,
                       y pueden ser de carácter fijo y/o provisional con previa notificación y autorización por los propios condóminos.
    </p>

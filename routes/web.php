@@ -144,6 +144,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/formSubmitCartaServicios/{id}','EtapaController@uploadPlantillaCartaServicios');
         Route::get('/downloadReglamento/{fileName}' , 'EtapaController@downloadReglamento');
         Route::get('/downloadPlantilla/cartaServicios/{fileName}' , 'EtapaController@downloadPlantillaCartaServicios');
+        Route::post('/etapas/costoMantenimiento/registrar/{id}','EtapaController@registrarCostoMantenimiento');
 
         
     ///////////////////     RUTAS PERSONAL      ////////////////////////////////////
@@ -316,9 +317,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/creditos_select/actualizar','CreditoController@updateDatosCredito');
         Route::get('/inst_select/observacion','ObservacionInstSeleccionadaController@index');
     
-        Route::get('/serviciosTelecom/pdf/','ServicioController@servicioTelecomPdf')->name('servicios.pdf');
-        Route::get('/cartaServicios/pdf/','ServicioController@cartaDeServicioPdf')->name('CartaDeservicios.pdf');
-        Route::get('/contratoCompraVenta/pdf/','ServicioController@contratoCompraVentaPdf')->name('contratoCompraVenta.pdf');
+        Route::get('/serviciosTelecom/pdf/{id}','ServicioController@servicioTelecomPdf')->name('servicios.pdf');
+        Route::get('/cartaServicios/pdf/{id}','ServicioController@cartaDeServicioPdf')->name('CartaDeservicios.pdf');
         
 
         
@@ -334,6 +334,7 @@ Route::group(['middleware' => ['auth']],function(){
 
         Route::get('/contratoCompraVenta/pdf/{id}','ContratoController@contratoCompraVentaPdf')->name('contratoCompraVenta.pdf');
         Route::get('/pagareContrato/pdf/{id}','ContratoController@pagareContratopdf')->name('pagare.pdf');
+        Route::get('/descargarReglamento/contrato/{id}','EtapaController@descargarReglamentoContrato');
 
 
         /************************** RUTAS ESTADISTICAS ***************************/

@@ -38,8 +38,9 @@
                                         <th>Fraccionamiento</th>
                                         <th>Fecha de inicio </th>
                                         <th>Fecha de termino</th>
-                                        <th>Plantilla para carta de servicios</th>
                                         <th>Reglamento</th>
+                                        <th>Plantilla para carta de servicios</th>
+                                        <th>Costo de mantenimiento</th>
                                         
                                     </tr>
                                 </thead>
@@ -49,15 +50,19 @@
                                             <button type="button" @click="abrirModal('etapa','subirArchivo',etapa)" class="btn btn-info btn-sm">
                                             <i class="icon-cloud-upload"></i>
                                             </button> &nbsp;
+                                            <button title="Asignar costo de mantenimiento" type="button" @click="abrirModal('etapa','costo',etapa)" class="btn btn-warning btn-sm">
+                                            <i class="icon-pencil"></i>
+                                            </button> &nbsp;
                                         </td>
                                         <td v-text="etapa.num_etapa"></td>
                                         <td v-text="etapa.fraccionamiento"></td>
                                         <td v-text="etapa.f_ini"></td>
                                         <td v-text="etapa.f_fin"></td>
-                                        <td  v-if = "etapa.archivo_reglamento"><a class="btn btn-success btn-sm" v-bind:href="'/downloadReglamento/'+etapa.archivo_reglamento"><i class="fa fa-download fa-spin"></i></a></td>
+                                        <td style="width:7%" v-if = "etapa.archivo_reglamento"><a class="btn btn-success btn-sm" v-bind:href="'/downloadReglamento/'+etapa.archivo_reglamento"><i class="fa fa-download fa-spin"></i></a></td>
                                         <td v-else></td>
-                                        <td style="width:7%" v-if = "etapa.plantilla_carta_servicios"><a class="btn btn-success btn-sm" v-bind:href="'/downloadPlantilla/cartaServicios/'+etapa.plantilla_carta_servicios"><i class="fa fa-download fa-spin"></i></a></td>
+                                        <td  v-if = "etapa.plantilla_carta_servicios"><a class="btn btn-success btn-sm" v-bind:href="'/downloadPlantilla/cartaServicios/'+etapa.plantilla_carta_servicios"><i class="fa fa-download fa-spin"></i></a></td>
                                         <td v-else></td>
+                                        <td v-text="'$' + etapa.costo_mantenimiento"></td>
                                     </tr>                               
                                 </tbody>
                             </table>
@@ -90,7 +95,7 @@
                               <span aria-hidden="true">×</span>
                             </button>
                         </div>
-                        <div class="modal-body">
+                        <div v-if="tipoAccion != 2" class="modal-body">
 
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Numero de etapa</label>
@@ -111,7 +116,7 @@
 
                                 </div>
                             <br>
-                        <div>
+                        <div v-if="tipoAccion != 2">
                              <form  method="post" @submit="formSubmitReglamento" enctype="multipart/form-data">
 
                                     <strong>Sube aqui el reglamento para esta etapa</strong>
@@ -121,12 +126,20 @@
                                     <button type="submit" class="btn btn-success">Cargar</button>
                             </form>
                         </div>
-                                    
-                               
-                        </div>
+                        </div>       
+                    
+                        <div v-if="tipoAccion == 2" class="modal-body">
+                          <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Costo mantenimiento</label>
+                                    <div class="col-md-4">
+                                        <input type="text" v-model="costo_mantenimiento" class="form-control" placeholder="$">
+                                    </div>
+                                </div>
+                          </div>
                         <!-- Botones del modal -->
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                            <button type="button" class="btn btn-info" v-if="tipoAccion==2" @click="registrarCostosMantenimiento()">Guardar</button>
                         </div>
                     </div>
                     <!-- /.modal-content -->
@@ -151,7 +164,8 @@
                 id:0,
                 num_etapa : 0,
                 archivo_plantilla_servicio: '',
-                 archivo_reglamento: '',
+                archivo_reglamento: '',
+                costo_mantenimiento: 0,
                 arrayEtapa : [],
                 modal : 0,
                 tituloModal : '',
@@ -269,6 +283,35 @@
                 });
 
             },
+             registrarCostosMantenimiento(){
+                if(this.proceso==true){
+                    return;
+                }
+             
+                this.proceso=true;
+                let me = this;
+                //Con axios se llama el metodo store de FraccionaminetoController
+                axios.post('/etapas/costoMantenimiento/registrar/'+this.id,{
+                    'costo_mantenimiento': this.costo_mantenimiento,
+                  
+                    
+                }).then(function (response){
+                    me.proceso=false;
+                    me.cerrarModal(); //al guardar el registro se cierra el modal
+                    me.listarEtapa(1,'','','fraccionamiento.nombre');
+
+                    //Se muestra mensaje Success
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Asignaciones realizadas correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
 
 
 
@@ -320,6 +363,16 @@
                                 this.archivo_reglamento=data['archivo_reglamento'];
                                 this.archivo_plantilla_servicio=data['plantilla_carta_servicios'];
                                 this.tipoAccion = 1;
+                                break;
+                            }
+                             case 'costo':
+                            {
+                                this.modal = 1;
+                                this.tituloModal = 'Asigna un costo de mantenimiento para esta etapa';
+                                this.num_etapa = data['num_etapa'];
+                                this.id=data['id'];
+                                this.costo_matenimiento = data['costo_mantenimiento'];
+                                this.tipoAccion = 2;
                                 break;
                             }
                            
