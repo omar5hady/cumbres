@@ -266,14 +266,21 @@
                 let me = this;
                 //Con axios se llama el metodo update de DepartamentoController
 
+                var tamaño=me.lotes_ini.length;
+                var i=1;
+                var aviso =0;
                 me.lotes_ini.forEach(element => {
 
+                    if(i == tamaño)
+                        aviso = tamaño;
                     axios.put('/lotes/enviarAviObra',{
                     'arquitecto_id': this.arquitecto_id,
                     'id': element,
                     'fecha_ini' : this.f_ini,
-                    'fecha_fin' : this.f_fin
+                    'fecha_fin' : this.f_fin,
+                    'aviso' : aviso
                     }); 
+                    i++;
                 });
                 Swal({
                 title: 'Enviado!',

@@ -6,6 +6,7 @@ use App\Http\Controllers\AvanceController;
 use Illuminate\Http\Request;
 use App\Precio_etapa;
 use App\Sobreprecio_modelo;
+use App\Notifications\NotifyAdmin;
 use App\Precio_modelo;
 use App\Lote;
 use App\Lote_promocion;
@@ -22,6 +23,7 @@ use DB;
 use Carbon\Carbon;
 use App\Apartado;
 use Auth;
+use App\User;
 
 class LoteController extends Controller
 {
@@ -410,6 +412,8 @@ class LoteController extends Controller
     public function enviarAviso(Request $request)
     {
        //if(!$request->ajax())return redirect('/');
+       $aviso = $request->aviso;
+       $id = $request->id;
         //FindOrFail se utiliza para buscar lo que recibe de argumento
         $lote = Lote::findOrFail($request->id);
         $lote->fecha_ini = $request ->fecha_ini;
@@ -419,6 +423,38 @@ class LoteController extends Controller
         $lote->ehl_solicitado = Carbon::today()->format('ymd');
         
         $lote->save();
+
+        if($aviso != '0'){
+                
+            $loteIni = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+            ->select('fraccionamientos.nombre as proyecto','lotes.fecha_fin','lotes.fecha_ini')
+            ->where('lotes.id','=',$id)->get();
+
+            setlocale(LC_TIME, 'es');
+            $fecha_fin = new Carbon($loteIni[0]->fecha_fin);
+            $loteIni[0]->fecha_fin = $fecha_fin->formatLocalized('%d-%m-%Y');
+            $fecha_ini = new Carbon($loteIni[0]->fecha_ini);
+            $loteIni[0]->fecha_ini = $fecha_ini->formatLocalized('%d-%m-%Y');
+
+            $imagenUsuario = DB::table('users')->select('foto_user','usuario')->where('id','=',Auth::user()->id)->get();
+            $fecha = Carbon::now();
+            $msj = "Se han enviado ". $aviso ." lotes del Proyecto ". $loteIni[0]->proyecto . " a inicio de obra (" . $loteIni[0]->fecha_ini . " - " . $loteIni[0]->fecha_fin . ") ";
+            $iniciosObra = [
+                'notificacion' => [
+                    'usuario' => $imagenUsuario[0]->usuario,
+                    'foto' => $imagenUsuario[0]->foto_user,
+                    'fecha' => $fecha,
+                    'msj' => $msj,
+                    'titulo' => 'Inicio de obra pendiente'
+                ]
+            ];
+
+            $users = User::select('id')->where('rol_id','=','5')->get();
+
+            foreach($users as $notificar){
+                User::findOrFail($notificar->id)->notify(new NotifyAdmin($iniciosObra));
+            }
+        }
 
         //Aqui se deberia hacer toda la asignacion para la tabla avances
         $partidas = Partida::select('id','partida')

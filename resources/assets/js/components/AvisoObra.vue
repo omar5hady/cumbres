@@ -167,7 +167,7 @@
                                         <div class="form-inline">
                                         <select class="form-control" v-model="lote_id" @click="selectDatosLotes(lote_id)">
                                             <option value="0">Seleccione</option>
-                                            <option v-for="lotes in arrayLotes" :key="lotes.id" :value="lotes.id" v-text="lotes.num_lote"></option>
+                                            <option v-for="lotes in arrayLotes" :key="lotes.id" :value="lotes.id" v-text="lotes.num_lote + ' - ' + lotes.fecha_fin"></option>
                                         </select>
                                            
                                         </div>

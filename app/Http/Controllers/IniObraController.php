@@ -172,7 +172,7 @@ class IniObraController extends Controller
     {
         $buscar = $request->buscar;
         $buscar2 = $request->buscar2;
-        $lotes = Lote::select('num_lote','id')
+        $lotes = Lote::select('num_lote','id','fecha_fin')
                         ->where('fraccionamiento_id','=',$buscar2)
                         ->where('manzana','=',$buscar)
                         ->where('ini_obra', '=', '1')
