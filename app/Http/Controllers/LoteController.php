@@ -47,7 +47,8 @@ class LoteController extends Controller
                       'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
                       'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
                       'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                      'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios')
+                      'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios',
+                      'lotes.regimen_condom')
                       ->orderBy('fraccionamientos.nombre','DESC')
                       ->orderBy('lotes.etapa_servicios','DESC')->paginate(8);
         }
@@ -62,7 +63,7 @@ class LoteController extends Controller
                         'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
                         'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
                         'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                        'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios')
+                        'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom')
                     ->where($criterio, 'like', '%'. $buscar . '%')
                     ->orderBy('fraccionamientos.nombre','DESC')
                     ->orderBy('lotes.etapa_servicios','DESC')->paginate(8);
@@ -78,7 +79,7 @@ class LoteController extends Controller
                             'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
                             'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
                             'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                            'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios')
+                            'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom')
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                         ->orderBy('fraccionamientos.nombre','DESC')
@@ -93,7 +94,7 @@ class LoteController extends Controller
                             'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
                             'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
                             'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                            'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios')
+                            'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom')
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                         ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
@@ -351,6 +352,7 @@ class LoteController extends Controller
         $lote->lote_comercial = $request->lote_comercial;   
         $lote->casa_muestra = $request->casa_muestra;
         $lote->comentarios = $request->comentarios;
+        $lote->regimen_condom = $request->regimen;
 
         if($request->habilitado == 1){
             $terrenoExcedente = ($lote->terreno - $terrenoModelo[0]->terreno);

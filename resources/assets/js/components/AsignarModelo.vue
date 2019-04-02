@@ -285,6 +285,23 @@
                                             <label class="form-check-label" for="radio4">No </label>
                                         </div>
                                     </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Regimen condominio</label>
+                                    <div class="col-md-2">
+                                        <div class="form-check">
+                                            <input class="form-check-input" v-model="regimen" id="radio5" type="radio" value="1" name="radios3">
+                                            <label class="form-check-label" for="radio5">Si </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-check">
+                                            <input class="form-check-input" v-model="regimen" id="radio6" type="radio" value="0" name="radios3">
+                                            <label class="form-check-label" for="radio6">No </label>
+                                        </div>
+                                    </div>
+                                
+                                
 
                                     
 
@@ -410,6 +427,7 @@
                 habilitado: 0,
                 credito_puente:'',
                 comentarios: '',
+                regimen:0,
                 
                 file: '',
                 modelostc :'',
@@ -656,6 +674,7 @@
                     'habilitado': this.habilitado,
                     'credito_puente':this.credito_puente,
                     'comentarios': this.comentarios,
+                    'regimen':this.regimen,
                     
                 }).then(function (response){
                     me.proceso=false;
@@ -826,6 +845,7 @@
                                 this.habilitado=data['habilitado'];
                                 this.credito_puente=data['credito_puente'];
                                 this.comentarios=data['comentarios'];
+                                this.regimen = data['regimen_condom'];
                                 break;
                             }
 
