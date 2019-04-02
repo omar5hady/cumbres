@@ -1114,7 +1114,7 @@ class ContratoController extends Controller
             ->join('personal','creditos.prospecto_id','=','personal.id')
             ->join('clientes','creditos.prospecto_id','=','clientes.id')
             ->select('personal.nombre','personal.apellidos', 'personal.telefono','personal.celular',
-            'personal.email','personal.direccion','personal.cp','personal.colonia','clientes.estado','clientes.ciudad')
+            'personal.email','personal.direccion','personal.cp','personal.colonia','clientes.estado','clientes.ciudad','contratos.fecha')
             ->where('contratos.id','=',$id)->get();
          
              $pagos = Pago_contrato::select('monto_pago','num_pago','fecha_pago')->where('contrato_id','=',$id)->orderBy('fecha_pago','asc')->get();
@@ -1130,14 +1130,40 @@ class ContratoController extends Controller
                 $pagos[$i]->montoPagoLetra = NumerosEnLetras::convertir($pagos[$i]->monto_pago,'Pesos',false,'Centavos');
                 }
                  
-                $now= Carbon::now();
-                $pagos[0]->fecha_hoy = $now->formatLocalized('%d de %B de %Y');
-
+                
+                $tiempo = new Carbon($cliente[0]->fecha);
+                $cliente[0]->fecha = $tiempo->formatLocalized('%d de %B de %Y');
  
              $pdf = \PDF::loadview('pdf.contratos.pagaresContratos',['pagos' => $pagos , 'cliente' => $cliente]);
              return $pdf->stream('pagare.pdf');
              // return ['cabecera' => $cabecera];
       }
+
+      public function contratoConReservaDeDominio (Request $request){
+
+        $contratosDom = Contrato::join('creditos','contratos.id','=','creditos.id')
+        ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+        ->join('personal','creditos.prospecto_id','=','personal.id')
+        ->join('clientes','creditos.prospecto_id','=','clientes.id')
+        ->join('personal as v','clientes.vendedor_id','v.id')
+        ->join('lotes','creditos.lote_id','=','lotes.id')
+        ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
+        ->select('creditos.id','creditos.prospecto_id','creditos.num_dep_economicos','creditos.tipo_economia',
+            'creditos.nombre_primera_ref','creditos.telefono_primera_ref','creditos.celular_primera_ref',
+            'creditos.nombre_segunda_ref','creditos.telefono_segunda_ref','creditos.celular_segunda_ref',
+            'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','creditos.precio_base',
+            'creditos.superficie','creditos.terreno_excedente','creditos.precio_terreno_excedente',
+            'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
+            'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
+            'creditos.costo_paquete','inst_seleccionadas.tipo_credito','inst_seleccionadas.id as inst_credito',
+            'creditos.precio_obra_extra','creditos.fraccionamiento as proyecto')
+        ->get();
+
+
+        $pdf = \PDF::loadview('pdf.contratos.contratoConReservaDeDominio',['contratosDom' => $contratosDom]);
+        return $pdf->stream('contrato_reserva_de_dominio.pdf');
+    
+    }
 
 
 }

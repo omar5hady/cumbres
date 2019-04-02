@@ -31,7 +31,7 @@ body {
         <div style="text-align: right; margin-bottom: 0em;  margin-top: 0em;">
             <p style="margin-bottom: 0em;  margin-top: 0em;"> <strong> PAGARE NO. </strong> {{$pagos[$i]->num_pago + 1}}/{{count($pagos)}}</p>
             <p style="margin-bottom: 0em;  margin-top: 0em;"> <strong>BUENO POR </strong>${{$pagos[$i]->monto_pago}}</p>
-            <p style="margin-bottom: 0em;  margin-top: 0em;">EN SAN LUIS POTOSI, SAN LUIS POTOSI, A {{strtoupper($pagos[0]->fecha_hoy)}}</p>
+            <p style="margin-bottom: 0em;  margin-top: 0em;">EN SAN LUIS POTOSI, SAN LUIS POTOSI, A {{strtoupper($cliente[0]->fecha)}}</p>
         </div>
         <br>
         <br>
