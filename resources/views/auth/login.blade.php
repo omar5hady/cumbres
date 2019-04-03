@@ -22,17 +22,18 @@
               </div>
               <div class="row animated fadeInLeft slower">
                 <div class="col-6">
-                  <button type="submit" class="btn btn-primary px-4">Acceder</button>
+                  <button type="submit" class="btn btn-dark px-4">Acceder</button>
                 </div>
               </div>
             </div>
           </form>
           </div>
-          <div class="card text-white bg-primary py-5 d-md-down-none" style="width:44%">
+          <div class="card text-white bg-dark py-5 d-md-down-none" style="width:44%">
             <div class="card-body text-center">
               <div>
-                <h2>Sistema cumbres</h2>
-                <p>sistema de venta de casas - Grupo constructor cumbres</p>
+                <h1 center> SII </h1>
+                <h2 center> CUMBRES </h2>
+                <img id="logo" src="img/logoLogin.png" alt="">
               </div>
             </div>
           </div>
