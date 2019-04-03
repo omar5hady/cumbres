@@ -1151,7 +1151,7 @@ class ContratoController extends Controller
         ->join('lotes','creditos.lote_id','=','lotes.id')
         ->select('creditos.id','creditos.prospecto_id','creditos.etapa','creditos.manzana','creditos.num_lote',
             'creditos.superficie','inst_seleccionadas.id as inst_credito','inst_seleccionadas.tipo_credito',
-            'creditos.fraccionamiento as proyecto','lotes.construccion','lotes.regimen_condom',
+            'creditos.fraccionamiento as proyecto','lotes.construccion','lotes.regimen_condom','creditos.precio_venta',
             
             'personal.nombre','personal.apellidos', 'personal.telefono','personal.celular',
             'personal.direccion','personal.cp','personal.colonia',
@@ -1160,13 +1160,14 @@ class ContratoController extends Controller
             'clientes.nacionalidad_coa','clientes.estado','clientes.ciudad',
             
             'contratos.enganche_total','contratos.fecha')
+        ->where('inst_seleccionadas.elegido','=','1')
         ->where('contratos.id','=',$id)
         ->where('inst_seleccionadas.tipo_credito','=','Crédito Directo')
         ->get();
 
         setlocale(LC_TIME, 'es');
-        $contratosDom[0]->engancheTotalLetra = NumerosEnLetras::convertir($contratosDom[0]->enganche_total,'Pesos',false,'Centavos');
-        $contratosDom[0]->enganche_total = number_format((float)$contratosDom[0]->enganche_total,2,'.',',');
+        $contratosDom[0]->precioVentaLetra = NumerosEnLetras::convertir($contratosDom[0]->precio_venta,'Pesos',false,'Centavos');
+        $contratosDom[0]->precio_venta = number_format((float)$contratosDom[0]->precio_venta,2,'.',',');
 
         $fechaContrato = new Carbon($contratosDom[0]->fecha);
         $contratosDom[0]->fecha = $fechaContrato->formatLocalized('%d días de %B de %Y');
@@ -1201,6 +1202,80 @@ class ContratoController extends Controller
 
         $pdf = \PDF::loadview('pdf.contratos.contratoConReservaDeDominio',['contratosDom' => $contratosDom, 'pagos' => $pagos]);
         return $pdf->stream('contrato_reserva_de_dominio.pdf');
+    
+    }
+
+
+    public function contratoDePromesaCredito (Request $request, $id){
+
+        $contratoPromesa = Contrato::join('creditos','contratos.id','=','creditos.id')
+        ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+        ->join('personal','creditos.prospecto_id','=','personal.id')
+        ->join('clientes','creditos.prospecto_id','=','clientes.id')
+        ->join('personal as v','clientes.vendedor_id','v.id')
+        ->join('lotes','creditos.lote_id','=','lotes.id')
+        ->select('creditos.id','creditos.prospecto_id','creditos.etapa','creditos.manzana','creditos.num_lote',
+            'creditos.superficie','inst_seleccionadas.id as inst_credito','inst_seleccionadas.tipo_credito','creditos.precio_venta',
+            'inst_seleccionadas.institucion','creditos.fraccionamiento as proyecto','lotes.construccion','lotes.regimen_condom',
+            
+            'personal.nombre','personal.apellidos', 'personal.telefono','personal.celular',
+            'personal.direccion','personal.cp','personal.colonia',
+            'creditos.fraccionamiento','clientes.id as prospecto_id','clientes.edo_civil','clientes.nss','clientes.curp','clientes.empresa',
+            'clientes.coacreditado','clientes.nombre_coa','clientes.apellidos_coa','clientes.f_nacimiento_coa',
+            'clientes.nacionalidad_coa','clientes.estado','clientes.ciudad',
+            
+            'contratos.monto_total_credito','contratos.enganche_total','contratos.fecha','contratos.infonavit','contratos.fovisste')
+        ->where('inst_seleccionadas.elegido','=','1')
+        ->where('contratos.id','=',$id)
+        ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
+        ->get();
+
+        setlocale(LC_TIME, 'es');
+        $contratoPromesa[0]->precioVentaLetra = NumerosEnLetras::convertir($contratoPromesa[0]->precio_venta,'Pesos',false,'Centavos');
+        $contratoPromesa[0]->precio_venta = number_format((float)$contratoPromesa[0]->precio_venta,2,'.',',');
+
+        $contratoPromesa[0]->montoTotalCreditoLetra = NumerosEnLetras::convertir($contratoPromesa[0]->monto_total_credito,'Pesos',false,'Centavos');
+        $contratoPromesa[0]->monto_total_credito = number_format((float)$contratoPromesa[0]->monto_total_credito,2,'.',',');
+
+        $contratoPromesa[0]->infonavitLetra = NumerosEnLetras::convertir($contratoPromesa[0]->infonavit,'Pesos',false,'Centavos');
+        $contratoPromesa[0]->infonavit = number_format((float)$contratoPromesa[0]->infonavit,2,'.',',');
+
+        $contratoPromesa[0]->fovissteLetra = NumerosEnLetras::convertir($contratoPromesa[0]->fovisste,'Pesos',false,'Centavos');
+        $contratoPromesa[0]->fovisste = number_format((float)$contratoPromesa[0]->fovisste,2,'.',',');
+
+        $fechaContrato = new Carbon($contratoPromesa[0]->fecha);
+        $contratoPromesa[0]->fecha = $fechaContrato->formatLocalized('%d días de %B de %Y');
+
+        $pagos = Pago_contrato::select('monto_pago','num_pago','fecha_pago')->where('contrato_id','=',$id)->orderBy('fecha_pago','asc')->get();
+        
+
+        $totalDePagos = count($pagos);
+        $pagos[0]->totalDePagos = NumerosEnLetras::convertir($totalDePagos,false,false,false);
+
+        for($i=0; $i<count($pagos); $i++){
+        $tiempo = new Carbon($pagos[$i]->fecha_pago);
+        $pagos[$i]->fecha_pago = $tiempo->formatLocalized('%d de %B de %Y');
+        $pagos[$i]->montoPagoLetra = NumerosEnLetras::convertir($pagos[$i]->monto_pago,'Pesos',false,'Centavos');
+        $pagos[$i]->monto_pago = number_format((float)$pagos[$i]->monto_pago,2,'.',',');
+
+        switch($i){
+            case (0) : {$pagos[$i]->numeros = 'primero'; break;}
+            case (1) : {$pagos[$i]->numeros = 'segundo'; break;}
+            case (2) : {$pagos[$i]->numeros = 'tercero'; break;}
+            case (3) : {$pagos[$i]->numeros = 'cuarto'; break;}
+            case (4) : {$pagos[$i]->numeros = 'quinto'; break;}
+            case (5) : {$pagos[$i]->numeros = 'sexto'; break;}
+            case (6) : {$pagos[$i]->numeros = 'septimo'; break;}
+            case (7) : {$pagos[$i]->numeros = 'octavo'; break;}
+            case (8) : {$pagos[$i]->numeros = 'noveno'; break;}
+            case (9) : {$pagos[$i]->numeros = 'decimo'; break;}
+            case (10) : {$pagos[$i]->numeros = 'onceavo'; break;}
+             }    
+        }
+
+
+        $pdf = \PDF::loadview('pdf.contratos.contratoDePromesaCredito',['contratoPromesa' => $contratoPromesa, 'pagos' => $pagos]);
+        return $pdf->stream('contrato_promesa_credito.pdf');
     
     }
 

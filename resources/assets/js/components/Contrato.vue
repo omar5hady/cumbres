@@ -1381,12 +1381,13 @@
                                                 <button type="button" v-if="listado==3" class="btn btn-primary" @click="crearContrato()"> Enviar </button>
                                             </div>
                                              <div style="text-align: right;">
-                                                <a class="btn btn-info btn-sm" v-if="listado==4" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+id">Imprimir contrato</a>
-                                                <a class="btn btn-primary btn-sm" v-if="listado==4" target="_blank" v-bind:href="'/pagareContrato/pdf/'+id">Imprimir pagares</a>
-                                                <a class="btn btn-success btn-sm" v-if="listado==4" target="_blank" v-bind:href="'/cartaServicios/pdf/'+id">Carta de servicios</a>
-                                                <a class="btn btn-warning btn-sm" v-if="listado==4" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+id">Servicios de telecomunición</a>
+                                                <a class="btn btn-warning btn-sm" v-if="listado==4 && tipo_credito!='Crédito Directo'" target="_blank" v-bind:href="'/contrato/promesaCredito/pdf/'+id">Imprimir contrato</a>
+                                                <a class="btn btn-warning btn-sm" v-if="listado==4 && tipo_credito=='Crédito Directo'" target="_blank" v-bind:href="'/contratoCompraVenta/reservaDeDominio/pdf/'+id">Imprimir contrato</a>
+                                                <a class="btn btn-primary btn-sm" v-if="listado==4" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+id">Imprimir contrato de compra venta</a>
+                                                <a class="btn btn-light btn-sm" v-if="listado==4" target="_blank" v-bind:href="'/pagareContrato/pdf/'+id">Imprimir pagares</a>
+                                                <a class="btn btn-dark btn-sm" v-if="listado==4" target="_blank" v-bind:href="'/cartaServicios/pdf/'+id">Carta de servicios</a>
+                                                <a class="btn btn-dark btn-sm" v-if="listado==4" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+id">Servicios de telecomunición</a>
                                                 <a class="btn btn-danger btn-sm" v-if="listado==4" v-bind:href="'/descargarReglamento/contrato/'+id">Reglamento de la etapa</a>
-                                                <a class="btn btn-info btn-sm" v-if="listado==4 && tipo_credito=='Crédito Directo'" target="_blank" v-bind:href="'/contratoCompraVenta/reservaDeDominio/pdf/'+id">Imprimir contrato con reserva de dominio</a>
                                             </div>
                                           
                                         </div>

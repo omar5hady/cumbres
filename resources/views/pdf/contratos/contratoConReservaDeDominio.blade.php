@@ -156,7 +156,7 @@ body{
 
         <p>
         <strong>CUARTA.-</strong> El precio total que convienen las partes motivo de esta operación será de
-                 <strong>${{$contratosDom[0]->enganche_total}} ({{strtoupper($contratosDom[0]->engancheTotalLetra)}} 00/100 Moneda Nacional)</strong> el precio Convenido por el <strong>LOTE</strong> y <strong>LA VIVIENDA</strong>
+                 <strong>${{$contratosDom[0]->precio_venta}} ({{strtoupper($contratosDom[0]->precioVentaLetra)}} 00/100 Moneda Nacional)</strong> el precio Convenido por el <strong>LOTE</strong> y <strong>LA VIVIENDA</strong>
                  será pagado por <strong>EL COMPRADOR</strong> de la siguiente forma:
         </p>
 
@@ -208,7 +208,7 @@ body{
        <strong>OCTAVA.-</strong> La falta de pago puntual por parte de <strong>EL COMPRADOR</strong> faculta a <strong>EL VENDEDOR</strong> al cobro de intereses a tasa del 5% mensual
                  aplicable sobre los días de retraso calculados sobre la cantidad adeudada. En caso de Cancelación <strong>EL VENDEDOR</strong> deberá 
                  reintegrar el importe recibido hasta la fecha por parte de <strong>EL COMPRADOR</strong>, descontándose la cantidad de 
-                 <strong>$ 15,000.00 (Quince Mil Pesos 00/100 </strong>Moneda Nacional) como pena por los daños y perjuicios ocasionados. 
+                 <strong>$ 25,000.00 (Veinticinco Mil Pesos 00/100 </strong>Moneda Nacional) como pena por los daños y perjuicios ocasionados. 
                  El importe se reintegrará hasta que <strong>EL VENDEDOR</strong> recupere la inversión realizada en la construcción. 
                  <strong>EL COMPRADOR.-</strong> Manifiesta su expresa conformidad y señala que entiende cabalmente el alcance de lo que aquí se detalla. 
                  El cobro de intereses, no limita o excluye la facultad de <strong>EL COMPRADOR</strong> de rescindir este contrato en términos de la siguiente cláusula.
