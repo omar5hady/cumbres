@@ -905,14 +905,14 @@
 
                                                     <div class="col-md-2" v-if="inst_financiera!=''">
                                                         <div class="form-group">
-                                                        <label for="">Plazo (años) <span style="color:red;" v-show="plazo_credito==0">(*)</span></label>
+                                                        <label for="">Plazo (años) <span style="color:red;" v-show="plazo_credito==''">(*)</span></label>
                                                             <input type="text" pattern="\d*" v-model="plazo_credito" maxlength="2" v-on:keypress="isNumber($event)" class="form-control" >
                                                         </div>
                                                     </div>
 
                                                     <div class="col-md-3" v-if="inst_financiera!=''">
                                                         <div class="form-group">
-                                                        <label for="">Crédito Solicitado <span style="color:red;" v-show="monto_credito==0">(*)</span></label>
+                                                        <label for="">Crédito Solicitado <span style="color:red;" v-show="monto_credito==''">(*)</span></label>
                                                             <input type="text" pattern="\d*" v-model="monto_credito" maxlength="9" v-on:keypress="isNumber($event)" class="form-control" >
                                                         </div>
                                                     </div>

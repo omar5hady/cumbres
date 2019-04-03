@@ -156,7 +156,7 @@ body{
 
         <p>
         <strong>CUARTA.-</strong> El precio total que convienen las partes motivo de esta operación será de
-                 <strong>${{$contratosDom[0]->precio_venta}} ({{strtoupper($contratosDom[0]->precioVentaLetra)}} 00/100 Moneda Nacional)</strong> el precio Convenido por el <strong>LOTE</strong> y <strong>LA VIVIENDA</strong>
+                 <strong>${{$contratosDom[0]->enganche_total}} ({{strtoupper($contratosDom[0]->engancheTotalLetra)}} 00/100 Moneda Nacional)</strong> el precio Convenido por el <strong>LOTE</strong> y <strong>LA VIVIENDA</strong>
                  será pagado por <strong>EL COMPRADOR</strong> de la siguiente forma:
         </p>
 

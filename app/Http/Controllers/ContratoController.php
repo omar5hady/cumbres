@@ -1166,8 +1166,8 @@ class ContratoController extends Controller
         ->get();
 
         setlocale(LC_TIME, 'es');
-        $contratosDom[0]->precioVentaLetra = NumerosEnLetras::convertir($contratosDom[0]->precio_venta,'Pesos',false,'Centavos');
-        $contratosDom[0]->precio_venta = number_format((float)$contratosDom[0]->precio_venta,2,'.',',');
+        $contratosDom[0]->engacheTotalLetra = NumerosEnLetras::convertir($contratosDom[0]->enganche_total,'Pesos',false,'Centavos');
+        $contratosDom[0]->enganche_total = number_format((float)$contratosDom[0]->enganche_total,2,'.',',');
 
         $fechaContrato = new Carbon($contratosDom[0]->fecha);
         $contratosDom[0]->fecha = $fechaContrato->formatLocalized('%d días de %B de %Y');
@@ -1224,13 +1224,14 @@ class ContratoController extends Controller
             'clientes.coacreditado','clientes.nombre_coa','clientes.apellidos_coa','clientes.f_nacimiento_coa',
             'clientes.nacionalidad_coa','clientes.estado','clientes.ciudad',
             
-            'contratos.monto_total_credito','contratos.enganche_total','contratos.fecha','contratos.infonavit','contratos.fovisste')
+            'contratos.monto_total_credito','contratos.enganche_total','contratos.fecha','contratos.infonavit','contratos.fovisste','contratos.avaluo_cliente')
         ->where('inst_seleccionadas.elegido','=','1')
         ->where('contratos.id','=',$id)
         ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
         ->get();
 
         setlocale(LC_TIME, 'es');
+        $contratoPromesa[0]->precio_venta = $contratoPromesa[0]->precio_venta + $contratoPromesa[0]->avaluo_cliente;
         $contratoPromesa[0]->precioVentaLetra = NumerosEnLetras::convertir($contratoPromesa[0]->precio_venta,'Pesos',false,'Centavos');
         $contratoPromesa[0]->precio_venta = number_format((float)$contratoPromesa[0]->precio_venta,2,'.',',');
 
