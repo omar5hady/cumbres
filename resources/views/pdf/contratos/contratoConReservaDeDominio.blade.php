@@ -19,6 +19,10 @@ body{
     margin-right: 90px;
     margin-left: 90px;
 }
+
+.table-cell3 { display: table-cell; padding: 0em; font-size: 11pt; }
+.table3 { display: table; width:100%; border-collapse: collapse; table-layout: fixed; }
+.table-row { display: table-row; }
 </style>
 
 <body>
@@ -26,7 +30,7 @@ body{
         <p>
         <strong>CONTRATO DE COMPRAVENTA</strong> CON RESERVA DE DOMINIO, QUE CELEBRAN POR UNA PARTE, LA SOCIEDAD MERCANTIL DENOMINADA <strong>GRUPO CONSTRUCTOR CUMBRES, S.A DE C.V.</strong>,
         A QUIEN EN LOS SUCESIVO Y PARA LOS EFECTOS DEL PRESENTE CONTRATO SE LE DENOMINARA <strong>EL VENDEDOR</strong> REPRESENTADO EN ESTE ACTO POR EL 
-        ING. ALEJANDRO F. PEREZ ESPINOSA O EL ING. DAVID CALVILLO MARTINEZ, Y POR SU PROPIO DERECHO, <strong>EL SR(A) CECILIO BORJAS GARCIA Y MIGUEL ANGEL SOLORIO MUÑIZ</strong> 
+        ING. ALEJANDRO F. PEREZ ESPINOSA O EL ING. DAVID CALVILLO MARTINEZ, Y POR SU PROPIO DERECHO, <strong>EL SR(A) {{strtoupper($contratosDom[0]->nombre)}} {{strtoupper($contratosDom[0]->apellidos)}} Y {{strtoupper($contratosDom[0]->nombre_coa)}} {{strtoupper($contratosDom[0]->apellidos_coa)}}</strong> 
         LA QUIEN EN LO SUCESIVO Y PARA LOS EFECTOS DEL PRESENTE CONTRATO SE DENOMINARAN <strong>EL COMPRADOR</strong> AL TENOR DE LAS SIGUIENTES DECLARACIONES Y CLAUSULAS 
         </p>
 
@@ -49,8 +53,8 @@ body{
         </p>
 
         <p>
-        c) Que es único y legítimo propietario del <strong>Lote</strong>de terreno número <strong>101</strong>, de la <strong>Manzana 8</strong> del Fraccionamiento <strong>CATARA</strong>,
-           en esta ciudad de SAN LUIS POTOSÍ, SAN LUIS POTOSÍ, cuya superficie es de <strong>120.00 M2</strong>, mismo que en lo sucesivo y 
+        c) Que es único y legítimo propietario del <strong>Lote</strong> de terreno número <strong>{{$contratosDom[0]->num_lote}}</strong>, de la <strong>Manzana {{$contratosDom[0]->manzana}}</strong> del Fraccionamiento <strong>{{strtoupper($contratosDom[0]->proyecto)}}</strong>,
+           en esta ciudad de SAN LUIS POTOSÍ, SAN LUIS POTOSÍ, cuya superficie es de <strong>{{$contratosDom[0]->superficie}} M2</strong>, mismo que en lo sucesivo y 
            para todos los efectos del presente contrato se le denominará como <strong>EL LOTE</strong>. 
         </p>
 
@@ -145,14 +149,13 @@ body{
 
         <p>
         <strong>CUARTA.-</strong> El precio total que convienen las partes motivo de esta operación será de
-                 <strong>$1'054,000.00 (UN MILLÓN CINCUENTA Y CUATRO MIL PESOS 00/100 Moneda Nacional)</strong> el precio Convenido por el <strong>LOTE</strong> y <strong>LA VIVIENDA</strong>
+                 <strong>${{$contratosDom[0]->enganche_total}} ({{strtoupper($contratosDom[0]->engancheTotalLetra)}} 00/100 Moneda Nacional)</strong> el precio Convenido por el <strong>LOTE</strong> y <strong>LA VIVIENDA</strong>
                  será pagado por <strong>EL COMPRADOR</strong> de la siguiente forma:
         </p>
 
         <p>
-        * Mediante <strong>dos</strong> pagos, el <strong>primero</strong> por la cantidad de <strong>$1'023,000.00 (UN MILLÓN VEINTITRES MIL PESOS 00/100 </strong> Moneda Nacional),
-         que será liquidado a más tardar el día <strong>23</strong> de <strong>Abril</strong> de <strong>2018</strong>, el <strong>segundo</strong> por la cantidad de <strong>$31,000.00 (TREINTA Y UN MIL PESOS 00/100 </strong> Moneda Nacional), 
-         que será liquidado a más tardar el día <strong>23</strong> de <strong>Abril</strong>de <strong>2018</strong>, respectivamente. Asimismo, el precio pactado con antelación,
+        * Mediante <strong>{{$pagos[0]->totalDePagos}}</strong>pagos, @for($i=0; $i < count($pagos); $i++) el <strong>{{$pagos[$i]->numeros}}</strong> por la cantidad de <strong>${{$pagos[$i]->monto_pago}} ({{strtoupper($pagos[$i]->montoPagoLetra)}} 00/100 </strong> Moneda Nacional),
+         que será liquidado a más tardar el día <strong>{{$pagos[$i]->fecha_pago}}</strong>@endfor, respectivamente. Asimismo, el precio pactado con antelación,
          se sujeta a la condición de que el pago total de <strong>LA VIVIENDA</strong> se verifique a más tardar a la fecha de vencimiento del último 
          de los pagos pactados en el presenta contrato. <strong>EL VENDEDOR</strong> está facultado a no recibir el primer pago, sin responsabilidad de su parte, 
          si se pretende hacer en efectivo.
@@ -180,7 +183,7 @@ body{
 
 
         <p>
-        Las características de la urbanización del terreno. La Superficie de construcción que es de <strong>103.80M2</strong> Las especificaciones de <strong>LA VIVIENDA</strong> según anexo, 
+        Las características de la urbanización del terreno. La Superficie de construcción que es de <strong>{{$contratosDom[0]->construccion}} M2</strong> Las especificaciones de <strong>LA VIVIENDA</strong> según anexo, 
         el cual forma parte integral del presente contrato. El precio y la fecha de entrega.
         </p>
 
@@ -220,8 +223,8 @@ body{
         <p>
         <strong>DECIMA PRIMERA.-</strong> Las partes señalan como sus respectivos domicilios para recibir toda clase de notificaciones que deban hacérseles, 
         aun las personales en caso de juicio, los siguientes: <strong>GRUPO CONSTRUCTOR CUMBRES, S.A DE C.V. 
-        MANUEL GUTIERREZ NAJERA 190 Colonia TEQUISQUIAPAM San Luis Potosí, San Luis Potosí CECILIO BORJAS GARCIA Y MIGUEL ANGEL SOLORIO MUÑIZ 
-        CARRETERA AL AEROPUERTO KM 1 Colonia LOCALIDAD EL ZAPOTE SOLEDAD DE GRACIANO SÁNCHEZ, San Luis Potosí.</strong>
+        MANUEL GUTIERREZ NAJERA 190 Colonia TEQUISQUIAPAM San Luis Potosí, San Luis Potosí. {{strtoupper($contratosDom[0]->nombre)}} {{strtoupper($contratosDom[0]->apellidos)}} Y {{strtoupper($contratosDom[0]->nombre_coa)}} {{strtoupper($contratosDom[0]->apellidos_coa)}} 
+        {{strtoupper($contratosDom[0]->direccion)}} Colonia {{strtoupper($contratosDom[0]->colonia)}} {{strtoupper($contratosDom[0]->ciudad)}}, {{strtoupper($contratosDom[0]->estado)}}.</strong>
         </p>
 
 
@@ -231,8 +234,38 @@ body{
                          San Luis Potosí renunciando a cualquier otro fuero que les pudiera corresponder en razón de sus domicilios presentes o futuros.
                          Hecho de conformidad por las partes, el presente instrumento es fiel expresión de voluntad contractual y para constancia 
                          lo firman en dos ejemplares de un mismo tenor y para un solo efecto, en esta ciudad de SAN LUIS POTOSÍ, SAN LUIS POTOSÍ 
-                         <strong>a los 12 días de Abril del 2018.</strong> 
+                         <strong>a los {{$contratosDom[0]->fecha}}.</strong> 
         </p>
+
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+
+            <div class="table3">
+                <div class="table-row">
+                    <div colspan="2" class="table-cell3"><b>LA PARTE VENDEDORA </div>
+                    <div class="table-cell3"></div>
+                    <div colspan="2" class="table-cell3"><b>LA PARTE COMPRADORA</div>
+                </div>
+                <div class="table-row"> 
+                    <div colspan="5" class="table-cell3"> <br> <br> </div>
+                </div>
+                <div class="table-row">
+                    <div colspan="2" class="table-cell3">GRUPO CONSTRUCTOR CUMBRES S.A DE C.V</div>
+                    <div style="width: 8%;" class="table-cell3"></div>
+                    <div colspan="2" class="table-cell3">SR(A) {{strtoupper($contratosDom[0]->nombre)}} {{strtoupper($contratosDom[0]->apellidos)}}</div>
+                </div>
+                <div class="table-row"> 
+                    <div colspan="5" class="table-cell3">Representada por este acto por el</div>
+                </div>
+                <div class="table-row">
+                    <div colspan="5" class="table-cell3"><b>ING. ALEJANDRO F. PEREZ ESPINOSA O EL ING. DAVID CALVILLO MARTINEZ</div>
+                </div>
+            </div>
+
 
 
     </div>

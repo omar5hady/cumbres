@@ -335,7 +335,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/contratoCompraVenta/pdf/{id}','ContratoController@contratoCompraVentaPdf')->name('contratoCompraVenta.pdf');
         Route::get('/pagareContrato/pdf/{id}','ContratoController@pagareContratopdf')->name('pagare.pdf');
         Route::get('/descargarReglamento/contrato/{id}','EtapaController@descargarReglamentoContrato');
-        Route::get('/contratoCompraVenta/reservaDeDominio/pdf/','ContratoController@contratoConReservaDeDominio')->name('contrato_reserva_de_dominio.pdf');
+        Route::get('/contratoCompraVenta/reservaDeDominio/pdf/{id}','ContratoController@contratoConReservaDeDominio')->name('contrato_reserva_de_dominio.pdf');
 
 
         /************************** RUTAS ESTADISTICAS ***************************/

@@ -213,8 +213,16 @@ body {
         <div class="table" style="border: ridge #0B173B 1px; color:black; margin-top: -10px;">
                
                 <div class="table-row">
+                @if($contratos[0]->infonavit > 0)
                     <div class="table-cell2">INFONAVIT: </div>
-                    <div class="table-cell2"><u>$100,000</u></div>
+                    <div class="table-cell2"><u>${{$contratos[0]->infonavit}}</u></div>
+                @elseif($contratos[0]->fovisste > 0)
+                    <div class="table-cell2">FOVISSTE: </div>
+                    <div class="table-cell2"><u>${{$contratos[0]->fovisste}}</u></div> 
+                @else  
+                    <div class="table-cell2"></div>
+                    <div class="table-cell2"></div>
+                @endif  
                     <div class="table-cell2">PRECIO DE LA VIVIENDA: </div>
                     <div class="table-cell2">${{$contratos[0]->precio_base}}</div>
                 </div>
