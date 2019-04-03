@@ -41,8 +41,8 @@ body {
 <p align="left" style="border: ridge #0B173B 1px; font-size:10pt; color:white; margin-right: 470px; background-color: #0B173B;">DATOS DEL CREDITO</p>
     <div class="table1" style="border: ridge #0B173B 1px; color:black;  margin-top: -10px;">
         <div class="table-row">
-            <div class="table-cell1">TIPO DE CREDITO: <u>{{strtoupper($contratos[0]->tipo_credito)}}</u> </div>
-            <div class="table-cell1">INSTITUCION: <u>{{$contratos[0]->institucion}}</u> </div>
+            <div class="table-cell1">TIPO DE CREDITO: <u>{{mb_strtoupper($contratos[0]->tipo_credito)}}</u> </div>
+            <div class="table-cell1">INSTITUCION: <u>{{strtoupper($contratos[0]->institucion)}}</u> </div>
         </div>
         <div class="table-row">
             <div class="table-cell1">PLAZO: <u>{{$contratos[0]->plazo}} AÑOS</u> </div>
@@ -55,7 +55,7 @@ body {
     <p align="left" style="border: ridge #0B173B 1px; font-size:10pt; color:white; margin-right: 450px; background-color: #0B173B;">DATOS DEL COMPRADOR</p>
         <div class="table" style="border: ridge #0B173B 1px; color:black; margin-top: -10px;">
                 <div class="table-row">
-                    <div colspan="4" class="table-cell">NOMBRE: <u>{{strtoupper($contratos[0]->apellidos)}} {{strtoupper($contratos[0]->nombre)}}</u></div>
+                    <div colspan="4" class="table-cell">NOMBRE: <u>{{mb_strtoupper($contratos[0]->apellidos)}} {{mb_strtoupper($contratos[0]->nombre)}}</u></div>
                 </div>
                 <div class="table-row">
                     <div class="table-cell">N.S.S. <u>{{$contratos[0]->nss}}</u></div>
@@ -100,13 +100,13 @@ body {
                 @endif 
                 </div>
                 <div class="table-row">
-                    <div class="table-cell" colspan="2">DOMICILIO ACTUAL: <u>{{strtoupper($contratos[0]->direccion)}}</u></div>
-                    <div colspan="2" class="table-cell">COLONIA: <u>{{strtoupper($contratos[0]->colonia)}}</u></div> 
+                    <div class="table-cell" colspan="2">DOMICILIO ACTUAL: <u>{{mb_strtoupper($contratos[0]->direccion)}}</u></div>
+                    <div colspan="2" class="table-cell">COLONIA: <u>{{mb_strtoupper($contratos[0]->colonia)}}</u></div> 
                     
                 </div>
                 <div class="table-row">
-                    <div class="table-cell">MUNICIPIO: <u>{{strtoupper($contratos[0]->ciudad)}}</u></div>
-                    <div class="table-cell">ESTADO: <u>{{strtoupper($contratos[0]->estado)}}</u></div> 
+                    <div class="table-cell">MUNICIPIO: <u>{{mb_strtoupper($contratos[0]->ciudad)}}</u></div>
+                    <div class="table-cell">ESTADO: <u>{{mb_strtoupper($contratos[0]->estado)}}</u></div> 
                     <div class="table-cell">C.P. <u>{{$contratos[0]->cp}}</u></div> 
                     <div class="table-cell"></div>
                 </div>
@@ -116,11 +116,11 @@ body {
                     <div colspan="2" class="table-cell">EMAIL PERSONAL: <u>{{strtoupper($contratos[0]->email)}}</u></div>
                 </div>
                 <div class="table-row">
-                    <div colspan="2" class="table-cell">EMPRESA: <u>{{strtoupper($contratos[0]->empresa)}}</u></div>
+                    <div colspan="2" class="table-cell">EMPRESA: <u>{{mb_strtoupper($contratos[0]->empresa)}}</u></div>
                     <div colspan="2" class="table-cell">EMAIL EMPRESA: <u>{{strtoupper($contratos[0]->email_institucional)}}</u></div>
                 </div>
                 <div class="table-row">
-                    <div colspan="4" class="table-cell">DOMICILIO DE EMPRESA: <u>{{strtoupper($contratos[0]->direccion_empresa)}} {{strtoupper($contratos[0]->colonia_empresa)}}  C.P. {{$contratos[0]->cp_empresa}} {{strtoupper($contratos[0]->ciudad_empresa)}}, {{strtoupper($contratos[0]->estado_empresa)}}</u></div>
+                    <div colspan="4" class="table-cell">DOMICILIO DE EMPRESA: <u>{{mb_strtoupper($contratos[0]->direccion_empresa)}} {{strtoupper($contratos[0]->colonia_empresa)}}  C.P. {{$contratos[0]->cp_empresa}} {{strtoupper($contratos[0]->ciudad_empresa)}}, {{strtoupper($contratos[0]->estado_empresa)}}</u></div>
                 </div>
                 <div class="table-row">
                     <div class="table-cell" colspan="2">OCUPACION: <u>{{strtoupper($contratos[0]->puesto)}}</u></div>
@@ -139,11 +139,12 @@ body {
                 </div>
         </div>
 </div>
+@if($contratos[0]->coacreditado == 1)
     <div style="position: static; margin-top: -20px;">
     <p align="left" style="border: ridge #0B173B 1px; font-size:10pt; color:white; margin-right: 350px; background-color: #0B173B;">DATOS DEL CONYUGE O COACREDITADO</p>        
         <div class="table" style="border: ridge #0B173B 1px; color:black; margin-top: -10px;">
                 <div class="table-row">
-                    <div colspan="2" class="table-cell">NOMBRE: <u>{{strtoupper($contratos[0]->nombre_coa)}} {{strtoupper($contratos[0]->apellidos_coa)}}</u></div>
+                    <div colspan="2" class="table-cell">NOMBRE: <u>{{mb_strtoupper($contratos[0]->nombre_coa)}} {{mb_strtoupper($contratos[0]->apellidos_coa)}}</u></div>
                     <div class="table-cell">R.F.C. <u>{{$contratos[0]->rfc_coa}}</u></div>
                     <div class="table-cell">C.U.R.P. <u>{{$contratos[0]->curp_coa}}</u></div>  
                 </div>
@@ -153,8 +154,8 @@ body {
                     <div class="table-cell">N.S.S. <u>{{$contratos[0]->nss_coa}}</u></div>     
                 </div>
                 <div class="table-row">
-                    <div colspan="2" class="table-cell">DOMICILIO ACTUAL: <u>{{strtoupper($contratos[0]->direccion_coa)}}</u></div>
-                    <div colspan="2" class="table-cell">COLONIA: <u>{{strtoupper($contratos[0]->colonia_coa)}}</u></div>
+                    <div colspan="2" class="table-cell">DOMICILIO ACTUAL: <u>{{mb_strtoupper($contratos[0]->direccion_coa)}}</u></div>
+                    <div colspan="2" class="table-cell">COLONIA: <u>{{mb_strtoupper($contratos[0]->colonia_coa)}}</u></div>
                     
                 </div>
                 <div class="table-row">
@@ -165,10 +166,10 @@ body {
                     <div class="table-cell"></div>
                 </div>
                 <div class="table-row">
-                    <div colspan="4" class="table-cell">EMPRESA DONDE TRABAJA: <u>{{strtoupper($contratos[0]->empresa_coa)}}</u></div>
+                    <div colspan="4" class="table-cell">EMPRESA DONDE TRABAJA: <u>{{mb_strtoupper($contratos[0]->empresa_coa)}}</u></div>
                 </div>
                 <div class="table-row">
-                    <div colspan="4" class="table-cell">DOMICILIO DE EMPRESA: <u>{{strtoupper($contratos[0]->direccion_empresa_coa)}} {{strtoupper($contratos[0]->colonia_empresa_coa)}}  C.P. {{$contratos[0]->cp_empresa_coa}} {{strtoupper($contratos[0]->ciudad_empresa_coa)}}, {{strtoupper($contratos[0]->estado_empresa_coa)}}</u></div>
+                    <div colspan="4" class="table-cell">DOMICILIO DE EMPRESA: <u>{{mb_strtoupper($contratos[0]->direccion_empresa_coa)}} {{strtoupper($contratos[0]->colonia_empresa_coa)}}  C.P. {{$contratos[0]->cp_empresa_coa}} {{strtoupper($contratos[0]->ciudad_empresa_coa)}}, {{strtoupper($contratos[0]->estado_empresa_coa)}}</u></div>
                 </div>
                 <div class="table-row">
                     <div class="table-cell">TELEFONO: <u>{{$contratos[0]->telefono_coa}}</u></div>
@@ -179,20 +180,20 @@ body {
              </div>
         </div>
     
-
+@endif
 
 <div style="position: static; margin-top: -20px;">
     <p align="left" style="border: ridge #0B173B 1px; font-size:10pt; color:white; margin-right: 450px; background-color: #0B173B;">DATOS DE LA VIVIENDA</p>        
         <div class="table" style="border: ridge #0B173B 1px; color:black; margin-top: -10px;">
                 <div class="table-row">
-                    <div class="table-cell">FRACCIONAMIENTO: <u>{{strtoupper($contratos[0]->proyecto)}}</u></div>
-                    <div class="table-cell">MANZANA: <u>{{strtoupper($contratos[0]->manzana)}}</u></div>
+                    <div class="table-cell">FRACCIONAMIENTO: <u>{{mb_strtoupper($contratos[0]->proyecto)}}</u></div>
+                    <div class="table-cell">MANZANA: <u>{{mb_strtoupper($contratos[0]->manzana)}}</u></div>
                     <div class="table-cell">LOTE: <u>{{$contratos[0]->num_lote}}</u></div>
                 </div>
                 <div class="table-row">
-                    <div class="table-cell">CALLE: <u>{{strtoupper($contratos[0]->calle)}}</u></div>
+                    <div class="table-cell">CALLE: <u>{{mb_strtoupper($contratos[0]->calle)}}</u></div>
                     <div class="table-cell">NO. OFICIAL: <u>{{$contratos[0]->numero}} INT. {{strtoupper($contratos[0]->interior)}}</u></div>
-                    <div class="table-cell">MODELO: <u>{{strtoupper($contratos[0]->modelo)}}</u></div>
+                    <div class="table-cell">MODELO: <u>{{mb_strtoupper($contratos[0]->modelo)}}</u></div>
                 </div>
                 <div class="table-row">
                     <div class="table-cell">SUPERFICIE DE TERRENO: <u>{{$contratos[0]->terreno}} M2</u></div>
@@ -200,10 +201,10 @@ body {
                     <div class="table-cell"></div>
                 </div> 
                 <div class="table-row">
-                    <div colspan="3" class="table-cell">PAQUETE: {{strtoupper($contratos[0]->descripcion_paquete)}} </div>
+                    <div colspan="3" class="table-cell">PAQUETE: {{mb_strtoupper($contratos[0]->descripcion_paquete)}} </div>
                 </div>     
                 <div class="table-row">
-                    <div colspan="3" class="table-cell">PROMOCION: {{strtoupper($contratos[0]->descripcion_promocion)}} </div>
+                    <div colspan="3" class="table-cell">PROMOCION: {{mb_strtoupper($contratos[0]->descripcion_promocion)}} </div>
                 </div>                
         </div>
 </div>
@@ -227,7 +228,7 @@ body {
                     <div class="table-cell2">${{$contratos[0]->precio_base}}</div>
                 </div>
                  <div class="table-row">
-                    <div class="table-cell2">{{strtoupper($contratos[0]->institucion)}}: </div>
+                    <div class="table-cell2">{{mb_strtoupper($contratos[0]->institucion)}}: </div>
                     <div class="table-cell2">${{$contratos[0]->credito_solic}}</div> 
                     <div class="table-cell2"><u>{{$contratos[0]->terreno_excedente}} M2</u> TERRENO EXCEDENTE: </div>
                     <div class="table-cell2">${{$contratos[0]->precio_terreno_excedente}}</div>
@@ -303,7 +304,7 @@ body {
                     
                 </div>
                 <div class="table-row">
-                    <div colspan="2" class="table-cell">ASESOR DE VENTAS: <u>{{strtoupper($contratos[0]->vendedor_nombre)}} {{strtoupper($contratos[0]->vendedor_apellidos)}}</u></div>
+                    <div colspan="2" class="table-cell">ASESOR DE VENTAS: <u>{{mb_strtoupper($contratos[0]->vendedor_nombre)}} {{mb_strtoupper($contratos[0]->vendedor_apellidos)}}</u></div>
                     <div class="table-cell">FIRMA: ___________________</div>
                     <div colspan="2" class="table-cell">FIRMA DEL COMPRADOR: ___________________</div>
                 </div>
@@ -312,13 +313,13 @@ body {
                 </div>    
                 <div class="table-row">
                 @if ($contratos[0]->medio_publicidad === 'Recomendado')
-                    <div colspan="5" class="table-cell">MEDIO POR EL CUAL SE ENTERO: RECOMENDADO. (NOMBRE: {{strtoupper($contratos[0]->nombre_recomendado)}})</div>
+                    <div colspan="5" class="table-cell">MEDIO POR EL CUAL SE ENTERO: RECOMENDADO. (NOMBRE: {{mb_strtoupper($contratos[0]->nombre_recomendado)}})</div>
                 @else
-                    <div colspan="5" class="table-cell">MEDIO POR EL CUAL SE ENTERO: {{strtoupper($contratos[0]->medio_publicidad)}}</div>
+                    <div colspan="5" class="table-cell">MEDIO POR EL CUAL SE ENTERO: {{mb_strtoupper($contratos[0]->medio_publicidad)}}</div>
                 @endif
                 </div>   
                 <div class="table-row">
-                    <div colspan="5" class="table-cell">OBSERVACIONES: {{strtoupper($contratos[0]->observacion)}}</div>
+                    <div colspan="5" class="table-cell">OBSERVACIONES: {{mb_strtoupper($contratos[0]->observacion)}}</div>
                 </div>          
                 <div class="table-row">
                     <div colspan="5" class="table-cell"><hr style="border-color:gray;"></div>

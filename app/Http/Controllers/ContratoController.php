@@ -1149,10 +1149,9 @@ class ContratoController extends Controller
         ->join('clientes','creditos.prospecto_id','=','clientes.id')
         ->join('personal as v','clientes.vendedor_id','v.id')
         ->join('lotes','creditos.lote_id','=','lotes.id')
-        ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
         ->select('creditos.id','creditos.prospecto_id','creditos.etapa','creditos.manzana','creditos.num_lote',
-            'creditos.superficie','inst_seleccionadas.id as inst_credito',
-            'creditos.fraccionamiento as proyecto','lotes.construccion',
+            'creditos.superficie','inst_seleccionadas.id as inst_credito','inst_seleccionadas.tipo_credito',
+            'creditos.fraccionamiento as proyecto','lotes.construccion','lotes.regimen_condom',
             
             'personal.nombre','personal.apellidos', 'personal.telefono','personal.celular',
             'personal.direccion','personal.cp','personal.colonia',
@@ -1162,6 +1161,7 @@ class ContratoController extends Controller
             
             'contratos.enganche_total','contratos.fecha')
         ->where('contratos.id','=',$id)
+        ->where('inst_seleccionadas.tipo_credito','=','Crédito Directo')
         ->get();
 
         setlocale(LC_TIME, 'es');

@@ -30,7 +30,7 @@ body{
         <p>
         <strong>CONTRATO DE COMPRAVENTA</strong> CON RESERVA DE DOMINIO, QUE CELEBRAN POR UNA PARTE, LA SOCIEDAD MERCANTIL DENOMINADA <strong>GRUPO CONSTRUCTOR CUMBRES, S.A DE C.V.</strong>,
         A QUIEN EN LOS SUCESIVO Y PARA LOS EFECTOS DEL PRESENTE CONTRATO SE LE DENOMINARA <strong>EL VENDEDOR</strong> REPRESENTADO EN ESTE ACTO POR EL 
-        ING. ALEJANDRO F. PEREZ ESPINOSA O EL ING. DAVID CALVILLO MARTINEZ, Y POR SU PROPIO DERECHO, <strong>EL SR(A) {{strtoupper($contratosDom[0]->nombre)}} {{strtoupper($contratosDom[0]->apellidos)}} Y {{strtoupper($contratosDom[0]->nombre_coa)}} {{strtoupper($contratosDom[0]->apellidos_coa)}}</strong> 
+        ING. ALEJANDRO F. PEREZ ESPINOSA O EL ING. DAVID CALVILLO MARTINEZ, Y POR SU PROPIO DERECHO, <strong>EL SR(A) {{mb_strtoupper($contratosDom[0]->nombre)}} {{mb_strtoupper($contratosDom[0]->apellidos)}} @if($contratosDom[0]->coacreditado == 1) Y {{mb_strtoupper($contratosDom[0]->nombre_coa)}} {{mb_strtoupper($contratosDom[0]->apellidos_coa)}} @endif</strong>
         LA QUIEN EN LO SUCESIVO Y PARA LOS EFECTOS DEL PRESENTE CONTRATO SE DENOMINARAN <strong>EL COMPRADOR</strong> AL TENOR DE LAS SIGUIENTES DECLARACIONES Y CLAUSULAS 
         </p>
 
@@ -53,7 +53,7 @@ body{
         </p>
 
         <p>
-        c) Que es único y legítimo propietario del <strong>Lote</strong> de terreno número <strong>{{$contratosDom[0]->num_lote}}</strong>, de la <strong>Manzana {{$contratosDom[0]->manzana}}</strong> del Fraccionamiento <strong>{{strtoupper($contratosDom[0]->proyecto)}}</strong>,
+        c) Que es único y legítimo propietario del <strong>Lote</strong> de terreno número <strong>{{$contratosDom[0]->num_lote}}</strong>, de la <strong>Manzana {{mb_strtoupper($contratosDom[0]->manzana)}}</strong> del Fraccionamiento <strong>{{mb_strtoupper($contratosDom[0]->proyecto)}}</strong>,
            en esta ciudad de SAN LUIS POTOSÍ, SAN LUIS POTOSÍ, cuya superficie es de <strong>{{$contratosDom[0]->superficie}} M2</strong>, mismo que en lo sucesivo y 
            para todos los efectos del presente contrato se le denominará como <strong>EL LOTE</strong>. 
         </p>
@@ -101,7 +101,7 @@ body{
            y desea celebrar el presente contrato preparatorio con <strong>EL PROMITENTE VENDEDOR</strong>, a efecto de obligarse a celebrar el contrato definitivo de compraventa,
            por medio del cual adquirirá la propiedad de <strong>LA VIVIENDA.</strong> 
         </p>
-
+@if($contratosDom[0]->regimen_condom == 1)
         <p>
         d).- Que le fue explicado que <strong>LA VIVIENDA</strong> se encuentra dentro de un régimen de propiedad en condominio y 
              que dicha vivienda quedará sujeta a las disposiciones establecidas en el Régimen de Condominio  y 
@@ -114,15 +114,22 @@ body{
              sobre inmuebles cuando su monto exceda de 8025 unidades de medida y actualización, razón por la cual, 
              esta operación no deberá realizarse mediante pago en efectivo.
         </p>
-
-        <br>
+@else
+        <p>
+        d).- Que también le fue explicado el contenido del artículo 17, fracción V de la Ley Federal para la
+             Identificación de Operaciones con Recursos de Procedencia Ilícita, que considera vulnerables las operaciones
+             sobre inmuebles cuando su monto exceda de 8025 unidades de medida y actualización, razón por la cual, 
+             esta operación no deberá realizarse mediante pago en efectivo.
+        </p>
+@endif
+       
 
         <p>
         Que es su deseo celebrar el presente contrato con <strong>EL VENDEDOR</strong>, en los términos y condiciones que a continuación se establecen. 
         </p>
 
-        <br>
-        <br>
+       
+        
 
         <p>
         Conformes las partes con las declaraciones que anteceden, las cuales forman parte integrante del presente contrato, acuerdan otorgar las siguientes: 
@@ -213,7 +220,7 @@ body{
                 no cubrir cualquiera de los pagos pactados en la cláusula cuarta o pretender cubrir en efectivo el primer pago
         </p>
 
-        <br>
+      
 
         <p>
        <strong>DÉCIMA.-</strong> Esta compraventa se pacta en la modalidad de reserva de dominio, de conformidad con el artículo 2143 del Código Civil del Estado,
@@ -223,8 +230,8 @@ body{
         <p>
         <strong>DECIMA PRIMERA.-</strong> Las partes señalan como sus respectivos domicilios para recibir toda clase de notificaciones que deban hacérseles, 
         aun las personales en caso de juicio, los siguientes: <strong>GRUPO CONSTRUCTOR CUMBRES, S.A DE C.V. 
-        MANUEL GUTIERREZ NAJERA 190 Colonia TEQUISQUIAPAM San Luis Potosí, San Luis Potosí. {{strtoupper($contratosDom[0]->nombre)}} {{strtoupper($contratosDom[0]->apellidos)}} Y {{strtoupper($contratosDom[0]->nombre_coa)}} {{strtoupper($contratosDom[0]->apellidos_coa)}} 
-        {{strtoupper($contratosDom[0]->direccion)}} Colonia {{strtoupper($contratosDom[0]->colonia)}} {{strtoupper($contratosDom[0]->ciudad)}}, {{strtoupper($contratosDom[0]->estado)}}.</strong>
+        MANUEL GUTIERREZ NAJERA 190 Colonia TEQUISQUIAPAM San Luis Potosí, San Luis Potosí. {{mb_strtoupper($contratosDom[0]->nombre)}} {{mb_strtoupper($contratosDom[0]->apellidos)}} @if($contratosDom[0]->coacreditado == 1) Y {{mb_strtoupper($contratosDom[0]->nombre_coa)}} {{mb_strtoupper($contratosDom[0]->apellidos_coa)}} @endif ,
+        {{mb_strtoupper($contratosDom[0]->direccion)}} Colonia {{mb_strtoupper($contratosDom[0]->colonia)}} {{mb_strtoupper($contratosDom[0]->ciudad)}}, {{mb_strtoupper($contratosDom[0]->estado)}}.</strong>
         </p>
 
 
@@ -237,12 +244,12 @@ body{
                          <strong>a los {{$contratosDom[0]->fecha}}.</strong> 
         </p>
 
+        
         <br>
         <br>
         <br>
-        <br>
-        <br>
-        <br>
+        
+        
 
             <div class="table3">
                 <div class="table-row">
@@ -256,7 +263,7 @@ body{
                 <div class="table-row">
                     <div colspan="2" class="table-cell3">GRUPO CONSTRUCTOR CUMBRES S.A DE C.V</div>
                     <div style="width: 8%;" class="table-cell3"></div>
-                    <div colspan="2" class="table-cell3">SR(A) {{strtoupper($contratosDom[0]->nombre)}} {{strtoupper($contratosDom[0]->apellidos)}}</div>
+                    <div colspan="2" class="table-cell3">SR(A) {{mb_strtoupper($contratosDom[0]->nombre)}} {{mb_strtoupper($contratosDom[0]->apellidos)}}</div>
                 </div>
                 <div class="table-row"> 
                     <div colspan="5" class="table-cell3">Representada por este acto por el</div>
