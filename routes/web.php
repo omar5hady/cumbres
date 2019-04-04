@@ -76,6 +76,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/usuarios/activar','UserController@activar');
         Route::put('/usuarios/desactivar','UserController@desactivar');
         Route::put('/usuarios/act_privilegios','UserController@updatePrivilegios');
+        Route::put('/usuarios/asignar/gerente','UserController@asignarGerentes');
+        
 
     ////////////////// VENDEDORES //////////////////////////////////////////
         Route::get('/asesores','UserController@indexAsesores');
@@ -391,6 +393,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/select_servicios','ServicioController@selectServicio');
         Route::get('/select_tipcreditos_simulacion','CreditoController@selectTipCreditosSimulacion');
         Route::get('/servicios_etapas','ServEtapaController@index');
+        Route::get('/select_gerentes','UserController@select_users_gerentes');
         
     
     

@@ -212,6 +212,7 @@ class PersonalController extends Controller
         $personas = Personal::leftJoin('users as users','personal.id','=','users.id')
                              ->select('nombre','users.id as UserId','personal.id as personalId')
                              ->where('users.id','=',NULL)
+                             ->where('personal.departamento_id','!=','8')
                              ->where('nombre','!=','Sin Asignar')->get();
 
                              return ['personas' => $personas];

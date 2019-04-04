@@ -981,4 +981,21 @@ class UserController extends Controller
             }
             
     }
+
+
+    public function select_users_gerentes (){
+        $gerentes = User::join('personal','users.id','=','personal.id')
+                        ->select('users.usuario','personal.id','personal.nombre','personal.apellidos')
+                        ->where('users.rol_id','=','4')
+                        ->get();
+
+                return['gerentes' => $gerentes];
+    }
+
+    public function asignarGerentes (Request $request){
+        $asignar = Vendedor::findOrFail($request->id);
+        $asignar->supervisor_id = $request->supervisor_id;
+        $asignar->save();
+    }
+
 }

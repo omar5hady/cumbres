@@ -65,6 +65,9 @@
                                                         <i class="icon-check"></i>
                                                     </button>
                                                 </template>
+                                                 <button v-if="Personal.rol_id == 2" title="Asignar asesor a un gerente" type="button" @click="abrirModal('Personal','asignarGerente',Personal)" class="btn btn-dark btn-sm">
+                                                <i class="icon-share"></i>
+                                                </button>
                                         
                                             </td>
                                             <td v-text="Personal.nombre" ></td>
@@ -316,25 +319,25 @@
                                     <!--Criterios para el listado de busqueda -->
 
 
-                                  <div class="form-group row" v-if="tipoAccion > 1">
+                                  <div class="form-group row" v-if="tipoAccion > 1 && tipoAccion < 4">
                                     <label class="col-md-3 form-control-label" for="text-input">Apellidos</label>
                                     <div class="col-md-9">
                                         <input type="text" v-model="apellidos" class="form-control" placeholder="Apellidos" >
                                     </div>
                                 </div>
-                                   <div class="form-group row" v-if="tipoAccion > 1">
+                                   <div class="form-group row" v-if="tipoAccion > 1 && tipoAccion < 4">
                                     <label class="col-md-3 form-control-label" for="text-input">Nombre</label>
                                     <div class="col-md-9">
                                         <input type="text" maxlength="25" v-model="nombre" class="form-control" placeholder="Nombre" >
                                     </div>
                                 </div>
-                                <div class="form-group row" v-if="tipoAccion > 1">
+                                <div class="form-group row" v-if="tipoAccion > 1 && tipoAccion < 4">
                                     <label class="col-md-3 form-control-label" for="text-input">Fecha de nacimiento</label>
                                     <div class="col-md-6">
                                         <input type="date" v-model="f_nacimiento" class="form-control" placeholder="Fecha de nacimiento" >
                                     </div>
                                 </div>
-                                     <div class="form-group row" v-if="tipoAccion > 1">
+                                     <div class="form-group row" v-if="tipoAccion > 1 && tipoAccion < 4">
                                     <label class="col-md-3 form-control-label" for="text-input">RFC</label>
                                     <div class="col-md-4">
                                         <input type="text" maxlength="10" style="text-transform:uppercase" v-model="rfc" class="form-control" placeholder="RFC" >
@@ -344,14 +347,14 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group row" v-if="tipoAccion > 1">
+                                <div class="form-group row" v-if="tipoAccion > 1 && tipoAccion < 4">
                                     <label class="col-md-3 form-control-label" for="text-input">Codigo Postal</label>
                                     <div class="col-md-4">
                                         <input type="text" pattern="\d*" maxlength="5" v-model="cp" v-on:keypress="isNumber($event)" @keyup="selectColonias(cp)" class="form-control" placeholder="Codigo postal" >
                                     </div>
                                 </div>
 
-                                <div class="form-group row" v-if="tipoAccion > 1">
+                                <div class="form-group row" v-if="tipoAccion > 1 && tipoAccion < 4">
                                     <label class="col-md-3 form-control-label" for="text-input">Colonia</label>
                                     <div class="col-md-6">
                                         <select class="form-control" v-model="colonia" >
@@ -360,14 +363,14 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="form-group row" v-if="tipoAccion > 1">
+                                <div class="form-group row" v-if="tipoAccion > 1 && tipoAccion < 4">
                                     <label class="col-md-3 form-control-label" for="text-input">Direccion</label>
                                     <div class="col-md-9">
                                         <input type="text" v-model="direccion" class="form-control" placeholder="Direccion" >
                                     </div>
                                 </div>
 
-                                <div class="form-group row" v-if="tipoAccion > 1">
+                                <div class="form-group row" v-if="tipoAccion > 1 && tipoAccion < 4">
                                     <label class="col-md-3 form-control-label" for="text-input">Departamento</label>
                                     <div class="col-md-6">
                                           <select class="form-control" v-model="departamento_id" >
@@ -377,28 +380,28 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group row" v-if="tipoAccion > 1">
+                                <div class="form-group row" v-if="tipoAccion > 1 && tipoAccion < 4">
                                     <label class="col-md-3 form-control-label" for="text-input">Telefono</label>
                                     <div class="col-md-5">
                                         <input type="text" pattern="\d*" maxlength="7" v-on:keypress="isNumber($event)" class="form-control" v-model="telefono"  placeholder="Telefono" >
                                     </div>
                                 </div>
 
-                                <div class="form-group row" v-if="tipoAccion > 1">
+                                <div class="form-group row" v-if="tipoAccion > 1 && tipoAccion < 4">
                                     <label class="col-md-3 form-control-label" for="text-input">Extension</label>
                                     <div class="col-md-3">
                                         <input type="text" pattern="\d*" maxlength="3" v-on:keypress="isNumber($event)" v-model="ext" class="form-control" placeholder="Extension" >
                                     </div>
                                 </div>
                             
-                                <div class="form-group row" v-if="tipoAccion > 1">
+                                <div class="form-group row" v-if="tipoAccion > 1 && tipoAccion < 4">
                                     <label class="col-md-3 form-control-label" for="text-input">Celular</label>
                                     <div class="col-md-5">
                                         <input type="text" pattern="\d*" maxlength="10" v-on:keypress="isNumber($event)" v-model="celular" class="form-control" placeholder="Celular" >
                                     </div>
                                 </div>
 
-                                <div class="form-group row" v-if="tipoAccion > 1">
+                                <div class="form-group row" v-if="tipoAccion > 1 && tipoAccion < 4">
                                     <label class="col-md-3 form-control-label" for="text-input">Correo electronico</label>
                                     <div class="col-md-9">
                                         <input type="text" v-model="email" class="form-control" placeholder="Correo electronico" >
@@ -416,7 +419,7 @@
                                 </div>
 
 
-                                <div class="form-group row">
+                                <div class="form-group row" v-if="tipoAccion != 4">
                                     <label class="col-md-3 form-control-label" for="text-input">Usuario</label>
                                     <div class="col-md-9">
                                         <input type="text" v-model="usuario" class="form-control" placeholder="Usuario" >
@@ -424,14 +427,14 @@
                                 </div>
 
                                 
-                                <div class="form-group row">
+                                <div class="form-group row" v-if="tipoAccion != 4">
                                     <label class="col-md-3 form-control-label" for="text-input">Contraseña</label>
                                     <div class="col-md-9">
                                         <input type="password" v-model="password" class="form-control" placeholder="Contraseña" >
                                     </div>
                                 </div>
 
-                                <div class="form-group row">
+                                <div class="form-group row" v-if="tipoAccion != 4">
                                     <label class="col-md-3 form-control-label" for="text-input">Rol</label>
                                     <div class="col-md-6">
                                        <select class="form-control" v-model="rol_id" >
@@ -441,7 +444,7 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group row" v-if="rol_id==2">
+                                <div class="form-group row" v-if="rol_id==2 && tipoAccion != 4">
                                     <label class="col-md-3 form-control-label" for="text-input">Tipo</label>
                                     <div class="col-md-6">
                                        <select class="form-control" v-model="tipo_vendedor" >
@@ -451,14 +454,14 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group row" v-if="tipo_vendedor==1 && rol_id==2">
+                                <div class="form-group row" v-if="tipo_vendedor==1 && rol_id==2 && tipoAccion != 4">
                                     <label class="col-md-3 form-control-label" for="text-input">Inmobiliaria</label>
                                     <div class="col-md-9">
                                         <input type="text" v-model="inmobiliaria" class="form-control" placeholder="Inmobiliaria" >
                                     </div>
                                 </div>
 
-                                <div class="form-group row" v-if="tipoAccion > 1">
+                                <div class="form-group row" v-if="tipoAccion > 1 && tipoAccion < 4">
                                     <label class="col-md-3 form-control-label" for="text-input">Estatus</label>
                                     <div class="col-md-5">
                                         <select class="form-control" v-model="activo" >
@@ -466,6 +469,16 @@
                                             <option value="0"> Inactivo</option>
                                         </select>
                                         <!--<input type="text" v-model="estado" class="form-control" placeholder="Estado">-->
+                                    </div>
+                                </div>
+
+                                 <div v-if="tipoAccion == 4" class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Gerentes</label>
+                                    <div class="col-md-6">
+                                       <select class="form-control" v-model="supervisor_id" >
+                                            <option value="0">Seleccione</option>
+                                            <option v-for="gerentes in arrayGerentes" :key="gerentes.id" :value="gerentes.id" v-text="gerentes.nombre+' '+gerentes.apellidos"></option>
+                                        </select>
                                     </div>
                                 </div>
                                 <!-- Div para mostrar los errores que mande validerPersonal -->
@@ -485,6 +498,7 @@
                             <button type="button" v-if="tipoAccion==3" class="btn btn-primary" @click="registrarPersonal()">Guardar</button>
                             <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarPersonal()">Actualizar</button>
                             <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="asignarUsuario()">Asignar</button>
+                            <button type="button" v-if="tipoAccion==4" class="btn btn-primary" @click="asignarGerente()">Asignar</button>
                         </div>
                     </div>
                     <!-- /.modal-content -->
@@ -529,8 +543,10 @@
                 activo: 1, 
                 tipo_vendedor:0,
                 inmobiliaria:'',
+                supervisor_id: 0,
                 arrayPersonal : [],
                 arrayPersonas : [],
+                arrayGerentes: [],
                 arrayDepartamentos: [],
                 arrayRoles: [],
                 arrayEmpresas: [],
@@ -694,6 +710,19 @@
                     console.log(error);
                 });
               
+            },
+            
+             selectGerentes(){
+                let me = this;
+                me.arrayGerentes=[];
+                var url = '/select_gerentes';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayGerentes = respuesta.gerentes;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
             },
             limpiarAdministracion(){
                 //Administracion
@@ -988,6 +1017,29 @@
                     'condicion':this.condicion,
                     'tipo_vendedor':this.tipo_vendedor,
                     'inmobiliaria':this.inmobiliaria
+                }).then(function (response){
+                    me.proceso=false;
+                    me.cerrarModal();
+                    me.listarPersonal(1,'','nombre');
+                    //window.alert("Cambios guardados correctamente");
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Cambios guardados correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+            asignarGerente(){
+
+                let me = this;
+                //Con axios se llama el metodo update de PersonalController
+                axios.put('/usuarios/asignar/gerente',{
+                    'supervisor_id': this.supervisor_id,
+                    'id' : this.id,
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal();
@@ -1439,6 +1491,16 @@
                                 this.tipoAccion = 1;
                                 break;
                             }
+
+                             case 'asignarGerente':
+                            {
+                                //console.log(data);
+                                this.modal =1;
+                                this.tituloModal='Asignar asesor a gerente';
+                                this.id=data['id'];
+                                this.tipoAccion = 4;
+                                break;
+                            }
                         }
                     }
                 }
@@ -1447,6 +1509,7 @@
                 this.selectColonias(this.cp);
                 this.selectRoles();
                 this.selectPersonas();
+                this.selectGerentes();
             }
         },
         mounted() {
