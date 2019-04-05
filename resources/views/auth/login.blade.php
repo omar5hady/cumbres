@@ -33,7 +33,7 @@
               <div>
                 <h1 center> SII </h1>
                 <h2 center> CUMBRES </h2>
-                <img id="logo" src="img/logoLogin.png" alt="">
+                <img class="animated fadeInRight slower" id="logo" src="img/logoLogin.png" alt="">
               </div>
             </div>
           </div>
