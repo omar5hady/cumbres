@@ -56,7 +56,7 @@ class CreateClientesTable extends Migration
             $table->string('estado_coa',80)->nullable();
             $table->integer('cp_coa')->nullable();
             $table->string('telefono_coa',10)->nullable();
-            $table->string('ext_coa',3)->nullable();
+            $table->string('ext_coa',5)->nullable();
             $table->string('celular_coa',10)->nullable();
             $table->string('email_coa',40)->nullable();
             $table->string('parentesco_coa',20)->nullable();

@@ -488,7 +488,7 @@
                                             <div class="col-md-2" v-if="tipo_economia!=0">
                                                 <div class="form-group">
                                                     <label for=""> Ext. </label>
-                                                    <input :readonly="listado==4" type="text" class="form-control" v-model="ext_empresa" placeholder="Ext">
+                                                    <input :readonly="listado==4" type="text" maxlength="5" class="form-control" v-model="ext_empresa" placeholder="Ext">
                                                 </div>
                                             </div>
                                         </div>  
@@ -751,7 +751,7 @@
                                             <div class="col-md-2" v-if="coacreditado==true">
                                                 <div class="form-group">
                                                     <label for=""> Ext. </label>
-                                                    <input :readonly="listado==4" type="text" class="form-control" v-model="ext_empresa_coa" placeholder="Ext">
+                                                    <input :readonly="listado==4" type="text" maxlength="5" class="form-control" v-model="ext_empresa_coa" placeholder="Ext">
                                                 </div>
                                             </div>
                                                 

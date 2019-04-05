@@ -390,7 +390,7 @@
                                 <div class="form-group row" v-if="tipoAccion > 1 && tipoAccion < 4">
                                     <label class="col-md-3 form-control-label" for="text-input">Extension</label>
                                     <div class="col-md-3">
-                                        <input type="text" pattern="\d*" maxlength="3" v-on:keypress="isNumber($event)" v-model="ext" class="form-control" placeholder="Extension" >
+                                        <input type="text" pattern="\d*" maxlength="5" v-on:keypress="isNumber($event)" v-model="ext" class="form-control" placeholder="Extension" >
                                     </div>
                                 </div>
                             

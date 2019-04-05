@@ -38,7 +38,7 @@ class CreateContratosTable extends Migration
             $table->string('estado_empresa',80)->nullable();
             $table->string('ciudad_empresa',80)->nullable();
             $table->string('telefono_empresa',10)->nullable();
-            $table->string('ext_empresa',3)->nullable();
+            $table->string('ext_empresa',5)->nullable();
 
             $table->string('direccion_empresa_coa',80)->nullable();
             $table->integer('cp_empresa_coa')->nullable();
@@ -46,7 +46,7 @@ class CreateContratosTable extends Migration
             $table->string('estado_empresa_coa',80)->nullable();
             $table->string('ciudad_empresa_coa',80)->nullable();
             $table->string('telefono_empresa_coa',10)->nullable();
-            $table->string('ext_empresa_coa',3)->nullable();
+            $table->string('ext_empresa_coa',5)->nullable();
             $table->string('observacion')->nullable();
             
             
