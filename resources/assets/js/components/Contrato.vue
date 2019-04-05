@@ -791,7 +791,7 @@
                                                 <div class="col-md-4">
                                                         <div class="form-group">
                                                     <label for="">Telefono <span style="color:red;" v-show="telefono_referencia1==''">(*)</span></label>
-                                                    <input :readonly="listado==4" type="text"  maxlength="10" pattern="\d*" class="form-control"  v-model="telefono_referencia1" placeholder="Telefono">
+                                                    <input :readonly="listado==4" type="text" v-on:keypress="isNumber($event)" maxlength="10" pattern="\d*" class="form-control"  v-model="telefono_referencia1" placeholder="Telefono">
                                                 </div>
                                                 </div>
 
@@ -799,7 +799,7 @@
                                                 <div class="col-md-4">
                                                         <div class="form-group">
                                                     <label for="">Celular <span style="color:red;" v-show="celular_referencia1==''">(*)</span></label>
-                                                    <input :readonly="listado==4" type="text" maxlength="10"  pattern="\d*" class="form-control"  v-model="celular_referencia1" placeholder="Celular">
+                                                    <input :readonly="listado==4" type="text" v-on:keypress="isNumber($event)" maxlength="10"  pattern="\d*" class="form-control"  v-model="celular_referencia1" placeholder="Celular">
                                                 </div>
                                                 </div>
 
@@ -820,7 +820,7 @@
                                                 <div class="col-md-4">
                                                         <div class="form-group">
                                                     <label for="">Telefono <span style="color:red;" v-show="telefono_referencia2==''">(*)</span></label>
-                                                    <input :readonly="listado==4" type="text" maxlength="10" pattern="\d*" class="form-control"  v-model="telefono_referencia2" placeholder="Telefono">
+                                                    <input :readonly="listado==4" type="text" v-on:keypress="isNumber($event)" maxlength="10" pattern="\d*" class="form-control"  v-model="telefono_referencia2" placeholder="Telefono">
                                                 </div>
                                                 </div>
 
@@ -828,7 +828,7 @@
                                                 <div class="col-md-4">
                                                         <div class="form-group">
                                                     <label for="">Celular <span style="color:red;" v-show="celular_referencia2==''">(*)</span></label>
-                                                    <input :readonly="listado==4" type="text" maxlength="10" pattern="\d*" class="form-control"  v-model="celular_referencia2" placeholder="Celular">
+                                                    <input :readonly="listado==4" type="text" v-on:keypress="isNumber($event)" maxlength="10" pattern="\d*" class="form-control"  v-model="celular_referencia2" placeholder="Celular">
                                                 </div>
                                                 </div>
 

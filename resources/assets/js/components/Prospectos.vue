@@ -210,21 +210,21 @@
                                  <div class="col-md-3">
                                      <div class="form-group">
                                     <label for="">CURP</label>
-                                    <input type="text" maxlength="18" class="form-control"  v-model="curp" placeholder="CURP">
+                                    <input type="text" maxlength="18" style="text-transform:uppercase" class="form-control"  v-model="curp" placeholder="CURP">
                                 </div>
                                  </div>
 
                                   <div class="col-md-2">
                                     <div class="form-group">
                                         <label for="">RFC <span style="color:red;" v-show="rfc==''">(*)</span></label>
-                                        <input type="text" maxlength="10" class="form-control"  v-model="rfc" placeholder="RFC">
+                                        <input type="text" maxlength="10" style="text-transform:uppercase" class="form-control"  v-model="rfc" placeholder="RFC">
                                     </div>
                                  </div>
                                        
                                 <div align="left" class="col-md-1">
                                    <div class="form-group">
                                     <label for="">Homoclave</label>
-                                         <input type="text" maxlength="3" class="form-control"  v-model="homoclave" placeholder="AA0">
+                                         <input type="text" maxlength="3" style="text-transform:uppercase" class="form-control"  v-model="homoclave" placeholder="AA0">
                                    </div>
                                 </div>
 
@@ -509,21 +509,21 @@
                                  <div class="col-md-3">
                                      <div class="form-group">
                                     <label for="">CURP</label>
-                                    <input type="text" maxlength="18" class="form-control"  v-model="curp" placeholder="CURP">
+                                    <input type="text" maxlength="18" style="text-transform:uppercase" class="form-control"  v-model="curp" placeholder="CURP">
                                 </div>
                                  </div>
 
                                   <div class="col-md-2">
                                     <div class="form-group">
                                         <label for="">RFC <span style="color:red;" v-show="rfc==''">(*)</span></label>
-                                        <input type="text" maxlength="10" class="form-control"  disabled  v-model="rfc" placeholder="RFC">
+                                        <input type="text" maxlength="10" style="text-transform:uppercase" class="form-control"  disabled  v-model="rfc" placeholder="RFC">
                                     </div>
                                  </div>
                                        
                                 <div align="left" class="col-md-1">
                                    <div class="form-group">
                                     <label for="">Homoclave</label>
-                                         <input type="text" maxlength="3" class="form-control"  v-model="homoclave" placeholder="AA0">
+                                         <input type="text" maxlength="3" style="text-transform:uppercase" class="form-control"  v-model="homoclave" placeholder="AA0">
                                    </div>
                                 </div>
 
@@ -762,7 +762,7 @@
                                <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Email institucional </label>
                                          <div class="col-md-4">
-                                    <input type="text" class="form-control" v-model="email_institucional_coa" placeholder="email">
+                                    <input type="text" class="form-control" v-model="email_institucional_coa" placeholder="email institucional">
                                 </div>
                                 </div>
 
@@ -786,17 +786,19 @@
                                 </div>
 
                                 <div class="form-group row">
-                                    <label for="">Lugar de nacimiento <span style="color:red;" v-show="lugar_nacimiento_coa==''">(*)</span></label>
+                                    <label  class="col-md-3 form-control-label" for="">Lugar de nacimiento <span style="color:red;" v-show="lugar_nacimiento_coa==''">(*)</span></label>
+                                    <div class="col-md-6">
                                     <select class="form-control" v-model="lugar_nacimiento_coa">
                                         <option value="">Seleccione</option>
                                         <option v-for="estados in arrayEstados" :key="estados.estado" :value="estados.estado" v-text="estados.estado"></option>    
                                     </select>
+                                    </div>
                                 </div>
 
                                <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">CURP</label>
                                        <div class="col-md-4">
-                                    <input type="text" maxlength="18" class="form-control"  v-model="curp_coa" placeholder="CURP">
+                                    <input type="text" maxlength="18" style="text-transform:uppercase" class="form-control"  v-model="curp_coa" placeholder="CURP">
                                       </div>
                                  </div>
 

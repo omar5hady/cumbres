@@ -31,7 +31,7 @@
                                     </select>
                                     
                                     <input type="text"  class="form-control" disabled placeholder='Precio mt2 excedente:'>
-                                    <input type="number" v-model="precio_excedente" class="form-control" placeholder="Precio excedente">
+                                    <input type="number" v-model="precio_excedente"  class="form-control" placeholder="Precio excedente">
                                     <button type="button"  class="btn btn-primary" @click="actualizarPrecioEtapa(),listarPrecioModelo(1,id)">Guardar</button>
                                 </div>
 
@@ -60,7 +60,7 @@
                                             </button>
                                         </td>
                                         <td v-text="precioModelo.modelo"></td>
-                                        <td v-text="'$ '+precioModelo.precio_modelo"></td>
+                                        <td v-text="'$'+formatNumber(precioModelo.precio_modelo)"></td>
                                     </tr>                               
                                 </tbody>
                             </table>
@@ -135,6 +135,7 @@
                                     <div class="col-md-4" >
                                         <input type="text" pattern="\d*" v-model="precio_modelo" class="form-control" placeholder="Precio del modelo" v-on:keypress="isNumber($event)">
                                     </div>
+                                        <strong> <p v-text="'$'+formatNumber(precio_modelo)"></p> </strong>
                                 </div>
 
                                 <!-- Div para mostrar los errores que mande validerDepartamento -->
@@ -255,6 +256,11 @@
                 } else {
                     return true;
                 }
+            },
+            
+            formatNumber(value) {
+                let val = (value/1).toFixed(2)
+                return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             },
             cambiarPagina(page, buscar,){
                 let me = this;

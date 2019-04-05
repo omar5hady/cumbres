@@ -132,7 +132,7 @@
                           <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Costo mantenimiento</label>
                                     <div class="col-md-4">
-                                        <input type="text" v-model="costo_mantenimiento" class="form-control" placeholder="$">
+                                        <input type="text" v-on:keypress="isNumber($event)" v-model="costo_mantenimiento" class="form-control" placeholder="$">
                                     </div>
                                 </div>
                           </div>
@@ -335,6 +335,15 @@
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
                 me.listarEtapa(page,buscar,buscar2,criterio);
+            },
+            isNumber: function(evt) {
+                evt = (evt) ? evt : window.event;
+                var charCode = (evt.which) ? evt.which : evt.keyCode;
+                if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
+                    evt.preventDefault();;
+                } else {
+                    return true;
+                }
             },
              limpiarBusqueda(){
                 let me=this;
