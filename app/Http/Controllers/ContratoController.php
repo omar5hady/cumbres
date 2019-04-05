@@ -52,9 +52,9 @@ class ContratoController extends Controller
                 'clientes.ext_coa','clientes.celular_coa','clientes.email_coa','clientes.parentesco_coa', 'clientes.lugar_nacimiento_coa',
                 'v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos',
 
-                'contratos.infonavit','contratos.fovisste','contratos.comision_apertura','clientes.lugar_nacimiento',
+                'contratos.id as contratoId','contratos.infonavit','contratos.fovisste','contratos.comision_apertura','clientes.lugar_nacimiento',
                 'contratos.investigacion','contratos.avaluo','contratos.prima_unica','contratos.escrituras',
-                'contratos.credito_neto','contratos.status','contratos.avaluo_cliente','contratos.fecha',
+                'contratos.credito_neto','contratos.status','contratos.fecha_status','contratos.avaluo_cliente','contratos.fecha',
                 'contratos.direccion_empresa','contratos.cp_empresa','contratos.colonia_empresa',
                 'contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
                 'contratos.ext_empresa','contratos.direccion_empresa_coa','contratos.cp_empresa_coa',
@@ -94,9 +94,9 @@ class ContratoController extends Controller
                         'clientes.ext_coa','clientes.celular_coa','clientes.email_coa','clientes.parentesco_coa', 'clientes.lugar_nacimiento_coa',
                         'v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos',
 
-                        'contratos.infonavit','contratos.fovisste','contratos.comision_apertura','clientes.lugar_nacimiento',
+                        'contratos.id as contratoId','contratos.infonavit','contratos.fovisste','contratos.comision_apertura','clientes.lugar_nacimiento',
                         'contratos.investigacion','contratos.avaluo','contratos.prima_unica','contratos.escrituras',
-                        'contratos.credito_neto','contratos.status','contratos.avaluo_cliente','contratos.fecha',
+                        'contratos.credito_neto','contratos.status','contratos.fecha_status','contratos.avaluo_cliente','contratos.fecha',
                         'contratos.direccion_empresa','contratos.cp_empresa','contratos.colonia_empresa',
                         'contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
                         'contratos.ext_empresa','contratos.direccion_empresa_coa','contratos.cp_empresa_coa',
@@ -139,9 +139,9 @@ class ContratoController extends Controller
                         'clientes.ext_coa','clientes.celular_coa','clientes.email_coa','clientes.parentesco_coa', 'clientes.lugar_nacimiento_coa',
                         'v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos',
 
-                        'contratos.infonavit','contratos.fovisste','contratos.comision_apertura','clientes.lugar_nacimiento',
+                        'contratos.id as contratoId','contratos.infonavit','contratos.fovisste','contratos.comision_apertura','clientes.lugar_nacimiento',
                         'contratos.investigacion','contratos.avaluo','contratos.prima_unica','contratos.escrituras',
-                        'contratos.credito_neto','contratos.status','contratos.avaluo_cliente','contratos.fecha',
+                        'contratos.credito_neto','contratos.status','contratos.fecha_status','contratos.avaluo_cliente','contratos.fecha',
                         'contratos.direccion_empresa','contratos.cp_empresa','contratos.colonia_empresa',
                         'contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
                         'contratos.ext_empresa','contratos.direccion_empresa_coa','contratos.cp_empresa_coa',
@@ -184,9 +184,9 @@ class ContratoController extends Controller
                         'clientes.ext_coa','clientes.celular_coa','clientes.email_coa','clientes.parentesco_coa', 'clientes.lugar_nacimiento_coa',
                         'v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos',
 
-                        'contratos.infonavit','contratos.fovisste','contratos.comision_apertura','clientes.lugar_nacimiento',
+                        'contratos.id as contratoId','contratos.infonavit','contratos.fovisste','contratos.comision_apertura','clientes.lugar_nacimiento',
                         'contratos.investigacion','contratos.avaluo','contratos.prima_unica','contratos.escrituras',
-                        'contratos.credito_neto','contratos.status','contratos.avaluo_cliente','contratos.fecha',
+                        'contratos.credito_neto','contratos.status','contratos.fecha_status','contratos.avaluo_cliente','contratos.fecha',
                         'contratos.direccion_empresa','contratos.cp_empresa','contratos.colonia_empresa',
                         'contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
                         'contratos.ext_empresa','contratos.direccion_empresa_coa','contratos.cp_empresa_coa',
@@ -226,9 +226,9 @@ class ContratoController extends Controller
                         'clientes.ext_coa','clientes.celular_coa','clientes.email_coa','clientes.parentesco_coa', 'clientes.lugar_nacimiento_coa',
                         'v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos',
 
-                        'contratos.infonavit','contratos.fovisste','contratos.comision_apertura','clientes.lugar_nacimiento',
+                        'contratos.id as contratoId','contratos.infonavit','contratos.fovisste','contratos.comision_apertura','clientes.lugar_nacimiento',
                         'contratos.investigacion','contratos.avaluo','contratos.prima_unica','contratos.escrituras',
-                        'contratos.credito_neto','contratos.status','contratos.avaluo_cliente','contratos.fecha',
+                        'contratos.credito_neto','contratos.status','contratos.fecha_status','contratos.avaluo_cliente','contratos.fecha',
                         'contratos.direccion_empresa','contratos.cp_empresa','contratos.colonia_empresa',
                         'contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
                         'contratos.ext_empresa','contratos.direccion_empresa_coa','contratos.cp_empresa_coa',
@@ -269,9 +269,9 @@ class ContratoController extends Controller
                         'clientes.ext_coa','clientes.celular_coa','clientes.email_coa','clientes.parentesco_coa', 'clientes.lugar_nacimiento_coa',
                         'v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos',
 
-                        'contratos.infonavit','contratos.fovisste','contratos.comision_apertura','clientes.lugar_nacimiento',
+                        'contratos.id as contratoId','contratos.infonavit','contratos.fovisste','contratos.comision_apertura','clientes.lugar_nacimiento',
                         'contratos.investigacion','contratos.avaluo','contratos.prima_unica','contratos.escrituras',
-                        'contratos.credito_neto','contratos.status','contratos.avaluo_cliente','contratos.fecha',
+                        'contratos.credito_neto','contratos.status','contratos.fecha_status','contratos.avaluo_cliente','contratos.fecha',
                         'contratos.direccion_empresa','contratos.cp_empresa','contratos.colonia_empresa',
                         'contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
                         'contratos.ext_empresa','contratos.direccion_empresa_coa','contratos.cp_empresa_coa',
@@ -313,9 +313,9 @@ class ContratoController extends Controller
                             'clientes.ext_coa','clientes.celular_coa','clientes.email_coa','clientes.parentesco_coa', 'clientes.lugar_nacimiento_coa',
                             'v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos',
 
-                            'contratos.infonavit','contratos.fovisste','contratos.comision_apertura','clientes.lugar_nacimiento',
+                            'contratos.id as contratoId','contratos.infonavit','contratos.fovisste','contratos.comision_apertura','clientes.lugar_nacimiento',
                             'contratos.investigacion','contratos.avaluo','contratos.prima_unica','contratos.escrituras',
-                            'contratos.credito_neto','contratos.status','contratos.avaluo_cliente','contratos.fecha',
+                            'contratos.credito_neto','contratos.status','contratos.fecha_status','contratos.avaluo_cliente','contratos.fecha',
                             'contratos.direccion_empresa','contratos.cp_empresa','contratos.colonia_empresa',
                             'contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
                             'contratos.ext_empresa','contratos.direccion_empresa_coa','contratos.cp_empresa_coa',
@@ -358,9 +358,9 @@ class ContratoController extends Controller
                                 'clientes.ext_coa','clientes.celular_coa','clientes.email_coa','clientes.parentesco_coa', 'clientes.lugar_nacimiento_coa',
                                 'v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos',
 
-                                'contratos.infonavit','contratos.fovisste','contratos.comision_apertura','clientes.lugar_nacimiento',
+                                'contratos.id as contratoId','contratos.infonavit','contratos.fovisste','contratos.comision_apertura','clientes.lugar_nacimiento',
                                 'contratos.investigacion','contratos.avaluo','contratos.prima_unica','contratos.escrituras',
-                                'contratos.credito_neto','contratos.status','contratos.avaluo_cliente','contratos.fecha',
+                                'contratos.credito_neto','contratos.status','contratos.fecha_status','contratos.avaluo_cliente','contratos.fecha',
                                 'contratos.direccion_empresa','contratos.cp_empresa','contratos.colonia_empresa',
                                 'contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
                                 'contratos.ext_empresa','contratos.direccion_empresa_coa','contratos.cp_empresa_coa',
@@ -401,9 +401,9 @@ class ContratoController extends Controller
                                     'clientes.ext_coa','clientes.celular_coa','clientes.email_coa','clientes.parentesco_coa', 'clientes.lugar_nacimiento_coa',
                                     'v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos',
 
-                                    'contratos.infonavit','contratos.fovisste','contratos.comision_apertura','clientes.lugar_nacimiento',
+                                    'contratos.id as contratoId','contratos.infonavit','contratos.fovisste','contratos.comision_apertura','clientes.lugar_nacimiento',
                                     'contratos.investigacion','contratos.avaluo','contratos.prima_unica','contratos.escrituras',
-                                    'contratos.credito_neto','contratos.status','contratos.avaluo_cliente','contratos.fecha',
+                                    'contratos.credito_neto','contratos.status','contratos.fecha_status','contratos.avaluo_cliente','contratos.fecha',
                                     'contratos.direccion_empresa','contratos.cp_empresa','contratos.colonia_empresa',
                                     'contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
                                     'contratos.ext_empresa','contratos.direccion_empresa_coa','contratos.cp_empresa_coa',
@@ -443,9 +443,9 @@ class ContratoController extends Controller
                                         'clientes.ext_coa','clientes.celular_coa','clientes.email_coa','clientes.parentesco_coa', 'clientes.lugar_nacimiento_coa',
                                         'v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos',
                         
-                                        'contratos.infonavit','contratos.fovisste','contratos.comision_apertura','clientes.lugar_nacimiento',
+                                        'contratos.id as contratoId','contratos.infonavit','contratos.fovisste','contratos.comision_apertura','clientes.lugar_nacimiento',
                                         'contratos.investigacion','contratos.avaluo','contratos.prima_unica','contratos.escrituras',
-                                        'contratos.credito_neto','contratos.status','contratos.avaluo_cliente','contratos.fecha',
+                                        'contratos.credito_neto','contratos.status','contratos.fecha_status','contratos.avaluo_cliente','contratos.fecha',
                                         'contratos.direccion_empresa','contratos.cp_empresa','contratos.colonia_empresa',
                                         'contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
                                         'contratos.ext_empresa','contratos.direccion_empresa_coa','contratos.cp_empresa_coa',
@@ -485,9 +485,9 @@ class ContratoController extends Controller
                                             'clientes.ext_coa','clientes.celular_coa','clientes.email_coa','clientes.parentesco_coa', 'clientes.lugar_nacimiento_coa',
                                             'v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos',
 
-                                            'contratos.infonavit','contratos.fovisste','contratos.comision_apertura','clientes.lugar_nacimiento',
+                                            'contratos.id as contratoId','contratos.infonavit','contratos.fovisste','contratos.comision_apertura','clientes.lugar_nacimiento',
                                             'contratos.investigacion','contratos.avaluo','contratos.prima_unica','contratos.escrituras',
-                                            'contratos.credito_neto','contratos.status','contratos.avaluo_cliente','contratos.fecha',
+                                            'contratos.credito_neto','contratos.status','contratos.fecha_status','contratos.avaluo_cliente','contratos.fecha',
                                             'contratos.direccion_empresa','contratos.cp_empresa','contratos.colonia_empresa',
                                             'contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
                                             'contratos.ext_empresa','contratos.direccion_empresa_coa','contratos.cp_empresa_coa',
@@ -526,9 +526,9 @@ class ContratoController extends Controller
                                             'clientes.ext_coa','clientes.celular_coa','clientes.email_coa','clientes.parentesco_coa', 'clientes.lugar_nacimiento_coa',
                                             'v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos',
 
-                                            'contratos.infonavit','contratos.fovisste','contratos.comision_apertura','clientes.lugar_nacimiento',
+                                            'contratos.id as contratoId','contratos.infonavit','contratos.fovisste','contratos.comision_apertura','clientes.lugar_nacimiento',
                                             'contratos.investigacion','contratos.avaluo','contratos.prima_unica','contratos.escrituras',
-                                            'contratos.credito_neto','contratos.status','contratos.avaluo_cliente','contratos.fecha',
+                                            'contratos.credito_neto','contratos.status','contratos.fecha_status','contratos.avaluo_cliente','contratos.fecha',
                                             'contratos.direccion_empresa','contratos.cp_empresa','contratos.colonia_empresa',
                                             'contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
                                             'contratos.ext_empresa','contratos.direccion_empresa_coa','contratos.cp_empresa_coa',
@@ -1278,6 +1278,25 @@ class ContratoController extends Controller
         $pdf = \PDF::loadview('pdf.contratos.contratoDePromesaCredito',['contratoPromesa' => $contratoPromesa, 'pagos' => $pagos]);
         return $pdf->stream('contrato_promesa_credito.pdf');
     
+    }
+
+    public function statusContrato(Request $request){
+
+        if($request->fecha_status == ''){
+            $fecha = Carbon::now();
+            $status = Contrato::findOrFail($request->id);
+            $status->status = $request->status;
+            $status->fecha_status = $fecha;
+            $status->save();
+        }else{
+            $status = Contrato::findOrFail($request->id);
+            $status->status = $request->status;
+            $status->fecha_status = $request->fecha_status;
+            $status->save();
+        }
+
+    
+
     }
 
 

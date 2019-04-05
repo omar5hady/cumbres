@@ -16,6 +16,24 @@
                         <button type="button" @click="listado=0" class="btn btn-success" v-if="listado==1">
                             <i class="fa fa-mail-reply"></i>&nbsp;Regresar
                         </button>
+                    <!-- form para cambiar el status de los contratos -->
+                     <form action="" method="post" v-if="listado == 4">
+                                    <div style="text-align: right;">
+                                            <div>
+                                                <div>
+                                                    <label for="text-input"> <strong>Status</strong> </label>
+                                                    <select v-model="status" @change="selectStatus(status)">
+                                                        <option value="0">Cancelado</option>
+                                                        <option value="1">Pendiente</option>
+                                                        <option value="2">No firmado</option>
+                                                        <option value="3">Firmado</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                             
+                                    </div>
+                                </form>
+
                     </div>
 
             <!----------------- Listado Contratos ------------------------------>
@@ -197,8 +215,15 @@
             <!----------------- Vista para crear un contrato ------------------------------>
                     <!-- Div Card Body para registrar simulacion -->
                     <template v-else-if="listado == 3 || listado == 4">
-                        <div class="card-body"> 
-
+                    <div class="card-body"> 
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <center> <h5 style="color:orange;" align="right" v-if="listado==4 && status==1" v-text="' Pendiente '"></h5> </center>
+                                    <center> <h5 style="color:red;" align="right" v-if="listado==4 && status==0" v-text="' Cancelado '"></h5> </center>
+                                    <center> <h5 style="color:red;" align="right" v-if="listado==4 && status==2" v-text="' No firmado '"></h5> </center>
+                                    <center> <h5 style="color:green;" align="right" v-if="listado==4 && status==3" v-text="' Firmado '"></h5> </center>
+                                </div>
+                            </div> 
                             <!-- Acordeon -->
                             <div id="accordion" role="tablist">
                                 <div class="card mb-0">
@@ -1401,6 +1426,41 @@
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
+
+
+             <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" v-text="tituloModal"></h4>
+                            <button type="button" class="close" @click="cerrarModal4()" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                 
+                      <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">Fecha</label>
+                                <div class="col-md-9">
+                                    <input type="date" v-model="fecha_status" class="form-control" placeholder="Fecha status">
+                                </div>
+                            </div>
+                      </form>
+
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                            <button type="button" class="btn btn-primary" @click="registrarFechaStatus()">Guardar</button>
+                         </div>
+                    </div> 
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!--Fin del modal-->
+
            
 
         </main>
@@ -1418,6 +1478,7 @@
         data(){
             return{
                 id:0,
+                id_contrato:0,
                 proceso:false,
 
                 arraySimulaciones:[],
@@ -1426,6 +1487,9 @@
                 arrayFraccionamientos: [],
                 arryaEmpresas:[],
                 arrayPagos:[],
+
+                status: 1,
+                fecha_status: '',
 
                 /// variables datos del prospecto //
                     nombre:'',
@@ -1589,6 +1653,9 @@
                 b_manzana2: '',
                 b_lote2: '',
                 listado:0,
+                modal: 0,
+                tituloModal: '',
+                tipoAccion: 0
                
             }
         },
@@ -1927,6 +1994,7 @@
                 this.e_civil = data['edo_civil'];
                 this.dep_economicos = data['num_dep_economicos']
                 this.status = data['status'];
+                this.fecha_status = data['fecha_status'];
                 this.lote_id = data['lote_id'];
                 
                 this.nombre_referencia1 = data['nombre_primera_ref'];
@@ -2006,6 +2074,11 @@
                 this.listado = 0;
             },
 
+            cerrarModal(){
+                this.modal = 0;
+                this.tituloModal = '';
+            },
+
             verContrato(data = []){
                 this.prospecto_id = data['prospecto_id'];
                 this.id= data['id'];
@@ -2040,6 +2113,7 @@
                 this.e_civil = data['edo_civil'];
                 this.dep_economicos = data['num_dep_economicos']
                 this.status = data['status'];
+                this.fecha_status = data['fecha_status'];
                 this.lote_id = data['lote_id'];
                 
                 this.nombre_referencia1 = data['nombre_primera_ref'];
@@ -2114,6 +2188,8 @@
                 this.total_pagar = data['total_pagar'];
                 this.monto_total_credito = data['monto_total_credito'];
                 this.enganche_total = data['enganche_total'];
+
+                this.id_contrato = data['contratoId'];
            
                
                 this.listarPagos(this.id);
@@ -2145,6 +2221,57 @@
             eliminarPago(index){
                 let me = this;
                 me.arrayPagos.splice(index,1);
+            },
+
+            selectStatus(status){
+                let me = this;
+                if(status==3 || status==0 ){
+                    this.abrirModal('status','statusFecha',this.arrayContratos);
+                }else{ 
+
+                
+                axios.put('/contrato/status/fecha',{
+                                'id': this.id_contrato,
+                                'status': this.status,
+                                'fecha_status': this.fecha_status,
+                                }).then(function (response){
+                                me.listado=4;
+                                
+                                //Se muestra mensaje Success
+                                swal({
+                                    position: 'top-end',
+                                    type: 'success',
+                                    title: 'Hecho',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                    })
+                            }).catch(function (error){
+                                console.log(error);
+                            });
+                        
+                }
+            },
+
+        registrarFechaStatus(){
+            let me = this;
+            axios.put('/contrato/status/fecha',{
+                    'id': this.id_contrato,
+                    'status':this.status,
+                    'fecha_status':this.fecha_status,
+                    }).then(function (response){
+                    me.listado=4;
+                    me.cerrarModal();
+                    //Se muestra mensaje Success
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Hecho',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
             },
 
             validarRegistro(){
@@ -2512,6 +2639,27 @@
                 me.b_lote2='';
                 
             },
+             abrirModal(status, accion,data =[]){
+                switch(status){
+                    case "status":
+                    {
+                        switch(accion){
+                            
+                            
+                            case 'statusFecha':
+                            {
+                                this.modal = 1;
+                                this.tituloModal='Fecha de la operacion';
+                                this.id=data['id'];
+                                this.fecha_status=data['fecha_status'];
+                                this.tipoAccion = 1;
+                                break;
+                            }
+                        }
+                    }
+                }
+                //this.selectCiudades(this.estado);
+            }
 
            
         },
