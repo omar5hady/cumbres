@@ -50,14 +50,22 @@
                                             <option value="v.nombre">Vendedor</option>
                                             <option value="creditos.fraccionamiento">Proyecto</option>
                                             <option value="contratos.fecha">Fecha</option>
+                                            <option value="contratos.status">Status</option>
                                         </select>
                                           <select class="form-control" v-if="criterio2=='creditos.fraccionamiento'" v-model="buscar2" >
                                             <option value="">Seleccione</option>
                                             <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id" :value="proyecto.nombre" v-text="proyecto.nombre"></option>
                                          </select>
+                                  
                                     <input v-if="criterio2=='creditos.fraccionamiento'" type="text"  v-model="b_etapa2" @keyup.enter="listarContratos(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="Etapa">
                                     <input v-if="criterio2=='creditos.fraccionamiento'" type="text"  v-model="b_manzana2" @keyup.enter="listarContratos(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="Manzana">
                                     <input v-if="criterio2=='creditos.fraccionamiento'" type="text"  v-model="b_lote2" @keyup.enter="listarContratos(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="# Lote">
+                                        <select class="form-control col-md-4" v-if="criterio2=='contratos.status'" v-model="buscar2">
+                                            <option value="0">Cancelado</option>
+                                            <option value="1">Pendiente</option>
+                                            <option value="2">No firmado</option>
+                                            <option value="3">Firmado</option>
+                                        </select> 
                                         <input  v-if="criterio2=='contratos.fecha'" type="date" v-model="buscar2" @keyup.enter="listarContratos(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control">
                                         <input  v-if="criterio2=='personal.nombre' || criterio2=='v.nombre' || criterio2=='creditos.id'" type="text" v-model="buscar2" @keyup.enter="listarContratos(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control">
                                         <button type="submit" @click="listarContratos(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
