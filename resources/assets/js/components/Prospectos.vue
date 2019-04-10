@@ -548,8 +548,8 @@
                                             <option value="Oficina central">Oficina central</option>
                                             <option value="Modulo">Modulo</option>
                                             <option value="Pagina web">Pagina web</option>
-                                            <option v-for="fraccionamientos in arrayFraccionamientos2" :key="fraccionamientos.id" :value="fraccionamientos.nombre" v-text="fraccionamientos.nombre"></option>
-                                            <!-- <option v-for="lugares in arrayLugarContacto" :key="lugares.id" :value="lugares.nombre" v-text="lugares.nombre"></option> -->
+                                            <option v-for="fraccionamientos in arrayFraccionamientos2" :key="fraccionamientos.nombre" :value="fraccionamientos.nombre" v-text="fraccionamientos.nombre"></option>
+                                            <option v-for="lugares in arrayLugarContacto" :key="lugares.id" :value="lugares.nombre" v-text="lugares.nombre"></option>
                                     </select>
                                     </div>
                                 </div>

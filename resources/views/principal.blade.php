@@ -109,7 +109,7 @@
                                 @endif
                                 @if(Auth::user()->inst_financiamiento == 1)
                                     <li @click="menu=16" class="nav-item">
-                                        <a class="nav-link" href="#"><i class="fa fa-building-o"></i> Instituciones de financiamiento</a>
+                                        <a class="nav-link" href="#"><i class="fa fa-building-o"></i> Inst. de financ.</a>
                                     </li>
                                 @endif
                                 @if(Auth::user()->tipos_credito == 1)
