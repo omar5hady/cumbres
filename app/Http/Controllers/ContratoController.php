@@ -39,7 +39,7 @@ class ContratoController extends Controller
                 'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
                 'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
                 'creditos.costo_paquete','inst_seleccionadas.tipo_credito','inst_seleccionadas.id as inst_credito',
-                'creditos.precio_obra_extra','creditos.fraccionamiento as proyecto',
+                'creditos.precio_obra_extra','creditos.fraccionamiento as proyecto','creditos.lote_id',
 
                 'inst_seleccionadas.institucion','personal.nombre','personal.apellidos', 'personal.telefono','personal.celular',
                 'personal.email','personal.direccion','personal.cp','personal.colonia','personal.f_nacimiento','personal.rfc','personal.homoclave',
@@ -81,7 +81,7 @@ class ContratoController extends Controller
                         'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
                         'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
                         'creditos.costo_paquete','inst_seleccionadas.tipo_credito','inst_seleccionadas.id as inst_credito',
-                        'creditos.precio_obra_extra','creditos.fraccionamiento as proyecto',
+                        'creditos.precio_obra_extra','creditos.fraccionamiento as proyecto','creditos.lote_id',
 
                         'inst_seleccionadas.institucion','personal.nombre','personal.apellidos', 'personal.telefono','personal.celular',
                         'personal.email','personal.direccion','personal.cp','personal.colonia','personal.f_nacimiento','personal.rfc','personal.homoclave',
@@ -126,7 +126,7 @@ class ContratoController extends Controller
                         'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
                         'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
                         'creditos.costo_paquete','inst_seleccionadas.tipo_credito','inst_seleccionadas.id as inst_credito',
-                        'creditos.precio_obra_extra','creditos.fraccionamiento as proyecto',
+                        'creditos.precio_obra_extra','creditos.fraccionamiento as proyecto','creditos.lote_id',
 
                         'inst_seleccionadas.institucion','personal.nombre','personal.apellidos', 'personal.telefono','personal.celular',
                         'personal.email','personal.direccion','personal.cp','personal.colonia','personal.f_nacimiento','personal.rfc','personal.homoclave',
@@ -171,7 +171,7 @@ class ContratoController extends Controller
                         'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
                         'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
                         'creditos.costo_paquete','inst_seleccionadas.tipo_credito','inst_seleccionadas.id as inst_credito',
-                        'creditos.precio_obra_extra','creditos.fraccionamiento as proyecto',
+                        'creditos.precio_obra_extra','creditos.fraccionamiento as proyecto','creditos.lote_id',
 
                         'inst_seleccionadas.institucion','personal.nombre','personal.apellidos', 'personal.telefono','personal.celular',
                         'personal.email','personal.direccion','personal.cp','personal.colonia','personal.f_nacimiento','personal.rfc','personal.homoclave',
@@ -213,7 +213,7 @@ class ContratoController extends Controller
                         'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
                         'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
                         'creditos.costo_paquete','inst_seleccionadas.tipo_credito','inst_seleccionadas.id as inst_credito',
-                        'creditos.precio_obra_extra','creditos.fraccionamiento as proyecto',
+                        'creditos.precio_obra_extra','creditos.fraccionamiento as proyecto','creditos.lote_id',
 
                         'inst_seleccionadas.institucion','personal.nombre','personal.apellidos', 'personal.telefono','personal.celular',
                         'personal.email','personal.direccion','personal.cp','personal.colonia','personal.f_nacimiento','personal.rfc','personal.homoclave',
@@ -256,7 +256,7 @@ class ContratoController extends Controller
                         'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
                         'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
                         'creditos.costo_paquete','inst_seleccionadas.tipo_credito','inst_seleccionadas.id as inst_credito',
-                        'creditos.precio_obra_extra','creditos.fraccionamiento as proyecto',
+                        'creditos.precio_obra_extra','creditos.fraccionamiento as proyecto','creditos.lote_id',
 
                         'inst_seleccionadas.institucion','personal.nombre','personal.apellidos', 'personal.telefono','personal.celular',
                         'personal.email','personal.direccion','personal.cp','personal.colonia','personal.f_nacimiento','personal.rfc','personal.homoclave',
@@ -299,7 +299,7 @@ class ContratoController extends Controller
                         'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
                         'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
                         'creditos.costo_paquete','inst_seleccionadas.tipo_credito','inst_seleccionadas.id as inst_credito',
-                        'creditos.precio_obra_extra','creditos.fraccionamiento as proyecto',
+                        'creditos.precio_obra_extra','creditos.fraccionamiento as proyecto','creditos.lote_id',
 
                         'inst_seleccionadas.institucion','personal.nombre','personal.apellidos', 'personal.telefono','personal.celular',
                         'personal.email','personal.direccion','personal.cp','personal.colonia','personal.f_nacimiento','personal.rfc','personal.homoclave',
@@ -343,7 +343,7 @@ class ContratoController extends Controller
                             'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
                             'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
                             'creditos.costo_paquete','inst_seleccionadas.tipo_credito','inst_seleccionadas.id as inst_credito',
-                            'creditos.precio_obra_extra','creditos.fraccionamiento as proyecto',
+                            'creditos.precio_obra_extra','creditos.fraccionamiento as proyecto','creditos.lote_id',
 
                             'inst_seleccionadas.institucion','personal.nombre','personal.apellidos', 'personal.telefono','personal.celular',
                             'personal.email','personal.direccion','personal.cp','personal.colonia','personal.f_nacimiento','personal.rfc','personal.homoclave',
@@ -388,7 +388,7 @@ class ContratoController extends Controller
                                 'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
                                 'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
                                 'creditos.costo_paquete','inst_seleccionadas.tipo_credito','inst_seleccionadas.id as inst_credito',
-                                'creditos.precio_obra_extra','creditos.fraccionamiento as proyecto',
+                                'creditos.precio_obra_extra','creditos.fraccionamiento as proyecto','creditos.lote_id',
 
                                 'inst_seleccionadas.institucion','personal.nombre','personal.apellidos', 'personal.telefono','personal.celular',
                                 'personal.email','personal.direccion','personal.cp','personal.colonia','personal.f_nacimiento','personal.rfc','personal.homoclave',
@@ -431,7 +431,7 @@ class ContratoController extends Controller
                                     'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
                                     'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
                                     'creditos.costo_paquete','inst_seleccionadas.tipo_credito','inst_seleccionadas.id as inst_credito',
-                                    'creditos.precio_obra_extra','creditos.fraccionamiento as proyecto',
+                                    'creditos.precio_obra_extra','creditos.fraccionamiento as proyecto','creditos.lote_id',
 
                                     'inst_seleccionadas.institucion','personal.nombre','personal.apellidos', 'personal.telefono','personal.celular',
                                     'personal.email','personal.direccion','personal.cp','personal.colonia','personal.f_nacimiento','personal.rfc','personal.homoclave',
@@ -473,7 +473,7 @@ class ContratoController extends Controller
                                         'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
                                         'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
                                         'creditos.costo_paquete','inst_seleccionadas.tipo_credito','inst_seleccionadas.id as inst_credito',
-                                        'creditos.precio_obra_extra','creditos.fraccionamiento as proyecto',
+                                        'creditos.precio_obra_extra','creditos.fraccionamiento as proyecto','creditos.lote_id',
                         
                                         'inst_seleccionadas.institucion','personal.nombre','personal.apellidos', 'personal.telefono','personal.celular',
                                         'personal.email','personal.direccion','personal.cp','personal.colonia','personal.f_nacimiento','personal.rfc','personal.homoclave',
@@ -515,7 +515,7 @@ class ContratoController extends Controller
                                             'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
                                             'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
                                             'creditos.costo_paquete','inst_seleccionadas.tipo_credito','inst_seleccionadas.id as inst_credito',
-                                            'creditos.precio_obra_extra','creditos.fraccionamiento as proyecto',
+                                            'creditos.precio_obra_extra','creditos.fraccionamiento as proyecto','creditos.lote_id',
 
                                             'inst_seleccionadas.institucion','personal.nombre','personal.apellidos', 'personal.telefono','personal.celular',
                                             'personal.email','personal.direccion','personal.cp','personal.colonia','personal.f_nacimiento','personal.rfc','personal.homoclave',
@@ -556,7 +556,7 @@ class ContratoController extends Controller
                                             'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
                                             'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
                                             'creditos.costo_paquete','inst_seleccionadas.tipo_credito','inst_seleccionadas.id as inst_credito',
-                                            'creditos.precio_obra_extra','creditos.fraccionamiento as proyecto',
+                                            'creditos.precio_obra_extra','creditos.fraccionamiento as proyecto','creditos.lote_id',
 
                                             'inst_seleccionadas.institucion','personal.nombre','personal.apellidos', 'personal.telefono','personal.celular',
                                             'personal.email','personal.direccion','personal.cp','personal.colonia','personal.f_nacimiento','personal.rfc','personal.homoclave',
@@ -1325,17 +1325,32 @@ class ContratoController extends Controller
 
     public function statusContrato(Request $request){
 
+        $id_lote = $request->lote_id;
+
         if($request->fecha_status == ''){
             $fecha = Carbon::now();
             $status = Contrato::findOrFail($request->id);
             $status->status = $request->status;
             $status->fecha_status = $fecha;
             $status->save();
+            if($request->status == 0 || $request->status == 2 ){
+                $contrato = Lote::findOrFail($id_lote);
+                $contrato->contrato = 0;
+                $contrato->apartado= 0;
+                $contrato->save();
+            }
+
         }else{
             $status = Contrato::findOrFail($request->id);
             $status->status = $request->status;
             $status->fecha_status = $request->fecha_status;
             $status->save();
+            if($request->status == 0 || $request->status == 2 ){
+                $contrato = Lote::findOrFail($id_lote);
+                $contrato->contrato = 0;
+                $contrato->apartado= 0;
+                $contrato->save();
+            }
         }
 
     

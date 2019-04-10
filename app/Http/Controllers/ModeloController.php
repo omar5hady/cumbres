@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\PartidaController;
 use App\Modelo;
 use DB;
+use App\Contrato;
 
 
 class ModeloController extends Controller
@@ -386,6 +387,17 @@ class ModeloController extends Controller
         ->where('id', '=', $buscar )->get();
 
         return ['modelosTc' => $modelosTc];
+    }
+
+    public function modeloArchivoContrato (Request $request, $id)
+    {
+         $modelo = Contrato::join('creditos','contratos.id','=','creditos.id')
+        ->join('lotes','creditos.lote_id','=','lotes.id')
+        ->join('modelos','lotes.modelo_id','=','modelos.id')
+        ->select('modelos.archivo')
+        ->where('contratos.id','=',$id)->get();
+
+        return ['modelo' => $modelo];
     }
 
 

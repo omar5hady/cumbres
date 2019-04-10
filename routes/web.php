@@ -339,6 +339,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/descargarReglamento/contrato/{id}','EtapaController@descargarReglamentoContrato');
         Route::get('/contratoCompraVenta/reservaDeDominio/pdf/{id}','ContratoController@contratoConReservaDeDominio')->name('contrato_reserva_de_dominio.pdf');
         Route::get('/contrato/promesaCredito/pdf/{id}','ContratoController@contratoDePromesaCredito')->name('contrato_promesa_credito.pdf');
+        Route::get('/contrato/modelo/caracteristicas/pdf/{id}','ModeloController@modeloArchivoContrato');
         Route::put('/contrato/status/fecha','ContratoController@statusContrato');
 
 

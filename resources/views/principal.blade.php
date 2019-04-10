@@ -312,7 +312,7 @@
                         </li>
                     @endif
                     <li @click="menu=31" class="nav-item">
-                        <a class="nav-link" href="#"><i class="icon-book-open"></i> Ayuda <span class="badge badge-danger">PDF</span></a>
+                        <a class="nav-link" onclick="window.open('/pdf/manualUsuario.pdf','_blank')"><i class="icon-book-open"></i> Ayuda <span class="badge badge-danger">PDF</span></a>
                     </li>
                     <li @click="menu=32" class="nav-item">
                         <a class="nav-link" href="#"><i class="icon-info"></i> Acerca de...<span class="badge badge-info">IT</span></a>

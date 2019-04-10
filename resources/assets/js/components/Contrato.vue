@@ -1421,6 +1421,7 @@
                                                 <a class="btn btn-dark btn-sm" v-if="listado==4" target="_blank" v-bind:href="'/cartaServicios/pdf/'+id">Carta de servicios</a>
                                                 <a class="btn btn-dark btn-sm" v-if="listado==4" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+id">Servicios de telecomunición</a>
                                                 <a class="btn btn-danger btn-sm" v-if="listado==4" v-bind:href="'/descargarReglamento/contrato/'+id">Reglamento de la etapa</a>
+                                                <a class="btn btn-info btn-sm" v-if="listado==4" @click="selectNombreArchivoModelo()">Modelo</a>
                                             </div>
                                           
                                         </div>
@@ -1498,6 +1499,7 @@
 
                 status: 1,
                 fecha_status: '',
+                nombre_archivo_modelo: '',
 
                 /// variables datos del prospecto //
                     nombre:'',
@@ -1920,6 +1922,20 @@
                     console.log(error);
                 });
             },
+            
+            selectNombreArchivoModelo(){
+                let me = this;
+                me.nombre_archivo_modelo='';
+                var url = '/contrato/modelo/caracteristicas/pdf/' + this.id;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                        me.nombre_archivo_modelo = respuesta.modelo[0].archivo;
+                        window.open('/files/modelos/'+me.nombre_archivo_modelo, '_blank')
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
             getDatosEmpresa(nombre,coacreditado){
                 let me = this;
                 var arrayDatosEmpresa=[];
@@ -2242,6 +2258,7 @@
                                 'id': this.id_contrato,
                                 'status': this.status,
                                 'fecha_status': this.fecha_status,
+                                'lote_id':this.lote_id
                                 }).then(function (response){
                                 me.listado=4;
                                 
@@ -2266,6 +2283,7 @@
                     'id': this.id_contrato,
                     'status':this.status,
                     'fecha_status':this.fecha_status,
+                    'lote_id':this.lote_id
                     }).then(function (response){
                     me.listado=4;
                     me.cerrarModal();
