@@ -30,7 +30,7 @@
                             </div>
                         </div>
 
-<form method="post"  @submit="formSubmit" enctype="multipart/form-data">
+             <form method="post"  @submit="formSubmit" enctype="multipart/form-data">
                         <div class="row">
                             <label class="col-md-12 form-control-label" for="text-input"><strong>Password</strong></label>
                         </div>
@@ -56,12 +56,12 @@
 
                         <div class="form-group row">
                             <div class="col-md-2">
-                                <button :disabled="password == ''" type="submit" class="btn btn-primary">
+                                <button @click="passwordChange()" :disabled="password == ''" type="submit" class="btn btn-primary">
                                     <i class="icon-save"></i>&nbsp;Aplicar cambios
                                 </button>
                             </div>
                         </div>
-</form>
+        </form>
                              
 
 
@@ -105,16 +105,24 @@
 
                 e.preventDefault();
 
-                let currentObj = this;
-            
+                
                 let formData = new FormData();
            
-                formData.append('foto_user',this.foto_user );
+                formData.append('foto_user',this.foto_user);
                 let me = this;
                 axios.post('/users/foto/'+this.userId ,formData)
-                .then(function (response) {
+               
+
+               
+
+            },
+
+            passwordChange(){
+                 axios.put('/users/update/password',{
+                    'password': this.password,
+                    'id' :this.userId
+                    }) .then(function (response) {
                     location.reload();
-                    currentObj.success = response.data.success;
                     swal({
                         position: 'top-end',
                         type: 'success',
@@ -130,7 +138,6 @@
                     currentObj.output = error;
 
                 });
-
             },
 
 
@@ -144,6 +151,7 @@
                     me.usuario = me.arrayUsuario[0].usuario;
                     me.nombre = me.arrayUsuario[0].n_completo;
                     me.foto_user = me.arrayUsuario[0].foto_user;
+                    me.password = '';
                     
                 })
                 .catch(function (error) {

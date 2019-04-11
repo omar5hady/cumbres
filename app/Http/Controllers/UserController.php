@@ -836,7 +836,7 @@ class UserController extends Controller
 
     public function obtenerDatos(Request $request){
         $usuario = User::join('personal','users.id','=','personal.id')
-            ->select('users.usuario','users.foto_user','users.id',DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"))
+            ->select('users.usuario','users.foto_user','users.id','users.password as pass',DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"))
             ->where('users.id','=',$request->id)->get();
 
         return['usuario' => $usuario];
@@ -945,42 +945,58 @@ class UserController extends Controller
         $imgAnterior = User::select('foto_user','id')
                             ->where('foto_user','!=','default-image.gif')
                             ->where('id','=',$id)->get();
+
+
+                if($imgAnterior->isEmpty()==1){
+
+                            $fileName = uniqid().'.'.$request->foto_user->getClientOriginalExtension();
+                            $moved =  $request->foto_user->move(public_path('/img/avatars'), $fileName);
+
+                                                                
+                            if($moved){
+                                if(!$request->ajax())return redirect('/');
+                                $user = User::findOrFail($request->id);
+                                $user->foto_user = $fileName;
+                                $user->id = $id;
+                                $user->save(); //Insert
+                            }
+                            return back();
+                        
                             
-
-        if($imgAnterior->isEmpty()==1){
-            $fileName = uniqid().'.'.$request->foto_user->getClientOriginalExtension();
-                    $moved =  $request->foto_user->move(public_path('/img/avatars'), $fileName);
-            
-                    if($moved){
-                        if(!$request->ajax())return redirect('/');
-                        $user = User::findOrFail($request->id);
-                        $user->foto_user = $fileName;
-                        $user->id = $id;
-                        $user->save(); //Insert
-                    }
-                    return back();
+                            }else{
+                                if ($request->foto_user != $imgAnterior[0]->foto_user){
+                            
+                                $pathAnterior = public_path().'/img/avatars/'.$imgAnterior[0]->foto_user;
+                                File::delete($pathAnterior);  }   
                 
-            
-            }else{
-            
-                $pathAnterior = public_path().'/img/avatars/'.$imgAnterior[0]->foto_user;
-                File::delete($pathAnterior);     
+                                $fileName = uniqid().'.'.$request->foto_user->getClientOriginalExtension();
+                                $moved =  $request->foto_user->move(public_path('/img/avatars'), $fileName);
+                
+                                if($moved){
+                                    if(!$request->ajax())return redirect('/');
+                                    $user = User::findOrFail($request->id);
+                                    $user->foto_user = $fileName;
+                                    $user->id = $id;
+                                    
+                                    $user->save(); //Insert
+                                }
+                                return back();                  
+                            
+                        }
 
-                $fileName = uniqid().'.'.$request->foto_user->getClientOriginalExtension();
-                $moved =  $request->foto_user->move(public_path('/img/avatars'), $fileName);
+                                    
+                    
+                            
+                        }
 
-                if($moved){
-                    if(!$request->ajax())return redirect('/');
-                    $user = User::findOrFail($request->id);
-                    $user->foto_user = $fileName;
-                    $user->id = $id;
-                    $user->save(); //Insert
-                }
-                return back();
+    public function updatePassword(Request $request){
 
-            }
-            
+        $user = User::findOrFail($request->id);
+        $user->password = bcrypt($request->password);
+        $user->save();
     }
+           
+                            
 
 
     public function select_users_gerentes (){

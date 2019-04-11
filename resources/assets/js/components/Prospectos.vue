@@ -197,10 +197,11 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="">Lugar de nacimiento <span style="color:red;" v-show="lugar_nacimiento==''">(*)</span></label>
-                                        <select class="form-control" v-model="lugar_nacimiento">
+                                        <input type="text" name="city3" list="cityname3" class="form-control" v-model="lugar_nacimiento">
+                                        <datalist id="cityname3">
                                             <option value="">Seleccione</option>
                                             <option v-for="estados in arrayEstados" :key="estados.estado" :value="estados.estado" v-text="estados.estado"></option>    
-                                        </select>
+                                        </datalist>
                                     </div>
                                 </div>
 
@@ -496,10 +497,11 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="">Lugar de nacimiento <span style="color:red;" v-show="lugar_nacimiento==''">(*)</span></label>
-                                        <select class="form-control" v-model="lugar_nacimiento">
+                                        <input type="text" name="city" list="cityname" class="form-control" v-model="lugar_nacimiento">
+                                        <datalist id="cityname">
                                             <option value="">Seleccione</option>
                                             <option v-for="estados in arrayEstados" :key="estados.estado" :value="estados.estado" v-text="estados.estado"></option>    
-                                        </select>
+                                        </datalist>
                                     </div>
                                 </div>
 
@@ -788,10 +790,11 @@
                                 <div class="form-group row">
                                     <label  class="col-md-3 form-control-label" for="">Lugar de nacimiento <span style="color:red;" v-show="lugar_nacimiento_coa==''">(*)</span></label>
                                     <div class="col-md-6">
-                                    <select class="form-control" v-model="lugar_nacimiento_coa">
-                                        <option value="">Seleccione</option>
-                                        <option v-for="estados in arrayEstados" :key="estados.estado" :value="estados.estado" v-text="estados.estado"></option>    
-                                    </select>
+                                        <input type="text" name="city2" list="cityname2" class="form-control" v-model="lugar_nacimiento_coa">
+                                        <datalist id="cityname2">
+                                            <option value="">Seleccione</option>
+                                            <option v-for="estados in arrayEstados" :key="estados.estado" :value="estados.estado" v-text="estados.estado"></option>    
+                                        </datalist>
                                     </div>
                                 </div>
 

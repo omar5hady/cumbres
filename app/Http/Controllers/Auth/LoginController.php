@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 class LoginController extends Controller
 {
@@ -37,5 +38,29 @@ class LoginController extends Controller
       return redirect('/');
 
   }
+
+
+  /**
+ * Envía la respuesta después de que el usuario se autentifique.
+ * Elimina el resto de sesiones de este usuario
+ *
+ * @param  \Illuminate\Http\Request  $request
+ * @return \Illuminate\Http\Response
+ */
+protected function sendLoginResponse(Request $request)
+{
+    $request->session()->regenerate();
+    $previous_session = Auth::User()->session_id;
+    if ($previous_session) {
+        Session::getHandler()->destroy($previous_session);
+    }
+
+    Auth::user()->session_id = Session::getId();
+    Auth::user()->save();
+    $this->clearLoginAttempts($request);
+
+    return $this->authenticated($request, $this->guard()->user())
+        ?: redirect()->intended($this->redirectPath());
+}
 
 }

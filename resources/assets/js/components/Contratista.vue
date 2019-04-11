@@ -152,8 +152,10 @@
                                     <div class="col-md-6">
                                         <select class="form-control" v-model="estado" @click="selectCiudades(estado)">
                                             <option value="San Luis Potosí">San Luis Potosí</option>
+                                            <option value="Aguascalientes">Aguascalientes</option>
                                             <option value="Baja California">Baja California</option>
                                             <option value="Baja California Sur">Baja California Sur</option>
+                                            <option value="Campeche">Campeche</option>
                                             <option value="Coahuila de Zaragoza">Coahuila de Zaragoza</option>
                                             <option value="Colima">Colima</option>
                                             <option value="Chiapas">Chiapas</option>

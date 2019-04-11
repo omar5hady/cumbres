@@ -25,7 +25,7 @@ class PersonalController extends Controller
             $Personales = Personal::join('departamento','personal.departamento_id','=','departamento.id_departamento')
             ->join('empresas','personal.empresa_id','=','empresas.id')
             ->select('personal.nombre','personal.apellidos',
-                'personal.f_nacimiento','personal.rfc','personal.direccion','personal.colonia','personal.cp',
+                'personal.f_nacimiento','personal.rfc','personal.homoclave','personal.direccion','personal.colonia','personal.cp',
                 'personal.telefono','personal.ext','personal.celular','personal.email','personal.activo',
                 'personal.id','personal.departamento_id','departamento.departamento as departamento',
                 'personal.empresa_id','empresas.nombre as empresa',
@@ -38,7 +38,7 @@ class PersonalController extends Controller
                 $Personales = Personal::join('departamento','personal.departamento_id','=','departamento.id_departamento')
                 ->join('empresas','personal.empresa_id','=','empresas.id')
                 ->select('personal.nombre','personal.apellidos',
-                    'personal.f_nacimiento','personal.rfc','personal.direccion','personal.colonia','personal.cp',
+                    'personal.f_nacimiento','personal.rfc','personal.homoclave','personal.direccion','personal.colonia','personal.cp',
                     'personal.telefono','personal.ext','personal.celular','personal.email','personal.activo',
                     'personal.id','personal.departamento_id','departamento.departamento as departamento',
                     'personal.empresa_id','empresas.nombre as empresa',
@@ -50,7 +50,7 @@ class PersonalController extends Controller
                 $Personales = Personal::join('departamento','personal.departamento_id','=','departamento.id_departamento')
                 ->join('empresas','personal.empresa_id','=','empresas.id')
                 ->select('personal.nombre','personal.apellidos',
-                    'personal.f_nacimiento','personal.rfc','personal.direccion','personal.colonia','personal.cp',
+                    'personal.f_nacimiento','personal.rfc','personal.homoclave','personal.direccion','personal.colonia','personal.cp',
                     'personal.telefono','personal.ext','personal.celular','personal.email','personal.activo',
                     'personal.id','personal.departamento_id','departamento.departamento as departamento',
                     'personal.empresa_id','empresas.nombre as empresa',
@@ -99,6 +99,7 @@ class PersonalController extends Controller
         $Personal->apellidos = $request->apellidos;
         $Personal->f_nacimiento = $request->f_nacimiento;
         $Personal->rfc = $request->rfc;
+        $Personal->homoclave = $request->homoclave;
         $Personal->direccion = $request->direccion;
         $Personal->colonia = $request->colonia;
         $Personal->cp = $request->cp;
@@ -151,6 +152,7 @@ class PersonalController extends Controller
         $Personal->apellidos = $request->apellidos;
         $Personal->f_nacimiento = $request->f_nacimiento;
         $Personal->rfc = $request->rfc;
+        $Personal->homoclave = $request->homoclave;
         $Personal->direccion = $request->direccion;
         $Personal->colonia = $request->colonia;
         $Personal->cp = $request->cp;

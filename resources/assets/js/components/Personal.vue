@@ -398,6 +398,7 @@
                     'apellidos': this.apellidos,
                     'f_nacimiento': this.f_nacimiento,
                     'rfc': this.rfc,
+                    'homoclave' : this.homoclave,
                     'colonia': this.colonia,
                     'direccion': this.direccion,
                     'cp': this.cp,
@@ -444,6 +445,7 @@
                     'apellidos': this.apellidos,
                     'f_nacimiento': this.f_nacimiento,
                     'rfc': this.rfc.toUpperCase(),
+                    'homoclave' : this.homoclave,
                     'colonia': this.colonia,
                     'direccion': this.direccion,
                     'cp': this.cp,
@@ -555,6 +557,7 @@
                 this.apellidos=data['apellidos'];
                 this.f_nacimiento=data['f_nacimiento'];
                 this.rfc=data['rfc'];
+                this.homoclave=data['homoclave'];
                 this.colonia=data['colonia'];
                 this.direccion=data['direccion'];
                 this.cp=data['cp'];
@@ -629,6 +632,7 @@
                 this.apellidos='';
                 this.f_nacimiento='';
                 this.rfc='';
+                this.homoclave='';
                 this.colonia='';
                 this.direccion='';
                 this.cp='';
@@ -657,6 +661,7 @@
                                 this.apellidos='';
                                 this.f_nacimiento='';
                                 this.rfc='';
+                                this.homoclave='';
                                 this.colonia='0';
                                 this.direccion='';
                                 this.cp='';
@@ -681,6 +686,7 @@
                                 this.apellidos=data['apellidos'];
                                 this.f_nacimiento=data['f_nacimiento'];
                                 this.rfc=data['rfc'];
+                                this.homoclave=data['homoclave'];
                                 this.colonia=data['colonia'];
                                 this.direccion=data['direccion'];
                                 this.cp=data['cp'];
@@ -705,6 +711,7 @@
                                 this.apellidos=data['apellidos'];
                                 this.f_nacimiento=data['f_nacimiento'];
                                 this.rfc=data['rfc'];
+                                this.homoclave=data['homoclave'];
                                 this.colonia=data['colonia'];
                                 this.direccion=data['direccion'];
                                 this.cp=data['cp'];
