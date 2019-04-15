@@ -167,13 +167,13 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Telefono</label>
                                     <div class="col-md-9">
-                                        <input type="text" maxlength="8" v-model="telefono" class="form-control" placeholder="Telefono">
+                                        <input type="text" maxlength="10" v-model="telefono" class="form-control" placeholder="Telefono">
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Extension</label>
                                     <div class="col-md-9">
-                                        <input type="text" maxlength="3" v-model="ext" class="form-control" placeholder="Ext">
+                                        <input type="text" maxlength="5" v-model="ext" class="form-control" placeholder="Ext">
                                     </div>
                                 </div>
                                 <!-- Div para mostrar los errores que mande validerFraccionamiento -->

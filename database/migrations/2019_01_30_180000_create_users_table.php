@@ -21,7 +21,6 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->boolean('condicion')->default(1);
             $table->string('foto_user')->default('default-image.gif');
-            $table->text('session_id')->nullable()->default(null);
             $table->integer('rol_id')->unsigned();
             $table->foreign('rol_id')->references('id')->on('roles');
 

@@ -383,7 +383,7 @@
                                 <div class="form-group row" v-if="tipoAccion > 1 && tipoAccion < 4">
                                     <label class="col-md-3 form-control-label" for="text-input">Telefono</label>
                                     <div class="col-md-5">
-                                        <input type="text" pattern="\d*" maxlength="7" v-on:keypress="isNumber($event)" class="form-control" v-model="telefono"  placeholder="Telefono" >
+                                        <input type="text" pattern="\d*" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" v-model="telefono"  placeholder="Telefono" >
                                     </div>
                                 </div>
 

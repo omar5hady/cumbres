@@ -21,8 +21,8 @@ class CreateEmpresasTable extends Migration
             $table->string('colonia',80)->nullable();
             $table->string('estado',100)->nullable();
             $table->string('ciudad',100)->nullable();
-            $table->string('telefono',8)->nullable();
-            $table->string('ext',3)->nullable();
+            $table->string('telefono',10)->nullable();
+            $table->string('ext',5)->nullable();
             $table->timestamps();
         });
     }
