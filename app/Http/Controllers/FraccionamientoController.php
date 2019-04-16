@@ -25,10 +25,12 @@ class FraccionamientoController extends Controller
         $criterio = $request->criterio;
         
         if($buscar==''){
-            $fraccionamientos = Fraccionamiento::orderBy('id','desc')->paginate(8);
+            $fraccionamientos = Fraccionamiento::where('id','!=','1')->orderBy('id','desc')->paginate(8);
         }
         else{
-            $fraccionamientos = Fraccionamiento::where($criterio, 'like', '%'. $buscar . '%')->orderBy('id','desc')->paginate(8);
+            $fraccionamientos = Fraccionamiento::where($criterio, 'like', '%'. $buscar . '%')
+                                                ->where('id','!=','1')
+                                                ->orderBy('id','desc')->paginate(8);
         }
 
         return [
@@ -176,7 +178,7 @@ class FraccionamientoController extends Controller
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
         if(!$request->ajax())return redirect('/');
         
-        $fraccionamientos = Fraccionamiento::select('nombre','id')->get();
+        $fraccionamientos = Fraccionamiento::select('nombre','id')->where('id','!=','1')->get();
         return['fraccionamientos' => $fraccionamientos];
     }
 
@@ -186,7 +188,7 @@ class FraccionamientoController extends Controller
         $filtro = $request->filtro;
 
         $fraccionamientos = Fraccionamiento::select('nombre','id')
-        ->where('nombre','like','%'.$filtro.'%')->get();
+        ->where('nombre','like','%'.$filtro.'%')->where('id','!=','1')->get();
         return['fraccionamientos' => $fraccionamientos];
     }
 
@@ -195,6 +197,7 @@ class FraccionamientoController extends Controller
         if(!$request->ajax())return redirect('/');
         $fraccionamientos = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')->
         select('fraccionamientos.nombre','fraccionamientos.id')
+        ->where('fraccionamientos.id','!=','1')
         ->groupBy('fraccionamientos.id')->get();
         return['fraccionamientos' => $fraccionamientos];
     }

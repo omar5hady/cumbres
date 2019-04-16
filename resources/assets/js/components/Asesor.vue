@@ -190,7 +190,7 @@
                                     <li class="page-item" v-if="pagination2.current_page > 1">
                                         <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination2.current_page - 1,buscar2,criterio2)">Ant</a>
                                     </li>
-                                    <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
+                                    <li class="page-item" v-for="page in pagesNumber2" :key="page" :class="[page == isActived ? 'active' : '']">
                                         <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar2,criterio2)" v-text="page"></a>
                                     </li>
                                     <li class="page-item" v-if="pagination2.current_page < pagination2.last_page">
