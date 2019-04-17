@@ -186,6 +186,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/lotes/enviarAviObra','LoteController@enviarAviso');
         Route::get('/lotes/export_excel/{fraccionamiento_id}','LoteController@excelLotes');
         Route::get('/lotes/resume_excel_lotes_disp','LoteController@exportExcelLotesDisp');
+        Route::get('/lotes/con_precio_base','LoteController@LotesConPrecioBase');
+        Route::put('/lotes/actualizar/ajuste','LoteController@updateAjuste');
         
     ////////////////////        RUTAS APARTADOS    /////////////////////////////////
         Route::post('/apartado/registrar','ApartadoController@store');

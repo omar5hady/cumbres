@@ -1165,5 +1165,92 @@ class LoteController extends Controller
       
     }
 
+    public function LotesConPrecioBase(Request $request){
+
+        if(!$request->ajax())return redirect('/');
+
+        $buscar = $request->buscar;
+        $buscar2 = $request->buscar2;
+        $buscar3 = $request->buscar3;
+        $criterio = $request->criterio;
+
+        if($buscar==''){
+            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+            ->join('etapas','lotes.etapa_id','=','etapas.id')
+            ->join('modelos','lotes.modelo_id','=','modelos.id')
+            ->select('lotes.id','lotes.num_lote','lotes.sublote','lotes.precio_base','lotes.manzana',
+            'lotes.ajuste','fraccionamientos.nombre as proyecto','etapas.num_etapa','modelos.nombre as modelo')
+            ->where('lotes.precio_base','>','0')
+            ->where('lotes.contrato','=','0')
+            ->orderBy('fraccionamientos.nombre','DESC')
+            ->paginate(8);  
+        }
+        else{
+            if($buscar2=='' && $buscar3=='')
+            {
+                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                ->join('etapas','lotes.etapa_id','=','etapas.id')
+                ->join('modelos','lotes.modelo_id','=','modelos.id')
+                ->select('lotes.id','lotes.num_lote','lotes.sublote','lotes.precio_base','lotes.manzana',
+                'lotes.ajuste','fraccionamientos.nombre as proyecto','etapas.num_etapa','modelos.nombre as modelo')
+                ->where('lotes.precio_base','>','0')
+                ->where('lotes.contrato','=','0')
+                ->where($criterio, 'like', '%'. $buscar . '%')
+                ->orderBy('fraccionamientos.nombre','DESC')
+                ->paginate(8);
+            }
+            else{
+                if($buscar3=='')
+                {
+                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                    ->join('etapas','lotes.etapa_id','=','etapas.id')
+                    ->join('modelos','lotes.modelo_id','=','modelos.id')
+                    ->select('lotes.id','lotes.num_lote','lotes.sublote','lotes.precio_base','lotes.manzana',
+                    'lotes.ajuste','fraccionamientos.nombre as proyecto','etapas.num_etapa','modelos.nombre as modelo')
+                    ->where('lotes.precio_base','>','0')
+                    ->where('lotes.contrato','=','0')
+                    ->where($criterio, 'like', '%'. $buscar . '%')
+                    ->where('etapas.num_etapa', 'like', '%'. $buscar2 . '%')
+                    ->orderBy('fraccionamientos.nombre','DESC')
+                    ->paginate(8);
+                }
+                else{
+                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                    ->join('etapas','lotes.etapa_id','=','etapas.id')
+                    ->join('modelos','lotes.modelo_id','=','modelos.id')
+                    ->select('lotes.id','lotes.num_lote','lotes.sublote','lotes.precio_base','lotes.manzana',
+                    'lotes.ajuste','fraccionamientos.nombre as proyecto','etapas.num_etapa','modelos.nombre as modelo')
+                    ->where('lotes.precio_base','>','0')
+                    ->where('lotes.contrato','=','0')
+                    ->where($criterio, 'like', '%'. $buscar . '%')
+                    ->where('etapas.num_etapa', 'like', '%'. $buscar2 . '%')
+                    ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
+                    ->orderBy('fraccionamientos.nombre','DESC')
+                    ->paginate(8);
+                }
+            }
+        }
+
+
+        return [
+            'pagination' => [
+                'total'         => $lotes->total(),
+                'current_page'  => $lotes->currentPage(),
+                'per_page'      => $lotes->perPage(),
+                'last_page'     => $lotes->lastPage(),
+                'from'          => $lotes->firstItem(),
+                'to'            => $lotes->lastItem(),
+            ],
+            'lotes' => $lotes
+        ];
+    }
+
+
+    public function updateAjuste(Request $request){
+        $ajuste = Lote::findOrFail($request->id);
+        $ajuste->ajuste = $request->ajuste;
+        $ajuste->save();
+    }
+
 
 }

@@ -192,6 +192,11 @@
                                         <a class="nav-link" href="#"><i class="fa fa-usd"></i> Precios de etapa</a>
                                     </li>
                                 @endif
+                                @if(Auth::user()->precios_viviendas == 1)
+                                    <li @click="menu=25" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="fa fa-usd"></i> Precios de vivienda</a>
+                                    </li>
+                                @endif
                                 @if(Auth::user()->sobreprecios == 1)
                                     <li @click="menu=22" class="nav-item">
                                         <a class="nav-link" href="#"><i class="fa fa-plus-square-o"></i> Sobreprecios</a>

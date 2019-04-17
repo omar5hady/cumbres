@@ -45,6 +45,8 @@ class CreateLotesTable extends Migration
             $table->date('ehl_solicitado')->nullable(); 
             $table->string('aviso',11)->default(0);    
             $table->double('obra_extra')->default(0);
+            $table->double('ajuste')->default(0);
+            
 
             ///////// Datos para precio //////////////////
             $table->double('precio_base')->default(0);

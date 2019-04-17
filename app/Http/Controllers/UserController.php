@@ -68,40 +68,74 @@ class UserController extends Controller
         $buscar = $request->buscar;
         $criterio = $request->criterio;
          
-        if ($buscar==''){
-            $personas = User::join('personal','users.id','=','personal.id')
-            ->join('roles','users.rol_id','=','roles.id')
-            ->join('vendedores','personal.id','=','vendedores.id')
-            ->select('personal.id','personal.nombre','personal.rfc','personal.f_nacimiento',
-            'personal.direccion','personal.telefono','personal.departamento_id',
-            'personal.colonia','personal.ext','personal.homoclave','personal.cp',
-            'personal.celular','personal.activo','personal.empresa_id','personal.apellidos',
-            'personal.email','users.usuario','users.password',
-            'users.condicion','users.rol_id','roles.nombre as rol','vendedores.inmobiliaria','vendedores.tipo')
-            ->where('vendedores.supervisor_id','=',Auth::user()->id)
-            ->orWhere('vendedores.tipo','=',1)
-            ->orderBy('users.condicion', 'desc')
-            ->orderBy('personal.id', 'desc')
-            ->paginate(8);
+        if(Auth::user()->rol_id == 6){
+            if ($buscar==''){
+                $personas = User::join('personal','users.id','=','personal.id')
+                ->join('roles','users.rol_id','=','roles.id')
+                ->join('vendedores','personal.id','=','vendedores.id')
+                ->select('personal.id','personal.nombre','personal.rfc','personal.f_nacimiento',
+                'personal.direccion','personal.telefono','personal.departamento_id',
+                'personal.colonia','personal.ext','personal.homoclave','personal.cp',
+                'personal.celular','personal.activo','personal.empresa_id','personal.apellidos',
+                'personal.email','users.usuario','users.password',
+                'users.condicion','users.rol_id','roles.nombre as rol','vendedores.inmobiliaria','vendedores.tipo')
+                ->orderBy('users.condicion', 'desc')
+                ->orderBy('personal.id', 'desc')
+                ->paginate(8);
+            }
+            else{
+                $personas = User::join('personal','users.id','=','personal.id')
+                ->join('roles','users.rol_id','=','roles.id')
+                ->join('vendedores','personal.id','=','vendedores.id')
+                ->select('personal.id','personal.nombre','personal.rfc','personal.f_nacimiento',
+                'personal.direccion','personal.telefono','personal.departamento_id',
+                'personal.colonia','personal.ext','personal.homoclave','personal.cp',
+                'personal.celular','personal.activo','personal.empresa_id','personal.apellidos',
+                'personal.email','users.usuario','users.password',
+                'users.condicion','users.rol_id','roles.nombre as rol','vendedores.inmobiliaria','vendedores.tipo')   
+                ->where($criterio, 'like', '%'. $buscar . '%')
+                ->orderBy('users.condicion', 'desc')
+                ->orderBy('personal.id', 'desc')
+               ->paginate(8);
+            }
+        }else{
+            if ($buscar==''){
+                $personas = User::join('personal','users.id','=','personal.id')
+                ->join('roles','users.rol_id','=','roles.id')
+                ->join('vendedores','personal.id','=','vendedores.id')
+                ->select('personal.id','personal.nombre','personal.rfc','personal.f_nacimiento',
+                'personal.direccion','personal.telefono','personal.departamento_id',
+                'personal.colonia','personal.ext','personal.homoclave','personal.cp',
+                'personal.celular','personal.activo','personal.empresa_id','personal.apellidos',
+                'personal.email','users.usuario','users.password',
+                'users.condicion','users.rol_id','roles.nombre as rol','vendedores.inmobiliaria','vendedores.tipo')
+                ->where('vendedores.supervisor_id','=',Auth::user()->id)
+                ->orWhere('vendedores.tipo','=',1)
+                ->orderBy('users.condicion', 'desc')
+                ->orderBy('personal.id', 'desc')
+                ->paginate(8);
+            }
+            else{
+                $personas = User::join('personal','users.id','=','personal.id')
+                ->join('roles','users.rol_id','=','roles.id')
+                ->join('vendedores','personal.id','=','vendedores.id')
+                ->select('personal.id','personal.nombre','personal.rfc','personal.f_nacimiento',
+                'personal.direccion','personal.telefono','personal.departamento_id',
+                'personal.colonia','personal.ext','personal.homoclave','personal.cp',
+                'personal.celular','personal.activo','personal.empresa_id','personal.apellidos',
+                'personal.email','users.usuario','users.password',
+                'users.condicion','users.rol_id','roles.nombre as rol','vendedores.inmobiliaria','vendedores.tipo')   
+                ->where('vendedores.supervisor_id','=',Auth::user()->id)
+                ->where($criterio, 'like', '%'. $buscar . '%')
+                ->orWhere('vendedores.tipo','=',1)
+                ->where($criterio, 'like', '%'. $buscar . '%')
+                ->orderBy('users.condicion', 'desc')
+                ->orderBy('personal.id', 'desc')
+               ->paginate(8);
+            }
         }
-        else{
-            $personas = User::join('personal','users.id','=','personal.id')
-            ->join('roles','users.rol_id','=','roles.id')
-            ->join('vendedores','personal.id','=','vendedores.id')
-            ->select('personal.id','personal.nombre','personal.rfc','personal.f_nacimiento',
-            'personal.direccion','personal.telefono','personal.departamento_id',
-            'personal.colonia','personal.ext','personal.homoclave','personal.cp',
-            'personal.celular','personal.activo','personal.empresa_id','personal.apellidos',
-            'personal.email','users.usuario','users.password',
-            'users.condicion','users.rol_id','roles.nombre as rol','vendedores.inmobiliaria','vendedores.tipo')   
-            ->where('vendedores.supervisor_id','=',Auth::user()->id)
-            ->where($criterio, 'like', '%'. $buscar . '%')
-            ->orWhere('vendedores.tipo','=',1)
-            ->where($criterio, 'like', '%'. $buscar . '%')
-            ->orderBy('users.condicion', 'desc')
-            ->orderBy('personal.id', 'desc')
-           ->paginate(8);
-        }
+
+       
          
  
         return [
@@ -867,7 +901,7 @@ class UserController extends Controller
                                 'users.fraccionamiento','users.etapas','users.modelos','users.lotes','users.asign_modelos','users.licencias',
                                 'users.acta_terminacion','users.p_etapa','users.p_fraccionamiento',
                                 //Precios
-                                'users.precios_etapas','users.sobreprecios','users.paquetes','users.promociones',
+                                'users.precios_etapas','users.precios_viviendas','users.sobreprecios','users.paquetes','users.promociones',
                                 //Obra
                                 'users.contratistas','users.ini_obra','users.aviso_obra','users.partidas','users.avance',
                                 //Ventas
@@ -916,6 +950,7 @@ class UserController extends Controller
         $user->p_fraccionamiento = $request->p_fraccionamiento;
         //Precios
         $user->precios_etapas = $request->precios_etapas;
+        $user->precios_viviendas = $request->precios_viviendas;
         $user->sobreprecios = $request->sobreprecios;
         $user->paquetes = $request->paquetes;
         $user->promociones = $request->promociones;

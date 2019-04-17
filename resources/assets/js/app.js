@@ -41,6 +41,7 @@ Vue.component('asignar-modelo', require('./components/AsignarModelo.vue'));
 Vue.component('licencias', require('./components/Licencias.vue'));
 Vue.component('actadeterminacion', require('./components/ActaDeTerminacion.vue'));
 Vue.component('lote-disponible', require('./components/LotesDisp.vue'));
+Vue.component('precios-vivienda', require('./components/PreciosVivienda.vue'));
 
 Vue.component('precio-etapa', require('./components/PrecioEtapa.vue'));
 Vue.component('sobreprecios', require('./components/Sobreprecio.vue'));

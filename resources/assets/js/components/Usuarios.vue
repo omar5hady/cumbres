@@ -257,6 +257,9 @@
                                                         <a class="nav-link"><i class="fa fa-usd"></i> <input v-model="precios_etapas" type="checkbox" value="1"/> Precios de etapa</a>
                                                     </li>
                                                     <li class="nav-item">
+                                                        <a class="nav-link"><i class="fa fa-usd"></i> <input v-model="precios_viviendas" type="checkbox" value="1"/> Precios de viviendas</a>
+                                                    </li>
+                                                    <li class="nav-item">
                                                         <a class="nav-link"><i class="fa fa-plus-square-o"></i> <input v-model="sobreprecios" type="checkbox" value="1"/> Sobreprecios</a>
                                                     </li>
                                                     <li class="nav-item">
@@ -591,6 +594,7 @@
 
                     //Precios
                     precios_etapas:0,
+                    precios_viviendas:0,
                     sobreprecios:0,
                     paquetes:0,
                     promociones:0,
@@ -752,6 +756,7 @@
             limpiarPrecios(){
                  //Precios
                 this.precios_etapas=0;
+                this.precios_viviendas=0;
                 this.sobreprecios=0;
                 this.paquetes=0;
                 this.promociones=0;
@@ -840,6 +845,7 @@
 
                     //Precios
                     me.precios_etapas=usuarios[0].precios_etapas;
+                    me.precios_viviendas = usuarios[0].precios_viviendas;
                     me.sobreprecios=usuarios[0].sobreprecios;
                     me.paquetes=usuarios[0].paquetes;
                     me.promociones=usuarios[0].promociones;
@@ -1091,6 +1097,7 @@
                     'p_fraccionamiento':this.p_fraccionamiento,
                         //Precios
                     'precios_etapas':this.precios_etapas,
+                    'precios_viviendas':this.precios_viviendas,
                     'sobreprecios':this.sobreprecios,
                     'paquetes':this.paquetes,
                     'promociones':this.promociones,
@@ -1355,6 +1362,7 @@
 
                     //Precios
                 me.precios_etapas=0;
+                me.precios_viviendas=0;
                 me.sobreprecios=0;
                 me.paquetes=0;
                 me.promociones=0;

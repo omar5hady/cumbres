@@ -245,6 +245,12 @@
             </template>
         @endif
 
+        @if(Auth::user()->precios_viviendas == 1)
+            <template v-if="menu==25">
+                <precios-vivienda></precios-vivienda>
+            </template>
+        @endif
+
         
     @endif
 

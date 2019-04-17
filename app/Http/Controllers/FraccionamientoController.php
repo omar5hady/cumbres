@@ -208,7 +208,8 @@ class FraccionamientoController extends Controller
 
         $buscar = $request->buscar;
         $fraccionamiento = Fraccionamiento::select('nombre','id')
-        ->where('tipo_proyecto', '=', $buscar)->get();
+        ->where('tipo_proyecto', '=', $buscar)
+        ->where('id','!=','1')->get();
         return['fraccionamientos' => $fraccionamiento];
     }
 
