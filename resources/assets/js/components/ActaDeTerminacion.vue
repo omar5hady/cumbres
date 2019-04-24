@@ -25,6 +25,13 @@
                                         <option value="licencias.term_ingreso">Fecha ingreso</option>
                                         <option value="licencias.term_salida">Fecha salida</option>
                                         <option value="licencias.avance">Porcentaje de avance</option>
+                                        <option value="licencias.perito_dro">DRO</option>
+                                    </select>
+
+                                    <select class="form-control"  v-if="criterio=='licencias.perito_dro'" v-model="buscar">
+                                            <option value="0">Seleccione</option>
+                                            <option value="15044">Ing. Alejandro F. Perez Espinosa</option>
+                                            <option value="23679">Raúl Palos López</option>
                                     </select>
 
                                     <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" >
@@ -37,8 +44,11 @@
                                     <input type="date" v-if="criterio=='licencias.term_ingreso' || criterio== 'licencias.term_salida'" v-model="buscar" @keyup.enter="listarActa(1,buscar,b_manzana,b_lote,criterio,buscar2)" class="form-control col-md-6" placeholder="Desde" >
                                     <input type="date" v-if="criterio=='licencias.term_ingreso' || criterio== 'licencias.term_salida'" v-model="buscar2"  @keyup.enter="listarActa(1,buscar,b_manzana,b_lote,criterio,buscar2)" class="form-control col-md-6" placeholder="Hasta" >
 
-                                    <input v-if="criterio!='lotes.fraccionamiento_id' && criterio!='licencias.term_ingreso' && criterio!='licencias.term_salida'" type="text"  v-model="buscar" @keyup.enter="listarActa(1,buscar,b_manzana,b_lote,criterio,buscar2)" class="form-control" placeholder="Texto a buscar">
+                                    <input v-if="criterio!='lotes.fraccionamiento_id' && criterio!='licencias.term_ingreso' && criterio!='licencias.term_salida' && criterio!='licencias.perito_dro'" type="text"  v-model="buscar" @keyup.enter="listarActa(1,buscar,b_manzana,b_lote,criterio,buscar2)" class="form-control" placeholder="Texto a buscar">
                                     <button type="submit" @click="listarActa(1,buscar,b_manzana,b_lote,criterio,buscar2)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <a class="btn btn-success" v-bind:href="'/acta_terminacion/excel?buscar=' + buscar + '&b_manzana=' + b_manzana + '&b_lote='+ b_lote + '&criterio=' + criterio + '&buscar2=' + buscar2" >
+                                        <i class="icon-pencil"></i>&nbsp;Excel
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -79,7 +89,7 @@
                                         <td class="td2" v-text="act_terminacion.terreno"></td>
                                         <td class="td2" v-text="act_terminacion.construccion"></td>
                                         <td class="td2">
-                                            <span v-if = "act_terminacion.perito!='Sin Asignar  '" class="badge badge-success" v-text="'Arq. '+act_terminacion.perito"></span>
+                                            <span v-if = "act_terminacion.perito!='Sin Asignar  '" class="badge badge-success" v-text="act_terminacion.perito"></span>
                                             <span v-else class="badge badge-danger"> Por Asignar </span>
                                         </td>
                                         

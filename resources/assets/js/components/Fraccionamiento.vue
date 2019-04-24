@@ -491,14 +491,12 @@
                 });
             },
             actualizarFraccionamiento(){
-                if(this.proceso==true){
-                    return;
-                }
+              
                 if(this.validarFraccionamiento()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
-                this.proceso=true;
+               
                 let me = this;
                 //Con axios se llama el metodo update de FraccionaminetoController
                 axios.put('/fraccionamiento/actualizar',{
@@ -512,7 +510,7 @@
                     'cp' : this.cp,
                     'id' : this.id
                 }).then(function (response){
-                    this.proceso=false;
+                    
                     me.cerrarModal();
                     me.listarFraccionamiento(1,'','fraccionamiento');
                     //window.alert("Cambios guardados correctamente");

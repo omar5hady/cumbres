@@ -6,8 +6,13 @@ use Illuminate\Http\Request;
 use App\Fraccionamiento; //Importar el modelo
 use App\Etapa;
 use App\Modelo;
+use Auth;
 use App\Lote;
 use File;
+use DB;
+use App\User;
+use App\Notifications\NotifyAdmin;
+use Carbon\Carbon;
 
 class FraccionamientoController extends Controller
 {
@@ -65,9 +70,12 @@ class FraccionamientoController extends Controller
     //funcion para insertar en la tabla
     public function store(Request $request)
     {
+
         if(!$request->ajax())return redirect('/');
+        $proyecto = $request->nombre;
+        $usuario_id = Auth::user()->id;
         $fraccionamiento = new Fraccionamiento();
-        $fraccionamiento->nombre = $request->nombre;
+        $fraccionamiento->nombre = $proyecto;
         $fraccionamiento->tipo_proyecto = $request->tipo_proyecto;
         $fraccionamiento->calle = $request->calle;
         $fraccionamiento->colonia = $request->colonia;
@@ -92,6 +100,24 @@ class FraccionamientoController extends Controller
         $modelo->terreno = 0;
         $modelo->construccion = 0;
         $modelo->save();
+
+        $imagenUsuario = DB::table('users')->select('foto_user','usuario')->where('id','=',$usuario_id)->get();
+        $fecha = Carbon::now();
+        $arregloSimPendientes = [
+            'notificacion' => [
+                'usuario' => $imagenUsuario[0]->usuario,
+                'foto' => $imagenUsuario[0]->foto_user,
+                'fecha' => $fecha,
+                'msj' => 'Se ha agregado el proyecto '. $proyecto,
+                'titulo' => 'Nuevo Proyecto'
+            ]
+        ];
+
+        $users = User::select('id')->where('rol_id','=','3')->get();
+
+        foreach($users as $notificar){
+            User::findOrFail($notificar->id)->notify(new NotifyAdmin($arregloSimPendientes));
+        }
 
     }
 
@@ -127,10 +153,13 @@ class FraccionamientoController extends Controller
     //funcion para actualizar los datos
     public function update(Request $request)
     {
+
         if(!$request->ajax())return redirect('/');
+        $proyecto = $request->nombre;
+        $usuario_id = Auth::user()->id;
         //FindOrFail se utiliza para buscar lo que recibe de argumento
         $fraccionamiento = Fraccionamiento::findOrFail($request->id);
-        $fraccionamiento->nombre = $request->nombre;
+        $fraccionamiento->nombre = $proyecto;
         $fraccionamiento->tipo_proyecto = $request->tipo_proyecto;
         $fraccionamiento->calle = $request->calle;
         $fraccionamiento->colonia = $request->colonia;
@@ -139,6 +168,24 @@ class FraccionamientoController extends Controller
         $fraccionamiento->delegacion = $request->delegacion;
         $fraccionamiento->cp = $request->cp;
         $fraccionamiento->save();
+
+        $imagenUsuario = DB::table('users')->select('foto_user','usuario')->where('id','=', $usuario_id)->get();
+        $fecha = Carbon::now();
+        $arregloSimPendientes = [
+            'notificacion' => [
+                'usuario' => $imagenUsuario[0]->usuario,
+                'foto' => $imagenUsuario[0]->foto_user,
+                'fecha' => $fecha,
+                'msj' => 'Se han modificado los datos del proyecto '. $proyecto,
+                'titulo' => 'Modificación'
+            ]
+        ];
+
+        $users = User::select('id')->where('rol_id','=','3')->get();
+
+        foreach($users as $notificar){
+            User::findOrFail($notificar->id)->notify(new NotifyAdmin($arregloSimPendientes));
+        }
     }
 
     /**
@@ -229,6 +276,24 @@ class FraccionamientoController extends Controller
              $planos->archivo_planos = $fileName;
              $planos->id = $id;
              $planos->save(); //Insert
+
+             $imagenUsuario = DB::table('users')->select('foto_user','usuario')->where('id','=',Auth::user()->id)->get();
+             $fecha = Carbon::now();
+             $arregloSimPendientes = [
+                 'notificacion' => [
+                     'usuario' => $imagenUsuario[0]->usuario,
+                     'foto' => $imagenUsuario[0]->foto_user,
+                     'fecha' => $fecha,
+                     'msj' => 'Se han subido los planos para el proyecto '. $planos->nombre,
+                     'titulo' => 'Nuevos planos agregados'
+                 ]
+             ];
+
+             $users = User::select('id')->where('rol_id','=','3')->get();
+
+             foreach($users as $notificar){
+                 User::findOrFail($notificar->id)->notify(new NotifyAdmin($arregloSimPendientes));
+             }
      
              }
          
@@ -256,6 +321,24 @@ class FraccionamientoController extends Controller
               $escrituras->archivo_escrituras = $fileName;
               $escrituras->id = $id;
               $escrituras->save(); //Insert
+
+              $imagenUsuario = DB::table('users')->select('foto_user','usuario')->where('id','=',Auth::user()->id)->get();
+                $fecha = Carbon::now();
+                $arregloSimPendientes = [
+                    'notificacion' => [
+                        'usuario' => $imagenUsuario[0]->usuario,
+                        'foto' => $imagenUsuario[0]->foto_user,
+                        'fecha' => $fecha,
+                        'msj' => 'Se han subido las escrituras para el proyecto '. $escrituras->nombre,
+                        'titulo' => 'Nuevas escrituras agregados'
+                    ]
+                ];
+
+                $users = User::select('id')->where('rol_id','=','3')->get();
+
+                foreach($users as $notificar){
+                    User::findOrFail($notificar->id)->notify(new NotifyAdmin($arregloSimPendientes));
+                }
       
               }
           

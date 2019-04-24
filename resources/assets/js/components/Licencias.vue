@@ -27,11 +27,19 @@
                                         <option value="arquitecto">Arquitecto</option>
                                         <option value="licencias.num_licencia">Num.Licencia</option>
                                         <option value="licencias.f_planos">Planos</option>
+                                        <option value="lotes.siembra">Siembra</option>
+                                        <option value="licencias.credito_puente">Crédito puente</option>
+                                        <option value="licencias.perito_dro">DRO</option>
                                     </select>
 
                                     <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" >
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                                    </select>
+                                     <select class="form-control"  v-if="criterio=='licencias.perito_dro'" v-model="buscar">
+                                            <option value="0">Seleccione</option>
+                                            <option value="15044">Ing. Alejandro F. Perez Espinosa</option>
+                                            <option value="23679">Raúl Palos López</option>
                                     </select>
                                     <input v-if="criterio=='lotes.fraccionamiento_id'" type="text"  v-model="b_manzana" @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)" class="form-control" placeholder="Manzana">
                                     <input v-if="criterio=='lotes.fraccionamiento_id'" type="text"  v-model="b_lote" @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)" class="form-control" placeholder="# Lote">
@@ -41,8 +49,14 @@
                                     <input type="date" v-if="criterio=='licencias.f_planos'" v-model="buscar" @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)" class="form-control col-md-6" placeholder="Desde" >
                                     <input type="date" v-if="criterio=='licencias.f_planos'" v-model="buscar2"  @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)" class="form-control col-md-6" placeholder="Hasta" >
 
-                                    <input v-if="criterio!='lotes.fraccionamiento_id' && criterio!='licencias.f_planos' " type="text"  v-model="buscar" @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)" class="form-control" placeholder="Texto a buscar">
+                                    
+                                    <input type="date" v-if="criterio=='lotes.siembra'" v-model="buscar" @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)" class="form-control col-md-6" placeholder="Desde" >
+                    
+                                    <input v-if="criterio!='lotes.fraccionamiento_id' && criterio!='licencias.f_planos' && criterio!='lotes.siembra' && criterio!='licencias.perito_dro' " type="text"  v-model="buscar" @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)" class="form-control" placeholder="Texto a buscar">
                                     <button type="submit" @click="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <a class="btn btn-success" v-bind:href="'/licencias/excel?buscar=' + buscar + '&b_manzana=' + b_manzana + '&b_lote='+ b_lote + '&b_modelo='+ b_modelo + '&b_arquitecto='+ b_arquitecto + '&criterio=' + criterio + '&buscar2=' + buscar2" >
+                                        <i class="icon-pencil"></i>&nbsp;Excel
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -60,7 +74,8 @@
                                         <th>Modelo</th>
                                         <th>Arquitecto</th>
                                         <th>Siembra</th>
-                                        <th>Planos</th>
+                                        <th>Planos obra</th>
+                                        <th>Planos licencia</th>
                                         <th>DRO</th>
                                         <th>Ingreso</th>
                                         <th>Salida</th>
@@ -104,12 +119,15 @@
                                         <!-- SIEMBRA -->
                                         <td class="td2" v-if="!licencias.siembra" v-text="''"></td>
                                         <td class="td2" v-else v-text="this.moment(licencias.siembra).locale('es').format('DD/MMM/YYYY')"></td>
-                                        <!-- Fecha planos -->    
+                                            <!-- Fecha planos obra -->
+                                         <td class="td2" v-if="!licencias.f_planos_obra" v-text="''"></td>
+                                        <td class="td2" v-else v-text="this.moment(licencias.f_planos_obra).locale('es').format('DD/MMM/YYYY')"></td>
+                                        <!-- Fecha planos licencias-->    
                                         <td class="td2" v-if="!licencias.f_planos" v-text="''"></td>
                                         <td class="td2" v-else v-text="this.moment(licencias.f_planos).locale('es').format('DD/MMM/YYYY')"></td>
-                                        <!-- Fecha planos -->
+                                        <!-- perito -->
                                         <td class="td2">
-                                            <span v-if = "licencias.perito!='Sin Asignar  '" class="badge badge-success" v-text="'Arq. '+licencias.perito"></span>
+                                            <span v-if = "licencias.perito!='Sin Asignar  '" class="badge badge-success" v-text="licencias.perito"></span>
                                             <span v-else class="badge badge-danger"> Por Asignar </span>
                                         </td>
 
@@ -181,13 +199,20 @@
                                     <div class="col-md-6">
                                         <select class="form-control" v-model="perito_dro">
                                             <option value="0">Seleccione</option>
-                                            <option v-for="arquitectos in arrayArquitectos" :key="arquitectos.id" :value="arquitectos.id" v-text="'Arq. ' + arquitectos.name"></option>
+                                            <option value="15044">Ing. Alejandro F. Perez Espinosa</option>
+                                            <option value="23679">Raúl Palos López</option>
                                         </select>
                                     </div>
                                 </div>
                                 <br><br>
+                                   <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Planos obra</label>
+                                    <div class="col-md-6">
+                                       <input type="date" v-model="f_planos_obra" class="form-control" >
+                                    </div>
+                                </div>
                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Planos</label>
+                                    <label class="col-md-3 form-control-label" for="text-input">Planos licencia</label>
                                     <div class="col-md-6">
                                        <input type="date" v-model="f_planos" class="form-control" >
                                     </div>
@@ -341,14 +366,25 @@
                                         <input type="text" style="width:200px;" disabled v-model="siembra" class="form-control" placeholder="Siembra">
                                   
                                     </div>
-                                    <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Planos</label>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Planos obra</label>
                                     <div class="col-md-4">
 
-                                        <input type="text" style="width:200px;" disabled v-model="f_planos" class="form-control" placeholder="Planos">
+                                        <input type="text" style="width:200px;" disabled v-model="f_planos_obra" class="form-control" placeholder="Planos obra">
                                   
                                     </div>
+                                 </div>
+
                                 </div>
+
+                                  <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Planos licencia</label>
+                                    <div class="col-md-4">
+
+                                        <input type="text" style="width:200px;" disabled v-model="f_planos" class="form-control" placeholder="Planos licencia">
+                                  
+                                    </div>
                                 </div>
                                 
                                 <div class="form-group row">
@@ -522,6 +558,7 @@
                 id: 0,
                 siembra:'',
                 f_planos:'',
+                f_planos_obra: '',
                 f_ingreso:'',
                 f_salida:'',
                 fecha_comentario:'',
@@ -828,6 +865,7 @@
                 axios.put('/licencias/actualizar',{
                     'id':this.id,
                     'f_planos' : this.f_planos,
+                    'f_planos_obra' : this.f_planos_obra,
                     'f_ingreso' : this.f_ingreso,
                     'f_salida' : this.f_salida,
                     'num_licencia' : this.num_licencia,
@@ -868,6 +906,7 @@
                 this.modal = 0;
                 this.tituloModal = '';
                 this.f_planos = '';
+                this.f_planos_obra = '';
                 this.f_ingreso = '';
                 this.f_salida = '';
                 this.num_licencia = '';
@@ -881,6 +920,7 @@
                 this.modal2 = 0;
                 this.tituloModal2 = '';
                 this.f_planos='';
+                this.f_planos_obra='';
                 this.f_ingreso='';
                 this.f_salida='';
                 this.num_licencia='';
@@ -934,6 +974,7 @@
                                 this.modal =1;
                                 this.tituloModal='Actualizar Licencia';
                                 this.f_planos=data['f_planos'];
+                                this.f_planos_obra=data['f_planos_obra'];
                                 this.f_ingreso=data['f_ingreso'];
                                 this.f_salida=data['f_salida'];
                                 this.num_licencia=data['num_licencia'];
@@ -1000,6 +1041,8 @@
                             {
                                 this.modal2 =1;
                                 this.tituloModal2='Consulta ';
+                                 if(data['f_planos_obra'])
+                                    this.f_planos_obra=moment(data['f_planos_obra']).locale('es').format('DD/MMM/YYYY');
                                 if(data['f_planos'])
                                     this.f_planos=moment(data['f_planos']).locale('es').format('DD/MMM/YYYY');
                                 if(data['f_ingreso'])

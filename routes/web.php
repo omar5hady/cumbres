@@ -199,6 +199,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/licencias/resume','LicenciasController@resumeLicencias');
         Route::post('/formSubmitLicencias/{id}','LicenciasController@formSubmit'); //carga de licencias
         Route::get('/downloadLicencias/{fileName}' , 'LicenciasController@downloadFile'); //descarga de licencias
+        Route::get('/licencias/excel','LicenciasController@exportExcelLicencias'); //excel de las licencias
         
     ///////////////////       RUTAS LICENCIA-ACTA  ////////////////////////////////////
         Route::get('/acta_terminacion','LicenciasController@indexActa');
@@ -208,6 +209,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/downloadActa/{fileName}' , 'LicenciasController@downloadFileActa'); //descarga de acta
         Route::post('/formSubmitPredial/{id}','LicenciasController@formSubmitPredial'); //carga de predial
         Route::get('/downloadPredial/{fileName}' , 'LicenciasController@downloadFilePredial'); //descarga de predial
+        Route::get('/acta_terminacion/excel','LicenciasController@exportExcelActaTerminacion'); //excel de las actas
     
     ////////////////////        RUTAS TERRENOS    /////////////////////////////////
         Route::get('/terreno','TerrenoController@index');
