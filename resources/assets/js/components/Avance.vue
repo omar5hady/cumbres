@@ -16,6 +16,10 @@
                         <button v-if="resumen==1" type="button" @click="abrirModal('avance','excel')" class="btn btn-success">
                             <i class="icon-share-alt"></i> Descargar avance
                         </button>
+
+                        <button v-if="resumen==1" type="button" @click="abrirModal('avance','excelPartidas')" class="btn btn-primary">
+                            <i class="icon-share-alt"></i> Descargar avance partidas
+                        </button>
                         <!---->
                     </div>
                     <div class="card-body" v-if="resumen==0">
@@ -105,6 +109,9 @@
                                         <th>Modelo</th>
                                         <th>Manzana</th>
                                         <th>Lote</th>
+                                        <th>Etapa de servicio</th>
+                                        <th>Inicio</th>
+                                        <th>Termino</th>
                                         <th>Porcentaje de avance</th>
                                     </tr>
                                 </thead>
@@ -112,7 +119,7 @@
                                     <tr v-for="avancepro in arrayAvanceProm" :key="avancepro.lote_id">
                                         <td style="width:9%">
                                             <button type="button" class="btn btn-primary btn-sm" @click="mostrarPartidas(avancepro.lote_id)">
-                                            <i class="icon-eye"></i>
+                                                <i class="icon-eye"></i>
                                             </button>
                                         </td>
                                         <td v-text="avancepro.aviso"></td>
@@ -120,6 +127,9 @@
                                         <td v-text="avancepro.modelos"></td>
                                         <td v-text="avancepro.manzana"></td>
                                         <td v-text="avancepro.lote"></td>
+                                        <td v-text="avancepro.etapa_servicios"></td>
+                                        <td v-text="avancepro.fecha_ini"></td>
+                                        <td v-text="avancepro.fecha_fin"></td>
                                         <td v-text="formatNumber(avancepro.porcentajeTotal) + '%'"></td>
 
                                         
@@ -223,9 +233,19 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
                                     <div class="col-md-6">
-                                        <select class="form-control" v-model="fraccionamiento_id" >
+                                        <select class="form-control" v-model="fraccionamiento_id" @click="selectNumContratos(fraccionamiento_id)" >
                                             <option value="">Seleccione</option>
                                             <option v-for="fraccionamientos in arrayFraccionamientosLote" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Contrato</label>
+                                    <div class="col-md-6">
+                                        <select class="form-control" v-model="numContrato" >
+                                            <option value="">Seleccione</option>
+                                            <option v-for="contratos in arrayNumContratos" :key="contratos.clave" :value="contratos.clave" v-text="contratos.clave"></option>
                                         </select>
                                     </div>
                                 </div>
@@ -237,9 +257,18 @@
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
                             <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
                              <!--   Boton   -->
-                            <a class="btn btn-success" v-bind:href="'/avances/resume_excel/'+fraccionamiento_id" >
-                                <i class="icon-share-alt"></i>&nbsp;Descargar
-                            </a>
+                            <template v-if="tipoAccion == 5">
+                                <a class="btn btn-success" v-bind:href="'/avances/resume_excel/'+numContrato" >
+                                    <i class="icon-share-alt"></i>&nbsp;Descargar
+                                </a>
+                            </template> 
+
+                            <template v-if="tipoAccion == 4">
+                                <a class="btn btn-primary" v-bind:href="'/avances/res_partidas/'+numContrato" >
+                                    <i class="icon-share-alt"></i>&nbsp;Descargar resumen partidas
+                                </a>
+                            </template> 
+                            
                             <!---->
                         </div>
                     </div>
@@ -248,6 +277,7 @@
                 <!-- /.modal-dialog -->
             </div>
             <!--Fin del modal-->
+            
             
 
         </main>
@@ -269,6 +299,7 @@
                 partida : '',
                 costo : 0,
                 costos : [],
+                numContrato:'',
                 porcentaje : 0,
                 modelo_id : 0,
                 fraccionamiento_id:0,
@@ -277,6 +308,7 @@
                 arrayAvance : [],
                 arrayAvanceProm : [],
                 arrayFraccionamientosLote: [],
+                arrayNumContratos: [],
                 modal : 0,
                 modal2 : 0,
                 tituloModal : '',
@@ -421,6 +453,18 @@
                     console.log(error);
                 });
             },
+            selectNumContratos(proyecto_id){
+                let me = this;
+                me.arrayNumContratos=[];
+                var url = '/select_numcontratos_obra?buscar='+proyecto_id;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayNumContratos = respuesta.numContratos;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
             isNumber: function(evt) {
                 evt = (evt) ? evt : window.event;
                 var charCode = (evt.which) ? evt.which : evt.keyCode;
@@ -552,6 +596,8 @@
                 this.fraccionamiento_id=0;
                 this.erroAvance = 0;
                 this.errorMostrarMsjAvance = [];
+                this.numContrato = '';
+                this.arrayNumContratos = [];
                 this.modal2 = 0;
 
             },
@@ -588,7 +634,17 @@
                                 this.modal2 =1;
                                 this.tituloModal='Descargar excel';
                                 this.fraccionamiento_id="";
-                                
+                                this.tipoAccion = 5;
+                                break;
+                            }
+
+                            case 'excelPartidas':
+                            {
+                                //console.log(data);
+                                this.modal2 =1;
+                                this.tituloModal='Descargar control partidas';
+                                this.fraccionamiento_id="";
+                                this.tipoAccion = 4;
                                 break;
                             }
                         }

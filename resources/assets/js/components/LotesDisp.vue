@@ -52,7 +52,7 @@
                                         <th>Manzana</th>
                                         <th># Lote</th>
                                         <th>% Avance</th>
-                                        <th>Modelo</th>
+                                        <th style="text-align:center;">Modelo</th>
                                         <th>Calle</th>
                                         <th># Oficial</th>
                                         <th style="width:8%">Terreno m&sup2;</th>
@@ -88,6 +88,7 @@
                                         <td class="td2" v-text="lote.avance"></td>
                                         <td class="td2">
                                             <span class="badge badge-success" v-text="lote.modelo"></span>
+                                            <span v-if="lote.casa_muestra == 1" class="badge badge-danger">Casa muestra</span>
                                         </td>
                                         <td class="td2" v-text="lote.calle"></td>
                                             <td class="td2" v-if="!lote.interior" v-text="lote.numero"></td>
@@ -147,31 +148,26 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Vendedor</label>
                                     <div class="col-md-6">
-                                       <select v-model="vendedor_id" id="myselect" class="form-control" :disabled="tipoAccion==3" @click="selectClientes(vendedor_id)" >
+                                       <select v-model="vendedor_id" id="myselect" class="form-control"  @click="selectClientes(vendedor_id)" >
                                             <option value="0">Seleccione</option>
                                             <option v-for="vendedores in arrayVendedores" :key="vendedores.id" :value="vendedores.id" v-text="vendedores.n_completo"></option>
                                         </select>
                                     </div>
                                 </div>
-                                <div v-if="tipoAccion!=3" class="form-group row">
+                                <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Cliente</label>
                                     <div class="col-md-6">
-                                       <select v-model="cliente_id" id="myselect" :disabled="tipoAccion==3" class="form-control" >
+                                       <select v-model="cliente_id" id="myselect"  class="form-control" >
                                             <option value="0">Seleccione</option>
                                             <option v-for="clientes in arrayClientes" :key="clientes.id" :value="clientes.id" v-text="clientes.n_completo"></option>
                                         </select>
                                     </div>
                                 </div>
-                                <div v-if="tipoAccion==3" class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Cliente</label>
-                                    <div class="col-md-6">
-                                       <label for="" v-text="cliente"></label>
-                                    </div>
-                                </div>
+                             
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Tipo de Crédito</label>
                                     <div class="col-md-6">
-                                       <select id="myselect" v-model="credito" :disabled="tipoAccion==3" class="form-control" >
+                                       <select id="myselect" v-model="credito"  class="form-control" >
                                             <option value="">Seleccione</option>
                                             <option v-for="creditos in arrayCreditos" :key="creditos.nombre" :value="creditos.nombre" v-text="creditos.nombre"></option>
                                         </select>
@@ -182,9 +178,18 @@
                                     <label class="col-md-3 form-control-label" for="text-input">Fecha apartado</label>
                                     <div class="col-md-4" >
                                         <label v-if="tipoAccion==2" v-text="fecha_mostrar"></label>
-                                        <label v-if="tipoAccion==3" v-text="fecha_apartado"></label>
+                                        <label v-if="tipoAccion==3" v-text="fecha_apartado_format"></label>
                                     </div>
                                 </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Comentario</label>
+                                    <div class="col-md-6" >
+                                        <textarea rows="3" cols="30" v-model="comentario" class="form-control" placeholder="Comentario"></textarea>
+                                    </div>
+                                </div>
+
+                                
                             </form>
                         </div>
                         <!-- Botones del modal -->
@@ -192,7 +197,8 @@
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
                             <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
                             <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="apartarLote()">Apartar</button>
-                            <button type="button" v-if="tipoAccion==3" class="btn btn-primary" @click="desapartarLote()">Desapartar</button>
+                            <button type="button" v-if="tipoAccion==3" class="btn btn-warning" @click="desapartarLote()">Desapartar</button>
+                            <button type="button" v-if="tipoAccion==3" class="btn btn-success" @click="actualizarLote()">Guardar</button>
                         </div>
                     </div>
                       <!-- /.modal-content -->
@@ -222,9 +228,9 @@
                 apartado:0,
                 fraccionamiento_id:0,
                 credito:'',
-                comentarios: '',
                 fecha_apartado:'',
                 fecha_mostrar:'',
+                comentario: '',
                 arrayLote : [],
                 arrayFraccionamientos :[],
                 arrayClientes:[],
@@ -347,8 +353,9 @@
                     me.cliente_id = me.arrayDatosApartado[0].cliente_id;
                     me.fecha_apartado = me.arrayDatosApartado[0].fecha_apartado;
                     me.credito = me.arrayDatosApartado[0].tipo_credito;
-                    me.cliente = me.arrayDatosApartado[0].cliente;
-                    me.fecha_apartado=moment(me.fecha_apartado).locale('es').format("DD [de] MMMM [de] YYYY");
+                    me.comentario = me.arrayDatosApartado[0].comentario;
+                    me.fecha_apartado_format=moment(me.fecha_apartado).locale('es').format("DD [de] MMMM [de] YYYY");
+                    me.selectClientes(me.vendedor_id);
                    
                 })
                 .catch(function (error) {
@@ -415,6 +422,7 @@
                     'cliente_id': this.cliente_id,
                     'tipo_credito': this.credito,
                     'fecha_apartado': this.fecha_apartado,
+                    'comentario': this.comentario,
                     'lote_id': this.lote_id,
                 }).then(function (response){
                     me.proceso=false;
@@ -425,6 +433,40 @@
                         position: 'top-end',
                         type: 'success',
                         title: 'Lote apartado correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
+            actualizarLote(){
+                  if(this.validarLote() || this.proceso==true) //Se verifica si hay un error (campo vacio)
+                {
+                    return;
+                }
+
+                this.proceso=true;
+                let me = this;
+                //Con axios se llama el metodo store de FraccionaminetoController
+                axios.put('/apartado/actualizar',{                 
+                    'vendedor_id': this.vendedor_id,
+                    'cliente_id': this.cliente_id,
+                    'tipo_credito': this.credito,
+                    'fecha_apartado': this.fecha_apartado,
+                    'comentario': this.comentario,
+                    'lote_id': this.lote_id,
+                    'id': this.apartado,
+                }).then(function (response){
+                    me.proceso=false;
+                    me.cerrarModal(); //al guardar el registro se cierra el modal
+                    me.listarLote(1,'','','','lote', 1); //se enlistan nuevamente los registros
+                    //Se muestra mensaje Success
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Lote apartado actualizado correctamente',
                         showConfirmButton: false,
                         timer: 1500
                         })
@@ -472,6 +514,7 @@
                 this.cliente_id=0;
                 this.vendedor_id=0;
                 this.credito='';
+                this.comentario='';
                 this.errorLote = 0;
                 this.errorMostrarMsjLote = [];
                 this.id=0;
@@ -519,8 +562,8 @@
                                 this.selectDatosApartado(data['id']);
                                 this.modal =1;
                                 this.tituloModal='Lote apartado';
+                                this.fraccionamiento_id=data['fraccionamiento_id'];
                                 this.lote_id=data['id'];
-                                this.id=data['id'];
                                 this.apartado=data['apartado'];
                                 this.tipoAccion=3;
                                 break;

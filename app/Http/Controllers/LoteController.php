@@ -1071,6 +1071,7 @@ class LoteController extends Controller
                     'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.contrato','lotes.obra_extra')
                     ->where('lotes.habilitado','=',1)
                     ->where('lotes.contrato','=',0)
+                    ->where('lotes.apartado','=',0)
                     ->orderBy('fraccionamientos.nombre','DESC')
                     ->orderBy('lotes.etapa_servicios','DESC')->get();
 
@@ -1112,7 +1113,7 @@ class LoteController extends Controller
                         'N' => '$#,##0.00',
                     ));
 
-                    
+                    $o=3;
 
                     foreach($lotes as $index => $lote) {
                         if($lote->fecha_fin == NULL){
@@ -1122,6 +1123,19 @@ class LoteController extends Controller
                         $mesAño = new Carbon($lote->fecha_fin);
                         $lote->fecha_fin = $mesAño->formatLocalized('%B %Y');
                         }
+                        if($lote->casa_muestra == 1){
+                            $casaMuestra = 'Casa muestra';
+                            $sheet->cells('R'.$o, function($cells) {
+
+                                $cells->setBackground('#ff4040');
+                                $cells->setFontColor('#ffffff');
+                            
+                            });
+                            $o++;
+                        }else{
+                            $casaMuestra = '';
+                        }
+                        
                         $lote->precio_base = $lote->precio_base + $lote->ajuste;
                         $lote->precio_venta= $lote->sobreprecio + $lote->precio_base + $lote->excedente_terreno + $lote->obra_extra;
                         $promocion=[];
@@ -1157,7 +1171,8 @@ class LoteController extends Controller
                             $lote->precio_venta,
                             $lote->promocion,
                             $lote->fecha_fin,
-                            $lote->comentarios
+                            $lote->comentarios,
+                            $casaMuestra
                            
                         ]);	
                     }

@@ -18,11 +18,25 @@ class ApartadoController extends Controller
         $apartado->cliente_id = $request->cliente_id;
         $apartado->fecha_apartado = $request->fecha_apartado;
         $apartado->tipo_credito = $request->tipo_credito;
+        $apartado->comentario = $request->comentario;
         $apartado->save();
 
         $lote = Lote::findOrFail($request->lote_id);
         $lote->apartado = $apartado->id;
         $lote->save();
+
+        
+    }
+
+    public function update(Request $request){
+        $apartado = Apartado::findOrFail($request->id);
+        $apartado->lote_id = $request->lote_id;
+        $apartado->vendedor_id = $request->vendedor_id;
+        $apartado->cliente_id = $request->cliente_id;
+        $apartado->fecha_apartado = $request->fecha_apartado;
+        $apartado->tipo_credito = $request->tipo_credito;
+        $apartado->comentario = $request->comentario;
+        $apartado->save();
 
         
     }
@@ -42,7 +56,7 @@ class ApartadoController extends Controller
     }
 
     public function select_datos_apartado(Request $request){
-        $apartados = Apartado::select('cliente_id','vendedor_id','tipo_credito','fecha_apartado')
+        $apartados = Apartado::select('cliente_id','vendedor_id','tipo_credito','fecha_apartado','comentario')
                 ->where('lote_id','=',$request->lote_id)
                 ->get();
         $persona = Personal::select(DB::raw("CONCAT(nombre,' ',apellidos) AS n_completo"))

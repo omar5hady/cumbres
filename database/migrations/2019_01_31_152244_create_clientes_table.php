@@ -22,7 +22,7 @@ class CreateClientesTable extends Migration
             $table->unsignedInteger('proyecto_interes_id');/////////////
             $table->unsignedInteger('publicidad_id');//////////////////
             $table->boolean('edo_civil'); //TinyInt
-            $table->string('nss',11);
+            $table->string('nss',11)->nullable();
             $table->string('curp',18)->nullable();
             $table->unsignedInteger('vendedor_id')->nullable();////////////////
             $table->string('empresa')->nullable();

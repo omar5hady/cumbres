@@ -20,6 +20,7 @@ class CreateApartadosTable extends Migration
             $table->UnsignedInteger('cliente_id');
             $table->string('tipo_credito');
             $table->date('fecha_apartado');
+            $table->text('comentario')->nullable();
           
             $table->foreign('lote_id')->references('id')->on('lotes')->onDelete('cascade');
             $table->foreign('vendedor_id')->references('id')->on('vendedores')->onDelete('cascade');

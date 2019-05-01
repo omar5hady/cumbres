@@ -191,6 +191,7 @@ Route::group(['middleware' => ['auth']],function(){
         
     ////////////////////        RUTAS APARTADOS    /////////////////////////////////
         Route::post('/apartado/registrar','ApartadoController@store');
+        Route::put('/apartado/actualizar','ApartadoController@update');
         Route::delete('/apartado/eliminar','ApartadoController@destroy');
 
     ///////////////////       RUTAS LICENCIA   ////////////////////////////////////
@@ -305,7 +306,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/avance','AvanceController@index');
         Route::get('/avanceProm','AvanceController@indexProm');
         Route::put('/avance/actualizar','AvanceController@update');
-        Route::get('/avances/resume_excel/{fraccionamiento}','AvanceController@exportExcel');
+        Route::get('/avances/resume_excel/{contrato}','AvanceController@exportExcel');
+        Route::get('/avances/res_partidas/{contrato}','AvanceController@excelLotesPartidas');
 
     
     /**********************************RUTAS SIMULACION*************************** */
@@ -357,6 +359,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/select_departamentos','DepartamentoController@selectDepartamento');
         Route::get('/select_colonias','CiudadController@selectColonias');
         Route::get('/select_colonias_vue','CiudadController@selectColoniasVue');
+        Route::get('/select_numcontratos_obra','IniObraController@select_numContrato');
         Route::get('/select_empresas','EmpresaController@selectEmpresa');
         Route::get('/select_ciudades','CiudadController@selectCiudades');
         Route::get('/select_personal','PersonalController@selectNombre'); //Nombre completo de persona (Directivos activos)

@@ -28,9 +28,21 @@
                                             <option value="clientes.curp">CURP</option>
                                             <option value="clientes.nss">NSS</option>
                                             <option value="fraccionamientos.nombre">Proyecto</option>
+                                            <option value="clientes.created_at">Fecha de alta</option>
                                         </select>
-                                        <input  type="text" v-model="buscar" @keyup.enter="listarProspectos(1,buscar,criterio)" class="form-control">
-                                        <button type="submit" @click="listarProspectos(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                
+                                        <input v-if="criterio=='clientes.created_at'" type="date" v-model="buscar" @keyup.enter="listarProspectos(1,buscar,b_clasificacion,criterio)" class="form-control">
+                                        <input v-else type="text" v-model="buscar" @keyup.enter="listarProspectos(1,buscar,b_clasificacion,criterio)" class="form-control">
+                                        <select class="form-control" v-model="b_clasificacion" >
+                                            <option value="1">No viable</option>
+                                            <option value="2">Tipo A</option>
+                                            <option value="3">Tipo B</option>
+                                            <option value="4">Tipo C</option>
+                                            <option value="5">Ventas</option>
+                                            <option value="6">Cancelado</option>                               
+                                        </select>
+                                        <button type="submit" @click="listarProspectos(1,buscar,b_clasificacion,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                        <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Clientes en total: '+ contador"> </span>
                                     </div>
                                 </div>
                             </div>
@@ -93,10 +105,10 @@
                                 <!--Botones de paginacion -->
                                 <ul class="pagination">
                                     <li class="page-item" v-if="pagination.current_page > 1">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,criterio)">Ant</a>
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,b_clasificacion,criterio)">Ant</a>
                                     </li>
                                     <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,criterio)" v-text="page"></a>
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,b_clasificacion,criterio)" v-text="page"></a>
                                     </li>
                                     <li class="page-item" v-if="pagination.current_page < pagination.last_page">
                                         <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,criterio)">Sig</a>
@@ -232,7 +244,7 @@
                                  
                                 <div class="col-md-3">
                                      <div class="form-group">
-                                    <label for="">NSS <span style="color:red;" v-show="nss==''">(*)</span></label>
+                                    <label for="">NSS</label>
                                     <input type="text" maxlength="11" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="nss" placeholder="NSS">
                                 </div>
                                 </div>
@@ -964,6 +976,7 @@
                 lugar_contacto: 0,
                 lugar_nacimiento:'',
                 conyugeNom: '',
+                contador: 0,
 
 
                 nombre_coa:'',
@@ -1009,6 +1022,7 @@
                 offset : 3,
                 criterio : 'personal.nombre', 
                 buscar : '',
+                b_clasificacion: 2,
                 arrayCoacreditados : [],
                 arrayProspectos: [],
                 arrayFraccionamientos : [],
@@ -1055,17 +1069,23 @@
        
         methods : {
             /**Metodo para mostrar los registros */
-            listarProspectos(page, buscar, criterio){
+            listarProspectos(page, buscar, b_clasificacion, criterio){
                 let me = this;
-                var url = '/clientes?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
+                var url = '/clientes?page=' + page + '&buscar=' + buscar+ '&b_clasificacion=' + b_clasificacion + '&criterio=' + criterio;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayProspectos = respuesta.personas.data;
                     me.pagination = respuesta.pagination;
+                    me.contador = respuesta.contadorClientes;
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
+            },
+            limpiarBusqueda(){
+                let me=this;
+                me.buscar= "";
+                me.b_clasificacion = "";
             },
             selectFraccionamientos(){
                 let me = this;
@@ -1221,12 +1241,12 @@
                 
             },
 
-            cambiarPagina(page, buscar, criterio){
+            cambiarPagina(page, buscar,b_clasificacion, criterio){
                 let me = this;
                 //Actualiza la pagina actual
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
-                me.listarProspectos(page,buscar,criterio);
+                me.listarProspectos(page,buscar,b_clasificacion,criterio);
             },
             /**Metodo para registrar  */
             registrarProspecto(){
@@ -1516,8 +1536,6 @@
                     this.errorMostrarMsjProspecto.push("Ingresar fecha de nacimiento.");
                 if(this.rfc=='') 
                     this.errorMostrarMsjProspecto.push("Ingresar RFC.");
-                if(this.nss=='') 
-                    this.errorMostrarMsjProspecto.push("Ingresar numero de seguro social.");
                 if(this.tipo_casa==0) 
                     this.errorMostrarMsjProspecto.push("Seleccionar tipo de casa.");
                 if(this.e_civil==0) 
@@ -1550,8 +1568,6 @@
                     this.errorMostrarMsjCoacreditado.push("Ingresar fecha de nacimiento.");
                 if(this.rfc_coa=='') 
                     this.errorMostrarMsjCoacreditado.push("Ingresar RFC.");
-                if(this.nss_coa=='') 
-                    this.errorMostrarMsjCoacreditado.push("Ingresar numero de seguro social.");
                 if(this.tipo_casa_coa==0) 
                     this.errorMostrarMsjCoacreditado.push("Seleccionar tipo de casa.");
                 if(this.e_civil_coa==0) 
@@ -1764,7 +1780,7 @@
            
         },
         mounted() {
-            this.listarProspectos(1,this.buscar,this.criterio);
+            this.listarProspectos(1,this.buscar,this.b_clasificacion,this.criterio);
             this.selectMedioPublicidad();
             this.selectFraccionamientos();
             this.selectLugarContacto();
