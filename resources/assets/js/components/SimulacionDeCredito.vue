@@ -287,21 +287,21 @@
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                 <label for="">CURP</label>
-                                                <input disabled type="text" maxlength="18" class="form-control"  v-model="curp" placeholder="CURP">
+                                                <input disabled type="text" maxlength="18" style="text-transform:uppercase" class="form-control"  v-model="curp" placeholder="CURP">
                                             </div>
                                                 </div>
 
                                                 <div class="col-md-2">
                                                 <div class="form-group">
                                                     <label for="">RFC <span style="color:red;" v-show="rfc==''">(*)</span></label>
-                                                    <input type="text" maxlength="10" class="form-control"  disabled  v-model="rfc" placeholder="RFC">
+                                                    <input type="text" maxlength="10" style="text-transform:uppercase" class="form-control"  disabled  v-model="rfc" placeholder="RFC">
                                                 </div>
                                                 </div>
                                                     
                                             <div align="left" class="col-md-1">
                                                 <div class="form-group">
                                                 <label for="">Homoclave</label>
-                                                        <input disabled type="text" maxlength="3" class="form-control"  v-model="homoclave" placeholder="AA0">
+                                                        <input disabled type="text" style="text-transform:uppercase" maxlength="3" class="form-control"  v-model="homoclave" placeholder="AA0">
                                                 </div>
                                             </div>
 
@@ -1937,10 +1937,10 @@
                                             <div class="col-md-10">
                                                 <button type="button" class="btn btn-secondary" @click="ocultarDetalle()"> Cerrar </button>
                                             </div>
-                                            <div class="col-md-1" v-if="rolId==1">
+                                            <div class="col-md-1" v-if="rolId==1 || rolId==4 ">
                                                 <button type="button" class="btn btn-danger" @click="rechazarSimulacion()"> Rechazar </button>
                                             </div>
-                                            <div class="col-md-1" v-if="rolId==1">
+                                            <div class="col-md-1" v-if="rolId==1 || rolId==4">
                                                 <button type="button" class="btn btn-success" @click="aceptarSimulacion()"> Aprobar </button>
                                             </div>
                                         </div>

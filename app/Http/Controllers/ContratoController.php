@@ -20,6 +20,7 @@ class ContratoController extends Controller
 {
     public function indexContrato(Request $request){
         $buscar = $request->buscar;
+        $buscar3 = $request->buscar3; 
         $criterio = $request->criterio;
         $b_etapa = $request->b_etapa;
         $b_manzana = $request->b_manzana;
@@ -279,7 +280,7 @@ class ContratoController extends Controller
                         'contratos.telefono_empresa_coa','contratos.ext_empresa_coa','contratos.total_pagar',
                         'contratos.monto_total_credito','contratos.enganche_total','contratos.avance_lote','contratos.observacion')
 
-                        ->where($criterio, '=', $buscar )
+                        ->whereBetween($criterio, [$buscar,$buscar3])
                         ->where('inst_seleccionadas.elegido','=','1')
                         ->orderBy('id','desc')->paginate(8);
                     break;
@@ -1138,10 +1139,11 @@ class ContratoController extends Controller
                 $contratos[0]->infonavit = number_format((float)$contratos[0]->infonavit,2,'.',',');
                 $contratos[0]->fovisste = number_format((float)$contratos[0]->fovisste,2,'.',',');
 
-                $pagos = Pago_contrato::select('monto_pago','num_pago')->where('contrato_id','=',$id)->orderBy('fecha_pago','asc')->get();
-
+                $pagos = Pago_contrato::select('monto_pago','num_pago', 'fecha_pago')->where('contrato_id','=',$id)->orderBy('fecha_pago','asc')->get();
                 for($i=0; $i<count($pagos); $i++){
                 $pagos[$i]->monto_pago = number_format((float)$pagos[$i]->monto_pago,2,'.',',');
+                $fecha_pago = new Carbon($pagos[$i]->fecha_pago);
+                $pagos[$i]->fecha_pago = $fecha_pago->formatLocalized('%d-%m-%Y');
                 }
                 
 

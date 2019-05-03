@@ -404,7 +404,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/select_tipcreditos_simulacion','CreditoController@selectTipCreditosSimulacion');
         Route::get('/servicios_etapas','ServEtapaController@index');
         Route::get('/select_gerentes','UserController@select_users_gerentes');
-        
+        Route::get('/select_rfcs','PersonalController@selectRFC');
     
     
     

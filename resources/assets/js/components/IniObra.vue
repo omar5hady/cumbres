@@ -104,6 +104,12 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Fecha de terminacion ventas</label>
+                                    <div class="col-md-6">
+                                        <input type="date" v-model="fecha_termino_ventas" class="form-control" placeholder="Fecha de terminacion ventas">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Arquitectos</label>
                                     <div class="col-md-6">
                                         <select class="form-control" v-model="arquitecto_id">
@@ -153,6 +159,7 @@
                 id:0,
                 f_ini : new Date().toISOString().substr(0, 10),
                 f_fin : '',
+                fecha_termino_ventas: '',
                 arrayLotes : [],
                 lotes_ini : [],
                 modal : 0,
@@ -278,6 +285,7 @@
                     'id': element,
                     'fecha_ini' : this.f_ini,
                     'fecha_fin' : this.f_fin,
+                    'fecha_termino_ventas' : this.fecha_termino_ventas,
                     'aviso' : aviso
                     }); 
                     i++;

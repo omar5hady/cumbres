@@ -101,7 +101,7 @@
                                         <td class="td2" v-text="'$'+formatNumber(lote.sobreprecio)"></td>
                                         <td class="td2" style="width:20%" v-text="'$'+formatNumber(lote.precio_venta)"></td>
                                         <td class="td2" v-text="lote.promocion"></td>
-                                        <td class="td2" v-text="this.moment(lote.fecha_fin).locale('es').format('MMMM YYYY')"></td>
+                                        <td class="td2" v-text="this.moment(lote.fecha_termino_ventas).locale('es').format('MMMM YYYY')"></td>
                                         <td class="td2" style="width:40%" v-text="lote.comentarios"></td>
                                     </tr>                               
                                 </tbody>

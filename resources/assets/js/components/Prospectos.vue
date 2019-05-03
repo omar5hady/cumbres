@@ -229,8 +229,8 @@
 
                                   <div class="col-md-2">
                                     <div class="form-group">
-                                        <label for="">RFC <span style="color:red;" v-show="rfc==''">(*)</span></label>
-                                        <input type="text" maxlength="10" style="text-transform:uppercase" class="form-control"  v-model="rfc" placeholder="RFC">
+                                        <label for="">RFC  <span style="color:red;" v-show="encuentraRFC==1"> Ya se encuentra este rfc registrado</span> <span style="color:red;" v-show="rfc==''">(*)</span></label>
+                                        <input type="text" maxlength="10" style="text-transform:uppercase" class="form-control" @keyup="selectRFC(rfc)"  v-model="rfc" placeholder="RFC">
                                     </div>
                                  </div>
                                        
@@ -529,8 +529,8 @@
 
                                   <div class="col-md-2">
                                     <div class="form-group">
-                                        <label for="">RFC <span style="color:red;" v-show="rfc==''">(*)</span></label>
-                                        <input type="text" maxlength="10" style="text-transform:uppercase" class="form-control"  disabled  v-model="rfc" placeholder="RFC">
+                                        <label for="">RFC <span style="color:red;" v-show="encuentraRFC==1"> Ya se encuentra este rfc registrado</span> <span style="color:red;" v-show="rfc==''">(*)</span></label>
+                                        <input type="text" maxlength="10" style="text-transform:uppercase"  @keyup="selectRFC(rfc)" class="form-control"  disabled  v-model="rfc" placeholder="RFC">
                                     </div>
                                  </div>
                                        
@@ -821,7 +821,8 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">RFC</label>
                                     <div class="col-md-3">
-                                        <input type="text" maxlength="10" style="text-transform:uppercase" v-model="rfc_coa" class="form-control" placeholder="RFC" :disabled="tipoAccion == 3">
+                                        <span style="color:red;" v-show="encuentraRFC==1"> Ya se encuentra este rfc registrado</span>
+                                        <input type="text" maxlength="10" style="text-transform:uppercase"  @keyup="selectRFC(rfc_coa)" v-model="rfc_coa" class="form-control" placeholder="RFC" :disabled="tipoAccion == 3">
                                     </div>
                                     <div class="col-md-3">
                                         <input type="text" maxlength="3" style="text-transform:uppercase" v-model="homoclave_coa" class="form-control" placeholder="Homoclave" :disabled="tipoAccion == 3">
@@ -1000,6 +1001,7 @@
                 arrayEmpresa: [],
                 arrayMediosPublicidad:[],
                 arrayEstados:[],
+                encuentraRFC:0,
 
                 modal : 0,
                 modal3: 0,
@@ -1641,6 +1643,21 @@
             },
             ocultarDetalle(){
                 this.listado=1;
+            },
+
+            selectRFC(rfc){
+                var url = '/select_rfcs?rfc=' + rfc;
+                let me = this;
+                me.encuentraRFC=0;
+                axios.get(url).then(function (response) {
+                var respuesta = response.data;
+                me.encuentraRFC = respuesta;    
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+
+
             },
 
             actualizarProspectoBTN(id){

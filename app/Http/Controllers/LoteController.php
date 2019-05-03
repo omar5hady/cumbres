@@ -49,8 +49,11 @@ class LoteController extends Controller
                       'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
                       'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios',
                       'lotes.regimen_condom')
-                      ->orderBy('fraccionamientos.nombre','DESC')
-                      ->orderBy('lotes.etapa_servicios','DESC')->paginate(8);
+                      ->orderBy('fraccionamientos.nombre','ASC')
+                      ->orderBy('etapas.num_etapa','ASC')
+                      ->orderBy('lotes.manzana','ASC')
+                      ->orderBy('lotes.num_lote','ASC')
+                      ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
         }
         else{
             if($buscar2=='' && $buscar3=='')
@@ -65,8 +68,11 @@ class LoteController extends Controller
                         'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
                         'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom')
                     ->where($criterio, 'like', '%'. $buscar . '%')
-                    ->orderBy('fraccionamientos.nombre','DESC')
-                    ->orderBy('lotes.etapa_servicios','DESC')->paginate(8);
+                    ->orderBy('fraccionamientos.nombre','ASC')
+                    ->orderBy('etapas.num_etapa','ASC')
+                      ->orderBy('lotes.manzana','ASC')
+                      ->orderBy('lotes.num_lote','ASC')
+                    ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
             }
             else{
                 if($buscar3=='')
@@ -82,8 +88,11 @@ class LoteController extends Controller
                             'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom')
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                        ->orderBy('fraccionamientos.nombre','DESC')
-                        ->orderBy('lotes.etapa_servicios','DESC')->paginate(8);
+                        ->orderBy('fraccionamientos.nombre','ASC')
+                        ->orderBy('etapas.num_etapa','ASC')
+                      ->orderBy('lotes.manzana','ASC')
+                      ->orderBy('lotes.num_lote','ASC')
+                        ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
                 }
                 else{
                     $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
@@ -98,8 +107,11 @@ class LoteController extends Controller
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                         ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                        ->orderBy('fraccionamientos.nombre','DESC')
-                        ->orderBy('lotes.etapa_servicios','DESC')->paginate(8);
+                        ->orderBy('fraccionamientos.nombre','ASC')
+                        ->orderBy('etapas.num_etapa','ASC')
+                      ->orderBy('lotes.manzana','ASC')
+                      ->orderBy('lotes.num_lote','ASC')
+                        ->orderBy('lotes.etapa_servicios','ASC')->paginate(25);
                 }
             }
         }
@@ -139,7 +151,7 @@ class LoteController extends Controller
                       'lotes.clv_catastral','lotes.etapa_servicios')
                       ->orderBy('fraccionamientos.nombre','DESC')
                       ->orderBy('lotes.manzana','ASC')
-                      ->orderBy('lotes.num_lote','ASC')->paginate(8);
+                      ->orderBy('lotes.num_lote','ASC')->paginate(25);
         }
         else{
             if($buscar2=='' &&$buscar3=='')
@@ -156,7 +168,7 @@ class LoteController extends Controller
                     ->where($criterio, 'like', '%'. $buscar . '%')
                     ->orderBy('fraccionamientos.nombre','DESC')
                     ->orderBy('lotes.manzana','ASC')
-                    ->orderBy('lotes.num_lote','ASC')->paginate(8);
+                    ->orderBy('lotes.num_lote','ASC')->paginate(25);
             }
             else{
                 if($buscar3=='')
@@ -174,7 +186,7 @@ class LoteController extends Controller
                         ->where('lotes.etapa_servicios', 'like', '%'. $buscar2 . '%')
                         ->orderBy('fraccionamientos.nombre','DESC')
                         ->orderBy('lotes.manzana','ASC')
-                        ->orderBy('lotes.num_lote','ASC')->paginate(8);
+                        ->orderBy('lotes.num_lote','ASC')->paginate(25);
                 }
                 else{
                     $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
@@ -191,7 +203,7 @@ class LoteController extends Controller
                         ->where('lotes.manzana', '=', $buscar3)
                         ->orderBy('fraccionamientos.nombre','DESC')
                         ->orderBy('lotes.manzana','ASC')
-                        ->orderBy('lotes.num_lote','ASC')->paginate(8);
+                        ->orderBy('lotes.num_lote','ASC')->paginate(25);
                 }
             }
         }
@@ -420,6 +432,7 @@ class LoteController extends Controller
         $lote = Lote::findOrFail($request->id);
         $lote->fecha_ini = $request ->fecha_ini;
         $lote->fecha_fin = $request ->fecha_fin;
+        $lote->fecha_termino_ventas = $request ->fecha_termino_ventas;
         $lote->ini_obra = 1;
         $lote->arquitecto_id = $request ->arquitecto_id;
         $lote->ehl_solicitado = Carbon::today()->format('ymd');
@@ -622,7 +635,7 @@ class LoteController extends Controller
             ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
                       'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
                       'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
-                      'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios')
+                      'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','lotes.fecha_termino_ventas')
                 ->where('lotes.ini_obra', '=', '0')
                 ->where('modelos.nombre','!=','Por Asignar')
                 ->orderBy('fraccionamientos.nombre','lotes.id')->paginate(12);
@@ -637,7 +650,7 @@ class LoteController extends Controller
             ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
                     'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
                     'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
-                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios')
+                    'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','lotes.fecha_termino_ventas')
                 ->where($criterio, 'like', '%'. $buscar . '%')
                 ->where('lotes.ini_obra', '=', '0')
                 ->where('modelos.nombre','!=','Por Asignar')
@@ -746,7 +759,7 @@ class LoteController extends Controller
                             'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
                             'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
                             'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                            'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra')
+                            'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas')
                             ->where('lotes.habilitado','=',1)
                             ->where('lotes.contrato','=',0)
                             ->orderBy('fraccionamientos.nombre','DESC')
@@ -763,7 +776,7 @@ class LoteController extends Controller
                                 'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
                                 'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
                                 'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra')
+                                'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas')
                                 ->where('lotes.habilitado','=',1)
                                 ->where('lotes.contrato','=',0)
                                 ->where($criterio, 'like', '%'. $buscar . '%')
@@ -781,7 +794,7 @@ class LoteController extends Controller
                             'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
                             'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
                             'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                            'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra')
+                            'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas')
                             ->where('lotes.habilitado','=',1)
                             ->where('lotes.contrato','=',0)
                             ->where($criterio, 'like', '%'. $buscar . '%')
@@ -798,7 +811,7 @@ class LoteController extends Controller
                             'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
                             'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
                             'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                            'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra')
+                            'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas')
                             ->where('lotes.habilitado','=',1)
                             ->where('lotes.contrato','=',0)
                             ->where($criterio, 'like', '%'. $buscar . '%')
@@ -821,7 +834,7 @@ class LoteController extends Controller
                             'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
                             'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
                             'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                            'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra')
+                            'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas')
                             ->where('lotes.habilitado','=',1)
                             ->where('lotes.apartado','=',0)
                             ->where('lotes.contrato','=',0)
@@ -843,7 +856,7 @@ class LoteController extends Controller
                                 'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
                                 'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
                                 'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                                'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra')
+                                'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas')
                                 ->where('lotes.habilitado','=',1)
                                 ->where('lotes.apartado','=',0)
                                 ->where('lotes.contrato','=',0)
@@ -867,7 +880,7 @@ class LoteController extends Controller
                             'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
                             'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
                             'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                            'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra')
+                            'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas')
                             ->where('lotes.habilitado','=',1)
                             ->where('lotes.apartado','=',0)
                             ->where('lotes.contrato','=',0)
@@ -891,7 +904,7 @@ class LoteController extends Controller
                             'modelos.nombre as modelo','lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
                             'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id','lotes.fecha_fin',
                             'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','licencias.avance',
-                            'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra')
+                            'lotes.sobreprecio', 'lotes.precio_base','lotes.ajuste','lotes.excedente_terreno','lotes.apartado','lotes.obra_extra','lotes.fecha_termino_ventas')
                             ->where('lotes.habilitado','=',1)
                             ->where('lotes.apartado','=',0)
                             ->where('lotes.contrato','=',0)

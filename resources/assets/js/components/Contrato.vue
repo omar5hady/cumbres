@@ -57,18 +57,19 @@
                                             <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id" :value="proyecto.nombre" v-text="proyecto.nombre"></option>
                                          </select>
                                   
-                                    <input v-if="criterio2=='creditos.fraccionamiento'" type="text"  v-model="b_etapa2" @keyup.enter="listarContratos(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="Etapa">
-                                    <input v-if="criterio2=='creditos.fraccionamiento'" type="text"  v-model="b_manzana2" @keyup.enter="listarContratos(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="Manzana">
-                                    <input v-if="criterio2=='creditos.fraccionamiento'" type="text"  v-model="b_lote2" @keyup.enter="listarContratos(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="# Lote">
+                                    <input v-if="criterio2=='creditos.fraccionamiento'" type="text"  v-model="b_etapa2" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="Etapa">
+                                    <input v-if="criterio2=='creditos.fraccionamiento'" type="text"  v-model="b_manzana2" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="Manzana">
+                                    <input v-if="criterio2=='creditos.fraccionamiento'" type="text"  v-model="b_lote2" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="# Lote">
                                         <select class="form-control col-md-4" v-if="criterio2=='contratos.status'" v-model="buscar2">
                                             <option value="0">Cancelado</option>
                                             <option value="1">Pendiente</option>
                                             <option value="2">No firmado</option>
                                             <option value="3">Firmado</option>
                                         </select> 
-                                        <input  v-if="criterio2=='contratos.fecha'" type="date" v-model="buscar2" @keyup.enter="listarContratos(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control">
-                                        <input  v-if="criterio2=='personal.nombre' || criterio2=='v.nombre' || criterio2=='creditos.id'" type="text" v-model="buscar2" @keyup.enter="listarContratos(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control">
-                                        <button type="submit" @click="listarContratos(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                        <input  v-if="criterio2=='contratos.fecha'" type="date" v-model="buscar2" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control">
+                                        <input  v-if="criterio2=='contratos.fecha'" type="date" v-model="buscar3" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control">
+                                        <input  v-if="criterio2=='personal.nombre' || criterio2=='v.nombre' || criterio2=='creditos.id'" type="text" v-model="buscar2" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control">
+                                        <button type="submit" @click="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                     </div>
                                    
                                 </div>
@@ -1208,17 +1209,19 @@
                                                         </div>
                                                     </div>
 
-                                                    <div class="col-md-3" v-if="inst_financiera!='' && listado==3">
+                                                     
+
+                                                    <div class="col-md-3" v-if="inst_financiera!=''&& listado==3">
                                                         <div class="form-group">
-                                                        <label for="">Prima unica</label>
-                                                            <input type="text" pattern="\d*" v-model="prima_unica" maxlength="9" v-on:keypress="isNumber($event)" class="form-control" >
+                                                        <label for="">Gastos de escrituración</label>
+                                                            <input type="text" pattern="\d*" v-model="escrituras" maxlength="9" v-on:keypress="isNumber($event)" class="form-control" >
                                                         </div>
                                                     </div>
 
-                                                    <div class="col-md-3" >
+                                                    <div class="col-md-3">
                                                         <div class="form-group">
-                                                            <h6 style="color:#2271b3;" for=""><strong> Prima unica </strong></h6>
-                                                            <h6 v-text="'$'+formatNumber(prima_unica)"></h6>
+                                                            <h6 style="color:#2271b3;" for=""><strong> Gastos de escrituración </strong></h6>
+                                                            <h6 v-text="'$'+formatNumber(escrituras)"></h6>
                                                         </div>
                                                     </div> 
 
@@ -1240,19 +1243,20 @@
                                                         </div>
                                                     </div>
 
-                                                    <div class="col-md-3" v-if="inst_financiera!=''&& listado==3">
+                                                        <div class="col-md-3" v-if="inst_financiera!='' && listado==3">
                                                         <div class="form-group">
-                                                        <label for="">Gastos de escrituración</label>
-                                                            <input type="text" pattern="\d*" v-model="escrituras" maxlength="9" v-on:keypress="isNumber($event)" class="form-control" >
+                                                        <!--<label for="">Prima unica</label>
+                                                            <input type="text" pattern="\d*" v-model="prima_unica" maxlength="9" v-on:keypress="isNumber($event)" class="form-control" >-->
                                                         </div>
                                                     </div>
 
-                                                    <div class="col-md-3">
+                                                    <div class="col-md-3" >
                                                         <div class="form-group">
-                                                            <h6 style="color:#2271b3;" for=""><strong> Gastos de escrituración </strong></h6>
-                                                            <h6 v-text="'$'+formatNumber(escrituras)"></h6>
+                                                           <!-- <h6 style="color:#2271b3;" for=""><strong> Prima unica </strong></h6>
+                                                            <h6 v-text="'$'+formatNumber(prima_unica)"></h6>-->
                                                         </div>
-                                                    </div> 
+                                                    </div>
+                                                    
 
                                                     <div class="col-md-3" v-if="inst_financiera!='' && listado==3" ><hr>
                                                         <div class="form-group">
@@ -1654,6 +1658,7 @@
                 offset2 : 3,
                 criterio : 'personal.nombre', 
                 buscar : '',
+                buscar3 : '',
                 b_etapa: '',
                 b_manzana: '',
                 b_lote: '',
@@ -1778,9 +1783,9 @@
                     console.log(error);
                 })
             },
-            listarContratos(page, buscar, b_etapa, b_manzana,b_lote,criterio){
+            listarContratos(page, buscar,buscar3, b_etapa, b_manzana,b_lote,criterio){
                 let me = this;
-                var url = '/contratos?page=' + page + '&buscar=' + buscar + '&b_etapa=' +b_etapa+ '&b_manzana=' + b_manzana + '&b_lote='+ b_lote + '&criterio=' + criterio;
+                var url = '/contratos?page=' + page + '&buscar=' + buscar + '&buscar3=' + buscar3 + '&b_etapa=' +b_etapa+ '&b_manzana=' + b_manzana + '&b_lote='+ b_lote + '&criterio=' + criterio;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayContratos = respuesta.contratos.data;
@@ -1814,12 +1819,12 @@
                 me.listarSimulaciones(page,buscar, b_etapa, b_manzana,b_lote,criterio);
             },
 
-            cambiarPagina2(page, buscar, b_etapa, b_manzana,b_lote,criterio){
+            cambiarPagina2(page, buscar, buscar3, b_etapa, b_manzana,b_lote,criterio){
                 let me = this;
                 //Actualiza la pagina actual
                 me.pagination2.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
-                me.listarContratos(page,buscar, b_etapa, b_manzana,b_lote,criterio);
+                me.listarContratos(page,buscar, buscar3, b_etapa, b_manzana,b_lote,criterio);
             },
             listarPagos(id){
                 let me = this;
@@ -2690,7 +2695,7 @@
            
         },
         mounted() {          
-            this.listarContratos(1,this.buscar,this.b_etapa,this.b_manzana,this.b_lote,this.criterio);
+            this.listarContratos(1,this.buscar,this.buscar3,this.b_etapa,this.b_manzana,this.b_lote,this.criterio);
             this.selectFraccionamientos();
         }
     }

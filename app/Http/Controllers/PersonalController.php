@@ -220,5 +220,11 @@ class PersonalController extends Controller
                              return ['personas' => $personas];
     }
 
+    public function selectRFC(Request $request){
+        $rfc = $request->rfc;
+         $rfc = Personal::select('rfc')
+                          ->where('rfc','=',$rfc)->count();
+                return $rfc;
+    }
 
 }
