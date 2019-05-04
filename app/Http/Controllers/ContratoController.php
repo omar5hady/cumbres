@@ -592,7 +592,7 @@ class ContratoController extends Controller
             }
 
         }
-
+        $contadorContrato = count($contratos);
         return[
             'pagination' => [
                 'total'         => $contratos->total(),
@@ -601,7 +601,7 @@ class ContratoController extends Controller
                 'last_page'     => $contratos->lastPage(),
                 'from'          => $contratos->firstItem(),
                 'to'            => $contratos->lastItem(),
-            ],'contratos' => $contratos];
+            ],'contratos' => $contratos,'contadorContrato' => $contadorContrato ];
     }
 
     public function indexCreditosAprobados(Request $request){

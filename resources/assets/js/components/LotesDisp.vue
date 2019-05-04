@@ -24,6 +24,7 @@
                                         <option value="lotes.fraccionamiento_id">Proyecto</option>
                                         <option value="modelos.nombre">Modelo</option>
                                         <option value="lotes.calle">Calle</option>
+                                        <option value="lotes.fecha_termino_ventas">Fecha termino</option>
                                     </select>
                                     
                                     <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" >
@@ -36,9 +37,10 @@
 
                                     <input type="text" v-if="criterio=='modelos.nombre'" v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio,rolId)" class="form-control" placeholder="Texto a buscar">
                                     <input type="text" v-if="criterio=='lotes.calle'" v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio,rolId)" class="form-control" placeholder="Texto a buscar">
-                                                                        
+                                    <input type="date" v-if="criterio=='lotes.fecha_termino_ventas'" v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio,rolId)" class="form-control" placeholder="Texto a buscar">                                    
                                     <input type="text" v-if="criterio=='fraccionamientos.nombre'" v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio,rolId)" class="form-control" placeholder="Texto a buscar">
                                     <button type="submit" @click="listarLote(1,buscar,buscar2,buscar3,criterio,rolId)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Total: '+ contador"> </span>
                                 </div>
                             </div>
                         </div>
@@ -227,6 +229,7 @@
                 lote_id: 0,
                 apartado:0,
                 fraccionamiento_id:0,
+                contador: 0,
                 credito:'',
                 fecha_apartado:'',
                 fecha_mostrar:'',
@@ -297,6 +300,7 @@
                     var respuesta = response.data;
                     me.arrayLote = respuesta.lotes.data;
                     me.pagination = respuesta.pagination;
+                    me.contador = respuesta.contadorLotesDisponibles;
                 })
                 .catch(function (error) {
                     console.log(error);

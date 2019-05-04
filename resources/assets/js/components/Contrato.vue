@@ -70,6 +70,7 @@
                                         <input  v-if="criterio2=='contratos.fecha'" type="date" v-model="buscar3" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control">
                                         <input  v-if="criterio2=='personal.nombre' || criterio2=='v.nombre' || criterio2=='creditos.id'" type="text" v-model="buscar2" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control">
                                         <button type="submit" @click="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                         <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Total: '+ contador"> </span>
                                     </div>
                                    
                                 </div>
@@ -594,7 +595,7 @@
                                                 <div class="col-md-3" v-if="coacreditado==true">
                                                         <div class="form-group">
                                                     <label for="">CURP </label>
-                                                    <input :readonly="listado==4" type="text" class="form-control" v-model="curp_coa" placeholder="CURP">
+                                                    <input :readonly="listado==4" type="text" maxlength="18" class="form-control" v-model="curp_coa" placeholder="CURP">
                                                 </div>
                                                 </div>
 
@@ -1636,6 +1637,7 @@
                 arrayDatosPaquetes: [],
 
                 errorContrato : 0,
+                contador: 0,
                 errorMostrarMsjContrato : [],
 
                 pagination : {
@@ -1790,6 +1792,7 @@
                     var respuesta = response.data;
                     me.arrayContratos = respuesta.contratos.data;
                     me.pagination2 = respuesta.pagination;
+                    me.contador = respuesta.contadorContrato;
                 })
                 .catch(function (error) {
                     console.log(error);

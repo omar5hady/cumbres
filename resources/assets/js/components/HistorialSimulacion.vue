@@ -38,6 +38,7 @@
                                     <input v-if="criterio=='creditos.fraccionamiento'" type="text"  v-model="b_lote" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="# Lote">
                                         <input  v-else type="text" v-model="buscar" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control">
                                         <button type="submit" @click="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                        <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Total: '+ contador"> </span>
                                     </div>
                                    
                                 </div>
@@ -235,6 +236,7 @@
                 modal3: 0,
                 modal2: 0,
                 modal5: 0,
+                contador: 0,
                 listado:1,
                 prospecto_id:0,
                 observacion:'',
@@ -296,6 +298,7 @@
                     var respuesta = response.data;
                     me.arraySimulaciones = respuesta.creditos.data;
                     me.pagination = respuesta.pagination;
+                    me.contador = respuesta.contadorHistSim;
                 })
                 .catch(function (error) {
                     console.log(error);

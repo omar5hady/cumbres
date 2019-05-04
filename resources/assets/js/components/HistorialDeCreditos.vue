@@ -29,6 +29,7 @@
                                         </select>
                                         <input type="text" v-model="buscar" @keyup.enter="listarHistorialCreditos(1,buscar,criterio)" class="form-control">
                                         <button type="submit" @click="listarHistorialCreditos(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                         <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Total: '+ contador"> </span>
                                     </div>
                                 </div>
                             </div>
@@ -157,7 +158,8 @@
                 arrayObservacion:[],
                 arrayFraccionamientos: [],
                 arrayObservacionCreditos: [],
-             
+
+                contadorHistCred: 0,
                 modal3: 0,
                 modal2: 0,
                 modal5: 0,
@@ -222,6 +224,7 @@
                     var respuesta = response.data;
                     me.arrayHistorialCreditos = respuesta.Historialcreditos.data;
                     me.pagination = respuesta.pagination;
+                    me.contador =respuesta.contadorHistCred;
                 })
                 .catch(function (error) {
                     console.log(error);

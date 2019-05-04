@@ -80,6 +80,7 @@
                                         </select>
                                         <input  type="text" v-model="buscar" @keyup.enter="listarProspectos(1,buscar,criterio)" class="form-control">
                                         <button type="submit" @click="listarProspectos(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                        <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Total: '+ contador"> </span>
                                     </div>
                                 </div>
                             </div>
@@ -2386,6 +2387,7 @@
                 fraccionamiento:'',
                 mascotas:0,
                 num_perros:0,
+                contador: 0,
                 num_habitantes:0,
                 num_folio:0,
                 rang0_10:0,
@@ -2453,6 +2455,7 @@
                     var respuesta = response.data;
                     me.arrayProspectos = respuesta.personas.data;
                     me.pagination = respuesta.pagination;
+                    me.contador = respuesta.contadorSimulacion;
                 })
                 .catch(function (error) {
                     console.log(error);

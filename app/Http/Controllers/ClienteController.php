@@ -842,7 +842,7 @@ class ClienteController extends Controller
             }
         }
          
- 
+        $contadorSimulacion = count($personas);
         return [
             'pagination' => [
                 'total'        => $personas->total(),
@@ -852,7 +852,7 @@ class ClienteController extends Controller
                 'from'         => $personas->firstItem(),
                 'to'           => $personas->lastItem(),
             ],
-            'personas' => $personas
+            'personas' => $personas, 'contadorSimulacion' => $contadorSimulacion
         ];
     }
 

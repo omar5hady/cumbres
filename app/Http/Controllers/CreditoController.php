@@ -639,7 +639,8 @@ class CreditoController extends Controller
             }
 
         }
-    
+
+    $contadorHistSim = count($creditos);
         return[
             'pagination' => [
                 'total'         => $creditos->total(),
@@ -648,7 +649,7 @@ class CreditoController extends Controller
                 'last_page'     => $creditos->lastPage(),
                 'from'          => $creditos->firstItem(),
                 'to'            => $creditos->lastItem(),
-            ],'creditos' => $creditos];
+            ],'creditos' => $creditos, 'contadorHistSim' => $contadorHistSim ];
     }
 
     public function HistorialDeCreditos (Request $request){
@@ -716,6 +717,7 @@ class CreditoController extends Controller
             ->where($criterio,'like','%'.$buscar.'%')
             ->orderBy('id','desc')->paginate(8);
         }
+        $contadorHistCred = count($Historialcreditos);
         return[
             'pagination' => [
                 'total'         => $Historialcreditos->total(),
@@ -724,7 +726,7 @@ class CreditoController extends Controller
                 'last_page'     => $Historialcreditos->lastPage(),
                 'from'          => $Historialcreditos->firstItem(),
                 'to'            => $Historialcreditos->lastItem(),
-            ],'Historialcreditos' => $Historialcreditos];
+            ],'Historialcreditos' => $Historialcreditos, 'contadorHistCred' => $contadorHistCred ];
     }
 
     public function ExportarHistorialSimulacion (){
