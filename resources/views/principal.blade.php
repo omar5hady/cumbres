@@ -339,22 +339,22 @@
 
 
     
-         <!-- /Div para iconos de redes sociales-->
+         <!-- /Div para iconos de redes sociales
          <div class="app-footer">
         <a class="btn" href="https://www.facebook.com/CasasCumbresSLP/">
             <button type="button" class="btn btn-brand btn-sm btn-facebook" >
                 <i class="fa fa-facebook"></i>
             </button>
         </a>
-    </div>
+    </div>-->
 
    
 
     <footer class="app-footer">
         
-        <span><a href="http://www.casascumbres.mx/">Grupo constructor cumbres</a> &copy; 2018</span>
+        <span><a href="http://www.casascumbres.mx/" target="_blank">Grupo constructor cumbres</a> &copy; 2018</span>
         
-        <span class="ml-auto">Desarrollado por <a href="http://www.casascumbres.mx/">Casas Cumbres</a></span>
+        <span class="ml-auto">Desarrollado por <a href="http://www.casascumbres.mx/" target="_blank">Casas Cumbres</a></span>
     </footer>
 
     <!-- Bootstrap and necessary plugins -->

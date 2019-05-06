@@ -1178,7 +1178,7 @@ class LoteController extends Controller
                         'N' => '$#,##0.00',
                     ));
 
-                    $o=2;
+                    
 
                     foreach($lotes as $index => $lote) {
                         if($lote->fecha_fin == NULL){
@@ -1190,13 +1190,8 @@ class LoteController extends Controller
                         }
                         if($lote->casa_muestra == 1){
                             $casaMuestra = 'Casa muestra';
-                            $sheet->cells('R'.$o, function($cells) {
-
-                                $cells->setBackground('#ff4040');
-                                $cells->setFontColor('#ffffff');
                             
-                            });
-                            $o++;
+                            
                         }else{
                             $casaMuestra = '';
                         }
@@ -1255,6 +1250,12 @@ class LoteController extends Controller
 
                     $num='A1:Q' . $cont;
                     $sheet->setBorder($num, 'thin');
+                    $sheet->cells('R1:R'.$cont, function($cells) {
+
+                        
+                        $cells->setFontColor('#ff4040');
+                    
+                    });
                 });
             }
             
