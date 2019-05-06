@@ -79,6 +79,7 @@
                                 <table class="table2 table-bordered table-striped table-sm">
                                     <thead>
                                         <tr>
+                                          
                                             <th># Contrato</th>
                                             <th>Cliente</th>
                                             <th>Vendedor</th>
@@ -224,7 +225,7 @@
 
             <!----------------- Vista para crear un contrato ------------------------------>
                     <!-- Div Card Body para registrar simulacion -->
-                    <template v-else-if="listado == 3 || listado == 4">
+                  <template v-else-if="listado == 3 || listado == 4">
                     <div class="card-body"> 
                             <div class="col-md-12">
                                 <div class="form-group">
@@ -1367,41 +1368,41 @@
                                                     </div>
                                                 
 
-                        <div class="col-md-6">
-                            <div class="form-group row" v-if="arrayPagos.length">
-                                <div class="table-responsive col-md-12">
-                                    <table class="table table-bordered table-striped table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th v-if="listado==3">Opciones</th>
-                                                <th># Pago</th>
-                                                <th>Fecha de pago</th>
-                                                <th>Monto</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody >
-                                            <tr v-for="(pago,index) in arrayPagos" :key="pago.fecha_pago">
-                                                <td v-if="listado==3">
-                                                    <button @click="eliminarPago(index)" type="button" class="btn btn-danger btn-sm">
-                                                        <i class="icon-close"></i>
-                                                    </button>
-                                                </td>
-                                                <td v-text="'Pago no. ' + parseInt(index+1)"></td>
-                                                <td v-text="this.moment(pago.fecha_pago).locale('es').format('DD/MMM/YYYY')"></td>
-                                                
-                                                <td>
-                                                    {{ pago.monto_pago | currency}}
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>                                                
-                                                    
-                                            </div>
+                                <div class="col-md-6">
+                                    <div class="form-group row" v-if="arrayPagos.length">
+                                        <div class="table-responsive col-md-12">
+                                            <table class="table table-bordered table-striped table-sm">
+                                                <thead>
+                                                    <tr>
+                                                        <th v-if="listado==3">Opciones</th>
+                                                        <th># Pago</th>
+                                                        <th>Fecha de pago</th>
+                                                        <th>Monto</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody >
+                                                    <tr v-for="(pago,index) in arrayPagos" :key="pago.fecha_pago">
+                                                        <td v-if="listado==3">
+                                                            <button @click="eliminarPago(index)" type="button" class="btn btn-danger btn-sm">
+                                                                <i class="icon-close"></i>
+                                                            </button>
+                                                        </td>
+                                                        <td v-text="'Pago no. ' + parseInt(index+1)"></td>
+                                                        <td v-text="this.moment(pago.fecha_pago).locale('es').format('DD/MMM/YYYY')"></td>
+                                                        
+                                                        <td>
+                                                            {{ pago.monto_pago | currency}}
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
-                                </div>
+                                </div>                                                
+                                                            
+                                                </div>
+                                    </div>
+                              </div>
                                 <!--- Botones y div para errores -->
                                 <div class="card-body">
                                         <div class="form-group">
@@ -2217,6 +2218,7 @@
                 this.credito_neto = data['credito_neto'];
                 this.avaluo_cliente = data['avaluo_cliente'];
                 this.fecha_contrato = data['fecha'];
+                this.observacion = data['observacion'];
                 this.total_pagar = data['total_pagar'];
                 this.monto_total_credito = data['monto_total_credito'];
                 this.enganche_total = data['enganche_total'];
