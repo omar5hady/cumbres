@@ -175,6 +175,8 @@ class CreditoController extends Controller
             $credito->credito_solic = $request->monto_credito;
             $credito->lote_id = $request->lote_id;
             $credito->fraccionamiento = $request->fraccionamiento;
+            $credito->vendedor_id = Auth::user()->id;
+
 
             $credito->save();
 

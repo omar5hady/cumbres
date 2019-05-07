@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Personal;
 use DB;
+use App\Cliente;
 
 class PersonalController extends Controller
 {
@@ -222,9 +223,22 @@ class PersonalController extends Controller
 
     public function selectRFC(Request $request){
         $rfc = $request->rfc;
-         $rfc = Personal::select('rfc')
+         $rfc1 = Personal::select('rfc')
                           ->where('rfc','=',$rfc)->count();
-                return $rfc;
+            if($rfc1==1){
+                $personaid = Personal::select('rfc','id')
+                            ->where('rfc','=',$rfc)->get();
+                $vendedor = Cliente::join('vendedores','clientes.vendedor_id','=','vendedores.id')
+                ->join('personal','vendedores.id','=','personal.id')
+                ->select('personal.nombre','personal.apellidos')
+                ->where('clientes.id','=',$personaid[0]->id)->get();
+                return ['rfc1'=>$rfc1,'personaid' => $personaid, 'vendedor'=> $vendedor];
+                          }else{
+                            return ['rfc1'=>$rfc1];
+                          }
+                          
+       
+            
     }
 
 }

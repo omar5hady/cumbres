@@ -59,6 +59,7 @@
                                             <th>CURP </th>
                                             <th>Proyecto de interes</th>
                                             <th>Observaciones</th>
+                                            <th v-if="rolId != 2">Vendedor</th>
                                             
                                         </tr>
                                     </thead>
@@ -97,6 +98,7 @@
                                             <td v-text="prospecto.curp"></td>
                                             <td v-text="prospecto.proyecto"></td>
                                             <td> <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" @click="abrirModal3('prospecto','ver_todo', prospecto.id),listarObservacion(1,prospecto.id)">Ver todos</button> </td>
+                                            <td v-text="prospecto.v_completo"></td>
                                         </tr>                               
                                     </tbody>
                                 </table>
@@ -948,6 +950,9 @@
 <script>
     import vSelect from 'vue-select';
     export default {
+        props:{
+            rolId:{type: String}
+        },
         data(){
             return{
                 proceso:false,
@@ -1651,7 +1656,19 @@
                 me.encuentraRFC=0;
                 axios.get(url).then(function (response) {
                 var respuesta = response.data;
-                me.encuentraRFC = respuesta;    
+                me.encuentraRFC = respuesta.rfc1; 
+
+                if(me.encuentraRFC==1) {
+                    var vendedorrfc = [];
+                    var nombrevendedor = '';
+                    vendedorrfc = respuesta.vendedor;
+                    nombrevendedor = vendedorrfc[0]['nombre'] + ' ' + vendedorrfc[0]['apellidos'];
+                    Swal({
+                    title: 'Este RFC ya ha sido agregado por: ' + nombrevendedor ,
+                    animation: false,
+                    customClass: 'animated tada'
+                    })
+                } 
                 })
                 .catch(function (error) {
                     console.log(error);

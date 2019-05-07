@@ -8,7 +8,7 @@
                 <!-- Ejemplo de tabla Listado -->
                 <div class="card scroll-box">
                     <div class="card-header">
-                        <i class="fa fa-align-justify"></i> Lotes Disponibles
+                        <i class="fa fa-align-justify"></i> Casas Disponibles
                         <!--   Boton descargar excel    -->
                          <a class="btn btn-success" v-bind:href="'/lotes/resume_excel_lotes_disp'">
                             <i class="fa fa-file-text"></i>&nbsp; Descargar relacion

@@ -46,6 +46,7 @@ class CreateCreditosTable extends Migration
             $table->boolean('status')->default(1)->nullable();
             $table->unsignedInteger('lote_id')->nullable();
             $table->boolean('contrato')->default(0)->nullable();
+            $table->integer('vendedor_id')->nullable();
 
             $table->timestamps();
             

@@ -253,7 +253,7 @@
                             <ul class="nav-dropdown-items">
                                 @if(Auth::user()->lotes_disp == 1)
                                     <li @click="menu=59" class="nav-item">
-                                        <a class="nav-link" href="#"><i class="fa fa-circle-o-notch fa-spin"></i> Lotes Disponibles</a>
+                                        <a class="nav-link" href="#"><i class="fa fa-circle-o-notch fa-spin"></i> Casas Disponibles</a>
                                     </li>
                                 @endif
                                 @if(Auth::user()->mis_prospectos == 1)
