@@ -27,19 +27,27 @@
                                         <option value="lotes.fecha_termino_ventas">Fecha termino</option>
                                     </select>
                                     
-                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" >
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @click="selectEtapa(buscar), selectModelo(buscar)">
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
 
-                                    <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar2" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio,rolId)" class="form-control" placeholder="Etapa">
-                                    <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar3" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio,rolId)" class="form-control" placeholder="Manzana a buscar">
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar2" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)"> 
+                                        <option value="">Etapa</option>
+                                        <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
+                                    </select>
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_modelo" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)">
+                                            <option value="">Modelo</option>
+                                            <option v-for="modelos in arrayModelos" :key="modelos.id" :value="modelos.id" v-text="modelos.nombre"></option>
+                                        </select>
 
-                                    <input type="text" v-if="criterio=='modelos.nombre'" v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio,rolId)" class="form-control" placeholder="Texto a buscar">
-                                    <input type="text" v-if="criterio=='lotes.calle'" v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio,rolId)" class="form-control" placeholder="Texto a buscar">
-                                    <input type="date" v-if="criterio=='lotes.fecha_termino_ventas'" v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio,rolId)" class="form-control" placeholder="Texto a buscar">                                    
-                                    <input type="text" v-if="criterio=='fraccionamientos.nombre'" v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio,rolId)" class="form-control" placeholder="Texto a buscar">
-                                    <button type="submit" @click="listarLote(1,buscar,buscar2,buscar3,criterio,rolId)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar3" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)" class="form-control" placeholder="Manzana a buscar">
+                                    <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)" class="form-control" placeholder="Lote a buscar">
+                                    <input type="text" v-if="criterio=='modelos.nombre'" v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)" class="form-control" placeholder="Texto a buscar">
+                                    <input type="text" v-if="criterio=='lotes.calle'" v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)" class="form-control" placeholder="Texto a buscar">
+                                    <input type="date" v-if="criterio=='lotes.fecha_termino_ventas'" v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)" class="form-control" placeholder="Texto a buscar">                                    
+                                    <input type="text" v-if="criterio=='fraccionamientos.nombre'" v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)" class="form-control" placeholder="Texto a buscar">
+                                    <button type="submit" @click="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                     <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Total: '+ contador"> </span>
                                 </div>
                             </div>
@@ -228,6 +236,8 @@
                 vendedor_id:0,
                 lote_id: 0,
                 apartado:0,
+                b_modelo:'',
+                b_lote:'',
                 fraccionamiento_id:0,
                 contador: 0,
                 credito:'',
@@ -240,6 +250,9 @@
                 arrayVendedores:[],
                 arrayCreditos:[],
                 arrayDatosApartado: [],
+                arrayEtapas: [],
+                arrayModelos: [],
+
                 modal : 0,
                 tituloModal : '',
                 tipoAccion: 0,
@@ -291,11 +304,12 @@
 
         },
 
+
         methods : {
             /**Metodo para mostrar los registros */
-            listarLote(page, buscar, buscar2, buscar3, criterio,rol){
+            listarLote(page, buscar, buscar2, buscar3, b_modelo, b_lote, criterio,rol){
                 let me = this;
-                var url = '/lotesDisponibles?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2+ '&buscar3=' + buscar3 + '&criterio=' + criterio + '&rolId=' + rol;
+                var url = '/lotesDisponibles?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2+ '&buscar3=' + buscar3 + '&b_modelo='+ b_modelo + '&b_lote='+ b_lote +'&criterio=' + criterio + '&rolId=' + rol; 
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayLote = respuesta.lotes.data;
@@ -333,6 +347,36 @@
                     console.log(error);
                 });
             },
+            selectEtapa(buscar){
+                let me = this;
+                me.buscar2=""
+                me.buscar3=""
+                
+                me.arrayEtapas=[];
+                var url = '/select_etapa_proyecto?buscar=' + buscar;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayEtapas = respuesta.etapas;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
+            selectModelo(buscar){
+                let me = this;
+              
+                me.arrayModelos=[];
+                var url = '/select_modelo_proyecto?buscar=' + buscar;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayModelos = respuesta.modelos;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
             selectVendedores(){
                 let me = this;
                 me.arrayVendedores=[];
@@ -378,12 +422,12 @@
                     console.log(error);
                 });
             },
-            cambiarPagina(page, buscar, buscar2, buscar3, criterio,rol){
+            cambiarPagina(page, buscar, buscar2, buscar3,b_modelo, b_lote, criterio,rol){
                 let me = this;
                 //Actualiza la pagina actual
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
-                me.listarLote(page,buscar,buscar2,buscar3,criterio,rol);
+                me.listarLote(page,buscar,buscar2,buscar3,b_modelo, b_lote,criterio,rol);
             },
             formatNumber(value) {
                 let val = (value/1).toFixed(2)
@@ -431,7 +475,7 @@
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal(); //al guardar el registro se cierra el modal
-                    me.listarLote(1,'','','','lote', 1); //se enlistan nuevamente los registros
+                    me.listarLote(1,'','','','','','lote', 1); //se enlistan nuevamente los registros
                     //Se muestra mensaje Success
                     swal({
                         position: 'top-end',
@@ -465,7 +509,7 @@
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal(); //al guardar el registro se cierra el modal
-                    me.listarLote(1,'','','','lote', 1); //se enlistan nuevamente los registros
+                    me.listarLote(1,'','','','','','lote', 1); //se enlistan nuevamente los registros
                     //Se muestra mensaje Success
                     swal({
                         position: 'top-end',
@@ -503,7 +547,7 @@
                         'success'
                         )
                         me.cerrarModal();
-                        me.listarLote(1,'','','','lote',1);
+                        me.listarLote(1,'','','','','','lote',1);
                     }).catch(function (error){
                         console.log(error);
                     });
@@ -584,7 +628,7 @@
             }
         },
         mounted() {
-            this.listarLote(1,this.buscar,this.buscar2,this.buscar3,this.criterio,this.rolId);
+            this.listarLote(1,this.buscar,this.buscar2,this.buscar3,this.b_modelo,this.b_lote,this.criterio,this.rolId);
             this.selectFraccionamientos();
             this.selectCreditos();
         }

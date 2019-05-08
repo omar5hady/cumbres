@@ -690,6 +690,16 @@ class ClienteController extends Controller
                 ->orderBy('personal.apellidos', 'desc')
                 ->orderBy('personal.nombre', 'desc')
                 ->paginate(8);
+
+                $contadorPersonas = Cliente::join('personal','clientes.id','=','personal.id')
+                ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
+                ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
+                ->select('personal.id') 
+                ->where('vendedor_id','=',Auth::user()->id)
+                ->where('clientes.clasificacion','=','2')
+                ->orderBy('personal.apellidos', 'desc')
+                ->orderBy('personal.nombre', 'desc')
+                ->count();
             }
             else{
 
@@ -722,6 +732,18 @@ class ClienteController extends Controller
                     ->orderBy('personal.apellidos', 'desc')
                     ->orderBy('personal.nombre', 'desc')
                 ->paginate(8);
+
+                $contadorPersonas = Cliente::join('personal','clientes.id','=','personal.id')
+                ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
+                ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
+                ->select('personal.id') 
+                ->where('vendedor_id','=',Auth::user()->id)     
+                ->where('clientes.clasificacion','=','2')
+                ->where($criterio, 'like', '%'. $buscar . '%')
+                ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
+                ->orderBy('personal.apellidos', 'desc')
+                ->orderBy('personal.nombre', 'desc')
+                ->count();
                 }
 
                 else{
@@ -752,6 +774,18 @@ class ClienteController extends Controller
                 ->orderBy('personal.apellidos', 'desc')
                 ->orderBy('personal.nombre', 'desc')
                 ->paginate(8);
+
+                $contadorPersonas = Cliente::join('personal','clientes.id','=','personal.id')
+                ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
+                ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
+                ->select('personal.id') 
+                ->where('vendedor_id','=',Auth::user()->id)     
+                ->where('clientes.clasificacion','=','2')
+                ->where($criterio, 'like', '%'. $buscar . '%')
+                ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
+                ->orderBy('personal.apellidos', 'desc')
+                ->orderBy('personal.nombre', 'desc')
+                ->count();
                 }
             }
         }
@@ -784,6 +818,15 @@ class ClienteController extends Controller
                     ->orderBy('personal.apellidos', 'desc')
                     ->orderBy('personal.nombre', 'desc')
                     ->paginate(8);
+
+                    $contadorPersonas = Cliente::join('personal','clientes.id','=','personal.id')
+                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
+                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
+                    ->select('personal.id') 
+                    ->where('clientes.clasificacion','=','2')
+                    ->orderBy('personal.apellidos', 'desc')
+                    ->orderBy('personal.nombre', 'desc')
+                    ->count();
                 }
                 else{
 
@@ -816,6 +859,17 @@ class ClienteController extends Controller
                         ->orderBy('personal.apellidos', 'desc')
                         ->orderBy('personal.nombre', 'desc')
                     ->paginate(8);
+
+                    $contadorPersonas = Cliente::join('personal','clientes.id','=','personal.id')
+                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
+                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
+                    ->select('personal.id') 
+                    ->where('clientes.clasificacion','=','2')
+                    ->where($criterio, 'like', '%'. $buscar . '%')
+                    ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
+                    ->orderBy('personal.apellidos', 'desc')
+                    ->orderBy('personal.nombre', 'desc')
+                    ->count();
                     }
 
                     else{
@@ -846,12 +900,22 @@ class ClienteController extends Controller
                     ->orderBy('personal.apellidos', 'desc')
                     ->orderBy('personal.nombre', 'desc')
                     ->paginate(8);
+
+                    $contadorPersonas = Cliente::join('personal','clientes.id','=','personal.id')
+                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
+                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
+                    ->select('personal.id') 
+                    ->where('clientes.clasificacion','=','2')
+                    ->where($criterio, 'like', '%'. $buscar . '%')
+                    ->orderBy('personal.apellidos', 'desc')
+                    ->orderBy('personal.nombre', 'desc')
+                    ->count();
                     }
                 }
             }
         }
          
-        $contadorSimulacion = count($personas);
+        
         return [
             'pagination' => [
                 'total'        => $personas->total(),
@@ -861,7 +925,7 @@ class ClienteController extends Controller
                 'from'         => $personas->firstItem(),
                 'to'           => $personas->lastItem(),
             ],
-            'personas' => $personas, 'contadorSimulacion' => $contadorSimulacion
+            'personas' => $personas, 'contadorSimulacion' => $contadorPersonas
         ];
     }
 
