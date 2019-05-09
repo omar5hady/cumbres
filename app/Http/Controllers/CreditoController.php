@@ -7,7 +7,7 @@ use App\Dato_extra;
 use App\Credito;
 use App\Personal;
 use App\Cliente;
-use App\Inst_seleccionada;
+use App\inst_seleccionada;
 use App\Vendedor;
 use DB;
 use App\User;
@@ -54,7 +54,7 @@ class CreditoController extends Controller
                         ->where('clientes.id','=',$credito->prospecto_id)->get();
                     
                     $institucion=[];
-                    $institucion=Inst_seleccionada::select('tipo_credito','institucion','elegido')
+                    $institucion=inst_seleccionada::select('tipo_credito','institucion','elegido')
                         ->where('credito_id','=',$credito->id)
                         ->where('elegido','=',1)->get();
                     if(sizeof($prospecto) > 0){
@@ -180,8 +180,9 @@ class CreditoController extends Controller
 
             $credito->save();
 
+            $id_credito = $credito->id;
             $datos_extra = new Dato_extra();
-            $datos_extra->id = $credito->id;
+            $datos_extra->id = $id_credito;
             $datos_extra->mascota = $request->mascotas;
             $datos_extra->num_perros = $request->num_perros;
             $datos_extra->rang010 = $request->rang0_10;
@@ -193,8 +194,8 @@ class CreditoController extends Controller
             $datos_extra->num_vehiculos = $request->num_vehiculos;
             $datos_extra->save();
 
-            $inst_seleccionada = new Inst_seleccionada();
-            $inst_seleccionada->credito_id = $credito->id;
+            $inst_seleccionada = new inst_seleccionada();
+            $inst_seleccionada->credito_id = $id_credito;
             $inst_seleccionada->tipo_credito = $request->tipo_credito;
             $inst_seleccionada->institucion = $request->inst_financiera;
             $inst_seleccionada->elegido = 1;
@@ -255,7 +256,7 @@ class CreditoController extends Controller
     }
 
     public function storeCreditoSelect(Request $request){
-        $inst_seleccionada = new Inst_seleccionada();
+        $inst_seleccionada = new inst_seleccionada();
         $inst_seleccionada->credito_id = $request->credito_id;
         $inst_seleccionada->tipo_credito = $request->tipo_credito;
         $inst_seleccionada->institucion = $request->institucion;
@@ -269,7 +270,7 @@ class CreditoController extends Controller
         if (!$request->ajax()) return redirect('/');
         try{
             DB::beginTransaction();
-        $inst_seleccionada = Inst_seleccionada::findOrFail($request->id);
+        $inst_seleccionada = inst_seleccionada::findOrFail($request->id);
         $inst_seleccionada->fecha_ingreso = $request->fecha_ingreso;
         $inst_seleccionada->status = $request->status;
         if($inst_seleccionada->status == 0 || $inst_seleccionada->status == 2 ){
@@ -299,7 +300,7 @@ class CreditoController extends Controller
 
     public function seleccionarCredito(Request $request){
         if(!$request->ajax())return redirect('/');
-        $inst_seleccionada = Inst_seleccionada::findOrFail($request->id);
+        $inst_seleccionada = inst_seleccionada::findOrFail($request->id);
         $inst_seleccionada->elegido = 1;
         $inst_seleccionada->save();
 
@@ -310,7 +311,7 @@ class CreditoController extends Controller
         $credito->credito_solic = $inst_seleccionada->monto_credito;
         $credito->save();
 
-        $seleccionados =  Inst_seleccionada::select('id','elegido')
+        $seleccionados =  inst_seleccionada::select('id','elegido')
                                              ->where('credito_id','=',$simulacion)
                                              ->where('id','!=',$request->id)
                                              ->get();
