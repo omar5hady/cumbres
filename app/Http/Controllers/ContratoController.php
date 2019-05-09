@@ -9,7 +9,7 @@ use App\Pago_contrato;
 use DB;
 use Auth;
 use Carbon\Carbon;
-use App\Inst_seleccionada;
+use App\inst_seleccionada;
 use App\Cliente;
 use App\Personal;
 use App\Licencia;
@@ -1014,7 +1014,7 @@ class ContratoController extends Controller
                         ->where('clientes.id','=',$credito->prospecto_id)->get();
                     
                     $institucion=[];
-                    $institucion=Inst_seleccionada::select('tipo_credito','institucion','elegido')
+                    $institucion=inst_seleccionada::select('tipo_credito','institucion','elegido')
                         ->where('credito_id','=',$credito->id)
                         ->where('elegido','=',1)->get();
                     if(sizeof($prospecto) > 0){

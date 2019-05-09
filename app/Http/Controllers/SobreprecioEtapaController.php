@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Sobreprecio_etapa;
 use DB;
+use App\Sobreprecio_modelo;
+use App\Lote;
+use App\Credito;
 
 
 class SobreprecioEtapaController extends Controller
@@ -103,6 +106,36 @@ class SobreprecioEtapaController extends Controller
         $sobreprecio_etapa->sobreprecio_id = $request->sobreprecio_id;
         $sobreprecio_etapa->sobreprecio = $request->sobreprecio;
         $sobreprecio_etapa->save();
+
+        $loteid1 = Sobreprecio_modelo::select('lote_id')->where('sobreprecio_etapa_id','=',$request->id)->get();
+
+        foreach($loteid1 as $lotesid){
+            $lote_id = Lote::select('id')->where('id','=',$lotesid->lote_id)
+            ->where('contrato','=',0)->get();
+
+            foreach($lote_id as $loteid){
+                $sobreprecios = Sobreprecio_modelo::join('sobreprecios_etapas','sobreprecios_modelos.sobreprecio_etapa_id','=','sobreprecios_etapas.id')
+                ->select(DB::raw("SUM(sobreprecios_etapas.sobreprecio) as sobreprecios"))
+                ->where('sobreprecios_modelos.lote_id','=',$loteid->id)->get();
+
+            foreach($sobreprecios as $sobreprecio){
+                $sobreprecioslote = Lote::findOrFail($loteid->id);
+                $sobreprecioslote->sobreprecio = $sobreprecio->sobreprecios;
+                $sobreprecioslote->save();
+
+            $creditos = Credito::select('id')->where('lote_id','=',$loteid->id)->get();
+                foreach($creditos as $creditosid){
+                    $credito = Credito::findOrFail($creditosid->id);
+                    $credito->precio_venta = $sobreprecio->sobreprecios + $credito->precio_base + $credito->precio_terreno_excedente + $credito->precio_obra_extra - $credito->descuento_promocion + $credito->costo_paquete;
+                    $credito->save();
+                    
+
+                }
+              } 
+            }
+        }
+
+        
     }
 
     /**

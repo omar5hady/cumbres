@@ -808,7 +808,7 @@ class LoteController extends Controller
        ->where('id','=',$modeloOld[0]->modelo_id)
        ->get();
 
-       $modelo= Modelo::select('construccion')
+       $modelo= Modelo::select('construccion','nombre')
        ->where('id','=', $request->modelo_id)
        ->get();
        
@@ -840,7 +840,7 @@ class LoteController extends Controller
                 'usuario' => $imagenUsuario[0]->usuario,
                 'foto' => $imagenUsuario[0]->foto_user,
                 'fecha' => $fecha,
-                'msj' => 'Asigno el modelo: '.$nombreModelo[0]->nombre.' a la etapa: '.$etapa[0]->num_etapa.' a '.$aviso.' lotes, del fraccionamiento '.$fraccionamientos[0]->nombre,
+                'msj' => 'Asigno el modelo: '.$modelo[0]->nombre.' a la etapa: '.$etapa[0]->num_etapa.' a '.$aviso.' lotes, del fraccionamiento '.$fraccionamientos[0]->nombre,
                 'titulo' => 'Nuevos modelos asignados'
             ]
         ];

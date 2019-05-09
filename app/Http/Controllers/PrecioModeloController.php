@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 use App\Precio_modelo;
 
 use Illuminate\Http\Request;
+use App\Precio_etapa;
+use App\Lote;
+use App\Credito;
 
 class PrecioModeloController extends Controller
 {
@@ -73,8 +76,28 @@ class PrecioModeloController extends Controller
         $precio_modelo->modelo_id = $request->modelo_id;
         $precio_modelo->precio_modelo = $request->precio_modelo;
         $precio_modelo->save();
-    
-        $precio_modelo->save();
+
+        $etapa_id = Precio_etapa::select('etapa_id')->where('id','=',$request->precio_etapa_id)->get();
+        $lote_id = Lote::select('id')->where('modelo_id','=',$request->modelo_id)
+        ->where('etapa_id','=',$etapa_id[0]->etapa_id)
+        ->where('contrato','=',0)->get();
+        
+        foreach($lote_id as $loteid){
+            $credito_id = Credito::select('id','precio_base','precio_venta')->where('lote_id','=',$loteid->id)
+            ->where('contrato','=',0)->get();
+            foreach($credito_id as $creditoid){
+                $newPrecioVenta = $creditoid->precio_venta - $creditoid->precio_base + $request->precio_modelo;
+                $credito = Credito::findOrFail($creditoid->id);
+                $credito->precio_venta=$newPrecioVenta;
+                $credito->precio_base = $request->precio_modelo;
+                $credito->save();
+            }
+
+            $precio = Lote::findOrFail($loteid->id);
+            $precio->precio_base=$request->precio_modelo;
+            $precio->save();
+        }
+        
     }
 
     public function destroy(Request $request)

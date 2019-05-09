@@ -34,6 +34,7 @@
                                         <input v-if="criterio=='clientes.created_at'" type="date" v-model="buscar" @keyup.enter="listarProspectos(1,buscar,b_clasificacion,criterio)" class="form-control">
                                         <input v-else type="text" v-model="buscar" @keyup.enter="listarProspectos(1,buscar,b_clasificacion,criterio)" class="form-control">
                                         <select class="form-control" v-model="b_clasificacion" >
+                                            <option value="">Clasificación</option>
                                             <option value="1">No viable</option>
                                             <option value="2">Tipo A</option>
                                             <option value="3">Tipo B</option>
