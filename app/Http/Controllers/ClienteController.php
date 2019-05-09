@@ -481,11 +481,7 @@ class ClienteController extends Controller
             $cliente->curp = $request->curp;
             $cliente->nombre_recomendado = $request->nombre_recomendado;
             $cliente->lugar_nacimiento = $request->lugar_nacimiento;
-            if($request->vendedor_id == NULL)
-            $cliente->vendedor_id = Auth::user()->id;
-            else{
-            $cliente->vendedor_id = $request->vendedor_id;
-        }
+            
             $cliente->empresa = $request->empresa;
 
             $cliente->coacreditado = $request->coacreditado;

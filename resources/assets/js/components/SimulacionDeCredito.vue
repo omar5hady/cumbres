@@ -2638,12 +2638,12 @@
                         me.modelo = me.arrayDatosLotes[0]['modelo'];
                         me.superficie = me.arrayDatosLotes[0]['terreno'];
                         me.precioBase = me.arrayDatosLotes[0]['precio_base'];
-                        me.precioExcedente = me.arrayDatosLotes[0]['excedente_terreno'];
+                        me.precioExcedente = Math.round(me.arrayDatosLotes[0]['excedente_terreno']*100)/100;
                         me.precioVenta = me.arrayDatosLotes[0]['precio_venta'];
                         me.promocion = me.arrayDatosLotes[0]['promocion'];
                         me.descripcionPromo = me.arrayDatosLotes[0]['descripcionPromo'];
                         me.descuentoPromo = me.arrayDatosLotes[0]['descuentoPromo'];
-                        me.terreno_tam_excedente= me.arrayDatosLotes[0]['terreno_tam_excedente'];
+                        me.terreno_tam_excedente= Math.round( me.arrayDatosLotes[0]['terreno_tam_excedente']*100)/100;
                         me.num_lote = me.arrayDatosLotes[0]['num_lote'];
                         me.precioObraExtra = me.arrayDatosLotes[0]['obra_extra'];
                         me.fraccionamiento = me.arrayDatosLotes[0]['proyecto'];

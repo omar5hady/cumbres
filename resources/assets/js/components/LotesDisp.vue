@@ -121,19 +121,19 @@
                             <!--Botones de paginacion -->
                             <ul class="pagination">
                                 <li class="page-item" v-if="pagination.last_page > 7 && pagination.current_page > 7">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(1,buscar,buscar2,buscar3,criterio,rolId)">Inicio</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)">Inicio</a>
                                 </li>
                                 <li class="page-item" v-if="pagination.current_page > 1">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,buscar2,buscar3,criterio,rolId)">Ant</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)">Ant</a>
                                 </li>
                                 <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,buscar2,buscar3,criterio,rolId)" v-text="page"></a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)" v-text="page"></a>
                                 </li>
                                 <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,buscar2,buscar3,criterio,rolId)">Sig</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)">Sig</a>
                                 </li>
                                 <li class="page-item" v-if="pagination.last_page > 7 && pagination.current_page<pagination.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.last_page,buscar,buscar2,buscar3,criterio,rolId)">Ultimo</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.last_page,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)">Ultimo</a>
                                 </li>
                             </ul>
                         </nav>
