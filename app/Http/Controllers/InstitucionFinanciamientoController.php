@@ -16,10 +16,10 @@ class InstitucionFinanciamientoController extends Controller
         $criterio = $request->criterio;
         
         if($buscar==''){
-            $instituciones_financiamiento = InstitucionFinanciamiento::orderBy('nombre','desc')->paginate(8);
+            $instituciones_financiamiento = InstitucionFinanciamiento::orderBy('nombre','asc')->paginate(8);
         }
         else{
-            $instituciones_financiamiento = InstitucionFinanciamiento::where($criterio, 'like', '%'. $buscar . '%')->orderBy('nombre','desc')->paginate(8);
+            $instituciones_financiamiento = InstitucionFinanciamiento::where($criterio, 'like', '%'. $buscar . '%')->orderBy('nombre','asc')->paginate(8);
         }
 
         return [

@@ -25,7 +25,7 @@ class SobreprecioModeloController extends Controller
             ->join('sobreprecios','sobreprecios_etapas.sobreprecio_id','=','sobreprecios.id')
             ->select('lotes.num_lote as lotes',DB::raw("CONCAT(sobreprecios.nombre,' $',sobreprecios_etapas.sobreprecio) AS sobreprecioModelo"),'sobreprecios_modelos.id',
                     'sobreprecios_modelos.sobreprecio_etapa_id', 'lotes.id as lote_id', 'lotes.manzana as manzana')
-            ->orderBy('id','ASC')->paginate(8);
+            ->orderBy('id','ASC')->paginate(20);
         }
         else{
             if($buscar2 == '' && $buscar3 == '') {
@@ -35,7 +35,7 @@ class SobreprecioModeloController extends Controller
                 ->select('lotes.num_lote as lotes',DB::raw("CONCAT(sobreprecios.nombre,' $',sobreprecios_etapas.sobreprecio) AS sobreprecioModelo"),'sobreprecios_modelos.id',
                         'sobreprecios_modelos.sobreprecio_etapa_id', 'lotes.id as lote_id', 'lotes.manzana as manzana')
                     ->where('sobreprecios_etapas.etapa_id','=', $buscar)
-                    ->orderBy('id','ASC')->paginate(8);
+                    ->orderBy('id','ASC')->paginate(20);
             }
             else{
                 if($buscar2 == ''){
@@ -46,7 +46,7 @@ class SobreprecioModeloController extends Controller
                             'sobreprecios_modelos.sobreprecio_etapa_id', 'lotes.id as lote_id', 'lotes.manzana as manzana')
                         ->where('sobreprecios_etapas.etapa_id','=', $buscar)
                         ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                        ->orderBy('id','ASC')->paginate(8);
+                        ->orderBy('id','ASC')->paginate(20);
                     }
                 
                 if($buscar3 == ''){
@@ -57,7 +57,7 @@ class SobreprecioModeloController extends Controller
                             'sobreprecios_modelos.sobreprecio_etapa_id', 'lotes.id as lote_id', 'lotes.manzana as manzana')
                         ->where('sobreprecios_etapas.etapa_id','=', $buscar)
                         ->where('lotes.num_lote', 'like', '%'. $buscar2 . '%')
-                        ->orderBy('id','ASC')->paginate(8);
+                        ->orderBy('id','ASC')->paginate(20);
                     }
                 else{
                     $sobreprecio_modelo = Sobreprecio_modelo::join('lotes','sobreprecios_modelos.lote_id','=','lotes.id')
@@ -68,7 +68,7 @@ class SobreprecioModeloController extends Controller
                         ->where('sobreprecios_etapas.etapa_id','=', $buscar)
                         ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
                         ->where('lotes.num_lote', 'like', '%'. $buscar2 . '%')
-                        ->orderBy('id','sobreprecios_modelos.lote_id')->paginate(8);
+                        ->orderBy('id','sobreprecios_modelos.lote_id')->paginate(20);
 
                     }
             }

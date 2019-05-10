@@ -30,9 +30,11 @@ class PaqueteController extends Controller
             'paquetes.fraccionamiento_id','paquetes.etapa_id','paquetes.nombre','paquetes.v_ini','paquetes.v_fin',
             'paquetes.costo','paquetes.descripcion',
             DB::raw('(CASE WHEN paquetes.v_fin >= ' . $current . ' THEN 1 ELSE 0 END) AS is_active'))
-                ->orderBy('id','paquetes.nombre')
+                ->orderBy('fraccionamientos.nombre','asc')
+                ->orderBy('etapas.num_etapa','asc')
+                ->orderBy('paquetes.nombre','asc')
                 //->where('paquetes.v_fin', '>', $current)
-                ->paginate(5);
+                ->paginate(20);
         }
         else{
             $paquetes = Paquete::join('fraccionamientos','paquetes.fraccionamiento_id','=','fraccionamientos.id')
@@ -41,8 +43,10 @@ class PaqueteController extends Controller
             'paquetes.fraccionamiento_id','paquetes.etapa_id','paquetes.nombre','paquetes.v_ini',
             'paquetes.v_fin','paquetes.costo','paquetes.descripcion'
             ,DB::raw('(CASE WHEN paquetes.v_fin > ' . $current . ' THEN 1 ELSE 0 END) AS is_active'))
-                ->orderBy('id','paquetes.nombre')
-                ->where($criterio, 'like', '%'. $buscar . '%')->paginate(5);
+                ->orderBy('fraccionamientos.nombre','asc')
+                ->orderBy('etapas.num_etapa','asc')
+                ->orderBy('paquetes.nombre','asc')
+                ->where($criterio, 'like', '%'. $buscar . '%')->paginate(20);
         }
 
 

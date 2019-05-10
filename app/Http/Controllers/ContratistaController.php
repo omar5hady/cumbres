@@ -16,10 +16,10 @@ class ContratistaController extends Controller
         $criterio = $request->criterio;
         
         if($buscar==''){
-            $contratistas = Contratista::orderBy('nombre','desc')->paginate(8);
+            $contratistas = Contratista::orderBy('nombre','asc')->paginate(8);
         }
         else{
-            $contratistas = Contratista::where($criterio, 'like', '%'. $buscar . '%')->orderBy('nombre','desc')->paginate(8);
+            $contratistas = Contratista::where($criterio, 'like', '%'. $buscar . '%')->orderBy('nombre','asc')->paginate(8);
         }
 
         return [

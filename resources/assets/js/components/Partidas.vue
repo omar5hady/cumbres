@@ -21,12 +21,14 @@
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
                                     <select class="form-control col-md-4" v-model="criterio">
-                                      <option value="partida">Partidas</option>
-                                      <option value="fraccionamientos.nombre">Proyecto</option>
-                                      <option value="modelos.nombre">Modelo</option>
+                                      <option value="fraccionamientos.id">Proyecto</option>
                                     </select>
-                                    <input type="text" v-model="buscar" @keyup.enter="listarPartidas(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
-                                    <button type="submit" @click="listarPartidas(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <select class="form-control" v-model="buscar" >
+                                        <option value="">Seleccione</option>
+                                        <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                                    </select>
+                                    <input type="text" v-model="buscar2" @keyup.enter="listarPartidas(1,buscar,buscar2,criterio)" class="form-control" placeholder="Modelo">
+                                    <button type="submit" @click="listarPartidas(1,buscar,buscar2,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
                         </div>
@@ -68,13 +70,13 @@
                             <!--Botones de paginacion -->
                             <ul class="pagination">
                                 <li class="page-item" v-if="pagination.current_page > 1">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,criterio)">Ant</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,buscar2,criterio)">Ant</a>
                                 </li>
                                 <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,criterio)" v-text="page"></a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,buscar2,criterio)" v-text="page"></a>
                                 </li>
                                 <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,criterio)">Sig</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,buscar2,criterio)">Sig</a>
                                 </li>
                             </ul>
                         </nav>
@@ -186,8 +188,9 @@
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'partida', 
-                buscar : ''
+                criterio : 'fraccionamientos.id', 
+                buscar : '',
+                buscar2 : ''
             }
         },
         computed:{
@@ -220,9 +223,9 @@
         },
         methods : {
             /**Metodo para mostrar los registros */
-            listarPartidas(page, buscar, criterio){
+            listarPartidas(page, buscar,buscar2, criterio){
                 let me = this;
-                var url = '/partidas?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
+                var url = '/partidas?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2 +'&criterio=' + criterio;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayPartidas = respuesta.partidas.data;
@@ -236,12 +239,12 @@
                 let val = (value/1).toFixed(2)
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
             },
-            cambiarPagina(page, buscar, criterio){
+            cambiarPagina(page, buscar,buscar2, criterio){
                 let me = this;
                 //Actualiza la pagina actual
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
-                me.listarPartidas(page,buscar,criterio);
+                me.listarPartidas(page,buscar,buscar2,criterio);
             },
             /**Metodo para registrar  */
             registrarPartida(){
@@ -258,7 +261,7 @@
                     'costo':this.costo,
                 }).then(function (response){
                     me.cerrarModal(); //al guardar el registro se cierra el modal
-                    me.listarPartidas(1,'','partida'); //se enlistan nuevamente los registros
+                    me.listarPartidas(1,'','','partida'); //se enlistan nuevamente los registros
                     //Se muestra mensaje Success
                     swal({
                         position: 'top-end',
@@ -295,7 +298,7 @@
                     'id' : this.id
                 }).then(function (response){
                     me.cerrarModal();
-                    me.listarPartidas(1,'','partida');
+                    me.listarPartidas(1,'','','partida');
                     //window.alert("Cambios guardados correctamente");
                     swal({
                         position: 'top-end',
@@ -318,7 +321,7 @@
                     'costo':costo,
                     'id' : id
                 }).then(function (response){
-                    me.listarPartidas(1,modelo,'partidas.modelo_id');
+                    me.listarPartidas(1,modelo,'','partidas.modelo_id');
                     //window.alert("Cambios guardados correctamente");
                 const toast = Swal.mixin({
                     toast: true,
@@ -361,7 +364,7 @@
                         'Partida borrada correctamente.',
                         'success'
                         )
-                        me.listarPartidas(1,'','partida');
+                        me.listarPartidas(1,'','','partida');
                     }).catch(function (error){
                         console.log(error);
                     });
@@ -456,7 +459,8 @@
             }
         },
         mounted() {
-            this.listarPartidas(1,this.buscar,this.criterio);      
+            this.selectFraccionamientos();
+            this.listarPartidas(1,this.buscar,this.buscar2,this.criterio);      
             
         }
     }

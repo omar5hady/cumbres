@@ -29,7 +29,8 @@ class ModeloController extends Controller
             ->select('modelos.nombre','modelos.tipo','modelos.fraccionamiento_id',
             'fraccionamientos.nombre as fraccionamiento','modelos.terreno','modelos.construccion','modelos.archivo','modelos.id')
             ->where('modelos.nombre', '!=','Por Asignar')
-                ->orderBy('id','modelos.nombre')->paginate(8);
+                ->orderBy('fraccionamientos.nombre','asc')
+                ->orderBy('modelos.nombre','asc')->paginate(8);
         }
         else{
             $modelos = Modelo::join('fraccionamientos','modelos.fraccionamiento_id','=','fraccionamientos.id')
@@ -37,7 +38,8 @@ class ModeloController extends Controller
             'fraccionamientos.nombre as fraccionamiento','modelos.terreno','modelos.construccion','modelos.archivo','modelos.id')
                 ->where($criterio, 'like', '%'. $buscar . '%')
                 ->where('modelos.nombre', '!=','Por Asignar')
-                ->orderBy('id','modelos.nombre')->paginate(8);
+                ->orderBy('fraccionamientos.nombre','asc')
+                ->orderBy('modelos.nombre','asc')->paginate(8);
         }
 
         return [

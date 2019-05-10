@@ -8,7 +8,7 @@
                 <!-- Ejemplo de tabla Listado -->
 
                 <!-- div para sobreprecio de etapas -->
-                <div class="card col-sm-4" >
+                <div v-if="mostrar2==1"  class="card col-sm-4" >
                     <div class="card-header bg-primary">
                         <i class="fa fa-align-justify"></i> Sobreprecios Etapas
                         
@@ -58,9 +58,9 @@
                                 </tr>                               
                             </tbody>
                         </table>
-                        <nav>
-                            <!--Botones de paginacion -->
-                            <ul class="pagination">
+                       <!-- <nav>
+                            Botones de paginacion -->
+                           <!-- <ul class="pagination">
                                 <li class="page-item" v-if="pagination.current_page > 1">
                                     <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,etapa_id)">Ant</a>
                                 </li>
@@ -71,14 +71,128 @@
                                     <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,etapa_id)">Sig</a>
                                 </li>
                             </ul>
-                        </nav>
+                        </nav>-->
                     </div>
                 </div>
 
                  <!-- div para sobreprecio modelo -->
-                <div class="card col-sm-8">
+                <div v-if="mostrar2==1" class="card col-sm-8">
                     <div class="card-header bg-primary">
-                        <i class="fa fa-align-justify"></i> Sobreprecios por vivienda
+                        <i v-if="mostrar2==1" @click="mostrar2=0" class="fa fa-align-justify"></i> 
+                        <i v-if="mostrar2==0" @click="mostrar2=1" class="fa fa-align-justify"></i> Sobreprecios por vivienda
+                        
+                
+                        <!--   Boton Nuevo    -->
+                        <button type="button" @click="abrirModal('precio_etapa','registrar')" class="btn btn-warning">
+                            <i class="icon-plus"></i> Nuevo
+                        </button>
+                        <!---->
+                    </div>
+                    <div class="card-body" >
+                        <div class="form-group">
+                            <div class="col-md-8">
+                                
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input">Proyecto</label>
+                                        <div class="col-md-4">
+                                            <select class="form-control" v-model="fraccionamiento_id" @click="selectEtapa(fraccionamiento_id)" >
+                                                <option value="0">Seleccione proyecto</option>
+                                                <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                                            </select>
+                                        </div>
+                                        <label class="col-md-2 form-control-label" style="align:right" for="text-input">Etapa</label>
+                                        <div class="col-md-3">
+                                             <select class="form-control" v-model="etapa_id" @click="selectManzanas(fraccionamiento_id,etapa_id)">
+                                                <option value="0">Seleccione etapa</option>
+                                                <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-1">
+                                        <button v-if="mostrar==0" type="button"  class="btn btn-info" title="Mostrar mas filtros" @click="mostrarMasFiltros()">
+                                            <i class="icon-plus"></i> 
+                                        </button>
+                                        <button v-if="mostrar==1" type="button"  class="btn btn-danger" @click="mostrarMasFiltros()">
+                                            <i class="icon-minus"></i> 
+                                        </button>
+                                        </div>
+                                    </div>
+                                        
+                                    <div class="form-group row" v-if="mostrar==1">
+                                        <div class="col-md-4">
+                                        <select class="form-control" v-model="manzana" @click="selectLotesManzana(fraccionamiento_id,etapa_id,manzana)">
+                                                <option value="">Seleccione manzana</option>
+                                                <option v-for="manzanas in arrayManzanas" :key="manzanas.id" :value="manzanas.manzana" v-text="manzanas.manzana"></option>
+                                        </select>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <input type="text"  v-model="num_lote" class="form-control" placeholder="Numero de Lote">
+                                        </div>
+                                    </div>
+
+                                    <!-- <select class="form-control"  v-model="lote_id">
+                                            <option value="0">Seleccione</option>
+                                            <option v-for="lotes in arrayLotes" :key="lotes.id" :value="lotes.id" v-text="lotes.num_lote"></option>
+                                    </select> -->
+
+                                        <br/>
+                                   
+
+                                    <button type="button"  class="btn btn-primary" @click="listarSobrePrecioModelo(1,etapa_id,num_lote,manzana),listarSobrePrecioEtapa(1,etapa_id)">Buscar</button>
+                                
+
+                                <div class="input-group">
+                                   
+                                </div>
+                            </div>
+                        </div>
+                        <table class="table bg-light text-dark table-bordered table-striped table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Opciones</th>
+                                    <th>Lote</th>
+                                    <th>Sobreprecio etapa</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="sobreprecioModelo in arraySobreprecioModelo" :key="sobreprecioModelo.id">
+                                    <td>
+                                        <button type="button" @click="abrirModal('precio_etapa','actualizarLote',sobreprecioModelo)" class="btn btn-warning btn-sm">
+                                          <i class="icon-pencil"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-danger btn-sm" @click="eliminarPrecioModelo(sobreprecioModelo)">
+                                          <i class="icon-trash"></i>
+                                        </button>
+                                    </td>
+                                    <td v-text="sobreprecioModelo.lotes"></td>
+                                    <td v-text="sobreprecioModelo.sobreprecioModelo"></td>
+                                </tr>                               
+                            </tbody>
+                        </table>
+                        <nav>
+                            <!--Botones de paginacion -->
+                            <ul class="pagination">
+                                <li class="page-item" v-if="pagination.current_page > 1">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar)">Ant</a>
+                                </li>
+                                <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar)" v-text="page"></a>
+                                </li>
+                                <li class="page-item" v-if="pagination.current_page < pagination.last_page">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar)">Sig</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+
+                <!-- div para sobreprecio modelo -->
+                <div v-if="mostrar2==0" class="card col-sm-12">
+                    <div class="card-header bg-primary">
+                        <i v-if="mostrar2==1" @click="mostrar2=0" class="fa fa-align-justify"></i> 
+                        <i v-if="mostrar2==0" @click="mostrar2=1" class="fa fa-align-justify"></i> Sobreprecios por vivienda
+                        
                 
                         <!--   Boton Nuevo    -->
                         <button type="button" @click="abrirModal('precio_etapa','registrar')" class="btn btn-warning">
@@ -322,6 +436,7 @@
                 arrayEtapas:[],
                 modal : 0,
                 mostrar : 0,
+                mostrar2 : 1,
                 tituloModal : '',
                 tipoAccion: 0,
                 errorSobrePrecioEtapa : 0,
@@ -387,7 +502,7 @@
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arraySobreprecioEtapa = respuesta.sobreprecio_etapa.data;
-                    me.pagination = respuesta.pagination;
+                    //me.pagination = respuesta.pagination;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -400,7 +515,7 @@
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arraySobreprecioModelo = respuesta.sobreprecio_modelo.data;
-                    me.paginationModelo = respuesta.pagination;
+                    me.pagination = respuesta.pagination;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -411,7 +526,7 @@
                 //Actualiza la pagina actual
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
-                me.listarSobrePrecioEtapa(page,buscar);
+                //me.listarSobrePrecioEtapa(page,buscar);
                 me.listarSobrePrecioModelo(page,buscar,buscar2,buscar3);
             },
             selectFraccionamientos(){

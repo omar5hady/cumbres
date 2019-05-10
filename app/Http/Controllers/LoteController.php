@@ -1699,7 +1699,7 @@ class LoteController extends Controller
                 ->orderBy('etapas.num_etapa','ASC')
                 ->orderBy('lotes.manzana','ASC')
                 ->orderBy('lotes.num_lote','ASC')->count();
-}
+            }
             else{
                 if($buscar2=='' && $buscar3=='' && $b_modelo=='' && $b_lote=='')
                 {
@@ -2444,7 +2444,7 @@ class LoteController extends Controller
                     ->where('lotes.contrato','=',0)
                     ->where('etapas.num_etapa', 'like', '%'. $etapa .'%' )
                     ->where('lotes.manzana','=',$manzana)
-                    ->orderBy('lotes.num_lote','DESC')
+                    ->orderBy('lotes.num_lote','ASC')
                     ->get();
         return ['lotes_disp' => $lotes_disp];
     }

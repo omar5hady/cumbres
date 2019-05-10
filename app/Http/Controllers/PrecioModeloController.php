@@ -25,7 +25,7 @@ class PrecioModeloController extends Controller
                     'precios_modelos.precio_modelo','precios_modelos.id',
                     'precios_modelos.modelo_id','precios_modelos.precio_etapa_id' )
                     ->where('precios_modelos.precio_etapa_id', '=', $buscar )
-                ->orderBy('id','precios_modelos.modelo_id')->paginate(8);
+                ->orderBy('modelos.nombre','asc')->paginate(20);
        
         return [
             'pagination' => [

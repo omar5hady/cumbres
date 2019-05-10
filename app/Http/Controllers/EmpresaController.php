@@ -16,10 +16,10 @@ class EmpresaController extends Controller
         $criterio = $request->criterio;
         
         if($buscar==''){
-            $empresas = Empresa::orderBy('id','nombre')->paginate(8);
+            $empresas = Empresa::orderBy('nombre','ASC')->paginate(15);
         }
         else{
-            $empresas = Empresa::where($criterio, 'like', '%'. $buscar . '%')->orderBy('id','nombre')->paginate(8);
+            $empresas = Empresa::where($criterio, 'like', '%'. $buscar . '%')->orderBy('nombre','ASC')->paginate(15);
         }
 
         return [

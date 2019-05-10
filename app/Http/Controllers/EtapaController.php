@@ -35,7 +35,8 @@ class EtapaController extends Controller
                     'etapas.fraccionamiento_id','fraccionamientos.nombre as fraccionamiento','etapas.archivo_reglamento',
                     'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento')
                     ->where('etapas.num_etapa','!=','Sin Asignar')
-                    ->orderBy('id','name')->paginate(8);
+                    ->orderBy('fraccionamientos.nombre','asc')
+                    ->orderBy('etapas.num_etapa','asc')->paginate(8);
         }
         else{
             if($criterio == 'f_ini' || $criterio == 'f_fin')
@@ -49,7 +50,8 @@ class EtapaController extends Controller
                         'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento')
                         ->whereBetween($criterio, [$buscar,$buscar2])
                         ->where('etapas.num_etapa','!=','Sin Asignar')
-                        ->orderBy('id','name')->paginate(8);
+                        ->orderBy('fraccionamientos.nombre','asc')
+                        ->orderBy('etapas.num_etapa','asc')->paginate(8);
             }
             else{
                 $etapas = Etapa::join('personal','etapas.personal_id','=','personal.id')
@@ -61,7 +63,8 @@ class EtapaController extends Controller
                         'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento')
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->where('etapas.num_etapa','!=','Sin Asignar')
-                        ->orderBy('id','name')->paginate(8);
+                        ->orderBy('fraccionamientos.nombre','asc')
+                        ->orderBy('etapas.num_etapa','asc')->paginate(8);
             }
             
         }

@@ -17,10 +17,10 @@ class LugarContactoController extends Controller
         $criterio = $request->criterio;
         
         if($buscar==''){
-            $lugares_contacto = Lugar_contacto::orderBy('nombre','desc')->paginate(8);
+            $lugares_contacto = Lugar_contacto::orderBy('nombre','asc')->paginate(8);
         }
         else{
-            $lugares_contacto = Lugar_contacto::where($criterio, 'like', '%'. $buscar . '%')->orderBy('nombre','desc')->paginate(8);
+            $lugares_contacto = Lugar_contacto::where($criterio, 'like', '%'. $buscar . '%')->orderBy('nombre','asc')->paginate(8);
         }
 
         return [
