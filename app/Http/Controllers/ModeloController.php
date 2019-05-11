@@ -376,7 +376,8 @@ class ModeloController extends Controller
         $buscar = $request->buscar;
         $modelos = Modelo::select('nombre','id')
         ->where('fraccionamiento_id', '=', $buscar )
-        ->where('nombre','!=','Por Asignar')->get();
+        //->where('nombre','!=','Por Asignar')
+        ->get();
         return['modelos' => $modelos];
     }
 

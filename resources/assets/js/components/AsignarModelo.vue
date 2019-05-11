@@ -561,7 +561,8 @@
                     }); 
                     i++;
                 });
-                    me.listarLote(1,'','','','','','','lote');   
+                   // me.listarLote(1,'','','','','','','lote');   
+                    me.listarLote(1,me.buscar,me.buscar2,me.buscar3,me.b_modelo,me.b_lote,me.b_habilitado,me.criterio);
                     me.cerrarModal2();
                     Swal({
                         title: 'Hecho!',
@@ -576,7 +577,7 @@
             /**Metodo para mostrar los registros */
             listarLote(page, buscar, buscar2, buscar3, b_modelo, b_lote,b_habilitado, criterio){
                 let me = this;
-                var url = '/lote?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2+ '&buscar3=' + buscar3  + '&bmodelo=' + b_modelo + '&blote=' + b_lote + '&b_habilitado='+ b_habilitado+'&criterio=' + criterio;
+                var url = '/lote?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3  + '&bmodelo=' + b_modelo + '&blote=' + b_lote + '&b_habilitado='+ b_habilitado+'&criterio=' + criterio;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayLote = respuesta.lotes.data;
@@ -700,7 +701,7 @@
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal();
-                    me.listarLote(1,'','','','','','','','lote');
+                    me.listarLote(1,me.buscar,me.buscar2,me.buscar3,me.b_modelo,me.b_lote,me.b_habilitado,me.criterio);
                     //window.alert("Cambios guardados correctamente");
                     swal({
                         position: 'top-end',
@@ -867,6 +868,7 @@
                                 this.credito_puente=data['credito_puente'];
                                 this.comentarios=data['comentarios'];
                                 this.regimen = data['regimen_condom'];
+                 
                                 break;
                             }
 
