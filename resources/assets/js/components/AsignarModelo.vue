@@ -562,7 +562,7 @@
                     i++;
                 });
                    // me.listarLote(1,'','','','','','','lote');   
-                    me.listarLote(1,me.buscar,me.buscar2,me.buscar3,me.b_modelo,me.b_lote,me.b_habilitado,me.criterio);
+                    me.listarLote(me.pagination.current_page,me.buscar,me.buscar2,me.buscar3,me.b_modelo,me.b_lote,me.b_habilitado,me.criterio);
                     me.cerrarModal2();
                     Swal({
                         title: 'Hecho!',
@@ -701,7 +701,7 @@
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal();
-                    me.listarLote(1,me.buscar,me.buscar2,me.buscar3,me.b_modelo,me.b_lote,me.b_habilitado,me.criterio);
+                    me.listarLote(me.pagination.current_page,me.buscar,me.buscar2,me.buscar3,me.b_modelo,me.b_lote,me.b_habilitado,me.criterio);
                     //window.alert("Cambios guardados correctamente");
                     swal({
                         position: 'top-end',
@@ -752,7 +752,7 @@
                         'Lote borrado correctamente.',
                         'success'
                         )
-                        me.listarLote(1,'','','','','','','lote');
+                        me.listarLote(me.pagination.current_page,me.buscar,me.buscar2,me.buscar3,me.b_modelo,me.b_lote,me.b_habilitado,me.criterio);
                     }).catch(function (error){
                         console.log(error);
                     });

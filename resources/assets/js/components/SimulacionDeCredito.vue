@@ -2949,7 +2949,7 @@
                     me.actualizarDatosProspecto();
                     me.listado=1;
                     me.limpiarDatos();
-                    me.listarProspectos(1,'','ini_obras.clave'); //se enlistan nuevamente los registros
+                    me.listarProspectos(me.pagination.current_page,me.buscar,me.criterio); //se enlistan nuevamente los registros
                     
                     //Se muestra mensaje Success
                     swal({

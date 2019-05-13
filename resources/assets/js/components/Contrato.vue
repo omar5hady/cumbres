@@ -2209,7 +2209,7 @@
 
                 }).then(function (response){
                      me.listado = 0;
-                     me.listarContratos(1,'','','','','','creditos.id');
+                     me.listarContratos(me.pagination.current_page,me.buscar,me.buscar3,me.b_etapa,me.b_manzana,me.b_lote,me.criterio);
                     
                     //window.alert("Cambios guardados correctamente");
                     swal({
@@ -2625,7 +2625,7 @@
                     me.proceso=false;
                     me.actualizarDatosProspecto();
                     me.limpiarDatos();
-                    me.listarSimulaciones(1,me.buscar,me.b_etapa,me.b_manzana,me.b_lote,me.criterio);
+                    me.listarSimulaciones(me.pagination.current_page,me.buscar,me.b_etapa,me.b_manzana,me.b_lote,me.criterio);
                     me.listado=0;
                     
                     //Se muestra mensaje Success

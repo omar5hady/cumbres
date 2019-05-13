@@ -1312,7 +1312,7 @@
                     me.proceso=false;
                     me.listado=1;
                     me.limpiarDatos();
-                    me.listarProspectos(1,'','ini_obras.clave'); //se enlistan nuevamente los registros
+                    me.listarProspectos(1,me.buscar,me.b_clasificacion,me.criterio);
                     //Se muestra mensaje Success
                     swal({
                         position: 'top-end',
@@ -1429,7 +1429,7 @@
                     me.proceso=false;
                     me.listado=1;
                     me.limpiarDatos();
-                    me.listarProspectos(1,'','ini_obras.clave'); //se enlistan nuevamente los registros
+                    me.listarProspectos(me.pagination.current_page,me.buscar,me.b_clasificacion,me.criterio);
                     
                     //Se muestra mensaje Success
                     swal({
@@ -1465,7 +1465,7 @@
                     }).then(function (response) {
                         me.listado=1;
                         me.limpiarDatos();
-                        me.listarProspectos(1,'','ini_obras.clave');
+                        me.listarProspectos(1,me.buscar,me.b_clasificacion,me.criterio);
                         swal(
                         'Desactivado!',
                         'El registro ha sido desactivado con éxito.',
@@ -1506,7 +1506,7 @@
                     }).then(function (response) {
                     me.listado=1;
                     me.limpiarDatos();
-                    me.listarProspectos(1,'','ini_obras.clave');
+                    me.listarProspectos(1,me.buscar,me.b_clasificacion,me.criterio);
                         swal(
                         'Activado!',
                         'El registro ha sido activado con éxito.',
