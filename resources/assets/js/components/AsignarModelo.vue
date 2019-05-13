@@ -838,8 +838,8 @@
                         switch(accion){
                             case 'actualizar':
                             {
-                                this.modelo_id=0;
-                                this.etapa_id=0;
+                                this.modelo_id=data['modelo_id'];
+                                this.etapa_id=data['etapa_id'];
                                 if(data['modelo']!='Por Asignar')
                                     this.modelo_id=data['modelo_id'];
                                 if(data['etapas']!='Sin Asignar')
