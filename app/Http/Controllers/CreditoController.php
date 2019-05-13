@@ -376,185 +376,43 @@ class CreditoController extends Controller
         
         $buscar = $request->buscar;
         $criterio = $request->criterio;
+        $criterio2 = $request->criterio2;
         $b_etapa = $request->b_etapa;
         $b_manzana = $request->b_manzana;
         $b_lote = $request->b_lote;
 
-        if($buscar==''){
-            $creditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
-            ->join('personal','creditos.prospecto_id','=','personal.id')
-            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-            ->join('personal as v','clientes.vendedor_id','v.id')
-            ->select('creditos.id','creditos.prospecto_id','creditos.num_dep_economicos','creditos.tipo_economia',
-                'creditos.nombre_primera_ref','creditos.telefono_primera_ref','creditos.celular_primera_ref',
-                'creditos.nombre_segunda_ref','creditos.telefono_segunda_ref','creditos.celular_segunda_ref',
-                'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','creditos.precio_base',
-                'creditos.superficie','creditos.terreno_excedente','creditos.precio_terreno_excedente',
-                'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
-                'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
-                'creditos.costo_paquete','creditos.status','inst_seleccionadas.tipo_credito','inst_seleccionadas.id as inst_credito',
-                'inst_seleccionadas.institucion','personal.nombre','personal.apellidos','creditos.fraccionamiento',
-                'clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos')
-                ->where('creditos.status','!=','1')
-                ->where('inst_seleccionadas.elegido','=','1')
-                ->orderBy('id','desc')->paginate(8);
-
-                $contadorCreditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
-            ->join('personal','creditos.prospecto_id','=','personal.id')
-            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-            ->join('personal as v','clientes.vendedor_id','v.id')
-            ->select('creditos.id')
-                ->where('inst_seleccionadas.elegido','=','1')
-                ->orderBy('id','desc')->count();
-        }
-        else{
-            switch($criterio){
-                case 'personal.nombre':
-                {
-                    $creditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+        if($criterio2==''){
+            if($buscar==''){
+                $creditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+                ->join('personal','creditos.prospecto_id','=','personal.id')
+                ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                ->join('personal as v','clientes.vendedor_id','v.id')
+                ->select('creditos.id','creditos.prospecto_id','creditos.num_dep_economicos','creditos.tipo_economia',
+                    'creditos.nombre_primera_ref','creditos.telefono_primera_ref','creditos.celular_primera_ref',
+                    'creditos.nombre_segunda_ref','creditos.telefono_segunda_ref','creditos.celular_segunda_ref',
+                    'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','creditos.precio_base',
+                    'creditos.superficie','creditos.terreno_excedente','creditos.precio_terreno_excedente',
+                    'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
+                    'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
+                    'creditos.costo_paquete','creditos.status','inst_seleccionadas.tipo_credito','inst_seleccionadas.id as inst_credito',
+                    'inst_seleccionadas.institucion','personal.nombre','personal.apellidos','creditos.fraccionamiento',
+                    'clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos')
+                    ->where('creditos.status','!=','1')
+                    ->where('inst_seleccionadas.elegido','=','1')
+                    ->orderBy('id','desc')->paginate(8);
+    
+                    $contadorCreditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
                     ->join('personal','creditos.prospecto_id','=','personal.id')
                     ->join('clientes','creditos.prospecto_id','=','clientes.id')
                     ->join('personal as v','clientes.vendedor_id','v.id')
-                    ->select('creditos.id','creditos.prospecto_id','creditos.num_dep_economicos','creditos.tipo_economia',
-                        'creditos.nombre_primera_ref','creditos.telefono_primera_ref','creditos.celular_primera_ref',
-                        'creditos.nombre_segunda_ref','creditos.telefono_segunda_ref','creditos.celular_segunda_ref',
-                        'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','creditos.precio_base',
-                        'creditos.superficie','creditos.terreno_excedente','creditos.precio_terreno_excedente',
-                        'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
-                        'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
-                        'creditos.costo_paquete','creditos.status','inst_seleccionadas.tipo_credito',
-                        'inst_seleccionadas.institucion','personal.nombre','personal.apellidos','creditos.fraccionamiento',
-                        'clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos')
-                    
-                        ->where($criterio, 'like', '%'. $buscar . '%')
-                        ->where('creditos.status','!=','1')
-                        ->where('inst_seleccionadas.elegido','=','1')
-                        ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
-                        ->where('creditos.status','!=','1')
-                        ->where('inst_seleccionadas.elegido','=','1')
-                        ->orderBy('id','desc')->paginate(8);
-
-                        $contadorCreditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
-                        ->join('personal','creditos.prospecto_id','=','personal.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->join('personal as v','clientes.vendedor_id','v.id')
-                        ->select('creditos.id')
-                        ->where($criterio, 'like', '%'. $buscar . '%')
-                        ->where('creditos.status','!=','1')
-                        ->where('inst_seleccionadas.elegido','=','1')
-                        ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
-                        ->where('creditos.status','!=','1')
-                        ->where('inst_seleccionadas.elegido','=','1')
-                        ->orderBy('id','desc')->count();
-                    break;
-                }
-                case 'v.nombre':
-                {
-                    $creditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
-                    ->join('personal','creditos.prospecto_id','=','personal.id')
-                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                    ->join('personal as v','clientes.vendedor_id','v.id')
-                    ->select('creditos.id','creditos.prospecto_id','creditos.num_dep_economicos','creditos.tipo_economia',
-                        'creditos.nombre_primera_ref','creditos.telefono_primera_ref','creditos.celular_primera_ref',
-                        'creditos.nombre_segunda_ref','creditos.telefono_segunda_ref','creditos.celular_segunda_ref',
-                        'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','creditos.precio_base',
-                        'creditos.superficie','creditos.terreno_excedente','creditos.precio_terreno_excedente',
-                        'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
-                        'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
-                        'creditos.costo_paquete','creditos.status','inst_seleccionadas.tipo_credito',
-                        'inst_seleccionadas.institucion','personal.nombre','personal.apellidos','creditos.fraccionamiento',
-                        'clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos')
-                    
-                        ->where($criterio, 'like', '%'. $buscar . '%')
-                        ->where('creditos.status','!=','1')
-                        ->where('inst_seleccionadas.elegido','=','1')
-                        ->orWhere('v.apellidos', 'like', '%'. $buscar . '%')
-                        ->where('creditos.status','!=','1')
-                        ->where('inst_seleccionadas.elegido','=','1')
-                        ->orderBy('id','desc')->paginate(8);
-
-                        $contadorCreditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
-                        ->join('personal','creditos.prospecto_id','=','personal.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->join('personal as v','clientes.vendedor_id','v.id')
-                        ->select('creditos.id')
-                        ->where($criterio, 'like', '%'. $buscar . '%')
-                        ->where('creditos.status','!=','1')
-                        ->where('inst_seleccionadas.elegido','=','1')
-                        ->orWhere('v.apellidos', 'like', '%'. $buscar . '%')
-                        ->where('creditos.status','!=','1')
-                        ->where('inst_seleccionadas.elegido','=','1')
-                        ->orderBy('id','desc')->count();
-                    break;
-                }
-                case 'inst_seleccionadas.tipo_credito':
-                {
-                    $creditos = Credito::join('datos_extra','creditos.id','=','datos_extra.id')
-                    ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
-                    ->join('personal','creditos.prospecto_id','=','personal.id')
-                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                    ->join('personal as v','clientes.vendedor_id','v.id')
-                    ->select('creditos.id','creditos.prospecto_id','creditos.num_dep_economicos','creditos.tipo_economia',
-                        'creditos.nombre_primera_ref','creditos.telefono_primera_ref','creditos.celular_primera_ref',
-                        'creditos.nombre_segunda_ref','creditos.telefono_segunda_ref','creditos.celular_segunda_ref',
-                        'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','creditos.precio_base',
-                        'creditos.superficie','creditos.terreno_excedente','creditos.precio_terreno_excedente',
-                        'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
-                        'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
-                        'creditos.costo_paquete','creditos.status','inst_seleccionadas.tipo_credito',
-                        'inst_seleccionadas.institucion','personal.nombre','personal.apellidos','creditos.fraccionamiento',
-                        'clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos')
-                        ->where($criterio, 'like', '%'. $buscar . '%')
-                        ->where('creditos.status','!=','1')
-                        ->where('inst_seleccionadas.elegido','=','1')
-                        ->orderBy('id','desc')->paginate(8);
-
-                        $contadorCreditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
-                        ->join('personal','creditos.prospecto_id','=','personal.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->join('personal as v','clientes.vendedor_id','v.id')
-                        ->select('creditos.id')
-                        ->where($criterio, 'like', '%'. $buscar . '%')
-                        ->where('creditos.status','!=','1')
-                        ->where('inst_seleccionadas.elegido','=','1')
-                        ->orderBy('id','desc')->count();
-                    break;
-                }
-                case 'creditos.id':
-                {
-                    $creditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
-                    ->join('personal','creditos.prospecto_id','=','personal.id')
-                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                    ->join('personal as v','clientes.vendedor_id','v.id')
-                    ->select('creditos.id','creditos.prospecto_id','creditos.num_dep_economicos','creditos.tipo_economia',
-                        'creditos.nombre_primera_ref','creditos.telefono_primera_ref','creditos.celular_primera_ref',
-                        'creditos.nombre_segunda_ref','creditos.telefono_segunda_ref','creditos.celular_segunda_ref',
-                        'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','creditos.precio_base',
-                        'creditos.superficie','creditos.terreno_excedente','creditos.precio_terreno_excedente',
-                        'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
-                        'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
-                        'creditos.costo_paquete','creditos.status','inst_seleccionadas.tipo_credito',
-                        'inst_seleccionadas.institucion','personal.nombre','personal.apellidos','creditos.fraccionamiento',
-                        'clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos')
-                        ->where($criterio, 'like', '%'. $buscar . '%')
-                        ->where('creditos.status','!=','1')
-                        ->where('inst_seleccionadas.elegido','=','1')
-                        ->orderBy('id','desc')->paginate(8);
-
-                        $contadorCreditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
-                        ->join('personal','creditos.prospecto_id','=','personal.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->join('personal as v','clientes.vendedor_id','v.id')
-                        ->select('creditos.id')
-                        ->where($criterio, 'like', '%'. $buscar . '%')
-                        ->where('creditos.status','!=','1')
-                        ->where('inst_seleccionadas.elegido','=','1')
-                        ->orderBy('id','desc')->count();
-                    break;
-                }
-                case 'creditos.fraccionamiento':
-                {
-                    if($b_etapa != '' && $b_manzana != '' && $b_lote != ''){
+                    ->select('creditos.id')
+                    ->where('creditos.status','!=','1')
+                    ->where('inst_seleccionadas.elegido','=','1')->count();
+            }
+            else{
+                switch($criterio){
+                    case 'personal.nombre':
+                    {
                         $creditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
                         ->join('personal','creditos.prospecto_id','=','personal.id')
                         ->join('clientes','creditos.prospecto_id','=','clientes.id')
@@ -567,32 +425,138 @@ class CreditoController extends Controller
                             'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
                             'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
                             'creditos.costo_paquete','creditos.status','inst_seleccionadas.tipo_credito',
-                            'inst_seleccionadas.institucion','personal.nombre','personal.apellidos',
-                            'creditos.fraccionamiento','clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos')
+                            'inst_seleccionadas.institucion','personal.nombre','personal.apellidos','creditos.fraccionamiento',
+                            'clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos')
+                        
+                            ->where($criterio, 'like', '%'. $buscar . '%')
                             ->where('creditos.status','!=','1')
                             ->where('inst_seleccionadas.elegido','=','1')
-                            ->where('creditos.fraccionamiento', '=',  $buscar)
-                            ->where('creditos.etapa','=',$b_etapa)
-                            ->where('creditos.manzana', '=', $b_manzana)
-                            ->where('creditos.num_lote','=',$b_lote)
+                            ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
+                            ->where('creditos.status','!=','1')
+                            ->where('inst_seleccionadas.elegido','=','1')
                             ->orderBy('id','desc')->paginate(8);
-
+    
                             $contadorCreditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+                            ->join('personal','creditos.prospecto_id','=','personal.id')
+                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                            ->join('personal as v','clientes.vendedor_id','v.id')
+                            ->select('creditos.id')
+                            ->where($criterio, 'like', '%'. $buscar . '%')
+                            ->where('creditos.status','!=','1')
+                            ->where('inst_seleccionadas.elegido','=','1')
+                            ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
+                            ->where('creditos.status','!=','1')
+                            ->where('inst_seleccionadas.elegido','=','1')
+                            ->count();
+                        break;
+                    }
+                    case 'v.nombre':
+                    {
+                        $creditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
                         ->join('personal','creditos.prospecto_id','=','personal.id')
                         ->join('clientes','creditos.prospecto_id','=','clientes.id')
                         ->join('personal as v','clientes.vendedor_id','v.id')
-                        ->select('creditos.id')
-                        ->where('creditos.status','!=','1')
-                        ->where('inst_seleccionadas.elegido','=','1')
-                        ->where('creditos.fraccionamiento', '=',  $buscar)
-                        ->where('creditos.etapa','=',$b_etapa)
-                        ->where('creditos.manzana', '=', $b_manzana)
-                        ->where('creditos.num_lote','=',$b_lote)
-                        ->orderBy('id','desc')->count();
-                    
+                        ->select('creditos.id','creditos.prospecto_id','creditos.num_dep_economicos','creditos.tipo_economia',
+                            'creditos.nombre_primera_ref','creditos.telefono_primera_ref','creditos.celular_primera_ref',
+                            'creditos.nombre_segunda_ref','creditos.telefono_segunda_ref','creditos.celular_segunda_ref',
+                            'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','creditos.precio_base',
+                            'creditos.superficie','creditos.terreno_excedente','creditos.precio_terreno_excedente',
+                            'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
+                            'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
+                            'creditos.costo_paquete','creditos.status','inst_seleccionadas.tipo_credito',
+                            'inst_seleccionadas.institucion','personal.nombre','personal.apellidos','creditos.fraccionamiento',
+                            'clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos')
+                        
+                            ->where($criterio, 'like', '%'. $buscar . '%')
+                            ->where('creditos.status','!=','1')
+                            ->where('inst_seleccionadas.elegido','=','1')
+                            ->orWhere('v.apellidos', 'like', '%'. $buscar . '%')
+                            ->where('creditos.status','!=','1')
+                            ->where('inst_seleccionadas.elegido','=','1')
+                            ->orderBy('id','desc')->paginate(8);
+    
+                            $contadorCreditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+                            ->join('personal','creditos.prospecto_id','=','personal.id')
+                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                            ->join('personal as v','clientes.vendedor_id','v.id')
+                            ->select('creditos.id')
+                            ->where($criterio, 'like', '%'. $buscar . '%')
+                            ->where('creditos.status','!=','1')
+                            ->where('inst_seleccionadas.elegido','=','1')
+                            ->orWhere('v.apellidos', 'like', '%'. $buscar . '%')
+                            ->where('creditos.status','!=','1')
+                            ->where('inst_seleccionadas.elegido','=','1')
+                            ->count();
+                        break;
                     }
-                    else{
-                        if($b_etapa != '' && $b_manzana != ''){
+                    case 'inst_seleccionadas.tipo_credito':
+                    {
+                        $creditos = Credito::join('datos_extra','creditos.id','=','datos_extra.id')
+                        ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+                        ->join('personal','creditos.prospecto_id','=','personal.id')
+                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                        ->join('personal as v','clientes.vendedor_id','v.id')
+                        ->select('creditos.id','creditos.prospecto_id','creditos.num_dep_economicos','creditos.tipo_economia',
+                            'creditos.nombre_primera_ref','creditos.telefono_primera_ref','creditos.celular_primera_ref',
+                            'creditos.nombre_segunda_ref','creditos.telefono_segunda_ref','creditos.celular_segunda_ref',
+                            'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','creditos.precio_base',
+                            'creditos.superficie','creditos.terreno_excedente','creditos.precio_terreno_excedente',
+                            'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
+                            'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
+                            'creditos.costo_paquete','creditos.status','inst_seleccionadas.tipo_credito',
+                            'inst_seleccionadas.institucion','personal.nombre','personal.apellidos','creditos.fraccionamiento',
+                            'clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos')
+                            ->where($criterio, 'like', '%'. $buscar . '%')
+                            ->where('creditos.status','!=','1')
+                            ->where('inst_seleccionadas.elegido','=','1')
+                            ->orderBy('id','desc')->paginate(8);
+    
+                            $contadorCreditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+                            ->join('personal','creditos.prospecto_id','=','personal.id')
+                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                            ->join('personal as v','clientes.vendedor_id','v.id')
+                            ->select('creditos.id')
+                            ->where($criterio, 'like', '%'. $buscar . '%')
+                            ->where('creditos.status','!=','1')
+                            ->where('inst_seleccionadas.elegido','=','1')
+                            ->count();
+                        break;
+                    }
+                    case 'creditos.id':
+                    {
+                        $creditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+                        ->join('personal','creditos.prospecto_id','=','personal.id')
+                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                        ->join('personal as v','clientes.vendedor_id','v.id')
+                        ->select('creditos.id','creditos.prospecto_id','creditos.num_dep_economicos','creditos.tipo_economia',
+                            'creditos.nombre_primera_ref','creditos.telefono_primera_ref','creditos.celular_primera_ref',
+                            'creditos.nombre_segunda_ref','creditos.telefono_segunda_ref','creditos.celular_segunda_ref',
+                            'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','creditos.precio_base',
+                            'creditos.superficie','creditos.terreno_excedente','creditos.precio_terreno_excedente',
+                            'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
+                            'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
+                            'creditos.costo_paquete','creditos.status','inst_seleccionadas.tipo_credito',
+                            'inst_seleccionadas.institucion','personal.nombre','personal.apellidos','creditos.fraccionamiento',
+                            'clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos')
+                            ->where($criterio, 'like', '%'. $buscar . '%')
+                            ->where('creditos.status','!=','1')
+                            ->where('inst_seleccionadas.elegido','=','1')
+                            ->orderBy('id','desc')->paginate(8);
+    
+                            $contadorCreditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+                            ->join('personal','creditos.prospecto_id','=','personal.id')
+                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                            ->join('personal as v','clientes.vendedor_id','v.id')
+                            ->select('creditos.id')
+                            ->where($criterio, 'like', '%'. $buscar . '%')
+                            ->where('creditos.status','!=','1')
+                            ->where('inst_seleccionadas.elegido','=','1')
+                            ->count();
+                        break;
+                    }
+                    case 'creditos.fraccionamiento':
+                    {
+                        if($b_etapa != '' && $b_manzana != '' && $b_lote != ''){
                             $creditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
                             ->join('personal','creditos.prospecto_id','=','personal.id')
                             ->join('clientes','creditos.prospecto_id','=','clientes.id')
@@ -610,24 +574,27 @@ class CreditoController extends Controller
                                 ->where('creditos.status','!=','1')
                                 ->where('inst_seleccionadas.elegido','=','1')
                                 ->where('creditos.fraccionamiento', '=',  $buscar)
-                                ->where('creditos.etapa','like','%'.$b_etapa.'%')
+                                ->where('creditos.etapa','=',$b_etapa)
                                 ->where('creditos.manzana', '=', $b_manzana)
+                                ->where('creditos.num_lote','=',$b_lote)
                                 ->orderBy('id','desc')->paginate(8);
-
+    
                                 $contadorCreditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
-                        ->join('personal','creditos.prospecto_id','=','personal.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->join('personal as v','clientes.vendedor_id','v.id')
-                        ->select('creditos.id')
-                        ->where('creditos.status','!=','1')
-                        ->where('inst_seleccionadas.elegido','=','1')
-                        ->where('creditos.fraccionamiento', '=',  $buscar)
-                        ->where('creditos.etapa','like','%'.$b_etapa.'%')
-                        ->where('creditos.manzana', '=', $b_manzana)
-                        ->orderBy('id','desc')->count();
+                                ->join('personal','creditos.prospecto_id','=','personal.id')
+                                ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                                ->join('personal as v','clientes.vendedor_id','v.id')
+                                ->select('creditos.id')
+                                ->where('creditos.status','!=','1')
+                                ->where('inst_seleccionadas.elegido','=','1')
+                                ->where('creditos.fraccionamiento', '=',  $buscar)
+                                ->where('creditos.etapa','=',$b_etapa)
+                                ->where('creditos.manzana', '=', $b_manzana)
+                                ->where('creditos.num_lote','=',$b_lote)
+                                ->count();
+                        
                         }
                         else{
-                            if($b_etapa != ''){
+                            if($b_etapa != '' && $b_manzana != ''){
                                 $creditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
                                 ->join('personal','creditos.prospecto_id','=','personal.id')
                                 ->join('clientes','creditos.prospecto_id','=','clientes.id')
@@ -646,21 +613,23 @@ class CreditoController extends Controller
                                     ->where('inst_seleccionadas.elegido','=','1')
                                     ->where('creditos.fraccionamiento', '=',  $buscar)
                                     ->where('creditos.etapa','like','%'.$b_etapa.'%')
+                                    ->where('creditos.manzana', '=', $b_manzana)
                                     ->orderBy('id','desc')->paginate(8);
-
+    
                                     $contadorCreditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
-                        ->join('personal','creditos.prospecto_id','=','personal.id')
-                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->join('personal as v','clientes.vendedor_id','v.id')
-                        ->select('creditos.id')
-                        ->where('creditos.status','!=','1')
-                        ->where('inst_seleccionadas.elegido','=','1')
-                        ->where('creditos.fraccionamiento', '=',  $buscar)
-                        ->where('creditos.etapa','like','%'.$b_etapa.'%')
-                        ->orderBy('id','desc')->count();
+                                    ->join('personal','creditos.prospecto_id','=','personal.id')
+                                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                                    ->join('personal as v','clientes.vendedor_id','v.id')
+                                    ->select('creditos.id')
+                                    ->where('creditos.status','!=','1')
+                                    ->where('inst_seleccionadas.elegido','=','1')
+                                    ->where('creditos.fraccionamiento', '=',  $buscar)
+                                    ->where('creditos.etapa','like','%'.$b_etapa.'%')
+                                    ->where('creditos.manzana', '=', $b_manzana)
+                                    ->count();
                             }
                             else{
-                                if($b_manzana != ''){
+                                if($b_etapa != ''){
                                     $creditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
                                     ->join('personal','creditos.prospecto_id','=','personal.id')
                                     ->join('clientes','creditos.prospecto_id','=','clientes.id')
@@ -678,9 +647,9 @@ class CreditoController extends Controller
                                         ->where('creditos.status','!=','1')
                                         ->where('inst_seleccionadas.elegido','=','1')
                                         ->where('creditos.fraccionamiento', '=',  $buscar)
-                                        ->where('creditos.manzana', '=', $b_manzana)
+                                        ->where('creditos.etapa','like','%'.$b_etapa.'%')
                                         ->orderBy('id','desc')->paginate(8);
-
+    
                                         $contadorCreditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
                                         ->join('personal','creditos.prospecto_id','=','personal.id')
                                         ->join('clientes','creditos.prospecto_id','=','clientes.id')
@@ -689,11 +658,11 @@ class CreditoController extends Controller
                                         ->where('creditos.status','!=','1')
                                         ->where('inst_seleccionadas.elegido','=','1')
                                         ->where('creditos.fraccionamiento', '=',  $buscar)
-                                        ->where('creditos.manzana', '=', $b_manzana)
-                                        ->orderBy('id','desc')->count();
+                                        ->where('creditos.etapa','like','%'.$b_etapa.'%')
+                                        ->count();
                                 }
                                 else{
-                                    if($b_lote != ''){
+                                    if($b_manzana != ''){
                                         $creditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
                                         ->join('personal','creditos.prospecto_id','=','personal.id')
                                         ->join('clientes','creditos.prospecto_id','=','clientes.id')
@@ -711,40 +680,9 @@ class CreditoController extends Controller
                                             ->where('creditos.status','!=','1')
                                             ->where('inst_seleccionadas.elegido','=','1')
                                             ->where('creditos.fraccionamiento', '=',  $buscar)
-                                            ->where('creditos.num_lote','=',$b_lote)
+                                            ->where('creditos.manzana', '=', $b_manzana)
                                             ->orderBy('id','desc')->paginate(8);
-
-                                            $contadorCreditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
-                                        ->join('personal','creditos.prospecto_id','=','personal.id')
-                                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                                        ->join('personal as v','clientes.vendedor_id','v.id')
-                                        ->select('creditos.id')
-                                        ->where('creditos.status','!=','1')
-                                        ->where('inst_seleccionadas.elegido','=','1')
-                                        ->where('creditos.fraccionamiento', '=',  $buscar)
-                                        ->where('creditos.num_lote','=',$b_lote)
-                                        ->orderBy('id','desc')->count();
-                                    }
-                                    else{
-                                        $creditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
-                                        ->join('personal','creditos.prospecto_id','=','personal.id')
-                                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                                        ->join('personal as v','clientes.vendedor_id','v.id')
-                                        ->select('creditos.id','creditos.prospecto_id','creditos.num_dep_economicos','creditos.tipo_economia',
-                                            'creditos.nombre_primera_ref','creditos.telefono_primera_ref','creditos.celular_primera_ref',
-                                            'creditos.nombre_segunda_ref','creditos.telefono_segunda_ref','creditos.celular_segunda_ref',
-                                            'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','creditos.precio_base',
-                                            'creditos.superficie','creditos.terreno_excedente','creditos.precio_terreno_excedente',
-                                            'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
-                                            'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
-                                            'creditos.costo_paquete','creditos.status','inst_seleccionadas.tipo_credito',
-                                            'inst_seleccionadas.institucion','personal.nombre','personal.apellidos',
-                                            'creditos.fraccionamiento','clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos')
-                                            ->where('creditos.status','!=','1')
-                                            ->where('inst_seleccionadas.elegido','=','1')
-                                            ->where('creditos.fraccionamiento', '=',  $buscar)
-                                            ->orderBy('id','desc')->paginate(8);
-                                            
+    
                                             $contadorCreditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
                                             ->join('personal','creditos.prospecto_id','=','personal.id')
                                             ->join('clientes','creditos.prospecto_id','=','clientes.id')
@@ -753,17 +691,470 @@ class CreditoController extends Controller
                                             ->where('creditos.status','!=','1')
                                             ->where('inst_seleccionadas.elegido','=','1')
                                             ->where('creditos.fraccionamiento', '=',  $buscar)
-                                            ->orderBy('id','desc')->count();
+                                            ->where('creditos.manzana', '=', $b_manzana)
+                                            ->count();
+                                    }
+                                    else{
+                                        if($b_lote != ''){
+                                            $creditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+                                            ->join('personal','creditos.prospecto_id','=','personal.id')
+                                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                                            ->join('personal as v','clientes.vendedor_id','v.id')
+                                            ->select('creditos.id','creditos.prospecto_id','creditos.num_dep_economicos','creditos.tipo_economia',
+                                                'creditos.nombre_primera_ref','creditos.telefono_primera_ref','creditos.celular_primera_ref',
+                                                'creditos.nombre_segunda_ref','creditos.telefono_segunda_ref','creditos.celular_segunda_ref',
+                                                'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','creditos.precio_base',
+                                                'creditos.superficie','creditos.terreno_excedente','creditos.precio_terreno_excedente',
+                                                'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
+                                                'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
+                                                'creditos.costo_paquete','creditos.status','inst_seleccionadas.tipo_credito',
+                                                'inst_seleccionadas.institucion','personal.nombre','personal.apellidos',
+                                                'creditos.fraccionamiento','clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos')
+                                                ->where('creditos.status','!=','1')
+                                                ->where('inst_seleccionadas.elegido','=','1')
+                                                ->where('creditos.fraccionamiento', '=',  $buscar)
+                                                ->where('creditos.num_lote','=',$b_lote)
+                                                ->orderBy('id','desc')->paginate(8);
+    
+                                                $contadorCreditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+                                            ->join('personal','creditos.prospecto_id','=','personal.id')
+                                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                                            ->join('personal as v','clientes.vendedor_id','v.id')
+                                            ->select('creditos.id')
+                                            ->where('creditos.status','!=','1')
+                                            ->where('inst_seleccionadas.elegido','=','1')
+                                            ->where('creditos.fraccionamiento', '=',  $buscar)
+                                            ->where('creditos.num_lote','=',$b_lote)
+                                            ->count();
+                                        }
+                                        else{
+                                            $creditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+                                            ->join('personal','creditos.prospecto_id','=','personal.id')
+                                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                                            ->join('personal as v','clientes.vendedor_id','v.id')
+                                            ->select('creditos.id','creditos.prospecto_id','creditos.num_dep_economicos','creditos.tipo_economia',
+                                                'creditos.nombre_primera_ref','creditos.telefono_primera_ref','creditos.celular_primera_ref',
+                                                'creditos.nombre_segunda_ref','creditos.telefono_segunda_ref','creditos.celular_segunda_ref',
+                                                'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','creditos.precio_base',
+                                                'creditos.superficie','creditos.terreno_excedente','creditos.precio_terreno_excedente',
+                                                'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
+                                                'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
+                                                'creditos.costo_paquete','creditos.status','inst_seleccionadas.tipo_credito',
+                                                'inst_seleccionadas.institucion','personal.nombre','personal.apellidos',
+                                                'creditos.fraccionamiento','clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos')
+                                                ->where('creditos.status','!=','1')
+                                                ->where('inst_seleccionadas.elegido','=','1')
+                                                ->where('creditos.fraccionamiento', '=',  $buscar)
+                                                ->orderBy('id','desc')->paginate(8);
+                                                
+                                                $contadorCreditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+                                                ->join('personal','creditos.prospecto_id','=','personal.id')
+                                                ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                                                ->join('personal as v','clientes.vendedor_id','v.id')
+                                                ->select('creditos.id')
+                                                ->where('creditos.status','!=','1')
+                                                ->where('inst_seleccionadas.elegido','=','1')
+                                                ->where('creditos.fraccionamiento', '=',  $buscar)
+                                                ->count();
+                                        }
                                     }
                                 }
                             }
                         }
+                        break;
                     }
-                    break;
                 }
+    
             }
-
         }
+        else{
+            if($buscar==''){
+                $creditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+                ->join('personal','creditos.prospecto_id','=','personal.id')
+                ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                ->join('personal as v','clientes.vendedor_id','v.id')
+                ->select('creditos.id','creditos.prospecto_id','creditos.num_dep_economicos','creditos.tipo_economia',
+                    'creditos.nombre_primera_ref','creditos.telefono_primera_ref','creditos.celular_primera_ref',
+                    'creditos.nombre_segunda_ref','creditos.telefono_segunda_ref','creditos.celular_segunda_ref',
+                    'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','creditos.precio_base',
+                    'creditos.superficie','creditos.terreno_excedente','creditos.precio_terreno_excedente',
+                    'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
+                    'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
+                    'creditos.costo_paquete','creditos.status','inst_seleccionadas.tipo_credito','inst_seleccionadas.id as inst_credito',
+                    'inst_seleccionadas.institucion','personal.nombre','personal.apellidos','creditos.fraccionamiento',
+                    'clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos')
+                    ->where('creditos.status','=','1')
+                    ->where('inst_seleccionadas.elegido','=','1')
+                    ->orderBy('id','desc')->paginate(8);
+    
+                    $contadorCreditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+                    ->join('personal','creditos.prospecto_id','=','personal.id')
+                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                    ->join('personal as v','clientes.vendedor_id','v.id')
+                    ->select('creditos.id')
+                    ->where('creditos.status','=','1')
+                    ->where('inst_seleccionadas.elegido','=','1')
+                    ->count();
+            }
+            else{
+                switch($criterio){
+                    case 'personal.nombre':
+                    {
+                        $creditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+                        ->join('personal','creditos.prospecto_id','=','personal.id')
+                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                        ->join('personal as v','clientes.vendedor_id','v.id')
+                        ->select('creditos.id','creditos.prospecto_id','creditos.num_dep_economicos','creditos.tipo_economia',
+                            'creditos.nombre_primera_ref','creditos.telefono_primera_ref','creditos.celular_primera_ref',
+                            'creditos.nombre_segunda_ref','creditos.telefono_segunda_ref','creditos.celular_segunda_ref',
+                            'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','creditos.precio_base',
+                            'creditos.superficie','creditos.terreno_excedente','creditos.precio_terreno_excedente',
+                            'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
+                            'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
+                            'creditos.costo_paquete','creditos.status','inst_seleccionadas.tipo_credito',
+                            'inst_seleccionadas.institucion','personal.nombre','personal.apellidos','creditos.fraccionamiento',
+                            'clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos')
+                        
+                            ->where($criterio, 'like', '%'. $buscar . '%')
+                            ->where('creditos.status','=','1')
+                            ->where('inst_seleccionadas.elegido','=','1')
+                            ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
+                            ->where('creditos.status','=','1')
+                            ->where('inst_seleccionadas.elegido','=','1')
+                            ->orderBy('id','desc')->paginate(8);
+    
+                            $contadorCreditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+                            ->join('personal','creditos.prospecto_id','=','personal.id')
+                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                            ->join('personal as v','clientes.vendedor_id','v.id')
+                            ->select('creditos.id')
+                            ->where($criterio, 'like', '%'. $buscar . '%')
+                            ->where('creditos.status','=','1')
+                            ->where('inst_seleccionadas.elegido','=','1')
+                            ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
+                            ->where('creditos.status','=','1')
+                            ->where('inst_seleccionadas.elegido','=','1')
+                            ->count();
+                        break;
+                    }
+                    case 'v.nombre':
+                    {
+                        $creditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+                        ->join('personal','creditos.prospecto_id','=','personal.id')
+                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                        ->join('personal as v','clientes.vendedor_id','v.id')
+                        ->select('creditos.id','creditos.prospecto_id','creditos.num_dep_economicos','creditos.tipo_economia',
+                            'creditos.nombre_primera_ref','creditos.telefono_primera_ref','creditos.celular_primera_ref',
+                            'creditos.nombre_segunda_ref','creditos.telefono_segunda_ref','creditos.celular_segunda_ref',
+                            'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','creditos.precio_base',
+                            'creditos.superficie','creditos.terreno_excedente','creditos.precio_terreno_excedente',
+                            'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
+                            'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
+                            'creditos.costo_paquete','creditos.status','inst_seleccionadas.tipo_credito',
+                            'inst_seleccionadas.institucion','personal.nombre','personal.apellidos','creditos.fraccionamiento',
+                            'clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos')
+                        
+                            ->where($criterio, 'like', '%'. $buscar . '%')
+                            ->where('creditos.status','=','1')
+                            ->where('inst_seleccionadas.elegido','=','1')
+                            ->orWhere('v.apellidos', 'like', '%'. $buscar . '%')
+                            ->where('creditos.status','=','1')
+                            ->where('inst_seleccionadas.elegido','=','1')
+                            ->orderBy('id','desc')->paginate(8);
+    
+                            $contadorCreditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+                            ->join('personal','creditos.prospecto_id','=','personal.id')
+                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                            ->join('personal as v','clientes.vendedor_id','v.id')
+                            ->select('creditos.id')
+                            ->where($criterio, 'like', '%'. $buscar . '%')
+                            ->where('creditos.status','=','1')
+                            ->where('inst_seleccionadas.elegido','=','1')
+                            ->orWhere('v.apellidos', 'like', '%'. $buscar . '%')
+                            ->where('creditos.status','=','1')
+                            ->where('inst_seleccionadas.elegido','=','1')
+                            ->count();
+                        break;
+                    }
+                    case 'inst_seleccionadas.tipo_credito':
+                    {
+                        $creditos = Credito::join('datos_extra','creditos.id','=','datos_extra.id')
+                        ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+                        ->join('personal','creditos.prospecto_id','=','personal.id')
+                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                        ->join('personal as v','clientes.vendedor_id','v.id')
+                        ->select('creditos.id','creditos.prospecto_id','creditos.num_dep_economicos','creditos.tipo_economia',
+                            'creditos.nombre_primera_ref','creditos.telefono_primera_ref','creditos.celular_primera_ref',
+                            'creditos.nombre_segunda_ref','creditos.telefono_segunda_ref','creditos.celular_segunda_ref',
+                            'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','creditos.precio_base',
+                            'creditos.superficie','creditos.terreno_excedente','creditos.precio_terreno_excedente',
+                            'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
+                            'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
+                            'creditos.costo_paquete','creditos.status','inst_seleccionadas.tipo_credito',
+                            'inst_seleccionadas.institucion','personal.nombre','personal.apellidos','creditos.fraccionamiento',
+                            'clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos')
+                            ->where($criterio, 'like', '%'. $buscar . '%')
+                            ->where('creditos.status','=','1')
+                            ->where('inst_seleccionadas.elegido','=','1')
+                            ->orderBy('id','desc')->paginate(8);
+    
+                            $contadorCreditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+                            ->join('personal','creditos.prospecto_id','=','personal.id')
+                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                            ->join('personal as v','clientes.vendedor_id','v.id')
+                            ->select('creditos.id')
+                            ->where($criterio, 'like', '%'. $buscar . '%')
+                            ->where('creditos.status','=','1')
+                            ->where('inst_seleccionadas.elegido','=','1')
+                            ->count();
+                        break;
+                    }
+                    case 'creditos.id':
+                    {
+                        $creditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+                        ->join('personal','creditos.prospecto_id','=','personal.id')
+                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                        ->join('personal as v','clientes.vendedor_id','v.id')
+                        ->select('creditos.id','creditos.prospecto_id','creditos.num_dep_economicos','creditos.tipo_economia',
+                            'creditos.nombre_primera_ref','creditos.telefono_primera_ref','creditos.celular_primera_ref',
+                            'creditos.nombre_segunda_ref','creditos.telefono_segunda_ref','creditos.celular_segunda_ref',
+                            'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','creditos.precio_base',
+                            'creditos.superficie','creditos.terreno_excedente','creditos.precio_terreno_excedente',
+                            'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
+                            'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
+                            'creditos.costo_paquete','creditos.status','inst_seleccionadas.tipo_credito',
+                            'inst_seleccionadas.institucion','personal.nombre','personal.apellidos','creditos.fraccionamiento',
+                            'clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos')
+                            ->where($criterio, 'like', '%'. $buscar . '%')
+                            ->where('creditos.status','=','1')
+                            ->where('inst_seleccionadas.elegido','=','1')
+                            ->orderBy('id','desc')->paginate(8);
+    
+                            $contadorCreditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+                            ->join('personal','creditos.prospecto_id','=','personal.id')
+                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                            ->join('personal as v','clientes.vendedor_id','v.id')
+                            ->select('creditos.id')
+                            ->where($criterio, 'like', '%'. $buscar . '%')
+                            ->where('creditos.status','=','1')
+                            ->where('inst_seleccionadas.elegido','=','1')
+                            ->count();
+                        break;
+                    }
+                    case 'creditos.fraccionamiento':
+                    {
+                        if($b_etapa != '' && $b_manzana != '' && $b_lote != ''){
+                            $creditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+                            ->join('personal','creditos.prospecto_id','=','personal.id')
+                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                            ->join('personal as v','clientes.vendedor_id','v.id')
+                            ->select('creditos.id','creditos.prospecto_id','creditos.num_dep_economicos','creditos.tipo_economia',
+                                'creditos.nombre_primera_ref','creditos.telefono_primera_ref','creditos.celular_primera_ref',
+                                'creditos.nombre_segunda_ref','creditos.telefono_segunda_ref','creditos.celular_segunda_ref',
+                                'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','creditos.precio_base',
+                                'creditos.superficie','creditos.terreno_excedente','creditos.precio_terreno_excedente',
+                                'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
+                                'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
+                                'creditos.costo_paquete','creditos.status','inst_seleccionadas.tipo_credito',
+                                'inst_seleccionadas.institucion','personal.nombre','personal.apellidos',
+                                'creditos.fraccionamiento','clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos')
+                                ->where('creditos.status','=','1')
+                                ->where('inst_seleccionadas.elegido','=','1')
+                                ->where('creditos.fraccionamiento', '=',  $buscar)
+                                ->where('creditos.etapa','=',$b_etapa)
+                                ->where('creditos.manzana', '=', $b_manzana)
+                                ->where('creditos.num_lote','=',$b_lote)
+                                ->orderBy('id','desc')->paginate(8);
+    
+                                $contadorCreditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+                            ->join('personal','creditos.prospecto_id','=','personal.id')
+                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                            ->join('personal as v','clientes.vendedor_id','v.id')
+                            ->select('creditos.id')
+                            ->where('creditos.status','=','1')
+                            ->where('inst_seleccionadas.elegido','=','1')
+                            ->where('creditos.fraccionamiento', '=',  $buscar)
+                            ->where('creditos.etapa','=',$b_etapa)
+                            ->where('creditos.manzana', '=', $b_manzana)
+                            ->where('creditos.num_lote','=',$b_lote)
+                            ->count();
+                        
+                        }
+                        else{
+                            if($b_etapa != '' && $b_manzana != ''){
+                                $creditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+                                ->join('personal','creditos.prospecto_id','=','personal.id')
+                                ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                                ->join('personal as v','clientes.vendedor_id','v.id')
+                                ->select('creditos.id','creditos.prospecto_id','creditos.num_dep_economicos','creditos.tipo_economia',
+                                    'creditos.nombre_primera_ref','creditos.telefono_primera_ref','creditos.celular_primera_ref',
+                                    'creditos.nombre_segunda_ref','creditos.telefono_segunda_ref','creditos.celular_segunda_ref',
+                                    'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','creditos.precio_base',
+                                    'creditos.superficie','creditos.terreno_excedente','creditos.precio_terreno_excedente',
+                                    'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
+                                    'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
+                                    'creditos.costo_paquete','creditos.status','inst_seleccionadas.tipo_credito',
+                                    'inst_seleccionadas.institucion','personal.nombre','personal.apellidos',
+                                    'creditos.fraccionamiento','clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos')
+                                    ->where('creditos.status','=','1')
+                                    ->where('inst_seleccionadas.elegido','=','1')
+                                    ->where('creditos.fraccionamiento', '=',  $buscar)
+                                    ->where('creditos.etapa','like','%'.$b_etapa.'%')
+                                    ->where('creditos.manzana', '=', $b_manzana)
+                                    ->orderBy('id','desc')->paginate(8);
+    
+                                    $contadorCreditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+                            ->join('personal','creditos.prospecto_id','=','personal.id')
+                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                            ->join('personal as v','clientes.vendedor_id','v.id')
+                            ->select('creditos.id')
+                            ->where('creditos.status','=','1')
+                            ->where('inst_seleccionadas.elegido','=','1')
+                            ->where('creditos.fraccionamiento', '=',  $buscar)
+                            ->where('creditos.etapa','like','%'.$b_etapa.'%')
+                            ->where('creditos.manzana', '=', $b_manzana)
+                            ->count();
+                            }
+                            else{
+                                if($b_etapa != ''){
+                                    $creditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+                                    ->join('personal','creditos.prospecto_id','=','personal.id')
+                                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                                    ->join('personal as v','clientes.vendedor_id','v.id')
+                                    ->select('creditos.id','creditos.prospecto_id','creditos.num_dep_economicos','creditos.tipo_economia',
+                                        'creditos.nombre_primera_ref','creditos.telefono_primera_ref','creditos.celular_primera_ref',
+                                        'creditos.nombre_segunda_ref','creditos.telefono_segunda_ref','creditos.celular_segunda_ref',
+                                        'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','creditos.precio_base',
+                                        'creditos.superficie','creditos.terreno_excedente','creditos.precio_terreno_excedente',
+                                        'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
+                                        'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
+                                        'creditos.costo_paquete','creditos.status','inst_seleccionadas.tipo_credito',
+                                        'inst_seleccionadas.institucion','personal.nombre','personal.apellidos',
+                                        'creditos.fraccionamiento','clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos')
+                                        ->where('creditos.status','=','1')
+                                        ->where('inst_seleccionadas.elegido','=','1')
+                                        ->where('creditos.fraccionamiento', '=',  $buscar)
+                                        ->where('creditos.etapa','like','%'.$b_etapa.'%')
+                                        ->orderBy('id','desc')->paginate(8);
+    
+                                        $contadorCreditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+                                        ->join('personal','creditos.prospecto_id','=','personal.id')
+                                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                                        ->join('personal as v','clientes.vendedor_id','v.id')
+                                        ->select('creditos.id')
+                                        ->where('creditos.status','=','1')
+                                        ->where('inst_seleccionadas.elegido','=','1')
+                                        ->where('creditos.fraccionamiento', '=',  $buscar)
+                                        ->where('creditos.etapa','like','%'.$b_etapa.'%')
+                                        ->count();
+                                }
+                                else{
+                                    if($b_manzana != ''){
+                                        $creditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+                                        ->join('personal','creditos.prospecto_id','=','personal.id')
+                                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                                        ->join('personal as v','clientes.vendedor_id','v.id')
+                                        ->select('creditos.id','creditos.prospecto_id','creditos.num_dep_economicos','creditos.tipo_economia',
+                                            'creditos.nombre_primera_ref','creditos.telefono_primera_ref','creditos.celular_primera_ref',
+                                            'creditos.nombre_segunda_ref','creditos.telefono_segunda_ref','creditos.celular_segunda_ref',
+                                            'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','creditos.precio_base',
+                                            'creditos.superficie','creditos.terreno_excedente','creditos.precio_terreno_excedente',
+                                            'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
+                                            'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
+                                            'creditos.costo_paquete','creditos.status','inst_seleccionadas.tipo_credito',
+                                            'inst_seleccionadas.institucion','personal.nombre','personal.apellidos',
+                                            'creditos.fraccionamiento','clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos')
+                                            ->where('creditos.status','=','1')
+                                            ->where('inst_seleccionadas.elegido','=','1')
+                                            ->where('creditos.fraccionamiento', '=',  $buscar)
+                                            ->where('creditos.manzana', '=', $b_manzana)
+                                            ->orderBy('id','desc')->paginate(8);
+    
+                                            $contadorCreditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+                                            ->join('personal','creditos.prospecto_id','=','personal.id')
+                                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                                            ->join('personal as v','clientes.vendedor_id','v.id')
+                                            ->select('creditos.id')
+                                            ->where('creditos.status','=','1')
+                                            ->where('inst_seleccionadas.elegido','=','1')
+                                            ->where('creditos.fraccionamiento', '=',  $buscar)
+                                            ->where('creditos.manzana', '=', $b_manzana)
+                                            ->count();
+                                    }
+                                    else{
+                                        if($b_lote != ''){
+                                            $creditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+                                            ->join('personal','creditos.prospecto_id','=','personal.id')
+                                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                                            ->join('personal as v','clientes.vendedor_id','v.id')
+                                            ->select('creditos.id','creditos.prospecto_id','creditos.num_dep_economicos','creditos.tipo_economia',
+                                                'creditos.nombre_primera_ref','creditos.telefono_primera_ref','creditos.celular_primera_ref',
+                                                'creditos.nombre_segunda_ref','creditos.telefono_segunda_ref','creditos.celular_segunda_ref',
+                                                'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','creditos.precio_base',
+                                                'creditos.superficie','creditos.terreno_excedente','creditos.precio_terreno_excedente',
+                                                'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
+                                                'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
+                                                'creditos.costo_paquete','creditos.status','inst_seleccionadas.tipo_credito',
+                                                'inst_seleccionadas.institucion','personal.nombre','personal.apellidos',
+                                                'creditos.fraccionamiento','clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos')
+                                                ->where('creditos.status','=','1')
+                                                ->where('inst_seleccionadas.elegido','=','1')
+                                                ->where('creditos.fraccionamiento', '=',  $buscar)
+                                                ->where('creditos.num_lote','=',$b_lote)
+                                                ->orderBy('id','desc')->paginate(8);
+    
+                                                $contadorCreditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+                                                ->join('personal','creditos.prospecto_id','=','personal.id')
+                                                ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                                                ->join('personal as v','clientes.vendedor_id','v.id')
+                                                ->select('creditos.id')
+                                                ->where('creditos.status','=','1')
+                                                ->where('inst_seleccionadas.elegido','=','1')
+                                                ->where('creditos.fraccionamiento', '=',  $buscar)
+                                                ->where('creditos.num_lote','=',$b_lote)
+                                                ->count();
+                                        }
+                                        else{
+                                            $creditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+                                            ->join('personal','creditos.prospecto_id','=','personal.id')
+                                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                                            ->join('personal as v','clientes.vendedor_id','v.id')
+                                            ->select('creditos.id','creditos.prospecto_id','creditos.num_dep_economicos','creditos.tipo_economia',
+                                                'creditos.nombre_primera_ref','creditos.telefono_primera_ref','creditos.celular_primera_ref',
+                                                'creditos.nombre_segunda_ref','creditos.telefono_segunda_ref','creditos.celular_segunda_ref',
+                                                'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','creditos.precio_base',
+                                                'creditos.superficie','creditos.terreno_excedente','creditos.precio_terreno_excedente',
+                                                'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
+                                                'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
+                                                'creditos.costo_paquete','creditos.status','inst_seleccionadas.tipo_credito',
+                                                'inst_seleccionadas.institucion','personal.nombre','personal.apellidos',
+                                                'creditos.fraccionamiento','clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos')
+                                                ->where('creditos.status','=','1')
+                                                ->where('inst_seleccionadas.elegido','=','1')
+                                                ->where('creditos.fraccionamiento', '=',  $buscar)
+                                                ->orderBy('id','desc')->paginate(8);
+                                                
+                                                $contadorCreditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+                                                ->join('personal','creditos.prospecto_id','=','personal.id')
+                                                ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                                                ->join('personal as v','clientes.vendedor_id','v.id')
+                                                ->select('creditos.id')
+                                                ->where('creditos.status','=','1')
+                                                ->where('inst_seleccionadas.elegido','=','1')
+                                                ->where('creditos.fraccionamiento', '=',  $buscar)
+                                                ->count();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                    }
+                }
+    
+            }
+        }
+       
 
     
         return[

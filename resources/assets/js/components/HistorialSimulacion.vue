@@ -29,15 +29,19 @@
                                             <option value="creditos.fraccionamiento">Proyecto</option>
                                             <option value="inst_seleccionadas.tipo_credito">Tipo de credito</option>
                                         </select>
-                                          <select class="form-control" v-if="criterio=='creditos.fraccionamiento'" v-model="buscar" >
-                                        <option value="">Seleccione</option>
-                                        <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.nombre" :value="fraccionamientos.nombre" v-text="fraccionamientos.nombre"></option>
-                                         </select>
-                                    <input v-if="criterio=='creditos.fraccionamiento'" type="text"  v-model="b_etapa" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Etapa">
-                                    <input v-if="criterio=='creditos.fraccionamiento'" type="text"  v-model="b_manzana" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Manzana">
-                                    <input v-if="criterio=='creditos.fraccionamiento'" type="text"  v-model="b_lote" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="# Lote">
-                                        <input  v-else type="text" v-model="buscar" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control">
-                                        <button type="submit" @click="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                        <select class="form-control" v-if="criterio=='creditos.fraccionamiento'" v-model="buscar" >
+                                            <option value="">Seleccione</option>
+                                            <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.nombre" :value="fraccionamientos.nombre" v-text="fraccionamientos.nombre"></option>
+                                        </select>
+                                        <input v-if="criterio=='creditos.fraccionamiento'" type="text"  v-model="b_etapa" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio,criterio2)" class="form-control" placeholder="Etapa">
+                                        <input v-if="criterio=='creditos.fraccionamiento'" type="text"  v-model="b_manzana" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio,criterio2)" class="form-control" placeholder="Manzana">
+                                        <input v-if="criterio=='creditos.fraccionamiento'" type="text"  v-model="b_lote" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio,criterio2)" class="form-control" placeholder="# Lote">
+                                        <input  v-else type="text" v-model="buscar" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio,criterio2)" class="form-control" placeholder="Texto a buscar">
+                                        <select class="form-control" v-model="criterio2" >
+                                            <option value="">Seleccione</option>
+                                            <option value="creditos.status">Pendientes</option>
+                                        </select>
+                                        <button type="submit" @click="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio,criterio2)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                         <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Total: '+ contador"> </span>
                                     </div>
                                    
@@ -82,6 +86,9 @@
                                             <td class="td2" v-if="prospecto.status == '0'">
                                                 <span class="badge badge-danger">Rechazado</span>
                                             </td>
+                                            <td class="td2" v-if="prospecto.status == '1'">
+                                                <span class="badge badge-warning">Pendiente</span>
+                                            </td>
                                             <td class="td2" v-if="prospecto.status == '2'">
                                                 <span class="badge badge-success">Aprobado</span>
                                             </td>
@@ -96,13 +103,13 @@
                                 <!--Botones de paginacion -->
                                 <ul class="pagination">
                                     <li class="page-item" v-if="pagination.current_page > 1">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,criterio)">Ant</a>
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,b_etapa,b_manzana,b_lote,criterio,criterio2)">Ant</a>
                                     </li>
                                     <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,criterio)" v-text="page"></a>
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,b_etapa,b_manzana,b_lote,criterio,criterio2)" v-text="page"></a>
                                     </li>
                                     <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,criterio)">Sig</a>
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,b_etapa,b_manzana,b_lote,criterio,criterio2)">Sig</a>
                                     </li>
                                 </ul>
                             </nav>
@@ -252,6 +259,7 @@
                 },
                 offset : 3,
                 criterio : 'personal.nombre', 
+                criterio2 : '', 
                 buscar : '',
                 b_etapa: '',
                 b_manzana: '',
@@ -291,9 +299,9 @@
         },
        
         methods : {
-             listarSimulaciones(page, buscar, b_etapa, b_manzana,b_lote,criterio){
+             listarSimulaciones(page, buscar, b_etapa, b_manzana,b_lote,criterio,criterio2){
                 let me = this;
-                var url = '/historial_simulaciones_credito?page=' + page + '&buscar=' + buscar + '&b_etapa=' +b_etapa+ '&b_manzana=' + b_manzana + '&b_lote='+ b_lote + '&criterio=' + criterio;
+                var url = '/historial_simulaciones_credito?page=' + page + '&buscar=' + buscar + '&b_etapa=' +b_etapa+ '&b_manzana=' + b_manzana + '&b_lote='+ b_lote + '&criterio=' + criterio + '&criterio2=' + criterio2;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arraySimulaciones = respuesta.creditos.data;
@@ -335,12 +343,12 @@
                 });
                 
             },
-            cambiarPagina(page, buscar, criterio){
+            cambiarPagina(page, buscar, b_etapa, b_manzana,b_lote,criterio,criterio2){
                 let me = this;
                 //Actualiza la pagina actual
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
-                me.listarProspectos(page,buscar,criterio);
+                me.listarProspectos(page, buscar, b_etapa, b_manzana,b_lote,criterio,criterio2);
             },
             
             selectFraccionamientos(){
@@ -362,7 +370,7 @@
                 axios.put('/creditos/aceptar',{
                     'id': this.num_folio
                 }).then(function (response){
-                    me.listarSimulaciones();
+                    me.listarSimulaciones(1,this.buscar,this.b_etapa,this.b_manzana,this.b_lote,this.criterio,this.criterio2);
                     me.limpiarDatos();
                     //window.alert("Cambios guardados correctamente");
                     swal({
@@ -385,7 +393,7 @@
                 axios.put('/creditos/rechazar',{
                     'id': this.num_folio
                 }).then(function (response){
-                    me.listarSimulaciones(me.prospecto_id);
+                    me.listarSimulaciones(1,this.buscar,this.b_etapa,this.b_manzana,this.b_lote,this.criterio,this.criterio2);
                     me.limpiarDatos();
                     //window.alert("Cambios guardados correctamente");
                     swal({
@@ -477,7 +485,7 @@
            
         },
         mounted() {          
-            this.listarSimulaciones(1,this.buscar,this.b_etapa,this.b_manzana,this.b_lote,this.criterio);
+            this.listarSimulaciones(1,this.buscar,this.b_etapa,this.b_manzana,this.b_lote,this.criterio,this.criterio2);
             this.selectFraccionamientos();
         }
     }
