@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use NumerosEnLetras;
 use Excel;
 use PHPExcel_Worksheet_Drawing;
+use App\Credito;
 
 class IniObraController extends Controller
 {
@@ -149,7 +150,20 @@ class IniObraController extends Controller
                     $lote->aviso=$ini_obra->clave;
                     $lote->fecha_ini = $fecha_ini;
                     $lote->fecha_fin = $fecha_fin;
-                    $lote->obra_extra=$det['obra_extra'];
+                    if($lote->contrato==0){
+                        $lote->obra_extra=$det['obra_extra'];
+
+                        $credito_id = Credito::select('id','precio_obra_extra','precio_venta')->where('lote_id','=',$det['lote_id'])
+                        ->where('contrato','=',0)->get();
+
+                        foreach($credito_id as $creditoid){
+                            $newPrecioVenta = $creditoid->precio_venta - $creditoid->precio_obra_extra + $det['obra_extra'];
+                            $credito = Credito::findOrFail($creditoid->id);
+                            $credito->precio_venta=$newPrecioVenta;
+                            $credito->precio_obra_extra =  $det['obra_extra'];
+                            $credito->save();
+                        }
+                    }
                     $lote->save();
                 }
             }          
@@ -277,7 +291,20 @@ class IniObraController extends Controller
                     $lote->aviso=$ini_obra->clave;
                     $lote->fecha_ini = $fecha_ini;
                     $lote->fecha_fin = $fecha_fin;
-                    $lote->obra_extra=$det['obra_extra'];
+                    if($lote->contrato==0){
+                        $lote->obra_extra=$det['obra_extra'];
+
+                        $credito_id = Credito::select('id','precio_obra_extra','precio_venta')->where('lote_id','=',$det['lote_id'])
+                        ->where('contrato','=',0)->get();
+
+                        foreach($credito_id as $creditoid){
+                            $newPrecioVenta = $creditoid->precio_venta - $creditoid->precio_obra_extra + $det['obra_extra'];
+                            $credito = Credito::findOrFail($creditoid->id);
+                            $credito->precio_venta=$newPrecioVenta;
+                            $credito->precio_obra_extra =  $det['obra_extra'];
+                            $credito->save();
+                        }
+                    }
                     $lote->save();
                 }
             }          
@@ -361,33 +388,33 @@ class IniObraController extends Controller
 
     public function exportExcel(Request $request, $id)
     {
-    //Codigo para exportar vista PRE a excell
-    $id = $request->id;
-    $detalles = Ini_obra_lote::select('ini_obra_lotes.costo_directo',
-    'ini_obra_lotes.costo_indirecto','ini_obra_lotes.importe','ini_obra_lotes.lote',
-    'ini_obra_lotes.manzana','ini_obra_lotes.modelo','ini_obra_lotes.construccion',
-    'ini_obra_lotes.descripcion','ini_obra_lotes.id','ini_obra_lotes.ini_obra_id',
-    'ini_obra_lotes.lote_id','ini_obra_lotes.obra_extra')
-    ->where('ini_obra_lotes.ini_obra_id','=',$id)
-    ->orderBy('ini_obra_lotes.lote', 'desc')->get();
+        //Codigo para exportar vista PRE a excell
+        $id = $request->id;
+        $detalles = Ini_obra_lote::select('ini_obra_lotes.costo_directo',
+        'ini_obra_lotes.costo_indirecto','ini_obra_lotes.importe','ini_obra_lotes.lote',
+        'ini_obra_lotes.manzana','ini_obra_lotes.modelo','ini_obra_lotes.construccion',
+        'ini_obra_lotes.descripcion','ini_obra_lotes.id','ini_obra_lotes.ini_obra_id',
+        'ini_obra_lotes.lote_id','ini_obra_lotes.obra_extra')
+        ->where('ini_obra_lotes.ini_obra_id','=',$id)
+        ->orderBy('ini_obra_lotes.lote', 'desc')->get();
 
-    $relacion =  Ini_obra::join('contratistas','ini_obras.contratista_id','=','contratistas.id')
-    ->join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
-    ->select('ini_obras.id','ini_obras.clave','ini_obras.f_ini','ini_obras.f_fin',
-        'ini_obras.total_costo_directo','ini_obras.total_costo_indirecto','ini_obras.total_importe',
-        'contratistas.nombre as contratista','contratistas.rfc as rfc','contratistas.telefono as telefono',
-        'contratistas.direccion as direccion','contratistas.colonia as colonia',
-        'contratistas.cp as codigoPostal','contratistas.IMSS as imss','contratistas.estado as estado',
-        'contratistas.representante as representante','fraccionamientos.nombre as proyecto',
-        'fraccionamientos.calle as calleFracc','fraccionamientos.colonia as coloniaFracc',
-        'fraccionamientos.estado as estadoFracc','ini_obras.anticipo','fraccionamientos.cp as cpFracc',
-        'ini_obras.total_anticipo','ini_obras.costo_indirecto_porcentaje','ini_obras.fraccionamiento_id',
-        'ini_obras.contratista_id','ini_obras.descripcion_corta','ini_obras.descripcion_larga','ini_obras.iva','ini_obras.tipo')
-    ->where('ini_obras.id','=',$id)
-    ->orderBy('ini_obras.id', 'desc')->take(1)->get();
+        $relacion =  Ini_obra::join('contratistas','ini_obras.contratista_id','=','contratistas.id')
+        ->join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
+        ->select('ini_obras.id','ini_obras.clave','ini_obras.f_ini','ini_obras.f_fin',
+            'ini_obras.total_costo_directo','ini_obras.total_costo_indirecto','ini_obras.total_importe',
+            'contratistas.nombre as contratista','contratistas.rfc as rfc','contratistas.telefono as telefono',
+            'contratistas.direccion as direccion','contratistas.colonia as colonia',
+            'contratistas.cp as codigoPostal','contratistas.IMSS as imss','contratistas.estado as estado',
+            'contratistas.representante as representante','fraccionamientos.nombre as proyecto',
+            'fraccionamientos.calle as calleFracc','fraccionamientos.colonia as coloniaFracc',
+            'fraccionamientos.estado as estadoFracc','ini_obras.anticipo','fraccionamientos.cp as cpFracc',
+            'ini_obras.total_anticipo','ini_obras.costo_indirecto_porcentaje','ini_obras.fraccionamiento_id',
+            'ini_obras.contratista_id','ini_obras.descripcion_corta','ini_obras.descripcion_larga','ini_obras.iva','ini_obras.tipo')
+        ->where('ini_obras.id','=',$id)
+        ->orderBy('ini_obras.id', 'desc')->take(1)->get();
 
 
-    return Excel::create('Pre_'.$relacion[0]->proyecto , function($excel) use ($relacion, $detalles){
+        return Excel::create('Pre_'.$relacion[0]->proyecto , function($excel) use ($relacion, $detalles){
         $excel->sheet($relacion[0]->clave, function($sheet) use ($relacion, $detalles){
             
             $sheet->mergeCells('A1:G1');
@@ -584,9 +611,9 @@ class IniObraController extends Controller
             $num='A7:G' . $cont;
             $sheet->setBorder($num, 'thin');
         });
-    }
-    
-    )->download('xls');
+        }
+        
+        )->download('xls');
     
     }
 

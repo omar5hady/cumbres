@@ -2479,33 +2479,33 @@ class LoteController extends Controller
                     ->orderBy('fraccionamientos.nombre','DESC')
                     ->orderBy('lotes.etapa_servicios','DESC')->get();
 
-    foreach($lotes as $index => $lote) {
-        $lote->precio_base = $lote->precio_base + $lote->ajuste;
-        $lote->precio_venta= $lote->sobreprecio + $lote->precio_base + $lote->excedente_terreno + $lote->obra_extra;
-        $promocion=[];
-        $promocion = Lote_promocion::join('promociones','lotes_promocion.promocion_id','=','promociones.id')
-            ->select('promociones.nombre','promociones.v_ini','promociones.v_fin','promociones.id',
-                     'promociones.descuento','promociones.descripcion')
-            ->where('lotes_promocion.lote_id','=',$lote->id)
-            ->where('promociones.v_fin','>',Carbon::today()->format('ymd'))->get();
-        if(sizeof($promocion) > 0){
-            $lote->v_iniPromo = $promocion[0]->v_ini;
-            $lote->v_finPromo = $promocion[0]->v_fin;
-            $lote->promocion = $promocion[0]->nombre;
-            $lote->descripcionPromo = $promocion[0]->descripcion;
-            $lote->descuentoPromo = $promocion[0]->descuento;
-        }
-        else{
-            $lote->promocion = 'Sin Promoción';
-            $lote->descripcionPromo = '';
-            $lote->descuentoPromo = 0;
+        foreach($lotes as $index => $lote) {
+            $lote->precio_base = $lote->precio_base + $lote->ajuste;
+            $lote->precio_venta= $lote->sobreprecio + $lote->precio_base + $lote->excedente_terreno + $lote->obra_extra;
+            $promocion=[];
+            $promocion = Lote_promocion::join('promociones','lotes_promocion.promocion_id','=','promociones.id')
+                ->select('promociones.nombre','promociones.v_ini','promociones.v_fin','promociones.id',
+                        'promociones.descuento','promociones.descripcion')
+                ->where('lotes_promocion.lote_id','=',$lote->id)
+                ->where('promociones.v_fin','>',Carbon::today()->format('ymd'))->get();
+            if(sizeof($promocion) > 0){
+                $lote->v_iniPromo = $promocion[0]->v_ini;
+                $lote->v_finPromo = $promocion[0]->v_fin;
+                $lote->promocion = $promocion[0]->nombre;
+                $lote->descripcionPromo = $promocion[0]->descripcion;
+                $lote->descuentoPromo = $promocion[0]->descuento;
             }
-        
-        $lote->terreno_tam_excedente = $lote->terreno - $lote->terreno_modelo;
-        
-    }
+            else{
+                $lote->promocion = 'Sin Promoción';
+                $lote->descripcionPromo = '';
+                $lote->descuentoPromo = 0;
+                }
+            
+            $lote->terreno_tam_excedente = $lote->terreno - $lote->terreno_modelo;
+            
+        }
 
-    return ['lotes' => $lotes];
+        return ['lotes' => $lotes];
 
     }
 
