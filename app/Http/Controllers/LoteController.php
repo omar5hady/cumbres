@@ -780,6 +780,11 @@ class LoteController extends Controller
             else
                 $lote->sobreprecio = 0;
         }
+        else{
+            $lote->excedente_terreno = 0;
+            $lote->sobreprecio=0;
+            $lote->precio_base=0;
+        }
         $lote->habilitado = $request->habilitado;
 
         $lote->save();
@@ -828,30 +833,37 @@ class LoteController extends Controller
             $licencia->save();
         }
         $lote->construccion = $modelo[0]->construccion;
+        $lote->excedente_terreno = 0;
+        $lote->sobreprecio=0;
+        $lote->precio_base=0;
+        $lote->habilitado=0;
         $lote->save();
          
         if($aviso != '0'){
 
-        $imagenUsuario = DB::table('users')->select('foto_user','usuario')->where('id','=',Auth::user()->id)->get();
-        $fecha = Carbon::now();
-        
-        $arregloSimPendientes = [
-            'notificacion' => [
-                'usuario' => $imagenUsuario[0]->usuario,
-                'foto' => $imagenUsuario[0]->foto_user,
-                'fecha' => $fecha,
-                'msj' => 'Asigno el modelo: '.$modelo[0]->nombre.' a la etapa: '.$etapa[0]->num_etapa.' a '.$aviso.' lotes, del fraccionamiento '.$fraccionamientos[0]->nombre,
-                'titulo' => 'Nuevos modelos asignados'
-            ]
-        ];
+            if($nombreModelo[0]->nombre != "Por Asignar"){
+                $imagenUsuario = DB::table('users')->select('foto_user','usuario')->where('id','=',Auth::user()->id)->get();
+                $fecha = Carbon::now();
+                
+                $arregloSimPendientes = [
+                    'notificacion' => [
+                        'usuario' => $imagenUsuario[0]->usuario,
+                        'foto' => $imagenUsuario[0]->foto_user,
+                        'fecha' => $fecha,
+                        'msj' => 'Asigno el modelo: '.$modelo[0]->nombre.' a la etapa: '.$etapa[0]->num_etapa.' a '.$aviso.' lotes, del fraccionamiento '.$fraccionamientos[0]->nombre,
+                        'titulo' => 'Nuevos modelos asignados'
+                    ]
+                ];
 
-        $users = User::select('id')->where('rol_id','=','1')
-            ->orWhere('rol_id','=','6')
-            ->orWhere('rol_id','=','4')->get();
+                $users = User::select('id')->where('rol_id','=','1')
+                    ->orWhere('rol_id','=','6')
+                    ->orWhere('rol_id','=','4')->get();
 
-        foreach($users as $notificar){
-            User::findOrFail($notificar->id)->notify(new NotifyAdmin($arregloSimPendientes));
-        }
+                foreach($users as $notificar){
+                    User::findOrFail($notificar->id)->notify(new NotifyAdmin($arregloSimPendientes));
+                }
+            }
+            
         }
         
         
