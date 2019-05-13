@@ -29,7 +29,7 @@ class CreditoController extends Controller
                 'creditos.nombre_primera_ref','creditos.telefono_primera_ref','creditos.celular_primera_ref',
                 'creditos.nombre_segunda_ref','creditos.telefono_segunda_ref','creditos.celular_segunda_ref',
                 'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','creditos.precio_base','creditos.precio_obra_extra',
-                'creditos.superficie','creditos.terreno_excedente','creditos.precio_terreno_excedente',
+                'creditos.superficie','creditos.terreno_excedente','creditos.precio_terreno_excedente','creditos.contrato',
                 'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
                 'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic',
                 'datos_extra.mascota','datos_extra.num_perros','datos_extra.rang010','datos_extra.rang1120',
@@ -1379,6 +1379,115 @@ class CreditoController extends Controller
             )->download('xls');
         
       
+    }
+
+    public function cambiarTitularCredito(Request $request){
+        $credito_id = $request->id;
+        $titular_id = $request->cliente_id;
+        $rfc_coa = $request->rfc_coa;
+
+        $persona = Personal::select('id')->where('rfc','=',$rfc_coa)->get();
+        $id_coa = $persona[0]->id;
+
+        $titularOld = Cliente::join('personal', 'clientes.id','=','personal.id')
+                        ->select('clientes.f_nacimiento_coa','clientes.homoclave_coa','clientes.direccion_coa',
+                                 'clientes.colonia_coa','clientes.cp_coa','clientes.telefono_coa','clientes.celular_coa',
+                                 'clientes.email_coa','clientes.edo_civil_coa','clientes.nss_coa','clientes.curp_coa',
+                                 'clientes.empresa_coa','clientes.lugar_nacimiento_coa','clientes.estado_coa','clientes.ciudad_coa',
+                                 'clientes.nacionalidad_coa','clientes.parentesco_coa','clientes.estado','clientes.ciudad','clientes.curp',
+                                 'clientes.email_institucional','clientes.tipo_casa','clientes.edo_civil','clientes.nacionalidad',
+                                 'clientes.nss',
+ 
+                                 'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc','personal.homoclave',
+                                 'personal.direccion','personal.colonia','personal.colonia','personal.cp','personal.telefono',
+                                 'personal.celular','personal.email')
+                        ->where('personal.id','=',$titular_id)->get();
+
+        try{
+            DB::beginTransaction();
+ 
+            // La clasificación del Titular anterior se cambia a coacreditado
+            $newClienteCoa = Cliente::findOrFail($titular_id);
+            $newClienteCoa->clasificacion = 7;
+            
+
+            // Los datos que estaban como coacreditado se actualizan para el nuevo titular
+            // Datos tabla personal
+            $newTitularP = Personal::findOrFail($id_coa);
+            $newTitularP->f_nacimiento = $titularOld[0]->f_nacimiento_coa;
+            $newTitularP->homoclave = $titularOld[0]->homoclave_coa;
+            $newTitularP->direccion = $titularOld[0]->direccion_coa;
+            $newTitularP->colonia = $titularOld[0]->colonia_coa;
+            $newTitularP->cp = $titularOld[0]->cp_coa;
+            $newTitularP->telefono = $titularOld[0]->telefono_coa;
+            $newTitularP->celular = $titularOld[0]->celular_coa;
+            $newTitularP->email = $titularOld[0]->email_coa;
+            $newTitularP->save();
+
+            // Datos tabla clientes
+            $newClienteTitular = Cliente::findOrFail($id_coa);
+            $newClienteTitular->clasificacion = 2;
+            $newClienteTitular->edo_civil = $titularOld[0]->edo_civil_coa;
+            $newClienteTitular->nss = $titularOld[0]->nss_coa;
+            $newClienteTitular->curp = $titularOld[0]->curp_coa;
+            $newClienteTitular->empresa = $titularOld[0]->empresa_coa;
+            $newClienteTitular->coacreditado = 1;
+            $newClienteTitular->lugar_nacimiento = $titularOld[0]->lugar_nacimiento_coa;
+            $newClienteTitular->estado = $titularOld[0]->estado_coa;
+            $newClienteTitular->ciudad = $titularOld[0]->ciudad_coa;
+            $newClienteTitular->nacionalidad = $titularOld[0]->nacionalidad_coa;
+
+            $newClienteTitular->sexo_coa = $titularOld[0]->sexo;
+            $newClienteTitular->tipo_casa_coa = $titularOld[0]->tipo_casa;
+            $newClienteTitular->email_institucional_coa = $titularOld[0]->email_institucional;
+            $newClienteTitular->empresa_coa = $titularOld[0]->empresa;
+            $newClienteTitular->edo_civil_coa = $titularOld[0]->edo_civil;
+            $newClienteTitular->nss_coa = $titularOld[0]->nss;
+            $newClienteTitular->curp_coa = $titularOld[0]->curp;
+            $newClienteTitular->nombre_coa = $titularOld[0]->nombre;
+            $newClienteTitular->apellidos_coa = $titularOld[0]->apellidos;
+            $newClienteTitular->f_nacimiento_coa = $titularOld[0]->f_nacimiento;
+            $newClienteTitular->nacionalidad_coa = $titularOld[0]->nacionalidad;
+            $newClienteTitular->lugar_nacimiento_coa = $newClienteCoa->lugar_nacimiento;
+            $newClienteTitular->rfc_coa = $titularOld[0]->rfc;
+            $newClienteTitular->homoclave_coa = $titularOld[0]->homoclave;
+            $newClienteTitular->direccion_coa = $titularOld[0]->direccion;
+            $newClienteTitular->colonia_coa = $titularOld[0]->colonia;
+            $newClienteTitular->ciudad_coa = $titularOld[0]->ciudad;
+            $newClienteTitular->estado_coa = $titularOld[0]->estado;
+            $newClienteTitular->cp_coa = $titularOld[0]->cp;
+            $newClienteTitular->telefono_coa = $titularOld[0]->telefono;
+            $newClienteTitular->celular_coa = $titularOld[0]->celular;
+            $newClienteTitular->email_coa = $titularOld[0]->email;
+            $newClienteTitular->parentesco_coa = $newClienteCoa->parentesco_coa;
+
+            $credito = Credito::findOrFail($credito_id);
+            $credito->prospecto_id = $id_coa;
+
+            $observacion = new Cliente_observacion();
+            $observacion->cliente_id = $titular_id;
+            $observacion->comentario = "Se cambió a coacreditado";
+            $observacion->usuario = Auth::user()->usuario;
+           
+            $observacion2 = new Cliente_observacion();
+            $observacion2->cliente_id = $id_coa;
+            $observacion2->comentario = "Se cambió a titular";
+            $observacion2->usuario = Auth::user()->usuario;
+           
+
+
+            $newClienteCoa->save();
+            $newClienteTitular->save();
+            $credito->save();
+            $observacion->save();
+            $observacion2->save();
+
+            DB::commit();
+ 
+        } catch (Exception $e){
+            DB::rollBack();
+        }
+
     }
 
 }

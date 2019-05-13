@@ -1935,14 +1935,17 @@
                                 <!--- Botones y div para errores -->
                                 <div class="card-body">
                                         <div class="form-group row">
-                                            <div class="col-md-10">
+                                            <div class="col-md-9">
                                                 <button type="button" class="btn btn-secondary" @click="ocultarDetalle()"> Cerrar </button>
                                             </div>
-                                            <div class="col-md-1" v-if="rolId==1 || rolId==4 ">
+                                            <div class="col-md-1" v-if="rolId==1 && contrato==0 || rolId==4 && contrato==0">
                                                 <button type="button" class="btn btn-danger" @click="rechazarSimulacion()"> Rechazar </button>
                                             </div>
-                                            <div class="col-md-1" v-if="rolId==1 || rolId==4">
+                                            <div class="col-md-1" v-if="rolId==1 && contrato==0 || rolId==4 && contrato==0">
                                                 <button type="button" class="btn btn-success" @click="aceptarSimulacion()"> Aprobar </button>
+                                            </div>
+                                            <div class="col-md-1" v-if="coacreditado == 1 && contrato==0">
+                                                <button type="button" class="btn btn-light" @click="cambiarTitular()"> Cambiar titular </button>
                                             </div>
                                         </div>
                                     </div>
@@ -2401,7 +2404,8 @@
                 plazo_credito:0,
                 monto_credito:0,
                 plazo_credito2:0,
-                monto_credito2:0
+                monto_credito2:0,
+                contrato:0
                 
             }
         },
@@ -2847,7 +2851,29 @@
                     'nacionalidad_coa':this.nacionalidad_coa
                     
                 })
-            },    
+            },
+            cambiarTitular(){
+                //Con axios se llama el metodo store del controller
+                axios.put('/creditos/cambiarTitular',{
+                    //datos cliente
+                    'id':this.num_folio,
+                    'rfc_coa':this.rfc_coa,
+                    'cliente_id':this.prospecto_id,
+                }).then(function (response){
+                    me.listarProspectos(me.pagination.current_page,me.buscar,me.criterio);
+                    me.limpiarDatos();
+                    //window.alert("Cambios guardados correctamente");
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Cambios realizados',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },      
             aceptarSimulacion(){
                 let me = this;
                 //Con axios se llama el metodo update de DepartamentoController
@@ -3097,6 +3123,7 @@
                 this.e_civil = data['edo_civil'];
                 this.dep_economicos = data['num_dep_economicos']
                 this.status = data['status'];
+                this.contrato = data['contrato'];
                 
                 this.nombre_referencia1 = data['nombre_primera_ref'];
                 this.telefono_referencia1 = data['telefono_primera_ref'];
