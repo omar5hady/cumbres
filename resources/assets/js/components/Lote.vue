@@ -292,7 +292,7 @@
                                     <div class="col-md-6">
                                        <select class="form-control" v-model="buscar_fraccionamientoExcel" >
                                             <option value="0">Seleccione</option>
-                                            <option v-for="fraccionamientos in arrayFraccionamientosLote" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                                            <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                         </select>
                                     </div>
                                 </div>
@@ -886,7 +886,7 @@
                     }
                 }
                 this.selectFraccionamientos();
-                this.selectFraccionamientosConLote();
+               // this.selectFraccionamientosConLote();
                 this.selectEtapa(this.fraccionamiento_id);
                 this.selectModelo(this.fraccionamiento_id);
                 this.selectConsYTerreno(this.modelo_id);

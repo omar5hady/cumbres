@@ -2527,7 +2527,8 @@ class LoteController extends Controller
                     ->where('lotes.apartado','=',0)
                     ->orderBy('fraccionamientos.nombre','ASC')
                     ->orderBy('etapas.num_etapa','ASC')
-                    ->orderBy('lotes.num_lote','ASC')->get();
+                    ->orderBy('lotes.num_lote','ASC')
+                    ->orderBy('lotes.manzana','ASC')->get();
 
                    
 
@@ -2536,13 +2537,13 @@ class LoteController extends Controller
                 $excel->sheet('lotes', function($sheet) use ($lotes){
                     
                     $sheet->row(1, [
-                        'Proyecto', 'Manzana', '# Lote', '% Avance', 'Modelo', 'Calle',
+                        'Proyecto', 'Etapa' ,'Manzana', '# Lote', '% Avance', 'Modelo', 'Calle',
                         '# Oficial', 'Terreno', 'Construccion','Precio base','Terreno excedente','Obra extra',
                         'Sobreprecios','Precio venta','Promocion','Fecha de termino', 'Canal de venta'
                     ]);
 
 
-                    $sheet->cells('A1:Q1', function ($cells) {
+                    $sheet->cells('A1:R1', function ($cells) {
                         $cells->setBackground('#052154');
                         $cells->setFontColor('#ffffff');
                         // Set font family
@@ -2560,11 +2561,11 @@ class LoteController extends Controller
                     $cont=1;
                     
                     $sheet->setColumnFormat(array(
-                        'J' => '$#,##0.00',
                         'K' => '$#,##0.00',
                         'L' => '$#,##0.00',
                         'M' => '$#,##0.00',
                         'N' => '$#,##0.00',
+                        'O' => '$#,##0.00',
                     ));
 
                     
@@ -2615,6 +2616,7 @@ class LoteController extends Controller
                         
                         $sheet->row($index+2, [
                             $lote->proyecto, 
+                            $lote->etapa,
                             $lote->manzana,
                             $loteConSublote, 
                             $lote->avance, 
@@ -2637,9 +2639,9 @@ class LoteController extends Controller
                     }
 
 
-                    $num='A1:Q' . $cont;
+                    $num='A1:R' . $cont;
                     $sheet->setBorder($num, 'thin');
-                    $sheet->cells('R1:R'.$cont, function($cells) {
+                    $sheet->cells('S1:S'.$cont, function($cells) {
 
                         
                         $cells->setFontColor('#ff4040');
