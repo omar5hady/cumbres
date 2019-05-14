@@ -165,7 +165,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::delete('/empresa/eliminar','EmpresaController@destroy');
         
     ////////////////////        RUTAS MODELOS     /////////////////////////////////
-        Route::get('/modelo','ModeloController@index');
+        Route::get('/modelo','ModeloController@index'); 
         Route::post('/modelo/registrar','ModeloController@store');
         Route::put('/modelo/actualizar','ModeloController@update');
         Route::delete('/modelo/eliminar','ModeloController@destroy');
@@ -173,7 +173,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/downloadModelo/{fileName}' , 'ModeloController@downloadFile');
     
     ////////////////////        RUTAS LOTES    /////////////////////////////////
-        Route::get('/lote','LoteController@index');
+        Route::get('/lote','LoteController@index'); 
+        Route::get('/asignar_modelo/excel','LoteController@exportExcelAsignarModelo');
         Route::get('/lote2','LoteController@index2');
         Route::get('/lotesDisponibles','LoteController@indexLotesDisponibles');
         Route::post('/lote/registrar','LoteController@store');

@@ -53,6 +53,9 @@
                                                                         
                                     <input type="text" v-if="criterio=='lotes.credito_puente'" v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,b_habilitado,criterio)" class="form-control" placeholder="Texto a buscar">
                                     <button type="submit" @click="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,b_habilitado,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <a class="btn btn-success" v-bind:href="'/asignar_modelo/excel?buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3  + '&bmodelo=' + b_modelo + '&blote=' + b_lote + '&b_habilitado='+ b_habilitado+'&criterio=' + criterio " >
+                                        <i class="icon-pencil"></i>&nbsp;Excel
+                                    </a>
                                     <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Total: '+ contador"> </span>
                                 </div>
                             </div>
@@ -79,6 +82,7 @@
                                         <th>Construcción mts&sup2;</th>
                                         <th>Credito puente</th>
                                         <th>Casa en venta</th>
+                                        <th>Canal de ventas</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -119,6 +123,7 @@
                                             <span v-if = "lote.casa_muestra==0 && lote.lote_comercial==0 && lote.habilitado==1" class="badge badge-success">Activo</span>
                                             <span v-else class="badge badge-danger">Inactivo</span>
                                         </td> 
+                                        <td class="td2" v-text="lote.comentarios"></td>
                                     </tr>                               
                                 </tbody>
                             </table> 
