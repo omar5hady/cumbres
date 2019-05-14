@@ -1252,7 +1252,7 @@ class ContratoController extends Controller
                 ->where('contratos.id','=',$id)
                 ->orderBy('id','desc')->get();
                 
-                setlocale(LC_TIME, 'es');
+                setlocale(LC_TIME, 'es_MX.utf8');
                 $tiempo = new Carbon($contratos[0]->fecha);
                 $contratos[0]->fecha = $tiempo->formatLocalized('%d de %B de %Y');
 
@@ -1310,7 +1310,7 @@ class ContratoController extends Controller
          
              $pagos = Pago_contrato::select('monto_pago','num_pago','fecha_pago')->where('contrato_id','=',$id)->orderBy('fecha_pago','asc')->get();
 
-             setlocale(LC_TIME, 'es');
+             setlocale(LC_TIME, 'es_MX.utf8');
 
 
 
@@ -1354,7 +1354,7 @@ class ContratoController extends Controller
         ->where('inst_seleccionadas.tipo_credito','=','Crédito Directo')
         ->get();
 
-        setlocale(LC_TIME, 'es');
+        setlocale(LC_TIME, 'es_MX.utf8');
         $contratosDom[0]->engacheTotalLetra = NumerosEnLetras::convertir($contratosDom[0]->enganche_total,'Pesos',false,'Centavos');
         $contratosDom[0]->enganche_total = number_format((float)$contratosDom[0]->enganche_total,2,'.',',');
 
@@ -1419,7 +1419,7 @@ class ContratoController extends Controller
         ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
         ->get();
 
-        setlocale(LC_TIME, 'es');
+        setlocale(LC_TIME, 'es_MX.utf8');
         $contratoPromesa[0]->precio_venta = $contratoPromesa[0]->precio_venta + $contratoPromesa[0]->avaluo_cliente;
         $contratoPromesa[0]->precioVentaLetra = NumerosEnLetras::convertir($contratoPromesa[0]->precio_venta,'Pesos',false,'Centavos');
         $contratoPromesa[0]->precio_venta = number_format((float)$contratoPromesa[0]->precio_venta,2,'.',',');

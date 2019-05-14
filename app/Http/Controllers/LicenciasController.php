@@ -491,42 +491,42 @@ class LicenciasController extends Controller
                                 $avance=0;
                         
                         if($licencia->siembra){
-                            setlocale(LC_TIME, 'es');
+                            setlocale(LC_TIME, 'es_MX.utf8');
                             $tiempo = new Carbon($licencia->siembra);
                             $licencia->siembra = $tiempo->formatLocalized('%d de %B de %Y');
                             
                         }
 
                         if($licencia->ehl_solicitado){
-                            setlocale(LC_TIME, 'es');
+                            setlocale(LC_TIME, 'es_MX.utf8');
                             $t1 = new Carbon($licencia->ehl_solicitado);
                             $licencia->ehl_solicitado = $t1->formatLocalized('%d de %B de %Y');
                             
                         }
 
                         if($licencia->f_planos_obra){
-                            setlocale(LC_TIME, 'es');
+                            setlocale(LC_TIME, 'es_MX.utf8');
                             $t3 = new Carbon($licencia->f_planos_obra);
                             $licencia->f_planos_obra = $t3->formatLocalized('%d de %B de %Y');
                             
                         }
 
                         if($licencia->f_planos){
-                            setlocale(LC_TIME, 'es');
+                            setlocale(LC_TIME, 'es_MX.utf8');
                             $tiempo2 = new Carbon($licencia->f_planos);
                             $licencia->f_planos = $tiempo2->formatLocalized('%d de %B de %Y');
                             
                         }
 
                         if($licencia->f_ingreso){
-                            setlocale(LC_TIME, 'es');
+                            setlocale(LC_TIME, 'es_MX.utf8');
                             $tiempo = new Carbon($licencia->f_ingreso);
                             $licencia->f_ingreso = $tiempo->formatLocalized('%d de %B de %Y');
                             
                         }
 
                         if($licencia->f_salida){
-                            setlocale(LC_TIME, 'es');
+                            setlocale(LC_TIME, 'es_MX.utf8');
                             $tiempo = new Carbon($licencia->f_salida);
                             $licencia->f_salida = $tiempo->formatLocalized('%d de %B de %Y');
                             
@@ -1019,7 +1019,7 @@ class LicenciasController extends Controller
                                 $avance=0;
                         
                         if($licencia->siembra){
-                            setlocale(LC_TIME, 'es');
+                            setlocale(LC_TIME, 'es_MX.utf8');
                             $tiempo = new Carbon($licencia->siembra);
                             $licencia->siembra = $tiempo->formatLocalized('%d de %B de %Y');
                             
@@ -1027,28 +1027,28 @@ class LicenciasController extends Controller
 
 
                         if($licencia->f_planos_obra){
-                            setlocale(LC_TIME, 'es');
+                            setlocale(LC_TIME, 'es_MX.utf8');
                             $t3 = new Carbon($licencia->f_planos_obra);
                             $licencia->f_planos_obra = $t3->formatLocalized('%d de %B de %Y');
                             
                         }
 
                         if($licencia->f_planos){
-                            setlocale(LC_TIME, 'es');
+                            setlocale(LC_TIME, 'es_MX.utf8');
                             $tiempo2 = new Carbon($licencia->f_planos);
                             $licencia->f_planos = $tiempo2->formatLocalized('%d de %B de %Y');
                             
                         }
 
                         if($licencia->f_ingreso){
-                            setlocale(LC_TIME, 'es');
+                            setlocale(LC_TIME, 'es_MX.utf8');
                             $tiempo = new Carbon($licencia->f_ingreso);
                             $licencia->f_ingreso = $tiempo->formatLocalized('%d de %B de %Y');
                             
                         }
 
                         if($licencia->f_salida){
-                            setlocale(LC_TIME, 'es');
+                            setlocale(LC_TIME, 'es_MX.utf8');
                             $tiempo = new Carbon($licencia->f_salida);
                             $licencia->f_salida = $tiempo->formatLocalized('%d de %B de %Y');
                             
@@ -1228,14 +1228,14 @@ class LicenciasController extends Controller
                         
 
                         if($acta->term_ingreso){
-                            setlocale(LC_TIME, 'es');
+                            setlocale(LC_TIME, 'es_MX.utf8');
                             $tiempo = new Carbon($acta->term_ingreso);
                             $acta->term_ingreso = $tiempo->formatLocalized('%d de %B de %Y');
                             
                         }
 
                         if($acta->term_salida){
-                            setlocale(LC_TIME, 'es');
+                            setlocale(LC_TIME, 'es_MX.utf8');
                             $tiempo = new Carbon($acta->term_salida);
                             $acta->term_salida = $tiempo->formatLocalized('%d de %B de %Y');
                             

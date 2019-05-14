@@ -152,7 +152,7 @@ class LoteController extends Controller
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                         ->where('modelos.id', '=', $b_modelo )
-                        ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
+                        ->where('lotes.manzana', '=',  $buscar3)
                         ->where('lotes.habilitado','=', $b_habilitado)
                         ->orderBy('fraccionamientos.nombre','ASC')
                         ->orderBy('etapas.num_etapa','ASC')
@@ -168,7 +168,7 @@ class LoteController extends Controller
                             ->where($criterio, 'like', '%'. $buscar . '%')
                             ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                             ->where('modelos.id', '=', $b_modelo )
-                            ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
+                            ->where('lotes.manzana', '=', $buscar3)
                             ->where('lotes.habilitado','=', $b_habilitado)
                             ->orderBy('fraccionamientos.nombre','ASC')
                             ->orderBy('etapas.num_etapa','ASC')
@@ -262,7 +262,7 @@ class LoteController extends Controller
                                         'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
                                         'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom')
                                     ->where($criterio, 'like', '%'. $buscar . '%')
-                                    ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
+                                    ->where('lotes.manzana', '=',$buscar3)
                                     ->where('lotes.habilitado','=', $b_habilitado)
                                     ->orderBy('fraccionamientos.nombre','ASC')
                                     ->orderBy('etapas.num_etapa','ASC')
@@ -276,7 +276,7 @@ class LoteController extends Controller
                             ->join('empresas','lotes.empresa_id','=','empresas.id')
                             ->select('lotes.id')
                             ->where($criterio, 'like', '%'. $buscar . '%')
-                            ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
+                            ->where('lotes.manzana', '=',$buscar3)
                             ->where('lotes.habilitado','=', $b_habilitado)
                             ->orderBy('fraccionamientos.nombre','ASC')
                             ->orderBy('etapas.num_etapa','ASC')
@@ -295,7 +295,7 @@ class LoteController extends Controller
                                             'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
                                             'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom')
                                         ->where($criterio, 'like', '%'. $buscar . '%')
-                                        ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
+                                        ->where('lotes.manzana', '=',$buscar3)
                                         ->where('lotes.habilitado','=', $b_habilitado)
                                         ->where('modelos.id', '=', $b_modelo )
                                         ->orderBy('fraccionamientos.nombre','ASC')
@@ -310,7 +310,7 @@ class LoteController extends Controller
                             ->join('empresas','lotes.empresa_id','=','empresas.id')
                             ->select('lotes.id')
                             ->where($criterio, 'like', '%'. $buscar . '%')
-                            ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
+                            ->where('lotes.manzana', '=',$buscar3)
                             ->where('lotes.habilitado','=', $b_habilitado)
                             ->where('modelos.id', '=', $b_modelo )
                             ->orderBy('fraccionamientos.nombre','ASC')
@@ -330,7 +330,7 @@ class LoteController extends Controller
                                                 'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
                                                 'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom')
                                             ->where($criterio, 'like', '%'. $buscar . '%')
-                                            ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
+                                            ->where('lotes.manzana', '=',$buscar3)
                                             ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                                             ->where('lotes.habilitado','=', $b_habilitado)
                                             ->orderBy('fraccionamientos.nombre','ASC')
@@ -345,7 +345,7 @@ class LoteController extends Controller
                                             ->join('empresas','lotes.empresa_id','=','empresas.id')
                                             ->select('lotes.id')
                                             ->where($criterio, 'like', '%'. $buscar . '%')
-                                            ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
+                                            ->where('lotes.manzana', '=',$buscar3)
                                             ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
                                             ->where('lotes.habilitado','=', $b_habilitado)
                                             ->orderBy('fraccionamientos.nombre','ASC')
@@ -399,7 +399,7 @@ class LoteController extends Controller
                                                         'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom')
                                                     ->where($criterio, 'like', '%'. $buscar . '%')
                                                     ->where('modelos.id', '=', $b_modelo )
-                                                    ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
+                                                    ->where('lotes.manzana', '=',$buscar3)
                                                     ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
                                                     ->where('lotes.habilitado','=', $b_habilitado)
                                                     ->orderBy('fraccionamientos.nombre','ASC')
@@ -415,7 +415,7 @@ class LoteController extends Controller
                                             ->select('lotes.id')
                                             ->where($criterio, 'like', '%'. $buscar . '%')
                                             ->where('modelos.id', '=', $b_modelo )
-                                            ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
+                                            ->where('lotes.manzana', '=',$buscar3)
                                             ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
                                             ->where('lotes.habilitado','=', $b_habilitado)
                                             ->orderBy('fraccionamientos.nombre','ASC')
@@ -436,7 +436,7 @@ class LoteController extends Controller
                                                             'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom')
                                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                                         ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                        ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
+                                                        ->where('lotes.manzana', '=',$buscar3)
                                                         ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
                                                         ->where('lotes.habilitado','=', $b_habilitado)
                                                         ->orderBy('fraccionamientos.nombre','ASC')
@@ -452,7 +452,7 @@ class LoteController extends Controller
                                             ->select('lotes.id')
                                             ->where($criterio, 'like', '%'. $buscar . '%')
                                             ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                            ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
+                                            ->where('lotes.manzana', '=',$buscar3)
                                             ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
                                             ->where('lotes.habilitado','=', $b_habilitado)
                                             ->orderBy('fraccionamientos.nombre','ASC')
@@ -474,7 +474,7 @@ class LoteController extends Controller
                                                             ->where($criterio, 'like', '%'. $buscar . '%')
                                                             ->where('modelos.id', '=', $b_modelo )
                                                             ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                                            ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
+                                                            ->where('lotes.manzana', '=',$buscar3)
                                                             ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
                                                             ->where('lotes.habilitado','=', $b_habilitado)
                                                             ->orderBy('fraccionamientos.nombre','ASC')
@@ -491,7 +491,7 @@ class LoteController extends Controller
                                             ->where($criterio, 'like', '%'. $buscar . '%')
                                             ->where('modelos.id', '=', $b_modelo )
                                             ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
-                                            ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
+                                            ->where('lotes.manzana', '=',$buscar3)
                                             ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
                                             ->where('lotes.habilitado','=', $b_habilitado)
                                             ->orderBy('fraccionamientos.nombre','ASC')
@@ -894,7 +894,7 @@ class LoteController extends Controller
             ->select('fraccionamientos.nombre as proyecto','lotes.fecha_fin','lotes.fecha_ini')
             ->where('lotes.id','=',$id)->get();
 
-            setlocale(LC_TIME, 'es');
+            setlocale(LC_TIME, 'es_MX.utf8');
             $fecha_fin = new Carbon($loteIni[0]->fecha_fin);
             $loteIni[0]->fecha_fin = $fecha_fin->formatLocalized('%d-%m-%Y');
             $fecha_ini = new Carbon($loteIni[0]->fecha_ini);
@@ -2525,8 +2525,9 @@ class LoteController extends Controller
                     ->where('lotes.habilitado','=',1)
                     ->where('lotes.contrato','=',0)
                     ->where('lotes.apartado','=',0)
-                    ->orderBy('fraccionamientos.nombre','DESC')
-                    ->orderBy('lotes.etapa_servicios','DESC')->get();
+                    ->orderBy('fraccionamientos.nombre','ASC')
+                    ->orderBy('etapas.num_etapa','ASC')
+                    ->orderBy('lotes.num_lote','ASC')->get();
 
                    
 
@@ -2572,7 +2573,7 @@ class LoteController extends Controller
                         if($lote->fecha_fin == NULL){
                             $lote->fecha_fin = 'Por definir';
                         }else{
-                        setlocale(LC_TIME,'es');
+                        setlocale(LC_TIME,'es_MX.utf8');
                         $mesAño = new Carbon($lote->fecha_fin);
                         $lote->fecha_fin = $mesAño->formatLocalized('%B %Y');
                         }

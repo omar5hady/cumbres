@@ -75,7 +75,7 @@ class LotePromocionController extends Controller
                     'promociones.v_fin')
             ->where('lotes.id', '=', $id)->get();
 
-            setlocale(LC_TIME, 'es');
+            setlocale(LC_TIME, 'es_MX.utf8');
             $fecha_fin = new Carbon($lotes_promocion[0]->v_fin);
             $lotes_promocion[0]->v_fin = $fecha_fin->formatLocalized('%d-%m-%Y');
 

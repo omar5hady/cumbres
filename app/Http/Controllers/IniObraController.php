@@ -364,7 +364,7 @@ class IniObraController extends Controller
         ->where('ini_obras.id','=',$id)
         ->orderBy('ini_obras.id', 'desc')->take(1)->get();
 
-        setlocale(LC_TIME, 'es');
+        setlocale(LC_TIME, 'es_MX.utf8');
         $tiempo = new Carbon($cabecera[0]->f_ini);
         $cabecera[0]->f_ini = $tiempo->formatLocalized('%d de %B de %Y');
 

@@ -106,7 +106,7 @@ class ServicioController extends Controller
          ->where('contratos.id','=',$id)
          ->get();
 
-            setlocale(LC_TIME, 'es');
+            setlocale(LC_TIME, 'es_MX.utf8');
             $now= Carbon::now();
             $datos[0]->fecha_hoy = $now->formatLocalized('%d de %B de %Y');
  
