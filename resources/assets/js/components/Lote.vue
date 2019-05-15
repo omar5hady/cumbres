@@ -497,7 +497,7 @@
                 evt = (evt) ? evt : window.event;
                 var charCode = (evt.which) ? evt.which : evt.keyCode;
                 if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
-                    evt.preventDefault();;
+                    evt.preventDefault();
                 } else {
                     return true;
                 }
@@ -505,9 +505,9 @@
 
             selectFraccionamientos(){
                 let me = this;
-                me.buscar=""
-                me.buscar2=""
-                me.buscar3=""
+                me.buscar="";
+                me.buscar2="";
+                me.buscar3="";
                 me.arrayFraccionamientos=[];
                 var url = '/select_fraccionamiento';
                 axios.get(url).then(function (response) {
@@ -519,23 +519,23 @@
                 });
             },
 
-            selectFraccionamientosConLote(){
-                let me = this;
-                me.arrayFraccionamientosLote=[];
-                var url = '/select_fraccionamientoLote';
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayFraccionamientosLote = respuesta.fraccionamientos;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            },
+            // selectFraccionamientosConLote(){
+            //     let me = this;
+            //     me.arrayFraccionamientosLote=[];
+            //     var url = '/select_fraccionamientoLote';
+            //     axios.get(url).then(function (response) {
+            //         var respuesta = response.data;
+            //         me.arrayFraccionamientosLote = respuesta.fraccionamientos;
+            //     })
+            //     .catch(function (error) {
+            //         console.log(error);
+            //     });
+            // },
 
             selectEtapa(buscar){
                 let me = this;
-                me.buscar2=""
-                me.buscar3=""
+                me.buscar2="";
+                me.buscar3="";
                 me.arrayEtapas=[];
                 var url = '/select_etapa_proyecto?buscar=' + buscar;
                 axios.get(url).then(function (response) {
@@ -869,6 +869,7 @@
                                 this.modal2 =1;
                                 this.tituloModal2= 'Cargar desde Excel';
                                 this.tipoAccion=3;
+                                
                                 break;
                             }
 
@@ -886,7 +887,7 @@
                     }
                 }
                 this.selectFraccionamientos();
-               // this.selectFraccionamientosConLote();
+              
                 this.selectEtapa(this.fraccionamiento_id);
                 this.selectModelo(this.fraccionamiento_id);
                 this.selectConsYTerreno(this.modelo_id);

@@ -775,7 +775,7 @@ class LoteController extends Controller
             $terrenoExcedente = ($lote->terreno - $terrenoModelo[0]->terreno);
             if($terrenoExcedente > 0)
                 $lote->excedente_terreno = $terrenoExcedente * $precioTerreno[0]->precio_excedente;
-            $lote->precio_base = $precioBase[0]->precio_modelo;
+                $lote->precio_base = $precioBase[0]->precio_modelo;
             if($sobreprecios[0]->sobreprecios != NULL)
                 $lote->sobreprecio = $sobreprecios[0]->sobreprecios;
             else
@@ -958,22 +958,22 @@ class LoteController extends Controller
                 ->where('fraccionamiento_id','=',$request->fraccionamiento_id)
                 ->get();
 
-                if(Lote::count() > 0){
-                    $lotes = Lote::select('id')->get();
+                if(Licencia::count() > 0){
+                    $lotes =Licencia::select('id')->get();
                     $id = $lotes->last()->id + 1;
                 }
-                else
+                else{
                     $id = 1;
-                
+                }
 
                 $path = $request->file->getRealPath();
                 $data = Excel::load($path, function($reader) {
                 })->get();
+
                 if(!empty($data) && $data->count()){
  
                     foreach ($data as $key => $value) {
-                            
-
+                        
                         $insert[] = [
                         'id' => $id,
                         'fraccionamiento_id' => $request->fraccionamiento_id,
@@ -990,7 +990,7 @@ class LoteController extends Controller
                         'construccion' => $modelo[0]->construccion,
                         'clv_catastral' =>$value->clave_catastral,
                         'etapa_servicios' =>$value->etapa_servicios,
-                        'arquitecto_id' =>1
+                        'arquitecto_id' => 1
                         
                         ];
 
@@ -2392,7 +2392,7 @@ class LoteController extends Controller
             'to'            => $lotes->lastItem(),
         ],
         'lotes' => $lotes, 'contadorLotesDisponibles' => $contadorLotes
-    ];
+             ];
 
     }
 
