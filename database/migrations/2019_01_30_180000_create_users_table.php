@@ -59,6 +59,7 @@ class CreateUsersTable extends Migration
             $table->boolean('p_etapa')->default(0);
 
             //Precios
+            $table->boolean('agregar_sobreprecios')->default(0);
             $table->boolean('precios_etapas')->default(0);
             $table->boolean('precios_viviendas')->default(0);
             $table->boolean('sobreprecios')->default(0);

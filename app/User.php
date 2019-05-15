@@ -50,6 +50,7 @@ class User extends Authenticatable
         'p_fraccionamiento',
 
         //Precios
+        'agregar_sobreprecios',
         'precios_etapas',
         'sobreprecios',
         'paquetes',

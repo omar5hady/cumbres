@@ -233,6 +233,9 @@ Route::group(['middleware' => ['auth']],function(){
         Route::delete('/precio_modelo/eliminar','PrecioModeloController@destroy');
         
     ////////////////////        RUTAS SOBREPRECIO ETAPA    /////////////////////////////////
+        Route::get('/sobreprecios','SobreprecioEtapaController@ListarSobreprecio');
+        Route::post('/sobreprecios/registrar','SobreprecioEtapaController@registrarSobreprecio');
+        Route::put('/sobreprecios/actualizar','SobreprecioEtapaController@actualizarSobreprecio');
         Route::get('/sobreprecio_etapa','SobreprecioEtapaController@index');
         Route::post('/sobreprecio_etapa/registrar','SobreprecioEtapaController@store');
         Route::put('/sobreprecio_etapa/actualizar','SobreprecioEtapaController@update');

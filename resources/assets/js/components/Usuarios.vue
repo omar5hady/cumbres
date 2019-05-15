@@ -253,6 +253,9 @@
                                     <div class="form-group row border">
                                             <a class="nav-link nav-dropdown-toggle"><i class="fa fa-money"></i> <input @click="limpiarPrecios()" v-model="precios" type="checkbox" value="1"/> Modulo Precios</a>
                                                 <ul class="nav-dropdown-items" v-if="precios==1">
+                                                     <li class="nav-item">
+                                                        <a class="nav-link"><i class="fa fa-usd"></i> <input v-model="agregar_sobreprecios" type="checkbox" value="1"/>Agregar sobreprecios</a>
+                                                    </li>
                                                     <li class="nav-item">
                                                         <a class="nav-link"><i class="fa fa-usd"></i> <input v-model="precios_etapas" type="checkbox" value="1"/> Precios de etapa</a>
                                                     </li>
@@ -593,6 +596,7 @@
                     p_fraccionamiento:0,
 
                     //Precios
+                    agregar_sobreprecios: 0,
                     precios_etapas:0,
                     precios_viviendas:0,
                     sobreprecios:0,
@@ -755,6 +759,7 @@
             },
             limpiarPrecios(){
                  //Precios
+                this.agregar_sobreprecios=0; 
                 this.precios_etapas=0;
                 this.precios_viviendas=0;
                 this.sobreprecios=0;
@@ -844,6 +849,7 @@
                     me.p_fraccionamiento=usuarios[0].p_fraccionamiento;
 
                     //Precios
+                    me.agregar_sobreprecios = usuarios[0].agregar_sobreprecios;
                     me.precios_etapas=usuarios[0].precios_etapas;
                     me.precios_viviendas = usuarios[0].precios_viviendas;
                     me.sobreprecios=usuarios[0].sobreprecios;
@@ -1096,6 +1102,7 @@
                     'p_etapa':this.p_etapa,
                     'p_fraccionamiento':this.p_fraccionamiento,
                         //Precios
+                    'agregar_sobreprecios':this.agregar_sobreprecios,
                     'precios_etapas':this.precios_etapas,
                     'precios_viviendas':this.precios_viviendas,
                     'sobreprecios':this.sobreprecios,
@@ -1361,6 +1368,7 @@
                 me.p_fraccionamiento=0;
 
                     //Precios
+                me.agregar_sobreprecios=0;
                 me.precios_etapas=0;
                 me.precios_viviendas=0;
                 me.sobreprecios=0;

@@ -187,6 +187,11 @@
                         <li class="nav-item nav-dropdown">
                             <a class="nav-link nav-dropdown-toggle" href="#"><i class="fa fa-money"></i> Precios </a>
                             <ul class="nav-dropdown-items">
+                                @if(Auth::user()->agregar_sobreprecios == 1)
+                                    <li @click="menu=26" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="fa fa-usd"></i> Admn. Sobreprecios </a>
+                                    </li>
+                                @endif
                                 @if(Auth::user()->precios_etapas == 1)
                                     <li @click="menu=21" class="nav-item">
                                         <a class="nav-link" href="#"><i class="fa fa-usd"></i> Precios de etapa</a>

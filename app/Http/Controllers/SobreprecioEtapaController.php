@@ -8,6 +8,7 @@ use DB;
 use App\Sobreprecio_modelo;
 use App\Lote;
 use App\Credito;
+use App\Sobreprecio;
 
 
 class SobreprecioEtapaController extends Controller
@@ -25,7 +26,7 @@ class SobreprecioEtapaController extends Controller
                 'sobreprecios_etapas.id','sobreprecios_etapas.etapa_id',
                 'sobreprecios_etapas.sobreprecio_id','sobreprecios_etapas.sobreprecio' )
         ->where('sobreprecios_etapas.etapa_id','=', $buscar)
-        ->orderBy('id','sobreprecios_etapas.etapa_id')->paginate(7);
+        ->orderBy('id','sobreprecios_etapas.etapa_id')->paginate(10);
 
         return [
             'pagination' => [
@@ -163,6 +164,54 @@ class SobreprecioEtapaController extends Controller
                     ->where('sobreprecios_etapas.etapa_id','=', $buscar)
                     ->get();
         return ['sobreprecio_etapaM' => $sobreprecio_etapaM];
+    }
+
+
+    public function ListarSobreprecio (Request $request){
+        if(!$request->ajax())return redirect('/');
+
+        $buscar = $request->buscar;
+        $criterio = $request->criterio;
+        $sobreprecios = Sobreprecio::select('id','nombre')
+                        ->where($criterio, 'LIKE', '%'.$buscar.'%')
+                        ->orderBy('nombre','ASC')
+                        ->paginate(15);
+
+                        return [
+                            'pagination' => [
+                                'total'         => $sobreprecios->total(),
+                                'current_page'  => $sobreprecios->currentPage(),
+                                'per_page'      => $sobreprecios->perPage(),
+                                'last_page'     => $sobreprecios->lastPage(),
+                                'from'          => $sobreprecios->firstItem(),
+                                'to'            => $sobreprecios->lastItem(),
+                            ],
+                            'sobreprecios' => $sobreprecios
+                        ];
+    }
+
+    public function registrarSobreprecio(Request $request){
+        if(!$request->ajax())return redirect('/');
+        $sobreprecio = new Sobreprecio();
+        $sobreprecio->nombre = $request->sobreprecio;
+        $sobreprecio->save();
+
+        $sobreprecio_etapa = Sobreprecio_etapa::select('etapa_id')->distinct()->get();
+        foreach ($sobreprecio_etapa as $sobreprecioEtapa){
+            $sobreprecio_etapa_registrar = new Sobreprecio_etapa();
+            $sobreprecio_etapa_registrar->etapa_id = $sobreprecioEtapa->etapa_id;
+            $sobreprecio_etapa_registrar->sobreprecio_id = $sobreprecio->id;
+            $sobreprecio_etapa_registrar->sobreprecio = 0;
+            $sobreprecio_etapa_registrar->save();
+        }
+
+    }
+
+    public function actualizarSobreprecio(Request $request){
+        if(!$request->ajax())return redirect('/');
+        $sobreprecio = Sobreprecio::findOrFail($request->id);
+        $sobreprecio->nombre = $request->sobreprecio;
+        $sobreprecio->save();
     }
 
 }

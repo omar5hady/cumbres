@@ -216,6 +216,7 @@ class UserController extends Controller
                     $user->p_etapa=0;
                     $user->p_fraccionamiento=0;
                     //Precios
+                    $user->agregar_sobreprecios=1;
                     $user->precios_etapas=1;
                     $user->sobreprecios=1;
                     $user->paquetes=1;
@@ -313,6 +314,7 @@ class UserController extends Controller
                     $user->modelos=1;
                     $user->asign_modelos=1;
                     //Precios
+                    $user->agregar_sobreprecios=1;
                     $user->precios_etapas=1;
                     $user->sobreprecios=1;
                     $user->paquetes=1;
@@ -474,6 +476,7 @@ class UserController extends Controller
                     $user->p_etapa=0;
                     $user->p_fraccionamiento=0;
                     //Precios
+                    $user->agregar_sobreprecios=1;
                     $user->precios_etapas=1;
                     $user->sobreprecios=1;
                     $user->paquetes=1;
@@ -571,6 +574,7 @@ class UserController extends Controller
                     $user->modelos=1;
                     $user->asign_modelos=1;
                     //Precios
+                    $user->agregar_sobreprecios=1;
                     $user->precios_etapas=1;
                     $user->sobreprecios=1;
                     $user->paquetes=1;
@@ -685,6 +689,7 @@ class UserController extends Controller
                 $user->p_etapa=0;
                 $user->p_fraccionamiento=0;
                 //Precios
+                $user->agregar_sobreprecios=1;
                 $user->precios_etapas=1;
                 $user->sobreprecios=1;
                 $user->paquetes=1;
@@ -782,6 +787,7 @@ class UserController extends Controller
                 $user->modelos=1;
                 $user->asign_modelos=1;
                 //Precios
+                $user->agregar_sobreprecios=1;
                 $user->precios_etapas=1;
                 $user->sobreprecios=1;
                 $user->paquetes=1;
@@ -902,6 +908,7 @@ class UserController extends Controller
                                 'users.acta_terminacion','users.p_etapa','users.p_fraccionamiento',
                                 //Precios
                                 'users.precios_etapas','users.precios_viviendas','users.sobreprecios','users.paquetes','users.promociones',
+                                'users.agregar_sobreprecios',
                                 //Obra
                                 'users.contratistas','users.ini_obra','users.aviso_obra','users.partidas','users.avance',
                                 //Ventas
@@ -949,6 +956,7 @@ class UserController extends Controller
         $user->p_etapa = $request->p_etapa;
         $user->p_fraccionamiento = $request->p_fraccionamiento;
         //Precios
+        $user->agregar_sobreprecios=$request->agregar_sobreprecios;
         $user->precios_etapas = $request->precios_etapas;
         $user->precios_viviendas = $request->precios_viviendas;
         $user->sobreprecios = $request->sobreprecios;

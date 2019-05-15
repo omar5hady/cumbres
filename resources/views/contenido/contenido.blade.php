@@ -251,6 +251,12 @@
             </template>
         @endif
 
+        @if(Auth::user()->agregar_sobreprecios == 1)
+            <template v-if="menu==26">
+                <agregar-sobreprecios></agregar-sobreprecios>
+            </template>
+        @endif
+
         
     @endif
 
