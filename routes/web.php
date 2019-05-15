@@ -198,6 +198,7 @@ Route::group(['middleware' => ['auth']],function(){
     ///////////////////       RUTAS LICENCIA   ////////////////////////////////////
         Route::get('/licencias','LicenciasController@index');
         Route::put('/licencias/actualizar','LicenciasController@update');
+        Route::put('/licencias/actualizarMasa','LicenciasController@updateMasa');
         Route::get('/licencias/resume','LicenciasController@resumeLicencias');
         Route::post('/formSubmitLicencias/{id}','LicenciasController@formSubmit'); //carga de licencias
         Route::get('/downloadLicencias/{fileName}' , 'LicenciasController@downloadFile'); //descarga de licencias

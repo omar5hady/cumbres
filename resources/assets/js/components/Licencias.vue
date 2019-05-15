@@ -15,6 +15,9 @@
                             <i class="icon-pencil"></i>&nbsp;Descargar resumen
                         </a>
                         <!---->
+                        <button class="btn btn-info" @click="abrirModal5('lote','asignarMasa')"  v-if="allLic.length > 0" >
+                            <i class="icon-pencil"></i>&nbsp;Asignar en masa
+                        </button>
                     </div>
                     <div class="card-body">
                         <div class="form-group row">
@@ -64,7 +67,9 @@
                             <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
                                     <tr>
-                                        
+                                        <th>
+                                            <input type="checkbox" @click="selectAll" v-model="allSelected">
+                                        </th>
                                         <th>Opciones</th>
                                         <th>Proyecto</th>
                                         <th>Manzana</th>
@@ -86,6 +91,10 @@
                                 </thead>
                                 <tbody>
                                     <tr v-on:dblclick="abrirModal2('lote','ver',licencias)" v-for="licencias in arrayLicencias" :key="licencias.id">
+
+                                        <td class="td2">
+                                        <input type="checkbox"  @click="select" :id="licencias.id" :value="licencias.id" v-model="allLic" >
+                                        </td>
                                         
                                         <td class="td2" >
                                             <button title="Editar" type="button" @click="abrirModal('lote','actualizar',licencias)" class="btn btn-warning btn-sm">
@@ -245,11 +254,59 @@
                                 </div>
                             </form>
                         </div>
+                       
                         <!-- Botones del modal -->
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
                             <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
                             <button type="button"  class="btn btn-primary" @click="actualizarLicencia()">Actualizar</button>
+                            
+                        </div>
+                    </div>
+                      <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!--Fin del modal-->
+             <!--Inicio del modal planos/obra en masa-->
+            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal5}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" v-text="tituloModal5"></h4>
+                            <button type="button" class="close" @click="cerrarModal5()" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+
+                                
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">DRO</label>
+                                    <div class="col-md-6">
+                                        <select class="form-control" v-model="perito_dro">
+                                            <option value="0">Seleccione</option>
+                                            <option value="15044">Ing. Alejandro F. Perez Espinosa</option>
+                                            <option value="23679">Raúl Palos López</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <br><br>
+                                   <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Planos obra</label>
+                                    <div class="col-md-6">
+                                       <input type="date" v-model="f_planos_obra" class="form-control" >
+                                    </div>
+                                </div>
+                                
+                            </form>
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal5()">Cerrar</button>
+                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
+                            <button type="button"  class="btn btn-primary" @click="actualizarMasa()">Actualizar</button>
                             
                         </div>
                     </div>
@@ -587,6 +644,8 @@
                 interior: '',
                 terreno : 0,
                 construccion : 0,
+                allLic: [],
+                allSelected: false,
                 arrayLicencias : [],
                 arrayArquitectos:[],
                 arrayFraccionamientos:[],
@@ -595,10 +654,12 @@
                 modal2 : 0,
                 modal3 : 0,
                 modal4 : 0,
+                modal5 : 0,
                 tituloModal : '',
                 tituloModal2 : '',
                 tituloModal3: '',
                 tituloModal4: '',
+                tituloModal5: '',
                 tipoAccion: 0,
                 errorLote : 0,
                 errorMostrarMsjLote : [],
@@ -653,6 +714,21 @@
 
         
         methods : {
+
+            selectAll: function() {
+            this.allLic = [];
+
+            if (!this.allSelected) {
+                for (var lote in this.arrayLicencias
+                ) {
+                    this.allLic.push(this.arrayLicencias[lote].id.toString());
+                }
+            }
+            },
+
+             select: function() {
+                this.allSelected = false;
+            },
 
 //funciones para carga de los prediales     
 
@@ -854,7 +930,53 @@
                     console.log(error);
                 });
             },
-            
+
+            actualizarMasa(){
+                 if(this.proceso==true){
+                    return;
+                }
+                this.proceso=true;
+                let me = this;
+                //Con axios se llama el metodo update de LoteController
+                
+                 Swal({
+                    title: 'Estas seguro?',
+                    animation: false,
+                    customClass: 'animated bounceInDown',
+                    text: "DRO y fecha se asignaran a los lotes seleccionados",
+                    type: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'Cancelar',
+                    
+                    confirmButtonText: 'Si, asignar!'
+                    }).then((result) => {
+
+                    if (result.value) {
+                        me.allLic.forEach(element => {
+                   axios.put('/licencias/actualizarMasa',{
+                    'id':element,
+                    'f_planos_obra' : this.f_planos_obra,
+                    'perito_dro' : this.perito_dro
+
+                    }); 
+                    
+
+                })
+                    me.proceso=false;
+                    me.cerrarModal5();
+                    me.listarLicencias(1,'','','','','','fraccionamientos.nombre','');
+                     Swal({
+                        title: 'Hecho!',
+                        text: 'Se han asignado',
+                        type: 'success',
+                        animation: false,
+                        customClass: 'animated bounceInRight'
+                    })
+                    }})
+              
+            },
             actualizarLicencia(){
                 if(this.proceso==true){
                     return;
@@ -959,6 +1081,14 @@
                 this.errorMostrarMsjLote = [];
 
             },
+            cerrarModal5(){
+                this.modal5 = 0;
+                this.tituloModal5 = '';
+                this.perito_dro = '';
+                this.f_planos_obra = '';
+                
+
+            },
 
 
            
@@ -1024,6 +1154,29 @@
                                 this.tipoAccion= 4;
                                 break;  
                             }
+                            
+                        }
+                    }
+                 
+             }
+                
+         },
+
+         abrirModal5(licencias,accion,lote){
+             switch(licencias){
+                    case "lote":
+                    {
+                        switch(accion){
+                            
+                            case 'asignarMasa':
+                            {
+                                this.modal5 =1;
+                                this.tituloModal5='Asignación en masa';
+                                this.perito_dro = '';
+                                this.f_planos_obra='';
+                                break;
+                            }
+                             
                             
                         }
                     }

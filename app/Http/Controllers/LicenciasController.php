@@ -42,7 +42,7 @@ class LicenciasController extends Controller
                       DB::raw("CONCAT(p.nombre,' ',p.apellidos) AS perito"),'licencias.f_planos','licencias.f_planos_obra',
                       'licencias.f_ingreso','licencias.num_licencia','licencias.f_salida','lotes.arquitecto_id',
                       'licencias.perito_dro','fraccionamientos.nombre as fraccionamiento','licencias.cambios',
-                      'licencias.foto_lic','licencias.foto_predial','licencias.modelo_ant')
+                      'licencias.foto_lic','licencias.foto_predial','licencias.modelo_ant','licencias.id as licenciasid')
                       ->orderBy('licencias.cambios','DESC')
                       ->orderBy('fraccionamientos.nombre','DESC')
                       ->orderBy('lotes.manzana','ASC')
@@ -67,7 +67,7 @@ class LicenciasController extends Controller
                           DB::raw("CONCAT(p.nombre,' ',p.apellidos) AS perito"),'licencias.f_planos','licencias.f_planos_obra',
                           'licencias.f_ingreso','licencias.num_licencia','licencias.f_salida','lotes.arquitecto_id',
                           'licencias.perito_dro','fraccionamientos.nombre as fraccionamiento','licencias.cambios',
-                          'licencias.foto_lic','licencias.foto_predial','licencias.modelo_ant')
+                          'licencias.foto_lic','licencias.foto_predial','licencias.modelo_ant','licencias.id as licenciasid')
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->orderBy('licencias.cambios','DESC')
                         ->orderBy('fraccionamientos.nombre','DESC')
@@ -92,7 +92,7 @@ class LicenciasController extends Controller
                           DB::raw("CONCAT(p.nombre,' ',p.apellidos) AS perito"),'licencias.f_planos','licencias.f_planos_obra',
                           'licencias.f_ingreso','licencias.num_licencia','licencias.f_salida','lotes.arquitecto_id',
                           'licencias.perito_dro','fraccionamientos.nombre as fraccionamiento','licencias.cambios',
-                          'licencias.foto_lic','licencias.foto_predial','licencias.modelo_ant')
+                          'licencias.foto_lic','licencias.foto_predial','licencias.modelo_ant','licencias.id as licenciasid')
                         ->where($criterio,'=',$buscar)
                         ->orderBy('licencias.cambios','DESC')
                         ->orderBy('fraccionamientos.nombre','DESC')
@@ -116,7 +116,7 @@ class LicenciasController extends Controller
                                 DB::raw("CONCAT(p.nombre,' ',p.apellidos) AS perito"),'licencias.f_planos','licencias.f_planos_obra',
                                 'licencias.f_ingreso','licencias.num_licencia','licencias.f_salida','lotes.arquitecto_id',
                                 'licencias.perito_dro','fraccionamientos.nombre as fraccionamiento','licencias.cambios',
-                                'licencias.foto_lic','licencias.foto_predial','licencias.modelo_ant')
+                                'licencias.foto_lic','licencias.foto_predial','licencias.modelo_ant','licencias.id as licenciasid')
                             ->whereBetween($criterio, [$buscar,$buscar2])
                             ->orderBy('licencias.cambios','DESC')
                             ->orderBy('fraccionamientos.nombre','DESC')
@@ -142,7 +142,7 @@ class LicenciasController extends Controller
                               DB::raw("CONCAT(p.nombre,' ',p.apellidos) AS perito"),'licencias.f_planos','licencias.f_planos_obra',
                               'licencias.f_ingreso','licencias.num_licencia','licencias.f_salida','lotes.arquitecto_id',
                               'licencias.perito_dro','fraccionamientos.nombre as fraccionamiento','licencias.cambios',
-                              'licencias.foto_lic','licencias.foto_predial','licencias.modelo_ant')
+                              'licencias.foto_lic','licencias.foto_predial','licencias.modelo_ant','licencias.id as licenciasid')
                         ->where('lotes.fraccionamiento_id', '=',  $buscar)
                         ->where('lotes.manzana', '=', $b_manzana)
                             ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
@@ -170,7 +170,7 @@ class LicenciasController extends Controller
                                         DB::raw("CONCAT(p.nombre,' ',p.apellidos) AS perito"),'licencias.f_planos','licencias.f_planos_obra',
                                         'licencias.f_ingreso','licencias.num_licencia','licencias.f_salida','lotes.arquitecto_id',
                                         'licencias.perito_dro','fraccionamientos.nombre as fraccionamiento','licencias.cambios',
-                                        'licencias.foto_lic','licencias.foto_predial','licencias.modelo_ant')
+                                        'licencias.foto_lic','licencias.foto_predial','licencias.modelo_ant','licencias.id as licenciasid')
                                     ->where('lotes.fraccionamiento_id', '=',  $buscar)
                                         ->where('lotes.num_lote', 'like', '%'. $b_lote . '%')
                                         ->where('modelos.nombre', 'like', '%'. $b_modelo . '%')
@@ -199,7 +199,7 @@ class LicenciasController extends Controller
                                     DB::raw("CONCAT(p.nombre,' ',p.apellidos) AS perito"),'licencias.f_planos','licencias.f_planos_obra',
                                     'licencias.f_ingreso','licencias.num_licencia','licencias.f_salida','lotes.arquitecto_id',
                                     'licencias.perito_dro','fraccionamientos.nombre as fraccionamiento','licencias.cambios',
-                                    'licencias.foto_lic','licencias.foto_predial','licencias.modelo_ant')
+                                    'licencias.foto_lic','licencias.foto_predial','licencias.modelo_ant','licencias.id as licenciasid')
                                 ->where('personal.nombre', 'like', '%'. $buscar . '%')
                                 ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
                                 ->orderBy('licencias.cambios','DESC')
@@ -365,6 +365,15 @@ class LicenciasController extends Controller
             
         ];    
     
+    }
+
+    public function updateMasa(Request $request){
+        
+        if(!$request->ajax())return redirect('/');
+        $licencia = Licencia::findOrFail($request->id);
+        $licencia->f_planos_obra=$request->f_planos_obra;
+        $licencia->perito_dro=$request->perito_dro;
+        $licencia->save();
     }
 
     public function update(Request $request)
