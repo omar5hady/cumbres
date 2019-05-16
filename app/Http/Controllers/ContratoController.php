@@ -1496,6 +1496,22 @@ class ContratoController extends Controller
                 $contrato->contrato = 0;
                 $contrato->apartado= 0;
                 $contrato->save();
+
+                $credito = Credito::select('prospecto_id')
+                ->where('id','=',$request->id)
+                ->get();
+                $cliente = Cliente::findOrFail($credito[0]->prospecto_id);
+                $cliente->clasificacion = 6;
+                $cliente->save();
+
+            }
+            if($request->status == 3){
+                $credito = Credito::select('prospecto_id')
+                ->where('id','=',$request->id)
+                ->get();
+                $cliente = Cliente::findOrFail($credito[0]->prospecto_id);
+                $cliente->clasificacion = 5;
+                $cliente->save();
             }
         }
 

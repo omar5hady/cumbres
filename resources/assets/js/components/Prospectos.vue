@@ -43,8 +43,8 @@
                                             <option value="6">Cancelado</option>                               
                                         </select>
                                         <button type="submit" @click="listarProspectos(1,buscar,b_clasificacion,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                        <a v-if="rolId == 2" :href="'/prospectos/excel?buscar=' + buscar+ '&b_clasificacion=' + b_clasificacion + '&criterio=' + criterio "  class="btn btn-success"><i class="fa fa-search"></i>Excel</a>
-                                        <a v-if="rolId != 2" :href="'/prospectos/excel/gerente?buscar=' + buscar+ '&b_clasificacion=' + b_clasificacion + '&criterio=' + criterio "  class="btn btn-success"><i class="fa fa-search"></i>Excel1</a>
+                                        <a v-if="rolId == 2" :href="'/prospectos/excel?buscar=' + buscar+ '&b_clasificacion=' + b_clasificacion + '&criterio=' + criterio "  class="btn btn-success"><i class="fa fa-file-text"></i>Excel</a>
+                                        <a v-if="rolId != 2" :href="'/prospectos/excel/gerente?buscar=' + buscar+ '&b_clasificacion=' + b_clasificacion + '&criterio=' + criterio "  class="btn btn-success"><i class="fa fa-file-text"></i>Excel</a>
                                         <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Clientes en total: '+ contador"> </span>
                                     </div>
                                 </div>
