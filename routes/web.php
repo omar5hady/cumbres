@@ -97,7 +97,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/clientes/observacion','ClienteController@listarObservacion');
         Route::put('/clientes/desactivar','ClienteController@desactivar');
         Route::put('/clientes/activar','ClienteController@activar');
-        
+        Route::get('/prospectos/excel','ClienteController@exportExcelClientesAsesor');
+        Route::get('/prospectos/excel/gerente','ClienteController@exportExcelClientesGerente');
     ///////////////////        RUTAS Medios Publicitarios    //////////////////////////////////
         Route::get('/medio_publicitario','MedioPublicitarioController@index');
         Route::post('/medio_publicitario/registrar','MedioPublicitarioController@store');

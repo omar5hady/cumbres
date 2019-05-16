@@ -43,6 +43,8 @@
                                             <option value="6">Cancelado</option>                               
                                         </select>
                                         <button type="submit" @click="listarProspectos(1,buscar,b_clasificacion,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                        <a v-if="rolId == 2" :href="'/prospectos/excel?buscar=' + buscar+ '&b_clasificacion=' + b_clasificacion + '&criterio=' + criterio "  class="btn btn-success"><i class="fa fa-search"></i>Excel</a>
+                                        <a v-if="rolId != 2" :href="'/prospectos/excel/gerente?buscar=' + buscar+ '&b_clasificacion=' + b_clasificacion + '&criterio=' + criterio "  class="btn btn-success"><i class="fa fa-search"></i>Excel1</a>
                                         <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Clientes en total: '+ contador"> </span>
                                     </div>
                                 </div>
@@ -59,6 +61,7 @@
                                             <th>IMSS</th>
                                             <th>CURP </th>
                                             <th>Proyecto de interes</th>
+                                            <th>Clasificación</th>
                                             <th>Observaciones</th>
                                             <th v-if="rolId != 2">Vendedor</th>
                                             
@@ -98,8 +101,14 @@
                                             <td v-text="prospecto.nss"></td>
                                             <td v-text="prospecto.curp"></td>
                                             <td v-text="prospecto.proyecto"></td>
+                                            <td v-if="prospecto.clasificacion==1">No viable</td>
+                                            <td v-if="prospecto.clasificacion==2">Tipo A</td>
+                                            <td v-if="prospecto.clasificacion==3">Tipo B</td>
+                                            <td v-if="prospecto.clasificacion==4">Tipo C</td>
+                                            <td v-if="prospecto.clasificacion==5">Ventas</td>
+                                            <td v-if="prospecto.clasificacion==6">Cancelado</td>
                                             <td> <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" @click="abrirModal3('prospecto','ver_todo', prospecto.id),listarObservacion(1,prospecto.id)">Ver todos</button> </td>
-                                            <td v-text="prospecto.v_completo"></td>
+                                            <td v-if="rolId != 2" v-text="prospecto.v_completo"></td>
                                         </tr>                               
                                     </tbody>
                                 </table>
