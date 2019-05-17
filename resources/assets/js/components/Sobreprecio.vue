@@ -10,7 +10,7 @@
                 <!-- div para sobreprecio de etapas -->
                 <div v-if="mostrar2==1"  class="card col-sm-4" >
                     <div class="card-header bg-primary">
-                        <i class="fa fa-align-justify"></i> Sobreprecios Etapas
+                        <i  @click="mostrar2=0" class="fa fa-align-justify"></i> Sobreprecios Etapas
                         
                         <!--   Boton Nuevo    -->
                         <!-- <button type="button" @click="abrirModal('sobreprecio_etapa','registrar')" class="btn btn-warning">
@@ -29,7 +29,7 @@
                                     </select>
                                         <br/>
                                     <select class="form-control" v-model="etapa_id" @click="selectManzanas(fraccionamiento_id,etapa_id)">
-                                            <option value="0">Seleccione etapa</option>
+                                            <option value="">Seleccione etapa</option>
                                             <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                     </select>
                                         <br/>
@@ -103,7 +103,7 @@
                                         <label class="col-md-2 form-control-label" style="align:right" for="text-input">Etapa</label>
                                         <div class="col-md-3">
                                              <select class="form-control" v-model="etapa_id" @click="selectManzanas(fraccionamiento_id,etapa_id)">
-                                                <option value="0">Seleccione etapa</option>
+                                                <option value="">Seleccione etapa</option>
                                                 <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                             </select>
                                         </div>
@@ -215,7 +215,7 @@
                                         <label class="col-md-2 form-control-label" style="align:right" for="text-input">Etapa</label>
                                         <div class="col-md-3">
                                              <select class="form-control" v-model="etapa_id" @click="selectManzanas(fraccionamiento_id,etapa_id)">
-                                                <option value="0">Seleccione etapa</option>
+                                                <option value="">Seleccione etapa</option>
                                                 <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                             </select>
                                         </div>
@@ -263,6 +263,9 @@
                             <thead>
                                 <tr>
                                     <th>Opciones</th>
+                                    <th>Proyecto</th>
+                                    <th>Etapa</th>
+                                    <th>Manzana</th>
                                     <th>Lote</th>
                                     <th>Sobreprecio etapa</th>
                                 </tr>
@@ -277,6 +280,9 @@
                                           <i class="icon-trash"></i>
                                         </button>
                                     </td>
+                                    <td v-text="sobreprecioModelo.proyecto"></td>
+                                    <td v-text="sobreprecioModelo.etapa"></td>
+                                    <td v-text="sobreprecioModelo.manzana"></td>
                                     <td v-text="sobreprecioModelo.lotes"></td>
                                     <td v-text="sobreprecioModelo.sobreprecioModelo"></td>
                                 </tr>                               
@@ -419,7 +425,7 @@
                 id_sobrePrecioModelo: 0,
                 id:0,
                 fraccionamiento_id : 0,
-                etapa_id : 0,
+                etapa_id : '',
                 lote_id : 0,
                 num_lote : '',
                 manzana : '',
@@ -460,10 +466,6 @@
                     'to' : 0,
                 },
                 offset : 3,
-                buscar : '',
-                buscar1: '',
-                buscar2: '',
-                buscar3:''
             }
         },
         computed:{
@@ -531,6 +533,8 @@
             },
             selectFraccionamientos(){
                 let me = this;
+                me.etapa_id='';
+                me.manzana='';
 
                 me.arrayFraccionamientos=[];
                 var url = '/select_fraccionamiento';
@@ -597,6 +601,7 @@
             },
             selectEtapa(buscar){
                 let me = this;
+                me.etapa_id='';
                 
                 me.arrayEtapas=[];
                 me.num_lote='';
@@ -826,8 +831,8 @@
         mounted() {
             this.selectFraccionamientos();
             this.selectEtapa(this.fraccionamiento_id);
-            this.listarSobrePrecioEtapa(1,this.buscar);
-            this.listarSobrePrecioModelo(1,this.buscar,this.buscar2,this.buscar3);
+            this.listarSobrePrecioEtapa(1,this.etapa_id);
+            this.listarSobrePrecioModelo(1,this.etapa_id,this.buscar2,this.buscar3);
         }
     }
 </script>
