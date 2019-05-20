@@ -876,7 +876,9 @@ class UserController extends Controller
 
     public function obtenerDatos(Request $request){
         $usuario = User::join('personal','users.id','=','personal.id')
-            ->select('users.usuario','users.foto_user','users.id','users.password as pass',DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"))
+            ->select('users.usuario','users.foto_user','users.id',
+            'personal.celular','personal.email','users.password as pass',
+            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"))
             ->where('users.id','=',$request->id)->get();
 
         return['usuario' => $usuario];
@@ -1034,9 +1036,17 @@ class UserController extends Controller
 
     public function updatePassword(Request $request){
 
-        $user = User::findOrFail($request->id);
-        $user->password = bcrypt($request->password);
-        $user->save();
+        
+        if($request->password != ''){
+            $user = User::findOrFail($request->id);
+            $user->password = bcrypt($request->password);
+            $user->save();
+        }
+        $persona = Personal::findOrFail($request->id);
+        $persona->email = $request->email;
+        $persona->celular = $request->celular;
+        
+        $persona->save();
     }
            
                             

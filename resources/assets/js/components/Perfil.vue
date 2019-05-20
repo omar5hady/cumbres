@@ -40,6 +40,24 @@
                             </div>
                         </div>
 
+                        <div class="row">
+                            <label class="col-md-12 form-control-label" for="text-input"><strong>Celular</strong></label>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-12">
+                                <input type="text" maxlength="10" v-model="celular" class="form-control" placeholder="Celular">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <label class="col-md-12 form-control-label" for="text-input"><strong>Correo Electronico</strong></label>
+                        </div>
+                        <div class="form-group row"> 
+                            <div class="col-md-12">
+                                <input type="email" v-model="email" class="form-control" placeholder="Correo Electronico">
+                            </div>
+                        </div>
+
                         <div class="form-group row">
                             <div class="col-md-6">
                                 <img v-if="url" :src="url" class="img-avatar" rounded="circle" width="250" height="250"  />
@@ -56,7 +74,7 @@
 
                         <div class="form-group row">
                             <div class="col-md-2">
-                                <button @click="passwordChange()" :disabled="password == ''" type="submit" class="btn btn-primary">
+                                <button @click="passwordChange()" type="submit" class="btn btn-primary">
                                     <i class="icon-save"></i>&nbsp;Aplicar cambios
                                 </button>
                             </div>
@@ -84,6 +102,8 @@
                usuario:'',
                password:'',
                nombre:'',
+               celular:'',
+               email:'',
                foto_user: '',
                arrayUsuario: [],
                url: null,
@@ -120,6 +140,8 @@
             passwordChange(){
                  axios.put('/users/update/password',{
                     'password': this.password,
+                    'celular': this.celular,
+                    'email': this.email,
                     'id' :this.userId
                     }) .then(function (response) {
                     location.reload();
@@ -151,6 +173,8 @@
                     me.usuario = me.arrayUsuario[0].usuario;
                     me.nombre = me.arrayUsuario[0].n_completo;
                     me.foto_user = me.arrayUsuario[0].foto_user;
+                    me.celular = me.arrayUsuario[0].celular;
+                    me.email = me.arrayUsuario[0].email;
                     me.password = '';
                     
                 })

@@ -16,6 +16,8 @@ use App\Obs_inst_selec;
 use Auth;
 use Carbon\Carbon;
 use Excel;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\NotificationReceived;
 
 class CreditoController extends Controller
 
@@ -364,6 +366,10 @@ class CreditoController extends Controller
                     'titulo' => 'Aprobado'
                 ]
             ];
+
+            $personal = Personal::select('email')->where('id','=',$cliente[0]->vendedor_id)->get();
+            $correo = $personal[0]->email;
+            Mail::to($correo)->send(new NotificationReceived());
 
             User::findOrFail($cliente[0]->vendedor_id)->notify(new NotifyAdmin($arregloAceptado));
             
