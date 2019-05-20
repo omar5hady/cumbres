@@ -2354,6 +2354,7 @@
            
                
                 this.listarPagos(this.id);
+               // this.selectPaquetes(this.etapa);
                 this.listado=4;
                 this.btn_actualizar = 0;
             },
@@ -2898,6 +2899,7 @@
         mounted() {          
             this.listarContratos(1,this.buscar,this.buscar3,this.b_etapa,this.b_manzana,this.b_lote,this.criterio);
             this.selectFraccionamientos();
+           
         }
     }
 </script>

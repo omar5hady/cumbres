@@ -1506,9 +1506,12 @@ class ContratoController extends Controller
 
             }
             if($request->status == 3){
-                $credito = Credito::select('prospecto_id')
+                $credito = Credito::select('prospecto_id','descripcion_paquete')
                 ->where('id','=',$request->id)
                 ->get();
+                $paquete = Lote::findOrFail($id_lote);
+                $paquete->paquete = $credito[0]->descripcion_paquete;
+                $paquete->save();
                 $cliente = Cliente::findOrFail($credito[0]->prospecto_id);
                 $cliente->clasificacion = 5;
                 $cliente->save();

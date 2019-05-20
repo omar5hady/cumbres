@@ -63,6 +63,7 @@
                                         <th>Modelo</th>
                                         <th>Construc. m&sup2;</th>
                                         <th style="width:8%">Etapa de Servicio</th>
+                                        
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -91,6 +92,7 @@
                                         </td> 
                                         <td v-text="lote.construccion"></td>
                                         <td style="width:8%" v-text="lote.etapa_servicios"></td>
+                                       
                                     </tr>                               
                                 </tbody>
                             </table>  
@@ -346,6 +348,7 @@
                 casa_muestra: 0,
                 lote_comercial: 0,
                 comentarios: '',
+               
                 
                 file: '',
                 modelostc :'',
@@ -580,6 +583,7 @@
                     console.log(error);
                 });
             },
+            
             /**Metodo para registrar  */
             registrarLote(){
                 if(this.validarLote() || this.proceso==true) //Se verifica si hay un error (campo vacio)
@@ -880,7 +884,6 @@
                                 this.buscar_fraccionamientoExcel = 0;
                                 break;
                             }
-
 
                         
                         }

@@ -47,6 +47,7 @@ class CreateLotesTable extends Migration
             $table->double('obra_extra')->default(0);
             $table->double('ajuste')->default(0);
             $table->date('fecha_termino_ventas')->nullable();
+            $table->string('paquete')->nullable();
             
 
             ///////// Datos para precio //////////////////

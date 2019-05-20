@@ -29,7 +29,7 @@ class AvanceController extends Controller
             ->select('lotes.num_lote as lote', 
                 DB::raw("SUM(avances.avance_porcentaje) as porcentajeTotal"), 
                 'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id','lotes.aviso',
-                'lotes.etapa_servicios','lotes.fecha_ini','lotes.fecha_fin')
+                'lotes.etapa_servicios','lotes.fecha_ini','lotes.fecha_fin','lotes.paquete')
             ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
             ->addSelect('fraccionamientos.nombre as proyecto')
             ->join('modelos','lotes.modelo_id','=','modelos.id')
@@ -45,7 +45,7 @@ class AvanceController extends Controller
                 ->select('lotes.num_lote as lote', 
                     DB::raw("SUM(avances.avance_porcentaje) as porcentajeTotal"), 
                     'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id','lotes.aviso',
-                    'lotes.etapa_servicios','lotes.fecha_ini','lotes.fecha_fin')
+                    'lotes.etapa_servicios','lotes.fecha_ini','lotes.fecha_fin','lotes.paquete')
                 ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
                 ->addSelect('fraccionamientos.nombre as proyecto')
                 ->join('modelos','lotes.modelo_id','=','modelos.id')
@@ -61,7 +61,7 @@ class AvanceController extends Controller
                         ->select('lotes.num_lote as lote', 
                             DB::raw("SUM(avances.avance_porcentaje) as porcentajeTotal"), 
                             'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id','lotes.aviso',
-                            'lotes.etapa_servicios','lotes.fecha_ini','lotes.fecha_fin')
+                            'lotes.etapa_servicios','lotes.fecha_ini','lotes.fecha_fin','lotes.paquete')
                         ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
                         ->addSelect('fraccionamientos.nombre as proyecto')
                         ->join('modelos','lotes.modelo_id','=','modelos.id')
@@ -77,7 +77,7 @@ class AvanceController extends Controller
                                 ->select('lotes.num_lote as lote', 
                                     DB::raw("SUM(avances.avance_porcentaje) as porcentajeTotal"), 
                                     'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id','lotes.aviso',
-                                    'lotes.etapa_servicios','lotes.fecha_ini','lotes.fecha_fin')
+                                    'lotes.etapa_servicios','lotes.fecha_ini','lotes.fecha_fin','lotes.paquete')
                                 ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
                                 ->addSelect('fraccionamientos.nombre as proyecto')
                                 ->join('modelos','lotes.modelo_id','=','modelos.id')
@@ -94,7 +94,7 @@ class AvanceController extends Controller
                                     ->select('lotes.num_lote as lote', 
                                         DB::raw("SUM(avances.avance_porcentaje) as porcentajeTotal"), 
                                         'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id','lotes.aviso',
-                                        'lotes.etapa_servicios','lotes.fecha_ini','lotes.fecha_fin')
+                                        'lotes.etapa_servicios','lotes.fecha_ini','lotes.fecha_fin','lotes.paquete')
                                     ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
                                     ->addSelect('fraccionamientos.nombre as proyecto')
                                     ->join('modelos','lotes.modelo_id','=','modelos.id')
@@ -110,7 +110,7 @@ class AvanceController extends Controller
                                     ->select('lotes.num_lote as lote', 
                                         DB::raw("SUM(avances.avance_porcentaje) as porcentajeTotal"), 
                                         'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id','lotes.aviso',
-                                        'lotes.etapa_servicios','lotes.fecha_ini','lotes.fecha_fin')
+                                        'lotes.etapa_servicios','lotes.fecha_ini','lotes.fecha_fin','lotes.paquete')
                                     ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
                                     ->addSelect('fraccionamientos.nombre as proyecto')
                                     ->join('modelos','lotes.modelo_id','=','modelos.id')

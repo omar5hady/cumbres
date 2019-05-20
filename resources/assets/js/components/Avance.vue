@@ -35,6 +35,7 @@
                                     <th>Partida</th>
                                     <th>Avance</th>
                                     <th>Porcentaje</th>
+                                    
                                 </tr>
                             </thead>
                             <tbody>
@@ -57,7 +58,6 @@
                                     <input v-else type="number" pattern="\d*" @keyup.enter="actualizarPorcentaje(avance.id,$event.target.value,avance.partida_id,avance.lote)" :id="avance.id" :value="avance.avance" step=".1" min="0" max="1" v-on:keypress="isNumber($event)" class="form-control" >
                                     </td>
                                     <td v-text="formatNumber(avance.avance_porcentaje) + '%'"></td>
-
                                     
                                 </tr>                               
                             </tbody>
@@ -113,6 +113,7 @@
                                         <th>Inicio</th>
                                         <th>Termino</th>
                                         <th>Porcentaje de avance</th>
+                                        <th>Paquete</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -131,7 +132,8 @@
                                         <td v-text="avancepro.fecha_ini"></td>
                                         <td v-text="avancepro.fecha_fin"></td>
                                         <td v-text="formatNumber(avancepro.porcentajeTotal) + '%'"></td>
-
+                                        <td> <button v-if="avancepro.paquete != NULL" title="Ver paquete" type="button" class="btn btn-info pull-right" @click="mostrarPaquete(avancepro.paquete)">Ver paquete</button> </td>
+                                    
                                         
                                     </tr>                               
                                 </tbody>
@@ -433,6 +435,13 @@
                 me.paginationResume.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
                 me.listarAvance(page,buscar,criterio);
+            },
+            mostrarPaquete(paquete){
+                 Swal({
+                    title: paquete,
+                    animation: false,
+                    customClass: 'animated tada'
+                    })
             },
             formatNumber(value) {
                 let val = (value/1).toFixed(2)
