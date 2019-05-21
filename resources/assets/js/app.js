@@ -82,7 +82,7 @@ Vue.component('publicidad-etapa', require('./components/PublicidadEtapa.vue'));
 const app = new Vue({
     el: '#app',
     data :{
-        menu:0,
+        menu:100,
         notifications:[]
     },
     created(){
