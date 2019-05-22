@@ -17,9 +17,10 @@ class NotificationReceived extends Mailable
      *
      * @return void
      */
-    public function __construct()
+    public $mensaje;
+    public function __construct(String $mensaje1)
     {
-        
+        $this->mensaje = $mensaje1;
     }
 
     /**
@@ -29,6 +30,6 @@ class NotificationReceived extends Mailable
      */
     public function build()
     {
-        return $this->view('mails.mail_notification');
+        return $this->view('mails.mail_notification',['mensaje' => $this->mensaje]);
     }
 }

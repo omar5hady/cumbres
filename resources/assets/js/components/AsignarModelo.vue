@@ -604,9 +604,12 @@
 
             selectFraccionamientos(){
                 let me = this;
+                if(me.modal == 0){
                 me.buscar=""
                 me.buscar2=""
                 me.buscar3=""
+                }
+                
                 me.arrayFraccionamientos=[];
                 var url = '/select_fraccionamiento';
                 axios.get(url).then(function (response) {
@@ -619,8 +622,11 @@
             },
             selectEtapa(buscar){
                 let me = this;
+                if(me.modal == 0){
+                
                 me.buscar2=""
                 me.buscar3=""
+                }
                 
                 me.arrayEtapas=[];
                 var url = '/select_etapa_proyecto?buscar=' + buscar;

@@ -15,6 +15,10 @@ use App\Personal;
 use App\Licencia;
 use App\Lote;
 use NumerosEnLetras;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\NotificationReceived;
+use App\User;
+use App\Notifications\NotifyAdmin;
 
 class ContratoController extends Controller
 {
@@ -1328,7 +1332,7 @@ class ContratoController extends Controller
              $pdf = \PDF::loadview('pdf.contratos.pagaresContratos',['pagos' => $pagos , 'cliente' => $cliente]);
              return $pdf->stream('pagare.pdf');
              // return ['cabecera' => $cabecera];
-      }
+    }
 
       public function contratoConReservaDeDominio (Request $request, $id){
 
@@ -1392,7 +1396,7 @@ class ContratoController extends Controller
         $pdf = \PDF::loadview('pdf.contratos.contratoConReservaDeDominio',['contratosDom' => $contratosDom, 'pagos' => $pagos]);
         return $pdf->stream('contrato_reserva_de_dominio.pdf');
     
-    }
+        }
 
 
     public function contratoDePromesaCredito (Request $request, $id){
@@ -1506,7 +1510,7 @@ class ContratoController extends Controller
 
             }
             if($request->status == 3){
-                $credito = Credito::select('prospecto_id','descripcion_paquete')
+                $credito = Credito::select('prospecto_id','descripcion_paquete','num_lote','fraccionamiento','etapa')
                 ->where('id','=',$request->id)
                 ->get();
                 $paquete = Lote::findOrFail($id_lote);
@@ -1514,7 +1518,32 @@ class ContratoController extends Controller
                 $paquete->save();
                 $cliente = Cliente::findOrFail($credito[0]->prospecto_id);
                 $cliente->clasificacion = 5;
+                $vendedorid = $cliente->vendedor_id;
                 $cliente->save();
+
+                $imagenUsuario = DB::table('users')->select('foto_user','usuario')->where('id','=',$vendedorid)->get();
+                $fecha = Carbon::now();
+                $msj = "Se ha vendido el lote " . $credito[0]->num_lote. " del proyecto ".$credito[0]->fraccionamiento." etapa ".$credito[0]->etapa;
+                $arregloAceptado = [
+                    'notificacion' => [
+                        'usuario' => $imagenUsuario[0]->usuario,
+                        'foto' => $imagenUsuario[0]->foto_user,
+                        'fecha' => $fecha,
+                        'msj' => $msj,
+                        'titulo' => 'Venta :)'
+                    ]
+                ];
+    
+                $personal = Personal::join('users','personal.id','=','users.id')->select('personal.email','personal.id')->where('users.condicion','=',1)->get();
+               
+                foreach($personal as $personas){
+                    $correo = $personas->email;
+                    Mail::to($correo)->send(new NotificationReceived($msj));
+                    User::findOrFail($personas->id)->notify(new NotifyAdmin($arregloAceptado));
+                }
+                
+                
+            
             }
         }
 
