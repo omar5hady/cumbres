@@ -53,6 +53,12 @@ Route::group(['middleware' => ['auth']],function(){
 
     // RUTAS PARA EL ADMINISTRADOR
     Route::group(['middleware' => ['Administrador']],function(){
+
+    ///////////////////        RUTAS CUENTA      //////////////////////////////////
+        Route::get('/cuenta','CuentasController@index');
+        Route::post('/cuenta/registrar','CuentasController@store');
+        Route::put('/cuenta/actualizar','CuentasController@update');
+        Route::delete('/cuenta/eliminar','CuentasController@destroy');
          
     ///////////////////        RUTAS DEPARTAMENTO    //////////////////////////////////
         Route::get('/departamento','DepartamentoController@index');

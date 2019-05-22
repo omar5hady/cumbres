@@ -31,6 +31,7 @@ Vue.use(VueCurrencyFilter, {
  */
 
 Vue.component('departamento', require('./components/Departamento.vue'));
+Vue.component('cuenta', require('./components/Cuenta.vue'));
 Vue.component('fraccionamiento', require('./components/Fraccionamiento.vue'));
 Vue.component('personal', require('./components/personal.vue'));
 Vue.component('empresa', require('./components/Empresa.vue'));

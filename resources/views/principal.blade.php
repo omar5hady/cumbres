@@ -127,6 +127,12 @@
                                         <a class="nav-link" href="#"><i class="fa fa-user-circle-o"></i>Mis Asesores</a>
                                     </li>
                                 @endif
+
+                                @if(Auth::user()->cuenta == 1)
+                                    <li @click="menu=8" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="fa fa-credit-card"></i>Cuentas</a>
+                                    </li>
+                                @endif
                             </ul>
                         </li>
                     @endif

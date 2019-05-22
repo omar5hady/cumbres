@@ -905,7 +905,7 @@ class UserController extends Controller
                                 'users.acceso','users.reportes','users.rol_id',
                                 //Administracion
                                 'users.departamentos','users.personas','users.empresas','users.medios_public','users.lugares_contacto','users.servicios',
-                                'users.inst_financiamiento','users.tipos_credito','users.asig_servicios','users.mis_asesores',
+                                'users.inst_financiamiento','users.tipos_credito','users.asig_servicios','users.mis_asesores','users.cuenta',
                                 //Desarrollo
                                 'users.fraccionamiento','users.etapas','users.modelos','users.lotes','users.asign_modelos','users.licencias',
                                 'users.acta_terminacion','users.p_etapa','users.p_fraccionamiento',
@@ -948,6 +948,7 @@ class UserController extends Controller
         $user->tipos_credito = $request->tipos_credito;
         $user->asig_servicios = $request->asig_servicios;
         $user->mis_asesores = $request->mis_asesores;
+        $user->cuenta = $request->cuenta;
         //Desarrollo
         $user->fraccionamiento = $request->fraccionamiento;
         $user->etapas = $request->etapas;
@@ -1033,7 +1034,7 @@ class UserController extends Controller
                                     
                     
                             
-                        }
+    }
 
     public function updatePassword(Request $request){
 

@@ -36,7 +36,7 @@ class User extends Authenticatable
         'tipos_credito',
         'asig_servicios',
         'mis_asesores',
-
+        'cuenta',
 
         //Desarrollo
         'fraccionamiento',

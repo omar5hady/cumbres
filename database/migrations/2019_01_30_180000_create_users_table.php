@@ -45,6 +45,7 @@ class CreateUsersTable extends Migration
             $table->boolean('tipos_credito')->default(0);
             $table->boolean('asig_servicios')->default(0);
             $table->boolean('mis_asesores')->default(0);
+            $table->boolean('cuenta')->default(0);
 
 
             //Desarrollo

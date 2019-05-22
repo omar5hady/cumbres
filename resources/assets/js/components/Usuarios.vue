@@ -144,6 +144,9 @@
                                                 <li class="nav-item" v-if="rol_id!=7">
                                                     <a class="nav-link"><i class="fa fa-user-circle-o"></i> <input v-model="mis_asesores" type="checkbox" value="1"/> Mis Asesores</a>
                                                 </li>
+                                                <li class="nav-item" v-if="rol_id == 1 || rol_id == 7">
+                                                    <a class="nav-link"><i class="fa fa-credit-card"></i> <input v-model="cuenta" type="checkbox" value="1"/> Cuenta</a>
+                                                </li>
                                             </ul>
                                         
                                     </div>
@@ -582,6 +585,7 @@
                     tipos_credito:0,
                     asig_servicios:0,
                     mis_asesores:0,
+                    cuenta:0,
 
 
                     //Desarrollo
@@ -744,6 +748,7 @@
                 this.tipos_credito=0;
                 this.asig_servicios=0;
                 this.mis_asesores=0;
+                this.cuenta = 0;
             },
             limpiarDesarrollo(){
                 //Desarrollo
@@ -835,6 +840,7 @@
                     me.tipos_credito=usuarios[0].tipos_credito;
                     me.asig_servicios=usuarios[0].asig_servicios;
                     me.mis_asesores=usuarios[0].mis_asesores;
+                    me.cuenta = usuarios[0].cuenta;
 
 
                     //Desarrollo
@@ -1091,6 +1097,7 @@
                     'tipos_credito':this.tipos_credito,
                     'asig_servicios':this.asig_servicios,
                     'mis_asesores':this.mis_asesores,
+                    'cuenta':this.cuenta,
                         //Desarrollo
                     'fraccionamiento':this.fraccionamiento,
                     'etapas':this.etapas,
@@ -1354,6 +1361,7 @@
                 me.tipos_credito=0;
                 me.asig_servicios=0;
                 me.mis_asesores=0;
+                me.cuenta = 0;
 
 
                     //Desarrollo

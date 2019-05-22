@@ -7,9 +7,6 @@
         <template v-if="menu==0">
             <h1>Escritorio</h1>
         </template>
-        <template v-if="menu==8">
-            <h1>Contenido del menu 8</h1>
-        </template>
         <template v-if="menu==9">
             <h1>Contenido del menu 9</h1>
         </template>
@@ -74,6 +71,12 @@
         @if(Auth::user()->acta_terminacion == 1)
             <template v-if="menu==7">
                 <actadeterminacion></actadeterminacion>
+            </template>
+        @endif
+
+        @if(Auth::user()->cuenta == 1)
+            <template v-if="menu==8">
+                <cuenta></cuenta>
             </template>
         @endif
 
