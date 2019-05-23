@@ -257,7 +257,7 @@
                     swal({
                         position: 'top-end',
                         type: 'success',
-                        title: 'Cuetnta agregada correctamente',
+                        title: 'Cuenta agregada correctamente',
                         showConfirmButton: false,
                         timer: 1500
                         })
@@ -366,7 +366,7 @@
                     case 'registrar':
                     {
                         this.modal = 1;
-                        this.tituloModal = 'Registrar Departamento';
+                        this.tituloModal = 'Registrar Cuenta';
                         this.sucursal = '';
                         this.num_cuenta = '';
                         this.banco = '';
@@ -377,11 +377,12 @@
                     {
                         //console.log(data);
                         this.modal =1;
-                        this.tituloModal='Actualizar Departamento';
+                        this.tituloModal='Actualizar Cuenta';
                         this.tipoAccion=2;
                         this.num_cuenta=data['num_cuenta'];
                         this.sucursal=data['sucursal'];
                         this.banco=data['banco'];
+                        this.id=data['id'];
                         break;
                     }
                 }
