@@ -260,6 +260,10 @@
             </template>
         @endif
 
+        <template v-if="menu==200">
+            <depositos></depositos>
+        </template>
+
         
     @endif
 

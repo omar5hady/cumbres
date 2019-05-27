@@ -59,6 +59,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/cuenta/registrar','CuentasController@store');
         Route::put('/cuenta/actualizar','CuentasController@update');
         Route::delete('/cuenta/eliminar','CuentasController@destroy');
+        Route::get('/select_cuenta','CuentasController@selectCuenta');
          
     ///////////////////        RUTAS DEPARTAMENTO    //////////////////////////////////
         Route::get('/departamento','DepartamentoController@index');
@@ -365,6 +366,12 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/contrato/modelo/caracteristicas/pdf/{id}','ModeloController@modeloArchivoContrato');
         Route::put('/contrato/status/fecha','ContratoController@statusContrato');
 
+        /************************** RUTAS Depositos y Pagares ***************************/
+        Route::get('/pagares','DepositoController@indexPagares');
+        Route::get('/depositos','DepositoController@indexDepositos');
+        Route::post('/deposito/registrar','DepositoController@store');
+        Route::put('/deposito/actualizar','DepositoController@update');
+
 
         /************************** RUTAS ESTADISTICAS ***************************/
         Route::get('/estadisticas/datos_extra','EstadisticasController@estad_datos_extra');
@@ -385,8 +392,10 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/select_Frac_Tipo','FraccionamientoController@selectFrac_Tipo');
         Route::get('/contador_etapa','EtapaController@contEtapa'); 
         Route::get('/select_etapa_proyecto','EtapaController@selectEtapa_proyecto'); 
+        Route::get('/select_etapa','EtapaController@selectEtapa'); 
         Route::get('/select_modelo_proyecto','ModeloController@selectModelo_proyecto');
         Route::get('/select_manzana_proyecto','LoteController@selectManzana_proyecto'); 
+        Route::get('/selectManzana_dist','CreditoController@selectManzana'); 
         Route::get('/select_construcc_terreno','ModeloController@selectConsYTerreno'); 
         Route::get('/select_modelos_etapa','LoteController@select_modelos_etapa'); 
         Route::get('/select_manzanas_etapa','LoteController@select_manzanas_etapa'); 

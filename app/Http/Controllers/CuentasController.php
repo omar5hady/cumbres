@@ -61,4 +61,11 @@ class CuentasController extends Controller
         $cuenta = Cuenta::findOrFail($request->id);
         $cuenta->delete();
     }
+
+    public function selectCuenta(Request $request){
+        $cuentas = Cuenta::select('num_cuenta','sucursal','banco')->get();
+
+        return ['cuentas' => $cuentas];
+    }
 }
+ 

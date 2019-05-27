@@ -295,6 +295,20 @@
                             </ul>
                         </li>
                     @endif
+
+        <!----------      SALDOS      --->
+                    @if(Auth::user()->rol_id == 1)
+                        <li class="nav-item nav-dropdown">
+                            <a class="nav-link nav-dropdown-toggle" href="#"><i class="fa fa-calculator"></i> Saldos</a>
+                            <ul class="nav-dropdown-items">
+                                    <li @click="menu=200" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="fa fa-money"></i> Depositos</a>
+                                    </li>
+                            </ul>
+                        </li>
+                    @endif
+        <!----------     FIN SALDOS      --->
+
                     @if(Auth::user()->acceso == 1)
                         <li class="nav-item nav-dropdown">
                             <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-people"></i> Acceso</a>

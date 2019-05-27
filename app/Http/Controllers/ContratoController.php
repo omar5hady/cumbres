@@ -1191,6 +1191,7 @@ class ContratoController extends Controller
                 $pagos->contrato_id = $id;
                 $pagos->num_pago = $ep;
                 $pagos->monto_pago = $det['monto_pago'];
+                $pagos->restante = $det['monto_pago'];
                 $pagos->fecha_pago = $det['fecha_pago'];
                 $pagos->save();
             }          

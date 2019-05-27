@@ -204,6 +204,19 @@ class EtapaController extends Controller
         ->get();
         return['etapas' => $etapas];
     }
+
+    public function selectEtapa(Request $request){
+        $buscar = $request->buscar;
+
+        $etapas = Etapa::join('fraccionamientos','etapas.fraccionamiento_id','=','fraccionamientos.id')
+                ->select('etapas.num_etapa','etapas.id','fraccionamientos.nombre')
+                    ->where('fraccionamientos.nombre','=',$buscar)
+                    ->where('etapas.num_etapa','!=','Sin Asignar')
+                    ->orderBy('etapas.num_etapa','asc')->get();
+            
+            return['etapas' => $etapas];
+    }
+
     public function uploadReglamento (Request $request, $id){
         $ultimoReglamento = Etapa::select('archivo_reglamento','id')
                                  ->where('id','=',$id)

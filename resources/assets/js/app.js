@@ -80,6 +80,8 @@ Vue.component('crear-contrato', require('./components/Contrato.vue'));
 Vue.component('publicidad-fraccionamiento', require('./components/PublicidadFraccionamiento.vue'));
 Vue.component('publicidad-etapa', require('./components/PublicidadEtapa.vue'));
 
+Vue.component('depositos', require('./components/Deposito.vue'));
+
 const app = new Vue({
     el: '#app',
     data :{

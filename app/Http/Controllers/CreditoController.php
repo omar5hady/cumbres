@@ -377,6 +377,17 @@ class CreditoController extends Controller
 
     }
 
+    public function selectManzana(Request $request){
+        $buscar=$request->buscar;
+        $buscar2=$request->buscar2;
+
+        $manzanas=Credito::select('manzana')
+                    ->where('fraccionamiento','=',$buscar)
+                    ->where('etapa','=',$buscar2)
+                    ->distinct()->orderBy('manzana','asc')->get();
+            
+        return['manzanas' => $manzanas];
+    }
 
     public function indexHistorial(Request $request){
         
