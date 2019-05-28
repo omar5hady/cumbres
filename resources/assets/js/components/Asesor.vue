@@ -69,7 +69,7 @@
                                             </template>
                                       
                                         </td>
-                                        <td v-text="Personal.nombre" ></td>
+                                        <td v-text="Personal.nombre + ' ' + Personal.apellidos" ></td>
                                         
                                         <td v-text="Personal.usuario"></td>
                                         <td v-text="Personal.rol"></td>

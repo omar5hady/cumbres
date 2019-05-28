@@ -25,6 +25,7 @@ body {
 .table3 { display: table; width:100%; border-collapse: collapse; table-layout: fixed; }
 </style>
 <body>
+
 <div style="margin-right: 100px;  margin-top: -40px; position: absolute;">
 <div style="position: static;"> 
 <p align="center" style="border: ridge #0B173B 1px; font-size:16pt; color:white; margin-right: 100px; background-color: #0B173B;">CONTRATO DE COMPRA-VENTA</p>
@@ -220,10 +221,10 @@ body {
                 <div class="table-row">
                 @if($contratos[0]->infonavit > 0)
                     <div class="table-cell2">INFONAVIT: </div>
-                    <div class="table-cell2"><u>${{$contratos[0]->infonavit}}</u></div>
+                    <div class="table-cell2">${{$contratos[0]->infonavit}}</div>
                 @elseif($contratos[0]->fovisste > 0)
                     <div class="table-cell2">FOVISSTE: </div>
-                    <div class="table-cell2"><u>${{$contratos[0]->fovisste}}</u></div> 
+                    <div class="table-cell2">${{$contratos[0]->fovisste}}</div> 
                 @else  
                     <div class="table-cell2"></div>
                     <div class="table-cell2"></div>
@@ -267,21 +268,21 @@ body {
                     <div class="table-cell2">GASTOS DE ESCRITURACION: </div>
                     <div class="table-cell2">${{$contratos[0]->escrituras}}</div>
                     <div class="table-cell2">VALOR TOTAL CASA: </div>
-                    <div class="table-cell2"><u>${{$contratos[0]->precio_venta}}</u></div>            
+                    <div class="table-cell2">${{$contratos[0]->precio_venta}}</div>            
 
                 </div>
                 <div class="table-row">
                     <div class="table-cell2">CREDITO NETO {{strtoupper($contratos[0]->institucion)}}: </div>
-                    <div class="table-cell2"><u>${{$contratos[0]->credito_neto}}</u></div>
+                    <div class="table-cell2">${{$contratos[0]->credito_neto}}</div>
                     <div class="table-cell2">MONTO NETO CREDITO: </div>
-                    <div class="table-cell2"><u>${{$contratos[0]->monto_total_credito}}</u></div>
+                    <div class="table-cell2">${{$contratos[0]->monto_total_credito}}</div>
 
                 </div>           
                 <div class="table-row">
                     <div class="table-cell2"></div>
                     <div class="table-cell2"></div>
                     <div class="table-cell2">TOTAL A PAGAR: </div>
-                    <div class="table-cell2"><u>${{$contratos[0]->total_pagar}}</u></div>
+                    <div class="table-cell2">${{$contratos[0]->total_pagar}}</div>
 
                 </div>   
                 <div class="table-row">
@@ -294,7 +295,7 @@ body {
                     <div class="table-cell2"></div>
                     <div class="table-cell2"></div>
                     <div class="table-cell2"><b> ENGANCHE TOTAL: </div>
-                    <div class="table-cell2"><b><u>${{$contratos[0]->enganche_total}}</u></div>
+                    <div class="table-cell2"><b>${{$contratos[0]->enganche_total}}</div>
                 </div>           
              </div>
         </div>
@@ -308,9 +309,9 @@ body {
                     
                 </div>
                 <div class="table-row">
-                    <div colspan="2" class="table-cell">ASESOR DE VENTAS: <u>{{mb_strtoupper($contratos[0]->vendedor_nombre)}} {{mb_strtoupper($contratos[0]->vendedor_apellidos)}}</u></div>
-                    <div class="table-cell">FIRMA: ___________________</div>
-                    <div colspan="2" class="table-cell">FIRMA DEL COMPRADOR: ___________________</div>
+                    <div colspan="3" class="table-cell">ASESOR DE VENTAS: {{mb_strtoupper($contratos[0]->vendedor_nombre)}} {{mb_strtoupper($contratos[0]->vendedor_apellidos)}} ______________________</div>
+                   
+                    <div colspan="2" class="table-cell">COMPRADOR: {{mb_strtoupper($contratos[0]->apellidos)}} {{mb_strtoupper($contratos[0]->nombre)}}____________________</div>
                 </div>
                 <div class="table-row">
                     <div colspan="5" class="table-cell">NOTA: ESTE DOCUMENTO PIERDE SU EFECTO SI EN EL LAPSO DE 5 DIAS NATURALES NO ES LIQUIDADO EL PAGO #1.</div>

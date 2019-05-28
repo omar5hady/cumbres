@@ -371,6 +371,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/depositos','DepositoController@indexDepositos');
         Route::post('/deposito/registrar','DepositoController@store');
         Route::put('/deposito/actualizar','DepositoController@update');
+        Route::get('deposito/reciboPDF/{id}','DepositoController@reciboPDF');
 
 
         /************************** RUTAS ESTADISTICAS ***************************/

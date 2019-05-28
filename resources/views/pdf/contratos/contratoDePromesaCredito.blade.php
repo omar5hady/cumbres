@@ -178,7 +178,7 @@ suspensiva y sus efectos previstos en la actual cláusula, por lo que no existe 
 <p>
 <strong>TERCERA.- EL PROMITENTE COMPRADOR</strong> se obliga a integrar toda la documentación necesaria requerida por la institución 
           crediticia que pudiera otorgarle los recursos para la adquisición de <strong>LA VIVIENDA</strong>, y a entregarla a la propia institución bancaria 
-          en un plazo no mayor a 10 días naturales contados a partir de la firma del presente contrato para que tenga acceso al crédito mencionado 
+          en un plazo no mayor a 7 días naturales contados a partir de la firma del presente contrato para que tenga acceso al crédito mencionado 
           en la cláusula anterior, ya que será utilizada para integrar el expediente necesario para la obtención del crédito.
 </p>
 
@@ -189,11 +189,11 @@ sin que esa circunstancia releva a este último de ser el responsable de realiza
 
 <p>
 <strong>CUARTA.-</strong> El precio total que convienen las partes, será motivo de la operación de compraventa definitiva, 
-         es la cantidad que de <strong>${{$contratoPromesa[0]->precio_venta}} ({{strtoupper($contratoPromesa[0]->precioVentaLetra)}} 00/100 Moneda Nacional)</strong>, 
+         es la cantidad que de <strong>${{strtoupper($contratoPromesa[0]->precioVentaLetra)}}</strong>, 
          mismo que EL PROMITENTE COMPRADOR se obliga a pagar a EL PROMITENTE VENDEDOR en los términos establecidos en la 
-         cláusula de la siguiente manera: a).La cantidad de <strong>${{$contratoPromesa[0]->monto_total_credito}} ({{strtoupper($contratoPromesa[0]->montoTotalCreditoLetra)}} 00/100 Moneda Nacional)</strong>, 
-         mediante el crédito que le otorgara {{mb_strtoupper($contratoPromesa[0]->institucion)}} @if($contratoPromesa[0]->infonavit > 0) y la cantidad de <strong>${{$contratoPromesa[0]->infonavit}} ({{strtoupper($contratoPromesa[0]->infonavitLetra)}} 00/100 Moneda Nacional)</strong> que le otorga INFONAVIT @elseif($contratoPromesa[0]->fovisste > 0) y la cantidad de <strong>${{$contratoPromesa[0]->fovisste}} ({{strtoupper($contratoPromesa[0]->fovissteLetra)}} 00/100 Moneda Nacional)</strong> que le otorga FOVISSTE @endif, 
-         al que se refiere la cláusula segunda del presente convenio, misma que deberá ser liquidada dentro de los 45 días naturales siguientes a la conclusión de la construcción de LA VIVIENDA. b).El resto, mediante <strong>{{$pagos[0]->totalDePagos}}</strong>pagos, @for($i=0; $i < count($pagos); $i++) el <strong>{{$pagos[$i]->numeros}}</strong> por la cantidad de <strong>${{$pagos[$i]->monto_pago}} ({{strtoupper($pagos[$i]->montoPagoLetra)}} 00/100 </strong> Moneda Nacional),
+         cláusula de la siguiente manera: a).La cantidad de <strong>${{strtoupper($contratoPromesa[0]->montoTotalCreditoLetra)}},</strong> 
+         mediante el crédito que le otorgara {{mb_strtoupper($contratoPromesa[0]->institucion)}} @if($contratoPromesa[0]->infonavit > 0) y la cantidad de <strong>${{$contratoPromesa[0]->infonavit}} {{strtoupper($contratoPromesa[0]->infonavitLetra)}}</strong> que le otorga INFONAVIT @elseif($contratoPromesa[0]->fovisste > 0) y la cantidad de <strong>${{strtoupper($contratoPromesa[0]->fovissteLetra)}}</strong> que le otorga FOVISSTE @endif, 
+         al que se refiere la cláusula segunda del presente convenio, misma que deberá ser liquidada dentro de los 45 días naturales siguientes a la conclusión de la construcción de LA VIVIENDA. b).El resto, mediante <strong>{{$pagos[0]->totalDePagos}}</strong>pagos, @for($i=0; $i < count($pagos); $i++) el <strong>{{$pagos[$i]->numeros}}</strong> por la cantidad de <strong>${{strtoupper($pagos[$i]->montoPagoLetra)}},</strong>
          que será liquidado a más tardar el día <strong>{{$pagos[$i]->fecha_pago}}</strong>@endfor, respectivamente. 
 </p>
 
@@ -295,6 +295,11 @@ en tres ejemplares de un mismo tenor y para un solo efecto, a los <strong>{{$con
                     <div colspan="2" class="table-cell3">_________________________________</div>
                     <div style="width: 8%;" class="table-cell3"></div>
                     <div colspan="2" class="table-cell3">_________________________________</div>
+                </div>
+                <div class="table-row">
+                    <div colspan="2" class="table-cell3">GRUPO CONSTRUCTOR CUMBRES</div>
+                    <div style="width: 8%;" class="table-cell3"></div>
+                    <div colspan="2" class="table-cell3">{{mb_strtoupper($contratoPromesa[0]->nombre)}} {{mb_strtoupper($contratoPromesa[0]->apellidos)}}</div>
                 </div>
             </div>
 

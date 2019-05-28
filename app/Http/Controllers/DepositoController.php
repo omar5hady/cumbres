@@ -358,4 +358,17 @@ class DepositoController extends Controller
 
         $deposito->save();
     }
+
+    public function reciboPDF($id){
+        $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
+                            ->join('contratos','contratos.id','=','pagos_contratos.contrato_id')
+                            ->join('creditos','creditos.id','=','contratos.id')
+                            ->select('depositos.id', 'depositos.pago_id', 'depositos.cant_depo','depositos.interes_mor','depositos.interes_ord',
+                                     'depositos.obs_mor','depositos.obs_ord','depositos.num_recibo','depositos.banco','depositos.concepto','depositos.fecha_pago')
+                                    ->where('depositos.id','=',$id)
+                                    ->get();
+
+        $pdf = \PDF::loadview('pdf.reciboDePagos',['depositos' => $depositos]);
+        return $pdf->stream('recibo_de_pago.pdf');
+    }
 }

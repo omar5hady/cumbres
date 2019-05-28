@@ -992,15 +992,16 @@ class ContratoController extends Controller
 
     public function getDatosCredito(Request $request){
         $folio = $request->folio;
-        $creditos = Credito::select('id','prospecto_id','num_dep_economicos','tipo_economia',
-                'nombre_primera_ref','telefono_primera_ref','celular_primera_ref',
-                'nombre_segunda_ref','telefono_segunda_ref','celular_segunda_ref',
-                'etapa','manzana','num_lote','modelo','precio_base','precio_obra_extra',
-                'superficie','terreno_excedente','precio_terreno_excedente',
-                'promocion','descripcion_promocion','descuento_promocion','paquete',
-                'descripcion_paquete','precio_venta','plazo','credito_solic','lote_id','fraccionamiento as proyecto',
-                'costo_paquete','status')
-                ->where('id','=',$folio)->get();
+        $creditos = Credito::join('datos_extra','creditos.id','=','datos_extra.id')
+                ->select('creditos.id','creditos.prospecto_id','creditos.num_dep_economicos','creditos.tipo_economia',
+                'creditos.nombre_primera_ref','creditos.telefono_primera_ref','creditos.celular_primera_ref',
+                'creditos.nombre_segunda_ref','creditos.telefono_segunda_ref','creditos.celular_segunda_ref',
+                'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','creditos.precio_base','creditos.precio_obra_extra',
+                'creditos.superficie','creditos.terreno_excedente','creditos.precio_terreno_excedente',
+                'creditos.promocion','creditos.descripcion_promocion','creditos.descuento_promocion','creditos.paquete',
+                'creditos.descripcion_paquete','creditos.precio_venta','creditos.plazo','creditos.credito_solic','creditos.lote_id','creditos.fraccionamiento as proyecto',
+                'creditos.costo_paquete','creditos.status')
+                ->where('creditos.id','=',$folio)->get();
         
                 foreach($creditos as $index => $credito) {
                     $prospecto=[];
@@ -1418,24 +1419,23 @@ class ContratoController extends Controller
             'clientes.coacreditado','clientes.nombre_coa','clientes.apellidos_coa','clientes.f_nacimiento_coa',
             'clientes.nacionalidad_coa','clientes.estado','clientes.ciudad',
             
-            'contratos.monto_total_credito','contratos.enganche_total','contratos.fecha','contratos.infonavit','contratos.fovisste','contratos.avaluo_cliente')
+            'contratos.monto_total_credito','contratos.enganche_total','contratos.fecha','contratos.infonavit','contratos.fovisste','contratos.avaluo_cliente','contratos.credito_neto')
         ->where('inst_seleccionadas.elegido','=','1')
         ->where('contratos.id','=',$id)
         ->where('inst_seleccionadas.tipo_credito','!=','Crédito Directo')
         ->get();
 
         setlocale(LC_TIME, 'es_MX.utf8');
-        $contratoPromesa[0]->precio_venta = $contratoPromesa[0]->precio_venta + $contratoPromesa[0]->avaluo_cliente;
-        $contratoPromesa[0]->precioVentaLetra = NumerosEnLetras::convertir($contratoPromesa[0]->precio_venta,'Pesos',false,'Centavos');
+        $contratoPromesa[0]->precioVentaLetra = NumerosEnLetras::convertir($contratoPromesa[0]->precio_venta,'Pesos',true,'Centavos');
         $contratoPromesa[0]->precio_venta = number_format((float)$contratoPromesa[0]->precio_venta,2,'.',',');
 
-        $contratoPromesa[0]->montoTotalCreditoLetra = NumerosEnLetras::convertir($contratoPromesa[0]->monto_total_credito,'Pesos',false,'Centavos');
-        $contratoPromesa[0]->monto_total_credito = number_format((float)$contratoPromesa[0]->monto_total_credito,2,'.',',');
+        $contratoPromesa[0]->montoTotalCreditoLetra = NumerosEnLetras::convertir($contratoPromesa[0]->credito_neto,'Pesos',true,'Centavos');
+        $contratoPromesa[0]->credito_neto = number_format((float)$contratoPromesa[0]->credito_neto,2,'.',',');
 
-        $contratoPromesa[0]->infonavitLetra = NumerosEnLetras::convertir($contratoPromesa[0]->infonavit,'Pesos',false,'Centavos');
+        $contratoPromesa[0]->infonavitLetra = NumerosEnLetras::convertir($contratoPromesa[0]->infonavit,'Pesos',true,'Centavos');
         $contratoPromesa[0]->infonavit = number_format((float)$contratoPromesa[0]->infonavit,2,'.',',');
 
-        $contratoPromesa[0]->fovissteLetra = NumerosEnLetras::convertir($contratoPromesa[0]->fovisste,'Pesos',false,'Centavos');
+        $contratoPromesa[0]->fovissteLetra = NumerosEnLetras::convertir($contratoPromesa[0]->fovisste,'Pesos',true,'Centavos');
         $contratoPromesa[0]->fovisste = number_format((float)$contratoPromesa[0]->fovisste,2,'.',',');
 
         $fechaContrato = new Carbon($contratoPromesa[0]->fecha);
@@ -1447,10 +1447,12 @@ class ContratoController extends Controller
         $totalDePagos = count($pagos);
         $pagos[0]->totalDePagos = NumerosEnLetras::convertir($totalDePagos,false,false,false);
 
+       $pagos[$totalDePagos-1]->monto_pago =  $pagos[$totalDePagos-1]->monto_pago - $contratoPromesa[0]->avaluo_cliente;
+
         for($i=0; $i<count($pagos); $i++){
         $tiempo = new Carbon($pagos[$i]->fecha_pago);
         $pagos[$i]->fecha_pago = $tiempo->formatLocalized('%d de %B de %Y');
-        $pagos[$i]->montoPagoLetra = NumerosEnLetras::convertir($pagos[$i]->monto_pago,'Pesos',false,'Centavos');
+        $pagos[$i]->montoPagoLetra = NumerosEnLetras::convertir($pagos[$i]->monto_pago,'Pesos',true,'Centavos');
         $pagos[$i]->monto_pago = number_format((float)$pagos[$i]->monto_pago,2,'.',',');
 
         switch($i){

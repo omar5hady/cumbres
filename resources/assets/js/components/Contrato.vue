@@ -1767,27 +1767,27 @@
 
             totalCreditoSolic: function(){
                 var total_credito =0;
-                    total_credito = parseFloat(this.monto_credito) - parseInt(this.comision_apertura)-parseInt(this.investigacion)+parseInt(this.avaluo)-parseInt(this.prima_unica)-parseInt(this.escrituras); 
+                    total_credito = parseFloat(this.monto_credito) - parseFloat(this.comision_apertura)-parseFloat(this.investigacion)+parseFloat(this.avaluo)-parseFloat(this.prima_unica)-parseFloat(this.escrituras); 
                 return total_credito;
             },
 
             netoCredito: function(){
                 var neto_credito =0;
-                    neto_credito = parseFloat(this.infonavit) + parseInt(this.fovissste) + parseInt(this.credito_neto); 
+                    neto_credito = parseFloat(this.infonavit) + parseFloat(this.fovissste) + parseFloat(this.credito_neto); 
                 return neto_credito;
             },
 
             totalPagar: function(){
                 let me = this;
                 var total_pago =0;
-                    total_pago =parseInt(this.precioVenta) - parseFloat(this.monto_total_credito); 
+                    total_pago =parseFloat(this.precioVenta) - parseFloat(this.monto_total_credito); 
                 return total_pago;
             },
 
             totalEnganche: function(){
                 let me = this;
                 var total_engache =0;
-                    total_engache =parseInt(this.total_pagar) + parseFloat(this.avaluo_cliente); 
+                    total_engache =parseFloat(this.total_pagar) + parseFloat(this.avaluo_cliente); 
                     me.restante = total_engache;
                 return total_engache;
             },

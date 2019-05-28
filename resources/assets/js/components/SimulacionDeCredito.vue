@@ -1771,7 +1771,7 @@
                                                         </div>
                                                     </div>
 
-                                                    <div class="col-md-3" v-if="rolId == '1'">
+                                                    <div class="col-md-3" v-if="rolId == '1' || rolId == '4' || rolId == '6' || rolId == '8'">
                                                         <div class="form-group">
                                                             <h6><br></h6>
                                                             <button @click="abrirModal()" type="button" class="btn btn-success">
@@ -1938,10 +1938,10 @@
                                             <div class="col-md-9">
                                                 <button type="button" class="btn btn-secondary" @click="ocultarDetalle()"> Cerrar </button>
                                             </div>
-                                            <div class="col-md-1" v-if="rolId==1 && contrato==0 || rolId==4 && contrato==0">
+                                            <div class="col-md-1" v-if="rolId==1 && contrato==0 || rolId==4 && contrato==0 || rolId==6 && contrato==0 || rolId==8 && contrato==0">
                                                 <button type="button" class="btn btn-danger" @click="rechazarSimulacion()"> Rechazar </button>
                                             </div>
-                                            <div class="col-md-1" v-if="rolId==1 && contrato==0 || rolId==4 && contrato==0">
+                                            <div class="col-md-1" v-if="rolId==1 && contrato==0 || rolId==4 && contrato==0 || rolId==6 && contrato==0 || rolId==8 && contrato==0">
                                                 <button type="button" class="btn btn-success" @click="aceptarSimulacion()"> Aprobar </button>
                                             </div>
                                             <div class="col-md-1" v-if="coacreditado == 1 && contrato==0">

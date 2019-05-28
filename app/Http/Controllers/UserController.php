@@ -68,7 +68,7 @@ class UserController extends Controller
         $buscar = $request->buscar;
         $criterio = $request->criterio;
          
-        if(Auth::user()->rol_id == 6){
+        //if(Auth::user()->rol_id == 6){
             if ($buscar==''){
                 $personas = User::join('personal','users.id','=','personal.id')
                 ->join('roles','users.rol_id','=','roles.id')
@@ -80,7 +80,8 @@ class UserController extends Controller
                 'personal.email','users.usuario','users.password',
                 'users.condicion','users.rol_id','roles.nombre as rol','vendedores.inmobiliaria','vendedores.tipo')
                 ->orderBy('users.condicion', 'desc')
-                ->orderBy('personal.id', 'desc')
+                ->orderBy('personal.apellidos', 'asc')
+                ->orderBy('personal.nombre', 'asc')
                 ->paginate(8);
             }
             else{
@@ -95,10 +96,11 @@ class UserController extends Controller
                 'users.condicion','users.rol_id','roles.nombre as rol','vendedores.inmobiliaria','vendedores.tipo')   
                 ->where($criterio, 'like', '%'. $buscar . '%')
                 ->orderBy('users.condicion', 'desc')
-                ->orderBy('personal.id', 'desc')
+                ->orderBy('personal.apellidos', 'asc')
+                ->orderBy('personal.nombre', 'asc')
                ->paginate(8);
-            }
-        }else{
+          //  }
+        }/*else{
             if ($buscar==''){
                 $personas = User::join('personal','users.id','=','personal.id')
                 ->join('roles','users.rol_id','=','roles.id')
@@ -112,7 +114,8 @@ class UserController extends Controller
                 ->where('vendedores.supervisor_id','=',Auth::user()->id)
                 ->orWhere('vendedores.tipo','=',1)
                 ->orderBy('users.condicion', 'desc')
-                ->orderBy('personal.id', 'desc')
+                ->orderBy('personal.apellidos', 'asc')
+                ->orderBy('personal.nombre', 'asc')
                 ->paginate(8);
             }
             else{
@@ -130,10 +133,11 @@ class UserController extends Controller
                 ->orWhere('vendedores.tipo','=',1)
                 ->where($criterio, 'like', '%'. $buscar . '%')
                 ->orderBy('users.condicion', 'desc')
-                ->orderBy('personal.id', 'desc')
+                ->orderBy('personal.apellidos', 'asc')
+                ->orderBy('personal.nombre', 'asc')
                ->paginate(8);
             }
-        }
+        }*/
 
        
          
@@ -890,14 +894,16 @@ class UserController extends Controller
             $personas = User::join('personal','users.id','=','personal.id')
             ->join('vendedores','personal.id','=','vendedores.id')
             ->select('personal.id','personal.nombre','personal.apellidos')
-            ->where('vendedores.supervisor_id','=',Auth::user()->id)
+            //->where('vendedores.supervisor_id','=',Auth::user()->id)
             ->where('users.condicion','=',1)
             ->orWhere('vendedores.tipo','=',1)
-            ->orderBy('personal.id', 'desc')
+            ->orderBy('personal.apellidos', 'asc')
+            ->orderBy('personal.nombre', 'asc')
             ->get();
     
         return ['personas' => $personas];
     }
+    
 
     public function getPrivilegios(Request $request){
         $privilegios=User::join('roles','users.rol_id','=','roles.id')
