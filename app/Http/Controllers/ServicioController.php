@@ -110,7 +110,7 @@ class ServicioController extends Controller
             $now= Carbon::now();
             $datos[0]->fecha_hoy = $now->formatLocalized('%d de %B de %Y');
  
-            $datos[0]->costoMantenimientoLetra = NumerosEnLetras::convertir($datos[0]->costo_mantenimiento,'Pesos',false,'Centavos');
+            $datos[0]->costoMantenimientoLetra = NumerosEnLetras::convertir($datos[0]->costo_mantenimiento,'Pesos M.N.',true,'Centavos');
  
              $pdf = \PDF::loadview('pdf.contratos.cartaDeServicios',['datos' => $datos , 'servicios' => $servicios]);
              return $pdf->stream('CartaDeservicios.pdf');

@@ -139,7 +139,7 @@
                                 <tbody>
                                     <tr v-for="deposito in arrayDepositos" :key="deposito.id">
                                         <td style="width:12%">   
-                                        <a type="button"  class="btn btn-danger btn-sm" title="Imprimir" v-bind:href="'deposito/reciboPDF/'+deposito.id"> <i class="fa fa-file-pdf-o"></i></a>
+                                        <a type="button" target="_blank" class="btn btn-danger btn-sm" title="Imprimir" v-bind:href="'deposito/reciboPDF/'+deposito.id"> <i class="fa fa-file-pdf-o"></i></a>
                                          &nbsp;
                                             <button type="button" @click="abrirModal('actualizar',deposito)" class="btn btn-warning btn-sm" title="Editar deposito">
                                             <i class="icon-pencil"></i>

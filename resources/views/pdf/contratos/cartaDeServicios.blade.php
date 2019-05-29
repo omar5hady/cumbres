@@ -27,9 +27,9 @@ ul{
 .table-cell { display: table-cell; padding: 0em; font-size: 9pt; }
 </style>
 <body>
-<div style="margin-top: 0px; width: 100%; position: fixed; text-align: center;">
-<img src="files/etapas/plantillasCartaServicios/{{ $datos[0]->plantilla_carta_servicios }}">
-<div style="margin-top: 170px; position: absolute; width: 100%; left:60px; right:60px;">
+<div style="width: 100%; position: fixed; text-align: center;">
+<img style="margin-top: -20px;" src="files/etapas/plantillasCartaServicios/{{ $datos[0]->plantilla_carta_servicios }}" width="794" height="1020">
+<div style="margin-top: 200px; position: absolute; width: 100%; left:60px; right:60px;">
 
     <p align="right">México, San Luis Potosí, S.L.P, a <u>{{$datos[0]->fecha_hoy}}</u></p>
     <p align="left">Bienvenido a la Familia Cumbres Sr (a) <u>{{$datos[0]->nombre}} {{$datos[0]->apellidos}}</u></p>
@@ -47,7 +47,7 @@ ul{
 @endfor
 </ul>
 
-    <p align="justify">&nbsp; &nbsp; La aportacion será de <strong>${{$datos[0]->costo_mantenimiento}} ({{$datos[0]->costoMantenimientoLetra}} MXN)</strong> de forma mensual, como costo base;
+    <p align="justify">&nbsp; &nbsp; La aportacion será de <strong>${{$datos[0]->costoMantenimientoLetra}}</strong> de forma mensual, como costo base;
                       cabe destacar que las cuotas pueden actualizarse conforme a los requerimientos de los costos de los servicios,
                       y pueden ser de carácter fijo y/o provisional con previa notificación y autorización por los propios condóminos.
    </p>
