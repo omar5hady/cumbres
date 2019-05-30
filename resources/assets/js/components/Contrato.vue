@@ -927,7 +927,13 @@
                                                         </div>
                                                     </div>
 
-                                                    
+                                                    <div class="col-md-2" v-if="listado==3 || listado==4 && btn_actualizar==1">
+                                                        <div class="form-group">
+                                                            <button type="button" class="btn btn-default" @click="abrirModal('reasignar')"> 
+                                                                <i class="fa fa-street-view"></i> Reasignar cliente </button>
+                                                        </div>
+                                                    </div>
+                                                   
 
                                                     <div class="col-md-12" >
                                                         <h6></h6>
@@ -1002,7 +1008,7 @@
                                                         </div>
                                                     </div>
 
-                                                        <div class="col-md-3" v-if="descuentoPromo!=0">
+                                                    <div class="col-md-3" v-if="descuentoPromo!=0">
                                                         <div class="form-group">
                                                             <label style="color:#2271b3;" for=""><strong> Descuento de la promocion </strong></label>
                                                             <p v-text="'$'+formatNumber(descuentoPromo)"></p>
@@ -1462,7 +1468,7 @@
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
 
-
+            <!-- Inicio Modal Fecha para firma -->
              <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
                 <div class="modal-dialog modal-primary modal-lg" role="document">
                     <div class="modal-content">
@@ -1475,10 +1481,51 @@
                         <div class="modal-body">
                  
                       <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-                            <div class="form-group row">
+
+                            <div class="form-group row" v-if="tipoAccion==1">
                                 <label class="col-md-3 form-control-label" for="text-input">Fecha</label>
                                 <div class="col-md-9">
                                     <input type="date" v-model="fecha_status" class="form-control" placeholder="Fecha status">
+                                </div>
+                            </div>
+
+                            <div class="form-group row" v-if="tipoAccion==2">
+                                <label class="col-md-3 form-control-label" for="text-input">Fraccionamiento</label>
+                                <div class="col-md-9">
+                                    <select class="form-control" v-model="sel_proyecto" @click="selectEtapa(sel_proyecto)">
+                                            <option value=0> Seleccione </option>
+                                            <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group row" v-if="tipoAccion==2">
+                                <label class="col-md-3 form-control-label" for="text-input">Etapa</label>
+                                <div class="col-md-9">
+                                    <select class="form-control" v-model="sel_etapa" @click="selectManzana(sel_etapa)">
+                                            <option value=''> Seleccione </option>
+                                            <option v-for="etapas in arrayEtapas" :key="etapas.etapa" :value="etapas.etapa" v-text="etapas.etapa"></option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group row" v-if="tipoAccion==2">
+                                <label class="col-md-3 form-control-label" for="text-input">Manzana</label>
+                                <div class="col-md-9">
+                                    <select class="form-control" v-model="sel_manzana" @click="selectLotes(sel_manzana, sel_etapa)">
+                                            <option value=''> Seleccione </option>
+                                            <option v-for="manzanas in arrayManzanas" :key="manzanas.manzana" :value="manzanas.manzana" v-text="manzanas.manzana"></option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group row" v-if="tipoAccion==2">
+                                <label class="col-md-3 form-control-label" for="text-input">Lote</label>
+                                <div class="col-md-9">
+                                   <select class="form-control" v-model="sel_lote">
+                                            <option value=''> Seleccione </option>
+                                            <option v-for="lotes in arrayLotes" :key="lotes.id" :value="lotes.id" v-text="lotes.num_lote"></option>
+                                    </select>
                                 </div>
                             </div>
                       </form>
@@ -1487,7 +1534,8 @@
                         <!-- Botones del modal -->
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <button type="button" class="btn btn-primary" @click="registrarFechaStatus()">Guardar</button>
+                            <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarFechaStatus()">Guardar</button>
+                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="mostrarDatosLote(sel_lote)">reasignar</button>
                          </div>
                     </div> 
                     <!-- /.modal-content -->
@@ -1520,8 +1568,18 @@
                 arrayContratos:[],
                 arrayDatosSimulacion:[],
                 arrayFraccionamientos: [],
+                arrayEtapas:[],
+                arrayManzanas:[],
+                arrayLotes:[],
+                arrayDatosLotes:[],
+
                 arryaEmpresas:[],
                 arrayPagos:[],
+
+                sel_proyecto:0,
+                sel_etapa:'',
+                sel_manzana:'',
+                sel_lote:'',
 
                 status: 1,
                 fecha_status: '',
@@ -1876,6 +1934,77 @@
                     console.log(error);
                 });
             },
+            selectEtapa(fraccionamiento){
+                let me = this;
+                me.arrayEtapas=[];
+                var url = '/select_etapas_disp?buscar=' + fraccionamiento;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                     me.arrayEtapas = respuesta.lotes_etapas;
+                    
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            selectManzana(etapa){
+                let me = this;
+                me.arrayManzanas=[];
+                var url = '/select_manzanas_disp?buscar=' + etapa;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                     me.arrayManzanas = respuesta.lotes_manzanas;
+                    
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            selectLotes(manzana,etapa){
+                let me = this;
+                me.arrayLotes=[];
+                var url = '/select_lotes_disp?buscar=' + manzana + '&buscar2=' + etapa;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                     me.arrayLotes = respuesta.lotes_disp;
+                    
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            mostrarDatosLote(lote){
+                let me = this;
+                me.arrayDatosLotes=[];
+                var url = '/select_datos_lotes_disp?buscar=' + lote;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayDatosLotes = respuesta.lotes;
+
+                    me.reasignar(me.arrayDatosLotes[0]);
+                    
+                    me.modelo = me.arrayDatosLotes[0]['modelo'];
+                    me.superficie = me.arrayDatosLotes[0]['terreno'];
+                    me.precioBase = me.arrayDatosLotes[0]['precio_base'];
+                    me.precioExcedente = Math.round(me.arrayDatosLotes[0]['excedente_terreno']*100)/100;
+                    me.precioVenta = me.arrayDatosLotes[0]['precio_venta'];
+                    me.promocion = me.arrayDatosLotes[0]['promocion'];
+                    me.descripcionPromo = me.arrayDatosLotes[0]['descripcionPromo'];
+                    me.descuentoPromo = me.arrayDatosLotes[0]['descuentoPromo'];
+                    me.terreno_tam_excedente= Math.round( me.arrayDatosLotes[0]['terreno_tam_excedente']*100)/100;
+                    me.lote = me.arrayDatosLotes[0]['num_lote'];
+                    me.precioObraExtra = me.arrayDatosLotes[0]['obra_extra'];
+                    me.proyecto = me.arrayDatosLotes[0]['proyecto'];
+
+                    me.precioVenta = me.precioVenta - me.descuentoPromo;
+                    me.selectPaquetes(me.etapa,me.proyecto);
+                    me.cerrarModal();
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+        /////
             selectEmpresas(){
                 let me = this;
                 me.arryaEmpresas=[];
@@ -1889,10 +2018,10 @@
                     console.log(error);
                 });
             },
-            selectPaquetes(etapa){
+            selectPaquetes(etapa,proyecto){
                 let me = this;
                 me.arrayPaquetes=[];
-                var url = '/select_paquetes?buscar=' + etapa;
+                var url = '/select_paquetes?buscar=' + etapa + '&proyecto=' + proyecto;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                      me.arrayPaquetes = respuesta.paquetes;
@@ -2112,7 +2241,7 @@
                 this.selectCiudades(this.estado_coa,1);
                 this.selectColonias(this.cp,0);
                 this.selectColonias(this.cp_coa,1);
-                this.selectPaquetes(this.etapa);
+                this.selectPaquetes(this.etapa, this.proyecto);
                 this.selectEmpresas();
 
                 this.getDatosEmpresa(this.empresa,0);
@@ -2237,6 +2366,13 @@
             cerrarModal(){
                 this.modal = 0;
                 this.tituloModal = '';
+                this.arrayEtapas = [];
+                this.arrayManzanas = [];
+                this.arrayLotes = [];
+                this.sel_proyecto=0;
+                this.sel_etapa='';
+                this.sel_manzana='';
+                this.sel_lote='';
             },
 
             verContrato(data = []){
@@ -2354,7 +2490,7 @@
            
                
                 this.listarPagos(this.id);
-               // this.selectPaquetes(this.etapa);
+                this.selectPaquetes(this.etapa, this.proyecto);
                 this.listado=4;
                 this.btn_actualizar = 0;
             },
@@ -2457,7 +2593,7 @@
             selectStatus(status){
                 let me = this;
                 if(status==3 || status==0 ){
-                    this.abrirModal('status','statusFecha',this.arrayContratos);
+                    this.abrirModal('statusFecha',this.arrayContratos);
                 }else{ 
 
                 
@@ -2484,9 +2620,9 @@
                 }
             },
 
-        registrarFechaStatus(){
-            let me = this;
-            axios.put('/contrato/status/fecha',{
+            registrarFechaStatus(){
+                let me = this;
+                axios.put('/contrato/status/fecha',{
                     'id': this.id_contrato,
                     'status':this.status,
                     'fecha_status':this.fecha_status,
@@ -2571,7 +2707,7 @@
                     this.errorMostrarMsjContrato.push("Ingresar pago para el monto restante");
                 if(this.fecha_contrato=='') 
                     this.errorMostrarMsjContrato.push("Ingresar fecha del contrato");
-               
+            
                 if(this.errorMostrarMsjContrato.length)//Si el mensaje tiene almacenado algo en el array
                     this.errorContrato = 1;
 
@@ -2645,56 +2781,56 @@
             actualizarDatosProspecto(){
                 //Con axios se llama el metodo store del controller
                 axios.put('/contrato/actualizarCredito',{
-                   'prospecto_id':this.prospecto_id,
-                   'apellidos':this.apellidos,
-                   'nombre':this.nombre,
-                   'f_nacimiento':this.fecha_nac,
-                   'rfc':this.rfc,
-                   'homoclave':this.homoclave,
-                   'direccion':this.direccion,
-                   'cp':this.cp,
-                   'colonia':this.colonia,
-                   'telefono':this.telefono,
-                   'celular':this.celular,
-                   'email':this.email,
-                   'sexo':this.sexo,
-                   'email_institucional':this.email_inst,
-                   'edo_civil':this.e_civil,
-                   'nss':this.nss,
-                   'curp':this.curp,
-                   'empresa':this.empresa,
-                   'coacreditado':this.coacreditado,
-                   'ciudad':this.ciudad,
-                   'estado':this.estado,
-                   'nacionalidad':this.nacionalidad,
-                   'puesto':this.puesto,
-                   'sexo_coa':this.sexo_coa,
-                   'direccion_coa':this.direccion_coa,
-                   'email_institucional_coa':this.email_institucional_coa,
-                   'edo_civil_coa':this.e_civil_coa,
-                   'nss_coa':this.nss_coa,
-                   'curp_coa':this.curp_coa,
-                   'nombre_coa':this.nombre_coa,
-                   'apellidos_coa':this.apellidos_coa,
-                   'f_nacimiento_coa':this.fecha_nac_coa,
-                   'colonia_coa':this.colonia_coa,
-                   'cp_coa':this.cp_coa,
-                   'rfc_coa':this.rfc_coa,
-                   'homoclave_coa':this.homoclave_coa,
-                   'ciudad_coa':this.ciudad_coa,
-                   'estado_coa':this.estado_coa,
-                   'empresa_coa':this.empresa_coa,
-                   'nacionalidad_coa':this.nacionalidad_coa,
-                   'telefono_coa':this.telefono_coa,
-                   'celular_coa':this.celular_coa,
-                   'email_coa':this.email_coa,
-                   'parentesco_coa':this.parentesco_coa,
-                   'id':this.id,
-                   'num_dep_economicos':this.dep_economicos,
-                   'lote_id': this.lote_id,
+                'prospecto_id':this.prospecto_id,
+                'apellidos':this.apellidos,
+                'nombre':this.nombre,
+                'f_nacimiento':this.fecha_nac,
+                'rfc':this.rfc,
+                'homoclave':this.homoclave,
+                'direccion':this.direccion,
+                'cp':this.cp,
+                'colonia':this.colonia,
+                'telefono':this.telefono,
+                'celular':this.celular,
+                'email':this.email,
+                'sexo':this.sexo,
+                'email_institucional':this.email_inst,
+                'edo_civil':this.e_civil,
+                'nss':this.nss,
+                'curp':this.curp,
+                'empresa':this.empresa,
+                'coacreditado':this.coacreditado,
+                'ciudad':this.ciudad,
+                'estado':this.estado,
+                'nacionalidad':this.nacionalidad,
+                'puesto':this.puesto,
+                'sexo_coa':this.sexo_coa,
+                'direccion_coa':this.direccion_coa,
+                'email_institucional_coa':this.email_institucional_coa,
+                'edo_civil_coa':this.e_civil_coa,
+                'nss_coa':this.nss_coa,
+                'curp_coa':this.curp_coa,
+                'nombre_coa':this.nombre_coa,
+                'apellidos_coa':this.apellidos_coa,
+                'f_nacimiento_coa':this.fecha_nac_coa,
+                'colonia_coa':this.colonia_coa,
+                'cp_coa':this.cp_coa,
+                'rfc_coa':this.rfc_coa,
+                'homoclave_coa':this.homoclave_coa,
+                'ciudad_coa':this.ciudad_coa,
+                'estado_coa':this.estado_coa,
+                'empresa_coa':this.empresa_coa,
+                'nacionalidad_coa':this.nacionalidad_coa,
+                'telefono_coa':this.telefono_coa,
+                'celular_coa':this.celular_coa,
+                'email_coa':this.email_coa,
+                'parentesco_coa':this.parentesco_coa,
+                'id':this.id,
+                'num_dep_economicos':this.dep_economicos,
+                'lote_id': this.lote_id,
                 })
             },
-  
+
             isNumber: function(evt) {
                 evt = (evt) ? evt : window.event;
                 var charCode = (evt.which) ? evt.which : evt.keyCode;
@@ -2829,7 +2965,7 @@
                         me.infonavit='0';
                         me.fovissste='0';
                         me.monto_total_credito=0;
-             
+            
                 me.prospecto_id=0;
                 me.restante=0;
                 me.monto_pago=0;
@@ -2872,29 +3008,67 @@
                 me.b_lote2='';
                 
             },
-             abrirModal(status, accion,data =[]){
-                switch(status){
-                    case "status":
+            abrirModal(accion,data =[]){
+                switch(accion){
+                    case 'statusFecha':
                     {
-                        switch(accion){
-                            
-                            
-                            case 'statusFecha':
-                            {
-                                this.modal = 1;
-                                this.tituloModal='Fecha de la operacion';
-                                this.id=data['id'];
-                                this.fecha_status=data['fecha_status'];
-                                this.tipoAccion = 1;
-                                break;
-                            }
-                        }
+                        this.modal = 1;
+                        this.tituloModal='Fecha de la operacion';
+                        this.id=data['id'];
+                        this.fecha_status=data['fecha_status'];
+                        this.tipoAccion = 1;
+                        break;
                     }
+                    case 'reasignar':
+                    {
+                        this.modal = 1;
+                        this.tituloModal='Reasignar cliente';
+                        this.tipoAccion = 2;
+                        break;
+                    }
+                    this.selectFraccionamientos();
                 }
-                //this.selectCiudades(this.estado);
+            },
+        /////
+
+            reasignar(data=[]){
+                let me = this;
+                
+                axios.put('/contrato/reasignar',{
+                   'lote_id':me.lote_id,
+                   'sel_lote':me.sel_lote,
+                   'id':me.id,
+                   'fraccionamiento':data['proyecto'],
+                   'etapa':me.sel_etapa,
+                   'manzana':me.sel_manzana,
+                   'num_lote':data['num_lote'],
+                   'modelo':data['modelo'],
+                   'precio_base':data['precio_base'],
+                   'superficie':data['terreno'],
+                   'terreno_excedente':Math.round( data['terreno_tam_excedente']*100)/100,
+                   'precio_terreno_excedente':Math.round(data['excedente_terreno']*100)/100,
+                   'precio_obra_extra':data['obra_extra'],
+                   'promocion':data['promocion'],
+                   'descripcion_promocion':data['descripcionPromo'],
+                   'descuento_promocion':data['descuentoPromo'],
+                   'precio_venta':data['precio_venta'] - data['descuentoPromo'],
+
+                }).then(function (response){
+                    
+                    //window.alert("Cambios guardados correctamente");
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'El cliente ha sido reasignado correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });  
             }
 
-           
+        
         },
         mounted() {          
             this.listarContratos(1,this.buscar,this.buscar3,this.b_etapa,this.b_manzana,this.b_lote,this.criterio);

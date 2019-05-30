@@ -357,6 +357,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/contrato/pagos/agregar','ContratoController@agregarPago');
         Route::delete('/contrato/pagos/eliminar','ContratoController@eliminarPago');
         Route::put('/contrato/actualizar','ContratoController@actualizarContrato');
+        Route::put('/contrato/reasignar','ContratoController@reasignarCliente');
 
         Route::get('/contratoCompraVenta/pdf/{id}','ContratoController@contratoCompraVentaPdf')->name('contratoCompraVenta.pdf');
         Route::get('/pagareContrato/pdf/{id}','ContratoController@pagareContratopdf')->name('pagare.pdf');

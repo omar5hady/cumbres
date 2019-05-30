@@ -27,8 +27,13 @@
                                             <option value="inst_seleccionadas.tipo_credito">Tipo de credito</option>
                                             <option value="inst_seleccionadas.institucion">Institucion</option>
                                         </select>
-                                        <input type="text" v-model="buscar" @keyup.enter="listarHistorialCreditos(1,buscar,criterio)" class="form-control">
-                                        <button type="submit" @click="listarHistorialCreditos(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                        <input type="text" v-model="buscar" @keyup.enter="listarHistorialCreditos(1,buscar,buscar2,criterio)" class="form-control">
+                                        <select class="form-control col-md-4" v-model="buscar2">
+                                            <option value="1">Pendientes</option>
+                                            <option value="0">Rechazados</option>
+                                            <option value="2">Aprobados</option>
+                                        </select>
+                                        <button type="submit" @click="listarHistorialCreditos(1,buscar,buscar2,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                          <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Total: '+ contador"> </span>
                                     </div>
                                 </div>
@@ -50,8 +55,8 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="historial in arrayHistorialCreditos" :key="historial.id">
-                                            <td class="td2" v-text="historial.id_credito"></td>
+                                        <tr v-for="historial in arrayHistorialCreditos" :key="historial.id" @dblclick="abrirModal('actualizar', historial)">
+                                            <td class="td2" v-text="historial.id_credito" @click="abrirModal('registrar', historial)"></td>
                                             <td class="td2" v-text="historial.nombre + ' ' + historial.apellidos"></td>
                                             <td class="td2" v-text="historial.vendedor_nombre + ' ' + historial.vendedor_apellidos "></td>
                                             <td class="td2" v-text="historial.institucion"></td>
@@ -59,8 +64,10 @@
                                             <td class="td2" v-text="historial.fecha_ingreso"></td>
                                             <td class="td2" v-text="'$'+formatNumber(historial.monto_credito)"></td>
                                             <td class="td2" v-text="historial.plazo_credito"></td>
-                                            <td class="td2" v-if="historial.status == '1'">
-                                                <span class="badge badge-warning">Pendiente</span>
+                                            <td class="td2" >
+                                                <span v-if="historial.status == '1'" class="badge badge-warning">Pendiente</span>
+                                                <span v-if="historial.status == '0'" class="badge badge-danger">Rechazado</span>
+                                                <span v-if="historial.status == '2'" class="badge badge-success">Aprobado</span>
                                             </td>
                                            
                                             <td class="td2">
@@ -74,13 +81,13 @@
                                 <!--Botones de paginacion -->
                                 <ul class="pagination">
                                     <li class="page-item" v-if="pagination.current_page > 1">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,criterio)">Ant</a>
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,buscar2,criterio)">Ant</a>
                                     </li>
                                     <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,criterio)" v-text="page"></a>
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,buscar2,criterio)" v-text="page"></a>
                                     </li>
                                     <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,criterio)">Sig</a>
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,buscar2,criterio)">Sig</a>
                                     </li>
                                 </ul>
                             </nav>
@@ -139,6 +146,106 @@
                 <!-- /.modal-dialog -->
             </div>
 
+            <!--Inicio del modal observaciones de creditos-->
+            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" v-text="tituloModal"></h4>
+                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Tipo de credito</label>
+                                    <div class="col-md-6">
+                                        <select class="form-control" v-model="tipo_credito" @click="selectInstitucion(tipo_credito)" >
+                                            <option value="0">Seleccione</option>
+                                            <option v-for="creditos in arrayCreditos" :key="creditos.nombre" :value="creditos.nombre" v-text="creditos.nombre"></option>   
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Institución de financiamiento</label>
+                                    <div class="col-md-6">
+                                        <select class="form-control" v-model="inst_financiera" >
+                                            <option value="">Seleccione</option>
+                                            <option v-for="institucion in arrayInstituciones" :key="institucion.institucion_fin" :value="institucion.institucion_fin" v-text="institucion.institucion_fin"></option>      
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Plazo (años)</label>
+                                    <div class="col-md-4">
+                                        <input type="text" maxlength="2" v-model="plazo_credito" pattern="\d*" v-on:keypress="isNumber($event)" class="form-control" placeholder="Plazo">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Monto</label>
+                                    <div class="col-md-4">
+                                        <input type="text" maxlength="9" v-model="monto_credito" pattern="\d*" v-on:keypress="isNumber($event)" class="form-control" placeholder="Monto">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <h6 v-text="'$'+formatNumber(monto_credito)"></h6>
+                                    </div>
+
+                                </div>
+                                
+                                <div class="form-group row" v-if="tipoAccion==2">
+                                    <label class="col-md-3 form-control-label" for="text-input">Fecha de ingreso</label>
+                                    <div class="col-md-6">
+                                        <input type="date" v-model="fecha_ingreso" class="form-control" placeholder="Fecha ingreso">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row" v-if="tipoAccion==2">
+                                    <label class="col-md-3 form-control-label" for="text-input">Estatus</label>
+                                    <div class="col-md-6">
+                                        <select class="form-control" v-model="estatus">
+                                            <option value="1">Pendiente</option>
+                                            <option value="0">Rechazar</option>
+                                            <option value="2">Aceptar</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row" v-if="tipoAccion==2">
+                                    <label class="col-md-3 form-control-label" for="text-input">Observación </label>
+                                    <div class="col-md-6">
+                                        <textarea rows="3" cols="30" v-model="observacion" class="form-control" placeholder="Observación"></textarea>
+                                    </div>
+                                </div>
+
+                                 <!-- Div para mostrar los errores -->
+                                <div v-show="errorInstSelec" class="form-group row div-error">
+                                    <div class="text-center text-error">
+                                        <div v-for="error in errorMostrarMsjInstSelect" :key="error" v-text="error">
+
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </form>
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                            <button type="button" v-if="tipoAccion==2" class="btn btn-success" @click="actualizarDatosCredito()" >Guardar cambios</button>
+                            <button type="button" v-if="tipoAccion==1" class="btn btn-success" @click="regisrarCredito()" >Guardar cambios</button>
+                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="seleccionarCredito(id, folio)" >Elegir credito</button>
+                        </div>
+                    </div>
+                      <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+
         </main>
 </template>
 
@@ -158,15 +265,30 @@
                 arrayObservacion:[],
                 arrayFraccionamientos: [],
                 arrayObservacionCreditos: [],
+                arrayCreditos :[],
+                arrayInstituciones :[],
+
+                plazo_credito: 0,
+                monto_credito: 0,
+                fecha_ingreso : '',
+                estatus: '',
+                observacion : '',
+                id:0,
+                folio:0,
+                tipo_credito:'',
+                inst_financiera:'',
+
+                errorInstSelec : 0,
+                errorMostrarMsjInstSelect : [],
 
                 contadorHistCred: 0,
-                modal3: 0,
-                modal2: 0,
+                contador:0,
+                modal: 0,
                 modal5: 0,
                 listado:1,
                 prospecto_id:0,
                 observacion:'',
-                tituloModal3 : '',
+                tituloModal : '',
                 tipoAccion: 0,
                 pagination : {
                     'total' : 0,         
@@ -179,9 +301,7 @@
                 offset : 3,
                 criterio : 'personal.nombre', 
                 buscar : '',
-                b_etapa: '',
-                b_manzana: '',
-                b_lote: ''
+                buscar2: 1,
                
             }
         },
@@ -217,9 +337,9 @@
         },
        
         methods : {
-             listarHistorialCreditos(page, buscar,criterio){
+             listarHistorialCreditos(page, buscar,buscar2,criterio){
                 let me = this;
-                var url = '/historial_creditos?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
+                var url = '/historial_creditos?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2 +'&criterio=' + criterio;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayHistorialCreditos = respuesta.Historialcreditos.data;
@@ -269,7 +389,113 @@
                     console.log(error);
                 });
             },
-  
+
+            selectCreditos(){
+                let me = this;
+                me.arrayCreditos=[];
+                var url = '/select_tipoCredito';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayCreditos = respuesta.Tipos_creditos;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            selectInstitucion(credito){
+                let me = this;
+                if(me.tipo_credito==0){
+                    me.inst_financiera="";
+                }
+                me.arrayInstituciones=[];
+                var url = '/select_institucion?buscar='+credito;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayInstituciones = respuesta.instituciones;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
+            validarInstSelect(){
+                this.errorInstSelec=0;
+                this.errorMostrarMsjInstSelect=[];
+
+                if(this.observacion=='') 
+                    this.errorMostrarMsjInstSelect.push("Ingresar una observacion");
+                
+                if(this.errorMostrarMsjInstSelect.length)//Si el mensaje tiene almacenado algo en el array
+                    this.errorInstSelec = 1;
+
+                return this.errorInstSelec;
+            },
+
+            actualizarDatosCredito(){
+                if(this.validarInstSelect()) //Se verifica si hay un error (campo vacio)
+                {
+                    return;
+                }
+
+                let me = this;
+                //Con axios se llama el metodo update de DepartamentoController
+                axios.put('/creditos_select/actualizar',{
+                    'id': this.id,
+                    'fecha_ingreso': this.fecha_ingreso,
+                    'plazo_credito': this.plazo_credito,
+                    'monto_credito': this.monto_credito,
+                    'status': this.estatus,
+                    'observacion': this.observacion
+
+                }).then(function (response){
+                  
+                    me.listarHistorialCreditos(1,me.buscar,me.buscar2,me.criterio)
+                    me.cerrarModal()
+                    //window.alert("Cambios guardados correctamente");
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Cambios guardados',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+
+            },
+
+            regisrarCredito(){
+                if(this.proceso==true) //Se verifica si hay un error (campo vacio)
+                {
+                    return;
+                }
+
+                this.proceso=true;
+
+                let me = this;
+                //Con axios se llama el metodo store de FraccionaminetoController
+                axios.post('/creditos_select/registrar',{
+                    'credito_id':this.folio,
+                    'tipo_credito':this.tipo_credito,
+                    'institucion':this.inst_financiera,
+                    'monto_credito':this.monto_credito,
+                    'plazo_credito':this.plazo_credito
+                }).then(function (response){
+                    me.listarHistorialCreditos(1,me.buscar,me.buscar2,me.criterio)
+                    me.cerrarModal();
+                    //Se muestra mensaje Success
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Credito agregado correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
 
             isNumber: function(evt) {
                 evt = (evt) ? evt : window.event;
@@ -280,37 +506,52 @@
                     return true;
                 }
             },
-            registrarObservacion(){
 
-                let me = this;
-                //Con axios se llama el metodo store de FraccionaminetoController
-                axios.post('/clientes/storeObservacion',{
-                    'cliente_id':this.prospecto_id,
-                    'observacion':this.observacion                 
-                }).then(function (response){
-                    me.listarObservacion(1,me.prospecto_id);
-                    me.observacion='';
-                    //Se muestra mensaje Success
-                    swal({
-                        position: 'top-end',
-                        type: 'success',
-                        title: 'Observacion agregada correctamente',
-                        showConfirmButton: false,
-                        timer: 1500
-                        })
-                }).catch(function (error){
-                    console.log(error);
-                });
+            seleccionarCredito(id,folio){
+        
+                swal({
+                title: 'Esta seguro desea asignar este credito?',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Aceptar!',
+                cancelButtonText: 'Cancelar',
+                confirmButtonClass: 'btn btn-success',
+                cancelButtonClass: 'btn btn-danger',
+                buttonsStyling: false,
+                reverseButtons: true
+                }).then((result) => {
+                if (result.value) {
+                    let me = this;
+
+                    axios.put('/creditos/seleccionar',{
+                        'id': id,
+                        'simulacion_id': folio
+                    }).then(function (response) {
+                        me.cerrarModal();
+                        swal(
+                        'Hecho!',
+                        'Este credito ha sido elegido.',
+                        'success'
+                        )
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                    
+                    
+                } else if (
+                    // Read more about handling dismissals
+                    result.dismiss === swal.DismissReason.cancel
+                ) {
+                    
+                }
+                }) 
             },
-
-
              
             limpiarBusqueda(){
                 let me=this;
                 me.buscar= "";
-                me.b_etapa='';
-                me.b_manzana='';
-                me.b_lote='';
             },
             
             abrirModal5(){
@@ -318,13 +559,69 @@
             },
             cerrarModal5(){
                 this.modal5=0;
+            },
+
+            abrirModal(accion,data=[]){
+
+                switch(accion){
+                    case 'actualizar':{
+                        
+                        this.plazo_credito=data['plazo_credito'];
+                        this.monto_credito=data['monto_credito'];
+                        this.fecha_ingreso =data['fecha_ingreso'];
+                        this.estatus=data['status'];
+                        this.observacion ='';
+                        this.id=data['id'];
+                        this.folio=data['id_credito'];
+                        this.modal=1;
+                        this.tituloModal = 'Actualizar credito';
+                        this.inst_financiera = data['institucion'];
+                        this.tipo_credito = data['tipo_credito'];
+                        this.tipoAccion = 2;
+
+                        break;
+                    }
+                    case 'registrar':{
+                        this.modal=1;
+                        this.tituloModal = 'Registrar credito para folio #' + data['id_credito'];
+                        this.plazo_credito=0;
+                        this.monto_credito=0;
+                        this.fecha_ingreso ='';
+                        this.estatus=1;
+                        this.observacion ='';
+                        this.id=0;
+                        this.folio=data['id_credito'];
+                        this.inst_financiera = '';
+                        this.tipo_credito = '';
+                        this.tipoAccion = 1;
+
+                        break;
+                    }
+
+                }
+                this.selectInstitucion(this.tipo_credito);
+
+            },
+
+            cerrarModal(){
+                this.plazo_credito=0;
+                this.monto_credito=0;
+                this.fecha_ingreso ='';
+                this.estatus=0;
+                this.observacion ='';
+                this.id=0;
+                this.folio=0;
+                this.modal=0;
+                this.tituloModal = '';
             }
 
            
         },
         mounted() {          
-            this.listarHistorialCreditos(1,this.buscar,this.criterio);
+            this.listarHistorialCreditos(1,this.buscar,this.buscar2,this.criterio);
             this.selectFraccionamientos();
+            this.selectCreditos();
+            
         }
     }
 </script>

@@ -702,7 +702,7 @@
                                                     
                                                 <div class="col-md-2">
                                                         <div class="form-group">
-                                                            <select class="form-control" v-model="etapa" @click="selectManzana(etapa),selectPaquetes(etapa)">
+                                                            <select class="form-control" v-model="etapa" @click="selectManzana(etapa)">
                                                                     <option value=''> Seleccione </option>
                                                                     <option v-for="etapas in arrayEtapas" :key="etapas.etapa" :value="etapas.etapa" v-text="etapas.etapa"></option>
                                                             </select>
@@ -2015,7 +2015,7 @@
                         <div class="modal-body">
                             <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
                             <div class="modal-body">
-                                <div class="form-group row" v-if="rolId == '1'">
+                                <div class="form-group row" v-if="rolId == '1' || rolId == '4' || rolId == '6' || rolId == '8'">
                                     <label class="col-md-3 form-control-label" for="text-input">Tipo de Credito</label>
                                     <div class="col-md-6">
                                         <select class="form-control" v-model="tipo_credito2" @click="selectInstitucion(tipo_credito2)" >
@@ -2025,7 +2025,7 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group row" v-if="rolId == '1'">
+                                <div class="form-group row" v-if="rolId == '1'|| rolId == '4' || rolId == '6' || rolId == '8'">
                                     <label class="col-md-3 form-control-label" for="text-input">Institucion Financiera</label>
                                     <div class="col-md-6">
                                         <select class="form-control" v-model="inst_financiera2" >
@@ -2035,7 +2035,7 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group row" v-if="rolId == '1'">
+                                <div class="form-group row" v-if="rolId == '1'|| rolId == '4' || rolId == '6' || rolId == '8'">
                                     <button type="button" class="btn btn-primary" @click="registrarCreditoSelect()" >Guardar</button>
                                 </div>
                             
@@ -2043,7 +2043,7 @@
                                     <thead>
                                         <tr>
 
-                                            <th width="14%" v-if="rolId == '1'">Opciones</th>
+                                            <th width="14%" v-if="rolId == '1'|| rolId == '4' || rolId == '6' || rolId == '8'">Opciones</th>
                                             <th>Tipo de Credito</th>
                                             <th>Institucion Financiera</th>
                                             <th>Fecha ingreso</th>
@@ -2054,9 +2054,9 @@
                                     </thead>
                                     <tbody>
                                         <tr v-for="tipoCredito in arrayTiposCreditos" :key="tipoCredito.id">
-                                             <td class="td2" v-if="rolId == '1'">
+                                             <td class="td2" v-if="rolId == '1' || rolId == '4' || rolId == '6' || rolId == '8'">
                                                 <template v-if="tipoCredito.elegido==1">
-                                                     <button disabled type="button" class="btn btn-success btn-sm">
+                                                     <button  @click="seleccionarCredito(tipoCredito.id, tipoCredito.institucion, tipoCredito.tipo_credito, tipoCredito.monto_credito, tipoCredito.plazo_credito)" type="button" class="btn btn-success btn-sm">
                                                         <i class="fa fa-check fa-md"></i>
                                                     </button>
                                                 </template>
@@ -2582,10 +2582,10 @@
                     console.log(error);
                 });
             },
-            selectPaquetes(etapa){
+            selectPaquetes(etapa,proyecto){
                 let me = this;
                 me.arrayPaquetes=[];
-                var url = '/select_paquetes?buscar=' + etapa;
+                var url = '/select_paquetes?buscar=' + etapa + '&proyecto=' + proyecto;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                      me.arrayPaquetes = respuesta.paquetes;
@@ -2653,14 +2653,11 @@
                         me.fraccionamiento = me.arrayDatosLotes[0]['proyecto'];
 
                         me.precioVenta = me.precioVenta - me.descuentoPromo;
-                    
-                    
+                        me.selectPaquetes(me.etapa,me.fraccionamiento);
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
-                
-
             },
             LimpiarMascotas(){
                 if(this.mascotas=="0"){
@@ -3493,7 +3490,6 @@
             this.selectFraccionamientos();
             this.selectEtapa(this.proyecto_interes_id);
             this.selectManzana(this.etapa);
-            this.selectPaquetes(this.etapa);
             this.datosPaquetes(this.paquete_id);
             this.selectLotes(this.manzana, this.etapa);
             this.mostrarDatosLote(this.lote);

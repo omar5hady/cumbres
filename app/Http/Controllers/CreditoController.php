@@ -1187,110 +1187,118 @@ class CreditoController extends Controller
 
     public function HistorialDeCreditos (Request $request){
         $buscar = $request->buscar;
+        $buscar2 = $request->buscar2;
         $criterio = $request->criterio;
+
+
+
         if($buscar == ''){
-        $Historialcreditos = inst_seleccionada::join('creditos','inst_seleccionadas.credito_id','=','creditos.id')
-                                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                                        ->join('personal','clientes.id','=','personal.id')
-                                        ->join('personal as v','clientes.vendedor_id','=','v.id')
-                                        ->select('inst_seleccionadas.tipo_credito','inst_seleccionadas.institucion','inst_seleccionadas.fecha_ingreso',
-                                                 'personal.nombre as nombre', 'personal.apellidos as apellidos','inst_seleccionadas.id','inst_seleccionadas.status',
-                                                 'v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos','inst_seleccionadas.monto_credito','inst_seleccionadas.plazo_credito',
-                                                 'creditos.id as id_credito')
-                                        ->where('inst_seleccionadas.status','=',1)
-                                        ->orderBy('id','desc')->paginate(8);
+            $Historialcreditos = inst_seleccionada::join('creditos','inst_seleccionadas.credito_id','=','creditos.id')
+                ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                ->join('personal','clientes.id','=','personal.id')
+                ->join('personal as v','clientes.vendedor_id','=','v.id')
+                ->select('inst_seleccionadas.tipo_credito','inst_seleccionadas.institucion','inst_seleccionadas.fecha_ingreso',
+                        'personal.nombre as nombre', 'personal.apellidos as apellidos','inst_seleccionadas.id','inst_seleccionadas.status',
+                        'v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos','inst_seleccionadas.monto_credito','inst_seleccionadas.plazo_credito',
+                        'creditos.id as id_credito')
+                ->where('inst_seleccionadas.status','=',$buscar2)
+                ->orderBy('id','desc')->paginate(8);
 
-                                        $contadorHistorialcreditos = inst_seleccionada::join('creditos','inst_seleccionadas.credito_id','=','creditos.id')
-                                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                                        ->join('personal','clientes.id','=','personal.id')
-                                        ->join('personal as v','clientes.vendedor_id','=','v.id')
-                                        ->select('inst_seleccionadas.id')
-                                        ->where('inst_seleccionadas.status','=',1)
-                                        ->orderBy('id','desc')->count();
+                $contadorHistorialcreditos = inst_seleccionada::join('creditos','inst_seleccionadas.credito_id','=','creditos.id')
+                ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                ->join('personal','clientes.id','=','personal.id')
+                ->join('personal as v','clientes.vendedor_id','=','v.id')
+                ->select('inst_seleccionadas.id')
+                ->where('inst_seleccionadas.status','=',$buscar2)
+                ->orderBy('id','desc')->count();
         } 
-        
-        if($criterio == 'personal.nombre'){
-
-            $Historialcreditos = inst_seleccionada::join('creditos','inst_seleccionadas.credito_id','=','creditos.id')
-            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-            ->join('personal','clientes.id','=','personal.id')
-            ->join('personal as v','clientes.vendedor_id','=','v.id')
-            ->select('inst_seleccionadas.tipo_credito','inst_seleccionadas.institucion','inst_seleccionadas.fecha_ingreso',
-                     'personal.nombre as nombre', 'personal.apellidos as apellidos','inst_seleccionadas.id','inst_seleccionadas.status',
-                     'v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos','inst_seleccionadas.monto_credito','inst_seleccionadas.plazo_credito',
-                     'creditos.id as id_credito')
-            ->where('inst_seleccionadas.status','=',1)
-            ->where($criterio,'like','%'.$buscar.'%')
-            ->where('inst_seleccionadas.status','=',1)
-            ->orwhere('personal.apellidos','like','%'.$buscar.'%')
-            ->where('inst_seleccionadas.status','=',1)
-            ->orderBy('id','desc')->paginate(8);
-
-            $contadorHistorialcreditos = inst_seleccionada::join('creditos','inst_seleccionadas.credito_id','=','creditos.id')
-                                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                                        ->join('personal','clientes.id','=','personal.id')
-                                        ->join('personal as v','clientes.vendedor_id','=','v.id')
-                                        ->select('inst_seleccionadas.id')
-                                        ->where('inst_seleccionadas.status','=',1)
-                                        ->where($criterio,'like','%'.$buscar.'%')
-                                        ->where('inst_seleccionadas.status','=',1)
-                                        ->orwhere('personal.apellidos','like','%'.$buscar.'%')
-                                        ->where('inst_seleccionadas.status','=',1)
-                                        ->orderBy('id','desc')->count();
-
-        }
-        if($criterio == 'v.nombre'){
-
-            $Historialcreditos = inst_seleccionada::join('creditos','inst_seleccionadas.credito_id','=','creditos.id')
-            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-            ->join('personal','clientes.id','=','personal.id')
-            ->join('personal as v','clientes.vendedor_id','=','v.id')
-            ->select('inst_seleccionadas.tipo_credito','inst_seleccionadas.institucion','inst_seleccionadas.fecha_ingreso',
-                     'personal.nombre as nombre', 'personal.apellidos as apellidos','inst_seleccionadas.id','inst_seleccionadas.status',
-                     'v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos','inst_seleccionadas.monto_credito','inst_seleccionadas.plazo_credito',
-                     'creditos.id as id_credito')
-            ->where('inst_seleccionadas.status','=',1)
-            ->where($criterio,'like','%'.$buscar.'%')
-            ->where('inst_seleccionadas.status','=',1)
-            ->orwhere('v.apellidos','like','%'.$buscar.'%')
-            ->where('inst_seleccionadas.status','=',1)
-            ->orderBy('id','desc')->paginate(8);
-
-            $contadorHistorialcreditos = inst_seleccionada::join('creditos','inst_seleccionadas.credito_id','=','creditos.id')
-                                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                                        ->join('personal','clientes.id','=','personal.id')
-                                        ->join('personal as v','clientes.vendedor_id','=','v.id')
-                                        ->select('inst_seleccionadas.id')
-                                        ->where('inst_seleccionadas.status','=',1)
-                                        ->where($criterio,'like','%'.$buscar.'%')
-                                        ->where('inst_seleccionadas.status','=',1)
-                                        ->orwhere('v.apellidos','like','%'.$buscar.'%')
-                                        ->where('inst_seleccionadas.status','=',1)
-                                        ->orderBy('id','desc')->count();
-
-        }
         else{
-            $Historialcreditos = inst_seleccionada::join('creditos','inst_seleccionadas.credito_id','=','creditos.id')
-            ->join('clientes','creditos.prospecto_id','=','clientes.id')
-            ->join('personal','clientes.id','=','personal.id')
-            ->join('personal as v','clientes.vendedor_id','=','v.id')
-            ->select('inst_seleccionadas.tipo_credito','inst_seleccionadas.institucion','inst_seleccionadas.fecha_ingreso',
-                     'personal.nombre as nombre', 'personal.apellidos as apellidos','inst_seleccionadas.id','inst_seleccionadas.status',
-                     'v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos','inst_seleccionadas.monto_credito','inst_seleccionadas.plazo_credito',
-                     'creditos.id as id_credito')
-            ->where('inst_seleccionadas.status','=',1)
-            ->where($criterio,'like','%'.$buscar.'%')
-            ->orderBy('id','desc')->paginate(8);
+            if($criterio == 'personal.nombre'){
 
-            $contadorHistorialcreditos = inst_seleccionada::join('creditos','inst_seleccionadas.credito_id','=','creditos.id')
-                                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                                        ->join('personal','clientes.id','=','personal.id')
-                                        ->join('personal as v','clientes.vendedor_id','=','v.id')
-                                        ->select('inst_seleccionadas.id')
-                                        ->where('inst_seleccionadas.status','=',1)
-                                        ->where($criterio,'like','%'.$buscar.'%')
-                                        ->orderBy('id','desc')->count();
+                $Historialcreditos = inst_seleccionada::join('creditos','inst_seleccionadas.credito_id','=','creditos.id')
+                ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                ->join('personal','clientes.id','=','personal.id')
+                ->join('personal as v','clientes.vendedor_id','=','v.id')
+                ->select('inst_seleccionadas.tipo_credito','inst_seleccionadas.institucion','inst_seleccionadas.fecha_ingreso',
+                         'personal.nombre as nombre', 'personal.apellidos as apellidos','inst_seleccionadas.id','inst_seleccionadas.status',
+                         'v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos','inst_seleccionadas.monto_credito','inst_seleccionadas.plazo_credito',
+                         'creditos.id as id_credito')
+                ->where('inst_seleccionadas.status','=',$buscar2)
+                ->where($criterio,'like','%'.$buscar.'%')
+                ->where('inst_seleccionadas.status','=',$buscar2)
+                ->orwhere('personal.apellidos','like','%'.$buscar.'%')
+                ->where('inst_seleccionadas.status','=',$buscar2)
+                ->orderBy('id','desc')->paginate(8);
+    
+                $contadorHistorialcreditos = inst_seleccionada::join('creditos','inst_seleccionadas.credito_id','=','creditos.id')
+                                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                                            ->join('personal','clientes.id','=','personal.id')
+                                            ->join('personal as v','clientes.vendedor_id','=','v.id')
+                                            ->select('inst_seleccionadas.id')
+                                            ->where('inst_seleccionadas.status','=',$buscar2)
+                                            ->where($criterio,'like','%'.$buscar.'%')
+                                            ->where('inst_seleccionadas.status','=',$buscar2)
+                                            ->orwhere('personal.apellidos','like','%'.$buscar.'%')
+                                            ->where('inst_seleccionadas.status','=',$buscar2)
+                                            ->orderBy('id','desc')->count();
+    
+            }
+            if($criterio == 'v.nombre'){
+    
+                $Historialcreditos = inst_seleccionada::join('creditos','inst_seleccionadas.credito_id','=','creditos.id')
+                ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                ->join('personal','clientes.id','=','personal.id')
+                ->join('personal as v','clientes.vendedor_id','=','v.id')
+                ->select('inst_seleccionadas.tipo_credito','inst_seleccionadas.institucion','inst_seleccionadas.fecha_ingreso',
+                         'personal.nombre as nombre', 'personal.apellidos as apellidos','inst_seleccionadas.id','inst_seleccionadas.status',
+                         'v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos','inst_seleccionadas.monto_credito','inst_seleccionadas.plazo_credito',
+                         'creditos.id as id_credito')
+                ->where('inst_seleccionadas.status','=',$buscar2)
+                ->where($criterio,'like','%'.$buscar.'%')
+                ->where('inst_seleccionadas.status','=',$buscar2)
+                ->orwhere('v.apellidos','like','%'.$buscar.'%')
+                ->where('inst_seleccionadas.status','=',$buscar2)
+                ->orderBy('id','desc')->paginate(8);
+    
+                $contadorHistorialcreditos = inst_seleccionada::join('creditos','inst_seleccionadas.credito_id','=','creditos.id')
+                                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                                            ->join('personal','clientes.id','=','personal.id')
+                                            ->join('personal as v','clientes.vendedor_id','=','v.id')
+                                            ->select('inst_seleccionadas.id')
+                                            ->where('inst_seleccionadas.status','=',$buscar2)
+                                            ->where($criterio,'like','%'.$buscar.'%')
+                                            ->where('inst_seleccionadas.status','=',$buscar2)
+                                            ->orwhere('v.apellidos','like','%'.$buscar.'%')
+                                            ->where('inst_seleccionadas.status','=',$buscar2)
+                                            ->orderBy('id','desc')->count();
+    
+            }
+            else{
+                $Historialcreditos = inst_seleccionada::join('creditos','inst_seleccionadas.credito_id','=','creditos.id')
+                ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                ->join('personal','clientes.id','=','personal.id')
+                ->join('personal as v','clientes.vendedor_id','=','v.id')
+                ->select('inst_seleccionadas.tipo_credito','inst_seleccionadas.institucion','inst_seleccionadas.fecha_ingreso',
+                         'personal.nombre as nombre', 'personal.apellidos as apellidos','inst_seleccionadas.id','inst_seleccionadas.status',
+                         'v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos','inst_seleccionadas.monto_credito','inst_seleccionadas.plazo_credito',
+                         'creditos.id as id_credito')
+                ->where('inst_seleccionadas.status','=',$buscar2)
+                ->where($criterio,'like','%'.$buscar.'%')
+                ->orderBy('id','desc')->paginate(8);
+    
+                $contadorHistorialcreditos = inst_seleccionada::join('creditos','inst_seleccionadas.credito_id','=','creditos.id')
+                                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                                            ->join('personal','clientes.id','=','personal.id')
+                                            ->join('personal as v','clientes.vendedor_id','=','v.id')
+                                            ->select('inst_seleccionadas.id')
+                                            ->where('inst_seleccionadas.status','=',$buscar2)
+                                            ->where($criterio,'like','%'.$buscar.'%')
+                                            ->orderBy('id','desc')->count();
+            }
+
         }
+        
+        
         
         return[
             'pagination' => [

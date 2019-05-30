@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Paquete;
 use DB;
 use Carbon\Carbon;
+use App\Etapa;
 
 class PaqueteController extends Controller
 {
@@ -156,10 +157,16 @@ class PaqueteController extends Controller
 
     public function select_paquetes(Request $request){
         $buscar = $request->buscar;
+        $proyecto = $request->proyecto;
+
+        $fraccionamiento = Etapa::join('fraccionamientos','fraccionamientos.id','=','etapas.fraccionamiento_id')
+                            ->select('etapas.id')
+                            ->where('fraccionamientos.nombre','=',$proyecto)
+                            ->where('etapas.num_etapa','=',$buscar)->get();
 
         $paquetes = Paquete::join('etapas','paquetes.etapa_id','=','etapas.id')
                             ->select('paquetes.id','paquetes.nombre','paquetes.descripcion','paquetes.costo','paquetes.v_ini','paquetes.v_fin')
-                            ->where('etapas.num_etapa','=',$buscar)
+                            ->where('etapas.id','=',$fraccionamiento[0]->id)
                             ->get();
 
         return['paquetes' => $paquetes];
