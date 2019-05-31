@@ -7,9 +7,7 @@
         <template v-if="menu==0">
             <h1>Escritorio</h1>
         </template>
-        <template v-if="menu==9">
-            <h1>Contenido del menu 9</h1>
-        </template>
+        
         <template v-if="menu==10">
             <h1>Contenido del menu 10</h1>
         </template>
@@ -79,6 +77,14 @@
                 <cuenta></cuenta>
             </template>
         @endif
+
+        @if(Auth::user()->notaria == 1)
+        <template v-if="menu==9">
+            <notarias></notarias>
+        </template>
+        @endif
+
+        
 
         @if(Auth::user()->departamentos == 1)
             <template v-if="menu==11">

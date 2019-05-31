@@ -147,6 +147,9 @@
                                                 <li class="nav-item" v-if="rol_id == 1 || rol_id == 7">
                                                     <a class="nav-link"><i class="fa fa-credit-card"></i> <input v-model="cuenta" type="checkbox" value="1"/> Cuenta</a>
                                                 </li>
+                                                <li class="nav-item" v-if="rol_id == 1 || rol_id == 7">
+                                                    <a class="nav-link"><i class="fa fa-credit-card"></i> <input v-model="notaria" type="checkbox" value="1"/> Notarias</a>
+                                                </li>
                                             </ul>
                                         
                                     </div>
@@ -586,6 +589,7 @@
                     asig_servicios:0,
                     mis_asesores:0,
                     cuenta:0,
+                    notaria: 0,
 
 
                     //Desarrollo
@@ -749,6 +753,7 @@
                 this.asig_servicios=0;
                 this.mis_asesores=0;
                 this.cuenta = 0;
+                this.notaria=0;
             },
             limpiarDesarrollo(){
                 //Desarrollo
@@ -841,6 +846,7 @@
                     me.asig_servicios=usuarios[0].asig_servicios;
                     me.mis_asesores=usuarios[0].mis_asesores;
                     me.cuenta = usuarios[0].cuenta;
+                    me.notaria = usuarios[0].notaria;
 
 
                     //Desarrollo
@@ -1098,6 +1104,7 @@
                     'asig_servicios':this.asig_servicios,
                     'mis_asesores':this.mis_asesores,
                     'cuenta':this.cuenta,
+                    'notaria':this.notaria,
                         //Desarrollo
                     'fraccionamiento':this.fraccionamiento,
                     'etapas':this.etapas,
@@ -1362,6 +1369,7 @@
                 me.asig_servicios=0;
                 me.mis_asesores=0;
                 me.cuenta = 0;
+                me.notaria = 0;
 
 
                     //Desarrollo

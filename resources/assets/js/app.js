@@ -82,6 +82,8 @@ Vue.component('publicidad-etapa', require('./components/PublicidadEtapa.vue'));
 
 Vue.component('depositos', require('./components/Deposito.vue'));
 
+Vue.component('notarias', require('./components/Notaria.vue'));
+
 const app = new Vue({
     el: '#app',
     data :{

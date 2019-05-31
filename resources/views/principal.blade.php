@@ -133,6 +133,12 @@
                                         <a class="nav-link" href="#"><i class="fa fa-credit-card"></i>Cuentas</a>
                                     </li>
                                 @endif
+
+                                @if(Auth::user()->notaria == 1)
+                                    <li @click="menu=9" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="fa fa-credit-card"></i>Notarias</a>
+                                    </li>
+                                @endif
                             </ul>
                         </li>
                     @endif

@@ -377,7 +377,16 @@ Route::group(['middleware' => ['auth']],function(){
 
         /************************** RUTAS ESTADISTICAS ***************************/
         Route::get('/estadisticas/datos_extra','EstadisticasController@estad_datos_extra');
+
+        ///////////////////        RUTAS NOTARIA     //////////////////////////////////
+        Route::get('/notaria','NotariaController@index');
+        Route::post('/notaria/registrar','NotariaController@store');
+        Route::put('/notaria/actualizar','NotariaController@update');
+        Route::delete('/notaria/eliminar','NotariaController@destroy');
+        
     });
+
+
 
 
     ///////////////////       RUTAS SELECT    ////////////////////////////////////
