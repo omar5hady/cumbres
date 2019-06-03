@@ -32,9 +32,10 @@ body {
 
     <div class="table1" style="margin-top: -12px;">
         <div class="table-row">
-            <div  style="border: ridge #0B173B 1px; padding-right:-30px; color:white; font-size:10pt; background-color: #0B173B;" class="table-cell1">FECHA</div>
+            <div  style="border: ridge #0B173B 1px; padding-right:-20px; color:white; font-size:9pt; background-color: #0B173B;" class="table-cell1">FECHA</div>
             <div  style="border: ridge #000000 1px; color:black; " class="table-cell1">{{strtoupper($contratos[0]->fecha)}}</div>
             <div  style="border: ridge #000000 1px; color:black; " class="table-cell1">#Ref: {{$contratos[0]->prospecto_id}} - {{$contratos[0]->avance_lote}}%</div>
+            <div  style="border: ridge #000000 1px; color:black; " class="table-cell1">TERMINO: {{strtoupper($contratos[0]->fecha_termino_ventas)}}</div>
         </div>
     </div>
 </div> 
@@ -340,7 +341,7 @@ body {
 
 
 <div style="display: inline-block; float: right;" >
-    <IMG SRC="img/contratos/logoContrato1.png" width="180" height="180">
+    <IMG SRC="img/contratos/logoContrato1.png" width="170" height="170">
 </div>
 
 <div style="page-break-after:always;"></div>

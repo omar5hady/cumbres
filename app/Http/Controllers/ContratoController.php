@@ -1231,7 +1231,8 @@ class ContratoController extends Controller
                 'creditos.costo_paquete','inst_seleccionadas.tipo_credito','inst_seleccionadas.id as inst_credito',
                 'creditos.precio_obra_extra','creditos.fraccionamiento as proyecto',
 
-                'lotes.calle','lotes.numero','lotes.interior','lotes.terreno','lotes.construccion','lotes.sobreprecio','medios_publicitarios.nombre as medio_publicidad',
+                'lotes.calle','lotes.numero','lotes.interior','lotes.terreno','lotes.construccion','lotes.sobreprecio','lotes.fecha_termino_ventas',
+                'medios_publicitarios.nombre as medio_publicidad',
 
                 'inst_seleccionadas.institucion','personal.nombre','personal.apellidos', 'personal.telefono','personal.celular',
                 'personal.email','clientes.email_institucional','personal.direccion','personal.cp','personal.colonia','personal.f_nacimiento','personal.rfc','personal.homoclave',
@@ -1261,6 +1262,9 @@ class ContratoController extends Controller
                 setlocale(LC_TIME, 'es_MX.utf8');
                 $tiempo = new Carbon($contratos[0]->fecha);
                 $contratos[0]->fecha = $tiempo->formatLocalized('%d de %B de %Y');
+
+                $fecha_termino_ventas = new Carbon($contratos[0]->fecha_termino_ventas);
+                $contratos[0]->fecha_termino_ventas = $fecha_termino_ventas->formatLocalized('%B de %Y');
 
                 $fecha_nac = new Carbon($contratos[0]->f_nacimiento);
                 $contratos[0]->f_nacimiento = $fecha_nac->formatLocalized('%d-%m-%Y');
@@ -1355,14 +1359,14 @@ class ContratoController extends Controller
             'clientes.coacreditado','clientes.nombre_coa','clientes.apellidos_coa','clientes.f_nacimiento_coa',
             'clientes.nacionalidad_coa','clientes.estado','clientes.ciudad',
             
-            'contratos.enganche_total','contratos.fecha')
+            'contratos.enganche_total','contratos.fecha','contratos.avaluo_cliente')
         ->where('inst_seleccionadas.elegido','=','1')
         ->where('contratos.id','=',$id)
         ->where('inst_seleccionadas.tipo_credito','=','Crédito Directo')
         ->get();
 
         setlocale(LC_TIME, 'es_MX.utf8');
-        $contratosDom[0]->engacheTotalLetra = NumerosEnLetras::convertir($contratosDom[0]->enganche_total,'Pesos',false,'Centavos');
+        $contratosDom[0]->engacheTotalLetra = NumerosEnLetras::convertir($contratosDom[0]->enganche_total,'Pesos',true,'Centavos');
         $contratosDom[0]->enganche_total = number_format((float)$contratosDom[0]->enganche_total,2,'.',',');
 
         $fechaContrato = new Carbon($contratosDom[0]->fecha);
@@ -1374,10 +1378,12 @@ class ContratoController extends Controller
         $totalDePagos = count($pagos);
         $pagos[0]->totalDePagos = NumerosEnLetras::convertir($totalDePagos,false,false,false);
 
+        $pagos[$totalDePagos-1]->monto_pago =  $pagos[$totalDePagos-1]->monto_pago - $contratosDom[0]->avaluo_cliente;
+
         for($i=0; $i<count($pagos); $i++){
         $tiempo = new Carbon($pagos[$i]->fecha_pago);
         $pagos[$i]->fecha_pago = $tiempo->formatLocalized('%d de %B de %Y');
-        $pagos[$i]->montoPagoLetra = NumerosEnLetras::convertir($pagos[$i]->monto_pago,'Pesos',false,'Centavos');
+        $pagos[$i]->montoPagoLetra = NumerosEnLetras::convertir($pagos[$i]->monto_pago,'Pesos',true,'Centavos');
         $pagos[$i]->monto_pago = number_format((float)$pagos[$i]->monto_pago,2,'.',',');
 
         switch($i){
