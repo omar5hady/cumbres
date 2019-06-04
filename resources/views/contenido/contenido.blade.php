@@ -270,6 +270,10 @@
             <depositos></depositos>
         </template>
 
+        <template v-if="menu==201">
+            <expediente></expediente>
+        </template>
+
         
     @endif
 

@@ -47,8 +47,8 @@ class ClienteController extends Controller
                     'medios_publicitarios.nombre as publicidad','fraccionamientos.nombre as proyecto')
                     ->where('vendedor_id','=',Auth::user()->id)
                     ->where('clientes.clasificacion', '=', $buscarC)
-                    ->orderBy('personal.apellidos', 'desc')
-                    ->orderBy('personal.nombre', 'desc')
+                    ->orderBy('personal.nombre', 'asc')
+                    ->orderBy('personal.apellidos', 'asc')
                     ->paginate(8);
     
                     $contadorClientes = Cliente::join('personal','clientes.id','=','personal.id')
@@ -57,8 +57,8 @@ class ClienteController extends Controller
                     ->select('personal.id','personal.nombre','personal.rfc','personal.homoclave')
                     ->where('vendedor_id','=',Auth::user()->id)
                     ->where('clientes.clasificacion', '=', $buscarC)
-                    ->orderBy('personal.apellidos', 'desc')
-                    ->orderBy('personal.nombre', 'desc')
+                    ->orderBy('personal.nombre', 'asc')
+                    ->orderBy('personal.apellidos', 'asc')
                     ->count();
                 }
                 else{
@@ -91,8 +91,9 @@ class ClienteController extends Controller
                         ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
                         ->where('vendedor_id','=',Auth::user()->id)
                         ->where('clientes.clasificacion', '=', $buscarC)
-                        ->orderBy('personal.apellidos', 'desc')
-                        ->orderBy('personal.nombre', 'desc')
+                        ->orderBy('personal.nombre', 'asc')
+                        ->orderBy('personal.apellidos', 'asc')
+
                         ->paginate(8);
     
                         $contadorClientes = Cliente::join('personal','clientes.id','=','personal.id')
@@ -105,8 +106,9 @@ class ClienteController extends Controller
                         ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
                         ->where('vendedor_id','=',Auth::user()->id)
                         ->where('clientes.clasificacion', '=', $buscarC)
-                        ->orderBy('personal.apellidos', 'desc')
-                        ->orderBy('personal.nombre', 'desc')
+                        ->orderBy('personal.nombre', 'asc')
+                        ->orderBy('personal.apellidos', 'asc')
+
                         ->count();
                     }
     
@@ -135,8 +137,9 @@ class ClienteController extends Controller
                         ->where('vendedor_id','=',Auth::user()->id)     
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->where('clientes.clasificacion', '=', $buscarC)
-                        ->orderBy('personal.apellidos', 'desc')
-                        ->orderBy('personal.nombre', 'desc')
+                        ->orderBy('personal.nombre', 'asc')
+                        ->orderBy('personal.apellidos', 'asc')
+
                         ->paginate(8);
     
                         $contadorClientes = Cliente::join('personal','clientes.id','=','personal.id')
@@ -146,8 +149,9 @@ class ClienteController extends Controller
                         ->where('vendedor_id','=',Auth::user()->id)     
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->where('clientes.clasificacion', '=', $buscarC)
-                        ->orderBy('personal.apellidos', 'desc')
-                        ->orderBy('personal.nombre', 'desc')
+                        ->orderBy('personal.nombre', 'asc')
+                        ->orderBy('personal.apellidos', 'asc')
+
                         ->count();
                     }
                 }
@@ -175,8 +179,8 @@ class ClienteController extends Controller
                     DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS n_completo_coa"),
                     'medios_publicitarios.nombre as publicidad','fraccionamientos.nombre as proyecto')
                     ->where('vendedor_id','=',Auth::user()->id)
-                    ->orderBy('personal.apellidos', 'desc')
-                    ->orderBy('personal.nombre', 'desc')
+                    ->orderBy('personal.nombre', 'asc')
+                    ->orderBy('personal.apellidos', 'asc')
                     ->paginate(8);
     
                     $contadorClientes = Cliente::join('personal','clientes.id','=','personal.id')
@@ -184,8 +188,8 @@ class ClienteController extends Controller
                     ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
                     ->select('personal.id','personal.nombre','personal.rfc','personal.homoclave')
                     ->where('vendedor_id','=',Auth::user()->id)
-                    ->orderBy('personal.apellidos', 'desc')
-                    ->orderBy('personal.nombre', 'desc')
+                    ->orderBy('personal.nombre', 'asc')
+                    ->orderBy('personal.apellidos', 'asc')
                     ->count();
                 }
                 else{
@@ -216,8 +220,9 @@ class ClienteController extends Controller
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
                         ->where('vendedor_id','=',Auth::user()->id)
-                        ->orderBy('personal.apellidos', 'desc')
-                        ->orderBy('personal.nombre', 'desc')
+                        ->orderBy('personal.nombre', 'asc')
+                        ->orderBy('personal.apellidos', 'asc')
+
                         ->paginate(8);
     
                         $contadorClientes = Cliente::join('personal','clientes.id','=','personal.id')
@@ -228,8 +233,9 @@ class ClienteController extends Controller
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
                         ->where('vendedor_id','=',Auth::user()->id)
-                        ->orderBy('personal.apellidos', 'desc')
-                        ->orderBy('personal.nombre', 'desc')
+                        ->orderBy('personal.nombre', 'asc')
+                        ->orderBy('personal.apellidos', 'asc')
+
                         ->count();
                     }
     
@@ -257,8 +263,9 @@ class ClienteController extends Controller
                         'medios_publicitarios.nombre as publicidad','fraccionamientos.nombre as proyecto')   
                         ->where('vendedor_id','=',Auth::user()->id)     
                         ->where($criterio, 'like', '%'. $buscar . '%')
-                        ->orderBy('personal.apellidos', 'desc')
-                        ->orderBy('personal.nombre', 'desc')
+                        ->orderBy('personal.nombre', 'asc')
+                        ->orderBy('personal.apellidos', 'asc')
+
                         ->paginate(8);
     
                         $contadorClientes = Cliente::join('personal','clientes.id','=','personal.id')
@@ -267,8 +274,9 @@ class ClienteController extends Controller
                         ->select('personal.id','personal.nombre','personal.rfc','personal.homoclave')
                         ->where('vendedor_id','=',Auth::user()->id)     
                         ->where($criterio, 'like', '%'. $buscar . '%')
-                        ->orderBy('personal.apellidos', 'desc')
-                        ->orderBy('personal.nombre', 'desc')
+                        ->orderBy('personal.nombre', 'asc')
+                        ->orderBy('personal.apellidos', 'asc')
+
                         ->count();
                     }
                 }
@@ -304,8 +312,8 @@ class ClienteController extends Controller
                     'medios_publicitarios.nombre as publicidad','fraccionamientos.nombre as proyecto')
                     //->where('vendedor_id','=',Auth::user()->id)
                     ->where('clientes.clasificacion', '=', $buscarC)
-                    ->orderBy('personal.apellidos', 'desc')
-                    ->orderBy('personal.nombre', 'desc')
+                    ->orderBy('personal.nombre', 'asc')
+                    ->orderBy('personal.apellidos', 'asc')
                     ->paginate(8);
     
                     $contadorClientes = Cliente::join('personal','clientes.id','=','personal.id')
@@ -314,8 +322,8 @@ class ClienteController extends Controller
                     ->select('personal.id','personal.nombre','personal.rfc','personal.homoclave')
                     //->where('vendedor_id','=',Auth::user()->id)
                     ->where('clientes.clasificacion', '=', $buscarC)
-                    ->orderBy('personal.apellidos', 'desc')
-                    ->orderBy('personal.nombre', 'desc')
+                    ->orderBy('personal.nombre', 'asc')
+                    ->orderBy('personal.apellidos', 'asc')
                     ->count();
                 }
                 else{
@@ -350,8 +358,9 @@ class ClienteController extends Controller
                         ->where('clientes.clasificacion', '=', $buscarC)
                         ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
                         ->where('clientes.clasificacion', '=', $buscarC)
-                        ->orderBy('personal.apellidos', 'desc')
-                        ->orderBy('personal.nombre', 'desc')
+                        ->orderBy('personal.nombre', 'asc')
+                        ->orderBy('personal.apellidos', 'asc')
+
                         ->paginate(8);
     
                     $contadorClientes = Cliente::join('personal','clientes.id','=','personal.id')
@@ -363,8 +372,9 @@ class ClienteController extends Controller
                         ->where('clientes.clasificacion', '=', $buscarC)
                         ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
                         ->where('clientes.clasificacion', '=', $buscarC)
-                        ->orderBy('personal.apellidos', 'desc')
-                        ->orderBy('personal.nombre', 'desc')
+                        ->orderBy('personal.nombre', 'asc')
+                        ->orderBy('personal.apellidos', 'asc')
+
                         ->count();
                     }
     
@@ -396,8 +406,8 @@ class ClienteController extends Controller
                     //->where('vendedor_id','=',Auth::user()->id)     
                     ->where($criterio, 'like', '%'. $buscar . '%')
                     ->where('clientes.clasificacion', '=', $buscarC)
-                    ->orderBy('personal.apellidos', 'desc')
-                    ->orderBy('personal.nombre', 'desc')
+                    ->orderBy('personal.nombre', 'asc')
+                    ->orderBy('personal.apellidos', 'asc')
                     ->paginate(8);
     
                         $contadorClientes = Cliente::join('personal','clientes.id','=','personal.id')
@@ -407,8 +417,9 @@ class ClienteController extends Controller
                         //->where('vendedor_id','=',Auth::user()->id)     
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->where('clientes.clasificacion', '=', $buscarC)
-                        ->orderBy('personal.apellidos', 'desc')
-                        ->orderBy('personal.nombre', 'desc')
+                        ->orderBy('personal.nombre', 'asc')
+                        ->orderBy('personal.apellidos', 'asc')
+
                         ->count();
                     }
                 }
@@ -441,8 +452,8 @@ class ClienteController extends Controller
                     'medios_publicitarios.nombre as publicidad','fraccionamientos.nombre as proyecto')
                     //->where('vendedor_id','=',Auth::user()->id)
                     //->where('clientes.clasificacion', '=', $buscarC)
-                    ->orderBy('personal.apellidos', 'desc')
-                    ->orderBy('personal.nombre', 'desc')
+                    ->orderBy('personal.nombre', 'asc')
+                    ->orderBy('personal.apellidos', 'asc')
                     ->paginate(8);
     
                     $contadorClientes = Cliente::join('personal','clientes.id','=','personal.id')
@@ -451,8 +462,8 @@ class ClienteController extends Controller
                     ->select('personal.id','personal.nombre','personal.rfc','personal.homoclave')
                     //->where('vendedor_id','=',Auth::user()->id)
                     //>where('clientes.clasificacion', '=', $buscarC)
-                    ->orderBy('personal.apellidos', 'desc')
-                    ->orderBy('personal.nombre', 'desc')
+                    ->orderBy('personal.nombre', 'asc')
+                    ->orderBy('personal.apellidos', 'asc')
                     ->count();
                 }
                 else{
@@ -487,8 +498,9 @@ class ClienteController extends Controller
                         ->where('clientes.clasificacion', '=', $buscarC)
                         ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
                         ->where('clientes.clasificacion', '=', $buscarC)
-                        ->orderBy('personal.apellidos', 'desc')
-                        ->orderBy('personal.nombre', 'desc')
+                        ->orderBy('personal.nombre', 'asc')
+                        ->orderBy('personal.apellidos', 'asc')
+
                         ->paginate(8);
     
                     $contadorClientes = Cliente::join('personal','clientes.id','=','personal.id')
@@ -500,8 +512,9 @@ class ClienteController extends Controller
                         ->where('clientes.clasificacion', '=', $buscarC)
                         ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
                         ->where('clientes.clasificacion', '=', $buscarC)
-                        ->orderBy('personal.apellidos', 'desc')
-                        ->orderBy('personal.nombre', 'desc')
+                        ->orderBy('personal.nombre', 'asc')
+                        ->orderBy('personal.apellidos', 'asc')
+
                         ->count();
                     }
     
@@ -533,8 +546,8 @@ class ClienteController extends Controller
                     //->where('vendedor_id','=',Auth::user()->id)     
                     ->where($criterio, 'like', '%'. $buscar . '%')
                     ->where('clientes.clasificacion', '=', $buscarC)
-                    ->orderBy('personal.apellidos', 'desc')
-                    ->orderBy('personal.nombre', 'desc')
+                    ->orderBy('personal.nombre', 'asc')
+                    ->orderBy('personal.apellidos', 'asc')
                     ->paginate(8);
     
                         $contadorClientes = Cliente::join('personal','clientes.id','=','personal.id')
@@ -544,8 +557,9 @@ class ClienteController extends Controller
                         //->where('vendedor_id','=',Auth::user()->id)     
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->where('clientes.clasificacion', '=', $buscarC)
-                        ->orderBy('personal.apellidos', 'desc')
-                        ->orderBy('personal.nombre', 'desc')
+                        ->orderBy('personal.nombre', 'asc')
+                        ->orderBy('personal.apellidos', 'asc')
+
                         ->count();
                     }
                 }

@@ -315,6 +315,19 @@
                     @endif
         <!----------     FIN SALDOS      --->
 
+             <!----------      GESTORIA      --->
+             @if(Auth::user()->rol_id == 1)
+                        <li class="nav-item nav-dropdown">
+                            <a class="nav-link nav-dropdown-toggle" href="#"><i class="fa fa-calculator"></i> Gestoria</a>
+                            <ul class="nav-dropdown-items">
+                                    <li @click="menu=201" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="fa fa-money"></i> Expediente</a>
+                                    </li>
+                            </ul>
+                        </li>
+                    @endif
+        <!----------     FIN GESTORIA      --->
+
                     @if(Auth::user()->acceso == 1)
                         <li class="nav-item nav-dropdown">
                             <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-people"></i> Acceso</a>

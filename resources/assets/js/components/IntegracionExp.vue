@@ -1,0 +1,731 @@
+<template >
+    <main class="main" >
+            <!-- Breadcrumb -->
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><strong><a style="color:#FFFFFF;" href="/">Home</a></strong></li>
+            </ol>
+            <div class="container-fluid">
+                <!-- Ejemplo de tabla Listado -->
+                <div class="card scroll-box">
+                    <div class="card-header">
+                        <i class="fa fa-align-justify"></i>Integracion de expediente
+
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group row">
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <!--Criterios para el listado de busqueda -->
+                                    <select class="form-control col-md-5" v-model="criterio" @click="selectFraccionamientos()">
+                                        <option value="lotes.fraccionamiento_id">Proyecto</option>
+                                        <option value="c.nombre">Cliente</option>
+                                        <option value="v.nombre">Asesor</option>
+                                        <option value="contraos.id"># Folio</option>
+                                    </select>
+
+                                    
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @click="selectEtapa(buscar)">
+                                        <option value="">Seleccione</option>
+                                        <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                                    </select>
+
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_etapa"> 
+                                        <option value="">Etapa</option>
+                                        <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
+                                    </select>
+
+                                    
+                                    <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_manzana" class="form-control" placeholder="Manzana a buscar">
+                                    <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
+
+                                    <input v-else type="text"  v-model="buscar" @keyup.enter="listarContratos(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
+                                    <button type="submit" @click="listarContratos(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <a class="btn btn-success" >
+                                        <i class="icon-pencil"></i>&nbsp;Excel
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table2 table-bordered table-striped table-sm">
+                                <thead>
+                                    <tr> 
+                                        
+                                        <th># Ref</th>
+                                        <th>Cliente</th>
+                                        <th>Asesor</th>
+                                        <th>Proyecto</th>
+                                        <th>Etapa</th>
+                                        <th>Manzana</th>
+                                        <th>Lote</th>
+                                        <th>Avance</th>
+                                        <th>Firma</th>
+                                        <th>Tipo de credito</th>
+                                        <th>Institucion de Fin.</th>
+                                        <th>Solicitud de avaluo</th>
+                                        <th>Aviso preventivo</th>
+                                        <th>Regimen en condominio</th>
+                                        <th>Conyuge</th>
+                                        <th>Integracion</th>
+                                        <th>Observaciones</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="contratos in arrayContratos" :key="contratos.id">
+                                        
+                                        <td class="td2" v-text="contratos.folio"></td>
+                                        <td class="td2" v-text="contratos.nombre_cliente"></td>
+                                        <td class="td2" v-text="contratos.nombre_vendedor"></td>
+                                        <td class="td2" v-text="contratos.proyecto"></td>
+                                        <td class="td2" v-text="contratos.etapa"></td>
+                                        <td class="td2" v-text="contratos.manzana"></td>
+                                        <td class="td2" v-text="contratos.num_lote"></td>
+                                        <td class="td2" v-text="contratos.avance_lote+'%'"></td>
+                                        <td class="td2" v-text="contratos.fecha_status"></td>
+                                        <td class="td2" v-text="contratos.tipo_credito"></td>
+                                        <td class="td2" v-text="contratos.institucion"></td>
+                                        <template v-if="contratos.avaluo_preventivo">
+                                            <td class="td2" v-text="contratos.avaluo_preventivo"></td>
+                                        </template>
+                                        <template v-else>
+                                            <td class="td2">
+                                                <button type="button" @click="abrirModal('avaluo',contratos)" class="btn btn-warning btn-sm" title="Solicitar avaluo">
+                                                    <i class="fa fa-file-text-o"></i>
+                                                </button>
+                                                <button type="button" @click="noAplica(contratos.id)" class="btn btn-danger btn-sm" title="No aplica">
+                                                    <i class="fa fa-times-circle"></i>
+                                                </button>
+                                            </td>
+                                        </template>
+                                         <template v-if="contratos.aviso_prev">
+                                            <td class="td2" v-text="contratos.aviso_prev"></td>
+                                        </template>
+                                        <template v-else>
+                                            <td class="td2">
+                                                <button type="button" @click="abrirModal('aviso_preventivo',contratos)" class="btn btn-warning btn-sm" title="Solicitar aviso">
+                                                    <i class="fa fa-file-text-o"></i>
+                                                </button>
+                                                <button type="button" @click="noAplica(contratos.id)" class="btn btn-danger btn-sm" title="No aplica">
+                                                    <i class="fa fa-times-circle"></i>
+                                                </button>
+                                            </td>
+                                        </template>
+                                        <td class="td2" >
+                                            <span v-if = "contratos.regimen_condom == 0" class="badge badge-danger">No</span>
+                                            <span v-if = "contratos.regimen_condom == 1" class="badge badge-success">Si</span>
+                                        </td>
+                                        <td v-if="contratos.coacreditado == 1" class="td2" v-text="contratos.nombre_conyuge"></td>
+                                        <td v-else class="td2">Sin conyuge</td>
+                                        <td class="td2">
+                                            <button type="button" @click="abrirModal('avaluo',contratos)" class="btn btn-primary btn-sm" title="Integrar">
+                                                 <i class="fa fa-check-square-o"> Integrar</i>
+                                            </button>
+                                        </td>
+                                         
+                                        <td class="td2"></td>
+
+                                    </tr>                               
+                                </tbody>
+                            </table>  
+                        </div>
+                        <nav>
+                            <!--Botones de paginacion -->
+                            <ul class="pagination">
+                                <li class="page-item" v-if="pagination.last_page > 7 && pagination.current_page > 7">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(1,buscar,criterio)">Inicio</a>
+                                </li>
+                                <li class="page-item" v-if="pagination.current_page > 1">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,criterio)">Ant</a>
+                                </li>
+                                <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,criterio)" v-text="page"></a>
+                                </li>
+                                <li class="page-item" v-if="pagination.current_page < pagination.last_page">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,criterio)">Sig</a>
+                                </li>
+                                <li class="page-item" v-if="pagination.last_page > 7 && pagination.current_page<pagination.last_page">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.last_page,buscar,criterio)">Ultimo</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+                <!-- Fin ejemplo de tabla Listado -->
+            </div>
+         
+
+            <!--Inicio del modal avaluo-->
+            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" v-text="tituloModal"></h4>
+                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- form para solicitud de avaluo -->
+                            <form v-if="tipoAccion == 1" action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Fecha solicitud</label>
+                                    <div class="col-md-4">
+                                        <input type="date"  v-model="fecha_solicitud" class="form-control" >
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Monto</label>
+                                    <div class="col-md-4">
+                                        <input type="text"  v-model="valor_requerido" class="form-control" placeholder="Valor requerido">
+                                    </div>
+                                </div>
+                                
+                            </form>
+                            <!-- fin del form solicitud de avaluo -->
+
+                            <!-- form para aviso preventivo -->
+                            <form  v-if="tipoAccion == 2" action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Fecha solicitud</label>
+                                    <div class="col-md-4">
+                                        <input type="date"  v-model="fecha_aviso" class="form-control" >
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Estado</label>
+                                    <div class="col-md-4">
+                                        <select class="form-control" v-model="estado" @click="selectCiudades(estado)">
+                                            <option value="San Luis Potosí">San Luis Potosí</option>
+                                            <option value="Baja California">Baja California</option>
+                                            <option value="Baja California Sur">Baja California Sur</option>
+                                            <option value="Coahuila de Zaragoza">Coahuila de Zaragoza</option>
+                                            <option value="Colima">Colima</option>
+                                            <option value="Chiapas">Chiapas</option>
+                                            <option value="Chihuahua">Chihuahua</option>
+                                            <option value="Ciudad de México">Ciudad de México</option>
+                                            <option value="Durango">Durango</option>
+                                            <option value="Guanajuato">Guanajuato</option>
+                                            <option value="Guerrero">Guerrero</option>
+                                            <option value="Hidalgo">Hidalgo</option>
+                                            <option value="Jalisco">Jalisco</option>
+                                            <option value="México">México</option>
+                                            <option value="Michoacán de Ocampo">Michoacán de Ocampo</option>
+                                            <option value="Morelos">Morelos</option>
+                                            <option value="Nayarit">Nayarit</option>
+                                            <option value="Nuevo León">Nuevo León</option>
+                                            <option value="Oaxaca">Oaxaca</option>
+                                            <option value="Puebla">Puebla</option>
+                                            <option value="Querétaro">Querétaro</option>
+                                            <option value="Quintana Roo">Quintana Roo</option>
+                                            <option value="Sinaloa">Sinaloa</option>
+                                            <option value="Sonora">Sonora</option>
+                                            <option value="Tabasco">Tabasco</option>
+                                            <option value="Tamaulipas">Tamaulipas</option>
+                                            <option value="Tlaxcala">Tlaxcala</option>
+                                            <option value="Veracruz de Ignacio de la Llave">Veracruz de Ignacio de la Llave</option>
+                                            <option value="Yucatán">Yucatán</option>
+                                            <option value="Zacatecas">Zacatecas</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Ciudad</label>
+                                    <div class="col-md-4">
+                                        <select class="form-control" v-model="ciudad" @click="selectNotarias(estado,ciudad)">
+                                            <option v-for="ciudades in arrayCiudades" :key="ciudades.municipio" :value="ciudades.municipio" v-text="ciudades.municipio"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Notarias</label>
+                                    <div class="col-md-6">
+                                        <select class="form-control" v-model="notaria">
+                                            <option v-for="notarias in arrayNotarias" :key="notarias.id" :value="notarias.id" v-text="notarias.notaria + ' - ' + notarias.titular"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                            </form>
+                            <!-- fin del form aviso preventivo -->
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                            <button v-if="tipoAccion==1" type="button" class="btn btn-primary" @click="solicitudAvaluo()">Enviar</button>
+                            <button v-if="tipoAccion==2" type="button" class="btn btn-primary" @click="avisoPreventivo()">Enviar</button>
+                           
+                        </div>
+                    </div>
+                      <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!--Fin del modal consulta-->
+
+             <!--Inicio del modal observaciones-->
+            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal3}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" v-text="tituloModal3"></h4>
+                            <button type="button" class="close" @click="cerrarModal3()" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+
+                                <div class="form-group row" v-if="tipoAccion==3">
+                                    <label class="col-md-3 form-control-label" for="text-input">Observacion</label>
+                                    <div class="col-md-6">
+                                         <textarea rows="5" cols="30" v-model="observacion" class="form-control" placeholder="Observacion"></textarea>
+
+                                    </div>
+                                </div>
+                                
+                                <table class="table table-bordered table-striped table-sm" v-if="tipoAccion == 4">
+                                    <thead>
+                                        <tr>
+                                            <th>Usuario</th>
+                                            <th>Observacion</th>
+                                            <th>Fecha</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="observacion in arrayObservacion" :key="observacion.id">
+                                            
+                                            <td v-text="observacion.usuario" ></td>
+                                            <td v-text="observacion.comentario" ></td>
+                                            <td v-text="observacion.created_at"></td>
+                                        </tr>                               
+                                    </tbody>
+                                </table>
+                                
+                            </form>
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal3()">Cerrar</button>
+                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
+                            <button type="button"  v-if="tipoAccion==3"  class="btn btn-primary" @click="agregarComentario()">Guardar</button>
+                        </div>
+                    </div>
+                      <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            
+         
+     </main>
+</template>
+
+<!-- ************************************************************************************************************************************  -->
+<!-- *********************************************************** CODIGO JAVASCRIPT *************************************************************************  -->
+<!-- ************************************************************************************************************************************  -->
+
+<script>
+    export default {
+        data(){
+            return{
+                proceso:false,
+                id: 0,
+                
+                fecha_comentario:'',
+                observacion:'',
+                usuario: '',
+               
+                fecha_solicitud: '',
+                valor_requerido: '',
+                fecha_aviso: '',
+                notaria:0,
+
+                arrayContratos : [],
+                arrayCiudades:[],
+                arrayNotarias:[],
+                arrayObservacion:[],
+
+                arrayFraccionamientos:[],
+                arrayEtapas:[],
+
+                modal : 0,
+                modal3 : 0,
+              
+                estado : 'San Luis Potosí',
+                ciudad: 'San Luis Potosí',
+                
+                tituloModal : '',
+                tituloModal3: '',
+           
+                tipoAccion: 0,
+                errorLote : 0,
+                errorMostrarMsjLote : [],
+                pagination : {
+                    'total' : 0,         
+                    'current_page' : 0,
+                    'per_page' : 0,
+                    'last_page' : 0,
+                    'from' : 0,
+                    'to' : 0,
+                },
+                offset : 3,
+                criterio : '', 
+                buscar : '',
+                b_etapa: '',
+                b_manzana: '',
+                b_lote: ''
+               
+            }
+        },
+        computed:{
+
+            isActived: function(){
+                return this.pagination.current_page;
+            },
+            //Calcula los elementos de la paginación
+            pagesNumber:function(){
+                if(!this.pagination.to){
+                    return [];
+                }
+
+                var from = this.pagination.current_page - this.offset;
+                if(from < 1){
+                    from = 1;
+                }
+
+                var to = from + (this.offset * 2);
+                if(to >= this.pagination.last_page){
+                    to = this.pagination.last_page;
+                }
+
+                var pagesArray = [];
+                while(from <= to){
+                    pagesArray.push(from);
+                    from++;
+                }
+                return pagesArray;
+            },
+
+        },
+
+        
+        methods : {
+
+            /**Metodo para mostrar los registros */
+            listarContratos(page, buscar, b_etapa, b_manzana, b_lote, criterio){
+                let me = this;
+                var url = '/expediente/listarContratos?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayContratos = respuesta.contratos.data;
+                    me.pagination = respuesta.pagination;
+                    console.log(url);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+                
+            },
+            listarObservacion(page, buscar){
+                let me = this;
+                var url = '/observacion?page=' + page + '&buscar=' + buscar ;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayObservacion = respuesta.observacion.data;
+                    me.pagination = respuesta.pagination;
+                    console.log(url);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+                
+            },
+            
+            selectFraccionamientos(){
+                let me = this;
+                me.buscar=""
+                
+                me.arrayFraccionamientos=[];
+                var url = '/select_fraccionamiento';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayFraccionamientos = respuesta.fraccionamientos;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
+            selectEtapa(buscar){
+                let me = this;
+                me.buscar2=""
+                
+                me.arrayEtapas=[];
+                var url = '/select_etapa_proyecto?buscar=' + buscar;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayEtapas = respuesta.etapas;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
+             selectCiudades(buscar){
+                let me = this;
+                me.arrayCiudades=[];
+                var url = '/select_ciudades?buscar=' + buscar;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayCiudades = respuesta.ciudades;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
+            selectNotarias(estado, ciudad){
+                let me = this;
+                me.arrayNotarias=[];
+                var url = '/select_notarias?estado=' + estado + '&ciudad=' + ciudad;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayNotarias = respuesta.notarias;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
+
+            cambiarPagina(page,buscar,b_etapa,b_manzana,b_lote,criterio){
+                let me = this;
+                //Actualiza la pagina actual
+                me.pagination.current_page = page;
+                //Envia la petición para visualizar la data de esta pagina
+                me.listarContratos(page,buscar,b_etapa,b_manzana,b_lote,criterio);
+            },
+
+            agregarComentario(){
+                if(this.proceso==true){
+                    return;
+                }
+                this.proceso=true;
+                let me = this;
+                //Con axios se llama el metodo store de DepartamentoController
+                axios.post('/observacion/registrar',{
+                    'lote_id': this.lote_id,
+                    'comentario': this.observacion,
+                    'usuario': this.usuario
+                }).then(function (response){
+                    me.proceso=false;
+                    me.cerrarModal3(); //al guardar el registro se cierra el modal
+                    
+                    const toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+                    });
+
+                    toast({
+                    type: 'success',
+                    title: 'Observación Agregada Correctamente'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
+       
+             solicitudAvaluo(){
+                if(this.proceso==true){
+                    return;
+                }
+                this.proceso=true;
+                let me = this;
+                //Con axios se llama el metodo update de LoteController
+                axios.put('/expediente/solicitarAvaluo',{
+                    'id':this.id,
+                    'fecha_solicitud' : this.fecha_solicitud,
+                    'valor_requerido' : this.valor_requerido,
+                    
+                    
+                }).then(function (response){
+                    me.proceso=false;
+                    me.cerrarModal();
+                    me.listarContratos(1,me.buscar,me.b_etapa,me.b_manzana,me.b_lote,me.criterio);
+                    //window.alert("Cambios guardados correctamente");
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Cambios guardados correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
+            validarLote(){
+                this.errorLote=0;
+                this.errorMostrarMsjLote=[];
+
+                if(!this.fraccionamiento_id) //Si la variable Lote esta vacia
+                    this.errorMostrarMsjLote.push("El nombre del proyecto para el Lote no puede ir vacio.");
+
+                if(this.errorMostrarMsjLote.length)//Si el mensaje tiene almacenado algo en el array
+                    this.errorLote = 1;
+
+                return this.errorLote;
+            },
+
+            cerrarModal(){
+                this.modal = 0;
+                this.tituloModal = '';
+                
+            },
+            cerrarModal3(){
+                this.modal3 = 0;
+                this.tituloModal3 = '';
+                this.usuario = '';
+                this.observacion = '';
+            },
+         
+      
+             abrirModal3(accion,lote){
+          
+                        switch(accion){
+                            
+                            case 'observacion':
+                            {
+                                this.modal3 =1;
+                                this.tituloModal3='Agregar Observación';
+                                this.observacion='';
+                                this.usuario='';
+                                this.lote_id=lote;
+                                this.tipoAccion= 3;
+                                break;
+                            }
+                             case 'ver_todo':
+                            {
+                                this.modal3 =1;
+                                this.tituloModal3='Consulta Observaciones';
+                                this.tipoAccion= 4;
+                                break;  
+                            }
+                            
+                 this.listarObservacion(1, data['id']);
+             }
+                
+         },
+
+      
+            abrirModal(accion,data =[]){
+               
+                        switch(accion){
+                           
+                            case 'avaluo':
+                            {
+                                this.modal =1;
+                                this.tituloModal='Avaluo';
+                                this.tipoAccion = 1;
+                                break;
+                            }
+
+                            case 'aviso_preventivo': 
+                            {
+                                this.modal = 1;
+                                this.tituloModal='Aviso preventivo';
+                                this.tipoAccion = 2;
+                                this.ciudad = 'San Luis Potosí';
+                                break;
+                            }
+                            
+                }
+                this.selectCiudades(this.estado);
+                this.selectNotarias(this.estado,this.ciudad);
+
+            }
+        
+        },
+       
+        mounted() {
+            this.listarContratos(1,this.buscar,this.b_etapa,this.b_manzana,this.b_lote,this.criterio);
+            this.selectFraccionamientos();
+        }
+    }
+</script>
+<style>
+    .form-control:disabled, .form-control[readonly] {
+    background-color: rgba(0, 0, 0, 0.06);
+    opacity: 1;
+    font-size: 1rem;
+    color: #27417b;
+    }
+    .modal-content{
+        width: 100% !important;
+        position: absolute !important;
+    }
+    .mostrar{
+        display: list-item !important;
+        opacity: 1 !important;
+        position: fixed !important;
+        background-color: #3c29297a !important;
+         overflow-y: auto;
+        
+    }
+    .div-error{
+        display:flex;
+        justify-content: center;
+    }
+    .text-error{
+        color: red !important;
+        font-weight: bold;
+    }
+    .table2 {
+    margin: auto;
+    border-collapse: collapse;
+    overflow-x: auto;
+    display: block;
+    width: fit-content;
+    max-width: 100%;
+    box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
+    }
+
+    .td2, .th2 {
+    border: solid rgb(200, 200, 200) 1px;
+    padding: .5rem;
+    }
+
+    /*th {
+    text-align: left;
+    background-color: rgb(190, 220, 250);
+    text-transform: uppercase;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: rgb(50, 50, 100) solid 2px;
+    border-top: none;
+    }*/
+
+    .td2 {
+    white-space: nowrap;
+    border-bottom: none;
+    color: rgb(20, 20, 20);
+    }
+
+    .td2:first-of-type, th:first-of-type {
+    border-left: none;
+    }
+
+    .td2:last-of-type, th:last-of-type {
+    border-right: none;
+    } 
+</style>

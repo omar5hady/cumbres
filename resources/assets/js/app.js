@@ -81,8 +81,8 @@ Vue.component('publicidad-fraccionamiento', require('./components/PublicidadFrac
 Vue.component('publicidad-etapa', require('./components/PublicidadEtapa.vue'));
 
 Vue.component('depositos', require('./components/Deposito.vue'));
-
 Vue.component('notarias', require('./components/Notaria.vue'));
+Vue.component('expediente', require('./components/IntegracionExp.vue'));
 
 const app = new Vue({
     el: '#app',

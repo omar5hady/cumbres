@@ -13,7 +13,7 @@ class Contrato extends Model
         'direccion_empresa','cp_empresa','colonia_empresa','estado_empresa','ciudad_empresa','avance_lote',
         'telefono_empresa','ext_empresa','direccion_empresa_coa','cp_empresa_coa','colonia_empresa_coa',
         'estado_empresa_coa','ciudad_empresa_coa','telefono_empresa_coa','ext_empresa_coa','enganche_total',
-        'observacion'
+        'observacion','avaluo_preventivo','aviso_prev','integracion'
     ];
 
     public $timestamps = false;
@@ -25,5 +25,21 @@ class Contrato extends Model
 
     public function pago_contrato(){
         return $this->hasMany('App\Pago_contrato');
+    }
+
+    public function avaluo(){
+        return $this->hasMany('App\Avaluo');
+    }
+
+    public function aviso_preventivo(){
+        return $this->hasMany('App\Aviso_preventivo');
+    }
+
+    public function obs_expediente(){
+        return $this->hasMany('App\Obs_expediente');
+    }
+
+    public function expediente(){
+        return $this->hasOne('App/Expediente');
     }
 }

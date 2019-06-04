@@ -74,4 +74,17 @@ class NotariaController extends Controller
         $notarias =  Notaria::findOrFail($request->id);
         $notarias->delete();
     }
+
+    public function select_notarias(Request $request){
+        $estado = $request->estado;
+        $ciudad = $request->ciudad;
+
+        $notarias = Notaria::select('id','notaria','titular','colonia')
+                             ->where('estado','=',$estado)
+                             ->where('ciudad','=',$ciudad)
+                             ->orderBy('id','asc')
+                             ->get();
+
+        return['notarias' => $notarias];
+    }
 }

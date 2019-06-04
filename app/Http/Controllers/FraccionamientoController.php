@@ -234,8 +234,15 @@ class FraccionamientoController extends Controller
         if(!$request->ajax())return redirect('/');
         $filtro = $request->filtro;
 
-        $fraccionamientos = Fraccionamiento::select('nombre','id')
-        ->where('nombre','like','%'.$filtro.'%')->where('id','!=','1')->get();
+        if($filtro==''){
+            $fraccionamientos = Fraccionamiento::select('nombre','id')
+            ->where('id','!=','1')->get();
+        }
+        else{
+            $fraccionamientos = Fraccionamiento::select('nombre','id')
+            ->where('nombre','like','%'.$filtro.'%')->where('id','!=','1')->get();
+        }
+        
         return['fraccionamientos' => $fraccionamientos];
     }
 

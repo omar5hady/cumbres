@@ -48,6 +48,10 @@ class CreateContratosTable extends Migration
             $table->string('telefono_empresa_coa',10)->nullable();
             $table->string('ext_empresa_coa',5)->nullable();
             $table->string('observacion')->nullable();
+
+            $table->date('avaluo_preventivo')->nullable();
+            $table->date('aviso_prev')->nullable();
+            $table->boolean('integracion')->default(0);
             
             
             $table->foreign('id')->references('id')->on('creditos');

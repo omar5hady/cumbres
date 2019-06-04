@@ -383,7 +383,9 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/notaria/registrar','NotariaController@store');
         Route::put('/notaria/actualizar','NotariaController@update');
         Route::delete('/notaria/eliminar','NotariaController@destroy');
-        
+
+         /************************** RUTAS EXPEDIENTE ***************************/
+         Route::get('/expediente/listarContratos','ExpedienteController@indexContratos');
     });
 
 
@@ -441,7 +443,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/servicios_etapas','ServEtapaController@index');
         Route::get('/select_gerentes','UserController@select_users_gerentes');
         Route::get('/select_rfcs','PersonalController@selectRFC');
-    
+        Route::get('/select_notarias','NotariaController@select_notarias');
     
     
     

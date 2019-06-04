@@ -1178,11 +1178,23 @@
             }, 
             selectFraccionamientos(){
                 let me = this;
-                me.arrayFraccionamientos=[];
+                me.arrayFraccionamientos2=[];
                 var url = '/select_fraccionamiento';
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayFraccionamientos2 = respuesta.fraccionamientos;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            selectFraccionamientos2(){
+                let me = this;
+                me.arrayFraccionamientos=[];
+                var url = '/select_fraccionamiento2?filtro=';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayFraccionamientos = respuesta.fraccionamientos;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -1827,6 +1839,7 @@
             this.listarProspectos(1,this.buscar,this.b_clasificacion,this.criterio);
             this.selectMedioPublicidad();
             this.selectFraccionamientos();
+            this.selectFraccionamientos2();
             this.selectLugarContacto();
             this.selectEstados();
           
