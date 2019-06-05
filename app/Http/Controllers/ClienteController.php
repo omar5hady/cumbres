@@ -405,7 +405,7 @@ class ClienteController extends Controller
                     'medios_publicitarios.nombre as publicidad','fraccionamientos.nombre as proyecto')   
                     //->where('vendedor_id','=',Auth::user()->id)     
                     ->where($criterio, 'like', '%'. $buscar . '%')
-                    ->where('clientes.clasificacion', '=', $buscarC)
+                    //->where('clientes.clasificacion', '=', $buscarC)
                     ->orderBy('personal.nombre', 'asc')
                     ->orderBy('personal.apellidos', 'asc')
                     ->paginate(8);
@@ -416,7 +416,7 @@ class ClienteController extends Controller
                         ->select('personal.id','personal.nombre','personal.rfc','personal.homoclave')
                         //->where('vendedor_id','=',Auth::user()->id)     
                         ->where($criterio, 'like', '%'. $buscar . '%')
-                        ->where('clientes.clasificacion', '=', $buscarC)
+                        //->where('clientes.clasificacion', '=', $buscarC)
                         ->orderBy('personal.nombre', 'asc')
                         ->orderBy('personal.apellidos', 'asc')
 
@@ -495,9 +495,9 @@ class ClienteController extends Controller
                         'medios_publicitarios.nombre as publicidad','fraccionamientos.nombre as proyecto')   
                         //->where('vendedor_id','=',Auth::user()->id)     
                         ->where($criterio, 'like', '%'. $buscar . '%')
-                        ->where('clientes.clasificacion', '=', $buscarC)
+                        //->where('clientes.clasificacion', '=', $buscarC)
                         ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
-                        ->where('clientes.clasificacion', '=', $buscarC)
+                        //->where('clientes.clasificacion', '=', $buscarC)
                         ->orderBy('personal.nombre', 'asc')
                         ->orderBy('personal.apellidos', 'asc')
 
@@ -509,9 +509,9 @@ class ClienteController extends Controller
                         ->select('personal.id','personal.nombre','personal.rfc','personal.homoclave')
                         //->where('vendedor_id','=',Auth::user()->id)     
                         ->where($criterio, 'like', '%'. $buscar . '%')
-                        ->where('clientes.clasificacion', '=', $buscarC)
+                        //->where('clientes.clasificacion', '=', $buscarC)
                         ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
-                        ->where('clientes.clasificacion', '=', $buscarC)
+                        //->where('clientes.clasificacion', '=', $buscarC)
                         ->orderBy('personal.nombre', 'asc')
                         ->orderBy('personal.apellidos', 'asc')
 
@@ -545,7 +545,7 @@ class ClienteController extends Controller
                     'medios_publicitarios.nombre as publicidad','fraccionamientos.nombre as proyecto')   
                     //->where('vendedor_id','=',Auth::user()->id)     
                     ->where($criterio, 'like', '%'. $buscar . '%')
-                    ->where('clientes.clasificacion', '=', $buscarC)
+                    //->where('clientes.clasificacion', '=', $buscarC)
                     ->orderBy('personal.nombre', 'asc')
                     ->orderBy('personal.apellidos', 'asc')
                     ->paginate(8);
@@ -556,7 +556,7 @@ class ClienteController extends Controller
                         ->select('personal.id','personal.nombre','personal.rfc','personal.homoclave')
                         //->where('vendedor_id','=',Auth::user()->id)     
                         ->where($criterio, 'like', '%'. $buscar . '%')
-                        ->where('clientes.clasificacion', '=', $buscarC)
+                        //->where('clientes.clasificacion', '=', $buscarC)
                         ->orderBy('personal.nombre', 'asc')
                         ->orderBy('personal.apellidos', 'asc')
 
@@ -696,7 +696,12 @@ class ClienteController extends Controller
             $cliente->edo_civil = $request->edo_civil;
             $cliente->nss = $request->nss;
             $cliente->curp = $request->curp;
-            $cliente->vendedor_id = Auth::user()->id;
+            $rolUsuario = Auth::user()->rol_id;
+            if($rolUsuario == 1 || $rolUsuario == 4 || $rolUsuario == 6 || $rolUsuario == 8)
+                $cliente->vendedor_id = 19;
+            else{
+                $cliente->vendedor_id = Auth::user()->id;
+            }
             $cliente->empresa = $request->empresa;
             $cliente->coacreditado = $request->coacreditado;
             $cliente->clasificacion = $request->clasificacion;
