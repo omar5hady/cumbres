@@ -141,16 +141,16 @@
                                 </div>
 
                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Colonia</label>
+                                    <label class="col-md-3 form-control-label" for="text-input">Dirección</label>
                                     <div class="col-md-9">
-                                        <input type="text" v-model="colonia" class="form-control" placeholder="Colonia">
+                                        <input type="text" v-model="direccion" class="form-control" placeholder="Dirección">
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Dirección</label>
+                                    <label class="col-md-3 form-control-label" for="text-input">Colonia</label>
                                     <div class="col-md-9">
-                                        <input type="text" v-model="direccion" class="form-control" placeholder="Dirección">
+                                        <input type="text" v-model="colonia" class="form-control" placeholder="Colonia">
                                     </div>
                                 </div>
 

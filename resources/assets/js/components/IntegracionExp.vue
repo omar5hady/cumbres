@@ -13,7 +13,7 @@
                     </div>
                     <div class="card-body">
                         <div class="form-group row">
-                            <div class="col-md-8">
+                            <div class="col-md-10">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
                                     <select class="form-control col-md-5" v-model="criterio" @click="selectFraccionamientos()">
@@ -86,34 +86,51 @@
                                         <td class="td2" v-text="contratos.tipo_credito"></td>
                                         <td class="td2" v-text="contratos.institucion"></td>
                                         <template v-if="contratos.avaluo_preventivo">
-                                            <td class="td2" v-text="contratos.avaluo_preventivo"></td>
+                                            <td v-if="contratos.avaluo_preventivo!='0000-01-01'" class="td2" v-text="this.moment(contratos.avaluo_preventivo).locale('es').format('DD/MMM/YYYY')"></td>
+                                            <td v-if="contratos.avaluo_preventivo=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
                                         </template>
                                         <template v-else>
                                             <td class="td2">
                                                 <button type="button" @click="abrirModal('avaluo',contratos)" class="btn btn-warning btn-sm" title="Solicitar avaluo">
                                                     <i class="fa fa-file-text-o"></i>
                                                 </button>
-                                                <button type="button" @click="noAplica(contratos.id)" class="btn btn-danger btn-sm" title="No aplica">
+                                                <button type="button" @click="noAplicaAvaluo(contratos.folio)" class="btn btn-danger btn-sm" title="No aplica">
                                                     <i class="fa fa-times-circle"></i>
                                                 </button>
                                             </td>
                                         </template>
                                          <template v-if="contratos.aviso_prev">
-                                            <td class="td2" v-text="contratos.aviso_prev"></td>
+                                            <td v-if="contratos.aviso_prev!='0000-01-01' && !contratos.aviso_prev_venc" class="td2" v-text="'Fecha solicitud: ' 
+                                                + this.moment(contratos.aviso_prev).locale('es').format('DD/MMM/YYYY')"></td>
+
+                                            <td v-if="contratos.aviso_prev!='0000-01-01' && contratos.aviso_prev_venc" class="td2">
+                                                
+                                                <span v-if = "contratos.diferencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: ' 
+                                                + this.moment(contratos.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
+
+                                                <span v-if = "contratos.diferencia < 0 && contratos.diferencia >= -15 " class="badge2 badge-warning" v-text="'Fecha vencimiento: ' 
+                                                + this.moment(contratos.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
+
+                                                <span v-if = "contratos.diferencia < -15 " class="badge2 badge-success" v-text="'Fecha vencimiento: ' 
+                                                + this.moment(contratos.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
+                                                
+                                            </td>
+
+                                            <td v-if="contratos.aviso_prev=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
                                         </template>
                                         <template v-else>
                                             <td class="td2">
                                                 <button type="button" @click="abrirModal('aviso_preventivo',contratos)" class="btn btn-warning btn-sm" title="Solicitar aviso">
                                                     <i class="fa fa-file-text-o"></i>
                                                 </button>
-                                                <button type="button" @click="noAplica(contratos.id)" class="btn btn-danger btn-sm" title="No aplica">
+                                                <button type="button" @click="noAplicaAviso(contratos.folio)" class="btn btn-danger btn-sm" title="No aplica">
                                                     <i class="fa fa-times-circle"></i>
                                                 </button>
                                             </td>
                                         </template>
                                         <td class="td2" >
-                                            <span v-if = "contratos.regimen_condom == 0" class="badge badge-danger">No</span>
-                                            <span v-if = "contratos.regimen_condom == 1" class="badge badge-success">Si</span>
+                                            <span v-if = "contratos.regimen_condom == 0" class="badge2 badge-danger">No</span>
+                                            <span v-if = "contratos.regimen_condom == 1" class="badge2 badge-success">Si</span>
                                         </td>
                                         <td v-if="contratos.coacreditado == 1" class="td2" v-text="contratos.nombre_conyuge"></td>
                                         <td v-else class="td2">Sin conyuge</td>
@@ -123,7 +140,10 @@
                                             </button>
                                         </td>
                                          
-                                        <td class="td2"></td>
+                                        <td class="td2">
+                                            <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
+                                                @click="abrirModal3(contratos.folio)">Ver Observaciones</button>
+                                        </td>
 
                                     </tr>                               
                                 </tbody>
@@ -282,15 +302,18 @@
                         <div class="modal-body">
                             <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
 
-                                <div class="form-group row" v-if="tipoAccion==3">
+                                <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Observacion</label>
                                     <div class="col-md-6">
-                                         <textarea rows="5" cols="30" v-model="observacion" class="form-control" placeholder="Observacion"></textarea>
-
+                                         <textarea rows="3" cols="30" v-model="observacion" class="form-control" placeholder="Observacion"></textarea>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="button"  class="btn btn-primary" @click="agregarComentario()">Guardar</button>
                                     </div>
                                 </div>
+
                                 
-                                <table class="table table-bordered table-striped table-sm" v-if="tipoAccion == 4">
+                                <table class="table table-bordered table-striped table-sm" >
                                     <thead>
                                         <tr>
                                             <th>Usuario</th>
@@ -302,7 +325,7 @@
                                         <tr v-for="observacion in arrayObservacion" :key="observacion.id">
                                             
                                             <td v-text="observacion.usuario" ></td>
-                                            <td v-text="observacion.comentario" ></td>
+                                            <td v-text="observacion.observacion" ></td>
                                             <td v-text="observacion.created_at"></td>
                                         </tr>                               
                                     </tbody>
@@ -314,7 +337,6 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal3()">Cerrar</button>
                             <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button"  v-if="tipoAccion==3"  class="btn btn-primary" @click="agregarComentario()">Guardar</button>
                         </div>
                     </div>
                       <!-- /.modal-content -->
@@ -375,7 +397,7 @@
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : '', 
+                criterio : 'lotes.fraccionamiento_id', 
                 buscar : '',
                 b_etapa: '',
                 b_manzana: '',
@@ -425,20 +447,18 @@
                     var respuesta = response.data;
                     me.arrayContratos = respuesta.contratos.data;
                     me.pagination = respuesta.pagination;
-                    console.log(url);
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
                 
             },
-            listarObservacion(page, buscar){
+            listarObservacion(buscar){
                 let me = this;
-                var url = '/observacion?page=' + page + '&buscar=' + buscar ;
+                var url = '/observacionExpediente?folio=' + buscar ;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
-                    me.arrayObservacion = respuesta.observacion.data;
-                    me.pagination = respuesta.pagination;
+                    me.arrayObservacion = respuesta.observacion;
                     console.log(url);
                 })
                 .catch(function (error) {
@@ -477,7 +497,7 @@
                 });
             },
 
-             selectCiudades(buscar){
+            selectCiudades(buscar){
                 let me = this;
                 me.arrayCiudades=[];
                 var url = '/select_ciudades?buscar=' + buscar;
@@ -519,13 +539,14 @@
                 this.proceso=true;
                 let me = this;
                 //Con axios se llama el metodo store de DepartamentoController
-                axios.post('/observacion/registrar',{
-                    'lote_id': this.lote_id,
-                    'comentario': this.observacion,
-                    'usuario': this.usuario
+                axios.post('/observacionExpediente/registrar',{
+                    'folio': this.id,
+                    'observacion': this.observacion
                 }).then(function (response){
                     me.proceso=false;
-                    me.cerrarModal3(); //al guardar el registro se cierra el modal
+                    me.listarObservacion(me.id);
+                    me.observacion = '';
+                    //me.cerrarModal3(); //al guardar el registro se cierra el modal
                     
                     const toast = Swal.mixin({
                     toast: true,
@@ -544,15 +565,15 @@
             },
 
        
-             solicitudAvaluo(){
+            solicitudAvaluo(){
                 if(this.proceso==true){
                     return;
                 }
                 this.proceso=true;
                 let me = this;
                 //Con axios se llama el metodo update de LoteController
-                axios.put('/expediente/solicitarAvaluo',{
-                    'id':this.id,
+                axios.post('/expediente/solicitarAvaluo',{
+                    'folio':this.id,
                     'fecha_solicitud' : this.fecha_solicitud,
                     'valor_requerido' : this.valor_requerido,
                     
@@ -565,13 +586,127 @@
                     swal({
                         position: 'top-end',
                         type: 'success',
-                        title: 'Cambios guardados correctamente',
+                        title: 'Solicitud enviada correctamente',
                         showConfirmButton: false,
                         timer: 1500
                         })
                 }).catch(function (error){
                     console.log(error);
                 });
+            },
+
+            noAplicaAvaluo(id){
+                this.id = id;
+                swal({
+                title: '¿Esta seguro de que la solicitud de avaluo no aplica para este registro?',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Aceptar!',
+                cancelButtonText: 'Cancelar',
+                confirmButtonClass: 'btn btn-success',
+                cancelButtonClass: 'btn btn-danger',
+                buttonsStyling: false,
+                reverseButtons: true
+                }).then((result) => {
+                if (result.value) {
+                    let me = this;
+
+                    axios.put('/expediente/AvaluoNoAplica',{
+                        'folio': me.id
+                    }).then(function (response) {
+                        me.cerrarModal();
+                        me.listarContratos(1,me.buscar,me.b_etapa,me.b_manzana,me.b_lote,me.criterio);
+                        swal(
+                        'Hecho!',
+                        'No aplica.',
+                        'success'
+                        )
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                    
+                    
+                } else if (
+                    // Read more about handling dismissals
+                    result.dismiss === swal.DismissReason.cancel
+                ) {
+                    
+                }
+                }) 
+            },
+
+            avisoPreventivo(){
+                if(this.proceso==true){
+                    return;
+                }
+                this.proceso=true;
+                let me = this;
+                //Con axios se llama el metodo update de LoteController
+                axios.post('/expediente/solicitarAviso',{
+                    'folio':this.id,
+                    'fecha_solicitud' : this.fecha_aviso,
+                    'notaria_id' : this.notaria,
+                    
+                    
+                }).then(function (response){
+                    me.proceso=false;
+                    me.cerrarModal();
+                    me.listarContratos(1,me.buscar,me.b_etapa,me.b_manzana,me.b_lote,me.criterio);
+                    //window.alert("Cambios guardados correctamente");
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Solicitud enviada correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
+            noAplicaAviso(id){
+                this.id = id;
+                swal({
+                title: '¿Esta seguro de que el aviso preventivo no aplica para este registro?',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Aceptar!',
+                cancelButtonText: 'Cancelar',
+                confirmButtonClass: 'btn btn-success',
+                cancelButtonClass: 'btn btn-danger',
+                buttonsStyling: false,
+                reverseButtons: true
+                }).then((result) => {
+                if (result.value) {
+                    let me = this;
+
+                    axios.put('/expediente/AvisoNoAplica',{
+                        'folio': me.id
+                    }).then(function (response) {
+                        me.cerrarModal();
+                        me.listarContratos(1,me.buscar,me.b_etapa,me.b_manzana,me.b_lote,me.criterio);
+                        swal(
+                        'Hecho!',
+                        'No aplica.',
+                        'success'
+                        )
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                    
+                    
+                } else if (
+                    // Read more about handling dismissals
+                    result.dismiss === swal.DismissReason.cancel
+                ) {
+                    
+                }
+                }) 
             },
 
             validarLote(){
@@ -600,32 +735,14 @@
             },
          
       
-             abrirModal3(accion,lote){
-          
-                        switch(accion){
-                            
-                            case 'observacion':
-                            {
-                                this.modal3 =1;
-                                this.tituloModal3='Agregar Observación';
-                                this.observacion='';
-                                this.usuario='';
-                                this.lote_id=lote;
-                                this.tipoAccion= 3;
-                                break;
-                            }
-                             case 'ver_todo':
-                            {
-                                this.modal3 =1;
-                                this.tituloModal3='Consulta Observaciones';
-                                this.tipoAccion= 4;
-                                break;  
-                            }
-                            
-                 this.listarObservacion(1, data['id']);
-             }
-                
-         },
+            abrirModal3(folio){
+                this.modal3 =1;
+                this.tituloModal3='Observaciones';
+                this.observacion='';
+                this.usuario='';
+                this.id=folio;
+                this.listarObservacion(folio);
+            },
 
       
             abrirModal(accion,data =[]){
@@ -637,6 +754,8 @@
                                 this.modal =1;
                                 this.tituloModal='Avaluo';
                                 this.tipoAccion = 1;
+                                this.fecha_solicitud = '';
+                                this.id = data['folio'];
                                 break;
                             }
 
@@ -646,6 +765,7 @@
                                 this.tituloModal='Aviso preventivo';
                                 this.tipoAccion = 2;
                                 this.ciudad = 'San Luis Potosí';
+                                this.id = data['folio'];
                                 break;
                             }
                             
@@ -704,6 +824,18 @@
     border: solid rgb(200, 200, 200) 1px;
     padding: .5rem;
     }
+
+    .badge2 {
+    display: inline-block;
+    padding: 0.25em 0.4em;
+    font-size: 90%;
+    font-weight: bold;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+}
 
     /*th {
     text-align: left;

@@ -13,7 +13,7 @@ class Contrato extends Model
         'direccion_empresa','cp_empresa','colonia_empresa','estado_empresa','ciudad_empresa','avance_lote',
         'telefono_empresa','ext_empresa','direccion_empresa_coa','cp_empresa_coa','colonia_empresa_coa',
         'estado_empresa_coa','ciudad_empresa_coa','telefono_empresa_coa','ext_empresa_coa','enganche_total',
-        'observacion','avaluo_preventivo','aviso_prev','integracion'
+        'observacion','avaluo_preventivo','aviso_prev','integracion','aviso_prev_venc'
     ];
 
     public $timestamps = false;

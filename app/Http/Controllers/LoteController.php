@@ -2825,8 +2825,20 @@ class LoteController extends Controller
 
     public function updateAjuste(Request $request){
         $ajuste = Lote::findOrFail($request->id);
+        $cambio = $ajuste->ajuste;
         $ajuste->ajuste = $request->ajuste;
         $ajuste->save();
+
+        $creditos = Credito::select('id')->where('lote_id','=',$request->id)->get();
+        foreach($creditos as $creditosid){
+            
+            $credito = Credito::findOrFail($creditosid->id);
+            $credito->precio_venta = $credito->precio_venta + $request->ajuste - $cambio;
+            $credito->precio_base = $credito->precio_base + $request->ajuste - $cambio;
+            $credito->save();
+            
+
+        }
     }
 
     public function exportExcelAsignarModelo(Request $request){

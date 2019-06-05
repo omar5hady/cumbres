@@ -386,6 +386,12 @@ Route::group(['middleware' => ['auth']],function(){
 
          /************************** RUTAS EXPEDIENTE ***************************/
          Route::get('/expediente/listarContratos','ExpedienteController@indexContratos');
+         Route::post('/expediente/solicitarAvaluo','AvaluoController@store');
+         Route::post('/expediente/solicitarAviso','AvisoPreventivoController@store');
+         Route::put('/expediente/AvaluoNoAplica','AvaluoController@noAplicaAvaluo');
+         Route::put('/expediente/AvisoNoAplica','AvisoPreventivoController@noAplicaAviso');
+         Route::get('/observacionExpediente','ExpedienteController@listarObservaciones');
+         Route::post('/observacionExpediente/registrar','ExpedienteController@storeObservacion');
     });
 
 
