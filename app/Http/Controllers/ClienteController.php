@@ -741,9 +741,9 @@ class ClienteController extends Controller
             $Persona->apellidos = $request->apellidos;
             $Persona->f_nacimiento = $request->f_nacimiento;
             $Persona->rfc = $request->rfc;
-            $Persona->direccion = $request->direccion;
-            $Persona->colonia = $request->colonia;
-            $Persona->cp = $request->cp;
+            // $Persona->direccion = $request->direccion;
+            // $Persona->colonia = $request->colonia;
+            // $Persona->cp = $request->cp;
             $Persona->telefono = $request->telefono;
             $Persona->ext = $request->ext;
             $Persona->celular = $request->celular;
@@ -783,9 +783,9 @@ class ClienteController extends Controller
             $cliente->f_nacimiento_coa = $request->f_nacimiento_coa;
             $cliente->rfc_coa = $request->rfc_coa;
             $cliente->homoclave_coa = $request->homoclave_coa;
-            $cliente->direccion_coa = $request->direccion_coa;
-            $cliente->colonia_coa = $request->colonia_coa;
-            $cliente->cp_coa = $request->cp_coa;
+            // $cliente->direccion_coa = $request->direccion_coa;
+            // $cliente->colonia_coa = $request->colonia_coa;
+            // $cliente->cp_coa = $request->cp_coa;
             $cliente->lugar_nacimiento_coa = $request->lugar_nacimiento_coa;
             $cliente->telefono_coa = $request->telefono_coa;
             $cliente->ext_coa = $request->ext_coa;
@@ -860,16 +860,28 @@ class ClienteController extends Controller
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
         if(!$request->ajax())return redirect('/');
         $filtro = $request->filtro;
-
+    if(Auth::user()->rol_id == 4 || Auth::user()->rol_id == 6 || Auth::user()->rol_id == 8 || Auth::user()->rol_id == 1){
         $coacreditados = Cliente::join('personal','clientes.id','=','personal.id')
         ->select('personal.nombre','personal.apellidos','personal.id','personal.rfc','personal.homoclave','personal.f_nacimiento',
             'personal.telefono','personal.celular','personal.email','clientes.sexo',
             'clientes.email_institucional','clientes.edo_civil','clientes.nss','clientes.curp','clientes.tipo_casa','clientes.lugar_nacimiento',
             DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"))
-        ->where('vendedor_id','=',Auth::user()->id)
         ->where('nombre','like','%'.$filtro.'%')
         ->orWhere('apellidos','like','%'.$filtro.'%')
         ->get();
+        }else{
+            $coacreditados = Cliente::join('personal','clientes.id','=','personal.id')
+            ->select('personal.nombre','personal.apellidos','personal.id','personal.rfc','personal.homoclave','personal.f_nacimiento',
+                'personal.telefono','personal.celular','personal.email','clientes.sexo',
+                'clientes.email_institucional','clientes.edo_civil','clientes.nss','clientes.curp','clientes.tipo_casa','clientes.lugar_nacimiento',
+                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"))
+            ->where('vendedor_id','=',Auth::user()->id)
+            ->where('nombre','like','%'.$filtro.'%')
+            ->orWhere('apellidos','like','%'.$filtro.'%')
+            ->where('vendedor_id','=',Auth::user()->id)
+            ->get();
+        }
+       
         return['coacreditados' => $coacreditados];
     }
 

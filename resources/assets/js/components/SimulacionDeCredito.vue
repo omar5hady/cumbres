@@ -2968,8 +2968,8 @@
                     'fraccionamiento':this.fraccionamiento
                     
                 }).then(function (response){
-                    me.proceso=false;
                     me.actualizarDatosProspecto();
+                    me.proceso=false;
                     me.listado=1;
                     me.limpiarDatos();
                     me.listarProspectos(me.pagination.current_page,me.buscar,me.criterio); //se enlistan nuevamente los registros

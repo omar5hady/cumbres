@@ -392,6 +392,7 @@ Route::group(['middleware' => ['auth']],function(){
          Route::put('/expediente/AvisoNoAplica','AvisoPreventivoController@noAplicaAviso');
          Route::get('/observacionExpediente','ExpedienteController@listarObservaciones');
          Route::post('/observacionExpediente/registrar','ExpedienteController@storeObservacion');
+         Route::get('/expediente/Excel','ExpedienteController@exportExcel');
     });
 
 

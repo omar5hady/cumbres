@@ -40,7 +40,7 @@
 
                                     <input v-else type="text"  v-model="buscar" @keyup.enter="listarContratos(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
                                     <button type="submit" @click="listarContratos(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                    <a class="btn btn-success" >
+                                    <a class="btn btn-success" v-bind:href="'/expediente/Excel?buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio">
                                         <i class="icon-pencil"></i>&nbsp;Excel
                                     </a>
                                 </div>
