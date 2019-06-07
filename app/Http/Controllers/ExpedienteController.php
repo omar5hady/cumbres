@@ -975,6 +975,26 @@ class ExpedienteController extends Controller
                     }else{
                         $regimen = 'No';
                     }
+
+                    $avaluo_prev = '';
+                    if($contrato->avaluo_preventivo == "0000-01-01"){
+                        $avaluo_prev = 'No aplica';
+                    }
+                    else{
+                        $avaluo_prev = $contrato->avaluo_preventivo;
+                    }
+
+                    $aviso_prev = '';
+                    if($contrato->aviso_prev == "0000-01-01"){
+                        $aviso_prev = 'No aplica';
+                    }
+                    elseif($contrato->aviso_prev){
+                        if($contrato->aviso_prev_venc)
+                            $aviso_prev = 'Vencimiento: '.$contrato->aviso_prev;
+                        else{
+                            $aviso_prev = 'Solicitud: '.$contrato->aviso_prev;
+                        }
+                    }
                     
                     $sheet->row($index+2, [
                         $contrato->folio, 
@@ -988,8 +1008,8 @@ class ExpedienteController extends Controller
                         $contrato->fecha_status,
                         $contrato->tipo_credito,
                         $contrato->institucion,
-                        $contrato->avaluo_preventivo,
-                        $contrato->aviso_prev,
+                        $avaluo_prev,
+                        $aviso_prev,
                         $regimen,
                         $contrato->nombre_conyuge
                    
