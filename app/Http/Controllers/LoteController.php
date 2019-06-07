@@ -2575,7 +2575,7 @@ class LoteController extends Controller
                 ->select('promociones.nombre','promociones.v_ini','promociones.v_fin','promociones.id',
                         'promociones.descuento','promociones.descripcion')
                 ->where('lotes_promocion.lote_id','=',$lote->id)
-                ->where('promociones.v_fin','>',Carbon::today()->format('ymd'))->get();
+                ->where('promociones.v_fin','>=',Carbon::today()->format('ymd'))->get();
             if(sizeof($promocion) > 0){
                 $lote->v_iniPromo = $promocion[0]->v_ini;
                 $lote->v_finPromo = $promocion[0]->v_fin;

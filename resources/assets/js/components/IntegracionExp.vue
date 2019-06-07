@@ -100,10 +100,10 @@
                                             </td>
                                         </template>
                                          <template v-if="contratos.aviso_prev">
-                                            <td v-if="contratos.aviso_prev!='0000-01-01' && !contratos.aviso_prev_venc" class="td2" v-text="'Fecha solicitud: ' 
+                                            <td @dblclick="abrirModal('fecha_recibido',contratos)" v-if="contratos.aviso_prev!='0000-01-01' && !contratos.aviso_prev_venc" class="td2" v-text="'Fecha solicitud: ' 
                                                 + this.moment(contratos.aviso_prev).locale('es').format('DD/MMM/YYYY')"></td>
 
-                                            <td v-if="contratos.aviso_prev!='0000-01-01' && contratos.aviso_prev_venc" class="td2">
+                                            <td  @dblclick="abrirModal('fecha_recibido',contratos)" v-if="contratos.aviso_prev!='0000-01-01' && contratos.aviso_prev_venc" class="td2">
                                                 
                                                 <span v-if = "contratos.diferencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: ' 
                                                 + this.moment(contratos.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
@@ -274,13 +274,29 @@
                                 
                             </form>
                             <!-- fin del form aviso preventivo -->
+
+                             <!-- form para captura de fecha recibido -->
+                            <form v-if="tipoAccion == 3" action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Fecha de recibido</label>
+                                    <div class="col-md-4">
+                                        <input type="date"  v-model="fecha_recibido" class="form-control" >
+                                    </div>
+                                </div>
+                                
+                                
+                            </form>
+                            <!-- fin del form para captura de fecha recibido -->
+
                         </div>
                         <!-- Botones del modal -->
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
                             <button v-if="tipoAccion==1" type="button" class="btn btn-primary" @click="solicitudAvaluo()">Enviar</button>
                             <button v-if="tipoAccion==2" type="button" class="btn btn-primary" @click="avisoPreventivo()">Enviar</button>
-                           
+                            <button v-if="tipoAccion==3" type="button" class="btn btn-primary" @click="fechaRecibido()">Enviar</button>
+                            <a v-bind:href="'/expediente/solicitudPDF/' + id" v-if="tipoAccion==3" type="button" target="_blank" class="btn btn-primary">Imprimir</a>
                         </div>
                     </div>
                       <!-- /.modal-content -->
@@ -365,7 +381,9 @@
                
                 fecha_solicitud: '',
                 valor_requerido: '',
+                fecha_vencimiento:'',
                 fecha_aviso: '',
+                fecha_recibido: '',
                 notaria:0,
 
                 arrayContratos : [],
@@ -530,6 +548,37 @@
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
                 me.listarContratos(page,buscar,b_etapa,b_manzana,b_lote,criterio);
+            },
+
+            fechaRecibido(){
+                if(this.proceso==true){
+                    return;
+                }
+                this.proceso=true;
+                let me = this;
+                 
+                //Con axios se llama el metodo update de LoteController
+                axios.put('/expediente/fechaRecibido',{
+                    'folio':this.id,
+                    'fecha_recibido' : this.fecha_recibido,
+                    'fecha_vencimiento' : moment(this.fecha_recibido).add(60,'day').format('YYYY-MM-DD'), 
+
+                }).then(function (response){
+                    me.proceso=false;
+                    me.cerrarModal();
+                    me.listarContratos(1,me.buscar,me.b_etapa,me.b_manzana,me.b_lote,me.criterio);
+                    //window.alert("Cambios guardados correctamente");
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Solicitud enviada correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+
             },
 
             agregarComentario(){
@@ -766,6 +815,17 @@
                                 this.tipoAccion = 2;
                                 this.ciudad = 'San Luis Potosí';
                                 this.id = data['folio'];
+                                break;
+                            }
+
+                            case 'fecha_recibido': 
+                            {
+                                this.modal = 1;
+                                this.tituloModal='Fecha recibido';
+                                this.tipoAccion = 3;
+                                this.fecha_recibido = '';
+                                this.id = data['folio'];
+                                
                                 break;
                             }
                             

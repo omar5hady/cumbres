@@ -1820,6 +1820,7 @@
                     totalRestante += parseFloat(this.arrayPagos[i].monto_pago)
                 }
                 totalRestante = this.enganche_total - totalRestante;
+                totalRestante = Math.round(totalRestante*100)/100;
                 return totalRestante;
             },
 
@@ -2659,8 +2660,6 @@
                         this.errorMostrarMsjContrato.push("La Curp no es valida");
                     if(this.rfc=='' || this.rfc.length <10 || this.homoclave=='' || this.homoclave.length<3) 
                         this.errorMostrarMsjContrato.push("El RFC no es valido");
-                    if(this.nss=='' || this.nss.length <11) 
-                        this.errorMostrarMsjContrato.push("El NSS no es valido");
                 /************* Datos del trabajo *******************/
                     if(this.tipo_economia=='' || this.empresa=='' || this.puesto=='' || this.direccion_empresa==''
                         || this.cp_empresa=='' || this.colonia_empresa=='' || this.estado_empresa=='' 

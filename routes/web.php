@@ -375,6 +375,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('deposito/reciboPDF/{id}','DepositoController@reciboPDF');
 
 
+
         /************************** RUTAS ESTADISTICAS ***************************/
         Route::get('/estadisticas/datos_extra','EstadisticasController@estad_datos_extra');
 
@@ -393,6 +394,8 @@ Route::group(['middleware' => ['auth']],function(){
          Route::get('/observacionExpediente','ExpedienteController@listarObservaciones');
          Route::post('/observacionExpediente/registrar','ExpedienteController@storeObservacion');
          Route::get('/expediente/Excel','ExpedienteController@exportExcel');
+         Route::put('/expediente/fechaRecibido','AvisoPreventivoController@registrarFechaRecibido');
+         Route::get('/expediente/solicitudPDF/{id}','AvisoPreventivoController@solicitudPDF'); 
     });
 
 

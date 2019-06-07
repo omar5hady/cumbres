@@ -3061,8 +3061,6 @@
                     this.errorMostrarMsjCoacreditado.push("Ingresar fecha de nacimiento.");
                 if(this.rfc_coa=='') 
                     this.errorMostrarMsjCoacreditado.push("Ingresar RFC.");
-                if(this.nss_coa=='') 
-                    this.errorMostrarMsjCoacreditado.push("Ingresar numero de seguro social.");
                 if(this.tipo_casa_coa==0) 
                     this.errorMostrarMsjCoacreditado.push("Seleccionar tipo de casa.");
                 if(this.e_civil_coa==0) 
