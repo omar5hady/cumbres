@@ -28,12 +28,12 @@ body {
     <div style="clear:both;">
         
             <div style="float: left; margin-top: 5px; margin-left: 20px;">
-            <IMG SRC="img/contratos/logoContrato.jpg" width="110" height="110" >
+            <IMG SRC="img/contratos/logoContrato.jpg" width="130" height="130" >
             </div>
     <div  class="table" >
         <div class="table-row">
             <div  class="table-cell1"></div>
-            <div colspan="7" class="table-cell1"><b>SOLICITUD DE AVISO PREVENTIVOS</div>
+            <div colspan="7" class="table-cell1"><b>SOLICITUD DE AVISOS PREVENTIVOS</div>
             
         </div> 
 
@@ -48,7 +48,7 @@ body {
 
     <div class="table-row">
         <div class="table-cell2"></div>
-            <div colspan="8" class="table-cell2"> <b>Manuel Gutiérrez Najera no. 190 esquina  </div>  
+            <div colspan="8" class="table-cell2"> <b>Manuel Gutiérrez Najera No. 190 esquina  </div>  
         </div>
 
 <div class="table-row">
@@ -57,7 +57,7 @@ body {
         </div>
         <div class="table-row">
              <div class="table-cell2"></div>
-             <div colspan="8" class="table-cell2"> <b>C.P. 78230 Teléfono (444)8334683 al 85</div>  
+             <div colspan="8" class="table-cell2"> <b>C.P. 78230 Teléfono (444) 8-33-46-83 al 85</div>  
         </div>
         <div class="table-row">
             <div class="table-cell2"></div>
@@ -80,7 +80,7 @@ body {
     <div class="table" style="text-align:left; margin-top: 30px; margin-left: 20px;">
     
         <div class="table-row">
-            <div colspan="4" class="table-cell3"> TIPO DE CREDITO:<b> {{mb_strtoupper($solicitud[0]->tipo_credito)}} </div>  
+            <div colspan="4" class="table-cell3"> TIPO DE CREDITO:<b> {{mb_strtoupper($solicitud[0]->tipo_credito)}} ({{mb_strtoupper($solicitud[0]->institucion)}}) </div>  
         </div>
 
         <div class="table-row">
@@ -100,14 +100,17 @@ body {
         </div>
 
         <div class="table-row">
-            <div colspan="2" class="table-cell3">DIRECCIÓN:  <b>{{mb_strtoupper($solicitud[0]->calle)}}</div>
+            <div colspan="3" class="table-cell3">DIRECCIÓN:  <b>{{mb_strtoupper($solicitud[0]->calle)}} </div>
             <div class="table-cell3">NUM. <b>{{mb_strtoupper($solicitud[0]->numero)}}</div>
-            <div class="table-cell3">INT. <b>{{mb_strtoupper($solicitud[0]->interior)}}</div>
+            @if($solicitud[0]->interior)
+                <div class="table-cell3">INT. <b>{{mb_strtoupper($solicitud[0]->interior)}}</div>
+            @endif
+            @if(!$solicitud[0]->interior)
+                <div class="table-cell3"> </div>
+            @endif
             <div class="table-cell3"></div>
             <div class="table-cell3"></div>
             <div class="table-cell3"></div>
-            
-            
         </div>
     </div> 
 
@@ -166,12 +169,12 @@ body {
         <div style="clear:both;">
             
                 <div style="float: left; margin-top: 5px; margin-left: 20px;">
-                <IMG SRC="img/contratos/logoContrato.jpg" width="110" height="110" >
+                <IMG SRC="img/contratos/logoContrato.jpg" width="130" height="130" >
                 </div>
         <div  class="table" >
             <div class="table-row">
                 <div  class="table-cell1"></div>
-                <div colspan="7" class="table-cell1"><b>SOLICITUD DE AVISO PREVENTIVOS</div>
+                <div colspan="7" class="table-cell1"><b>SOLICITUD DE AVISOS PREVENTIVOS</div>
                 
             </div> 
     
@@ -186,7 +189,7 @@ body {
     
         <div class="table-row">
             <div class="table-cell2"></div>
-                <div colspan="8" class="table-cell2"> <b>Manuel Gutiérrez Najera no. 190 esquina  </div>  
+                <div colspan="8" class="table-cell2"> <b>Manuel Gutiérrez Najera No. 190 esquina  </div>  
             </div>
     
     <div class="table-row">
@@ -195,7 +198,7 @@ body {
             </div>
             <div class="table-row">
                  <div class="table-cell2"></div>
-                 <div colspan="8" class="table-cell2"> <b>C.P. 78230 Teléfono (444)8334683 al 85</div>  
+                 <div colspan="8" class="table-cell2"> <b>C.P. 78230 Teléfono (444) 8-33-46-83 al 85</div>  
             </div>
             <div class="table-row">
                 <div class="table-cell2"></div>
@@ -238,14 +241,17 @@ body {
             </div>
     
             <div class="table-row">
-                <div colspan="2" class="table-cell3">DIRECCIÓN:  <b>{{mb_strtoupper($solicitud[0]->calle)}}</div>
+                <div colspan="3" class="table-cell3">DIRECCIÓN:  <b>{{mb_strtoupper($solicitud[0]->calle)}} </div>
                 <div class="table-cell3">NUM. <b>{{mb_strtoupper($solicitud[0]->numero)}}</div>
-                <div class="table-cell3">INT. <b>{{mb_strtoupper($solicitud[0]->interior)}}</div>
+                @if($solicitud[0]->interior)
+                    <div class="table-cell3">INT. <b>{{mb_strtoupper($solicitud[0]->interior)}}</div>
+                @endif
+                @if(!$solicitud[0]->interior)
+                    <div class="table-cell3"> </div>
+                @endif
                 <div class="table-cell3"></div>
                 <div class="table-cell3"></div>
                 <div class="table-cell3"></div>
-                
-                
             </div>
         </div> 
     

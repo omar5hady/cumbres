@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Aviso_preventivo;
 use App\Contrato;
 use DB;
+use Carbon\Carbon;
 
 class AvisoPreventivoController extends Controller
 {
@@ -84,6 +85,10 @@ class AvisoPreventivoController extends Controller
         ->where('contratos.status', '!=', 2)
         ->where('aviso_preventivos.contrato_id', '=', $id)
         ->get();
+
+        setlocale(LC_TIME, 'es_MX.utf8');
+        $fechaAviso = new Carbon($solicitud[0]->aviso_prev);
+        $solicitud[0]->aviso_prev = $fechaAviso->formatLocalized('%d/%B/%Y');
 
         $pdf = \PDF::loadview('pdf.solicitudAvisosPreventivos',['solicitud' => $solicitud]);
         return $pdf->stream('solicitud_de_avisos_preventivos.pdf');
