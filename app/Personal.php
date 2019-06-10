@@ -29,6 +29,10 @@ class Personal extends Model
         return $this->hasMany('App\Lote');
     }
 
+    public function expediente(){
+        return $this->hasMany('App\Expediente');
+    }
+
     public function user(){
         return $this->hasOne('App\User');
     }

@@ -396,6 +396,7 @@ Route::group(['middleware' => ['auth']],function(){
          Route::get('/expediente/Excel','ExpedienteController@exportExcel');
          Route::put('/expediente/fechaRecibido','AvisoPreventivoController@registrarFechaRecibido');
          Route::get('/expediente/solicitudPDF/{id}','AvisoPreventivoController@solicitudPDF'); 
+         Route::post('/expediente/integrar','ExpedienteController@store');
     });
 
 

@@ -7,7 +7,9 @@ use App\Contrato;
 use DB;
 use App\Obs_expediente;
 use Auth;
+use App\Expediente;
 use Excel;
+use Carbon\Carbon;
 
 class ExpedienteController extends Controller
 {
@@ -1023,5 +1025,20 @@ class ExpedienteController extends Controller
         }
         
         )->download('xls');
+    }
+
+    public function store(Request $request){
+        if(!$request->ajax())return redirect('/');
+        setlocale(LC_TIME, 'es_MX.utf8');
+        $hoy = Carbon::today()->toDateString();
+
+        $expediente = new Expediente();
+        $expediente->id = $request->folio;
+        $expediente->fecha_integracion = $hoy;
+        $expediente->save();
+
+        $contrato = Contrato::findOrFail($request->folio);
+        $contrato->integracion = 1;
+        $contrato->save();
     }
 }

@@ -135,7 +135,7 @@
                                         <td v-if="contratos.coacreditado == 1" class="td2" v-text="contratos.nombre_conyuge"></td>
                                         <td v-else class="td2">Sin conyuge</td>
                                         <td class="td2">
-                                            <button type="button" @click="abrirModal('avaluo',contratos)" class="btn btn-primary btn-sm" title="Integrar">
+                                            <button type="button" @click="integrar(contratos.folio)" class="btn btn-primary btn-sm" title="Integrar">
                                                  <i class="fa fa-check-square-o"> Integrar</i>
                                             </button>
                                         </td>
@@ -758,17 +758,45 @@
                 }) 
             },
 
-            validarLote(){
-                this.errorLote=0;
-                this.errorMostrarMsjLote=[];
+            integrar(id){
+                this.id = id;
+                swal({
+                title: '¿Esta seguro integrar este registro?',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Aceptar!',
+                cancelButtonText: 'Cancelar',
+                confirmButtonClass: 'btn btn-success',
+                cancelButtonClass: 'btn btn-danger',
+                buttonsStyling: false,
+                reverseButtons: true
+                }).then((result) => {
+                if (result.value) {
+                    let me = this;
 
-                if(!this.fraccionamiento_id) //Si la variable Lote esta vacia
-                    this.errorMostrarMsjLote.push("El nombre del proyecto para el Lote no puede ir vacio.");
-
-                if(this.errorMostrarMsjLote.length)//Si el mensaje tiene almacenado algo en el array
-                    this.errorLote = 1;
-
-                return this.errorLote;
+                    axios.post('/expediente/integrar',{
+                        'folio': me.id
+                    }).then(function (response) {
+                        me.listarContratos(1,me.buscar,me.b_etapa,me.b_manzana,me.b_lote,me.criterio);
+                        swal(
+                        'Hecho!',
+                        'Contrato integrado correctamente.',
+                        'success'
+                        )
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                    
+                    
+                } else if (
+                    // Read more about handling dismissals
+                    result.dismiss === swal.DismissReason.cancel
+                ) {
+                    
+                }
+                }) 
             },
 
             cerrarModal(){
