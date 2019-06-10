@@ -275,6 +275,11 @@
         </template>
 
         
+        <template v-if="menu==202">
+            <asignargestor></asignargestor>
+        </template>
+
+        
     @endif
 
        

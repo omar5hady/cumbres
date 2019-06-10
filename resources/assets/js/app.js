@@ -80,13 +80,16 @@ Vue.component('crear-contrato', require('./components/Ventas/Contrato.vue'));
 Vue.component('rol', require('./components/Rol.vue'));
 Vue.component('usuario', require('./components/Usuarios.vue'));
 
+//Componentes gestoria
+Vue.component('depositos', require('./components/Deposito.vue'));
+Vue.component('expediente', require('./components/IntegracionExp.vue'));
+Vue.component('asignargestor', require('./components/AsignarGestor.vue'));
 
 Vue.component('notification', require('./components/Notification.vue'));
 Vue.component('perfil-user', require('./components/Perfil.vue'));
 Vue.component('listar-notifications', require('./components/ListarNotifications.vue'));
 Vue.component('datos-extra', require('./components/EstaditicaDatosExtra.vue'));
-Vue.component('depositos', require('./components/Deposito.vue'));
-Vue.component('expediente', require('./components/IntegracionExp.vue'));
+
 
 const app = new Vue({
     el: '#app',

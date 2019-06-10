@@ -1041,4 +1041,393 @@ class ExpedienteController extends Controller
         $contrato->integracion = 1;
         $contrato->save();
     }
+
+    public function indexAsignarGestor(Request $request)
+    {
+        $buscar = $request->buscar;
+        $b_etapa = $request->b_etapa;
+        $b_manzana = $request->b_manzana;
+        $b_lote = $request->b_lote;
+        $criterio = $request->criterio;
+
+
+        if ($buscar == '') {
+            $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                ->join('personal as c', 'clientes.id', '=', 'c.id')
+                ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                ->join('expedientes','contratos.id','=','expedientes.id')
+                ->join('personal as g','expedientes.gestor_id','=','g.id')
+                ->select(
+                    'contratos.id as folio',
+                    DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                    'creditos.fraccionamiento as proyecto',
+                    'creditos.etapa',
+                    'creditos.manzana',
+                    'creditos.num_lote',
+                    'contratos.fecha_status',
+                    'i.tipo_credito',
+                    'i.institucion', 
+                    'expedientes.gestor_id',                
+                    'contratos.integracion',
+                    'lotes.fraccionamiento_id',
+                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) AS nombre_gestor")
+                )
+                ->where('i.elegido', '=', 1)
+                ->where('contratos.integracion', '=', 1)
+                ->where('contratos.status', '!=', 0)
+                ->where('contratos.status', '!=', 2)
+                ->paginate(8);
+        } else {
+            if ($criterio != 'lotes.fraccionamiento_id' && $criterio != 'c.nombre' && $criterio != 'v.nombre') {
+                $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id') 
+                    ->join('personal as c', 'clientes.id', '=', 'c.id')
+                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                    ->join('expedientes','contratos.id','=','expedientes.id')
+                    ->join('personal as g','expedientes.gestor_id','=','g.id')
+                    ->select(
+                        'contratos.id as folio',
+                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                        'creditos.fraccionamiento as proyecto',
+                        'creditos.etapa',
+                        'creditos.manzana',
+                        'creditos.num_lote',
+                        'contratos.fecha_status',
+                        'i.tipo_credito',
+                        'i.institucion',
+                        'expedientes.gestor_id',
+                        'contratos.integracion',
+                        'lotes.fraccionamiento_id',
+                        DB::raw("CONCAT(g.nombre,' ',g.apellidos) AS nombre_gestor")
+                    )
+                    ->where('i.elegido', '=', 1)
+                    ->where('contratos.integracion', '=', 1)
+                    ->where('contratos.status', '!=', 0)
+                    ->where('contratos.status', '!=', 2)
+                    ->where($criterio, 'like', '%' . $buscar . '%')
+                    ->paginate(8);
+            } else {
+
+                if ($criterio == 'lotes.fraccionamiento_id' && $b_etapa == ''  && $b_manzana == '' && $b_lote == '') {
+                    $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id') 
+                        ->join('personal as c', 'clientes.id', '=', 'c.id')
+                        ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                        ->join('expedientes','contratos.id','=','expedientes.id')
+                        ->join('personal as g','expedientes.gestor_id','=','g.id')
+                        ->select(
+                            'contratos.id as folio',
+                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                            'creditos.fraccionamiento as proyecto',
+                            'creditos.etapa',
+                            'creditos.manzana',
+                            'creditos.num_lote',
+                            'contratos.fecha_status',
+                            'i.tipo_credito',
+                            'i.institucion',
+                            'expedientes.gestor_id',
+                            'contratos.integracion',
+                            'lotes.fraccionamiento_id',
+                            DB::raw("CONCAT(g.nombre,' ',g.apellidos) AS nombre_gestor")
+                        )
+                        ->where('i.elegido', '=', 1)
+                        ->where('contratos.integracion', '=', 1)
+                        ->where('contratos.status', '!=', 0)
+                        ->where('contratos.status', '!=', 2)
+                        ->where($criterio, '=', $buscar)
+                        ->paginate(8);
+                } else {
+                    if ($criterio == 'lotes.fraccionamiento_id' && $b_etapa != ''  && $b_manzana == '' && $b_lote == '') {
+                        $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                            ->join('personal as c', 'clientes.id', '=', 'c.id')
+                            ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                            ->join('expedientes','contratos.id','=','expedientes.id')
+                            ->join('personal as g','expedientes.gestor_id','=','g.id')
+                            ->select(
+                                'contratos.id as folio',
+                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"), 
+                                'creditos.fraccionamiento as proyecto',
+                                'creditos.etapa',
+                                'creditos.manzana',
+                                'creditos.num_lote',
+                                'contratos.fecha_status',
+                                'i.tipo_credito',
+                                'i.institucion',
+                                'expedientes.gestor_id',
+                                'contratos.integracion',
+                                'lotes.fraccionamiento_id',
+                                DB::raw("CONCAT(g.nombre,' ',g.apellidos) AS nombre_gestor")
+                            )
+                            ->where('i.elegido', '=', 1)
+                            ->where('contratos.integracion', '=', 1)
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where($criterio, '=', $buscar)
+                            ->where('lotes.etapa_id', '=', $b_etapa)
+                            ->paginate(8);
+                    } else {
+                        if ($criterio == 'lotes.fraccionamiento_id' && $b_etapa == ''  && $b_manzana != '' && $b_lote == '') {
+                            $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                ->join('personal as c', 'clientes.id', '=', 'c.id')
+                                ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                                ->join('expedientes','contratos.id','=','expedientes.id')
+                                ->join('personal as g','expedientes.gestor_id','=','g.id')
+                                ->select(
+                                    'contratos.id as folio',
+                                    DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                    'creditos.fraccionamiento as proyecto',
+                                    'creditos.etapa',
+                                    'creditos.manzana',
+                                    'creditos.num_lote',
+                                    'contratos.fecha_status',
+                                    'i.tipo_credito',
+                                    'i.institucion',
+                                    'expedientes.gestor_id',
+                                    'contratos.integracion',
+                                    'lotes.fraccionamiento_id',
+                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) AS nombre_gestor")
+                                )
+                                ->where('i.elegido', '=', 1)
+                                ->where('contratos.integracion', '=', 1)
+                                ->where('contratos.status', '!=', 0)
+                                ->where('contratos.status', '!=', 2)
+                                ->where($criterio, '=', $buscar)
+                                ->where('creditos.manzana', 'like', '%' . $b_manzana . '%')
+                                ->paginate(8);
+                        } else {
+                            if ($criterio == 'lotes.fraccionamiento_id' && $b_etapa == ''  && $b_manzana == '' && $b_lote != '') {
+                                $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')  
+                                    ->join('personal as c', 'clientes.id', '=', 'c.id') 
+                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                                    ->join('expedientes','contratos.id','=','expedientes.id')
+                                    ->join('personal as g','expedientes.gestor_id','=','g.id')
+                                    ->select(
+                                        'contratos.id as folio',
+                                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"), 
+                                        'creditos.fraccionamiento as proyecto',
+                                        'creditos.etapa',
+                                        'creditos.manzana',
+                                        'creditos.num_lote',  
+                                        'contratos.fecha_status',
+                                        'i.tipo_credito',
+                                        'i.institucion',
+                                        'expedientes.gestor_id',
+                                        'contratos.integracion',
+                                        'lotes.fraccionamiento_id',
+                                        DB::raw("CONCAT(g.nombre,' ',g.apellidos) AS nombre_gestor")
+                                    )
+                                    ->where('i.elegido', '=', 1)
+                                    ->where('contratos.integracion', '=', 1)
+                                    ->where('contratos.status', '!=', 0)
+                                    ->where('contratos.status', '!=', 2)
+                                    ->where($criterio, '=', $buscar)
+                                    ->where('creditos.num_lote', 'like', '%' . $b_lote . '%')
+                                    ->paginate(8);
+                            } else {
+                                if ($criterio == 'lotes.fraccionamiento_id' && $b_etapa != ''  && $b_manzana != '' && $b_lote == '') {
+                                    $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                        ->join('personal as c', 'clientes.id', '=', 'c.id')
+                                        ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                                        ->join('expedientes','contratos.id','=','expedientes.id')
+                                        ->join('personal as g','expedientes.gestor_id','=','g.id')
+                                        ->select(
+                                            'contratos.id as folio',
+                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                            'creditos.fraccionamiento as proyecto',
+                                            'creditos.etapa',
+                                            'creditos.manzana',
+                                            'creditos.num_lote',
+                                            'contratos.fecha_status',
+                                            'i.tipo_credito',
+                                            'i.institucion',
+                                            'expedientes.gestor_id',
+                                            'contratos.integracion',
+                                            'lotes.fraccionamiento_id',
+                                            DB::raw("CONCAT(g.nombre,' ',g.apellidos) AS nombre_gestor")
+                                        )
+                                        ->where('i.elegido', '=', 1)
+                                        ->where('contratos.integracion', '=', 1)
+                                        ->where('contratos.status', '!=', 0)
+                                        ->where('contratos.status', '!=', 2)
+                                        ->where($criterio, '=', $buscar)
+                                        ->where('lotes.etapa_id', '=', $b_etapa)
+                                        ->where('creditos.manzana', 'like', '%' . $b_manzana . '%')
+                                        ->paginate(8);
+                                } else {
+                                    if ($criterio == 'lotes.fraccionamiento_id' && $b_etapa != ''  && $b_manzana != '' && $b_lote != '') {
+                                        $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                            ->join('personal as c', 'clientes.id', '=', 'c.id')
+                                            ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                                            ->join('expedientes','contratos.id','=','expedientes.id')
+                                            ->join('personal as g','expedientes.gestor_id','=','g.id')
+                                            ->select(
+                                                'contratos.id as folio',
+                                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                                'creditos.fraccionamiento as proyecto',
+                                                'creditos.etapa',
+                                                'creditos.manzana',
+                                                'creditos.num_lote',
+                                                'contratos.fecha_status',
+                                                'i.tipo_credito',
+                                                'i.institucion',
+                                                'expedientes.gestor_id',
+                                                'contratos.integracion',
+                                                'lotes.fraccionamiento_id',
+                                                DB::raw("CONCAT(g.nombre,' ',g.apellidos) AS nombre_gestor")
+                                            )
+                                            ->where('i.elegido', '=', 1)
+                                            ->where('contratos.integracion', '=', 1)
+                                            ->where('contratos.status', '!=', 0)
+                                            ->where('contratos.status', '!=', 2)
+                                            ->where($criterio, '=', $buscar)
+                                            ->where('lotes.etapa_id', '=', $b_etapa)
+                                            ->where('creditos.manzana', 'like', '%' . $b_manzana . '%')
+                                            ->where('creditos.num_lote', 'like', '%' . $b_lote . '%')
+                                            ->paginate(8);
+                                    } else {
+                                        if ($criterio == 'lotes.fraccionamiento_id' && $b_etapa != ''  && $b_manzana == '' && $b_lote != '') {
+                                            $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                                ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                                ->join('personal as c', 'clientes.id', '=', 'c.id')
+                                                ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                                                ->join('expedientes','contratos.id','=','expedientes.id')
+                                                ->join('personal as g','expedientes.gestor_id','=','g.id')
+                                                ->select(
+                                                    'contratos.id as folio',
+                                                    DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                                    'creditos.fraccionamiento as proyecto',
+                                                    'creditos.etapa',
+                                                    'creditos.manzana',
+                                                    'creditos.num_lote',
+                                                    'contratos.fecha_status',
+                                                    'i.tipo_credito',
+                                                    'i.institucion',
+                                                    'expedientes.gestor_id',
+                                                    'contratos.integracion',
+                                                    'lotes.fraccionamiento_id',
+                                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) AS nombre_gestor")
+                                                )
+                                                ->where('i.elegido', '=', 1)
+                                                ->where('contratos.integracion', '=', 1)
+                                                ->where('contratos.status', '!=', 0)
+                                                ->where('contratos.status', '!=', 2)
+                                                ->where($criterio, '=', $buscar)
+                                                ->where('lotes.etapa_id', '=', $b_etapa)
+                                                ->where('creditos.num_lote', 'like', '%' . $b_lote . '%')
+                                                ->paginate(8);
+                                        } else {
+                                            if ($criterio == 'c.nombre' && $buscar != '') {
+                                                $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
+                                                    ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                                                    ->join('expedientes','contratos.id','=','expedientes.id')
+                                                    ->join('personal as g','expedientes.gestor_id','=','g.id')
+                                                    ->select(
+                                                        'contratos.id as folio',
+                                                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                                        'creditos.fraccionamiento as proyecto',
+                                                        'creditos.etapa',
+                                                        'creditos.manzana',
+                                                        'creditos.num_lote',
+                                                        'contratos.fecha_status',
+                                                        'i.tipo_credito',
+                                                        'i.institucion',
+                                                        'expedientes.gestor_id',
+                                                        'contratos.integracion',
+                                                        'lotes.fraccionamiento_id',
+                                                        DB::raw("CONCAT(g.nombre,' ',g.apellidos) AS nombre_gestor")
+                                                    )
+                                                    ->where('i.elegido', '=', 1)
+                                                    ->where('contratos.integracion', '=', 1)
+                                                    ->where('contratos.status', '!=', 0)
+                                                    ->where('contratos.status', '!=', 2)
+                                                    ->where($criterio, 'like', '%' . $buscar . '%')
+                                                    ->orWhere('c.apellidos', 'like', '%' . $buscar . '%')
+                                                    ->where('i.elegido', '=', 1)
+                                                    ->where('contratos.integracion', '=', 0)
+                                                    ->where('contratos.status', '!=', 0)
+                                                    ->where('contratos.status', '!=', 2)
+                                                    ->paginate(8);
+                                            } else {
+                                                if ($criterio == 'g.nombre' && $buscar != '') {
+                                                    $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                                        ->join('personal as c', 'clientes.id', '=', 'c.id')
+                                                        ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                                                        ->join('expedientes','contratos.id','=','expedientes.id')
+                                                        ->join('personal as g','expedientes.gestor_id','=','g.id')
+                                                        ->select(
+                                                            'contratos.id as folio',
+                                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                                            'creditos.fraccionamiento as proyecto',
+                                                            'creditos.etapa',
+                                                            'creditos.manzana',
+                                                            'creditos.num_lote',
+                                                            'contratos.fecha_status',
+                                                            'i.tipo_credito',
+                                                            'i.institucion',
+                                                            'expedientes.gestor_id',
+                                                            'contratos.integracion',
+                                                            'lotes.fraccionamiento_id',
+                                                            DB::raw("CONCAT(g.nombre,' ',g.apellidos) AS nombre_gestor")
+                                                        )
+                                                        ->where('i.elegido', '=', 1)
+                                                        ->where('contratos.integracion', '=', 1)
+                                                        ->where('contratos.status', '!=', 0)
+                                                        ->where('contratos.status', '!=', 2)
+                                                        ->where($criterio, 'like', '%' . $buscar . '%')
+                                                        ->orWhere('g.apellidos', 'like', '%' . $buscar . '%')
+                                                        ->where('i.elegido', '=', 1)
+                                                        ->where('contratos.integracion', '=', 0)
+                                                        ->where('contratos.status', '!=', 0)
+                                                        ->where('contratos.status', '!=', 2)
+                                                        ->paginate(8);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return [
+            'pagination' => [
+                'total'        => $contratos->total(),
+                'current_page' => $contratos->currentPage(),
+                'per_page'     => $contratos->perPage(),
+                'last_page'    => $contratos->lastPage(),
+                'from'         => $contratos->firstItem(),
+                'to'           => $contratos->lastItem(),
+            ],
+            'contratos' => $contratos,
+        ];
+    }
+
+    public function asignarGestor(Request $request){
+        $asignar = Expediente::findOrFail($request->folio);
+        $asignar->gestor_id =  $request->gestor_id;
+        $asignar->save();
+    }
 }

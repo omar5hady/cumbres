@@ -241,4 +241,14 @@ class PersonalController extends Controller
             
     }
 
+    public function select_gestores (){
+        $gestores = Personal::join('users','personal.id','=','users.id')
+                            ->select('personal.id',
+                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_gestor"))
+                            ->where('users.rol_id','=',8)
+                            ->where('users.condicion','=',1)
+                            ->get();
+        return ['gestores' => $gestores];
+    }
+
 }

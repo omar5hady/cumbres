@@ -18,5 +18,5 @@ class Expediente extends Model
     public function Gestor()
     {
         return $this->belongsTo('App\Personal');
-    }
+    } 
 }

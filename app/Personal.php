@@ -43,6 +43,6 @@ class Personal extends Model
 
     public function cliente(){
         return $this->hasOne('App\Vendedor');
-    }
+    } 
 
 }

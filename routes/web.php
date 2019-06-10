@@ -397,6 +397,12 @@ Route::group(['middleware' => ['auth']],function(){
          Route::put('/expediente/fechaRecibido','AvisoPreventivoController@registrarFechaRecibido');
          Route::get('/expediente/solicitudPDF/{id}','AvisoPreventivoController@solicitudPDF'); 
          Route::post('/expediente/integrar','ExpedienteController@store');
+
+        ////////////////////////// RUTAS ASIGNAR GESTOR /////////////////////////////
+
+        Route::get('expediente/indexAsignarGestor','ExpedienteController@indexAsignarGestor');
+        Route::put('/expediente/asignarGestor','ExpedienteController@asignarGestor');
+
     });
 
 
@@ -455,7 +461,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/select_gerentes','UserController@select_users_gerentes');
         Route::get('/select_rfcs','PersonalController@selectRFC');
         Route::get('/select_notarias','NotariaController@select_notarias');
-    
+        Route::get('/select_gestores','PersonalController@select_gestores');
     
     
 });

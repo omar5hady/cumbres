@@ -323,6 +323,9 @@
                                     <li @click="menu=201" class="nav-item">
                                         <a class="nav-link" href="#"><i class="fa fa-money"></i> Expediente</a>
                                     </li>
+                                    <li @click="menu=202" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="fa fa-money"></i> Asignar gestor</a>
+                                    </li>
                             </ul>
                         </li>
                     @endif

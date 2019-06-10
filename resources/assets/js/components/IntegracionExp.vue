@@ -98,7 +98,7 @@
                                                     <i class="fa fa-times-circle"></i>
                                                 </button>
                                             </td>
-                                        </template>
+                                        </template> 
                                          <template v-if="contratos.aviso_prev">
                                             <td @dblclick="abrirModal('fecha_recibido',contratos)" v-if="contratos.aviso_prev!='0000-01-01' && !contratos.aviso_prev_venc" class="td2" v-text="'Fecha solicitud: ' 
                                                 + this.moment(contratos.aviso_prev).locale('es').format('DD/MMM/YYYY')"></td>
