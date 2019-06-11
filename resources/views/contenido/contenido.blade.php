@@ -278,6 +278,9 @@
         <template v-if="menu==202">
             <asignargestor></asignargestor>
         </template>
+        <template v-if="menu==203">
+            <seguimiento-tramite></seguimiento-tramite>
+        </template>
 
         
     @endif
