@@ -3203,7 +3203,7 @@ class LoteController extends Controller
                     }else{
                         $casaenventa = 'no';
                     }
-                       $sheet->row($index+2, [
+                    $sheet->row($index+2, [
                         $lote->proyecto, 
                         $lote->etapas, 
                         $lote->etapa_servicios, 

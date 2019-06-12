@@ -194,6 +194,12 @@
             </template>
         @endif
 
+        @if(Auth::user()->aviso_obra == 1)
+            <template v-if="menu==55">
+                <visita-avaluo></visita-avaluo>
+            </template>
+        @endif
+
         @if(Auth::user()->roles == 1)
             <template v-if="menu==71">
                 <rol></rol>

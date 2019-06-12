@@ -67,6 +67,7 @@ Vue.component('iniobra', require('./components/Obra/IniObra.vue'));
 Vue.component('aviso-obra', require('./components/Obra/AvisoObra.vue'));
 Vue.component('partidas', require('./components/Obra/Partidas.vue'));
 Vue.component('avance', require('./components/Obra/Avance.vue'));
+Vue.component('visita-avaluo', require('./components/Obra/VisitaAvaluo.vue'));
 
 //Componentes Ventas
 Vue.component('lote-disponible', require('./components/Ventas/LotesDisp.vue'));

@@ -25,6 +25,7 @@ class ExpedienteController extends Controller
         if ($buscar == '') {
             $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                 ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                ->join('licencias', 'lotes.id', '=', 'licencias.id')
                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                 ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
                 ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -38,7 +39,7 @@ class ExpedienteController extends Controller
                     'creditos.etapa',
                     'creditos.manzana',
                     'creditos.num_lote',
-                    'contratos.avance_lote',
+                    'licencias.avance as avance_lote',
                     'contratos.fecha_status',
                     'i.tipo_credito',
                     'i.institucion',
@@ -61,6 +62,7 @@ class ExpedienteController extends Controller
             if ($criterio != 'lotes.fraccionamiento_id' && $criterio != 'c.nombre' && $criterio != 'v.nombre') {
                 $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                     ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                    ->join('licencias', 'lotes.id', '=', 'licencias.id')
                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                     ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
                     ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -74,6 +76,7 @@ class ExpedienteController extends Controller
                         'creditos.etapa',
                         'creditos.manzana',
                         'creditos.num_lote',
+                        'licencias.avance as avance_lote',
                         'contratos.avance_lote',
                         'contratos.fecha_status',
                         'i.tipo_credito',
@@ -99,6 +102,7 @@ class ExpedienteController extends Controller
                 if ($criterio == 'lotes.fraccionamiento_id' && $b_etapa == ''  && $b_manzana == '' && $b_lote == '') {
                     $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                         ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                        ->join('licencias', 'lotes.id', '=', 'licencias.id')
                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                         ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
                         ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -112,6 +116,7 @@ class ExpedienteController extends Controller
                             'creditos.etapa',
                             'creditos.manzana',
                             'creditos.num_lote',
+                            'licencias.avance as avance_lote',
                             'contratos.avance_lote',
                             'contratos.fecha_status',
                             'i.tipo_credito',
@@ -136,6 +141,7 @@ class ExpedienteController extends Controller
                     if ($criterio == 'lotes.fraccionamiento_id' && $b_etapa != ''  && $b_manzana == '' && $b_lote == '') {
                         $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                             ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
                             ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                             ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
                             ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -149,6 +155,7 @@ class ExpedienteController extends Controller
                                 'creditos.etapa',
                                 'creditos.manzana',
                                 'creditos.num_lote',
+                                'licencias.avance as avance_lote',
                                 'contratos.avance_lote',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
@@ -174,6 +181,7 @@ class ExpedienteController extends Controller
                         if ($criterio == 'lotes.fraccionamiento_id' && $b_etapa == ''  && $b_manzana != '' && $b_lote == '') {
                             $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                 ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                ->join('licencias', 'lotes.id', '=', 'licencias.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
                                 ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -187,6 +195,7 @@ class ExpedienteController extends Controller
                                     'creditos.etapa',
                                     'creditos.manzana',
                                     'creditos.num_lote',
+                                    'licencias.avance as avance_lote',
                                     'contratos.avance_lote',
                                     'contratos.fecha_status',
                                     'i.tipo_credito',
@@ -212,6 +221,7 @@ class ExpedienteController extends Controller
                             if ($criterio == 'lotes.fraccionamiento_id' && $b_etapa == ''  && $b_manzana == '' && $b_lote != '') {
                                 $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                     ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                    ->join('licencias', 'lotes.id', '=', 'licencias.id')
                                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                     ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
                                     ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -225,6 +235,7 @@ class ExpedienteController extends Controller
                                         'creditos.etapa',
                                         'creditos.manzana',
                                         'creditos.num_lote',
+                                        'licencias.avance as avance_lote',
                                         'contratos.avance_lote',
                                         'contratos.fecha_status',
                                         'i.tipo_credito',
@@ -250,6 +261,7 @@ class ExpedienteController extends Controller
                                 if ($criterio == 'lotes.fraccionamiento_id' && $b_etapa != ''  && $b_manzana != '' && $b_lote == '') {
                                     $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                         ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                        ->join('licencias', 'lotes.id', '=', 'licencias.id')
                                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                         ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
                                         ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -263,6 +275,7 @@ class ExpedienteController extends Controller
                                             'creditos.etapa',
                                             'creditos.manzana',
                                             'creditos.num_lote',
+                                            'licencias.avance as avance_lote',
                                             'contratos.avance_lote',
                                             'contratos.fecha_status',
                                             'i.tipo_credito',
@@ -289,6 +302,7 @@ class ExpedienteController extends Controller
                                     if ($criterio == 'lotes.fraccionamiento_id' && $b_etapa != ''  && $b_manzana != '' && $b_lote != '') {
                                         $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                             ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
                                             ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                             ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
                                             ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -302,6 +316,7 @@ class ExpedienteController extends Controller
                                                 'creditos.etapa',
                                                 'creditos.manzana',
                                                 'creditos.num_lote',
+                                                'licencias.avance as avance_lote',
                                                 'contratos.avance_lote',
                                                 'contratos.fecha_status',
                                                 'i.tipo_credito',
@@ -329,6 +344,7 @@ class ExpedienteController extends Controller
                                         if ($criterio == 'lotes.fraccionamiento_id' && $b_etapa != ''  && $b_manzana == '' && $b_lote != '') {
                                             $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                                 ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                                ->join('licencias', 'lotes.id', '=', 'licencias.id')
                                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                                 ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
                                                 ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -342,6 +358,7 @@ class ExpedienteController extends Controller
                                                     'creditos.etapa',
                                                     'creditos.manzana',
                                                     'creditos.num_lote',
+                                                    'licencias.avance as avance_lote',
                                                     'contratos.avance_lote',
                                                     'contratos.fecha_status',
                                                     'i.tipo_credito',
@@ -368,6 +385,7 @@ class ExpedienteController extends Controller
                                             if ($criterio == 'c.nombre' && $buscar != '') {
                                                 $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                                     ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                                    ->join('licencias', 'lotes.id', '=', 'licencias.id')
                                                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                                     ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
                                                     ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -381,6 +399,7 @@ class ExpedienteController extends Controller
                                                         'creditos.etapa',
                                                         'creditos.manzana',
                                                         'creditos.num_lote',
+                                                        'licencias.avance as avance_lote',
                                                         'contratos.avance_lote',
                                                         'contratos.fecha_status',
                                                         'i.tipo_credito',
@@ -410,6 +429,7 @@ class ExpedienteController extends Controller
                                                 if ($criterio == 'v.nombre' && $buscar != '') {
                                                     $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                                         ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                                        ->join('licencias', 'lotes.id', '=', 'licencias.id')
                                                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                                         ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
                                                         ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -423,6 +443,7 @@ class ExpedienteController extends Controller
                                                             'creditos.etapa',
                                                             'creditos.manzana',
                                                             'creditos.num_lote',
+                                                            'licencias.avance as avance_lote',
                                                             'contratos.avance_lote',
                                                             'contratos.fecha_status',
                                                             'i.tipo_credito',

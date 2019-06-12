@@ -261,6 +261,11 @@
                                         <a class="nav-link" href="#"><i class="fa fa-star-half-o"></i> Avance</a>
                                     </li>
                                 @endif
+                                @if(Auth::user()->avance == 1)
+                                    <li @click="menu=55 "class="nav-item">
+                                        <a class="nav-link" href="#"><i class="fa fa-star-half-o"></i> Visita para avaluo</a>
+                                    </li>
+                                @endif
                             </ul>
                         </li>
                     @endif

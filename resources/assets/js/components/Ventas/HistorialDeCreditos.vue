@@ -189,7 +189,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Monto</label>
                                     <div class="col-md-4">
-                                        <input type="text" maxlength="9" v-model="monto_credito" pattern="\d*" v-on:keypress="isNumber($event)" class="form-control" placeholder="Monto">
+                                        <input type="text" maxlength="10" v-model="monto_credito" pattern="\d*" v-on:keypress="isNumber($event)" class="form-control" placeholder="Monto">
                                     </div>
                                     <div class="col-md-3">
                                         <h6 v-text="'$'+formatNumber(monto_credito)"></h6>

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Precio_etapa;
 use App\Precio_modelo;
+use App\Lote;
+use App\Modelo;
 
 class PrecioEtapaController extends Controller
 {
@@ -113,8 +115,23 @@ class PrecioEtapaController extends Controller
         $precio_etapa->etapa_id = $request->etapa_id;
         $precio_etapa->precio_excedente = $request->precio_excedente;
         $precio_etapa->save();
+
+        $lotes = Lote::select('modelo_id','id','terreno')
+            ->where('contrato','=','0')
+            ->where('habilitado','=','1')
+            ->get();
+        
+        foreach($lotes as $lote){
+            $modelo = Modelo::select('terreno')->where('id','=',$lote->modelo_id)->get();
+            $loteExc = Lote::findOrFail($lote->id);
+            $terrenoExcedente = ($loteExc->terreno - $modelo[0]->terreno);
+            if($terrenoExcedente > 0)
+                $loteExc->excedente_terreno = $terrenoExcedente * $request->precio_excedente;
+            $loteExc->save();
+        }
+        
+        
     
-        $precio_etapa->save();
     }
 
     /**

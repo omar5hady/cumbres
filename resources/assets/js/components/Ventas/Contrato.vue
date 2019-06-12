@@ -322,10 +322,11 @@
                                             <div class="col-md-2">
                                                     <div class="form-group">
                                                 <label for="">Colonia<span style="color:red;" v-show="colonia==''">(*)</span></label>
-                                                <select class="form-control" v-if="listado==3 || listado==4 && btn_actualizar==1" v-model="colonia">
+                                                <input v-if="listado==3 || listado==4 && btn_actualizar==1" type="text" name="city3" list="cityname3" class="form-control" v-model="colonia">
+                                                <datalist v-if="listado==3 || listado==4 && btn_actualizar==1" id="cityname3">
                                                     <option value="">Seleccione</option>
-                                                    <option v-for="colonias in arrayColonias" :key="colonias.colonia " :value="colonias.colonia" v-text="colonias.colonia"></option>
-                                                </select>
+                                                    <option v-for="colonias in arrayColonias" :key="colonias.colonia " :value="colonias.colonia" v-text="colonias.colonia"></option>    
+                                                </datalist>
                                                 <input type="text" v-if="listado==4 && btn_actualizar==0" class="form-control" :readonly="listado==4 && btn_actualizar==0" v-model="colonia">
                                             </div>
                                             </div>
@@ -531,7 +532,7 @@
 
                                                             <div class="col-md-3">
                                                                 <div class="form-group">
-                                                                    <label for=""># Dependientes económicos<span style="color:red;" v-show="dep_economicos==''">(*)</span></label>
+                                                                    <label for=""># Dependientes económicos</label>
                                                                     <input :readonly="listado==4 && btn_actualizar==0" type="text" class="form-control" v-model="dep_economicos">
                                                                 </div>
                                                             </div>
@@ -1116,7 +1117,7 @@
                                                     <div class="col-md-3" v-if="inst_financiera!='' && listado==3 || listado==4 && btn_actualizar==1 && inst_financiera!=''">
                                                         <div class="form-group">
                                                         <label for="">Comisión por apertura</label>
-                                                            <input type="text" pattern="\d*" v-model="comision_apertura" maxlength="9" v-on:keypress="isNumber($event)" class="form-control" >
+                                                            <input type="text" pattern="\d*" v-model="comision_apertura" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
                                                         </div>
                                                     </div>
 
@@ -1147,7 +1148,7 @@
                                                     <div class="col-md-3" v-if="inst_financiera!=''&& listado==3 || listado==4 && btn_actualizar==1 && inst_financiera!=''">
                                                         <div class="form-group">
                                                         <label for="">Investigación</label>
-                                                            <input type="text" pattern="\d*" v-model="investigacion" maxlength="9" v-on:keypress="isNumber($event)" class="form-control" >
+                                                            <input type="text" pattern="\d*" v-model="investigacion" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
                                                         </div>
                                                     </div>
 
@@ -1158,17 +1159,17 @@
                                                         </div>
                                                     </div> 
 
-                                                    <div class="col-md-3" v-if="tipo_credito=='Alia2' && listado==3 || tipo_credito=='Respalda2' && listado==3 || tipo_credito=='Alia2' && listado==4 && btn_actualizar==1 || tipo_credito=='Respalda2' && listado==4 && btn_actualizar==1  ">
+                                                    <div class="col-md-3" v-if="tipo_credito=='Alia2' && listado==3 || tipo_credito=='Respalda2' && listado==3 || tipo_credito=='Alia2' && listado==4 && btn_actualizar==1 || tipo_credito=='Respalda2' && listado==4 && btn_actualizar==1 || tipo_credito=='INFONAVIT-FOVISSSTE' && listado==3 || tipo_credito=='INFONAVIT-FOVISSSTE' && listado==4 && btn_actualizar==1 ">
                                                         <div class="form-group">
                                                         <label for="">Fovissste</label>
-                                                            <input type="text" pattern="\d*" v-model="fovissste" maxlength="9" v-on:keypress="isNumber($event)" class="form-control" >
+                                                            <input type="text" pattern="\d*" v-model="fovissste" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
                                                         </div>
                                                     </div>
 
                                                     <div class="col-md-3" v-if="tipo_credito=='Cofinavit' && listado==3 || tipo_credito=='Cofinavit' && listado==4 && btn_actualizar==1">
                                                         <div class="form-group">
                                                         <label for="">Infonavit</label>
-                                                            <input type="text" pattern="\d*" v-model="infonavit" maxlength="9" v-on:keypress="isNumber($event)" class="form-control" >
+                                                            <input type="text" pattern="\d*" v-model="infonavit" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
                                                         </div>
                                                     </div>
 
@@ -1195,7 +1196,7 @@
                                                     <div class="col-md-3" v-if="inst_financiera!=''&& listado==3 || inst_financiera!=''&& listado==4 && btn_actualizar==1">
                                                         <div class="form-group">
                                                         <label for="">Avaluo por parte del banco</label>
-                                                            <input type="text" pattern="\d*" v-model="avaluo" maxlength="9" v-on:keypress="isNumber($event)" class="form-control" >
+                                                            <input type="text" pattern="\d*" v-model="avaluo" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
                                                         </div>
                                                     </div>
 
@@ -1228,7 +1229,7 @@
                                                     <div class="col-md-3" v-if="inst_financiera!=''&& listado==3 || inst_financiera!=''&& listado==4 && btn_actualizar==1">
                                                         <div class="form-group">
                                                         <label for="">Gastos de escrituración</label>
-                                                            <input type="text" pattern="\d*" v-model="escrituras" maxlength="9" v-on:keypress="isNumber($event)" class="form-control" >
+                                                            <input type="text" pattern="\d*" v-model="escrituras" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
                                                         </div>
                                                     </div>
 
@@ -1260,7 +1261,7 @@
                                                         <div class="col-md-3" v-if="inst_financiera!='' && listado==3 || inst_financiera!=''&& listado==4 && btn_actualizar==1">
                                                         <div class="form-group">
                                                         <!--<label for="">Prima unica</label>
-                                                            <input type="text" pattern="\d*" v-model="prima_unica" maxlength="9" v-on:keypress="isNumber($event)" class="form-control" >-->
+                                                            <input type="text" pattern="\d*" v-model="prima_unica" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >-->
                                                         </div>
                                                     </div>
 
@@ -1275,7 +1276,7 @@
                                                     <div class="col-md-3" v-if="inst_financiera!='' && listado==3 || inst_financiera!=''&& listado==4 && btn_actualizar==1" ><hr>
                                                         <div class="form-group">
                                                         <label for="">Avaluo por parte del cliente</label>
-                                                            <input type="text" pattern="\d*" v-model="avaluo_cliente" maxlength="9" v-on:keypress="isNumber($event)" class="form-control" >
+                                                            <input type="text" pattern="\d*" v-model="avaluo_cliente" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
                                                         </div>
                                                     </div>
 
@@ -1349,7 +1350,7 @@
                                                     <div class="col-md-3" v-if="inst_financiera!='' && listado==3 || inst_financiera!='' && listado==4 && btn_actualizar == 1">
                                                         <div class="form-group">
                                                         <label for="">Monto pago</label>
-                                                            <input type="text" pattern="\d*" v-model="monto_pago" maxlength="9" v-on:keypress="isNumber($event)" class="form-control" >
+                                                            <input type="text" pattern="\d*" v-model="monto_pago" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
                                                         </div>
                                                     </div>
                                                     
@@ -2408,7 +2409,7 @@
                 this.email_inst = data['email_institucional'];
                 this.tipo_casa = data['tipo_casa'];
                 this.e_civil = data['edo_civil'];
-                this.dep_economicos = data['num_dep_economicos']
+                this.dep_economicos = data['num_dep_economicos'];
                 this.status = data['status'];
                 this.fecha_status = data['fecha_status'];
                 this.lote_id = data['lote_id'];
@@ -2492,6 +2493,7 @@
                
                 this.listarPagos(this.id);
                 this.selectPaquetes(this.etapa, this.proyecto);
+                this.selectEstados();
                 this.listado=4;
                 this.btn_actualizar = 0;
             },
@@ -2667,8 +2669,7 @@
                         this.errorMostrarMsjContrato.push("Completar datos del lugar de trabajo");
                     if(this.e_civil=='' || !this.e_civil) 
                         this.errorMostrarMsjContrato.push("Seleccionar estado civil del cliente");
-                    if(this.dep_economicos=='' || !this.dep_economicos) 
-                        this.errorMostrarMsjContrato.push("Ingresar el numero de dependientes economicos");
+
                 /************* Datos del coacreditado *******************/
                     if(this.coacreditado == true){
                         if(this.nombre_coa=='' || this.apellidos_coa=='') 
@@ -2677,7 +2678,7 @@
                             this.errorMostrarMsjContrato.push("Ingresar el parentesco del cónyuge");
                         if(this.fecha_nac_coa=='') 
                             this.errorMostrarMsjContrato.push("Ingresar la fecha de nacimiento del cónyuge");
-                        if(this.rfc_coa=='' || this.rfc_coa.length <10 || this.homoclave_coa=='' || this.homoclave_coa.length<3) 
+                        if(this.rfc_coa=='' || this.rfc_coa.length <10) 
                             this.errorMostrarMsjContrato.push("El RFC del cónyuge no es valido");
                         if(this.curp_coa=='' || this.curp_coa.length <18) 
                             this.errorMostrarMsjContrato.push("La Curp del cónyuge no es valida");
@@ -2686,7 +2687,7 @@
                             this.errorMostrarMsjContrato.push("Completar el domicilio del cónyuge");
                         if(this.ciudad_coa=='' || this.estado_coa=='') 
                             this.errorMostrarMsjContrato.push("Seleccionar Ciudad y estado del cónyuge");
-                        if(this.celular_coa=='' || this.telefono_coa=='' || this.email_coa=='') 
+                        if(this.celular_coa=='' || this.telefono_coa=='') 
                             this.errorMostrarMsjContrato.push("Completar medios de contacto del cónyuge");
                         /************* Datos del trabajo *******************/
                         if(this.empresa_coa=='') 

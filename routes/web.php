@@ -302,6 +302,10 @@ Route::group(['middleware' => ['auth']],function(){
         Route::delete('/iniobra/lote/eliminar','IniObraController@eliminarIniObraLotes');
         Route::get('/iniobra/pdf/{id}','IniObraController@contratoObraPDF')->name('contratos.pdf');
         Route::get('/iniobra/relacion/excel/{id}','IniObraController@exportExcel');
+        Route::get('/licencias/indexVisita','LicenciasController@indexVisita');
+        Route::put('/licencias/progFechaVisita','LicenciasController@AsigFechaVisita');
+
+
     ////////////////////        RUTAS PARTIDAS   /////////////////////////////////
         Route::get('/partidas','PartidaController@index');
         Route::post('/partidas/registrar','PartidaController@registrar');

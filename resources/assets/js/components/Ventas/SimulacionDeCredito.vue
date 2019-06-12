@@ -915,7 +915,7 @@
                                                     <div class="col-md-3" v-if="inst_financiera!=''">
                                                         <div class="form-group">
                                                         <label for="">Crédito Solicitado <span style="color:red;" v-show="monto_credito==''">(*)</span></label>
-                                                            <input type="text" pattern="\d*" v-model="monto_credito" maxlength="9" v-on:keypress="isNumber($event)" class="form-control" >
+                                                            <input type="text" pattern="\d*" v-model="monto_credito" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
                                                         </div>
                                                     </div>
 
@@ -2127,7 +2127,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Monto</label>
                                     <div class="col-md-4">
-                                        <input type="text" maxlength="9" v-model="monto_credito2" pattern="\d*" v-on:keypress="isNumber($event)" class="form-control" placeholder="Monto">
+                                        <input type="text" maxlength="10" v-model="monto_credito2" pattern="\d*" v-on:keypress="isNumber($event)" class="form-control" placeholder="Monto">
                                     </div>
                                 </div>
                                 
