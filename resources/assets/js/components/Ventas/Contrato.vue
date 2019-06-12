@@ -2681,8 +2681,7 @@
                             this.errorMostrarMsjContrato.push("El RFC del cónyuge no es valido");
                         if(this.curp_coa=='' || this.curp_coa.length <18) 
                             this.errorMostrarMsjContrato.push("La Curp del cónyuge no es valida");
-                        if(this.nss_coa=='' || this.nss_coa.length <11) 
-                            this.errorMostrarMsjContrato.push("El NSS no es valido");
+                        
                         if(this.direccion_coa=='' || this.cp_coa=='' || this.colonia_coa=="") 
                             this.errorMostrarMsjContrato.push("Completar el domicilio del cónyuge");
                         if(this.ciudad_coa=='' || this.estado_coa=='') 
