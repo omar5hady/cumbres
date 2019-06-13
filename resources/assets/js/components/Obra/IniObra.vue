@@ -17,14 +17,23 @@
                     </div>
                     <div class="card-body">
                         <div class="form-group row">
-                            <div class="col-md-6">
+                            <div class="col-md-7">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
                                     <select class="form-control col-md-4" v-model="criterio">
-                                      <option value="fraccionamientos.nombre">Fraccionamiento</option>
+                                      <option value="lotes.fraccionamiento_id">Fraccionamiento</option>
                                     </select>
-                                    <input type="text" v-model="buscar" @keyup.enter="listarLotesIniObra(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
-                                    <button type="submit" @click="listarLotesIniObra(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @click="selectEtapa(buscar)" >
+                                        <option value="">Seleccione</option>
+                                        <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                                    </select>
+
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar2" @keyup.enter="listarLotesIniObra(1,buscar,buscar2,buscar3,criterio)"> 
+                                        <option value="">Etapa</option>
+                                        <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
+                                    </select>
+                                    <input type="text" v-if="buscar!=''" v-model="buscar3" @keyup.enter="listarLotesIniObra(1,buscar,buscar2,buscar3,criterio)" class="form-control" placeholder="Manzana a buscar">
+                                    <button type="submit" @click="listarLotesIniObra(1,buscar,buscar2,buscar3,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
                         </div>
@@ -65,13 +74,13 @@
                             <!--Botones de paginacion -->
                             <ul class="pagination">
                                 <li class="page-item" v-if="pagination.current_page > 1">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,criterio)">Ant</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,buscar2,buscar3,criterio)">Ant</a>
                                 </li>
                                 <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,criterio)" v-text="page"></a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,buscar2,buscar3,criterio)" v-text="page"></a>
                                 </li>
                                 <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,criterio)">Sig</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,buscar2,buscar3,criterio)">Sig</a>
                                 </li>
                             </ul>
                         </nav>
@@ -162,6 +171,8 @@
                 fecha_termino_ventas: '',
                 arrayLotes : [],
                 lotes_ini : [],
+                arrayEtapas: [],
+                arrayFraccionamientos:[],
                 modal : 0,
                 tituloModal : '',
                 tipoAccion: 0,
@@ -178,8 +189,10 @@
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'fraccionamientos.nombre', 
-                buscar : ''
+                criterio : 'lotes.fraccionamiento_id', 
+                buscar : '',
+                buscar2:'',
+                buscar3:''
             }
         },
         computed:{
@@ -236,13 +249,48 @@
                     console.log(error);
                 });
             },
-        
 
+            selectFraccionamientos(){
+                let me = this;
+                if(me.modal == 0){
+                me.buscar=""
+                me.buscar2=""
+                me.buscar3=""
+                }
+                
+                me.arrayFraccionamientos=[];
+                var url = '/select_fraccionamiento';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayFraccionamientos = respuesta.fraccionamientos;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            selectEtapa(buscar){
+                let me = this;
+                if(me.modal == 0){
+                
+                me.buscar2=""
+                me.buscar3=""
+                }
+                
+                me.arrayEtapas=[];
+                var url = '/select_etapa_proyecto?buscar=' + buscar;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayEtapas = respuesta.etapas;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
 
             /**Metodo para mostrar los registros */
-            listarLotesIniObra(page, buscar, criterio){
+            listarLotesIniObra(page, buscar,buscar2,buscar3, criterio){
                 let me = this;
-                var url = '/lote_aviso?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
+                var url = '/lote_aviso?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3 + '&criterio=' + criterio;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayLotes = respuesta.lotes.data;
@@ -252,12 +300,12 @@
                     console.log(error);
                 });
             },
-            cambiarPagina(page, buscar, criterio){
+            cambiarPagina(page, buscar, buscar2, buscar3, criterio){
                 let me = this;
                 //Actualiza la pagina actual
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
-                me.listarLotesIniObra(page,buscar,criterio);
+                me.listarLotesIniObra(page,buscar,buscar2,buscar3,criterio);
             },
             /**Metodo para registrar  */
             registrarInicioObra(){
@@ -367,7 +415,8 @@
             }
         },
         mounted() {
-            this.listarLotesIniObra(1,this.buscar,this.criterio);
+            this.listarLotesIniObra(1,this.buscar,this.buscar2,this.buscar3,this.criterio);
+            this.selectFraccionamientos();
         }
     }
 </script>

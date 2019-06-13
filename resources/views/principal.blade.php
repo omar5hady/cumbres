@@ -334,6 +334,9 @@
                                     <li @click="menu=203" class="nav-item">
                                         <a class="nav-link" href="#"><i class="fa fa-money"></i> Seguimiento de tramite</a>
                                     </li>
+                                    <li @click="menu=204" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="fa fa-money"></i> Avaluos</a>
+                                    </li>
                             </ul>
                         </li>
                     @endif

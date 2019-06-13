@@ -407,6 +407,9 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('expediente/indexAsignarGestor','ExpedienteController@indexAsignarGestor');
         Route::put('/expediente/asignarGestor','ExpedienteController@asignarGestor');
 
+        ///////////////////////// RUTAS AVALUOS /////////////////////////////////////
+        Route::get('avaluos/index','AvaluoController@index');
+
     });
 
 

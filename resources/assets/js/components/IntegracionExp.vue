@@ -82,7 +82,7 @@
                                         <td class="td2" v-text="contratos.manzana"></td>
                                         <td class="td2" v-text="contratos.num_lote"></td>
                                         <td class="td2" v-text="contratos.avance_lote+'%'"></td>
-                                        <td class="td2" v-text="contratos.fecha_status"></td>
+                                        <td class="td2" v-text="this.moment(contratos.fecha_status).locale('es').format('DD/MMM/YYYY')"></td>
                                         <td class="td2" v-text="contratos.tipo_credito"></td>
                                         <td class="td2" v-text="contratos.institucion"></td>
                                         <template v-if="contratos.avaluo_preventivo">

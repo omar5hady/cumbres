@@ -56,11 +56,11 @@ class Handler extends ExceptionHandler
             }
         }
 
-        if ($e instanceof ModelNotFoundException) {
-            $e = new NotFoundHttpException($e->getMessage(), $e);
+        if ($exception instanceof ModelNotFoundException) {
+            $exception = new NotFoundHttpException($exception->getMessage(), $exception);
         }
     
-        if ($e instanceof TokenMismatchException) {
+        if ($exception instanceof TokenMismatchException) {
     
             return redirect(route('/'))->with('message', 'You page session expired. Please try again');
         }

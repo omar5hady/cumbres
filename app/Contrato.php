@@ -39,6 +39,14 @@ class Contrato extends Model
         return $this->hasMany('App\Obs_expediente');
     }
 
+    public function hist_visita(){
+        return $this->hasMany('App\Hist_visita');
+    }
+
+    public function gasto_admin(){
+        return $this->hasMany('App\Gasto_admin');
+    }
+
     public function expediente(){
         return $this->hasOne('App/Expediente');
     }
