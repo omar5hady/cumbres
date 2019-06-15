@@ -17,7 +17,7 @@ class CreateHistVisitasTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('contrato_id');
             $table->date('fecha_visita')->nullable();
-            $table->date('observacion')->nullable();
+            $table->string('observacion')->nullable();
             $table->timestamps();
 
             $table->foreign('contrato_id')->references('id')->on('contratos');

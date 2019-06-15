@@ -81,7 +81,7 @@
                                         <td class="td2" v-text="this.moment(avaluos.fecha_solicitud).locale('es').format('DD/MMM/YYYY')"></td>
                                         <td class="td2" v-text="'$'+formatNumber(avaluos.valor_requerido)"></td>
 
-                                        <td class="td2" v-if="avaluos.fecha_ava_sol"
+                                        <td class="td2" @click="abrirModal('fecha_ava_sol',avaluos)" v-if="avaluos.fecha_ava_sol"
                                             v-text="this.moment(avaluos.fecha_ava_sol).locale('es').format('DD/MMM/YYYY')">
                                         </td>
                                         <td class="td2" v-else>
@@ -92,7 +92,7 @@
 
 
                                         <template v-if="avaluos.fecha_pago">
-                                            <td v-if="avaluos.fecha_pago!='0000-01-01'" class="td2" v-text="this.moment(avaluos.fecha_pago).locale('es').format('DD/MMM/YYYY')"></td>
+                                            <td @click="abrirModal('fecha_pago',avaluos)" v-if="avaluos.fecha_pago!='0000-01-01'" class="td2" v-text="this.moment(avaluos.fecha_pago).locale('es').format('DD/MMM/YYYY')"></td>
                                             <td v-if="avaluos.fecha_pago=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
                                         </template>
                                         <template v-else>
@@ -100,7 +100,7 @@
                                                 <button type="button" @click="abrirModal('fecha_pago',avaluos)" class="btn btn-default btn-sm" title="Ingresar fecha de pago">
                                                     <i class="fa fa-calendar"></i>
                                                 </button>
-                                                <button type="button" @click="noAplicaPago(avaluos)" class="btn btn-danger btn-sm" title="No aplica">
+                                                <button type="button" @click="noAplicaPago(avaluos.avaluoId)" class="btn btn-danger btn-sm" title="No aplica">
                                                     <i class="fa fa-times-circle"></i>
                                                 </button>
                                             </td>
@@ -108,7 +108,7 @@
 
                                         <td class="td2" @click="abrirModal('visita_avaluo',avaluos)" v-text="this.moment(avaluos.visita_avaluo).locale('es').format('DD/MMM/YYYY')"></td>
                                         <td class="td2" @click="abrirModal('status',avaluos)" v-text="avaluos.status"></td>
-                                        <td class="td2" v-if="avaluos.fecha_concluido"
+                                        <td class="td2" v-if="avaluos.fecha_concluido" @click="abrirModal('fecha_concluido',avaluos)"
                                             v-text="this.moment(avaluos.fecha_concluido).locale('es').format('DD/MMM/YYYY')">
                                         </td>
                                         <td class="td2" v-else>
@@ -122,12 +122,15 @@
 
 
                                         <td class="td2" v-text="'$'+formatNumber(avaluos.resultado)"></td>
-                                        <td class="td2" v-text="'$'+formatNumber(avaluos.costo)"></td>
+
+                                        <td class="td2" v-if="!avaluos.costo" @click="abrirModal('costo',avaluos)" v-text="'$'+formatNumber(avaluos.costo)"></td>
+                                        <td class="td2" v-else v-text="'$'+formatNumber(avaluos.costo)" @click="abrirModal('costo_act',avaluos)" ></td>
+
                                         <td class="td2" v-if="avaluos.fecha_recibido"
                                             v-text="this.moment(avaluos.fecha_recibido).locale('es').format('DD/MMM/YYYY')">
                                         </td>
                                         <td class="td2" v-else>
-                                            <button type="button" @click="enviarVentas(avaluos)" class="btn btn-primary btn-sm" title="Enviar a ventas">
+                                            <button type="button" @click="enviarVentas(avaluos.avaluoId)" class="btn btn-primary btn-sm" title="Enviar a ventas">
                                                 Enviar a ventas
                                             </button>
                                         </td>
@@ -161,7 +164,7 @@
             </div>
          
 
-            <!--Inicio del modal avaluo-->
+            <!--Inicio del modal 1 avaluo-->
             <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
                 <div class="modal-dialog modal-primary modal-lg" role="document">
                     <div class="modal-content">
@@ -215,12 +218,155 @@
                             </form>
                             <!-- fin del form solicitud de avaluo -->
 
+                            <!-- form para solicitud de avaluo -->
+                            <form v-if="tipoAccion == 4 || tipoAccion == 5" action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Fecha</label>
+                                    <div class="col-md-4">
+                                        <input type="date" v-model="fecha_costo" class="form-control">
+                                    </div>
+                                </div>
+
+                                 <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Costo</label>
+                                    <div class="col-md-4">
+                                        <input type="text" maxlength="10" v-model="costo" pattern="\d*" v-on:keypress="isNumber($event)" class="form-control" placeholder="Costo">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <h6 v-text="'$'+formatNumber(costo)"></h6>
+                                    </div>
+                                </div>
+                            </form>
+                            <!-- fin del form solicitud de avaluo -->
+
 
                         </div>
                         <!-- Botones del modal -->
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <button v-if="tipoAccion==1" type="button" class="btn btn-primary" @click="asignarFecha()">Actualizar</button>
+                            <button v-if="tipoAccion==1" type="button" class="btn btn-primary" @click="setFechaSolicitud()">Guardar</button>
+                            <button v-if="tipoAccion==2" type="button" class="btn btn-primary" @click="setFechaPago()">Guardar</button>
+                            <button v-if="tipoAccion==3" type="button" class="btn btn-primary" @click="setFechaConcluido()">Guardar</button>
+                            <button v-if="tipoAccion==4" type="button" class="btn btn-primary" @click="registrarGasto()">Guardar</button>
+                            <button v-if="tipoAccion==5" type="button" class="btn btn-primary" @click="updateGasto()">Guardar Cambios</button>
+                        </div>
+                    </div>
+                      <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!--Fin del modal 1 consulta-->
+
+            <!--Inicio del modal 2 avaluo-->
+            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" v-text="tituloModal"></h4>
+                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">Estatus</label>
+                                <div class="col-md-9">
+                                    <select class="form-control" v-model="status">
+                                        <option value="Pendiente">Pendiente</option>
+                                        <option value="Revisión">Revisión</option>
+                                        <option value="Reconsideración">Reconsideración</option>
+                                        <option value="Visto bueno">Visto bueno</option>
+                                        <option value="Detenido">Detenido</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">Nueva observación</label>
+                                <div class="col-md-9">
+                                    <textarea rows="1" cols="30" class="form-control" v-model="observacion" placeholder="Observaciones"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <button v-if="observacion != ''" class="btn btn-primary" @click="setStatus()">Guardar</button>
+                                </div>
+                            </div>
+                            <table class="table table-bordered table-striped table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Fecha</th>
+                                        <th>Estado</th>
+                                        <th>Observación</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="estado in arrayStatus" :key="estado.id">
+                                        
+                                        <td v-text="this.moment(estado.created_at).locale('es').format('DD/MMM/YYYY')"></td>
+                                        <td v-text="estado.status" ></td>
+                                        <td v-text="estado.observacion" ></td>
+                                    </tr>                               
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                        </div>
+                    </div>
+                      <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!--Fin del modal consulta-->
+
+            <!--Inicio del modal 3 avaluo-->
+            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal3}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" v-text="tituloModal"></h4>
+                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Fecha de visita</label>
+                                    <div class="col-md-4">
+                                        <input type="date" v-model="visita_avaluo" class="form-control">
+                                    </div>
+                                </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">Nueva observación</label>
+                                <div class="col-md-9">
+                                    <textarea rows="1" cols="30" class="form-control" v-model="observacion" placeholder="Observaciones"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <button v-if="observacion != ''" class="btn btn-primary" @click="setVisitaAvaluo()">Guardar</button>
+                                </div>
+                            </div>
+                            <table class="table table-bordered table-striped table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Fecha de visita</th>
+                                        <th>Observacion</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="visita in arrayVisitas" :key="visita.id">
+                                        
+                                        <td v-text="this.moment(visita.fecha_visita).locale('es').format('DD/MMM/YYYY')"></td>
+                                        <td v-text="visita.observacion" ></td>
+                                    </tr>                               
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
                         </div>
                     </div>
                       <!-- /.modal-content -->
@@ -245,11 +391,14 @@
                 id: 0,
                 avaluoId:0,
                 visita_avaluo:'',
-                
 
+                id_gasto:0,
+
+                
                 arrayAvaluos : [],
                 arrayFraccionamientos:[],
                 arrayEtapas:[],
+                arrayGastoAdmin:[],
 
                 arrayStatus:[],
                 arrayVisitas:[],
@@ -257,12 +406,11 @@
                 fecha_ava_sol:'',
                 fecha_pago:'',
                 fecha_concluido:'',
+                fecha_costo:'',
                 costo:0,
-                observación:'',
+                observacion:'',
                 status:'',
                 resultado:0,
-
-
 
                 modal : 0,
                 modal2: 0,
@@ -343,6 +491,34 @@
                 let val = (value/1).toFixed(2)
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             },
+
+            listarHistorial(buscar){
+                let me = this;
+                
+                me.arrayFraccionamientos=[];
+                var url = '/avaluos/historialVisita?buscar=' + buscar;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayVisitas = respuesta.historial;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
+            listarStatus(buscar){
+                let me = this;
+                
+                me.arrayFraccionamientos=[];
+                var url = '/avaluos/historialStatus?buscar=' + buscar;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayStatus = respuesta.status;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
         
             selectFraccionamientos(){
                 let me = this;
@@ -374,7 +550,6 @@
                 });
             },
 
-
             cambiarPagina(page,buscar,b_etapa,b_manzana,b_lote,criterio){
                 let me = this;
                 //Actualiza la pagina actual
@@ -382,28 +557,280 @@
                 //Envia la petición para visualizar la data de esta pagina
                 me.listarAvaluos(page,buscar,b_etapa,b_manzana,b_lote,criterio);
             },
-       
-            asignarFecha(){
+
+            setVisitaAvaluo(){
                 let me = this;
                 //Con axios se llama el metodo update de LoteController
-                axios.put('/licencias/progFechaVisita',{
-                    'id':this.id,
+                axios.post('/avaluos/storeVisita',{
+                    'contrato_id':this.id,
                     'visita_avaluo' : this.visita_avaluo,
+                    'observacion' : this.observacion
+                    
+                }).then(function (response){
+                    me.observacion = '';
+                    me.listarHistorial(me.id);
+                    //window.alert("Cambios guardados correctamente");
+                    const toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                        });
+                        toast({
+                        type: 'success',
+                        title: 'Registro de visita agregado correctamente'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
+            setStatus(){
+                let me = this;
+                //Con axios se llama el metodo update de LoteController
+                axios.post('/avaluos/storeStatus',{
+                    'avaluoId':this.avaluoId,
+                    'status' : this.status,
+                    'observacion' : this.observacion
+                    
+                }).then(function (response){
+                    me.observacion = '';
+                    me.listarStatus(me.avaluoId);
+                    me.listarAvaluos(1,me.buscar,me.b_etapa,me.b_manzana,me.b_lote,me.criterio);
+                    //window.alert("Cambios guardados correctamente");
+                    const toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                        });
+                        toast({
+                        type: 'success',
+                        title: 'Registro de visita agregado correctamente'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
+            registrarGasto(){
+                let me = this;
+                //Con axios se llama el metodo update de LoteController
+                axios.post('/gastos/storeAvaluo',{
+                    'avaluoId':this.avaluoId,
+                    'id':this.id,
+                    'costo' : this.costo,
+                    'fecha' : this.fecha_costo
+                    
+                }).then(function (response){
+                    me.observacion = '';
+                    me.cerrarModal();
+                    me.listarAvaluos(1,me.buscar,me.b_etapa,me.b_manzana,me.b_lote,me.criterio);
+                    //window.alert("Cambios guardados correctamente");
+                    const toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                        });
+                        toast({
+                        type: 'success',
+                        title: 'Gasto registrado correctamente'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
+            updateGasto(){
+                let me = this;
+                //Con axios se llama el metodo update de LoteController
+                axios.put('/gastos/updateAvaluo',{
+                    'avaluoId':this.avaluoId,
+                    'gasto_id':this.id_gasto,
+                    'costo' : this.costo,
+                    'fecha' : this.fecha_costo
+                    
+                }).then(function (response){
+                    me.observacion = '';
+                    me.cerrarModal();
+                    me.listarAvaluos(1,me.buscar,me.b_etapa,me.b_manzana,me.b_lote,me.criterio);
+                    //window.alert("Cambios guardados correctamente");
+                    const toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                        });
+                        toast({
+                        type: 'success',
+                        title: 'Gasto actualizado correctamente'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+       
+            setFechaSolicitud(){
+                let me = this;
+                //Con axios se llama el metodo update de LoteController
+                axios.put('/avaluos/fechaSolicitud',{
+                    'avaluoId':this.avaluoId,
+                    'fecha_ava_sol' : this.fecha_ava_sol,
                     
                 }).then(function (response){
                     me.cerrarModal();
                     me.listarAvaluos(1,me.buscar,me.b_etapa,me.b_manzana,me.b_lote,me.criterio);
                     //window.alert("Cambios guardados correctamente");
-                    swal({
+                    const toast = Swal.mixin({
+                        toast: true,
                         position: 'top-end',
-                        type: 'success',
-                        title: 'fecha agregada correctamente',
                         showConfirmButton: false,
-                        timer: 1500
-                        })
+                        timer: 3000
+                        });
+                        toast({
+                        type: 'success',
+                        title: 'Fecha de solicitud ingresada correctamente'
+                    })
                 }).catch(function (error){
                     console.log(error);
                 });
+            },
+
+            getDatosCosto(contrato_id,costo){
+                let me = this;
+                
+                me.arrayGastoAdmin=[];
+                var url = '/getGastoAvaluo?folio=' + contrato_id + '&costo='+ costo;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayGastoAdmin = respuesta.gasto;
+                    me.id_gasto = me.arrayGastoAdmin[0].id;
+                    me.fecha_costo = me.arrayGastoAdmin[0].fecha;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
+            setFechaPago(){
+                let me = this;
+                //Con axios se llama el metodo update de LoteController
+                axios.put('/avaluos/fechaPago',{
+                    'avaluoId':this.avaluoId,
+                    'fecha_pago' : this.fecha_pago,
+                    
+                }).then(function (response){
+                    me.cerrarModal();
+                    me.listarAvaluos(1,me.buscar,me.b_etapa,me.b_manzana,me.b_lote,me.criterio);
+                    //window.alert("Cambios guardados correctamente");
+                    const toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                        });
+                        toast({
+                        type: 'success',
+                        title: 'Fecha de pago ingresada correctamente'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
+            setFechaConcluido(){
+                let me = this;
+                //Con axios se llama el metodo update de LoteController
+                axios.put('/avaluos/fechaConcluido',{
+                    'avaluoId':this.avaluoId,
+                    'fecha_concluido' : this.fecha_concluido,
+                    'resultado' : this.resultado,
+                    
+                }).then(function (response){
+                    me.cerrarModal();
+                    me.listarAvaluos(1,me.buscar,me.b_etapa,me.b_manzana,me.b_lote,me.criterio);
+                    //window.alert("Cambios guardados correctamente");
+                    const toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                        });
+                        toast({
+                        type: 'success',
+                        title: 'Fecha de pago ingresada correctamente'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
+            noAplicaPago(id){
+                let me = this;
+                //Con axios se llama el metodo update de LoteController
+                axios.put('/avaluos/fechaPago',{
+                    'avaluoId':id,
+                    'fecha_pago' : '0000-01-01',
+                    
+                }).then(function (response){
+                    me.cerrarModal();
+                    me.listarAvaluos(1,me.buscar,me.b_etapa,me.b_manzana,me.b_lote,me.criterio);
+                    //window.alert("Cambios guardados correctamente");
+                    const toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                        });
+                        toast({
+                        type: 'success',
+                        title: 'Fecha de pago ingresada correctamente'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
+            enviarVentas(id){
+                this.avaluoId = id;
+                swal({
+                title: '¿Esta seguro de enviar el avaluo a ventas?',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Aceptar!',
+                cancelButtonText: 'Cancelar',
+                confirmButtonClass: 'btn btn-success',
+                cancelButtonClass: 'btn btn-danger',
+                buttonsStyling: false,
+                reverseButtons: true
+                }).then((result) => {
+                if (result.value) {
+                    let me = this;
+
+                    axios.put('/avaluos/enviarVentas',{
+                        'id': me.avaluoId,
+                    }).then(function (response) {
+                        me.listarAvaluos(1,me.buscar,me.b_etapa,me.b_manzana,me.b_lote,me.criterio);
+                        swal(
+                        'Hecho!',
+                        'Avaluo enviado correctamente.',
+                        'success'
+                        )
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                    
+                    
+                } else if (
+                    // Read more about handling dismissals
+                    result.dismiss === swal.DismissReason.cancel
+                ) {
+                    
+                }
+                }) 
             },
 
             isNumber: function(evt) {
@@ -418,11 +845,15 @@
 
             cerrarModal(){
                 this.modal = 0;
-                this.tituloModal = '';   
+                this.tituloModal = '';
+                this.observacion = '';
+                this.fecha_pago = '';
+                this.fecha_concluido = '';
+                this.fecha_ava_sol = '';
+                this.modal2=0;
+                this.modal3=0;
+                this.visita_avaluo='';
             },
-        
-         
-
       
             abrirModal(accion,data =[]){
                 switch(accion){
@@ -434,7 +865,7 @@
                         this.tipoAccion = 1;
                         this.fecha_ava_sol = data['fecha_ava_sol'];
                         this.avaluoId = data['avaluoId'];
-                        this.id = data['id'];
+                        this.id = data['folio'];
                         break;
                     }  
                     
@@ -445,7 +876,7 @@
                         this.tipoAccion = 2;
                         this.fecha_pago = data['fecha_pago'];
                         this.avaluoId = data['avaluoId'];
-                        this.id = data['id'];
+                        this.id = data['folio'];
                         break;
                     } 
 
@@ -457,29 +888,57 @@
                         this.fecha_concluido = data['fecha_concluido'];
                         this.resultado = data['resultado'];
                         this.avaluoId = data['avaluoId'];
-                        this.id = data['id'];
+                        this.id = data['folio'];
                         break;
                     } 
 
-                    case 'status':
+                    case 'costo':
                     {
                         this.modal =1;
-                        this.tituloModal='Asignar un gestor';
-                        this.tipoAccion = 1;
-                        this.visita_avaluo = data['visita_avaluo'];
+                        this.tituloModal='Ingresar Costo';
+                        this.tipoAccion = 4;
+                        this.fecha_costo = '';
+                        this.costo = data['costo'];
+                        this.id = data['folio'];
                         this.avaluoId = data['avaluoId'];
-                        this.id = data['id'];
+                        break;
+                    } 
+
+                    case 'costo_act':
+                    {
+                        this.modal =1;
+                        this.tituloModal='Editar Costo';
+                        this.tipoAccion = 5;
+                        this.fecha_costo = '';
+                        this.costo = data['costo'];
+                        this.id = data['folio'];
+                        this.avaluoId = data['avaluoId'];
+                        this.getDatosCosto(this.id,this.costo);
+                        break;
+                    }
+
+                    case 'status':
+                    {
+                        this.modal2 =1;
+                        this.tituloModal='Historial Estatus';
+                        this.avaluoId = data['avaluoId'];
+                        this.id = data['folio'];
+                        this.observacion='';
+                        this.status=data['status'];
+                        this.listarStatus(this.avaluoId);
                         break;
                     } 
 
                     case 'visita_avaluo':
                     {
-                        this.modal =1;
-                        this.tituloModal='Asignar un gestor';
-                        this.tipoAccion = 1;
+                        
+                        this.modal3 =1;
+                        this.tituloModal='Historial de visitas';
                         this.visita_avaluo = data['visita_avaluo'];
                         this.avaluoId = data['avaluoId'];
-                        this.id = data['id'];
+                        this.id = data['folio'];
+                        this.observacion='';
+                        this.listarHistorial(this.id);
                         break;
                     } 
                 } 
@@ -572,4 +1031,6 @@
     .td2:last-of-type, th:last-of-type {
     border-right: none;
     } 
+
+    
 </style>

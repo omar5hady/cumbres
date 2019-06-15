@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Avaluo;
 use App\Contrato;
+use App\Avaluo_status;
+use App\Gasto_admin;
+use Carbon\Carbon;
 
 class AvaluoController extends Controller
 {
@@ -59,5 +62,40 @@ class AvaluoController extends Controller
             'from'          => $avaluos->firstItem(),
             'to'            => $avaluos->lastItem(),
         ],'avaluos' => $avaluos];
+    }
+
+    public function setFechaSolicitud(Request $request){
+        $avaluo_id = $request->avaluoId;
+
+        $avaluo=Avaluo::findOrFail($avaluo_id);
+        $avaluo->fecha_ava_sol = $request->fecha_ava_sol;
+        $avaluo->save();
+    }
+
+    public function setFechaPago(Request $request){
+        $avaluo_id = $request->avaluoId;
+
+        $avaluo=Avaluo::findOrFail($avaluo_id);
+        $avaluo->fecha_pago = $request->fecha_pago;
+        $avaluo->save();
+    }
+
+    public function setFechaConcluido(Request $request){
+        $avaluo_id = $request->avaluoId;
+
+        $avaluo=Avaluo::findOrFail($avaluo_id);
+        $avaluo->fecha_concluido = $request->fecha_concluido;
+        $avaluo->resultado = $request->resultado;
+        $avaluo->save();
+    }
+
+    public function enviarVentas(Request $request){
+        $avaluo_id = $request->id;
+        setlocale(LC_TIME, 'es_MX.utf8');
+        $hoy = Carbon::today()->toDateString();
+
+        $avaluo=Avaluo::findOrFail($avaluo_id);
+        $avaluo->fecha_recibido = $hoy;
+        $avaluo->save();
     }
 }

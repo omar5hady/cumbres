@@ -17,6 +17,7 @@ class CreateGastosAdminTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('contrato_id');
             $table->string('concepto');
+            $table->date('fecha');
             $table->double('costo')->default(0);
             $table->string('observacion')->nullable();
             $table->timestamps();

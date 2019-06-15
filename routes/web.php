@@ -404,11 +404,22 @@ Route::group(['middleware' => ['auth']],function(){
 
         ////////////////////////// RUTAS ASIGNAR GESTOR /////////////////////////////
 
-        Route::get('expediente/indexAsignarGestor','ExpedienteController@indexAsignarGestor');
+        Route::get('/expediente/indexAsignarGestor','ExpedienteController@indexAsignarGestor');
         Route::put('/expediente/asignarGestor','ExpedienteController@asignarGestor');
 
         ///////////////////////// RUTAS AVALUOS /////////////////////////////////////
-        Route::get('avaluos/index','AvaluoController@index');
+        Route::get('/avaluos/index','AvaluoController@index');
+        Route::put('/avaluos/fechaSolicitud','AvaluoController@setFechaSolicitud');
+        Route::put('/avaluos/fechaPago','AvaluoController@setFechaPago');
+        Route::put('/avaluos/fechaConcluido','AvaluoController@setFechaConcluido');
+        Route::put('/avaluos/enviarVentas','AvaluoController@enviarVentas');
+        Route::get('/avaluos/historialVisita','HistVisitasController@index');
+        Route::get('/getGastoAvaluo','GastosAdministrativosController@getDatosAvaluo');
+        Route::post('/avaluos/storeVisita','HistVisitasController@store');
+        Route::post('/avaluos/storeStatus','HistVisitasController@storeStatus');
+        Route::get('/avaluos/historialStatus','HistVisitasController@indexStatus');
+        Route::post('/gastos/storeAvaluo','GastosAdministrativosController@storeAvaluo');
+        Route::put('/gastos/updateAvaluo','GastosAdministrativosController@updateAvaluo');
 
     });
 

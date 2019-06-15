@@ -20,7 +20,7 @@ class CreateAvaluosTable extends Migration
             $table->double('valor_requerido')->default(0);
             $table->string('observacion')->nullable();
             $table->date('fecha_recibido')->nullable();
-            $table->boolean('resultado')->default(0);
+            $table->double('resultado')->default(0);
             $table->timestamps();
 
 

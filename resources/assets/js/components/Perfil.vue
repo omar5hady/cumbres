@@ -107,7 +107,7 @@
                                                     <font style="vertical-align: inherit;">Contraseña</font>
                                                 </font>
                                             </label><!----><input aria-describedby="addon-right addon-left" type="password"
-                                                placeholder="Contraseña" class="form-control">
+                                                placeholder="Contraseña" class="form-control" v-model="password">
                                             <!----></div>
                                     </div>
                                 </div>

@@ -24,6 +24,7 @@ use Carbon\Carbon;
 use App\Apartado;
 use Auth;
 use App\User;
+use App\Credito;
 
 class LoteController extends Controller
 {
@@ -2600,8 +2601,6 @@ class LoteController extends Controller
                     ->get();
         return ['lotes_disp' => $lotes_disp];
     }
-
-
 
     public function select_datos_lotes_disp(Request $request){
 
