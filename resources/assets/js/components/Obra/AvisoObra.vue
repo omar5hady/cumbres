@@ -774,14 +774,14 @@
             for(var i=0;i<this.arrayAvisoObraLotes.length;i++){
                 resultado_costo_directo = parseFloat(resultado_costo_directo) + parseFloat(this.arrayAvisoObraLotes[i].costo_directo)
             }
-            return resultado_costo_directo;
+            return Math.round(resultado_costo_directo*100)/100;
         },
         totalCostoIndirecto: function(){
             var resultado_costo_indirecto =0.0;
             for(var i=0;i<this.arrayAvisoObraLotes.length;i++){
                 resultado_costo_indirecto = parseFloat(resultado_costo_indirecto) + parseFloat(this.arrayAvisoObraLotes[i].costo_indirecto) 
             }
-            return resultado_costo_indirecto;
+            return Math.round(resultado_costo_indirecto*100)/100;
         },
 
         totalImporte: function(){
@@ -789,7 +789,7 @@
             for(var i=0;i<this.arrayAvisoObraLotes.length;i++){
                 resultado_importe_total = parseFloat(resultado_importe_total) + parseFloat(this.arrayAvisoObraLotes[i].costo_directo) + parseFloat(this.arrayAvisoObraLotes[i].costo_indirecto)
             }
-            return resultado_importe_total;
+            return Math.round(resultado_importe_total*100)/100;
         },
 
         totalConstruccion: function(){
@@ -797,14 +797,14 @@
             for(var i=0;i<this.arrayAvisoObraLotes.length;i++){
                 resultado_construccion_total = parseFloat(resultado_construccion_total) + parseFloat(this.arrayAvisoObraLotes[i].construccion)
             }
-            return resultado_construccion_total;
+            return Math.round(resultado_construccion_total*100)/100;
         },
         totalSuperficie: function(){
             var resultado_construccion_total =0.0;
             for(var i=0;i<this.arrayAvisoObraLotes.length;i++){
                 resultado_construccion_total = parseFloat(resultado_construccion_total) + parseFloat(this.arrayAvisoObraLotes[i].superficie)
             }
-            return resultado_construccion_total;
+            return Math.round(resultado_construccion_total*100)/100;
         }
 
 

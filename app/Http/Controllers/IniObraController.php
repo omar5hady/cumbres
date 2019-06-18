@@ -321,10 +321,20 @@ class IniObraController extends Controller
         if (!$request->ajax()) return redirect('/');
 
         $loteIni = Ini_obra_lote::findOrFail($request->id);
-        $lote = Lote::findOrFail($loteIni->lote_id);
-                $lote->aviso = '0';
-                $lote->save();
-        $loteIni->delete();
+          
+         if($loteIni->lote_id==0){
+                
+                $loteIni->delete();
+         }else{
+
+            $lote = Lote::findOrFail($loteIni->lote_id);
+            $lote->aviso = '0';
+            $lote->save();
+            $loteIni->delete();
+         }
+       
+
+        
 
      }
      public function agregarIniObraLotes(Request $request)
