@@ -421,6 +421,9 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/gastos/storeAvaluo','GastosAdministrativosController@storeAvaluo');
         Route::put('/gastos/updateAvaluo','GastosAdministrativosController@updateAvaluo');
 
+        //////////////////// RUTAS GASTOS ADMINISTRATIVOS /////////////////////////////
+        Route::get('/gastos/index','GastosAdministrativosController@index');
+
     });
 
 

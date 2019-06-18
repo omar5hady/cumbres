@@ -92,6 +92,7 @@ Vue.component('perfil-user', require('./components/Perfil.vue'));
 Vue.component('listar-notifications', require('./components/ListarNotifications.vue'));
 Vue.component('datos-extra', require('./components/EstaditicaDatosExtra.vue'));
 Vue.component('avaluos', require('./components/Avaluos.vue'));
+Vue.component('gastos-admin', require('./components/GastosAdministrativos.vue'));
 
 
 const app = new Vue({

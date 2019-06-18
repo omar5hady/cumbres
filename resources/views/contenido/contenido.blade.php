@@ -290,6 +290,9 @@
         <template v-if="menu==204">
             <avaluos></avaluos>
         </template>
+        <template v-if="menu==205">
+            <gastos-admin></gastos-admin>
+        </template>
 
         
     @endif

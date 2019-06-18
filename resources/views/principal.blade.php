@@ -315,6 +315,9 @@
                                     <li @click="menu=200" class="nav-item">
                                         <a class="nav-link" href="#"><i class="fa fa-money"></i> Depositos</a>
                                     </li>
+                                    <li @click="menu=205" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="fa fa-money"></i> Gastos administrativos</a>
+                                    </li>
                             </ul>
                         </li>
                     @endif
