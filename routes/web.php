@@ -423,6 +423,10 @@ Route::group(['middleware' => ['auth']],function(){
 
         //////////////////// RUTAS GASTOS ADMINISTRATIVOS /////////////////////////////
         Route::get('/gastos/index','GastosAdministrativosController@index');
+        Route::get('/gastos/indexContratos','GastosAdministrativosController@indexContratos');
+        Route::post('/gastos/registrar','GastosAdministrativosController@store');
+        Route::put('/gastos/actualizar','GastosAdministrativosController@update');
+        Route::delete('/gastos/eliminar','GastosAdministrativosController@delete');
 
     });
 

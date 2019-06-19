@@ -323,7 +323,7 @@
                     case 'fecha':
                     {
                         this.modal =1;
-                        this.tituloModal='Asignar un gestor';
+                        this.tituloModal='Visita de avaluo';
                         this.tipoAccion = 1;
                         this.visita_avaluo = data['visita_avaluo'];
                         this.id = data['id'];

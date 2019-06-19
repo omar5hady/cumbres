@@ -94,7 +94,6 @@ Vue.component('datos-extra', require('./components/EstaditicaDatosExtra.vue'));
 Vue.component('avaluos', require('./components/Avaluos.vue'));
 Vue.component('gastos-admin', require('./components/GastosAdministrativos.vue'));
 
-
 const app = new Vue({
     el: '#app',
     data: {

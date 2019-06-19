@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Gasto_admin;
 use App\Avaluo;
+use App\Contrato;
+use DB;
 
 class GastosAdministrativosController extends Controller
 {
@@ -174,5 +176,157 @@ class GastosAdministrativosController extends Controller
         $avaluo = Avaluo::findOrFail($request->avaluoId);
         $avaluo->costo = $request->costo;
         $avaluo->save();
+    }
+
+    public function indexContratos (Request $request){
+        if(!$request->ajax())return redirect('/');
+        $b = $request->b;
+        $b2 = $request->b2;
+        $b3 = $request->b3;
+        $criterio2 = $request->criterio2;
+
+        if($b == ''){
+            $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
+            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+            ->join('personal','clientes.id','=','personal.id')
+            ->select(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),'contratos.id as folio',
+                       'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.num_lote')
+           ->where('contratos.status','!=',0)
+           ->orderBy('contratos.id','asc')
+           ->paginate(8);
+        }else{
+            switch($criterio2){
+                case 'contratos.id': {
+                    $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
+                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                    ->join('personal','clientes.id','=','personal.id')
+                    ->select(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),'contratos.id as folio',
+                                'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.num_lote')
+                    ->where('contratos.status','!=',0)
+                    ->where('contratos.id','=',$b)
+                    ->orderBy('contratos.id','asc')
+                    ->paginate(8);
+                    break;
+                }
+                case 'personal.nombre': {
+                    $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
+                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                    ->join('personal','clientes.id','=','personal.id')
+                    ->select(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),'contratos.id as folio',
+                                'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.num_lote')
+                    ->where('contratos.status','!=',0)
+                    ->where('personal.nombre','LIKE','%'.$b.'%')
+                    ->orwhere('contratos.status','!=',0)
+                    ->where('personal.apellidos','LIKE','%'.$b.'%')
+                    ->orderBy('contratos.id','asc')
+                    ->paginate(8);
+                    break;
+                }
+
+                case 'creditos.fraccionamiento': {
+                    if($b2 == '' && $b3 == ''){
+                    $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
+                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                    ->join('personal','clientes.id','=','personal.id')
+                    ->select(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),'contratos.id as folio',
+                                'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.num_lote')
+                    ->where('contratos.status','!=',0)
+                    ->where($criterio2,'=',$b)
+                    ->orderBy('contratos.id','asc')
+                    ->paginate(8);
+                    break;
+                    }elseif($b2 != '' && $b3 == ''){
+                        $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
+                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                        ->join('personal','clientes.id','=','personal.id')
+                        ->select(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),'contratos.id as folio',
+                                    'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.num_lote')
+                        ->where('contratos.status','!=',0)
+                        ->where($criterio2,'=',$b)
+                        ->where('creditos.etapa','=',$b2)
+                        ->orderBy('contratos.id','asc')
+                        ->paginate(8);
+                        break;
+                    }elseif ($b2 == '' && $b3 != '') {
+                        $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
+                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                        ->join('personal','clientes.id','=','personal.id')
+                        ->select(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),'contratos.id as folio',
+                                    'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.num_lote')
+                        ->where('contratos.status','!=',0)
+                        ->where($criterio2,'=',$b)
+                        ->where('creditos.manzana','=',$b3)
+                        ->orderBy('contratos.id','asc')
+                        ->paginate(8);
+                        break;
+                    }else {
+                        $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
+                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                        ->join('personal','clientes.id','=','personal.id')
+                        ->select(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),'contratos.id as folio',
+                                    'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.num_lote')
+                        ->where('contratos.status','!=',0)
+                        ->where($criterio2,'=',$b)
+                        ->where('creditos.etapa','=',$b2)
+                        ->where('creditos.manzana','=',$b3)
+                        ->orderBy('contratos.id','asc')
+                        ->paginate(8);
+                        break;
+                    }
+                }
+                default: {
+                    $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
+                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                    ->join('personal','clientes.id','=','personal.id')
+                    ->select(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),'contratos.id as folio',
+                                'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.num_lote')
+                    ->where('contratos.status','!=',0)
+                    ->where($criterio2,'=',$b)
+                    ->orderBy('contratos.id','asc')
+                    ->paginate(8);
+                    break;
+                }
+            }
+        }
+
+        return [
+            'pagination' => [
+                'total'         => $contratos->total(),
+                'current_page'  => $contratos->currentPage(),
+                'per_page'      => $contratos->perPage(),
+                'last_page'     => $contratos->lastPage(),
+                'from'          => $contratos->firstItem(),
+                'to'            => $contratos->lastItem(),
+            ],
+            'contratos' => $contratos];
+        
+
+    }
+
+    public function store(Request $request){
+        if(!$request->ajax())return redirect('/');
+        $gastos = new Gasto_admin();
+        $gastos->contrato_id = $request->contrato_id;
+        $gastos->concepto = $request->concepto;
+        $gastos->costo = $request->costo;
+        $gastos->observacion = $request->observacion;
+        $gastos->fecha = $request->fecha;
+        $gastos->save();
+    }
+
+    public function update(Request $request){
+        if(!$request->ajax())return redirect('/');
+        $gastos = Gasto_admin::findOrFail($request->id);
+        $gastos->concepto = $request->concepto;
+        $gastos->observacion = $request->observacion;
+        $gastos->fecha = $request->fecha;
+        $gastos->costo = $request->costo;
+        $gastos->save();
+    }
+
+    public function delete(Request $request){
+        if(!$request->ajax())return redirect('/');
+        $gastos = Gasto_admin::findOrFail($request->id);
+        $gastos->delete();
     }
 }

@@ -9,11 +9,16 @@
                 <div class="card scroll-box">
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Gastos administrativos
-                       <button type="button" class="btn btn-primary">
+                        <button type="button" class="btn btn-primary" v-if="listado == 0" @click="listado = 1, listarContratos(1,b,b2,b3,criterio2)">
                             <i class="icon-plus"></i>&nbsp;Nuevo Gasto Administrativo
+                        </button>
+                        <button type="button" class="btn btn-basic" v-if="listado == 1" @click="listado = 0">
+                            <i class="fa fa-arrow-left"></i>&nbsp;atras
                         </button>
                     </div>
                     
+            <!-- Listado de los gastos administrativos -->
+                <template v-if="listado==0">
                     <div class="card-body">
                         <div class="form-group row">
                             <div class="col-md-8">
@@ -64,18 +69,21 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="gasto in arrayGastos" :key="gasto.id">
+                                    <tr v-for="gasto in arrayGastos" :key="gasto.gastoId">
                                         <td style="width:8%">
-                                            <button type="button" @click="abrirModal('editar',gasto)" class="btn btn-warning btn-sm" title="Ver depositos">
+                                            <button type="button" @click="abrirModal('actualizar',gasto)" class="btn btn-warning btn-sm" title="Ver depositos">
                                             <i class="icon-pencil"></i>
                                             </button> &nbsp;
+                                            <button type="button" class="btn btn-danger btn-sm" @click="eliminarGasto(gasto.gastoId)">
+                                            <i class="icon-trash"></i>
+                                            </button>
                                         </td>
                                         <td v-text="gasto.folio"></td>
                                         <td v-text="gasto.nombre + ' ' + gasto.apellidos"></td>
                                         <td v-text="gasto.fraccionamiento"></td>
                                         <td v-text="gasto.etapa"></td>
                                         <td v-text="gasto.manzana"></td>
-                                        <td v-text="gasto.manzana"></td>
+                                        <td v-text="gasto.num_lote"></td>
                                         <td v-text="gasto.concepto"></td>
                                         <td v-text="this.moment(gasto.fecha).locale('es').format('DD/MMM/YYYY')"></td>
                                         <td v-text="'$'+formatNumber(gasto.costo)"></td>
@@ -98,105 +106,194 @@
                                 </li>
                             </ul>
                         </nav>
-                    </div>
-                </div>
-                <!-- Fin ejemplo de tabla Listado -->
-            </div>
+                    </div>                 
+                </template>
 
-            <!--Inicio del modal agregar/actualizar-->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" v-text="tituloModal"></h5>
-                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input"># Ref</label>
-                                    <div class="col-md-9">
-                                        <input type="text" disabled v-model="referencia" maxlength="10" class="form-control" placeholder="Numero de referencia">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
-                                    <div class="col-md-3">
-                                        <input type="text" disabled v-model="proyecto" maxlength="50" class="form-control">
-                                    </div>
-                                    <label class="col-md-3 form-control-label" for="text-input">Etapa</label>
-                                    <div class="col-md-3">
-                                        <input type="text" v-model="etapa" disabled maxlength="50" class="form-control">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Manzana</label>
-                                    <div class="col-md-3">
-                                        <input type="text" disabled v-model="manzana" maxlength="50" class="form-control">
-                                    </div>
-                                    <label class="col-md-3 form-control-label" for="text-input"># Lote</label>
-                                    <div class="col-md-3">
-                                        <input type="text" v-model="lote" disabled maxlength="50" class="form-control">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Fecha deposito</label>
-                                    <div class="col-md-6">
-                                        <input type="date" v-model="fecha_deposito" class="form-control">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Cantidad a depositar</label>
-                                    <div class="col-md-4">
-                                        <input type="text" pattern="\d*" v-on:keypress="isNumber($event)" v-model="cant_depo" maxlength="10" class="form-control">
-                                    </div>
-                                    <div class="col-md-4">
-                                        <p v-text="'$'+formatNumber(cant_depo)"></p>
-                                    </div>
-                                </div>
-
-
-                                 <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Concepto</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="concepto" class="form-control">
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Banco</label>
-                                    <div class="col-md-9">
-                                        <select class="form-control" v-model="banco">
-                                            <option value="">Seleccione</option>
-                                            <option v-for="banco in arrayBancos" :key="banco.num_cuenta" :value="banco.num_cuenta + '-' + banco.banco" v-text="banco.num_cuenta + '-' + banco.banco"></option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <!-- Div para mostrar los errores que mande validerDepartamento -->
-                                <div v-show="errorDeposito" class="form-group row div-error">
-                                    <div class="text-center text-error">
-                                        <div v-for="error in errorMostrarMsjDeposito" :key="error" v-text="error">
-                                        </div>
-                                    </div>
-                                </div>
-                        </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarDeposito()">Guardar</button>
-                            <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarDeposito()">Actualizar</button>
+                <!-- Listado de los contratos -->
+            <template v-if="listado==1">
+                <div class="card-body">
+                    <div class="form-group row">
+                        <div class="col-md-8">
+                            <div class="input-group">
+                                <!--Criterios para el listado de busqueda -->
+                                <select class="form-control col-md-4" v-model="criterio2" @click="b='', b2=''">
+                                    <option value="creditos.fraccionamiento">Proyecto</option>
+                                    <option value="contratos.id"># Referencia</option>
+                                    <option value="personal.nombre">Cliente</option>
+                                </select>
+                                <select class="form-control" v-if="criterio2=='creditos.fraccionamiento'" @click="selectEtapa(b)" v-model="b" >
+                                    <option value="">Seleccionar</option>
+                                    <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.nombre" v-text="fraccionamientos.nombre"></option>
+                                </select>
+                                    <select class="form-control" v-if="criterio2=='creditos.fraccionamiento'" v-model="b2"  @keyup.enter="listarContratos(1,b,b2,b3,criterio2)" @click="selectManzana(b, b2)"> 
+                                    <option value="">Etapa</option>
+                                    <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.num_etapa" v-text="etapas.num_etapa"></option>
+                                </select>
+                                <select class="form-control" v-if="criterio2=='creditos.fraccionamiento'" v-model="b3" @keyup.enter="listarContratos(1,b,b2,b3,criterio2)"> 
+                                    <option value="">Manzana</option>
+                                    <option v-for="manzana in arrayManzana" :key="manzana.manzana" :value="manzana.manzana" v-text="manzana.manzana"></option>
+                                </select>
+                                
+                                <input type="text" v-if="criterio2=='contratos.id'|| criterio2=='personal.nombre'" v-model="b" @keyup.enter="listarContratos(1,b,b2,b3,criterio2)" class="form-control" placeholder="Texto a buscar">
+                                
+                                <button type="submit" @click="listarContratos(1,b,b2,b3,criterio2)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                            </div>
                         </div>
                     </div>
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-sm">
+                            <thead>
+                                <tr>
+                                   
+                                    <th># Ref</th>
+                                    <th>Cliente</th>
+                                    <th>Proyecto</th>
+                                    <th>Etapa</th>
+                                    <th>Manzana</th>
+                                    <th># Lote</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="contrato in arrayContratos" :key="contrato.id" @dblclick="abrirModal('registrar',contrato)">
+                                   
+                                    <td v-text="contrato.folio"></td>
+                                    <td v-text="contrato.nombre_cliente"></td>
+                                    <td v-text="contrato.fraccionamiento"></td>
+                                    <td v-text="contrato.etapa"></td>
+                                    <td v-text="contrato.manzana"></td>
+                                    <td v-text="contrato.num_lote"></td>
+                                </tr>                               
+                            </tbody>
+                        </table>
+                    </div>
+                    <nav>
+                        <!--Botones de paginacion -->
+                        <ul class="pagination">
+                            <li class="page-item" v-if="pagination2.current_page > 1">
+                                <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page - 1,b,b2,b3,criterio2)">Ant</a>
+                            </li>
+                            <li class="page-item" v-for="page2 in pagesNumber2" :key="page2" :class="[page2 == isActived2 ? 'active' : '']">
+                                <a class="page-link" href="#" @click.prevent="cambiarPagina2(page2,b,b2,b3,criterio2)" v-text="page2"></a>
+                            </li>
+                            <li class="page-item" v-if="pagination2.current_page < pagination2.last_page">
+                                <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page + 1,b,b2,b3,criterio2)">Sig</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>                 
+            </template>
+                
             </div>
-            <!--Fin del modal-->
             
+        </div>
 
-        </main>
+        <!--Inicio del modal agregar/actualizar-->
+        <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog modal-primary modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" v-text="tituloModal"></h5>
+                        <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input"># Ref</label>
+                                <div class="col-md-9">
+                                    <input type="text" disabled v-model="referencia" maxlength="10" class="form-control" placeholder="Numero de referencia">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">Proyecto</label>
+                                <div class="col-md-3">
+                                    <input type="text" disabled v-model="proyecto" maxlength="50" class="form-control">
+                                </div>
+                                <label class="col-md-3 form-control-label" for="text-input">Etapa</label>
+                                <div class="col-md-3">
+                                    <input type="text" v-model="etapa" disabled maxlength="50" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">Manzana</label>
+                                <div class="col-md-3">
+                                    <input type="text" disabled v-model="manzana" maxlength="50" class="form-control">
+                                </div>
+                                <label class="col-md-3 form-control-label" for="text-input"># Lote</label>
+                                <div class="col-md-3">
+                                    <input type="text" v-model="lote" disabled maxlength="50" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">Fecha</label>
+                                <div class="col-md-6">
+                                    <input type="date" v-model="fecha" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">Concepto</label>
+                                <div class="col-md-6">
+                                    <select class="form-control" v-model="concepto">
+                                            <option value="Avaluo">Avaluo</option>
+                                            <option value="Ajuste">Ajuste</option>
+                                            <option value="2do Estudio">2do Estudio</option>
+                                            <option value="Aviso preventivo">Aviso preventivo</option>
+                                            <option value="Carta de no propiedad">Carta de no propiedad</option>
+                                            <option value="Comision por apertura">Comision por apertura</option>
+                                            <option value="Devolucion">Devolucion</option>
+                                            <option value="Folio de escritura cancelado">Folio de escritura cancelado</option>
+                                            <option value="Gastos de escrituracion">Gastos de escrituracion</option>
+                                            <option value="Honorarios">Honorarios</option>
+                                            <option value="Ingreso de expediente">Ingreso de expediente</option>
+                                            <option value="Intereses moratorios">Intereses moratorios</option>
+                                            <option value="Intereses ordinarios">Intereses ordinarios</option>
+                                            <option value="Investigacion">Investigacion</option>
+                                            <option value="Pedido especial">Pedido especial</option>
+                                            <option value="Registro de credito">Registro de credito</option>
+                                        </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">Costo</label>
+                                <div class="col-md-4">
+                                    <input type="text" pattern="\d*" v-on:keypress="isNumber($event)" v-model="costo" maxlength="10" class="form-control">
+                                </div>
+                                <div class="col-md-4">
+                                    <p v-text="'$'+formatNumber(costo)"></p>
+                                </div>
+                            </div>
+                              <div class="form-group row">
+                                <label class="col-md-3 form-control-label" for="text-input">Observacion</label>
+                                <div class="col-md-6">
+                                     <textarea rows="1" cols="30" class="form-control" v-model="observacion" placeholder="Observaciones"></textarea>
+                                </div>
+                            </div>
+
+
+                            <!-- Div para mostrar los errores que mande validerDepartamento -->
+                            <div v-show="errorGasto" class="form-group row div-error">
+                                <div class="text-center text-error">
+                                    <div v-for="error in errorMostrarMsjGasto" :key="error" v-text="error">
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                    <!-- Botones del modal -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                        <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
+                        <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarGasto()">Guardar</button>
+                        <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarGasto()">Actualizar</button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        <!--Fin del modal-->
+        
+
+    </main>
 </template>
 
 <!-- ************************************************************************************************************************************  -->
@@ -207,46 +304,40 @@
     export default {
         data(){
             return{
-                hoy:moment(),
+                
                 proceso:false,
                 id:0,
-                arrayGastos : [],
+                
                 arrayFraccionamientos : [],
                 arrayEtapas : [],
                 arrayManzana: [],
-                arrayDepositos : [],
-                arrayBancos : [],
+                arrayContratos: [],
+                arrayGastos: [],
                 modal : 0,
-                deposito : 0,
                 tituloModal : '',
                 tipoAccion: 0,
-                errorDeposito : 0,
-                errorMostrarMsjDeposito : [],
+                errorGasto: 0,
+                errorMostrarMsjGasto: [],
 
-                cliente:'',
-                referencia:'',
-                num_pagare:'',
-                proyecto:'',
-                etapa:'',
-                manzana:'',
-                lote:'',
-                fecha_limite:'',
-                fecha_deposito:'',
-                cant_depo:0,
-                interes_mor:0,
-                obs_mor:'',
-                interes_ord:0,
-                obs_ord:'',
-                saldo:0,
-                num_recibo:'',
-                banco:'',
-                concepto:'',
-                restante:0,
-                monto_pagare:0,
-                pago_id:0,
-                diferencia:0,
+                fecha: '',
+                costo: 0,
+                observacion: '',
+                referencia: 0,
+                etapa: '',
+                proyecto: '',
+                manzana: '',
+                lote: '',
+                concepto: '',
 
                 pagination : {
+                    'total' : 0,         
+                    'current_page' : 0,
+                    'per_page' : 0,
+                    'last_page' : 0,
+                    'from' : 0,
+                    'to' : 0,
+                },
+                 pagination2 : {
                     'total' : 0,         
                     'current_page' : 0,
                     'per_page' : 0,
@@ -259,12 +350,21 @@
                 buscar : '',
                 buscar2: '',
                 buscar3:'',
-                b_vencidos : 0
+
+                criterio2: 'creditos.fraccionamiento',
+                b: '',
+                b2: '',
+                b3: '',
+
+                listado: 0
             }
         },
         computed:{
             isActived: function(){
                 return this.pagination.current_page;
+            },
+             isActived2: function(){
+                return this.pagination2.current_page;
             },
             //Calcula los elementos de la paginación
             pagesNumber:function(){
@@ -289,7 +389,31 @@
                 }
                 return pagesArray;
             },
+            pagesNumber2:function(){
+                if(!this.pagination2.to){
+                    return [];
+                }
+
+                var from = this.pagination2.current_page - this.offset;
+                if(from < 1){
+                    from = 1;
+                }
+
+                var to = from + (this.offset * 2);
+                if(to >= this.pagination2.last_page){
+                    to = this.pagination2.last_page;
+                }
+
+                var pagesArray = [];
+                while(from <= to){
+                    pagesArray.push(from);
+                    from++;
+                }
+                return pagesArray;
+            }
         },
+          
+        
         methods : {
             /**Metodo para mostrar los registros */
             listarGastos(page, buscar,buscar2,buscar3,criterio){
@@ -304,10 +428,25 @@
                     console.log(error);
                 });
             },
+
+            listarContratos(page,b,b2,b3,criterio2){
+                let me = this;
+                var url = '/gastos/indexContratos?page=' + page + '&b=' + b + '&b2=' + b2 + '&b3=' + b3 + '&criterio2=' + criterio2;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayContratos = respuesta.contratos.data;
+                    me.pagination2 = respuesta.pagination;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
             formatNumber(value) {
                 let val = (value/1).toFixed(2)
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             },
+
             isNumber: function(evt) {
                 evt = (evt) ? evt : window.event;
                 var charCode = (evt.which) ? evt.which : evt.keyCode;
@@ -317,6 +456,7 @@
                     return true;
                 }
             },
+
             cambiarPagina(page, buscar, buscar2, buscar3,  criterio){
                 let me = this;
                 //Actualiza la pagina actual
@@ -324,6 +464,15 @@
                 //Envia la petición para visualizar la data de esta pagina
                 me.listarGastos(page,buscar, buscar2,buscar3,criterio);
             },
+
+            cambiarPagina2(page2, b, b2, b3,  criterio2){
+            let me = this;
+            //Actualiza la pagina actual
+            me.pagination2.current_page = page2;
+            //Envia la petición para visualizar la data de esta pagina
+            me.listarContratos(page2,b, b2,b3,criterio2);
+            },
+
             selectFraccionamiento(){
                 let me = this;
                 me.buscar="";
@@ -341,19 +490,6 @@
 
             },
 
-            selectCuenta(){
-                let me = this;
-                me.arrayBancos=[];
-                var url = '/select_cuenta';
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayBancos = respuesta.cuentas;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-
-            },
             selectEtapa(buscar){
                 let me = this;
                 me.buscar2="";
@@ -369,6 +505,7 @@
                     console.log(error);
                 });
             },
+
             selectManzana(buscar,buscar2){
                 let me = this;
                 me.buscar3=""
@@ -383,36 +520,30 @@
                     console.log(error);
                 });
             },
-            registrarDeposito(){
-                if(this.validarDeposito()) //Se verifica si hay un error (campo vacio)
+
+            registrarGasto(){
+                if(this.validarGasto()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
 
-                this.restante = this.restante - this.cant_depo;
-
                 let me = this;
                 //Con axios se llama el metodo store de DepartamentoController
-                axios.post('/deposito/registrar',{
-                    'pago_id':this.pago_id,
-                    'cant_depo':this.cant_depo,
-                    'interes_mor':this.interes_mor,
-                    'interes_ord':this.interes_ord,
-                    'obs_mor':this.obs_mor,
-                    'obs_ord':this.obs_ord,
-                    'num_recibo':this.num_recibo,
-                    'banco':this.banco,
+                axios.post('/gastos/registrar',{
+                    'contrato_id':this.referencia,
                     'concepto':this.concepto,
-                    'fecha_pago':this.fecha_deposito,
-                    'restante':this.restante
+                    'costo':this.costo,
+                    'observacion':this.observacion,
+                    'fecha':this.fecha
                 }).then(function (response){
                     me.cerrarModal(); //al guardar el registro se cierra el modal
-                    me.listarDepositos(); //se enlistan nuevamente los registros
+                    me.listado = 0;
+                    me.listarGastos(me.pagination.current_page,me.buscar, me.buscar2, me.buscar3, me.criterio); //se enlistan nuevamente los registros
                     //Se muestra mensaje Success
                     swal({
                         position: 'top-end',
                         type: 'success',
-                        title: 'Deposito agregado correctamente',
+                        title: 'Gasto agregado correctamente',
                         showConfirmButton: false,
                         timer: 1500
                         })
@@ -420,29 +551,23 @@
                     console.log(error);
                 });
             },
-            actualizarDeposito(){
-                if(this.validarDeposito()) //Se verifica si hay un error (campo vacio)
+            actualizarGasto(){
+                if(this.validarGasto()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
 
                 let me = this;
                 //Con axios se llama el metodo update de DepartamentoController
-                axios.put('/deposito/actualizar',{
-                    'pago_id':this.pago_id,
-                    'cant_depo':this.cant_depo,
-                    'interes_mor':this.interes_mor,
-                    'interes_ord':this.interes_ord,
-                    'obs_mor':this.obs_mor,
-                    'obs_ord':this.obs_ord,
-                    'num_recibo':this.num_recibo,
-                    'banco':this.banco,
+                axios.put('/gastos/actualizar',{
                     'concepto':this.concepto,
-                    'fecha_pago':this.fecha_deposito,
+                    'costo':this.costo,
+                    'observacion':this.observacion,
+                    'fecha':this.fecha,
                     'id':this.id,
                 }).then(function (response){
                     me.cerrarModal(); //al guardar el registro se cierra el modal
-                    me.listarDepositos(); //se enlistan nuevamente los registros
+                    me.listarGastos(me.pagination.current_page,me.buscar, me.buscar2, me.buscar3, me.criterio); //se enlistan nuevamente los registros
                     //window.alert("Cambios guardados correctamente");
                     swal({
                         position: 'top-end',
@@ -455,109 +580,86 @@
                     console.log(error);
                 });
             },
-            verDepositos(data=[]){
-                this.cliente=data['nombre']+' '+data['apellidos'];
-                this.referencia=data['folio'];
-                this.num_pagare= parseInt(data['num_pago']) + 1;
-                this.proyecto=data['fraccionamiento'];
-                this.etapa=data['etapa'];
-                this.manzana=data['manzana'];
-                this.lote=data['num_lote'];
-                this.fecha_limite=data['fecha_pago'];
-                this.fecha_deposito='';
-                this.cant_depo=0;
-                this.interes_mor=0;
-                this.obs_mor='';
-                this.interes_ord=0;
-                this.obs_ord='';
-                this.saldo=0;
-                this.num_recibo='';
-                this.banco='';
-                this.concepto='';
-                this.monto_pagare = data['monto_pago'];
-                this.restante= data['restante'];
-                this.pago_id = data['pago'];
-                this.diferencia=data['diferencia'];
 
-                this.listarDepositos();
+            eliminarGasto(id){
+                swal({
+                title: '¿Desea eliminar?',
+                text: "Esta acción no se puede revertir!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Si, eliminar!'
+                }).then((result) => {
+                if (result.value) {
+                    let me = this;
 
-               
-            },
-            listarDepositos(){
-                let me = this;
-                var url = '/depositos?buscar=' + me.pago_id;
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayDepositos = respuesta.depositos;
-                    me.deposito = 1;
-                    me.restante = respuesta.restante;
+                axios.delete('/gastos/eliminar', 
+                        {params: {'id': id}}).then(function (response){
+                        swal(
+                        'Borrado!',
+                        'Gasto borrado correctamente.',
+                        'success'
+                        )
+                        me.listarGastos(me.pagination.current_page,me.buscar, me.buscar2, me.buscar3, me.criterio);
+                    }).catch(function (error){
+                        console.log(error);
+                    });
+                }
                 })
-                .catch(function (error) {
-                    console.log(error);
-                });
             },
-
+        
             cerrarModal(){
                 this.modal = 0;
                 this.tituloModal = '';
 
-                this.fecha_deposito='';
-                this.cant_depo=0;
-                this.interes_mor=0;
-                this.obs_mor='';
-                this.interes_ord=0;
-                this.obs_ord='';
-                this.saldo=0;
-                this.num_recibo='';
-                this.banco='';
+                this.fecha='';
+                this.costo=0;
+                this.observacion='';
+                this.etapa='';
+                this.proyecto='';
+                this.manzana='';
+                this.lote='';
+                this.referencia=0;
                 this.concepto='';
 
-                this.errorDeposito = 0;
-                this.errorMostrarMsjDeposito = [];
+                this.errorGasto = 0;
+                this.errorMostrarMsjGasto = [];
 
             },
-            validarDeposito(){
-                this.errorDeposito=0;
-                this.errorMostrarMsjDeposito=[];
 
-                if(this.fecha_deposito== '') //Si la variable departamento esta vacia
-                    this.errorMostrarMsjDeposito.push("Ingresar fecha de deposito.");
+            validarGasto(){
+                this.errorGasto=0;
+                this.errorMostrarMsjGasto=[];
 
-                if(this.monto_pagare== '') //Si la variable departamento esta vacia
-                    this.errorMostrarMsjDeposito.push("Ingresar monto a depositar.");
-                
-                if(this.num_recibo == '') //Si la variable departamento esta vacia
-                    this.errorMostrarMsjDeposito.push("Ingresar numero de recibo.");
+                if(this.fecha== '') //Si la variable departamento esta vacia
+                    this.errorMostrarMsjDeposito.push("Ingresar una fecha.");
+
+                if(this.costo== '') //Si la variable departamento esta vacia
+                    this.errorMostrarMsjDeposito.push("Ingresar un costo.");
                 
                 if(this.concepto == '') //Si la variable departamento esta vacia
-                    this.errorMostrarMsjDeposito.push("Ingresar concepto.");
+                    this.errorMostrarMsjDeposito.push("Indicar un concepto.");
+              
+                if(this.errorMostrarMsjGasto.length)//Si el mensaje tiene almacenado algo en el array
+                    this.errorGasto = 1;
 
-                if(this.banco == '') //Si la variable departamento esta vacia
-                    this.errorMostrarMsjDeposito.push("Seleccionar cuenta.");
-                
-                if(this.tipoAccion==1)
-                    if(this.restante<0){
-                        this.errorMostrarMsjDeposito.push("El deposito supera a la cantidad restante.");
-                    }
-
-                if(this.errorMostrarMsjDeposito.length)//Si el mensaje tiene almacenado algo en el array
-                    this.errorDeposito = 1;
-
-                return this.errorDeposito;
+                return this.errorGasto;
             },
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
             abrirModal(accion,data =[]){
-                this.selectCuenta();
+               
                 switch(accion){
                     case 'registrar':
                     {
                         this.modal = 1;
-                        this.tituloModal = 'Nuevo deposito para pagare: '+ this.num_pagare;
-                        if(this.diferencia>0){
-                            this.interes_mor = ((this.monto_pagare * .05)/30) * this.diferencia;
-                            this.interes_mor=this.interes_mor.toFixed(2);
-                        }
-                       
+                        this.tituloModal = 'Registrar un nuevo gasto administrativo';
+                        this.referencia = data['folio'];
+                        this.proyecto = data['fraccionamiento'];
+                        this.etapa = data['etapa'];
+                        this.manzana = data['manzana'];
+                        this.lote = data['num_lote'];
                         this.tipoAccion = 1;
                         break;
                     }
@@ -565,21 +667,18 @@
                     {
                         //console.log(data);
                         this.modal =1;
-                        this.tituloModal='Actualizar deposito para pagare: '+ this.num_pagare;
+                        this.tituloModal='Actualizar gasto administrativo';
                         this.tipoAccion=2;
-
-                        this.fecha_deposito=data['fecha_pago'];
-                        this.cant_depo=data['cant_depo'];
-                        this.interes_mor=data['interes_mor'];
-                        this.obs_mor=data['obs_mor'];
-                        this.pago_id=data['pago_id'];
-                        this.interes_ord=data['interes_ord'];
-                        this.obs_ord=data['obs_ord'];
-                        this.num_recibo=data['num_recibo'];
-                        this.banco=data['banco'];
-                        this.concepto=data['concepto'];
-                        
-                        this.id=data['id'];
+                        this.id = data['gastoId'];
+                        this.referencia = data['folio'];
+                        this.proyecto = data['fraccionamiento'];
+                        this.etapa = data['etapa'];
+                        this.manzana = data['manzana'];
+                        this.lote = data['num_lote'];
+                        this.fecha = data['fecha'];
+                        this.concepto = data['concepto'];
+                        this.observacion = data['observacion'];
+                        this.costo = data['costo'];
                         break;
                     }
                 }
