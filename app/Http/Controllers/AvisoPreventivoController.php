@@ -80,7 +80,6 @@ class AvisoPreventivoController extends Controller
             'lotes.fraccionamiento_id'
         )
         ->where('i.elegido', '=', 1)
-        ->where('contratos.integracion', '=', 0)
         ->where('contratos.status', '!=', 0)
         ->where('contratos.status', '!=', 2)
         ->where('aviso_preventivos.contrato_id', '=', $id)

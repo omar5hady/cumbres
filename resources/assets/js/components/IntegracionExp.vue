@@ -201,6 +201,10 @@
                                     <div class="col-md-4">
                                         <input type="text"  v-model="valor_requerido" class="form-control" placeholder="Valor requerido">
                                     </div>
+
+                                    <div class="col-md-3">
+                                        <h6 v-text="'$'+formatNumber(valor_requerido)"></h6>
+                                    </div>
                                 </div>
                                 
                             </form>
@@ -851,7 +855,7 @@
                                 this.modal = 1;
                                 this.tituloModal='Fecha recibido';
                                 this.tipoAccion = 3;
-                                this.fecha_recibido = '';
+                                this.fecha_recibido = data['aviso_prev_venc'];
                                 this.id = data['folio'];
                                 
                                 break;

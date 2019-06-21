@@ -428,6 +428,10 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/gastos/actualizar','GastosAdministrativosController@update');
         Route::delete('/gastos/eliminar','GastosAdministrativosController@delete');
 
+        //////////////////// RUTAS SEGUIMIENTO TRAMITE /////////////////////////////////
+        Route::get('/expediente/ingresarIndex','ExpedienteController@indexIngresarExp');
+        Route::put('/expediente/ingresarExp','ExpedienteController@ingresarExp');
+
     });
 
 

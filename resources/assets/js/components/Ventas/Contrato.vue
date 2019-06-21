@@ -1997,6 +1997,7 @@
                     me.lote = me.arrayDatosLotes[0]['num_lote'];
                     me.precioObraExtra = me.arrayDatosLotes[0]['obra_extra'];
                     me.proyecto = me.arrayDatosLotes[0]['proyecto'];
+                    me.lote_id =  me.sel_lote;
 
                     me.precioVenta = me.precioVenta - me.descuentoPromo;
                     me.selectPaquetes(me.etapa,me.proyecto);

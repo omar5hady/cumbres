@@ -10,7 +10,7 @@
                 <div class="card-header">
                     <i class="fa fa-align-justify"></i> Sobreprecios
                     <!--   Boton Nuevo    -->
-                    <button type="button" @click="abrirModal('servicio','registrar')" class="btn btn-secondary">
+                    <button type="button" @click="abrirModal('sobreprecio','registrar')" class="btn btn-secondary">
                         <i class="icon-plus"></i>&nbsp;Nuevo
                     </button>
                     <!---->

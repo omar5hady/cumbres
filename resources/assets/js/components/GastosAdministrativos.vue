@@ -634,13 +634,13 @@
                 this.errorMostrarMsjGasto=[];
 
                 if(this.fecha== '') //Si la variable departamento esta vacia
-                    this.errorMostrarMsjDeposito.push("Ingresar una fecha.");
+                    this.errorMostrarMsjGasto.push("Ingresar una fecha.");
 
                 if(this.costo== '') //Si la variable departamento esta vacia
-                    this.errorMostrarMsjDeposito.push("Ingresar un costo.");
+                    this.errorMostrarMsjGasto.push("Ingresar un costo.");
                 
                 if(this.concepto == '') //Si la variable departamento esta vacia
-                    this.errorMostrarMsjDeposito.push("Indicar un concepto.");
+                    this.errorMostrarMsjGasto.push("Indicar un concepto.");
               
                 if(this.errorMostrarMsjGasto.length)//Si el mensaje tiene almacenado algo en el array
                     this.errorGasto = 1;

@@ -16,6 +16,8 @@ class AddGestorIdToExpedientes extends Migration
         Schema::table('expedientes', function($table) {
             $table->unsignedInteger('gestor_id')->default(1);
             $table->date('fecha_integracion')->nullable();
+            $table->date('fecha_ingreso')->nullable();
+            $table->double('valor_escrituras')->default(0)->nullable();
 
             $table->foreign('gestor_id')->references('id')->on('personal');
         });
