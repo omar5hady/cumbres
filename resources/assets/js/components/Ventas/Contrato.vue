@@ -1995,6 +1995,8 @@
                     me.descuentoPromo = me.arrayDatosLotes[0]['descuentoPromo'];
                     me.terreno_tam_excedente= Math.round( me.arrayDatosLotes[0]['terreno_tam_excedente']*100)/100;
                     me.lote = me.arrayDatosLotes[0]['num_lote'];
+                    me.manzana = me.arrayDatosLotes[0]['manzana'];
+                    me.etapa = me.arrayDatosLotes[0]['etapa'];
                     me.precioObraExtra = me.arrayDatosLotes[0]['obra_extra'];
                     me.proyecto = me.arrayDatosLotes[0]['proyecto'];
                     me.lote_id =  me.sel_lote;
