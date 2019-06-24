@@ -430,7 +430,10 @@ Route::group(['middleware' => ['auth']],function(){
 
         //////////////////// RUTAS SEGUIMIENTO TRAMITE /////////////////////////////////
         Route::get('/expediente/ingresarIndex','ExpedienteController@indexIngresarExp');
+        Route::get('/expediente/preautorizadosIndex','ExpedienteController@indexPreautorizados');
+        Route::get('/expediente/rechazadosIndex','ExpedienteController@indexRechazados');
         Route::put('/expediente/ingresarExp','ExpedienteController@ingresarExp');
+        Route::put('/expediente/ingresarPreauto','ExpedienteController@ingresarPreauto');
 
     });
 

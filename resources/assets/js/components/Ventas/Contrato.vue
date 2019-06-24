@@ -1827,7 +1827,7 @@
 
             totalCreditoSolic: function(){
                 var total_credito =0;
-                    total_credito = parseFloat(this.monto_credito) - parseFloat(this.comision_apertura)-parseFloat(this.investigacion)+parseFloat(this.avaluo)-parseFloat(this.prima_unica)-parseFloat(this.escrituras); 
+                    total_credito = parseFloat(this.monto_credito) - parseFloat(this.comision_apertura)-parseFloat(this.investigacion)-parseFloat(this.avaluo)-parseFloat(this.prima_unica)-parseFloat(this.escrituras); 
                 return total_credito;
             },
 

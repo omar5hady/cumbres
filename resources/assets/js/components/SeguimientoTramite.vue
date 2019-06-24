@@ -34,6 +34,8 @@
                         </ul>
 
                         <div class="tab-content" id="myTab1Content">
+
+                            <!-- Listado por ingresar -->
                             <div class="tab-pane fade active show" id="ingresar" role="tabpanel" aria-labelledby="ingresar-tab">
                                 <div class="form-group row">
                                     <div class="col-md-10">
@@ -142,40 +144,37 @@
                                         </tbody>
                                     </table>  
                                 </div>
-                                <nav>
-                                
-                                </nav>
                             </div>
 
+                            <!-- Listado de preautorizados -->
                             <div class="tab-pane fade" id="preautorizados" role="tabpanel" aria-labelledby="preautorizados-tab">
                                 <div class="form-group row">
                                     <div class="col-md-10">
                                         <div class="input-group">
                                             <!--Criterios para el listado de busqueda -->
-                                            <select class="form-control col-md-5" v-model="criterio" @click="selectFraccionamientos()">
+                                            <select class="form-control col-md-5" v-model="criterio_preauto" @click="selectFraccionamientos()">
                                                 <option value="lotes.fraccionamiento_id">Proyecto</option>
                                                 <option value="c.nombre">Cliente</option>
-                                                <option value="g.nombre">Gestor</option>
-                                                <option value="contraos.id"># Folio</option>
+                                                <option value="contratos.id"># Folio</option>
                                             </select>
 
                                             
-                                            <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @click="selectEtapa(buscar)">
+                                            <select class="form-control" v-if="criterio_preauto=='lotes.fraccionamiento_id'" v-model="buscar_preauto" @click="selectEtapa(buscar_preauto)">
                                                 <option value="">Seleccione</option>
                                                 <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                             </select>
 
-                                            <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_etapa"> 
+                                            <select class="form-control" v-if="criterio_preauto=='lotes.fraccionamiento_id'" v-model="b_etapa_preauto"> 
                                                 <option value="">Etapa</option>
                                                 <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                             </select>
 
                                             
-                                            <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_manzana" class="form-control" placeholder="Manzana a buscar">
-                                            <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
+                                            <input type="text" v-if="criterio_preauto=='lotes.fraccionamiento_id'" v-model="b_manzana_preauto" class="form-control" placeholder="Manzana a buscar">
+                                            <input type="text" v-if="criterio_preauto=='lotes.fraccionamiento_id'" v-model="b_lote_preauto" class="form-control" placeholder="Lote a buscar">
 
-                                            <input v-else type="text"  v-model="buscar" @keyup.enter="listarContratos(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
-                                            <button type="submit" @click="listarContratos(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                            <input v-else type="text"  v-model="buscar_preauto" @keyup.enter="listarPreautorizados(1,buscar_preauto,b_etapa_preauto,b_manzana_preauto,b_lote_preauto,criterio_preauto)" class="form-control" placeholder="Texto a buscar">
+                                            <button type="submit" @click="listarPreautorizados(1,buscar_preauto,b_etapa_preauto,b_manzana_preauto,b_lote_preauto,criterio_preauto)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                         
                                         </div>
                                     </div>
@@ -196,40 +195,182 @@
                                                 <th>Avance obra</th>
                                                 <th>Firma Contrato</th>
                                                 <th>Resultado avaluo</th>
-                                                <th>Avaluo Catastral</th>
                                                 <th>Aviso preventivo</th>
+                                                <th>Tipo de Crédito</th>
+                                                <th>Institución de Fin.</th>
                                                 <th>Valor de la vivienda</th>
-                                                <th>Aviso preventivo</th>
-                                                <th>Institución</th>
-                                                <th>Monto autorizado</th>
+                                                <th>Valor escriturar</th>
+                                                <th>Analisis</th>
+                                                <th>Crédito Puente</th>
+                                                <th>Observaciones</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr v-for="preautorizados in arrayPreautorizados" :key="preautorizados.id" @dblclick="abrirModal('gestor',preautorizados)" > 
+                                            <tr v-for="preautorizados in arrayPreautorizados" :key="preautorizados.id" @dblclick="abrirModal('gestor',ingresar)" > 
                                                 
                                                 <td class="td2" v-text="preautorizados.folio"></td>
                                                 <td class="td2" v-text="preautorizados.nombre_cliente"></td>
+                                                <td class="td2" v-text="preautorizados.nombre_vendedor"></td>
                                                 <td class="td2" v-text="preautorizados.proyecto"></td>
                                                 <td class="td2" v-text="preautorizados.etapa"></td>
                                                 <td class="td2" v-text="preautorizados.manzana"></td>
                                                 <td class="td2" v-text="preautorizados.num_lote"></td>
-                                                <td class="td2" v-text="preautorizados.nombre_gestor"></td>
-                                                <td class="td2" v-text="preautorizados.tipo_credito"></td>
-                                                <td class="td2" v-text="preautorizados.institucion"></td>
-                                            
+                                                <td class="td2" v-text="preautorizados.calle + ' '+ preautorizados.numero + ' '+ preautorizados.interior"></td>
+                                                <td class="td2" v-text="preautorizados.avance_lote"></td>
+                                                <td class="td2" v-text="preautorizados.fecha_status"></td>
+
+                                                <td v-if="preautorizados.avaluo_preventivo!='0000-01-01'" class="td2" v-text="'$'+formatNumber(preautorizados.resultado)"></td>
+                                                <td v-if="preautorizados.avaluo_preventivo=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
+
+                                                <td @dblclick="abrirModal('fecha_recibido',ingresar)" v-if="preautorizados.aviso_prev!='0000-01-01' && !preautorizados.aviso_prev_venc" class="td2" v-text="'Fecha solicitud: ' 
+                                                + this.moment(preautorizados.aviso_prev).locale('es').format('DD/MMM/YYYY')"></td>
+
+                                                <td  @dblclick="abrirModal('fecha_recibido',ingresar)" v-if="preautorizados.aviso_prev!='0000-01-01' && preautorizados.aviso_prev_venc" class="td2">
+                                                    
+                                                    <span v-if = "preautorizados.diferencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: ' 
+                                                    + this.moment(preautorizados.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
+
+                                                    <span v-if = "preautorizados.diferencia < 0 && preautorizados.diferencia >= -15 " class="badge2 badge-warning" v-text="'Fecha vencimiento: ' 
+                                                    + this.moment(preautorizados.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
+
+                                                    <span v-if = "preautorizados.diferencia < -15 " class="badge2 badge-success" v-text="'Fecha vencimiento: ' 
+                                                    + this.moment(preautorizados.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
+                                                    
+                                                </td>
+
+                                            <td v-if="preautorizados.aviso_prev=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
+                                            <td class="td2" v-text="preautorizados.tipo_credito"></td>
+                                            <td class="td2" v-text="preautorizados.institucion"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(preautorizados.precio_venta)"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(preautorizados.valor_escrituras)"></td>
+                                            <td>
+                                                <button type="button" @click="abrirModal('preautorizado',preautorizados)" class="btn btn-primary btn-sm" title="Ingresar">
+                                                    <i class="fa fa-send-o"></i>
+                                                </button>
+                                            </td>
+                                            <td class="td2" v-text="preautorizados.credito_puente"></td>
+                                            <td class="td2">
+                                                <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
+                                                    @click="abrirModal3(preautorizados.folio)">Ver Observaciones</button>
+                                            </td>
                                             </tr>                               
                                         </tbody>
                                     </table>  
                                 </div>
-                                <nav>
-                                
-                                </nav>
                             </div>
 
+                            <!-- Listado de rechazados -->
                             <div class="tab-pane fade" id="rechazados" role="tabpanel" aria-labelledby="rechazados-tab">
-                                Aqui puro rechazado
+                                <div class="form-group row">
+                                    <div class="col-md-10">
+                                        <div class="input-group">
+                                            <!--Criterios para el listado de busqueda -->
+                                            <select class="form-control col-md-5" v-model="criterio_rechazados" @click="selectFraccionamientos()">
+                                                <option value="lotes.fraccionamiento_id">Proyecto</option>
+                                                <option value="c.nombre">Cliente</option>
+                                                <option value="contratos.id"># Folio</option>
+                                            </select>
+
+                                            
+                                            <select class="form-control" v-if="criterio_rechazados=='lotes.fraccionamiento_id'" v-model="buscar_rechazados" @click="selectEtapa(buscar_rechazados)">
+                                                <option value="">Seleccione</option>
+                                                <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                                            </select>
+
+                                            <select class="form-control" v-if="criterio_rechazados=='lotes.fraccionamiento_id'" v-model="b_etapa_rechazados"> 
+                                                <option value="">Etapa</option>
+                                                <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
+                                            </select>
+
+                                            
+                                            <input type="text" v-if="criterio_rechazados=='lotes.fraccionamiento_id'" v-model="b_manzana_rechazados" class="form-control" placeholder="Manzana a buscar">
+                                            <input type="text" v-if="criterio_rechazados=='lotes.fraccionamiento_id'" v-model="b_lote_rechazados" class="form-control" placeholder="Lote a buscar">
+
+                                            <input v-else type="text"  v-model="buscar_rechazados" @keyup.enter="listarRechazados(1,buscar_rechazados,b_etapa_rechazados,b_manzana_rechazados,b_lote_rechazados,criterio_rechazados)" class="form-control" placeholder="Texto a buscar">
+                                            <button type="submit" @click="listarRechazados(1,buscar_rechazados,b_etapa_rechazados,b_manzana_rechazados,b_lote_rechazados,criterio_rechazados)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                        
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table2 table-bordered table-striped table-sm">
+                                        <thead>
+                                            <tr> 
+                                                
+                                                <th># Ref</th>
+                                                <th>Cliente</th>
+                                                <th>Asesor</th>
+                                                <th>Proyecto</th>
+                                                <th>Etapa</th>
+                                                <th>Manzana</th>
+                                                <th># Lote</th>
+                                                <th>Dirección</th>
+                                                <th>Avance obra</th>
+                                                <th>Firma Contrato</th>
+                                                <th>Resultado avaluo</th>
+                                                <th>Aviso preventivo</th>
+                                                <th>Tipo de Crédito</th>
+                                                <th>Institución de Fin.</th>
+                                                <th>Valor de la vivienda</th>
+                                                <th>Valor escriturar</th>
+                                                <th>Analisis</th>
+                                                <th>Crédito Puente</th>
+                                                <th>Observaciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="rechazados in arrayRechazados" :key="rechazados.id" @dblclick="abrirModal('gestor',ingresar)" > 
+                                                
+                                                <td class="td2" v-text="rechazados.folio"></td>
+                                                <td class="td2" v-text="rechazados.nombre_cliente"></td>
+                                                <td class="td2" v-text="rechazados.nombre_vendedor"></td>
+                                                <td class="td2" v-text="rechazados.proyecto"></td>
+                                                <td class="td2" v-text="rechazados.etapa"></td>
+                                                <td class="td2" v-text="rechazados.manzana"></td>
+                                                <td class="td2" v-text="rechazados.num_lote"></td>
+                                                <td class="td2" v-text="rechazados.calle + ' '+ rechazados.numero + ' '+ rechazados.interior"></td>
+                                                <td class="td2" v-text="rechazados.avance_lote"></td>
+                                                <td class="td2" v-text="rechazados.fecha_status"></td>
+
+                                                <td v-if="rechazados.avaluo_preventivo!='0000-01-01'" class="td2" v-text="'$'+formatNumber(rechazados.resultado)"></td>
+                                                <td v-if="rechazados.avaluo_preventivo=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
+
+                                                <td @dblclick="abrirModal('fecha_recibido',ingresar)" v-if="rechazados.aviso_prev!='0000-01-01' && !rechazados.aviso_prev_venc" class="td2" v-text="'Fecha solicitud: ' 
+                                                + this.moment(rechazados.aviso_prev).locale('es').format('DD/MMM/YYYY')"></td>
+
+                                                <td  @dblclick="abrirModal('fecha_recibido',ingresar)" v-if="rechazados.aviso_prev!='0000-01-01' && rechazados.aviso_prev_venc" class="td2">
+                                                    
+                                                    <span v-if = "rechazados.diferencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: ' 
+                                                    + this.moment(rechazados.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
+
+                                                    <span v-if = "rechazados.diferencia < 0 && rechazados.diferencia >= -15 " class="badge2 badge-warning" v-text="'Fecha vencimiento: ' 
+                                                    + this.moment(rechazados.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
+
+                                                    <span v-if = "rechazados.diferencia < -15 " class="badge2 badge-success" v-text="'Fecha vencimiento: ' 
+                                                    + this.moment(rechazados.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
+                                                    
+                                                </td>
+
+                                            <td v-if="rechazados.aviso_prev=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
+                                            <td class="td2" v-text="rechazados.tipo_credito"></td>
+                                            <td class="td2" v-text="rechazados.institucion"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(rechazados.precio_venta)"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(rechazados.valor_escrituras)"></td>
+                                            <td class="td2">
+                                            <span class="badge2 badge-danger" v-text="'Fecha rechazado: '+ this.moment(rechazados.fecha_preautorizado).locale('es').format('DD/MMM/YYYY')"></span>
+                                            </td>
+                                            <td class="td2" v-text="rechazados.credito_puente"></td>
+                                            <td class="td2">
+                                                <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
+                                                    @click="abrirModal3(rechazados.folio)">Ver Observaciones</button>
+                                            </td>
+                                            </tr>                               
+                                        </tbody>
+                                    </table>  
+                                </div>
                             </div>
 
+                            <!-- Listado de autorizados -->
                             <div class="tab-pane fade" id="autorizado" role="tabpanel" aria-labelledby="autorizado-tab">
                                 <div class="form-group row">
                                     <div class="col-md-10">
@@ -309,6 +450,7 @@
                                 </nav>
                             </div>
 
+                            <!-- Listado de liquidacion -->
                             <div class="tab-pane fade" id="liquidacion" role="tabpanel" aria-labelledby="liquidacion-tab">
                                 <div class="form-group row">
                                     <div class="col-md-10">
@@ -388,6 +530,7 @@
                                 </nav>
                             </div>
 
+                            <!-- Listado de programacion de firma -->
                             <div class="tab-pane fade" id="programacion" role="tabpanel" aria-labelledby="programacion-tab">
                                 <div class="form-group row">
                                     <div class="col-md-10">
@@ -466,6 +609,7 @@
                                 
                                 </nav>
                             </div>
+
                         </div>
                         
                         
@@ -489,35 +633,35 @@
                             <!-- form para captura de fecha recibido -->
                             <form v-if="tipoAccion == 2" action="" method="post" enctype="multipart/form-data" class="form-horizontal">
 
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Fecha</label>
-                                    <div class="col-md-4">
-                                        <input type="date"  v-model="fecha_ingreso" class="form-control" >
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Valor a escriturar</label>
-                                    <div class="col-md-4">
-                                        <input type="text" maxlength="10" v-model="valor_escrituras" pattern="\d*" v-on:keypress="isNumber($event)" class="form-control" placeholder="Monto">
-                                    </div>
-                                    <div class="col-md-3">
-                                        <h6 v-text="'$'+formatNumber(valor_escrituras)"></h6>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Fecha</label>
+                                        <div class="col-md-4">
+                                            <input type="date"  v-model="fecha_ingreso" class="form-control" >
+                                        </div>
                                     </div>
 
-                                </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Valor a escriturar</label>
+                                        <div class="col-md-4">
+                                            <input type="text" maxlength="10" v-model="valor_escrituras" pattern="\d*" v-on:keypress="isNumber($event)" class="form-control" placeholder="Monto">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <h6 v-text="'$'+formatNumber(valor_escrituras)"></h6>
+                                        </div>
 
-                                <!-- Div para mostrar los errores que mande validerDepartamento -->
-                            <div v-show="errorIngreso" class="form-group row div-error">
-                                <div class="text-center text-error">
-                                    <div v-for="error in errorMostrarMsjIngreso" :key="error" v-text="error">
+                                    </div>
+
+                                    <!-- Div para mostrar los errores que mande validerDepartamento -->
+                                <div v-show="errorIngreso" class="form-group row div-error">
+                                    <div class="text-center text-error">
+                                        <div v-for="error in errorMostrarMsjIngreso" :key="error" v-text="error">
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                                
-                                
+                                    
+                                    
                             </form>
-                            <!-- fin del form para captura de fecha recibido -->
+                           
 
                             <!-- form para captura de fecha recibido -->
                             <form v-if="tipoAccion == 3" action="" method="post" enctype="multipart/form-data" class="form-horizontal">
@@ -528,17 +672,48 @@
                                         <input type="date"  v-model="fecha_recibido" class="form-control" >
                                     </div>
                                 </div>
-                                
-                                
+
                             </form>
-                            <!-- fin del form para captura de fecha recibido -->
+                            
+
+                            <!-- form para los datos de preautorizados -->
+                            <form v-if="tipoAccion == 4" action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Autorización</label>
+                                        <div class="col-md-4"> 
+                                            <select class="form-control" v-model="autorizacion">
+                                                <option value="">Seleccione</option>
+                                                <option value="1">Autorizado</option>
+                                                <option value="2">Rechazado</option>
+                                            </select>
+                                       </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Fecha</label>
+                                        <div class="col-md-4">
+                                            <input type="date"  v-model="fecha_preautorizado" class="form-control" >
+                                        </div>
+                                    </div>
+
+                                    <!-- Div para mostrar los errores que mande validerDepartamento -->
+                                <div v-show="errorPreautorizados" class="form-group row div-error">
+                                    <div class="text-center text-error">
+                                        <div v-for="error in errorMostrarMsjPreautorizados" :key="error" v-text="error">
+                                        </div>
+                                    </div>
+                                </div>
+                                         
+                            </form>
 
                         </div>
                         <!-- Botones del modal -->
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
                             <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="enviarIngreso()">Ingresar</button>
-                            <button type="button" v-if="tipoAccion==3" class="btn btn-primary" @click="fechaRecibido()">Enviar</button>
+                            <!-- <button type="button" v-if="tipoAccion==3" class="btn btn-primary" @click="fechaRecibido()">Enviar</button> -->
+                            <button type="button" v-if="tipoAccion==4" class="btn btn-primary" @click="enviarPreautorizado()">Enviar</button>
                             <a v-bind:href="'/expediente/solicitudPDF/' + id" v-if="tipoAccion==3" type="button" target="_blank" class="btn btn-primary">Imprimir</a>
                         </div>
                     </div>
@@ -616,6 +791,7 @@
         data(){
             return{
                 arrayPreautorizados: [],
+                arrayRechazados: [],
                 arrayAutorizados: [],
                 arrayLiquidados: [],
                 arrayProgramacion: [],
@@ -627,17 +803,39 @@
 
                 errorIngreso:0,
                 errorMostrarMsjIngreso:[],
+
+                errorPreautorizados:0,
+                errorMostrarMsjPreautorizados:[],
                 
+                //variables para filtros de Por ingresar
                 criterio:'lotes.fraccionamiento_id',
                 buscar:'',
                 b_etapa:'',
                 b_manzana:'',
                 b_lote:'',
+
+                //variables para filtros de Preautorizados
+                criterio_preauto:'lotes.fraccionamiento_id',
+                buscar_preauto:'',
+                b_etapa_preauto:'',
+                b_manzana_preauto:'',
+                b_lote_preauto:'',
+
+                //variables para filtros de Rechazados
+                criterio_rechazados:'lotes.fraccionamiento_id',
+                buscar_rechazados:'',
+                b_etapa_rechazados:'',
+                b_manzana_rechazados:'',
+                b_lote_rechazados:'',
+
                 fecha_recibido:'',
                 id:0,
-                tipoAccion:0,
+                tipoAccion: 0,
                 fecha_ingreso:'',
                 valor_escrituras:'',
+
+                autorizacion: '',
+                fecha_preautorizado: '',
 
                 modal:0,
                 tituloModal:'',
@@ -778,12 +976,72 @@
                 });
             },
 
+            enviarPreautorizado(){
+                if(this.validarPreautorizados()){
+                    return;
+                }
+                
+                let me = this;
+                //Con axios se llama el metodo update de LoteController
+                axios.put('/expediente/ingresarPreauto',{
+                    'folio':this.id,
+                    'fecha_preautorizado' : this.fecha_preautorizado,
+                    'autorizacion' : this.autorizacion,
+                    
+                }).then(function (response){
+                   
+                    me.cerrarModal();
+                    me.listarPreautorizados(1, me.buscar_preauto, me.b_etapa_preauto, me.b_manzana_preauto, me.b_lote_preauto, me.criterio_preauto);
+                    //window.alert("Cambios guardados correctamente");
+                    const toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                        });
+                        toast({
+                        type: 'success',
+                        title: 'Preautorizacion ingresada correctamente'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
             listarIngresoExp(page, buscar, b_etapa, b_manzana, b_lote, criterio){
                 let me = this;
                 var url = '/expediente/ingresarIndex?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayPorIngresar = respuesta.contratos.data;
+                    me.pagination = respuesta.pagination;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+                
+            },
+
+            listarPreautorizados(page, buscar, b_etapa, b_manzana, b_lote, criterio){
+                let me = this;
+                var url = '/expediente/preautorizadosIndex?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayPreautorizados = respuesta.contratos.data;
+                    me.pagination = respuesta.pagination;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+                
+            },
+
+            listarRechazados(page, buscar, b_etapa, b_manzana, b_lote, criterio){
+                let me = this;
+                var url = '/expediente/rechazadosIndex?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayRechazados = respuesta.contratos.data;
                     me.pagination = respuesta.pagination;
                 })
                 .catch(function (error) {
@@ -806,6 +1064,23 @@
                     this.errorIngreso = 1;
 
                 return this.errorIngreso;
+            },
+
+            
+            validarPreautorizados(){
+                this.errorPreautorizados=0;
+                this.errorMostrarMsjPreautorizados=[];
+
+                if(this.fecha_preautorizado== '') //Si la variable departamento esta vacia
+                    this.errorMostrarMsjPreautorizados.push("Ingresar una fecha.");
+
+                if(this.autorizacion== '') //Si la variable departamento esta vacia
+                    this.errorMostrarMsjPreautorizados.push("Indicar autorizado / rechazado");
+                              
+                if(this.errorMostrarMsjPreautorizados.length)//Si el mensaje tiene almacenado algo en el array
+                    this.errorPreautorizados = 1;
+
+                return this.errorPreautorizados;
             },
 
             abrirModal3(folio){
@@ -839,6 +1114,17 @@
                         this.id = data['folio'];
                         break;
                     }
+
+                    case 'preautorizado': 
+                    {
+                        this.modal = 1;
+                        this.tituloModal='Ingresar autorizacion';
+                        this.tipoAccion = 4;
+                        this.fecha_preautorizado = '';
+                        this.autorizacion= 0;
+                        this.id = data['folio'];
+                        break;
+                    }
                 }
 
             },
@@ -866,6 +1152,8 @@
         mounted() {
             this.selectFraccionamientos();
             this.listarIngresoExp(1, this.buscar, this.b_etapa, this.b_manzana, this.b_lote, this.criterio);
+            this.listarPreautorizados(1, this.buscar_preauto, this.b_etapa_preauto, this.b_manzana_preauto, this.b_lote_preauto, this.criterio_preauto);
+            this.listarRechazados(1, this.buscar_rechazados, this.b_etapa_rechazados, this.b_manzana_rechazados, this.b_lote_rechazados, this.criterio_rechazados);
             
         }
     }
