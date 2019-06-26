@@ -18,8 +18,7 @@ class AddGestorIdToExpedientes extends Migration
             $table->date('fecha_integracion')->nullable();
             $table->date('fecha_ingreso')->nullable();
             $table->double('valor_escrituras')->default(0)->nullable();
-            $table->date('fecha_preautorizado')->nullable();
-            $table->boolean('autorizacion')->default(0);
+            $table->date('fecha_infonavit')->nullable();
 
             $table->foreign('gestor_id')->references('id')->on('personal');
         });

@@ -430,10 +430,11 @@ Route::group(['middleware' => ['auth']],function(){
 
         //////////////////// RUTAS SEGUIMIENTO TRAMITE /////////////////////////////////
         Route::get('/expediente/ingresarIndex','ExpedienteController@indexIngresarExp');
-        Route::get('/expediente/preautorizadosIndex','ExpedienteController@indexPreautorizados');
-        Route::get('/expediente/rechazadosIndex','ExpedienteController@indexRechazados');
+        Route::get('/expediente/autorizadosIndex','ExpedienteController@indexAutorizados');
+        Route::get('/expediente/liquidacionIndex','ExpedienteController@indexLiquidacion');
         Route::put('/expediente/ingresarExp','ExpedienteController@ingresarExp');
-        Route::put('/expediente/ingresarPreauto','ExpedienteController@ingresarPreauto');
+        Route::put('/expediente/inscInfonavit','ExpedienteController@inscribirInfonavit');
+        Route::put('/expediente/InfonavitNoAplica','ExpedienteController@noAplicaInfonavit');
 
     });
 

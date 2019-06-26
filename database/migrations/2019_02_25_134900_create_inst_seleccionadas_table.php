@@ -22,6 +22,7 @@ class CreateInstSeleccionadasTable extends Migration
             $table->boolean('status')->default(1)->nullable();
             $table->date('fecha_ingreso')->nullable();
             $table->date('fecha_respuesta')->nullable();
+            $table->date('fecha_vigencia')->nullable();
             $table->integer('plazo_credito')->nullable();
             $table->double('monto_credito')->nullable();
             $table->timestamps();

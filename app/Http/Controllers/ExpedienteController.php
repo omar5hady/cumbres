@@ -1459,6 +1459,7 @@ class ExpedienteController extends Controller
         $b_manzana = $request->b_manzana;
         $b_lote = $request->b_lote;
         $criterio = $request->criterio;
+        $contador = 0;
 
 
         if ($buscar == ''){
@@ -1506,7 +1507,7 @@ class ExpedienteController extends Controller
                 ->where('contratos.status', '!=', 2)
                 ->where('expedientes.fecha_ingreso','=',NULL)
                 ->orderBy('contratos.id','asc')
-                ->paginate(8);
+                ->get();
         }
         else{
             switch($criterio){
@@ -1561,7 +1562,7 @@ class ExpedienteController extends Controller
                         ->where('expedientes.fecha_ingreso','=',NULL)
                         ->where('c.apellidos','like','%'. $buscar . '%')
                         ->orderBy('contratos.id','asc')
-                        ->paginate(8);
+                        ->get();
                     break;
                 }
                 case 'contratos.id':{
@@ -1610,7 +1611,7 @@ class ExpedienteController extends Controller
                         ->where('expedientes.fecha_ingreso','=',NULL)
                         ->where($criterio,'=',$buscar)
                         ->orderBy('contratos.id','asc')
-                        ->paginate(8);
+                        ->get();
                     break;
                 }
                 case 'lotes.fraccionamiento_id':{
@@ -1660,7 +1661,7 @@ class ExpedienteController extends Controller
                             ->where('expedientes.fecha_ingreso','=',NULL)
                             ->where($criterio, '=', $buscar)
                             ->orderBy('contratos.id','asc')
-                            ->paginate(8);
+                            ->get();
                     }
                     elseif($b_etapa != '' && $b_manzana =='' && $b_lote == ''){
                         $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
@@ -1709,7 +1710,7 @@ class ExpedienteController extends Controller
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.etapa_id', '=', $b_etapa)
                             ->orderBy('contratos.id','asc')
-                            ->paginate(8);
+                            ->get();
                     }
                     elseif($b_etapa != '' && $b_manzana !='' && $b_lote == ''){
                         $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
@@ -1759,7 +1760,7 @@ class ExpedienteController extends Controller
                             ->where('lotes.etapa_id', '=', $b_etapa)
                             ->where('lotes.manzana', '=', $b_manzana)
                             ->orderBy('contratos.id','asc')
-                            ->paginate(8);
+                            ->get();
                     }
                     elseif($b_etapa != '' && $b_manzana !='' && $b_lote != ''){
                         $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
@@ -1810,7 +1811,7 @@ class ExpedienteController extends Controller
                             ->where('lotes.manzana', '=', $b_manzana)
                             ->where('lotes.num_lote', '=', $b_lote)
                             ->orderBy('contratos.id','asc')
-                            ->paginate(8);
+                            ->get();
                     }
                     elseif($b_etapa != '' && $b_manzana =='' && $b_lote != ''){
                         $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
@@ -1860,7 +1861,7 @@ class ExpedienteController extends Controller
                             ->where('lotes.etapa_id', '=', $b_etapa)
                             ->where('lotes.num_lote', '=', $b_lote)
                             ->orderBy('contratos.id','asc')
-                            ->paginate(8);
+                            ->get();
                     }
                     elseif($b_etapa == '' && $b_manzana !='' && $b_lote == ''){
                         $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
@@ -1909,7 +1910,7 @@ class ExpedienteController extends Controller
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.manzana', '=', $b_manzana)
                             ->orderBy('contratos.id','asc')
-                            ->paginate(8);
+                            ->get();
                     }
                     elseif($b_etapa == '' && $b_manzana =='' && $b_lote != ''){
                         $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
@@ -1958,7 +1959,7 @@ class ExpedienteController extends Controller
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.num_lote', '=', $b_lote)
                             ->orderBy('contratos.id','asc')
-                            ->paginate(8);
+                            ->get();
                     }
                     elseif($b_etapa == '' && $b_manzana !='' && $b_lote != ''){
                         $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
@@ -2008,23 +2009,18 @@ class ExpedienteController extends Controller
                             ->where('lotes.num_lote', '=', $b_lote)
                             ->where('lotes.manzana', '=', $b_manzana)
                             ->orderBy('contratos.id','asc')
-                            ->paginate(8);
+                            ->get();
                     }
                 }
             }
 
         }
 
+        $contador = $contratos->count();
+
         return [
-            'pagination' => [
-                'total'        => $contratos->total(),
-                'current_page' => $contratos->currentPage(),
-                'per_page'     => $contratos->perPage(),
-                'last_page'    => $contratos->lastPage(),
-                'from'         => $contratos->firstItem(),
-                'to'           => $contratos->lastItem(),
-            ],
             'contratos' => $contratos,
+            'contador' => $contador
         ];
     }
 
@@ -2035,13 +2031,20 @@ class ExpedienteController extends Controller
         $asignar->save();
     }
 
-    public function indexPreautorizados(Request $request)
+    public function inscribirInfonavit(Request $request){
+        $expediente = Expediente::findOrFail($request->folio);
+        $expediente->fecha_infonavit =  $request->fecha_infonavit;
+        $expediente->save();
+    }
+
+    public function indexAutorizados(Request $request)
     {
         $buscar = $request->buscar;
         $b_etapa = $request->b_etapa;
         $b_manzana = $request->b_manzana;
         $b_lote = $request->b_lote;
         $criterio = $request->criterio;
+        $contador = 0;
 
 
         if ($buscar == ''){
@@ -2068,6 +2071,8 @@ class ExpedienteController extends Controller
                     'contratos.fecha_status',
                     'i.tipo_credito',
                     'i.institucion',
+                    'i.fecha_vigencia',
+                    'creditos.credito_solic',
                     'contratos.avaluo_preventivo',
                     'contratos.aviso_prev',
                     'contratos.aviso_prev_venc',
@@ -2075,24 +2080,28 @@ class ExpedienteController extends Controller
                     'lotes.credito_puente',
                     DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
                     DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
+                    DB::raw('DATEDIFF(current_date,i.fecha_vigencia) as vigencia'),
                     'clientes.coacreditado',
                     'contratos.integracion',
                     'lotes.fraccionamiento_id',
                     'expedientes.valor_escrituras',
                     'expedientes.fecha_ingreso',
                     'expedientes.fecha_integracion',
+                    'expedientes.fecha_infonavit',
                     'lotes.calle','lotes.numero','lotes.interior',
                     'avaluos.resultado','avaluos.fecha_recibido'
                 )
                 ->where('i.elegido', '=', 1)
+                ->where('i.status','=',2)
                 ->where('contratos.status', '!=', 0)
                 ->where('contratos.status', '!=', 2)
                 ->where('expedientes.fecha_ingreso','!=',NULL)
                 ->where('expedientes.valor_escrituras','!=',0)
-                ->where('expedientes.fecha_preautorizado','=',NULL)
-                ->where('expedientes.autorizacion', '=',0)
+                ->where('expedientes.fecha_infonavit','=',NULL)
+                
+                
                 ->orderBy('contratos.id','asc')
-                ->paginate(8);
+                ->get();
         }
         else{
             switch($criterio){
@@ -2116,10 +2125,12 @@ class ExpedienteController extends Controller
                             'creditos.manzana',
                             'creditos.num_lote',
                             'creditos.precio_venta',
+                            'creditos.credito_solic',
                             'licencias.avance as avance_lote',
                             'contratos.fecha_status',
                             'i.tipo_credito',
                             'i.institucion',
+                            'i.fecha_vigencia',
                             'contratos.avaluo_preventivo',
                             'contratos.aviso_prev',
                             'contratos.aviso_prev_venc',
@@ -2127,33 +2138,38 @@ class ExpedienteController extends Controller
                             'lotes.credito_puente',
                             DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
                             DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
+                            DB::raw('DATEDIFF(current_date,i.fecha_vigencia) as vigencia'),
                             'clientes.coacreditado',
                             'contratos.integracion',
                             'lotes.fraccionamiento_id',
                             'expedientes.valor_escrituras',
                             'expedientes.fecha_ingreso',
                             'expedientes.fecha_integracion',
+                            'expedientes.fecha_infonavit',
                             'lotes.calle','lotes.numero','lotes.interior',
                             'avaluos.resultado','avaluos.fecha_recibido'
                         )
                         ->where('i.elegido', '=', 1)
+                        ->where('i.status','=',2)
                         ->where('contratos.status', '!=', 0)
                         ->where('contratos.status', '!=', 2)
                         ->where('expedientes.fecha_ingreso','!=',NULL)
                         ->where('expedientes.valor_escrituras','!=',0)
-                        ->where('expedientes.fecha_preautorizado','=',NULL)
-                        ->where('expedientes.autorizacion', '=',0)
+                        ->where('expedientes.fecha_infonavit','=',NULL)
+                        
+                        
                         ->where('c.nombre','like','%'. $buscar . '%')
                         ->orWhere('i.elegido', '=', 1)
                         ->where('contratos.status', '!=', 0)
                         ->where('contratos.status', '!=', 2)
                         ->where('expedientes.fecha_ingreso','!=',NULL)
                         ->where('expedientes.valor_escrituras','!=',0)
-                        ->where('expedientes.fecha_preautorizado','=',NULL)
-                        ->where('expedientes.autorizacion', '=',0)
+                        ->where('expedientes.fecha_infonavit','=',NULL)
+                        
+                        
                         ->where('c.apellidos','like','%'. $buscar . '%')
                         ->orderBy('contratos.id','asc')
-                        ->paginate(8);
+                        ->get();
                     break;
                 }
                 case 'contratos.id':{
@@ -2176,10 +2192,12 @@ class ExpedienteController extends Controller
                             'creditos.manzana',
                             'creditos.num_lote',
                             'creditos.precio_venta',
+                            'creditos.credito_solic',
                             'licencias.avance as avance_lote',
                             'contratos.fecha_status',
                             'i.tipo_credito',
                             'i.institucion',
+                            'i.fecha_vigencia',
                             'contratos.avaluo_preventivo',
                             'contratos.aviso_prev',
                             'contratos.aviso_prev_venc',
@@ -2187,25 +2205,29 @@ class ExpedienteController extends Controller
                             'lotes.credito_puente',
                             DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
                             DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
+                            DB::raw('DATEDIFF(current_date,i.fecha_vigencia) as vigencia'),
                             'clientes.coacreditado',
                             'contratos.integracion',
                             'lotes.fraccionamiento_id',
                             'expedientes.valor_escrituras',
                             'expedientes.fecha_ingreso',
                             'expedientes.fecha_integracion',
+                            'expedientes.fecha_infonavit',
                             'lotes.calle','lotes.numero','lotes.interior',
                             'avaluos.resultado','avaluos.fecha_recibido'
                         )
                         ->where('i.elegido', '=', 1)
+                        ->where('i.status','=',2)
                         ->where('contratos.status', '!=', 0)
                         ->where('contratos.status', '!=', 2)
                         ->where('expedientes.fecha_ingreso','!=',NULL)
                         ->where('expedientes.valor_escrituras','!=',0)
-                        ->where('expedientes.fecha_preautorizado','=',NULL)
-                        ->where('expedientes.autorizacion', '=',0)
+                        ->where('expedientes.fecha_infonavit','=',NULL)
+                        
+                        
                         ->where($criterio,'=',$buscar)
                         ->orderBy('contratos.id','asc')
-                        ->paginate(8);
+                        ->get();
                     break;
                 }
                 case 'lotes.fraccionamiento_id':{
@@ -2229,10 +2251,12 @@ class ExpedienteController extends Controller
                                 'creditos.manzana',
                                 'creditos.num_lote',
                                 'creditos.precio_venta',
+                                'creditos.credito_solic',
                                 'licencias.avance as avance_lote',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
+                                'i.fecha_vigencia',
                                 'contratos.avaluo_preventivo',
                                 'contratos.aviso_prev',
                                 'contratos.aviso_prev_venc',
@@ -2240,25 +2264,29 @@ class ExpedienteController extends Controller
                                 'lotes.credito_puente',
                                 DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
                                 DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
+                                DB::raw('DATEDIFF(current_date,i.fecha_vigencia) as vigencia'),
                                 'clientes.coacreditado',
                                 'contratos.integracion',
                                 'lotes.fraccionamiento_id',
                                 'expedientes.valor_escrituras',
                                 'expedientes.fecha_ingreso',
                                 'expedientes.fecha_integracion',
+                                'expedientes.fecha_infonavit',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido'
                             )
                             ->where('i.elegido', '=', 1)
+                            ->where('i.status','=',2)
                             ->where('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
                             ->where('expedientes.fecha_ingreso','!=',NULL)
                             ->where('expedientes.valor_escrituras','!=',0)
-                            ->where('expedientes.fecha_preautorizado','=',NULL)
-                            ->where('expedientes.autorizacion', '=',0)
+                            ->where('expedientes.fecha_infonavit','=',NULL)
+                            
+                            
                             ->where($criterio, '=', $buscar)
                             ->orderBy('contratos.id','asc')
-                            ->paginate(8);
+                            ->get();
                     }
                     elseif($b_etapa != '' && $b_manzana =='' && $b_lote == ''){
                         $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
@@ -2280,10 +2308,12 @@ class ExpedienteController extends Controller
                                 'creditos.manzana',
                                 'creditos.num_lote',
                                 'creditos.precio_venta',
+                                'creditos.credito_solic',
                                 'licencias.avance as avance_lote',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
+                                'i.fecha_vigencia',
                                 'contratos.avaluo_preventivo',
                                 'contratos.aviso_prev',
                                 'contratos.aviso_prev_venc',
@@ -2291,26 +2321,30 @@ class ExpedienteController extends Controller
                                 'lotes.credito_puente',
                                 DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
                                 DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
+                                DB::raw('DATEDIFF(current_date,i.fecha_vigencia) as vigencia'),
                                 'clientes.coacreditado',
                                 'contratos.integracion',
                                 'lotes.fraccionamiento_id',
                                 'expedientes.valor_escrituras',
                                 'expedientes.fecha_ingreso',
                                 'expedientes.fecha_integracion',
+                                'expedientes.fecha_infonavit',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido'
                             )
                             ->where('i.elegido', '=', 1)
+                            ->where('i.status','=',2)
                             ->where('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
                             ->where('expedientes.fecha_ingreso','!=',NULL)
                             ->where('expedientes.valor_escrituras','!=',0)
-                            ->where('expedientes.fecha_preautorizado','=',NULL)
-                            ->where('expedientes.autorizacion', '=',0)
+                            ->where('expedientes.fecha_infonavit','=',NULL)
+                            
+                            
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.etapa_id', '=', $b_etapa)
                             ->orderBy('contratos.id','asc')
-                            ->paginate(8);
+                            ->get();
                     }
                     elseif($b_etapa != '' && $b_manzana !='' && $b_lote == ''){
                         $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
@@ -2332,10 +2366,12 @@ class ExpedienteController extends Controller
                                 'creditos.manzana',
                                 'creditos.num_lote',
                                 'creditos.precio_venta',
+                                'creditos.credito_solic',
                                 'licencias.avance as avance_lote',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
+                                'i.fecha_vigencia',
                                 'contratos.avaluo_preventivo',
                                 'contratos.aviso_prev',
                                 'contratos.aviso_prev_venc',
@@ -2343,27 +2379,31 @@ class ExpedienteController extends Controller
                                 'lotes.credito_puente',
                                 DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
                                 DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
+                                DB::raw('DATEDIFF(current_date,i.fecha_vigencia) as vigencia'),
                                 'clientes.coacreditado',
                                 'contratos.integracion',
                                 'lotes.fraccionamiento_id',
                                 'expedientes.valor_escrituras',
                                 'expedientes.fecha_ingreso',
                                 'expedientes.fecha_integracion',
+                                'expedientes.fecha_infonavit',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido'
                             )
                             ->where('i.elegido', '=', 1)
+                            ->where('i.status','=',2)
                             ->where('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
                             ->where('expedientes.fecha_ingreso','!=',NULL)
                             ->where('expedientes.valor_escrituras','!=',0)
-                            ->where('expedientes.fecha_preautorizado','=',NULL)
-                            ->where('expedientes.autorizacion', '=',0)
+                            ->where('expedientes.fecha_infonavit','=',NULL)
+                            
+                            
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.etapa_id', '=', $b_etapa)
                             ->where('lotes.manzana', '=', $b_manzana)
                             ->orderBy('contratos.id','asc')
-                            ->paginate(8);
+                            ->get();
                     }
                     elseif($b_etapa != '' && $b_manzana !='' && $b_lote != ''){
                         $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
@@ -2385,10 +2425,12 @@ class ExpedienteController extends Controller
                                 'creditos.manzana',
                                 'creditos.num_lote',
                                 'creditos.precio_venta',
+                                'creditos.credito_solic',
                                 'licencias.avance as avance_lote',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
+                                'i.fecha_vigencia',
                                 'contratos.avaluo_preventivo',
                                 'contratos.aviso_prev',
                                 'contratos.aviso_prev_venc',
@@ -2396,28 +2438,32 @@ class ExpedienteController extends Controller
                                 'lotes.credito_puente',
                                 DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
                                 DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
+                                DB::raw('DATEDIFF(current_date,i.fecha_vigencia) as vigencia'),
                                 'clientes.coacreditado',
                                 'contratos.integracion',
                                 'lotes.fraccionamiento_id',
                                 'expedientes.valor_escrituras',
                                 'expedientes.fecha_ingreso',
                                 'expedientes.fecha_integracion',
+                                'expedientes.fecha_infonavit',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido'
                             )
                             ->where('i.elegido', '=', 1)
+                            ->where('i.status','=',2)
                             ->where('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
                             ->where('expedientes.fecha_ingreso','!=',NULL)
                             ->where('expedientes.valor_escrituras','!=',0)
-                            ->where('expedientes.fecha_preautorizado','=',NULL)
-                            ->where('expedientes.autorizacion', '=',0)
+                            ->where('expedientes.fecha_infonavit','=',NULL)
+                            
+                            
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.etapa_id', '=', $b_etapa)
                             ->where('lotes.manzana', '=', $b_manzana)
                             ->where('lotes.num_lote', '=', $b_lote)
                             ->orderBy('contratos.id','asc')
-                            ->paginate(8);
+                            ->get();
                     }
                     elseif($b_etapa != '' && $b_manzana =='' && $b_lote != ''){
                         $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
@@ -2439,10 +2485,12 @@ class ExpedienteController extends Controller
                                 'creditos.manzana',
                                 'creditos.num_lote',
                                 'creditos.precio_venta',
+                                'creditos.credito_solic',
                                 'licencias.avance as avance_lote',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
+                                'i.fecha_vigencia',
                                 'contratos.avaluo_preventivo',
                                 'contratos.aviso_prev',
                                 'contratos.aviso_prev_venc',
@@ -2450,27 +2498,31 @@ class ExpedienteController extends Controller
                                 'lotes.credito_puente',
                                 DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
                                 DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
+                                DB::raw('DATEDIFF(current_date,i.fecha_vigencia) as vigencia'),
                                 'clientes.coacreditado',
                                 'contratos.integracion',
                                 'lotes.fraccionamiento_id',
                                 'expedientes.valor_escrituras',
                                 'expedientes.fecha_ingreso',
                                 'expedientes.fecha_integracion',
+                                'expedientes.fecha_infonavit',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido'
                             )
                             ->where('i.elegido', '=', 1)
+                            ->where('i.status','=',2)
                             ->where('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
                             ->where('expedientes.fecha_ingreso','!=',NULL)
                             ->where('expedientes.valor_escrituras','!=',0)
-                            ->where('expedientes.fecha_preautorizado','=',NULL)
-                            ->where('expedientes.autorizacion', '=',0)
+                            ->where('expedientes.fecha_infonavit','=',NULL)
+                            
+                            
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.etapa_id', '=', $b_etapa)
                             ->where('lotes.num_lote', '=', $b_lote)
                             ->orderBy('contratos.id','asc')
-                            ->paginate(8);
+                            ->get();
                     }
                     elseif($b_etapa == '' && $b_manzana !='' && $b_lote == ''){
                         $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
@@ -2492,10 +2544,12 @@ class ExpedienteController extends Controller
                                 'creditos.manzana',
                                 'creditos.num_lote',
                                 'creditos.precio_venta',
+                                'creditos.credito_solic',
                                 'licencias.avance as avance_lote',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
+                                'i.fecha_vigencia',
                                 'contratos.avaluo_preventivo',
                                 'contratos.aviso_prev',
                                 'contratos.aviso_prev_venc',
@@ -2503,26 +2557,30 @@ class ExpedienteController extends Controller
                                 'lotes.credito_puente',
                                 DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
                                 DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
+                                DB::raw('DATEDIFF(current_date,i.fecha_vigencia) as vigencia'),
                                 'clientes.coacreditado',
                                 'contratos.integracion',
                                 'lotes.fraccionamiento_id',
                                 'expedientes.valor_escrituras',
                                 'expedientes.fecha_ingreso',
                                 'expedientes.fecha_integracion',
+                                'expedientes.fecha_infonavit',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido'
                             )
                             ->where('i.elegido', '=', 1)
+                            ->where('i.status','=',2)
                             ->where('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
                             ->where('expedientes.fecha_ingreso','!=',NULL)
                             ->where('expedientes.valor_escrituras','!=',0)
-                            ->where('expedientes.fecha_preautorizado','=',NULL)
-                            ->where('expedientes.autorizacion', '=',0)
+                            ->where('expedientes.fecha_infonavit','=',NULL)
+                            
+                            
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.manzana', '=', $b_manzana)
                             ->orderBy('contratos.id','asc')
-                            ->paginate(8);
+                            ->get();
                     }
                     elseif($b_etapa == '' && $b_manzana =='' && $b_lote != ''){
                         $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
@@ -2544,10 +2602,12 @@ class ExpedienteController extends Controller
                                 'creditos.manzana',
                                 'creditos.num_lote',
                                 'creditos.precio_venta',
+                                'creditos.credito_solic',
                                 'licencias.avance as avance_lote',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
+                                'i.fecha_vigencia',
                                 'contratos.avaluo_preventivo',
                                 'contratos.aviso_prev',
                                 'contratos.aviso_prev_venc',
@@ -2555,26 +2615,30 @@ class ExpedienteController extends Controller
                                 'lotes.credito_puente',
                                 DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
                                 DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
+                                DB::raw('DATEDIFF(current_date,i.fecha_vigencia) as vigencia'),
                                 'clientes.coacreditado',
                                 'contratos.integracion',
                                 'lotes.fraccionamiento_id',
                                 'expedientes.valor_escrituras',
                                 'expedientes.fecha_ingreso',
                                 'expedientes.fecha_integracion',
+                                'expedientes.fecha_infonavit',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido'
                             )
                             ->where('i.elegido', '=', 1)
+                            ->where('i.status','=',2)
                             ->where('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
                             ->where('expedientes.fecha_ingreso','!=',NULL)
                             ->where('expedientes.valor_escrituras','!=',0)
-                            ->where('expedientes.fecha_preautorizado','=',NULL)
-                            ->where('expedientes.autorizacion', '=',0)
+                            ->where('expedientes.fecha_infonavit','=',NULL)
+                            
+                            
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.num_lote', '=', $b_lote)
                             ->orderBy('contratos.id','asc')
-                            ->paginate(8);
+                            ->get();
                     }
                     elseif($b_etapa == '' && $b_manzana !='' && $b_lote != ''){
                         $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
@@ -2596,10 +2660,12 @@ class ExpedienteController extends Controller
                                 'creditos.manzana',
                                 'creditos.num_lote',
                                 'creditos.precio_venta',
+                                'creditos.credito_solic',
                                 'licencias.avance as avance_lote',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
+                                'i.fecha_vigencia',
                                 'contratos.avaluo_preventivo',
                                 'contratos.aviso_prev',
                                 'contratos.aviso_prev_venc',
@@ -2607,59 +2673,61 @@ class ExpedienteController extends Controller
                                 'lotes.credito_puente',
                                 DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
                                 DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
+                                DB::raw('DATEDIFF(current_date,i.fecha_vigencia) as vigencia'),
                                 'clientes.coacreditado',
                                 'contratos.integracion',
                                 'lotes.fraccionamiento_id',
                                 'expedientes.valor_escrituras',
                                 'expedientes.fecha_ingreso',
                                 'expedientes.fecha_integracion',
+                                'expedientes.fecha_infonavit',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido'
                             )
                             ->where('i.elegido', '=', 1)
+                            ->where('i.status','=',2)
                             ->where('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
                             ->where('expedientes.fecha_ingreso','!=',NULL)
                             ->where('expedientes.valor_escrituras','!=',0)
-                            ->where('expedientes.fecha_preautorizado','=',NULL)
-                            ->where('expedientes.autorizacion', '=',0)
+                            ->where('expedientes.fecha_infonavit','=',NULL)
+                            
+                            
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.num_lote', '=', $b_lote)
                             ->where('lotes.manzana', '=', $b_manzana)
                             ->orderBy('contratos.id','asc')
-                            ->paginate(8);
+                            ->get();
                     }
                 }
             }
 
         }
 
+        $contador = $contratos->count();
+
         return [
-            'pagination' => [
-                'total'        => $contratos->total(),
-                'current_page' => $contratos->currentPage(),
-                'per_page'     => $contratos->perPage(),
-                'last_page'    => $contratos->lastPage(),
-                'from'         => $contratos->firstItem(),
-                'to'           => $contratos->lastItem(),
-            ],
+            
             'contratos' => $contratos,
+            'contador' => $contador
         ];
     }
 
-    public function ingresarPreauto(Request $request){
-        $preautorizacion = Expediente::findOrFail($request->folio);
-        $preautorizacion->fecha_preautorizado =  $request->fecha_preautorizado;
-        $preautorizacion->autorizacion =  $request->autorizacion;
-        $preautorizacion->save();
+    public function noAplicaInfonavit(Request $request){
+        if(!$request->ajax())return redirect('/');
+        $expediente = Expediente::findOrFail($request->folio);
+        $expediente->fecha_infonavit = "0000-01-01";
+        $expediente->save();
     }
 
-    public function indexRechazados (Request $request){
+    public function indexLiquidacion(Request $request)
+    {
         $buscar = $request->buscar;
         $b_etapa = $request->b_etapa;
         $b_manzana = $request->b_manzana;
         $b_lote = $request->b_lote;
         $criterio = $request->criterio;
+        $contador = 0;
 
 
         if ($buscar == ''){
@@ -2686,6 +2754,8 @@ class ExpedienteController extends Controller
                     'contratos.fecha_status',
                     'i.tipo_credito',
                     'i.institucion',
+                    'i.fecha_vigencia',
+                    'creditos.credito_solic',
                     'contratos.avaluo_preventivo',
                     'contratos.aviso_prev',
                     'contratos.aviso_prev_venc',
@@ -2693,26 +2763,28 @@ class ExpedienteController extends Controller
                     'lotes.credito_puente',
                     DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
                     DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
+                    DB::raw('DATEDIFF(current_date,i.fecha_vigencia) as vigencia'),
                     'clientes.coacreditado',
                     'contratos.integracion',
                     'lotes.fraccionamiento_id',
                     'expedientes.valor_escrituras',
                     'expedientes.fecha_ingreso',
                     'expedientes.fecha_integracion',
-                    'expedientes.fecha_preautorizado',
-                    'expedientes.autorizacion',
+                    'expedientes.fecha_infonavit',
                     'lotes.calle','lotes.numero','lotes.interior',
                     'avaluos.resultado','avaluos.fecha_recibido'
                 )
                 ->where('i.elegido', '=', 1)
+                ->where('i.status','=',2)
                 ->where('contratos.status', '!=', 0)
                 ->where('contratos.status', '!=', 2)
                 ->where('expedientes.fecha_ingreso','!=',NULL)
                 ->where('expedientes.valor_escrituras','!=',0)
-                ->where('expedientes.fecha_preautorizado','!=',NULL)
-                ->where('expedientes.autorizacion', '=',2)
+                ->where('expedientes.fecha_infonavit','!=',NULL)
+                
+                
                 ->orderBy('contratos.id','asc')
-                ->paginate(8);
+                ->get();
         }
         else{
             switch($criterio){
@@ -2736,10 +2808,12 @@ class ExpedienteController extends Controller
                             'creditos.manzana',
                             'creditos.num_lote',
                             'creditos.precio_venta',
+                            'creditos.credito_solic',
                             'licencias.avance as avance_lote',
                             'contratos.fecha_status',
                             'i.tipo_credito',
                             'i.institucion',
+                            'i.fecha_vigencia',
                             'contratos.avaluo_preventivo',
                             'contratos.aviso_prev',
                             'contratos.aviso_prev_venc',
@@ -2747,35 +2821,38 @@ class ExpedienteController extends Controller
                             'lotes.credito_puente',
                             DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
                             DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
+                            DB::raw('DATEDIFF(current_date,i.fecha_vigencia) as vigencia'),
                             'clientes.coacreditado',
                             'contratos.integracion',
                             'lotes.fraccionamiento_id',
                             'expedientes.valor_escrituras',
                             'expedientes.fecha_ingreso',
                             'expedientes.fecha_integracion',
-                            'expedientes.fecha_preautorizado',
-                            'expedientes.autorizacion',
+                            'expedientes.fecha_infonavit',
                             'lotes.calle','lotes.numero','lotes.interior',
                             'avaluos.resultado','avaluos.fecha_recibido'
                         )
                         ->where('i.elegido', '=', 1)
+                        ->where('i.status','=',2)
                         ->where('contratos.status', '!=', 0)
                         ->where('contratos.status', '!=', 2)
                         ->where('expedientes.fecha_ingreso','!=',NULL)
                         ->where('expedientes.valor_escrituras','!=',0)
-                        ->where('expedientes.fecha_preautorizado','!=',NULL)
-                        ->where('expedientes.autorizacion', '=',2)
+                        ->where('expedientes.fecha_infonavit','!=',NULL)
+                        
+                        
                         ->where('c.nombre','like','%'. $buscar . '%')
                         ->orWhere('i.elegido', '=', 1)
                         ->where('contratos.status', '!=', 0)
                         ->where('contratos.status', '!=', 2)
                         ->where('expedientes.fecha_ingreso','!=',NULL)
                         ->where('expedientes.valor_escrituras','!=',0)
-                        ->where('expedientes.fecha_preautorizado','!=',NULL)
-                        ->where('expedientes.autorizacion', '=',2)
+                        ->where('expedientes.fecha_infonavit','!=',NULL)
+                        
+                        
                         ->where('c.apellidos','like','%'. $buscar . '%')
                         ->orderBy('contratos.id','asc')
-                        ->paginate(8);
+                        ->get();
                     break;
                 }
                 case 'contratos.id':{
@@ -2798,10 +2875,12 @@ class ExpedienteController extends Controller
                             'creditos.manzana',
                             'creditos.num_lote',
                             'creditos.precio_venta',
+                            'creditos.credito_solic',
                             'licencias.avance as avance_lote',
                             'contratos.fecha_status',
                             'i.tipo_credito',
                             'i.institucion',
+                            'i.fecha_vigencia',
                             'contratos.avaluo_preventivo',
                             'contratos.aviso_prev',
                             'contratos.aviso_prev_venc',
@@ -2809,27 +2888,29 @@ class ExpedienteController extends Controller
                             'lotes.credito_puente',
                             DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
                             DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
+                            DB::raw('DATEDIFF(current_date,i.fecha_vigencia) as vigencia'),
                             'clientes.coacreditado',
                             'contratos.integracion',
                             'lotes.fraccionamiento_id',
                             'expedientes.valor_escrituras',
                             'expedientes.fecha_ingreso',
                             'expedientes.fecha_integracion',
-                            'expedientes.fecha_preautorizado',
-                            'expedientes.autorizacion',
+                            'expedientes.fecha_infonavit',
                             'lotes.calle','lotes.numero','lotes.interior',
                             'avaluos.resultado','avaluos.fecha_recibido'
                         )
                         ->where('i.elegido', '=', 1)
+                        ->where('i.status','=',2)
                         ->where('contratos.status', '!=', 0)
                         ->where('contratos.status', '!=', 2)
                         ->where('expedientes.fecha_ingreso','!=',NULL)
                         ->where('expedientes.valor_escrituras','!=',0)
-                        ->where('expedientes.fecha_preautorizado','!=',NULL)
-                        ->where('expedientes.autorizacion', '=',2)
+                        ->where('expedientes.fecha_infonavit','!=',NULL)
+                        
+                        
                         ->where($criterio,'=',$buscar)
                         ->orderBy('contratos.id','asc')
-                        ->paginate(8);
+                        ->get();
                     break;
                 }
                 case 'lotes.fraccionamiento_id':{
@@ -2853,10 +2934,12 @@ class ExpedienteController extends Controller
                                 'creditos.manzana',
                                 'creditos.num_lote',
                                 'creditos.precio_venta',
+                                'creditos.credito_solic',
                                 'licencias.avance as avance_lote',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
+                                'i.fecha_vigencia',
                                 'contratos.avaluo_preventivo',
                                 'contratos.aviso_prev',
                                 'contratos.aviso_prev_venc',
@@ -2864,27 +2947,29 @@ class ExpedienteController extends Controller
                                 'lotes.credito_puente',
                                 DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
                                 DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
+                                DB::raw('DATEDIFF(current_date,i.fecha_vigencia) as vigencia'),
                                 'clientes.coacreditado',
                                 'contratos.integracion',
                                 'lotes.fraccionamiento_id',
                                 'expedientes.valor_escrituras',
                                 'expedientes.fecha_ingreso',
                                 'expedientes.fecha_integracion',
-                                'expedientes.fecha_preautorizado',
-                                'expedientes.autorizacion',
+                                'expedientes.fecha_infonavit',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido'
                             )
                             ->where('i.elegido', '=', 1)
+                            ->where('i.status','=',2)
                             ->where('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
                             ->where('expedientes.fecha_ingreso','!=',NULL)
                             ->where('expedientes.valor_escrituras','!=',0)
-                            ->where('expedientes.fecha_preautorizado','!=',NULL)
-                            ->where('expedientes.autorizacion', '=',2)
+                            ->where('expedientes.fecha_infonavit','!=',NULL)
+                            
+                            
                             ->where($criterio, '=', $buscar)
                             ->orderBy('contratos.id','asc')
-                            ->paginate(8);
+                            ->get();
                     }
                     elseif($b_etapa != '' && $b_manzana =='' && $b_lote == ''){
                         $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
@@ -2906,10 +2991,12 @@ class ExpedienteController extends Controller
                                 'creditos.manzana',
                                 'creditos.num_lote',
                                 'creditos.precio_venta',
+                                'creditos.credito_solic',
                                 'licencias.avance as avance_lote',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
+                                'i.fecha_vigencia',
                                 'contratos.avaluo_preventivo',
                                 'contratos.aviso_prev',
                                 'contratos.aviso_prev_venc',
@@ -2917,28 +3004,30 @@ class ExpedienteController extends Controller
                                 'lotes.credito_puente',
                                 DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
                                 DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
+                                DB::raw('DATEDIFF(current_date,i.fecha_vigencia) as vigencia'),
                                 'clientes.coacreditado',
                                 'contratos.integracion',
                                 'lotes.fraccionamiento_id',
                                 'expedientes.valor_escrituras',
                                 'expedientes.fecha_ingreso',
                                 'expedientes.fecha_integracion',
-                                'expedientes.fecha_preautorizado',
-                                'expedientes.autorizacion',
+                                'expedientes.fecha_infonavit',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido'
                             )
                             ->where('i.elegido', '=', 1)
+                            ->where('i.status','=',2)
                             ->where('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
                             ->where('expedientes.fecha_ingreso','!=',NULL)
                             ->where('expedientes.valor_escrituras','!=',0)
-                            ->where('expedientes.fecha_preautorizado','!=',NULL)
-                            ->where('expedientes.autorizacion', '=',2)
+                            ->where('expedientes.fecha_infonavit','!=',NULL)
+                            
+                            
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.etapa_id', '=', $b_etapa)
                             ->orderBy('contratos.id','asc')
-                            ->paginate(8);
+                            ->get();
                     }
                     elseif($b_etapa != '' && $b_manzana !='' && $b_lote == ''){
                         $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
@@ -2960,10 +3049,12 @@ class ExpedienteController extends Controller
                                 'creditos.manzana',
                                 'creditos.num_lote',
                                 'creditos.precio_venta',
+                                'creditos.credito_solic',
                                 'licencias.avance as avance_lote',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
+                                'i.fecha_vigencia',
                                 'contratos.avaluo_preventivo',
                                 'contratos.aviso_prev',
                                 'contratos.aviso_prev_venc',
@@ -2971,29 +3062,31 @@ class ExpedienteController extends Controller
                                 'lotes.credito_puente',
                                 DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
                                 DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
+                                DB::raw('DATEDIFF(current_date,i.fecha_vigencia) as vigencia'),
                                 'clientes.coacreditado',
                                 'contratos.integracion',
                                 'lotes.fraccionamiento_id',
                                 'expedientes.valor_escrituras',
                                 'expedientes.fecha_ingreso',
                                 'expedientes.fecha_integracion',
-                                'expedientes.fecha_preautorizado',
-                                'expedientes.autorizacion',
+                                'expedientes.fecha_infonavit',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido'
                             )
                             ->where('i.elegido', '=', 1)
+                            ->where('i.status','=',2)
                             ->where('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
                             ->where('expedientes.fecha_ingreso','!=',NULL)
                             ->where('expedientes.valor_escrituras','!=',0)
-                            ->where('expedientes.fecha_preautorizado','!=',NULL)
-                            ->where('expedientes.autorizacion', '=',2)
+                            ->where('expedientes.fecha_infonavit','!=',NULL)
+                            
+                            
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.etapa_id', '=', $b_etapa)
                             ->where('lotes.manzana', '=', $b_manzana)
                             ->orderBy('contratos.id','asc')
-                            ->paginate(8);
+                            ->get();
                     }
                     elseif($b_etapa != '' && $b_manzana !='' && $b_lote != ''){
                         $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
@@ -3015,10 +3108,12 @@ class ExpedienteController extends Controller
                                 'creditos.manzana',
                                 'creditos.num_lote',
                                 'creditos.precio_venta',
+                                'creditos.credito_solic',
                                 'licencias.avance as avance_lote',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
+                                'i.fecha_vigencia',
                                 'contratos.avaluo_preventivo',
                                 'contratos.aviso_prev',
                                 'contratos.aviso_prev_venc',
@@ -3026,30 +3121,32 @@ class ExpedienteController extends Controller
                                 'lotes.credito_puente',
                                 DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
                                 DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
+                                DB::raw('DATEDIFF(current_date,i.fecha_vigencia) as vigencia'),
                                 'clientes.coacreditado',
                                 'contratos.integracion',
                                 'lotes.fraccionamiento_id',
                                 'expedientes.valor_escrituras',
                                 'expedientes.fecha_ingreso',
                                 'expedientes.fecha_integracion',
-                                'expedientes.fecha_preautorizado',
-                                'expedientes.autorizacion',
+                                'expedientes.fecha_infonavit',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido'
                             )
                             ->where('i.elegido', '=', 1)
+                            ->where('i.status','=',2)
                             ->where('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
                             ->where('expedientes.fecha_ingreso','!=',NULL)
                             ->where('expedientes.valor_escrituras','!=',0)
-                            ->where('expedientes.fecha_preautorizado','!=',NULL)
-                            ->where('expedientes.autorizacion', '=',2)
+                            ->where('expedientes.fecha_infonavit','!=',NULL)
+                            
+                            
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.etapa_id', '=', $b_etapa)
                             ->where('lotes.manzana', '=', $b_manzana)
                             ->where('lotes.num_lote', '=', $b_lote)
                             ->orderBy('contratos.id','asc')
-                            ->paginate(8);
+                            ->get();
                     }
                     elseif($b_etapa != '' && $b_manzana =='' && $b_lote != ''){
                         $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
@@ -3071,10 +3168,12 @@ class ExpedienteController extends Controller
                                 'creditos.manzana',
                                 'creditos.num_lote',
                                 'creditos.precio_venta',
+                                'creditos.credito_solic',
                                 'licencias.avance as avance_lote',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
+                                'i.fecha_vigencia',
                                 'contratos.avaluo_preventivo',
                                 'contratos.aviso_prev',
                                 'contratos.aviso_prev_venc',
@@ -3082,29 +3181,31 @@ class ExpedienteController extends Controller
                                 'lotes.credito_puente',
                                 DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
                                 DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
+                                DB::raw('DATEDIFF(current_date,i.fecha_vigencia) as vigencia'),
                                 'clientes.coacreditado',
                                 'contratos.integracion',
                                 'lotes.fraccionamiento_id',
                                 'expedientes.valor_escrituras',
                                 'expedientes.fecha_ingreso',
                                 'expedientes.fecha_integracion',
-                                'expedientes.fecha_preautorizado',
-                                'expedientes.autorizacion',
+                                'expedientes.fecha_infonavit',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido'
                             )
                             ->where('i.elegido', '=', 1)
+                            ->where('i.status','=',2)
                             ->where('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
                             ->where('expedientes.fecha_ingreso','!=',NULL)
                             ->where('expedientes.valor_escrituras','!=',0)
-                            ->where('expedientes.fecha_preautorizado','!=',NULL)
-                            ->where('expedientes.autorizacion', '=',2)
+                            ->where('expedientes.fecha_infonavit','!=',NULL)
+                            
+                            
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.etapa_id', '=', $b_etapa)
                             ->where('lotes.num_lote', '=', $b_lote)
                             ->orderBy('contratos.id','asc')
-                            ->paginate(8);
+                            ->get();
                     }
                     elseif($b_etapa == '' && $b_manzana !='' && $b_lote == ''){
                         $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
@@ -3126,10 +3227,12 @@ class ExpedienteController extends Controller
                                 'creditos.manzana',
                                 'creditos.num_lote',
                                 'creditos.precio_venta',
+                                'creditos.credito_solic',
                                 'licencias.avance as avance_lote',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
+                                'i.fecha_vigencia',
                                 'contratos.avaluo_preventivo',
                                 'contratos.aviso_prev',
                                 'contratos.aviso_prev_venc',
@@ -3137,28 +3240,30 @@ class ExpedienteController extends Controller
                                 'lotes.credito_puente',
                                 DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
                                 DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
+                                DB::raw('DATEDIFF(current_date,i.fecha_vigencia) as vigencia'),
                                 'clientes.coacreditado',
                                 'contratos.integracion',
                                 'lotes.fraccionamiento_id',
                                 'expedientes.valor_escrituras',
                                 'expedientes.fecha_ingreso',
                                 'expedientes.fecha_integracion',
-                                'expedientes.fecha_preautorizado',
-                                'expedientes.autorizacion',
+                                'expedientes.fecha_infonavit',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido'
                             )
                             ->where('i.elegido', '=', 1)
+                            ->where('i.status','=',2)
                             ->where('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
                             ->where('expedientes.fecha_ingreso','!=',NULL)
                             ->where('expedientes.valor_escrituras','!=',0)
-                            ->where('expedientes.fecha_preautorizado','!=',NULL)
-                            ->where('expedientes.autorizacion', '=',2)
+                            ->where('expedientes.fecha_infonavit','!=',NULL)
+                            
+                            
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.manzana', '=', $b_manzana)
                             ->orderBy('contratos.id','asc')
-                            ->paginate(8);
+                            ->get();
                     }
                     elseif($b_etapa == '' && $b_manzana =='' && $b_lote != ''){
                         $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
@@ -3180,10 +3285,12 @@ class ExpedienteController extends Controller
                                 'creditos.manzana',
                                 'creditos.num_lote',
                                 'creditos.precio_venta',
+                                'creditos.credito_solic',
                                 'licencias.avance as avance_lote',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
+                                'i.fecha_vigencia',
                                 'contratos.avaluo_preventivo',
                                 'contratos.aviso_prev',
                                 'contratos.aviso_prev_venc',
@@ -3191,28 +3298,30 @@ class ExpedienteController extends Controller
                                 'lotes.credito_puente',
                                 DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
                                 DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
+                                DB::raw('DATEDIFF(current_date,i.fecha_vigencia) as vigencia'),
                                 'clientes.coacreditado',
                                 'contratos.integracion',
                                 'lotes.fraccionamiento_id',
                                 'expedientes.valor_escrituras',
                                 'expedientes.fecha_ingreso',
                                 'expedientes.fecha_integracion',
-                                'expedientes.fecha_preautorizado',
-                                'expedientes.autorizacion',
+                                'expedientes.fecha_infonavit',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido'
                             )
                             ->where('i.elegido', '=', 1)
+                            ->where('i.status','=',2)
                             ->where('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
                             ->where('expedientes.fecha_ingreso','!=',NULL)
                             ->where('expedientes.valor_escrituras','!=',0)
-                            ->where('expedientes.fecha_preautorizado','!=',NULL)
-                            ->where('expedientes.autorizacion', '=',2)
+                            ->where('expedientes.fecha_infonavit','!=',NULL)
+                            
+                            
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.num_lote', '=', $b_lote)
                             ->orderBy('contratos.id','asc')
-                            ->paginate(8);
+                            ->get();
                     }
                     elseif($b_etapa == '' && $b_manzana !='' && $b_lote != ''){
                         $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
@@ -3234,10 +3343,12 @@ class ExpedienteController extends Controller
                                 'creditos.manzana',
                                 'creditos.num_lote',
                                 'creditos.precio_venta',
+                                'creditos.credito_solic',
                                 'licencias.avance as avance_lote',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
+                                'i.fecha_vigencia',
                                 'contratos.avaluo_preventivo',
                                 'contratos.aviso_prev',
                                 'contratos.aviso_prev_venc',
@@ -3245,46 +3356,44 @@ class ExpedienteController extends Controller
                                 'lotes.credito_puente',
                                 DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
                                 DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
+                                DB::raw('DATEDIFF(current_date,i.fecha_vigencia) as vigencia'),
                                 'clientes.coacreditado',
                                 'contratos.integracion',
                                 'lotes.fraccionamiento_id',
                                 'expedientes.valor_escrituras',
                                 'expedientes.fecha_ingreso',
                                 'expedientes.fecha_integracion',
-                                'expedientes.fecha_preautorizado',
-                                'expedientes.autorizacion',
+                                'expedientes.fecha_infonavit',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido'
                             )
                             ->where('i.elegido', '=', 1)
+                            ->where('i.status','=',2)
                             ->where('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
                             ->where('expedientes.fecha_ingreso','!=',NULL)
                             ->where('expedientes.valor_escrituras','!=',0)
-                            ->where('expedientes.fecha_preautorizado','!=',NULL)
-                            ->where('expedientes.autorizacion', '=',2)
+                            ->where('expedientes.fecha_infonavit','!=',NULL)
+                            
+                            
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.num_lote', '=', $b_lote)
                             ->where('lotes.manzana', '=', $b_manzana)
                             ->orderBy('contratos.id','asc')
-                            ->paginate(8);
+                            ->get();
                     }
                 }
             }
 
         }
 
+        $contador = $contratos->count();
+
         return [
-            'pagination' => [
-                'total'        => $contratos->total(),
-                'current_page' => $contratos->currentPage(),
-                'per_page'     => $contratos->perPage(),
-                'last_page'    => $contratos->lastPage(),
-                'from'         => $contratos->firstItem(),
-                'to'           => $contratos->lastItem(),
-            ],
+            
             'contratos' => $contratos,
-        ]; 
+            'contador' => $contador
+        ];
     }
 
 }
