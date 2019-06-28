@@ -436,6 +436,9 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/expediente/inscInfonavit','ExpedienteController@inscribirInfonavit');
         Route::put('/expediente/InfonavitNoAplica','ExpedienteController@noAplicaInfonavit');
 
+        Route::get('/expediente/pagaresExpediente','ExpedienteController@pagaresExpediente');
+        Route::get('/expediente/gastosExpediente','GastosAdministrativosController@getGastos');
+
     });
 
 

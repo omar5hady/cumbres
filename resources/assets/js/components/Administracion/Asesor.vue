@@ -457,7 +457,7 @@
                         <div class="modal-body">
                             <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
 
-                                  <div class="form-group row">
+                                <div class="form-group row">
                                     <label class="col-md-2 form-control-label" for="text-input">Apellidos</label>
                                     <div class="col-md-4">
                                         <input type="text" :disabled="tipoAccion==2" v-model="apellidosProspecto" class="form-control" placeholder="Apellidos" >

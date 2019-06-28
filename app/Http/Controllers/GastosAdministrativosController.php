@@ -329,4 +329,18 @@ class GastosAdministrativosController extends Controller
         $gastos = Gasto_admin::findOrFail($request->id);
         $gastos->delete();
     }
+
+   public function getGastos(Request $request){
+        $gastos=Gasto_admin::select('concepto','costo','id')
+                    ->where('contrato_id','=',$request->folio)
+                    ->get();
+        
+        $totalGastos = Gasto_admin::select(DB::raw("SUM(costo) as sumGasto"))
+                    ->groupBy('contrato_id')
+                    ->where('contrato_id','=',$request->folio)
+                    ->get();
+
+        return ['gastos' => $gastos,
+                'totalGastos' => $totalGastos ];
+    }
 }

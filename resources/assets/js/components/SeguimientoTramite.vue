@@ -341,6 +341,7 @@
                                                 <th>Valor escriturar</th>
                                                 <th>Crédito Puente</th>
                                                 <th>Inscripción Infonavit</th>
+                                                <th>Liquidación</th>
                                                 <th>Observaciones</th>
                                             </tr>
                                         </thead>
@@ -403,7 +404,10 @@
                                                     <td v-if="liquidacion.fecha_infonavit!='0000-01-01'" class="td2" v-text="this.moment(liquidacion.fecha_infonavit).locale('es').format('DD/MMM/YYYY')"></td>
                                                     <td v-if="liquidacion.fecha_infonavit=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
                                                 </template>
-
+                                                <td class="td2">
+                                                    <button title="Generar liquidación" type="button" class="btn btn-danger pull-right" 
+                                                        @click="abrirModal('liquidacion',liquidacion)">Generar</button>
+                                                </td>
                                                 <td class="td2">
                                                     <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
                                                         @click="abrirModal3(liquidacion.folio)">Ver Observaciones</button>
@@ -599,6 +603,240 @@
             </div>
             <!--Fin del modal -->
 
+              <!--Inicio modal Liquidación-->
+            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" v-text="tituloModal"></h4>
+                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- form para captura de fecha recibido -->
+                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input">Cliente</label>
+                                        <div class="col-md-6">
+                                            <input type="text" disabled v-model="cliente" class="form-control" placeholder="Cliente" >
+                                        </div>
+                                        <label class="col-md-1 form-control-label" for="text-input">Fecha</label>
+                                        <div class="col-md-3">
+                                            <input type="date" v-model="fecha_liquidacion" class="form-control">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input">Tipo de Credito</label>
+                                        <div class="col-md-3">
+                                            <input type="text" disabled v-model="credito" class="form-control" >
+                                        </div>
+                                        <label class="col-md-3 form-control-label" for="text-input">Inst. Financiamiento</label>
+                                        <div class="col-md-3">
+                                            <input type="text" disabled v-model="inst_fin" class="form-control">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input">Proyecto</label>
+                                        <div class="col-md-3">
+                                            <input type="text" disabled v-model="proyecto" class="form-control" >
+                                        </div>
+
+                                        <label class="col-md-1 form-control-label" for="text-input">Etapa</label>
+                                        <div class="col-md-3">
+                                            <input type="text" disabled v-model="etapa" class="form-control">
+                                        </div>
+
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input">Manzana</label>
+                                        <div class="col-md-3">
+                                            <input type="text" disabled v-model="manzana" class="form-control" >
+                                        </div>
+
+                                        <label class="col-md-1 form-control-label" for="text-input">Lote</label>
+                                        <div class="col-md-2">
+                                            <input type="text" disabled v-model="lote" class="form-control">
+                                        </div>
+
+                                    </div>
+
+                                    <div class="form-group row">
+                                       
+                                        <label class="col-md-2 form-control-label" for="text-input">Fecha firma de contrato</label>
+                                        <div class="col-md-3">
+                                            <input type="date" disabled v-model="fecha_firma_contrato" class="form-control">
+                                        </div>
+
+                                    </div>
+
+                                    <div class="form-group row line-separator"></div>
+
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input">Valor de venta</label>
+                                        <div class="col-md-3">
+                                            <h6 v-text="'$'+formatNumber(valor_venta)"></h6>
+                                        </div>
+
+                                        <label class="col-md-2 form-control-label" for="text-input">Valor de escrituración</label>
+                                        <div class="col-md-2">
+                                            <input maxlength="10" v-model="valor_escrituras" pattern="\d*" v-on:keypress="isNumber($event)" class="form-control">
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <h6 v-text="'$'+formatNumber(valor_escrituras)"></h6>
+                                        </div>
+
+                                    </div>
+
+                                    <div v-if="arrayGastos.length">
+                                     <div class="form-group row"  v-for="gasto in arrayGastos" :key="gasto.id">
+                                        <label class="col-md-2 form-control-label" for="text-input" v-text="gasto.concepto"></label>
+                                        <div class="col-md-3">
+                                            <h6>${{ formatNumber(gasto.costo)}}</h6>
+                                        </div>
+                                    </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input">Enganche</label>
+                                        <div class="col-md-3">
+                                            <h6 v-text="'$'+formatNumber(totalEnganghe)"></h6>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input">Pagado</label>
+                                        <div class="col-md-3">
+                                            <h6 v-text="'$'+formatNumber(pagado=totalEnganghe-totalRestante)"></h6>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input">Descuento</label>
+                                        <div class="col-md-2">
+                                            <input maxlength="10" v-model="descuento" pattern="\d*" v-on:keypress="isNumber($event)" class="form-control">
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <h6 v-text="'$'+formatNumber(descuento)"></h6>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input">Credito autorizado</label>
+                                        <div class="col-md-3">
+                                            <h6>${{ formatNumber(netoCredito)}}</h6>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row" v-if="credito=='Alia2' || credito=='Respalda2'">
+                                        <label  class="col-md-2 form-control-label" for="text-input">Fovissste</label>
+                                        <div class="col-md-2">
+                                            <input type="text" pattern="\d*" v-model="fovissste" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
+                                        </div>
+                                        <div class="col-md-2">
+                                            <h6 v-text="'$'+formatNumber(fovissste)"></h6>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row" v-if="credito=='Cofinavit'">
+                                        <label  class="col-md-2 form-control-label" for="text-input">Infonavit</label>
+                                        <div class="col-md-2">
+                                            <input type="text" pattern="\d*" v-model="infonavit" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
+                                        </div>
+                                        <div class="col-md-2">
+                                            <h6 v-text="'$'+formatNumber(infonavit)"></h6>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input"><strong> Total a liquidar </strong></label>
+                                        <div class="col-md-3">
+                                            <h6><strong> ${{ formatNumber(total_liquidar=totalLiquidar)}} </strong></h6>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row line-separator"></div>
+
+                                    <div class="col-md-12" v-if="arrayPagares.length">
+                                        <div class="form-group">
+                                            <center> <h5>Pagares pendientes</h5> </center>
+                                        </div>
+                                    </div>  
+
+                                    <div class="col-md-12">
+                                        <div class="form-group row" v-if="arrayPagares.length">
+                                            <div class="table-responsive col-md-12">
+                                                <table class="table table-bordered table-striped table-sm">
+                                                    <thead>
+                                                        <tr>
+                                                            <th># Pago</th>
+                                                            <th>Fecha de pago</th>
+                                                            <th>Monto</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody >
+                                                        <tr v-for="(pago,index) in arrayPagares" :key="pago.fecha_pago">
+                                                            <td v-text="'Pago no. ' + parseInt(index+1)"></td>
+                                                            <td v-text="this.moment(pago.fecha_pago).locale('es').format('DD/MMM/YYYY')"></td>
+                                                            <td>
+                                                                {{ pago.monto_pago | currency}}
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div> 
+
+                                    <div class="form-group row line-separator" v-if="total_liquidar != 0"></div>
+
+                                    <div class="form-group row" v-if="total_liquidar != 0">
+                                        <label class="col-md-2 form-control-label" for="text-input">Fecha a liquidar</label>
+                                        <div class="col-md-3">
+                                            <input type="date" class="form-control" v-model="fecha_pagarefin">
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <h6 v-text="'$'+formatNumber(total_liquidar)"></h6>
+                                        </div>
+
+                                    </div>
+
+
+
+                                    <!-- Div para mostrar los errores que mande validerDepartamento -->
+                                <div v-show="errorIngreso" class="form-group row div-error">
+                                    <div class="text-center text-error">
+                                        <div v-for="error in errorMostrarMsjIngreso" :key="error" v-text="error">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                
+                                    
+                                    
+                            </form>
+                            
+
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                            <button type="button" class="btn btn-primary" @click="enviarIngreso()">Ingresar</button>
+                        </div>
+                    </div>
+                      <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!--Fin del modal -->
+
             <!--Inicio del modal observaciones-->
             <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal3}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
                 <div class="modal-dialog modal-primary modal-lg" role="document">
@@ -673,9 +911,13 @@
                 arrayProgramacion: [],
                 arrayPorIngresar:[],
                 arrayObservacion:[],
+                arrayPagares:[],
+                totalEnganghe:[],
+                totalRestante:[],
 
                 arrayFraccionamientos:[],
                 arrayEtapas:[],
+                arrayGastos:[],
 
                 errorIngreso:0,
                 errorMostrarMsjIngreso:[],
@@ -706,10 +948,31 @@
                 tipoAccion: 0,
                 fecha_ingreso:'',
                 valor_escrituras:'',
+                valor_venta:'',
+                totalGastos:0,
 
                 fecha_infonavit:'',
+                fecha_liquidacion:'',
+                fecha_firma_contrato:'',
+                fecha_pagarefin:'',
+                monto_pagare:0,
+                cliente:'',
+                credito:'',
+                inst_fin:'',
+                proyecto:'',
+                etapa:'',
+                manzana:'',
+                lote:'',
+                descuento:0,
+                pagado:0,
+                monto_credito:0,
+                infonavit:0,
+                fovissste:0,
+                avaluo:0,
+                total_liquidar:0,
 
                 modal:0,
+                modal2:0,
                 tituloModal:'',
                 modal3 :0,
                 tituloModal3:'Observaciones',
@@ -722,6 +985,18 @@
             }
         },
         computed:{
+            totalLiquidar: function(){
+                var neto_credito =0;
+                    neto_credito = parseFloat(this.valor_venta) - parseFloat(this.descuento) + parseFloat(this.totalGastos) - parseFloat(this.monto_credito) - 
+                    parseFloat(this.infonavit) - parseFloat(this.fovissste) - parseFloat(this.pagado); 
+                return neto_credito;
+            },
+
+             netoCredito: function(){
+                var total =0;
+                    total = parseFloat(this.infonavit) + parseFloat(this.fovissste) + parseFloat(this.monto_credito); 
+                return total;
+            },
         },
 
         
@@ -884,7 +1159,6 @@
                 });
             },
 
-
             listarIngresoExp(page, buscar, b_etapa, b_manzana, b_lote, criterio){
                 let me = this;
                 var url = '/expediente/ingresarIndex?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio;
@@ -925,6 +1199,33 @@
                     console.log(error);
                 });
                 
+            },
+
+            mostrarPagares(){
+                let me = this;
+                var url = '/expediente/pagaresExpediente?folio=' + this.id;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayPagares = respuesta.pagares;
+                    me.totalEnganghe = respuesta.calculos[0].enganche;
+                    me.totalRestante = respuesta.calculos[0].total_restante;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
+            listarGastos(){
+                let me = this;
+                var url = '/expediente/gastosExpediente?folio=' + this.id;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayGastos = respuesta.gastos;
+                    me.totalGastos = respuesta.totalGastos[0].sumGasto;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
             },
 
             validarIngreso(){
@@ -1040,6 +1341,34 @@
                         this.id = data['folio'];
                         break;
                     }
+
+                    case 'liquidacion': 
+                    {
+                        this.modal2 = 1;
+                        this.tituloModal='Generar Liquidación';
+                        this.id = data['folio'];
+                        this.fecha_firma_contrato=data['fecha_status'];
+                        this.cliente=data['nombre_cliente'];
+                        this.credito=data['tipo_credito'];
+                        this.inst_fin=data['institucion'];
+                        this.proyecto=data['proyecto'];
+                        this.etapa=data['etapa'];
+                        this.manzana=data['manzana'];
+                        this.lote=data['num_lote'];
+                        this.valor_escrituras = data['valor_escrituras'];
+                        this.valor_venta = data['precio_venta'];
+                        this.descuento = 0;
+                        this.totalEnganghe=0;
+                        this.pagado=0;
+                        this.monto_credito = data['credito_solic'];
+                        this.infonavit = data['infonavit'];
+                        this.fovissste = data['fovisste'];
+                        this.avaluo = data['resultado'];
+
+                        this.mostrarPagares();
+                        this.listarGastos();
+                        break;
+                    }
                 }
 
             },
@@ -1051,6 +1380,8 @@
                 this.valor_escrituras='0';
                 this.errorIngreso=0;
                 this.errorMostrarMsjIngreso=[];
+
+                this.modal2 = 0;
                 
             },
 
@@ -1074,10 +1405,17 @@
     }
 </script>
 <style>
+    .line-separator{
+        height:1px;
+        background:#717171;
+        border-bottom:1px solid #c2cfd6;
+    }
+
+
     .form-control:disabled, .form-control[readonly] {
     background-color: rgba(0, 0, 0, 0.06);
     opacity: 1;
-    font-size: 1rem;
+    font-size: 0.85rem;
     color: #27417b;
     }
     .modal-content{

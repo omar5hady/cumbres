@@ -15,6 +15,7 @@ class PromocionController extends Controller
         if(!$request->ajax())return redirect('/');
 
         $buscar = $request->buscar;
+        $buscar2 = $request->buscar2;
         $criterio = $request->criterio;
         $current = Carbon::today()->format('ymd');
                 
@@ -30,16 +31,33 @@ class PromocionController extends Controller
             ->orderBy('is_active', 'desc')->paginate(20);
         }
         else{
-            $promociones = Promocion::join('fraccionamientos','promociones.fraccionamiento_id','=','fraccionamientos.id')
-            ->join('etapas','promociones.etapa_id','=','etapas.id')
-            ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas',
-                    'promociones.id','promociones.fraccionamiento_id', 'promociones.etapa_id','promociones.nombre',
-                    'promociones.v_ini','promociones.v_fin','promociones.descuento','promociones.descripcion',
-                    DB::raw('(CASE WHEN promociones.v_fin >= ' . $current . ' THEN 1 ELSE 0 END) AS is_active'))
-            ->where($criterio, 'like', '%'. $buscar . '%')
-            ->orderBy('fraccionamientos.nombre', 'asc')
-            ->orderBy('etapas.num_etapa', 'asc')
-            ->orderBy('is_active', 'desc')->paginate(8);
+            if($buscar2 == ''){
+                $promociones = Promocion::join('fraccionamientos','promociones.fraccionamiento_id','=','fraccionamientos.id')
+                ->join('etapas','promociones.etapa_id','=','etapas.id')
+                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas',
+                        'promociones.id','promociones.fraccionamiento_id', 'promociones.etapa_id','promociones.nombre',
+                        'promociones.v_ini','promociones.v_fin','promociones.descuento','promociones.descripcion',
+                        DB::raw('(CASE WHEN promociones.v_fin >= ' . $current . ' THEN 1 ELSE 0 END) AS is_active'))
+                ->where($criterio, 'like', '%'. $buscar . '%')
+                ->orderBy('fraccionamientos.nombre', 'asc')
+                ->orderBy('etapas.num_etapa', 'asc')
+                ->orderBy('is_active', 'desc')->paginate(20);
+            }
+            else{
+                $promociones = Promocion::join('fraccionamientos','promociones.fraccionamiento_id','=','fraccionamientos.id')
+                ->join('etapas','promociones.etapa_id','=','etapas.id')
+                ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas',
+                        'promociones.id','promociones.fraccionamiento_id', 'promociones.etapa_id','promociones.nombre',
+                        'promociones.v_ini','promociones.v_fin','promociones.descuento','promociones.descripcion',
+                        DB::raw('(CASE WHEN promociones.v_fin >= ' . $current . ' THEN 1 ELSE 0 END) AS is_active'))
+                ->where($criterio, '=', $buscar)
+                ->where('etapas.id', '=', $buscar2)
+                ->orderBy('fraccionamientos.nombre', 'asc')
+                ->orderBy('etapas.num_etapa', 'asc')
+                ->orderBy('is_active', 'desc')->paginate(20);
+
+            }
+            
         }
             
         return [

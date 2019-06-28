@@ -10,6 +10,7 @@ use Auth;
 use App\Expediente;
 use Excel;
 use Carbon\Carbon;
+use App\Pago_contrato;
 
 class ExpedienteController extends Controller
 {
@@ -2759,6 +2760,8 @@ class ExpedienteController extends Controller
                     'contratos.avaluo_preventivo',
                     'contratos.aviso_prev',
                     'contratos.aviso_prev_venc',
+                    'contratos.infonavit',
+                    'contratos.fovisste',
                     'lotes.regimen_condom',
                     'lotes.credito_puente',
                     DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
@@ -3394,6 +3397,25 @@ class ExpedienteController extends Controller
             'contratos' => $contratos,
             'contador' => $contador
         ];
+    }
+
+    public function pagaresExpediente(Request $request)
+    {
+        $folio = $request->folio;
+        $pagares = Pago_contrato::select('contrato_id','num_pago','fecha_pago','monto_pago','restante','pagado')
+                    ->where('contrato_id','=',$folio)
+                    ->where('pagado','!=',2)
+                    ->orderBy('contrato_id','asc')
+                    ->orderBy('num_pago','asc')->get();
+
+        $calculos = Pago_contrato::select(DB::raw("SUM(monto_pago) as enganche"),
+                        DB::raw("SUM(restante) as total_restante"))
+                    ->groupBy('contrato_id')
+                    ->where('contrato_id','=',$folio)
+                    ->get();
+
+        return ['pagares' => $pagares,
+                'calculos' => $calculos];
     }
 
 }

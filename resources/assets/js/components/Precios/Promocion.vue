@@ -22,11 +22,19 @@
                                     <!--Criterios para el listado de busqueda -->
                                     <select class="form-control col-md-4" v-model="criterio">
                                         <option value="promociones.nombre">Promocion</option>
-                                        <option value="fraccionamientos.nombre">Proyecto</option>
-                                        <option value="etapas.num_etapa">Etapa</option>
+                                        <option value="fraccionamientos.id">Proyecto</option>
                                     </select>
-                                    <input type="text" v-model="buscar" @keyup.enter="listarPromociones(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
-                                    <button type="submit" @click="listarPromociones(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <select class="form-control" v-if="criterio=='fraccionamientos.id'" v-model="buscar" @click="selectEtapa(buscar), buscar2=''">
+                                        <option value="">Seleccione</option>
+                                        <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                                    </select>
+
+                                    <select class="form-control" v-if="criterio=='fraccionamientos.id'" v-model="buscar2" @keyup.enter="listarPromociones(1,buscar,buscar2,criterio)"> 
+                                        <option value="">Etapa</option>
+                                        <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
+                                    </select>
+                                    <input type="text" v-else v-model="buscar" @keyup.enter="listarPromociones(1,buscar,buscar2,criterio)" class="form-control" placeholder="Texto a buscar">
+                                    <button type="submit" @click="listarPromociones(1,buscar,buscar2,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
                         </div>
@@ -62,7 +70,7 @@
                                         <td v-text="promocion.etapas" ></td>
                                         <td v-text="promocion.nombre" ></td>
                                         <td v-text="promocion.descripcion" ></td>
-                                        <td v-text="promocion.descuento" ></td>
+                                        <td v-text="'$'+formatNumber(promocion.descuento)" ></td>
                                         <td v-text="promocion.v_ini" ></td>
                                         <td v-text="promocion.v_fin" ></td>
                                         <td v-if="promocion.is_active == '1'">
@@ -79,13 +87,13 @@
                             <!--Botones de paginacion -->
                             <ul class="pagination">
                                 <li class="page-item" v-if="pagination.current_page > 1">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,criterio)">Ant</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar, buscar2,criterio)">Ant</a>
                                 </li>
                                 <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,criterio)" v-text="page"></a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar, buscar2,criterio)" v-text="page"></a>
                                 </li>
                                 <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,criterio)">Sig</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar, buscar2,criterio)">Sig</a>
                                 </li>
                             </ul>
                         </nav>
@@ -360,7 +368,8 @@
                 },
                 offset : 3,
                 criterio : 'promociones.nombre', 
-                buscar : ''
+                buscar : '',
+                buscar2 : '',
             }
         },
         computed:{
@@ -420,9 +429,9 @@
         },
         methods : {
             /**Metodo para mostrar los registros */
-            listarPromociones(page, buscar, criterio){
+            listarPromociones(page, buscar,buscar2, criterio){
                 let me = this;
-                var url = '/promocion?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
+                var url = '/promocion?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2 + '&criterio=' + criterio;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayPromocion = respuesta.promociones.data;
@@ -456,12 +465,16 @@
                     return true;
                 }
             },
-            cambiarPagina(page, buscar, criterio){
+            formatNumber(value) {
+                let val = (value/1).toFixed(2)
+                return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+            },
+            cambiarPagina(page, buscar, buscar2, criterio){
                 let me = this;
                 //Actualiza la pagina actual
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
-                me.listarPromociones(page,buscar,criterio);
+                me.listarPromociones(page,buscar,buscar2,criterio);
             },
             cambiarPagina2(page, buscar){
                 let me = this;
@@ -491,7 +504,7 @@
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal(); //al guardar el registro se cierra el modal
-                    me.listarPromociones(1,'','nombre'); //se enlistan nuevamente los registros
+                    me.listarPromociones(me.pagination.current_page,me.buscar, me.buscar2,me.criterio); //se enlistan nuevamente los registros
                     //Se muestra mensaje Success
                     swal({
                         position: 'top-end',
@@ -519,7 +532,7 @@
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal2(); //al guardar el registro se cierra el modal
-                    me.listarPromociones(1,'','nombre'); //se enlistan nuevamente los registros
+                    me.listarPromociones(me.pagination.current_page,me.buscar,me.buscar2,me.criterio); //se enlistan nuevamente los registros
                     //Se muestra mensaje Success
                     swal({
                         position: 'top-end',
@@ -554,7 +567,7 @@
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal();
-                    me.listarPromociones(1,'','nombre');
+                    me.listarPromociones(me.pagination.current_page,me.buscar,me.buscar2,me.criterio);
                     //window.alert("Cambios guardados correctamente");
                     swal({
                         position: 'top-end',
@@ -597,7 +610,7 @@
                         'Paquete borrado correctamente.',
                         'success'
                         )
-                        me.listarPromociones(1,'','nombre');
+                        me.listarPromociones(me.pagination.current_page,me.buscar,me.buscar2,me.criterio);
                     }).catch(function (error){
                         console.log(error);
                     });
@@ -818,7 +831,8 @@
             }
         },
         mounted() {
-            this.listarPromociones(1,this.buscar,this.criterio);
+            this.listarPromociones(1,this.buscar,this.buscar2,this.criterio);
+            this.selectFraccionamientos();
         }
     }
 </script>
