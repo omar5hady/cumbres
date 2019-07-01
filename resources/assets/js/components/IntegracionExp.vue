@@ -554,6 +554,11 @@
                 me.listarContratos(page,buscar,b_etapa,b_manzana,b_lote,criterio);
             },
 
+            formatNumber(value) {
+                let val = (value/1).toFixed(2)
+                return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+            },
+
             fechaRecibido(){
                 if(this.proceso==true){
                     return;

@@ -9,6 +9,7 @@ Use App\Pago_contrato;
 use Carbon\Carbon;
 use DB;
 use NumerosEnLetras;
+use App\Gasto_admin;
 
 class DepositoController extends Controller
 {
@@ -33,6 +34,7 @@ class DepositoController extends Controller
                             'personal.nombre','personal.apellidos',
                             DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'))
                     ->where('pagos_contratos.pagado','!=',2)
+                    ->where('pagos_contratos.pagado','!=',3)
                     ->where('pagos_contratos.fecha_pago','<',$hoy)
                     ->orderBy('pagos_contratos.pagado', 'asc')
                     ->orderBy('pagos_contratos.fecha_pago', 'asc')
@@ -51,9 +53,11 @@ class DepositoController extends Controller
                                     'personal.nombre','personal.apellidos',
                                     DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'))
                             ->where('pagos_contratos.pagado','!=',2)
+                            ->where('pagos_contratos.pagado','!=',3)
                             ->where('pagos_contratos.fecha_pago','<',$hoy)
                             ->where('personal.nombre','like', '%'. $buscar . '%')
                             ->orWhere('pagos_contratos.pagado','!=',2)
+                            ->where('pagos_contratos.pagado','!=',3)
                             ->where('pagos_contratos.fecha_pago','<',$hoy)
                             ->where('personal.apellidos','like', '%'. $buscar . '%')
                             ->orderBy('pagos_contratos.pagado', 'asc')
@@ -72,6 +76,7 @@ class DepositoController extends Controller
                                     'personal.nombre','personal.apellidos',
                                     DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'))
                             ->where('pagos_contratos.pagado','!=',2)
+                            ->where('pagos_contratos.pagado','!=',3)
                             ->where('pagos_contratos.fecha_pago','<',$hoy)
                             ->whereBetween($criterio, [$buscar,$buscar2])
                             ->orderBy('pagos_contratos.pagado', 'asc')
@@ -91,6 +96,7 @@ class DepositoController extends Controller
                                     'personal.nombre','personal.apellidos',
                                     DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'))
                             ->where('pagos_contratos.pagado','!=',2)
+                            ->where('pagos_contratos.pagado','!=',3)
                             ->where('pagos_contratos.fecha_pago','<',$hoy)
                             ->where($criterio,'=',$buscar)
                             ->orderBy('pagos_contratos.pagado', 'asc')
@@ -108,6 +114,7 @@ class DepositoController extends Controller
                                     'personal.nombre','personal.apellidos',
                                     DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'))
                             ->where('pagos_contratos.pagado','!=',2)
+                            ->where('pagos_contratos.pagado','!=',3)
                             ->where('pagos_contratos.fecha_pago','<',$hoy)
                             ->where($criterio,'=',$buscar)
                             ->where('creditos.etapa','=',$buscar2)
@@ -126,6 +133,7 @@ class DepositoController extends Controller
                                     'personal.nombre','personal.apellidos',
                                     DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'))
                             ->where('pagos_contratos.pagado','!=',2)
+                            ->where('pagos_contratos.pagado','!=',3)
                             ->where('pagos_contratos.fecha_pago','<',$hoy)
                             ->where($criterio,'=',$buscar)
                             ->where('creditos.etapa','=',$buscar2)
@@ -147,6 +155,7 @@ class DepositoController extends Controller
                                     'personal.nombre','personal.apellidos',
                                     DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'))
                             ->where('pagos_contratos.pagado','!=',2)
+                            ->where('pagos_contratos.pagado','!=',3)
                             ->where('pagos_contratos.fecha_pago','<',$hoy)
                             ->where($criterio,'=',$buscar)
                             ->orderBy('pagos_contratos.pagado', 'asc')
@@ -325,6 +334,17 @@ class DepositoController extends Controller
         else{
             $pago_contrato->pagado = 1;
         }
+
+        if($request->interes_ord != 0){
+            $gasto = new Gasto_admin();
+            $gasto->contrato_id = $pago_contrato->contrato_id;
+            $gasto->concepto = 'Interes Ordinario';
+            $gasto->costo = $request->interes_ord;
+            $gasto->fecha = $request->fecha;
+            $gasto->observacion = '';
+            $gasto->save();
+        }
+
         $pago_contrato->save();
 
         $deposito->save();

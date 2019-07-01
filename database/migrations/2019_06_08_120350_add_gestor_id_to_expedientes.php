@@ -20,6 +20,10 @@ class AddGestorIdToExpedientes extends Migration
             $table->double('valor_escrituras')->default(0)->nullable();
             $table->date('fecha_infonavit')->nullable();
 
+            $table->double('descuento')->default(0)->nullable();
+            $table->double('total_liquidar')->default(0)->nullable();
+            $table->date('fecha_liquidacion')->nullable();
+
             $table->foreign('gestor_id')->references('id')->on('personal');
         });
     }

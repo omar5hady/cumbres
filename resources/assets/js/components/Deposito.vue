@@ -96,9 +96,10 @@
                                         <td v-text="'$'+formatNumber(pagare.restante)"></td>
                                         <td v-text="this.moment(pagare.fecha_pago).locale('es').format('DD/MMM/YYYY')"></td>
                                         <td >
-                                            <span v-if="pagare.diferencia > 0 && pagare.pagado != 2" class="badge badge-danger">Vencido</span>
-                                            <span v-if="pagare.diferencia < 0 && pagare.pagado != 2" class="badge badge-warning"> Pendiente</span>
+                                            <span v-if="pagare.diferencia > 0 && pagare.pagado < 2" class="badge badge-danger">Vencido</span>
+                                            <span v-if="pagare.diferencia < 0 && pagare.pagado < 2" class="badge badge-warning"> Pendiente</span>
                                             <span v-if="pagare.pagado == 2" class="badge badge-success"> Pagado</span>
+                                            <span v-if="pagare.pagado == 3" class="badge badge-success"> Liquidado</span>
                                         </td>
                                     </tr>                               
                                 </tbody>

@@ -794,7 +794,7 @@
                                         </div>
                                     </div> 
 
-                                    <div class="form-group row line-separator" v-if="total_liquidar != 0"></div>
+                                    <!--<div class="form-group row line-separator" v-if="total_liquidar != 0"></div>
 
                                     <div class="form-group row" v-if="total_liquidar != 0">
                                         <label class="col-md-2 form-control-label" for="text-input">Fecha a liquidar</label>
@@ -806,7 +806,7 @@
                                             <h6 v-text="'$'+formatNumber(total_liquidar)"></h6>
                                         </div>
 
-                                    </div>
+                                    </div>-->
 
 
 

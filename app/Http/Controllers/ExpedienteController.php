@@ -3418,4 +3418,18 @@ class ExpedienteController extends Controller
                 'calculos' => $calculos];
     }
 
+    public function setLiquidacion(Request $request){
+
+
+        $expediente = Expediente::findOrFail($request->folio);
+        $expediente->fecha_liquidacion = $request->fecha_liquidacion;
+        $expediente->valor_escrituras = $request->valor_escrituras;
+        $expediente->descuento = $request->descuento;
+        $expediente->total_liquidar = $request->total_liquidar;
+        $expediente->save();
+
+        $contrato = Contrato::findOrFail($request->folio);
+        //$contrato->infonavit = 
+    }
+
 }

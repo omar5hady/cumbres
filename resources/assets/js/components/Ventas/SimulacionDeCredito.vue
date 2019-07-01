@@ -227,11 +227,22 @@
                                             <div class="col-md-1">
                                                     <div class="form-group">
                                                 <label for="">C.P<span style="color:red;" v-show="cp==''">(*)</span></label>
-                                                <input type="text" class="form-control"  pattern="\d*" maxlength="5" v-on:keypress="isNumber($event)" @keyup="selectColonias(cp,0)"  v-model="cp" placeholder="C.Postal">
+                                                <input type="text" class="form-control"  pattern="\d*" maxlength="5" v-on:keypress="isNumber($event)" @keyup="selectColonias(cp,0), colonia=''"  v-model="cp" placeholder="C.Postal">
                                             </div>
                                             </div>
 
                                             <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label for="">Colonia<span style="color:red;" v-show="colonia==''">(*)</span></label>
+                                                    <input type="text" name="city3" list="cityname3" class="form-control" v-model="colonia">
+                                                    <datalist id="cityname3">
+                                                        <option value="">Seleccione</option>
+                                                        <option v-for="colonias in arrayColonias" :key="colonias.colonia " :value="colonias.colonia" v-text="colonias.colonia"></option>    
+                                                    </datalist>
+                                                </div>
+                                            </div>
+
+                                           <!-- <div class="col-md-2">
                                                     <div class="form-group">
                                                 <label for="">Colonia<span style="color:red;" v-show="colonia==''">(*)</span></label>
                                                 <select class="form-control" v-model="colonia">
@@ -239,7 +250,7 @@
                                                         <option v-for="colonias in arrayColonias" :key="colonias.colonia " :value="colonias.colonia" v-text="colonias.colonia"></option>
                                                     </select>
                                             </div>
-                                            </div>
+                                            </div>-->
 
                                             
                                             <div class="col-md-3">
@@ -497,11 +508,22 @@
                                                 <div class="col-md-1" v-if="coacreditado==true">
                                                         <div class="form-group">
                                                     <label for="">C.P</label>
-                                                    <input type="text" class="form-control"  pattern="\d*" maxlength="5" v-on:keypress="isNumber($event)" @keyup="selectColonias(cp_coa,1)"  v-model="cp_coa" placeholder="C.Postal">
+                                                    <input type="text" class="form-control"  pattern="\d*" maxlength="5" v-on:keypress="isNumber($event)" @keyup="selectColonias(cp_coa,1), colonia_coa=''"  v-model="cp_coa" placeholder="C.Postal">
                                                 </div>
                                                 </div>
 
                                                 <div class="col-md-2" v-if="coacreditado==true">
+                                                    <div class="form-group">
+                                                        <label for="">Colonia<span style="color:red;" v-show="colonia_coa==''">(*)</span></label>
+                                                        <input type="text" name="city4" list="cityname4" class="form-control" v-model="colonia_coa">
+                                                        <datalist id="cityname4">
+                                                            <option value="">Seleccione</option>
+                                                            <option v-for="colonias in arrayColoniasCoa" :key="colonias.colonia " :value="colonias.colonia" v-text="colonias.colonia"></option>    
+                                                        </datalist>
+                                                    </div>
+                                                </div>
+
+                                                <!--<div class="col-md-2" v-if="coacreditado==true">
                                                         <div class="form-group">
                                                     <label for="">Colonia<span style="color:red;" v-show="colonia_coa==''">(*)</span></label>
                                                     <select class="form-control" v-model="colonia_coa">
@@ -509,7 +531,7 @@
                                                             <option v-for="colonia in arrayColoniasCoa" :key="colonia.colonia " :value="colonia.colonia" v-text="colonia.colonia"></option>
                                                         </select>
                                                 </div>
-                                                </div>
+                                                </div>-->
 
                                                 
                                                 <div class="col-md-3">
