@@ -208,6 +208,7 @@
                                                 <th>Opciones</th>
                                                 <th>Descripcion</th>
                                                 <th>Lote</th>
+                                                <th>Manzana</th>
                                                 <th>M&sup2;</th>
                                                 <th>Costo Directo</th>
                                                 <th>Costo Indirecto</th>
@@ -227,6 +228,9 @@
                                                 </td>
                                                 <td v-text="detalle.lote">
                                                     
+                                                </td>
+                                                <td v-text="detalle.manzana">
+
                                                 </td>
                                                 <td v-text="detalle.superficie">
                                                    
@@ -436,6 +440,7 @@
                                                 <th>Opciones</th>
                                                 <th>Descripcion</th>
                                                 <th>Lote</th>
+                                                <th>Manzana</th>
                                                 <th>M&sup2;</th>
                                                 <th>Costo Directo</th>
                                                 <th>Costo Indirecto</th>
@@ -455,6 +460,9 @@
                                                 </td>
                                                 <td v-text="detalle.lote">
                                                     
+                                                </td>
+                                                <td v-text="detalle.manzana">
+
                                                 </td>
                                                 <td style="text-align: right;" v-text="detalle.construccion">
                                                    
