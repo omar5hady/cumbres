@@ -405,9 +405,14 @@
                                                     <td v-if="liquidacion.fecha_infonavit=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
                                                 </template>
                                                 <td class="td2">
-                                                    <button title="Generar liquidación" type="button" class="btn btn-danger pull-right" 
+                                                    <button v-if="liquidacion.fecha_liquidacion == 'NULL'" title="Generar liquidación" type="button" class="btn btn-danger pull-right" 
                                                         @click="abrirModal('liquidacion',liquidacion)">Generar</button>
+                                                    
+                                                    <button v-if="liquidacion.liquidado == 0 && liquidacion.fecha_liquidacion != 'NULL'" title="Intereses" type="button" class="btn btn-danger pull-right" 
+                                                        @click="abrirModal('intereses',liquidacion)">Generar intereses</button>
+            
                                                 </td>
+                                                
                                                 <td class="td2">
                                                     <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
                                                         @click="abrirModal3(liquidacion.folio)">Ver Observaciones</button>
@@ -811,9 +816,9 @@
 
 
                                     <!-- Div para mostrar los errores que mande validerDepartamento -->
-                                <div v-show="errorIngreso" class="form-group row div-error">
+                                <div v-show="errorLiquidacion" class="form-group row div-error">
                                     <div class="text-center text-error">
-                                        <div v-for="error in errorMostrarMsjIngreso" :key="error" v-text="error">
+                                        <div v-for="error in errorMostrarMsjLiquidacion" :key="error" v-text="error">
                                         </div>
                                     </div>
                                 </div>
@@ -828,7 +833,198 @@
                         <!-- Botones del modal -->
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <button type="button" class="btn btn-primary" @click="enviarIngreso()">Ingresar</button>
+                            <button type="button" class="btn btn-primary" @click="generarLiquidacion()">Generar</button>
+                        </div>
+                    </div>
+                      <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!--Fin del modal -->
+
+             <!--Inicio modal Intereses (Pagares)-->
+            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal4}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" v-text="tituloModal"></h4>
+                            <button type="button" class="close" @click="cerrarModal4()" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- form para captura de fecha recibido -->
+                            <form enctype="multipart/form-data" class="form-horizontal">
+
+                                    <div class="form-group row line-separator"></div>
+
+                                   
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input"><strong> Total a liquidar </strong></label>
+                                        <div class="col-md-3">
+                                            <h6><strong> ${{ formatNumber(total_liquidar1)}} </strong></h6>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Intereses Ordinarios (%)</label>
+                                        <div class="col-md-2">
+                                            <input type="text" maxlength="5" v-model="int_oridinario" class="form-control" placeholder="%" >
+                                        </div>
+                                        <label class="col-md-4 form-control-label" for="text-input">Fecha de inicio de intereses</label>
+                                        <div class="col-md-3">
+                                            <input type="date" pattern="\d*" maxlength="3" v-on:keypress="isNumber($event)" v-model="fecha_ini_interes" class="form-control" >
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Intereses Moratorios (%)</label>
+                                        <div class="col-md-2">
+                                            <input type="text" pattern="\d*" maxlength="3" v-on:keypress="isNumber($event)" v-model="int_moratorio" class="form-control" placeholder="%" >
+                                        </div>
+                                    </div>
+                                    
+
+                                    <div class="form-group row line-separator"></div>
+
+                                    <div class="form-group row">
+                                        <div class="col-md-12">  
+                                            <center> <h5>Pagares</h5> </center>
+                                        </div>
+                                    </div>  
+
+                                <div class="form-group row" v-if="fecha_pago!=''">
+                                    <div class="col-md-12">
+                                             <h6 style="text-align: right;">Restante: </h6>
+                                             <h4 style="text-align: right;"><strong>${{ formatNumber(restante_pago)}}</strong></h4>
+                                    </div> 
+                                </div>
+
+                                
+                                <div class="form-group row">
+                                    <label class="col-md-2 form-control-label" for="text-input">Fecha del pago</label>
+                                        <div class="col-md-3">
+                                            <input @change="mostrarRestante()" type="date" v-model="fecha_pago" class="form-control" >
+                                        </div>
+                                        <!-- <div class="col-md-3">
+                                            <h6 style="color:#2271b3;" ><strong> Dias </strong></h6>
+                                            <h6><strong>{{ dias = dias}}</strong></h6>
+                                        </div>
+                                         <div class="col-md-3">
+                                            <h6 style="color:#2271b3;" ><strong> Intereses </strong></h6>
+                                            <h6><strong>${{ formatNumber(interes= interes)}}</strong></h6>
+                                        </div> -->
+                                </div>
+
+                                <div class="form-group row" v-if="fecha_pago!=''">
+                                    <label class="col-md-2 form-control-label" for="text-input">Monto pago</label>
+                                        <div class="col-md-3">
+                                            <input  type="text" pattern="\d*" v-model="monto_pago" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
+                                        </div>
+                                        <div class="col-md-4">
+                                            <h6 style="color:#2271b3;" ><strong> Monto pago </strong></h6>
+                                            <h6><strong>${{ formatNumber(monto_pago)}}</strong></h6>
+                                        </div>
+                                </div> 
+
+                        
+                                <div class="form-group row" v-if="restante_pago>0">
+                                    <div class="col-md-1" v-if="monto_pago!=''">
+                                            <button @click="agregarPago()" class="btn btn-success form-control btnagregar"><i class="icon-plus"></i></button>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="form-group row" v-if="arrayPagos.length">
+                                        <div class="table-responsive col-md-12">
+                                            <table class="table table-bordered table-striped table-sm">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Opciones</th>
+                                                        <th># Pago</th>
+                                                        <th>Fecha de pago</th>
+                                                        <th>Dias</th>
+                                                        <th>Pendiente + Intereses</th>
+                                                        <th>Monto</th>
+                                                        <th>Restante</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody >
+                                                    <tr v-for="(pago,index) in arrayPagos" :key="pago.fecha_pago">
+                                                        <td>
+                                                            <button @click="eliminarPago(index)" type="button" class="btn btn-danger btn-sm">
+                                                                <i class="icon-close"></i>
+                                                            </button>
+                                                           
+                                                        </td>
+                                                        <td v-text="'Pago no. ' + parseInt(index+1)"></td>
+                                                        <td v-text="this.moment(pago.fecha_pago).locale('es').format('DD/MMM/YYYY')"></td>
+                                                        <td v-text="pago.dias">
+                                                            
+                                                        </td>
+                                                          <td>
+                                                            {{pago.restanteAnterior | currency}}
+                                                        </td>
+                                                        <td>
+                                                            {{ pago.monto_pago | currency}}
+                                                        </td>
+                                                        <td>
+                                                            {{pago.restante | currency}}
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div> 
+
+                                    <div class="form-group row line-separator"></div>
+
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <center> <h5>Aval</h5> </center>
+                                        </div>
+                                    </div>  
+
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Nombre</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="nombre_aval" class="form-control" placeholder="Nombre" >
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Dirección</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="direccion_aval" class="form-control" placeholder="Direccion" >
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Telefono</label>
+                                        <div class="col-md-6">
+                                            <input type="text" pattern="\d*" maxlength="10" v-on:keypress="isNumber($event)" v-model="telefono_aval" class="form-control" placeholder="Telefono" >
+                                        </div>
+                                    </div>
+
+                                 
+                                    <!-- Div para mostrar los errores que mande validerDepartamento -->
+                                <div v-show="errorLiquidacion" class="form-group row div-error">
+                                    <div class="text-center text-error">
+                                        <div v-for="error in errorMostrarMsjLiquidacion" :key="error" v-text="error">
+                                        </div>
+                                    </div>
+                                </div>
+ 
+                                    
+                            </form>
+                            
+
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal4()">Cerrar</button>
+                            <button v-if="restante_pago == 0" type="button" class="btn btn-primary" @click="generarPagare()">Generar</button>
                         </div>
                     </div>
                       <!-- /.modal-content -->
@@ -919,8 +1115,13 @@
                 arrayEtapas:[],
                 arrayGastos:[],
 
+                arrayPagos: [],
+
                 errorIngreso:0,
                 errorMostrarMsjIngreso:[],
+
+                errorLiquidacion: 0,
+                errorMostrarMsjLiquidacion: [],
                 
                 //variables para filtros de Por ingresar
                 criterio:'lotes.fraccionamiento_id',
@@ -970,11 +1171,26 @@
                 fovissste:0,
                 avaluo:0,
                 total_liquidar:0,
+                total_liquidar1:0,
+
+                int_oridinario:0,
+                int_moratorio:0,
+                fecha_ini_interes: '',
+                fecha_pago: '',
+                monto_pago: 0,
+                restante_pago: 0,
+                nombre_aval: '',
+                direccion_aval: '',
+                telefono_aval: '',
+                dias: 0,
+                interes: 0,
+
 
                 modal:0,
                 modal2:0,
-                tituloModal:'',
                 modal3 :0,
+                modal4:0,
+                tituloModal:'',
                 tituloModal3:'Observaciones',
                 observacion:'',
                 contadorIngresar : 0,
@@ -997,6 +1213,7 @@
                     total = parseFloat(this.infonavit) + parseFloat(this.fovissste) + parseFloat(this.monto_credito); 
                 return total;
             },
+
         },
 
         
@@ -1092,6 +1309,161 @@
                 });
             },
 
+            mostrarRestante(){
+                if(this.arrayPagos.length == 0){
+                var Restante = this.total_liquidar1;
+                var a = moment(this.fecha_pago);
+                var b = moment(this.fecha_ini_interes);
+                this.dias = a.diff(b, 'days'); //[days, years, months, seconds, ...]
+                var intereses = (this.int_oridinario / 100) * (this.dias/30) * (this.total_liquidar1);
+                this.interes = Math.round(intereses*100)/100;
+                
+                
+                Restante += this.interes;
+                Restante = Math.round(Restante*100)/100;
+                this.restante_pago = Restante;
+
+                }else{
+                    var b = this.arrayPagos[this.arrayPagos.length-1].fecha_pago;
+                    var a = moment(this.fecha_pago);
+                    this.dias = a.diff(b, 'days'); //[days, years, months, seconds, ...]
+                    var Restante =this.restante_pago;
+                    var intereses = (this.int_oridinario / 100) * (this.dias/30) * (Restante);
+                    this.interes = Math.round(intereses*100)/100;
+                   
+                    Restante += this.interes;
+                    this.restante_pago = Restante;
+
+                }
+            },
+
+            calcularRestante(){
+                if(this.arrayPagos.length == 0){
+                var Restante = this.total_liquidar1;
+                var a = moment(this.fecha_pago);
+                var b = moment(this.fecha_ini_interes);
+                this.dias = a.diff(b, 'days'); //[days, years, months, seconds, ...]
+                var intereses = (this.int_oridinario / 100) * (this.dias/30) * (this.total_liquidar1);
+                this.interes = Math.round(intereses*100)/100;
+                
+                
+                Restante += this.interes;
+                Restante = Math.round(Restante*100)/100;
+                // this.restante_pago = Restante;
+                return Restante;
+
+                }else{
+                    var b = this.arrayPagos[this.arrayPagos.length-1].fecha_pago;
+                    var a = moment(this.fecha_pago);
+                    this.dias = a.diff(b, 'days'); //[days, years, months, seconds, ...]
+                    var Restante =this.restante_pago;
+                    
+                    Restante = Math.round(Restante*100)/100;
+                    return Restante;
+
+                }
+            },
+
+            agregarPago(){
+                let me = this;
+                if(me.monto_pago == 0 || me.monto_pago=='' || me.fecha_pago==''){
+
+                }else{
+                    if(me.monto_pago > me.restante_pago){
+                         swal({
+                        type: 'error',
+                        title: 'Error',
+                        text: 'El monto supera al restante',
+                        });
+                        }
+                    if(me.encuentraFecha(me.fecha_pago)){
+                         swal({
+                        type: 'error',
+                        title: 'Error',
+                        text: 'La fecha de pago ya se enceuntra o es menor',
+                        })
+                    }
+                    else{
+                    me.restante_pago = me.calcularRestante();
+                    me.arrayPagos.push({
+                    monto_pago: me.monto_pago,
+                    fecha_pago: me.fecha_pago,
+                    restanteAnterior: me.restante_pago,
+                    dias: me.dias,
+                    restante: me.restante_pago - me.monto_pago,
+                    });
+                    me.restante_pago -= me.monto_pago;
+                  
+                   me.monto_pago = 0;
+
+
+                    }
+                }
+
+            },
+
+            eliminarPago(index){
+                let me = this;      
+                me.arrayPagos.splice(index,1);
+
+                    if(index != 0 ){
+                    for(var i=0;i<me.arrayPagos.length;i++){
+                    var b = me.arrayPagos[i].fecha_pago;
+                    var a = moment(me.arrayPagos[i+1].fecha_pago);
+                    me.arrayPagos[i+1].dias = a.diff(b, 'days'); //[days, years, months, seconds, ...]
+                    var Restante = me.arrayPagos[i].restante;
+                    var intereses = (me.int_oridinario / 100) * (me.arrayPagos[i+1].dias/30) * (Restante);
+                    var interes1 = Math.round(intereses*100)/100;
+                    Restante += interes1;
+                    Restante = Math.round(Restante*100)/100;
+                    me.arrayPagos[i+1].restanteAnterior = Restante;
+                    me.arrayPagos[i+1].restante = me.arrayPagos[i+1].restanteAnterior - me.arrayPagos[i+1].monto_pago;
+                    me.restante_pago =  me.arrayPagos[i+1].restante;
+                    }
+                    }else{
+                    var b = me.fecha_ini_interes
+                    var a = moment(me.arrayPagos[0].fecha_pago);
+                    me.arrayPagos[0].dias = a.diff(b, 'days');
+                    var Restante = me.total_liquidar1;
+                    var intereses = (me.int_oridinario / 100) * (me.arrayPagos[0].dias/30) * (Restante);
+                    var interes1 = Math.round(intereses*100)/100;
+                    Restante += interes1;
+                    Restante = Math.round(Restante*100)/100;
+                    me.arrayPagos[0].restanteAnterior = Restante;
+                    me.arrayPagos[0].restante = me.arrayPagos[0].restanteAnterior - me.arrayPagos[0].monto_pago;
+                    
+                    
+                    for(var i=0;i<me.arrayPagos.length;i++){
+                        var b = me.arrayPagos[i].fecha_pago;
+                        var a = moment(me.arrayPagos[i+1].fecha_pago);
+                        me.arrayPagos[i+1].dias = a.diff(b, 'days'); //[days, years, months, seconds, ...]
+                        var Restante = me.arrayPagos[i].restante;
+                        var intereses = (me.int_oridinario / 100) * (me.arrayPagos[i+1].dias/30) * (Restante);
+                        var interes1 = Math.round(intereses*100)/100;
+                        Restante += interes1;
+                        Restante = Math.round(Restante*100)/100;
+                        me.arrayPagos[i+1].restanteAnterior = Restante;
+                        me.arrayPagos[i+1].restante = me.arrayPagos[i+1].restanteAnterior - me.arrayPagos[i+1].monto_pago;
+                        me.restante_pago =  me.arrayPagos[i+1].restante;
+                    }
+                }
+           
+            },
+
+             encuentraFecha(fecha){
+                var sw=0;
+                for(var i=0;i<this.arrayPagos.length;i++)
+                {
+                    if(this.arrayPagos[i].fecha_pago == fecha || this.arrayPagos[i].fecha_pago > fecha)
+                    {
+                        sw=true;
+                    }
+
+                }
+
+                return sw;
+            },
+
             enviarIngreso(){
                 if(this.validarIngreso()){
                     return;
@@ -1120,6 +1492,83 @@
                         toast({
                         type: 'success',
                         title: 'Expediente ingresado correctamente'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
+            generarLiquidacion(){
+                if(this.validarLiquidacion()){
+                    return;
+                }
+                
+                let me = this;
+                //Con axios se llama el metodo update de LoteController
+                axios.put('/expediente/generarLiquidacion',{
+                    'folio':this.id,
+                    'fecha_liquidacion' : this.fecha_liquidacion,
+                    'valor_escrituras' : this.valor_escrituras,
+                    'descuento' : this.descuento,
+                    'total_liquidar' : this.total_liquidar,
+                    'infonavit' : this.infonavit,
+                    'fovissste': this.fovissste
+                    
+                }).then(function (response){
+                   
+                    me.cerrarModal();
+                    me.listarIngresoExp(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                    me.listarAutorizados(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                    me.listarLiquidacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                    //window.alert("Cambios guardados correctamente");
+                    const toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                        });
+                        toast({
+                        type: 'success',
+                        title: 'Liquidacion generada correctamente'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
+            generarPagare(){
+                // if(this.validarPagares()){
+                //     return;
+                // }
+                
+                let me = this;
+                //Con axios se llama el metodo update de LoteController
+                axios.post('/expediente/generarPagares',{
+                    'folio':this.id,
+                    'intereses_ordinarios' : this.int_oridinario,
+                    'intereses_moratorios' : this.int_moratorio,
+                    'fecha_ini_interes' : this.fecha_ini_interes,
+                    'nombre_aval' : this.nombre_aval,
+                    'direccion_aval' : this.direccion_aval,
+                    'telefono_aval': this.telefono_aval,
+                    'pagares' : this.arrayPagos
+                    
+                }).then(function (response){
+                   
+                    me.cerrarModal4();
+                    me.listarIngresoExp(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                    me.listarAutorizados(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                    me.listarLiquidacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                    //window.alert("Cambios guardados correctamente");
+                    const toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                        });
+                        toast({
+                        type: 'success',
+                        title: 'Pagares y liquidacion generados correctamente'
                     })
                 }).catch(function (error){
                     console.log(error);
@@ -1257,6 +1706,25 @@
                 return this.errorIngreso;
             },
 
+            validarLiquidacion(){
+                this.errorLiquidacion=0;
+                this.errorMostrarMsjLiquidacion=[];
+
+                if(this.fecha_liquidacion== '') //Si la variable departamento esta vacia
+                    this.errorMostrarMsjLiquidacion.push("Ingresar una fecha.");
+
+                if(this.valor_escrituras== '') //Si la variable departamento esta vacia
+                    this.errorMostrarMsjLiquidacion.push("Ingresar el valor a escriturar.");
+
+                if(this.descuento== '') //Si la variable departamento esta vacia
+                    this.errorMostrarMsjLiquidacion.push("Ingresar descuento.");
+                              
+                if(this.errorMostrarMsjLiquidacion.length)//Si el mensaje tiene almacenado algo en el array
+                    this.errorLiquidacion = 1;
+
+                return this.errorLiquidacion;
+            },
+
             noAplicaInfonavit(id){
                 this.id = id;
                 swal({
@@ -1369,6 +1837,25 @@
                         this.listarGastos();
                         break;
                     }
+
+                    case 'intereses': 
+                    {
+                        this.modal4 = 1;
+                        this.tituloModal='Intereses';
+                        this.id = data['folio'];
+                        this.total_liquidar1=data['total_liquidar'];
+                        this.int_oridinario = 5;
+                        this.int_moratorio = 5;
+                        this.fecha_ini_interes = '';
+                        this.fecha_pago = '';
+                        this.nombre_aval = '';
+                        this.direccion_aval = '';
+                        this.telefono_aval = '';
+                        this.arrayPagos = [];
+                        this.restante_pago=this.total_liquidar1;
+
+                        break;
+                    }
                 }
 
             },
@@ -1380,9 +1867,16 @@
                 this.valor_escrituras='0';
                 this.errorIngreso=0;
                 this.errorMostrarMsjIngreso=[];
+                this.errorLiquidacion=0;
+                this.errorMostrarMsjLiquidacion=[];
 
                 this.modal2 = 0;
                 
+            },
+
+            cerrarModal4(){
+                this.tituloModal = '';
+                this.modal4 = 0;                
             },
 
             cerrarModal3(){
@@ -1465,16 +1959,11 @@
     vertical-align: baseline;
 }
 
-    /*th {
-    text-align: left;
-    background-color: rgb(190, 220, 250);
-    text-transform: uppercase;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-    border-bottom: rgb(50, 50, 100) solid 2px;
-    border-top: none;
-    }*/
-
+ @media (min-width: 600px){
+  .btnagregar{
+        margin-top: 2rem;
+        }
+ }
     .td2 {
     white-space: nowrap;
     border-bottom: none;

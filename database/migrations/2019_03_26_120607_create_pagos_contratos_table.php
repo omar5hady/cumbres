@@ -21,6 +21,7 @@ class CreatePagosContratosTable extends Migration
             $table->double('restante')->default(0)->nullable();
             $table->date('fecha_pago')->nullable();
             $table->boolean('pagado')->default(0)->nullable();
+            $table->boolean('tipo_pagare')->default(0)->nullable();
             $table->timestamps();
 
             $table->foreign('contrato_id')->references('id')->on('contratos')->onDelete('cascade');

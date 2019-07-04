@@ -11,6 +11,7 @@ use App\Expediente;
 use Excel;
 use Carbon\Carbon;
 use App\Pago_contrato;
+use App\Liquidacion;
 
 class ExpedienteController extends Controller
 {
@@ -2773,6 +2774,11 @@ class ExpedienteController extends Controller
                     'expedientes.valor_escrituras',
                     'expedientes.fecha_ingreso',
                     'expedientes.fecha_integracion',
+                    'expedientes.fecha_liquidacion',
+                    'expedientes.liquidado',
+                    'expedientes.infonavit',
+                    'expedientes.fovissste',
+                    'expedientes.total_liquidar',
                     'expedientes.fecha_infonavit',
                     'lotes.calle','lotes.numero','lotes.interior',
                     'avaluos.resultado','avaluos.fecha_recibido'
@@ -2784,6 +2790,7 @@ class ExpedienteController extends Controller
                 ->where('expedientes.fecha_ingreso','!=',NULL)
                 ->where('expedientes.valor_escrituras','!=',0)
                 ->where('expedientes.fecha_infonavit','!=',NULL)
+                ->where('expedientes.liquidado','=',0)
                 
                 
                 ->orderBy('contratos.id','asc')
@@ -2831,6 +2838,11 @@ class ExpedienteController extends Controller
                             'expedientes.valor_escrituras',
                             'expedientes.fecha_ingreso',
                             'expedientes.fecha_integracion',
+                            'expedientes.fecha_liquidacion',
+                            'expedientes.liquidado',
+                            'expedientes.infonavit',
+                            'expedientes.fovissste',
+                            'expedientes.total_liquidar',
                             'expedientes.fecha_infonavit',
                             'lotes.calle','lotes.numero','lotes.interior',
                             'avaluos.resultado','avaluos.fecha_recibido'
@@ -2842,17 +2854,16 @@ class ExpedienteController extends Controller
                         ->where('expedientes.fecha_ingreso','!=',NULL)
                         ->where('expedientes.valor_escrituras','!=',0)
                         ->where('expedientes.fecha_infonavit','!=',NULL)
-                        
-                        
+                        ->where('expedientes.liquidado','=',0)
                         ->where('c.nombre','like','%'. $buscar . '%')
+
                         ->orWhere('i.elegido', '=', 1)
                         ->where('contratos.status', '!=', 0)
                         ->where('contratos.status', '!=', 2)
                         ->where('expedientes.fecha_ingreso','!=',NULL)
                         ->where('expedientes.valor_escrituras','!=',0)
                         ->where('expedientes.fecha_infonavit','!=',NULL)
-                        
-                        
+                        ->where('expedientes.liquidado','=',0)
                         ->where('c.apellidos','like','%'. $buscar . '%')
                         ->orderBy('contratos.id','asc')
                         ->get();
@@ -2898,6 +2909,11 @@ class ExpedienteController extends Controller
                             'expedientes.valor_escrituras',
                             'expedientes.fecha_ingreso',
                             'expedientes.fecha_integracion',
+                            'expedientes.fecha_liquidacion',
+                            'expedientes.liquidado',
+                            'expedientes.infonavit',
+                            'expedientes.fovissste',
+                            'expedientes.total_liquidar',
                             'expedientes.fecha_infonavit',
                             'lotes.calle','lotes.numero','lotes.interior',
                             'avaluos.resultado','avaluos.fecha_recibido'
@@ -2909,7 +2925,7 @@ class ExpedienteController extends Controller
                         ->where('expedientes.fecha_ingreso','!=',NULL)
                         ->where('expedientes.valor_escrituras','!=',0)
                         ->where('expedientes.fecha_infonavit','!=',NULL)
-                        
+                        ->where('expedientes.liquidado','=',0)
                         
                         ->where($criterio,'=',$buscar)
                         ->orderBy('contratos.id','asc')
@@ -2957,6 +2973,11 @@ class ExpedienteController extends Controller
                                 'expedientes.valor_escrituras',
                                 'expedientes.fecha_ingreso',
                                 'expedientes.fecha_integracion',
+                                'expedientes.fecha_liquidacion',
+                                'expedientes.liquidado',
+                                'expedientes.infonavit',
+                                'expedientes.fovissste',
+                                'expedientes.total_liquidar',
                                 'expedientes.fecha_infonavit',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido'
@@ -2968,7 +2989,7 @@ class ExpedienteController extends Controller
                             ->where('expedientes.fecha_ingreso','!=',NULL)
                             ->where('expedientes.valor_escrituras','!=',0)
                             ->where('expedientes.fecha_infonavit','!=',NULL)
-                            
+                            ->where('expedientes.liquidado','=',0)
                             
                             ->where($criterio, '=', $buscar)
                             ->orderBy('contratos.id','asc')
@@ -3014,6 +3035,11 @@ class ExpedienteController extends Controller
                                 'expedientes.valor_escrituras',
                                 'expedientes.fecha_ingreso',
                                 'expedientes.fecha_integracion',
+                                'expedientes.fecha_liquidacion',
+                                'expedientes.liquidado',
+                                'expedientes.infonavit',
+                                'expedientes.fovissste',
+                                'expedientes.total_liquidar',
                                 'expedientes.fecha_infonavit',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido'
@@ -3025,7 +3051,7 @@ class ExpedienteController extends Controller
                             ->where('expedientes.fecha_ingreso','!=',NULL)
                             ->where('expedientes.valor_escrituras','!=',0)
                             ->where('expedientes.fecha_infonavit','!=',NULL)
-                            
+                            ->where('expedientes.liquidado','=',0)
                             
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.etapa_id', '=', $b_etapa)
@@ -3072,6 +3098,11 @@ class ExpedienteController extends Controller
                                 'expedientes.valor_escrituras',
                                 'expedientes.fecha_ingreso',
                                 'expedientes.fecha_integracion',
+                                'expedientes.fecha_liquidacion',
+                                'expedientes.liquidado',
+                                'expedientes.infonavit',
+                                'expedientes.fovissste',
+                                'expedientes.total_liquidar',
                                 'expedientes.fecha_infonavit',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido'
@@ -3083,7 +3114,7 @@ class ExpedienteController extends Controller
                             ->where('expedientes.fecha_ingreso','!=',NULL)
                             ->where('expedientes.valor_escrituras','!=',0)
                             ->where('expedientes.fecha_infonavit','!=',NULL)
-                            
+                            ->where('expedientes.liquidado','=',0)
                             
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.etapa_id', '=', $b_etapa)
@@ -3131,6 +3162,11 @@ class ExpedienteController extends Controller
                                 'expedientes.valor_escrituras',
                                 'expedientes.fecha_ingreso',
                                 'expedientes.fecha_integracion',
+                                'expedientes.fecha_liquidacion',
+                                'expedientes.liquidado',
+                                'expedientes.infonavit',
+                                'expedientes.fovissste',
+                                'expedientes.total_liquidar',
                                 'expedientes.fecha_infonavit',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido'
@@ -3142,7 +3178,7 @@ class ExpedienteController extends Controller
                             ->where('expedientes.fecha_ingreso','!=',NULL)
                             ->where('expedientes.valor_escrituras','!=',0)
                             ->where('expedientes.fecha_infonavit','!=',NULL)
-                            
+                            ->where('expedientes.liquidado','=',0)
                             
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.etapa_id', '=', $b_etapa)
@@ -3191,6 +3227,11 @@ class ExpedienteController extends Controller
                                 'expedientes.valor_escrituras',
                                 'expedientes.fecha_ingreso',
                                 'expedientes.fecha_integracion',
+                                'expedientes.fecha_liquidacion',
+                                'expedientes.liquidado',
+                                'expedientes.infonavit',
+                                'expedientes.fovissste',
+                                'expedientes.total_liquidar',
                                 'expedientes.fecha_infonavit',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido'
@@ -3202,7 +3243,7 @@ class ExpedienteController extends Controller
                             ->where('expedientes.fecha_ingreso','!=',NULL)
                             ->where('expedientes.valor_escrituras','!=',0)
                             ->where('expedientes.fecha_infonavit','!=',NULL)
-                            
+                            ->where('expedientes.liquidado','=',0)
                             
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.etapa_id', '=', $b_etapa)
@@ -3250,6 +3291,11 @@ class ExpedienteController extends Controller
                                 'expedientes.valor_escrituras',
                                 'expedientes.fecha_ingreso',
                                 'expedientes.fecha_integracion',
+                                'expedientes.fecha_liquidacion',
+                                'expedientes.liquidado',
+                                'expedientes.infonavit',
+                                'expedientes.fovissste',
+                                'expedientes.total_liquidar',
                                 'expedientes.fecha_infonavit',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido'
@@ -3261,7 +3307,7 @@ class ExpedienteController extends Controller
                             ->where('expedientes.fecha_ingreso','!=',NULL)
                             ->where('expedientes.valor_escrituras','!=',0)
                             ->where('expedientes.fecha_infonavit','!=',NULL)
-                            
+                            ->where('expedientes.liquidado','=',0)
                             
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.manzana', '=', $b_manzana)
@@ -3308,6 +3354,11 @@ class ExpedienteController extends Controller
                                 'expedientes.valor_escrituras',
                                 'expedientes.fecha_ingreso',
                                 'expedientes.fecha_integracion',
+                                'expedientes.fecha_liquidacion',
+                                'expedientes.liquidado',
+                                'expedientes.infonavit',
+                                'expedientes.fovissste',
+                                'expedientes.total_liquidar',
                                 'expedientes.fecha_infonavit',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido'
@@ -3319,7 +3370,7 @@ class ExpedienteController extends Controller
                             ->where('expedientes.fecha_ingreso','!=',NULL)
                             ->where('expedientes.valor_escrituras','!=',0)
                             ->where('expedientes.fecha_infonavit','!=',NULL)
-                            
+                            ->where('expedientes.liquidado','=',0)
                             
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.num_lote', '=', $b_lote)
@@ -3366,6 +3417,11 @@ class ExpedienteController extends Controller
                                 'expedientes.valor_escrituras',
                                 'expedientes.fecha_ingreso',
                                 'expedientes.fecha_integracion',
+                                'expedientes.fecha_liquidacion',
+                                'expedientes.liquidado',
+                                'expedientes.infonavit',
+                                'expedientes.fovissste',
+                                'expedientes.total_liquidar',
                                 'expedientes.fecha_infonavit',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido'
@@ -3377,7 +3433,7 @@ class ExpedienteController extends Controller
                             ->where('expedientes.fecha_ingreso','!=',NULL)
                             ->where('expedientes.valor_escrituras','!=',0)
                             ->where('expedientes.fecha_infonavit','!=',NULL)
-                            
+                            ->where('expedientes.liquidado','=',0)
                             
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.num_lote', '=', $b_lote)
@@ -3425,11 +3481,64 @@ class ExpedienteController extends Controller
         $expediente->fecha_liquidacion = $request->fecha_liquidacion;
         $expediente->valor_escrituras = $request->valor_escrituras;
         $expediente->descuento = $request->descuento;
-        $expediente->total_liquidar = $request->total_liquidar;
+
+        if($request->total_liquidar == 0){
+            $expediente->total_liquidar = $request->total_liquidar;
+            $expediente->liquidado = 2;
+        }else{
+            $expediente->total_liquidar = $request->total_liquidar;
+            $expediente->liquidado = 0;
+        }
+        
+        $expediente->infonavit = $request->infonavit;
+        $expediente->fovissste = $request->fovissste;
+        $expediente->save();
+    }
+
+    public function generarPagares(Request $request){
+        $liquidacion = new Liquidacion();
+        $liquidacion->id = $request->folio;
+        $liquidacion->interes_ord = $request->intereses_ordinarios;
+        $liquidacion->interes_mor = $request->intereses_moratorios;
+        $liquidacion->fecha_ini_interes = $request->fecha_ini_interes;
+        $liquidacion->nombre_aval = $request->nombre_aval;
+        $liquidacion->direccion =  $request->direccion_aval;
+        $liquidacion->telefono = $request->telefono_aval;
+        $liquidacion->save();
+
+        $expediente = Expediente::findOrFail($request->folio);
+        $expediente->liquidado = 1;
         $expediente->save();
 
-        $contrato = Contrato::findOrFail($request->folio);
-        //$contrato->infonavit = 
+        $pagares = $request->pagares;
+
+        $pagaresContrato = Pago_contrato::select('id','pagado','contrato_id')
+                                        ->where('contrato_id','=',$request->folio)
+                                        ->where('pagado','=',1)
+                                        ->orWhere('pagado','=',0)
+                                        ->where('contrato_id','=',$request->folio)
+                                        ->get();
+
+        foreach ($pagaresContrato as $pagaresAnteriores){
+            $pagaresCambio = Pago_contrato::findOrFail($pagaresAnteriores->id);
+            $pagaresCambio->pagado = 3;
+            $pagaresCambio->save();
+        }
+
+
+        foreach($pagares as $ep=>$det)
+            {
+                $pagos = new Pago_contrato();
+                $pagos->contrato_id = $request->folio;
+                $pagos->num_pago = $ep;
+                $pagos->monto_pago = $det['monto_pago'];
+                $pagos->fecha_pago = $det['fecha_pago'];
+                $pagos->restante = $det['monto_pago'];
+                $pagos->pagado = 0;
+                $pagos->tipo_pagare = 1;
+                $pagos->save();
+
+            }
     }
 
 }
