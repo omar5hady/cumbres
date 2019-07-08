@@ -200,6 +200,8 @@ class CreditoController extends Controller
             $inst_seleccionada->credito_id = $id_credito;
             $inst_seleccionada->tipo_credito = $request->tipo_credito;
             $inst_seleccionada->institucion = $request->inst_financiera;
+            $inst_seleccionada->monto_credito = $request->monto_credito;
+            $inst_seleccionada->plazo_credito = $request->plazo_credito;
             $inst_seleccionada->elegido = 1;
             $inst_seleccionada->save();
 

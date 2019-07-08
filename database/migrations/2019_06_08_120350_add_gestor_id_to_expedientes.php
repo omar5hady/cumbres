@@ -29,6 +29,8 @@ class AddGestorIdToExpedientes extends Migration
 
             $table->boolean('liquidado')->default(0)->nullable();
 
+            $table->double('interes_ord')->default(0)->nullable();
+
             $table->foreign('gestor_id')->references('id')->on('personal');
         });
     }

@@ -2133,6 +2133,8 @@
             },
             datosPaquetes(paquete){
                 let me = this;
+                me.arrayDatosPaquetes=[];
+                me.paquete = '';
                 me.precioVenta = me.precioVenta - me.costoPaquete;
                 if(paquete!=0){
                 me.arrayDatosPaquetes=[];
@@ -2340,6 +2342,11 @@
                     'monto_total_credito':this.monto_total_credito,
                     'enganche_total':this.enganche_total,
                     'observacion' : this.observacion,
+
+                    'paquete' : this.paquete,
+                    'descripcion_paquete' : this.descripcionPaquete,
+                    'costo_paquete' : this.costoPaquete,
+                    'precio_venta' : this.precioVenta
 
                 }).then(function (response){
                      me.listado = 0;
@@ -2757,6 +2764,10 @@
                     'enganche_total':this.enganche_total,
                     'lote_id': this.lote_id,
                     'observacion' : this.observacion,
+                    'paquete' : this.paquete,
+                    'descripcion_paquete' : this.descripcionPaquete,
+                    'costo_paquete' : this.costoPaquete,
+                    'precio_venta' : this.precioVenta,
 
                     'data':this.arrayPagos,
                     

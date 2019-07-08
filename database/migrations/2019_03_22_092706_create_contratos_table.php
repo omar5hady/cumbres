@@ -52,6 +52,8 @@ class CreateContratosTable extends Migration
             $table->date('avaluo_preventivo')->nullable();
             $table->date('aviso_prev')->nullable();
             $table->boolean('integracion')->default(0);
+
+            $table->double('saldo')->default(0)->nullable();
             
             
             $table->foreign('id')->references('id')->on('creditos');

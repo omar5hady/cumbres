@@ -405,10 +405,10 @@
                                                     <td v-if="liquidacion.fecha_infonavit=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
                                                 </template>
                                                 <td class="td2">
-                                                    <button v-if="liquidacion.fecha_liquidacion == 'NULL'" title="Generar liquidación" type="button" class="btn btn-danger pull-right" 
+                                                    <button v-if="!liquidacion.fecha_liquidacion" title="Generar liquidación" type="button" class="btn btn-danger pull-right" 
                                                         @click="abrirModal('liquidacion',liquidacion)">Generar</button>
                                                     
-                                                    <button v-if="liquidacion.liquidado == 0 && liquidacion.fecha_liquidacion != 'NULL'" title="Intereses" type="button" class="btn btn-danger pull-right" 
+                                                    <button v-if="liquidacion.liquidado == 0 && liquidacion.fecha_liquidacion" title="Intereses" type="button" class="btn btn-danger pull-right" 
                                                         @click="abrirModal('intereses',liquidacion)">Generar intereses</button>
             
                                                 </td>
@@ -476,16 +476,25 @@
                                                 <th>Avance obra</th>
                                                 <th>Firma Contrato</th>
                                                 <th>Resultado avaluo</th>
-                                                <th>Avaluo Catastral</th>
                                                 <th>Aviso preventivo</th>
-                                                <th>Valor de la vivienda</th>
-                                                <th>Aviso preventivo</th>
-                                                <th>Institución</th>
+                                                <th>Ingreso expediente</th>
+                                                <th>Tipo de Crédito</th>
+                                                <th>Institución de Fin.</th>
                                                 <th>Monto autorizado</th>
+                                                <th>Fecha vigencia</th>
+                                                <th>Valor de la vivienda</th>
+                                                <th>Valor escriturar</th>
+                                                <th>Inscripción Infonavit</th>
+                                                <th>Liquidación</th>
+                                                <th>Firma de Escrituras</th>
+                                                <th>Saldo</th>
+                                                <th>Entrega de vivienda</th>
+                                                <th>Proceso concluido</th>
+                                                <th>Observaciones</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr v-for="programacion in arrayProgramacion" :key="programacion.id" @dblclick="abrirModal('gestor',programacion)" > 
+                                            <tr v-for="programacion in arrayProgramacion" :key="programacion.id"> 
                                                 
                                                 <td class="td2" v-text="programacion.folio"></td>
                                                 <td class="td2" v-text="programacion.nombre_cliente"></td>
@@ -496,7 +505,22 @@
                                                 <td class="td2" v-text="programacion.nombre_gestor"></td>
                                                 <td class="td2" v-text="programacion.tipo_credito"></td>
                                                 <td class="td2" v-text="programacion.institucion"></td>
-                                            
+                                                <td class="td2" v-text="programacion.folio"></td>
+                                                <td class="td2" v-text="programacion.nombre_cliente"></td>
+                                                <td class="td2" v-text="programacion.proyecto"></td>
+                                                <td class="td2" v-text="programacion.etapa"></td>
+                                                <td class="td2" v-text="programacion.manzana"></td>
+                                                <td class="td2" v-text="programacion.num_lote"></td>
+                                                <td class="td2" v-text="programacion.nombre_gestor"></td>
+                                                <td class="td2" v-text="programacion.tipo_credito"></td>
+                                                <td class="td2" v-text="programacion.institucion"></td>
+                                                <td class="td2" v-text="programacion.proyecto"></td>
+                                                <td class="td2" v-text="programacion.etapa"></td>
+                                                <td class="td2" v-text="programacion.manzana"></td>
+                                                <td class="td2" v-text="programacion.num_lote"></td>
+                                                <td class="td2" v-text="programacion.nombre_gestor"></td>
+                                                <td class="td2" v-text="programacion.tipo_credito"></td>
+                                                <td class="td2" v-text="programacion.institucion"></td>
                                             </tr>                               
                                         </tbody>
                                     </table>  
@@ -854,7 +878,7 @@
                         </div>
                         <div class="modal-body">
                             <!-- form para captura de fecha recibido -->
-                            <form enctype="multipart/form-data" class="form-horizontal">
+                            <!-- <form enctype="multipart/form-data" class="form-horizontal"> -->
 
                                     <div class="form-group row line-separator"></div>
 
@@ -1017,7 +1041,7 @@
                                 </div>
  
                                     
-                            </form>
+                            <!-- </form> -->
                             
 
                         </div>
@@ -1369,34 +1393,35 @@
                 if(me.monto_pago == 0 || me.monto_pago=='' || me.fecha_pago==''){
 
                 }else{
-                    if(me.monto_pago > me.restante_pago){
+                    if(me.monto_pago > Math.round(me.restante_pago*100)/100){
                          swal({
                         type: 'error',
                         title: 'Error',
                         text: 'El monto supera al restante',
                         });
                         }
-                    if(me.encuentraFecha(me.fecha_pago)){
-                         swal({
-                        type: 'error',
-                        title: 'Error',
-                        text: 'La fecha de pago ya se enceuntra o es menor',
-                        })
-                    }
-                    else{
-                    me.restante_pago = me.calcularRestante();
-                    me.arrayPagos.push({
-                    monto_pago: me.monto_pago,
-                    fecha_pago: me.fecha_pago,
-                    restanteAnterior: me.restante_pago,
-                    dias: me.dias,
-                    restante: me.restante_pago - me.monto_pago,
-                    });
-                    me.restante_pago -= me.monto_pago;
-                  
-                   me.monto_pago = 0;
-
-
+                    else
+                    {
+                        if(me.encuentraFecha(me.fecha_pago)){
+                            swal({
+                            type: 'error',
+                            title: 'Error',
+                            text: 'La fecha de pago ya se enceuntra o es menor',
+                            })
+                        }
+                        else{
+                            me.restante_pago = me.calcularRestante();
+                            me.arrayPagos.push({
+                            monto_pago: me.monto_pago,
+                            fecha_pago: me.fecha_pago,
+                            restanteAnterior: me.restante_pago,
+                            dias: me.dias,
+                            restante: me.restante_pago - me.monto_pago,
+                            });
+                            me.restante_pago -= me.monto_pago;
+                        
+                            me.monto_pago = 0;
+                        }
                     }
                 }
 
@@ -1404,53 +1429,74 @@
 
             eliminarPago(index){
                 let me = this;      
+
                 me.arrayPagos.splice(index,1);
 
                     if(index != 0 ){
-                    for(var i=0;i<me.arrayPagos.length;i++){
-                    var b = me.arrayPagos[i].fecha_pago;
-                    var a = moment(me.arrayPagos[i+1].fecha_pago);
-                    me.arrayPagos[i+1].dias = a.diff(b, 'days'); //[days, years, months, seconds, ...]
-                    var Restante = me.arrayPagos[i].restante;
-                    var intereses = (me.int_oridinario / 100) * (me.arrayPagos[i+1].dias/30) * (Restante);
-                    var interes1 = Math.round(intereses*100)/100;
-                    Restante += interes1;
-                    Restante = Math.round(Restante*100)/100;
-                    me.arrayPagos[i+1].restanteAnterior = Restante;
-                    me.arrayPagos[i+1].restante = me.arrayPagos[i+1].restanteAnterior - me.arrayPagos[i+1].monto_pago;
-                    me.restante_pago =  me.arrayPagos[i+1].restante;
-                    }
+                        if(me.arrayPagos.length > 1)
+                            for(var i=0;i<me.arrayPagos.length;i++){
+                                var b = me.arrayPagos[i].fecha_pago;
+                                var a = moment(me.arrayPagos[i+1].fecha_pago);
+                                me.arrayPagos[i+1].dias = a.diff(b, 'days'); //[days, years, months, seconds, ...]
+                                var Restante = me.arrayPagos[i].restante;
+                                var intereses = (me.int_oridinario / 100) * (me.arrayPagos[i+1].dias/30) * (Restante);
+                                var interes1 = Math.round(intereses*100)/100;
+                                Restante += interes1;
+                                Restante = Math.round(Restante*100)/100;
+                                me.arrayPagos[i+1].restanteAnterior = Restante;
+                                me.arrayPagos[i+1].restante = me.arrayPagos[i+1].restanteAnterior - me.arrayPagos[i+1].monto_pago;
+                                me.restante_pago =  me.arrayPagos[i+1].restante;
+                            }
+                            else{
+                                me.restante_pago = me.arrayPagos[0].restante;
+                            }
+                        
                     }else{
-                    var b = me.fecha_ini_interes
-                    var a = moment(me.arrayPagos[0].fecha_pago);
-                    me.arrayPagos[0].dias = a.diff(b, 'days');
-                    var Restante = me.total_liquidar1;
-                    var intereses = (me.int_oridinario / 100) * (me.arrayPagos[0].dias/30) * (Restante);
-                    var interes1 = Math.round(intereses*100)/100;
-                    Restante += interes1;
-                    Restante = Math.round(Restante*100)/100;
-                    me.arrayPagos[0].restanteAnterior = Restante;
-                    me.arrayPagos[0].restante = me.arrayPagos[0].restanteAnterior - me.arrayPagos[0].monto_pago;
-                    
-                    
-                    for(var i=0;i<me.arrayPagos.length;i++){
-                        var b = me.arrayPagos[i].fecha_pago;
-                        var a = moment(me.arrayPagos[i+1].fecha_pago);
-                        me.arrayPagos[i+1].dias = a.diff(b, 'days'); //[days, years, months, seconds, ...]
-                        var Restante = me.arrayPagos[i].restante;
-                        var intereses = (me.int_oridinario / 100) * (me.arrayPagos[i+1].dias/30) * (Restante);
-                        var interes1 = Math.round(intereses*100)/100;
-                        Restante += interes1;
-                        Restante = Math.round(Restante*100)/100;
-                        me.arrayPagos[i+1].restanteAnterior = Restante;
-                        me.arrayPagos[i+1].restante = me.arrayPagos[i+1].restanteAnterior - me.arrayPagos[i+1].monto_pago;
-                        me.restante_pago =  me.arrayPagos[i+1].restante;
-                    }
+                        if(me.arrayPagos.length == 0){
+                             var Restante = this.total_liquidar1;
+                            var a = moment(this.fecha_pago);
+                            var b = moment(this.fecha_ini_interes);
+                            this.dias = a.diff(b, 'days'); //[days, years, months, seconds, ...]
+                            var intereses = (this.int_oridinario / 100) * (this.dias/30) * (this.total_liquidar1);
+                            this.interes = Math.round(intereses*100)/100;
+                            
+                            
+                            Restante += this.interes;
+                            Restante = Math.round(Restante*100)/100;
+                            me.restante_pago = Restante;
+                        }
+                        else{
+                            var b = me.fecha_ini_interes
+                            var a = moment(me.arrayPagos[0].fecha_pago);
+                            me.arrayPagos[0].dias = a.diff(b, 'days');
+                            var Restante = me.total_liquidar1;
+                            var intereses = (me.int_oridinario / 100) * (me.arrayPagos[0].dias/30) * (Restante);
+                            var interes1 = Math.round(intereses*100)/100;
+                            Restante += interes1;
+                            Restante = Math.round(Restante*100)/100;
+                            me.arrayPagos[0].restanteAnterior = Restante;
+                            me.arrayPagos[0].restante = me.arrayPagos[0].restanteAnterior - me.arrayPagos[0].monto_pago;
+                        
+                            for(var i=0;i<me.arrayPagos.length;i++){
+                                var b = me.arrayPagos[i].fecha_pago;
+                                var a = moment(me.arrayPagos[i+1].fecha_pago);
+                                me.arrayPagos[i+1].dias = a.diff(b, 'days'); //[days, years, months, seconds, ...]
+                                var Restante = me.arrayPagos[i].restante;
+                                var intereses = (me.int_oridinario / 100) * (me.arrayPagos[i+1].dias/30) * (Restante);
+                                var interes1 = Math.round(intereses*100)/100;
+                                Restante += interes1;
+                                Restante = Math.round(Restante*100)/100;
+                                me.arrayPagos[i+1].restanteAnterior = Restante;
+                                me.arrayPagos[i+1].restante = me.arrayPagos[i+1].restanteAnterior - me.arrayPagos[i+1].monto_pago;
+                                me.restante_pago =  me.arrayPagos[i+1].restante;
+                            }
+                        }
+
                 }
            
             },
 
-             encuentraFecha(fecha){
+            encuentraFecha(fecha){
                 var sw=0;
                 for(var i=0;i<this.arrayPagos.length;i++)
                 {

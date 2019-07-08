@@ -2543,6 +2543,16 @@ class ContratoController extends Controller
             $contrato->enganche_total = $request->enganche_total;
             $contrato->avance_lote = $lote[0]->avance;
             $contrato->observacion = $request->observacion;
+
+            $credito = Credito::findOrFail($request->id);
+            $contrato->saldo = $credito->precio_venta;
+            
+            $credito->paquete =  $request->paquete;
+            $credito->descripcion_paquete = $request->descripcion_paquete;
+            $credito->costo_paquete = $request->costo_paquete;
+            $credito->precio_venta = $request->precio_venta;
+            $credito->save();
+
             $contrato->save();
 
             $pagos = $request->data; //Array de detalles
@@ -3221,6 +3231,10 @@ class ContratoController extends Controller
         $credito->nombre_segunda_ref = $request->nombre_segunda_ref;
         $credito->telefono_segunda_ref = $request->telefono_segunda_ref;
         $credito->celular_segunda_ref = $request->celular_segunda_ref;
+        $credito->paquete =  $request->paquete;
+        $credito->descripcion_paquete = $request->descripcion_paquete;
+        $credito->costo_paquete = $request->costo_paquete;
+        $credito->precio_venta = $request->precio_venta;
         $credito->contrato = 1;
 
         $lote = Lote::findOrFail($request->lote_id);
@@ -3254,6 +3268,8 @@ class ContratoController extends Controller
         $contrato->telefono_empresa_coa = $request->telefono_empresa_coa;
         $contrato->ext_empresa_coa = $request->ext_empresa_coa;
         $contrato->observacion = $request->observacion;
+
+        $contrato->saldo = $credito->precio_venta;
 
         $lote->save();
         $credito->save();

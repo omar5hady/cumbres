@@ -10,7 +10,7 @@ class Expediente extends Model
     
     protected $fillable = ['id','fecha_integracion','gestor_id','valor_escrituras',
                             'fecha_ingreso','fecha_infonavit','descuento','total_liquidar',
-                            'fecha_liquidacion','infonavit','fovissste','liquidado'
+                            'fecha_liquidacion','infonavit','fovissste','liquidado','interes_ord'
                             ];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
 
     public function contrato()

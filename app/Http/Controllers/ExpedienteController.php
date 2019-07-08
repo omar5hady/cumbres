@@ -12,6 +12,7 @@ use Excel;
 use Carbon\Carbon;
 use App\Pago_contrato;
 use App\Liquidacion;
+use App\inst_seleccionada;
 
 class ExpedienteController extends Controller
 {
@@ -3475,58 +3476,101 @@ class ExpedienteController extends Controller
     }
 
     public function setLiquidacion(Request $request){
+        try{
+            DB::beginTransaction();
+            $expediente = Expediente::findOrFail($request->folio);
+            $expediente->fecha_liquidacion = $request->fecha_liquidacion;
+            $expediente->valor_escrituras = $request->valor_escrituras;
+            $expediente->descuento = $request->descuento;
 
-
-        $expediente = Expediente::findOrFail($request->folio);
-        $expediente->fecha_liquidacion = $request->fecha_liquidacion;
-        $expediente->valor_escrituras = $request->valor_escrituras;
-        $expediente->descuento = $request->descuento;
-
-        if($request->total_liquidar == 0){
+            if($request->total_liquidar == 0){
+                $expediente->liquidado = 1;
+            }else{
+                $expediente->liquidado = 0;
+            }
             $expediente->total_liquidar = $request->total_liquidar;
-            $expediente->liquidado = 2;
-        }else{
-            $expediente->total_liquidar = $request->total_liquidar;
-            $expediente->liquidado = 0;
-        }
-        
-        $expediente->infonavit = $request->infonavit;
-        $expediente->fovissste = $request->fovissste;
-        $expediente->save();
+            $expediente->infonavit = $request->infonavit;
+            $expediente->fovissste = $request->fovissste;
+
+            if($expediente->infonavit != 0 && $expediente->fovissste == 0 ){
+                $inst_seleccionada = new inst_seleccionada();
+                $inst_seleccionada->credito_id = $request->folio;
+                $inst_seleccionada->tipo_credito = "INFONAVIT";
+                $inst_seleccionada->institucion = "INFONAVIT";
+                $inst_seleccionada->monto_credito = $request->infonavit;
+                $inst_seleccionada->tipo = 1;
+                $inst_seleccionada->save();
+
+                $elegido = inst_seleccionada::select('id')
+                            ->where('credito_id','=', $request->folio)
+                            ->where('elegido','=',1)->get();
+
+                $creditoEle = inst_seleccionada::findOrFail($elegido[0]->id);
+                $creditoEle->segundo_credito = $request->infonavit;
+                $creditoEle->save();
+            }
+            else{
+                $inst_seleccionada = new inst_seleccionada();
+                $inst_seleccionada->credito_id = $request->folio;
+                $inst_seleccionada->tipo_credito = "FOVISSSTE";
+                $inst_seleccionada->institucion = "FOVISSSTE";
+                $inst_seleccionada->monto_credito = $request->fovissste;
+                $inst_seleccionada->tipo = 1;
+                $inst_seleccionada->save();
+
+                $elegido = inst_seleccionada::select('id')
+                            ->where('credito_id','=', $request->folio)
+                            ->where('elegido','=',1)->get();
+
+                $creditoEle = inst_seleccionada::findOrFail($elegido[0]->id);
+                $creditoEle->segundo_credito = $request->fovissste;
+                $creditoEle->save();
+            }
+            $expediente->save();
+            DB::commit();
+                
+        } catch (Exception $e){
+            DB::rollBack();
+        }  
     }
 
     public function generarPagares(Request $request){
-        $liquidacion = new Liquidacion();
-        $liquidacion->id = $request->folio;
-        $liquidacion->interes_ord = $request->intereses_ordinarios;
-        $liquidacion->interes_mor = $request->intereses_moratorios;
-        $liquidacion->fecha_ini_interes = $request->fecha_ini_interes;
-        $liquidacion->nombre_aval = $request->nombre_aval;
-        $liquidacion->direccion =  $request->direccion_aval;
-        $liquidacion->telefono = $request->telefono_aval;
-        $liquidacion->save();
 
-        $expediente = Expediente::findOrFail($request->folio);
-        $expediente->liquidado = 1;
-        $expediente->save();
+        try{
+            DB::beginTransaction();
+            $intereses = 0;
 
-        $pagares = $request->pagares;
+            $liquidacion = new Liquidacion();
+            $liquidacion->id = $request->folio;
+            $liquidacion->interes_ord = $request->intereses_ordinarios;
+            $liquidacion->interes_mor = $request->intereses_moratorios;
+            $liquidacion->fecha_ini_interes = $request->fecha_ini_interes;
+            $liquidacion->nombre_aval = $request->nombre_aval;
+            $liquidacion->direccion =  $request->direccion_aval;
+            $liquidacion->telefono = $request->telefono_aval;
+            $liquidacion->save();
 
-        $pagaresContrato = Pago_contrato::select('id','pagado','contrato_id')
-                                        ->where('contrato_id','=',$request->folio)
-                                        ->where('pagado','=',1)
-                                        ->orWhere('pagado','=',0)
-                                        ->where('contrato_id','=',$request->folio)
-                                        ->get();
+            $expediente = Expediente::findOrFail($request->folio);
+            $expediente->liquidado = 1;
+            
 
-        foreach ($pagaresContrato as $pagaresAnteriores){
-            $pagaresCambio = Pago_contrato::findOrFail($pagaresAnteriores->id);
-            $pagaresCambio->pagado = 3;
-            $pagaresCambio->save();
-        }
+            $pagares = $request->pagares;
+
+            $pagaresContrato = Pago_contrato::select('id','pagado','contrato_id')
+                                            ->where('contrato_id','=',$request->folio)
+                                            ->where('pagado','=',1)
+                                            ->orWhere('pagado','=',0)
+                                            ->where('contrato_id','=',$request->folio)
+                                            ->get();
+
+            foreach ($pagaresContrato as $pagaresAnteriores){
+                $pagaresCambio = Pago_contrato::findOrFail($pagaresAnteriores->id);
+                $pagaresCambio->pagado = 3;
+                $pagaresCambio->save();
+            }
 
 
-        foreach($pagares as $ep=>$det)
+            foreach($pagares as $ep=>$det)
             {
                 $pagos = new Pago_contrato();
                 $pagos->contrato_id = $request->folio;
@@ -3538,7 +3582,761 @@ class ExpedienteController extends Controller
                 $pagos->tipo_pagare = 1;
                 $pagos->save();
 
+                $intereses += $det['monto_pago'];
+
             }
+
+            $intereses -= $expediente->total_liquidar;
+            $expediente->interes_ord = round($intereses,2);
+
+            $expediente->save();
+
+            $contrato = Contrato::findOrFail($request->folio);
+            $contrato->saldo += round($intereses,2);
+            $contrato->save();
+            DB::commit();
+                
+        } catch (Exception $e){
+            DB::rollBack();
+        }  
+    }
+
+    public function indexProgramacion(Request $request)
+    {
+        $buscar = $request->buscar;
+        $b_etapa = $request->b_etapa;
+        $b_manzana = $request->b_manzana;
+        $b_lote = $request->b_lote;
+        $criterio = $request->criterio;
+        $contador = 0;
+
+
+        if ($buscar == ''){
+            $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                ->leftJoin('avaluos','contratos.id','=','avaluos.contrato_id')
+                ->join('expedientes','contratos.id','=','expedientes.id')
+                ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                ->join('personal as c', 'clientes.id', '=', 'c.id')
+                ->join('personal as v', 'vendedores.id', '=', 'v.id')
+                ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                ->join('pagos_contratos as pc', 'contratos.id', '=', 'pc.contrato_id')
+                ->select(
+                    'contratos.id as folio',
+                    DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                    DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
+                    'creditos.fraccionamiento as proyecto',
+                    'creditos.etapa',
+                    'creditos.manzana',
+                    'creditos.num_lote',
+                    'creditos.precio_venta',
+                    'licencias.avance as avance_lote',
+                    'contratos.fecha_status',
+                    'i.tipo_credito',
+                    'i.institucion',
+                    'i.fecha_vigencia',
+                    'i.monto_credito as credito_solic',
+                    'i.cobrado',
+                    'i.segundo_credito',
+                    'contratos.avaluo_preventivo',
+                    'contratos.aviso_prev',
+                    'contratos.aviso_prev_venc',
+                    'contratos.infonavit',
+                    'contratos.fovisste',
+                    'lotes.regimen_condom',
+                    'lotes.credito_puente',
+                    DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
+                    DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
+                    DB::raw('DATEDIFF(current_date,i.fecha_vigencia) as vigencia'),
+                    'clientes.coacreditado',
+                    'contratos.integracion',
+                    'lotes.fraccionamiento_id',
+                    'expedientes.valor_escrituras',
+                    'expedientes.fecha_ingreso',
+                    'expedientes.fecha_integracion',
+                    'expedientes.fecha_liquidacion',
+                    'expedientes.liquidado',
+                    'expedientes.infonavit',
+                    'expedientes.fovissste',
+                    'expedientes.total_liquidar',
+                    'expedientes.fecha_infonavit',
+                    'lotes.calle','lotes.numero','lotes.interior',
+                    'avaluos.resultado','avaluos.fecha_recibido'
+                )
+                ->where('i.elegido', '=', 1)
+                ->where('i.status','=',2)
+                ->where('contratos.status', '!=', 0)
+                ->where('contratos.status', '!=', 2)
+                ->where('expedientes.fecha_ingreso','!=',NULL)
+                ->where('expedientes.valor_escrituras','!=',0)
+                ->where('expedientes.fecha_infonavit','!=',NULL)
+                ->where('expedientes.liquidado','=',1)
+
+                
+                
+                ->orderBy('contratos.id','asc')
+                ->get();
+        }
+        else{
+            switch($criterio){
+                case 'c.nombre':{
+                    $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                        ->leftJoin('avaluos','contratos.id','=','avaluos.contrato_id')
+                        ->join('expedientes','contratos.id','=','expedientes.id')
+                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                        ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                        ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                        ->join('personal as c', 'clientes.id', '=', 'c.id')
+                        ->join('personal as v', 'vendedores.id', '=', 'v.id')
+                        ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                        ->select(
+                            'contratos.id as folio',
+                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                            DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
+                            'creditos.fraccionamiento as proyecto',
+                            'creditos.etapa',
+                            'creditos.manzana',
+                            'creditos.num_lote',
+                            'creditos.precio_venta',
+                            'creditos.credito_solic',
+                            'licencias.avance as avance_lote',
+                            'contratos.fecha_status',
+                            'i.tipo_credito',
+                            'i.institucion',
+                            'i.fecha_vigencia',
+                            'contratos.avaluo_preventivo',
+                            'contratos.aviso_prev',
+                            'contratos.aviso_prev_venc',
+                            'lotes.regimen_condom',
+                            'lotes.credito_puente',
+                            DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
+                            DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
+                            DB::raw('DATEDIFF(current_date,i.fecha_vigencia) as vigencia'),
+                            'clientes.coacreditado',
+                            'contratos.integracion',
+                            'lotes.fraccionamiento_id',
+                            'expedientes.valor_escrituras',
+                            'expedientes.fecha_ingreso',
+                            'expedientes.fecha_integracion',
+                            'expedientes.fecha_liquidacion',
+                            'expedientes.liquidado',
+                            'expedientes.infonavit',
+                            'expedientes.fovissste',
+                            'expedientes.total_liquidar',
+                            'expedientes.fecha_infonavit',
+                            'lotes.calle','lotes.numero','lotes.interior',
+                            'avaluos.resultado','avaluos.fecha_recibido'
+                        )
+                        ->where('i.elegido', '=', 1)
+                        ->where('i.status','=',2)
+                        ->where('contratos.status', '!=', 0)
+                        ->where('contratos.status', '!=', 2)
+                        ->where('expedientes.fecha_ingreso','!=',NULL)
+                        ->where('expedientes.valor_escrituras','!=',0)
+                        ->where('expedientes.fecha_infonavit','!=',NULL)
+                        ->where('expedientes.liquidado','=',0)
+                        ->where('c.nombre','like','%'. $buscar . '%')
+
+                        ->orWhere('i.elegido', '=', 1)
+                        ->where('contratos.status', '!=', 0)
+                        ->where('contratos.status', '!=', 2)
+                        ->where('expedientes.fecha_ingreso','!=',NULL)
+                        ->where('expedientes.valor_escrituras','!=',0)
+                        ->where('expedientes.fecha_infonavit','!=',NULL)
+                        ->where('expedientes.liquidado','=',0)
+                        ->where('c.apellidos','like','%'. $buscar . '%')
+                        ->orderBy('contratos.id','asc')
+                        ->get();
+                    break;
+                }
+                case 'contratos.id':{
+                    $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                        ->leftJoin('avaluos','contratos.id','=','avaluos.contrato_id')
+                        ->join('expedientes','contratos.id','=','expedientes.id')
+                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                        ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                        ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                        ->join('personal as c', 'clientes.id', '=', 'c.id')
+                        ->join('personal as v', 'vendedores.id', '=', 'v.id')
+                        ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                        ->select(
+                            'contratos.id as folio',
+                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                            DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
+                            'creditos.fraccionamiento as proyecto',
+                            'creditos.etapa',
+                            'creditos.manzana',
+                            'creditos.num_lote',
+                            'creditos.precio_venta',
+                            'creditos.credito_solic',
+                            'licencias.avance as avance_lote',
+                            'contratos.fecha_status',
+                            'i.tipo_credito',
+                            'i.institucion',
+                            'i.fecha_vigencia',
+                            'contratos.avaluo_preventivo',
+                            'contratos.aviso_prev',
+                            'contratos.aviso_prev_venc',
+                            'lotes.regimen_condom',
+                            'lotes.credito_puente',
+                            DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
+                            DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
+                            DB::raw('DATEDIFF(current_date,i.fecha_vigencia) as vigencia'),
+                            'clientes.coacreditado',
+                            'contratos.integracion',
+                            'lotes.fraccionamiento_id',
+                            'expedientes.valor_escrituras',
+                            'expedientes.fecha_ingreso',
+                            'expedientes.fecha_integracion',
+                            'expedientes.fecha_liquidacion',
+                            'expedientes.liquidado',
+                            'expedientes.infonavit',
+                            'expedientes.fovissste',
+                            'expedientes.total_liquidar',
+                            'expedientes.fecha_infonavit',
+                            'lotes.calle','lotes.numero','lotes.interior',
+                            'avaluos.resultado','avaluos.fecha_recibido'
+                        )
+                        ->where('i.elegido', '=', 1)
+                        ->where('i.status','=',2)
+                        ->where('contratos.status', '!=', 0)
+                        ->where('contratos.status', '!=', 2)
+                        ->where('expedientes.fecha_ingreso','!=',NULL)
+                        ->where('expedientes.valor_escrituras','!=',0)
+                        ->where('expedientes.fecha_infonavit','!=',NULL)
+                        ->where('expedientes.liquidado','=',0)
+                        
+                        ->where($criterio,'=',$buscar)
+                        ->orderBy('contratos.id','asc')
+                        ->get();
+                    break;
+                }
+                case 'lotes.fraccionamiento_id':{
+                    if($b_etapa == '' && $b_manzana =='' && $b_lote == '' ){
+                        $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                            ->leftJoin('avaluos','contratos.id','=','avaluos.contrato_id')
+                            ->join('expedientes','contratos.id','=','expedientes.id')
+                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                            ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                            ->join('personal as c', 'clientes.id', '=', 'c.id')
+                            ->join('personal as v', 'vendedores.id', '=', 'v.id')
+                            ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                            ->select(
+                                'contratos.id as folio',
+                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
+                                'creditos.fraccionamiento as proyecto',
+                                'creditos.etapa',
+                                'creditos.manzana',
+                                'creditos.num_lote',
+                                'creditos.precio_venta',
+                                'creditos.credito_solic',
+                                'licencias.avance as avance_lote',
+                                'contratos.fecha_status',
+                                'i.tipo_credito',
+                                'i.institucion',
+                                'i.fecha_vigencia',
+                                'contratos.avaluo_preventivo',
+                                'contratos.aviso_prev',
+                                'contratos.aviso_prev_venc',
+                                'lotes.regimen_condom',
+                                'lotes.credito_puente',
+                                DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
+                                DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
+                                DB::raw('DATEDIFF(current_date,i.fecha_vigencia) as vigencia'),
+                                'clientes.coacreditado',
+                                'contratos.integracion',
+                                'lotes.fraccionamiento_id',
+                                'expedientes.valor_escrituras',
+                                'expedientes.fecha_ingreso',
+                                'expedientes.fecha_integracion',
+                                'expedientes.fecha_liquidacion',
+                                'expedientes.liquidado',
+                                'expedientes.infonavit',
+                                'expedientes.fovissste',
+                                'expedientes.total_liquidar',
+                                'expedientes.fecha_infonavit',
+                                'lotes.calle','lotes.numero','lotes.interior',
+                                'avaluos.resultado','avaluos.fecha_recibido'
+                            )
+                            ->where('i.elegido', '=', 1)
+                            ->where('i.status','=',2)
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('expedientes.fecha_ingreso','!=',NULL)
+                            ->where('expedientes.valor_escrituras','!=',0)
+                            ->where('expedientes.fecha_infonavit','!=',NULL)
+                            ->where('expedientes.liquidado','=',0)
+                            
+                            ->where($criterio, '=', $buscar)
+                            ->orderBy('contratos.id','asc')
+                            ->get();
+                    }
+                    elseif($b_etapa != '' && $b_manzana =='' && $b_lote == ''){
+                        $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                            ->leftJoin('avaluos','contratos.id','=','avaluos.contrato_id')
+                            ->join('expedientes','contratos.id','=','expedientes.id')
+                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                            ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                            ->join('personal as c', 'clientes.id', '=', 'c.id')
+                            ->join('personal as v', 'vendedores.id', '=', 'v.id')
+                            ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                            ->select(
+                                'contratos.id as folio',
+                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
+                                'creditos.fraccionamiento as proyecto',
+                                'creditos.etapa',
+                                'creditos.manzana',
+                                'creditos.num_lote',
+                                'creditos.precio_venta',
+                                'creditos.credito_solic',
+                                'licencias.avance as avance_lote',
+                                'contratos.fecha_status',
+                                'i.tipo_credito',
+                                'i.institucion',
+                                'i.fecha_vigencia',
+                                'contratos.avaluo_preventivo',
+                                'contratos.aviso_prev',
+                                'contratos.aviso_prev_venc',
+                                'lotes.regimen_condom',
+                                'lotes.credito_puente',
+                                DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
+                                DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
+                                DB::raw('DATEDIFF(current_date,i.fecha_vigencia) as vigencia'),
+                                'clientes.coacreditado',
+                                'contratos.integracion',
+                                'lotes.fraccionamiento_id',
+                                'expedientes.valor_escrituras',
+                                'expedientes.fecha_ingreso',
+                                'expedientes.fecha_integracion',
+                                'expedientes.fecha_liquidacion',
+                                'expedientes.liquidado',
+                                'expedientes.infonavit',
+                                'expedientes.fovissste',
+                                'expedientes.total_liquidar',
+                                'expedientes.fecha_infonavit',
+                                'lotes.calle','lotes.numero','lotes.interior',
+                                'avaluos.resultado','avaluos.fecha_recibido'
+                            )
+                            ->where('i.elegido', '=', 1)
+                            ->where('i.status','=',2)
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('expedientes.fecha_ingreso','!=',NULL)
+                            ->where('expedientes.valor_escrituras','!=',0)
+                            ->where('expedientes.fecha_infonavit','!=',NULL)
+                            ->where('expedientes.liquidado','=',0)
+                            
+                            ->where($criterio, '=', $buscar)
+                            ->where('lotes.etapa_id', '=', $b_etapa)
+                            ->orderBy('contratos.id','asc')
+                            ->get();
+                    }
+                    elseif($b_etapa != '' && $b_manzana !='' && $b_lote == ''){
+                        $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                            ->leftJoin('avaluos','contratos.id','=','avaluos.contrato_id')
+                            ->join('expedientes','contratos.id','=','expedientes.id')
+                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                            ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                            ->join('personal as c', 'clientes.id', '=', 'c.id')
+                            ->join('personal as v', 'vendedores.id', '=', 'v.id')
+                            ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                            ->select(
+                                'contratos.id as folio',
+                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
+                                'creditos.fraccionamiento as proyecto',
+                                'creditos.etapa',
+                                'creditos.manzana',
+                                'creditos.num_lote',
+                                'creditos.precio_venta',
+                                'creditos.credito_solic',
+                                'licencias.avance as avance_lote',
+                                'contratos.fecha_status',
+                                'i.tipo_credito',
+                                'i.institucion',
+                                'i.fecha_vigencia',
+                                'contratos.avaluo_preventivo',
+                                'contratos.aviso_prev',
+                                'contratos.aviso_prev_venc',
+                                'lotes.regimen_condom',
+                                'lotes.credito_puente',
+                                DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
+                                DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
+                                DB::raw('DATEDIFF(current_date,i.fecha_vigencia) as vigencia'),
+                                'clientes.coacreditado',
+                                'contratos.integracion',
+                                'lotes.fraccionamiento_id',
+                                'expedientes.valor_escrituras',
+                                'expedientes.fecha_ingreso',
+                                'expedientes.fecha_integracion',
+                                'expedientes.fecha_liquidacion',
+                                'expedientes.liquidado',
+                                'expedientes.infonavit',
+                                'expedientes.fovissste',
+                                'expedientes.total_liquidar',
+                                'expedientes.fecha_infonavit',
+                                'lotes.calle','lotes.numero','lotes.interior',
+                                'avaluos.resultado','avaluos.fecha_recibido'
+                            )
+                            ->where('i.elegido', '=', 1)
+                            ->where('i.status','=',2)
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('expedientes.fecha_ingreso','!=',NULL)
+                            ->where('expedientes.valor_escrituras','!=',0)
+                            ->where('expedientes.fecha_infonavit','!=',NULL)
+                            ->where('expedientes.liquidado','=',0)
+                            
+                            ->where($criterio, '=', $buscar)
+                            ->where('lotes.etapa_id', '=', $b_etapa)
+                            ->where('lotes.manzana', '=', $b_manzana)
+                            ->orderBy('contratos.id','asc')
+                            ->get();
+                    }
+                    elseif($b_etapa != '' && $b_manzana !='' && $b_lote != ''){
+                        $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                            ->leftJoin('avaluos','contratos.id','=','avaluos.contrato_id')
+                            ->join('expedientes','contratos.id','=','expedientes.id')
+                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                            ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                            ->join('personal as c', 'clientes.id', '=', 'c.id')
+                            ->join('personal as v', 'vendedores.id', '=', 'v.id')
+                            ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                            ->select(
+                                'contratos.id as folio',
+                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
+                                'creditos.fraccionamiento as proyecto',
+                                'creditos.etapa',
+                                'creditos.manzana',
+                                'creditos.num_lote',
+                                'creditos.precio_venta',
+                                'creditos.credito_solic',
+                                'licencias.avance as avance_lote',
+                                'contratos.fecha_status',
+                                'i.tipo_credito',
+                                'i.institucion',
+                                'i.fecha_vigencia',
+                                'contratos.avaluo_preventivo',
+                                'contratos.aviso_prev',
+                                'contratos.aviso_prev_venc',
+                                'lotes.regimen_condom',
+                                'lotes.credito_puente',
+                                DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
+                                DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
+                                DB::raw('DATEDIFF(current_date,i.fecha_vigencia) as vigencia'),
+                                'clientes.coacreditado',
+                                'contratos.integracion',
+                                'lotes.fraccionamiento_id',
+                                'expedientes.valor_escrituras',
+                                'expedientes.fecha_ingreso',
+                                'expedientes.fecha_integracion',
+                                'expedientes.fecha_liquidacion',
+                                'expedientes.liquidado',
+                                'expedientes.infonavit',
+                                'expedientes.fovissste',
+                                'expedientes.total_liquidar',
+                                'expedientes.fecha_infonavit',
+                                'lotes.calle','lotes.numero','lotes.interior',
+                                'avaluos.resultado','avaluos.fecha_recibido'
+                            )
+                            ->where('i.elegido', '=', 1)
+                            ->where('i.status','=',2)
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('expedientes.fecha_ingreso','!=',NULL)
+                            ->where('expedientes.valor_escrituras','!=',0)
+                            ->where('expedientes.fecha_infonavit','!=',NULL)
+                            ->where('expedientes.liquidado','=',0)
+                            
+                            ->where($criterio, '=', $buscar)
+                            ->where('lotes.etapa_id', '=', $b_etapa)
+                            ->where('lotes.manzana', '=', $b_manzana)
+                            ->where('lotes.num_lote', '=', $b_lote)
+                            ->orderBy('contratos.id','asc')
+                            ->get();
+                    }
+                    elseif($b_etapa != '' && $b_manzana =='' && $b_lote != ''){
+                        $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                            ->leftJoin('avaluos','contratos.id','=','avaluos.contrato_id')
+                            ->join('expedientes','contratos.id','=','expedientes.id')
+                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                            ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                            ->join('personal as c', 'clientes.id', '=', 'c.id')
+                            ->join('personal as v', 'vendedores.id', '=', 'v.id')
+                            ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                            ->select(
+                                'contratos.id as folio',
+                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
+                                'creditos.fraccionamiento as proyecto',
+                                'creditos.etapa',
+                                'creditos.manzana',
+                                'creditos.num_lote',
+                                'creditos.precio_venta',
+                                'creditos.credito_solic',
+                                'licencias.avance as avance_lote',
+                                'contratos.fecha_status',
+                                'i.tipo_credito',
+                                'i.institucion',
+                                'i.fecha_vigencia',
+                                'contratos.avaluo_preventivo',
+                                'contratos.aviso_prev',
+                                'contratos.aviso_prev_venc',
+                                'lotes.regimen_condom',
+                                'lotes.credito_puente',
+                                DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
+                                DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
+                                DB::raw('DATEDIFF(current_date,i.fecha_vigencia) as vigencia'),
+                                'clientes.coacreditado',
+                                'contratos.integracion',
+                                'lotes.fraccionamiento_id',
+                                'expedientes.valor_escrituras',
+                                'expedientes.fecha_ingreso',
+                                'expedientes.fecha_integracion',
+                                'expedientes.fecha_liquidacion',
+                                'expedientes.liquidado',
+                                'expedientes.infonavit',
+                                'expedientes.fovissste',
+                                'expedientes.total_liquidar',
+                                'expedientes.fecha_infonavit',
+                                'lotes.calle','lotes.numero','lotes.interior',
+                                'avaluos.resultado','avaluos.fecha_recibido'
+                            )
+                            ->where('i.elegido', '=', 1)
+                            ->where('i.status','=',2)
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('expedientes.fecha_ingreso','!=',NULL)
+                            ->where('expedientes.valor_escrituras','!=',0)
+                            ->where('expedientes.fecha_infonavit','!=',NULL)
+                            ->where('expedientes.liquidado','=',0)
+                            
+                            ->where($criterio, '=', $buscar)
+                            ->where('lotes.etapa_id', '=', $b_etapa)
+                            ->where('lotes.num_lote', '=', $b_lote)
+                            ->orderBy('contratos.id','asc')
+                            ->get();
+                    }
+                    elseif($b_etapa == '' && $b_manzana !='' && $b_lote == ''){
+                        $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                            ->leftJoin('avaluos','contratos.id','=','avaluos.contrato_id')
+                            ->join('expedientes','contratos.id','=','expedientes.id')
+                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                            ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                            ->join('personal as c', 'clientes.id', '=', 'c.id')
+                            ->join('personal as v', 'vendedores.id', '=', 'v.id')
+                            ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                            ->select(
+                                'contratos.id as folio',
+                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
+                                'creditos.fraccionamiento as proyecto',
+                                'creditos.etapa',
+                                'creditos.manzana',
+                                'creditos.num_lote',
+                                'creditos.precio_venta',
+                                'creditos.credito_solic',
+                                'licencias.avance as avance_lote',
+                                'contratos.fecha_status',
+                                'i.tipo_credito',
+                                'i.institucion',
+                                'i.fecha_vigencia',
+                                'contratos.avaluo_preventivo',
+                                'contratos.aviso_prev',
+                                'contratos.aviso_prev_venc',
+                                'lotes.regimen_condom',
+                                'lotes.credito_puente',
+                                DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
+                                DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
+                                DB::raw('DATEDIFF(current_date,i.fecha_vigencia) as vigencia'),
+                                'clientes.coacreditado',
+                                'contratos.integracion',
+                                'lotes.fraccionamiento_id',
+                                'expedientes.valor_escrituras',
+                                'expedientes.fecha_ingreso',
+                                'expedientes.fecha_integracion',
+                                'expedientes.fecha_liquidacion',
+                                'expedientes.liquidado',
+                                'expedientes.infonavit',
+                                'expedientes.fovissste',
+                                'expedientes.total_liquidar',
+                                'expedientes.fecha_infonavit',
+                                'lotes.calle','lotes.numero','lotes.interior',
+                                'avaluos.resultado','avaluos.fecha_recibido'
+                            )
+                            ->where('i.elegido', '=', 1)
+                            ->where('i.status','=',2)
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('expedientes.fecha_ingreso','!=',NULL)
+                            ->where('expedientes.valor_escrituras','!=',0)
+                            ->where('expedientes.fecha_infonavit','!=',NULL)
+                            ->where('expedientes.liquidado','=',0)
+                            
+                            ->where($criterio, '=', $buscar)
+                            ->where('lotes.manzana', '=', $b_manzana)
+                            ->orderBy('contratos.id','asc')
+                            ->get();
+                    }
+                    elseif($b_etapa == '' && $b_manzana =='' && $b_lote != ''){
+                        $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                            ->leftJoin('avaluos','contratos.id','=','avaluos.contrato_id')
+                            ->join('expedientes','contratos.id','=','expedientes.id')
+                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                            ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                            ->join('personal as c', 'clientes.id', '=', 'c.id')
+                            ->join('personal as v', 'vendedores.id', '=', 'v.id')
+                            ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                            ->select(
+                                'contratos.id as folio',
+                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
+                                'creditos.fraccionamiento as proyecto',
+                                'creditos.etapa',
+                                'creditos.manzana',
+                                'creditos.num_lote',
+                                'creditos.precio_venta',
+                                'creditos.credito_solic',
+                                'licencias.avance as avance_lote',
+                                'contratos.fecha_status',
+                                'i.tipo_credito',
+                                'i.institucion',
+                                'i.fecha_vigencia',
+                                'contratos.avaluo_preventivo',
+                                'contratos.aviso_prev',
+                                'contratos.aviso_prev_venc',
+                                'lotes.regimen_condom',
+                                'lotes.credito_puente',
+                                DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
+                                DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
+                                DB::raw('DATEDIFF(current_date,i.fecha_vigencia) as vigencia'),
+                                'clientes.coacreditado',
+                                'contratos.integracion',
+                                'lotes.fraccionamiento_id',
+                                'expedientes.valor_escrituras',
+                                'expedientes.fecha_ingreso',
+                                'expedientes.fecha_integracion',
+                                'expedientes.fecha_liquidacion',
+                                'expedientes.liquidado',
+                                'expedientes.infonavit',
+                                'expedientes.fovissste',
+                                'expedientes.total_liquidar',
+                                'expedientes.fecha_infonavit',
+                                'lotes.calle','lotes.numero','lotes.interior',
+                                'avaluos.resultado','avaluos.fecha_recibido'
+                            )
+                            ->where('i.elegido', '=', 1)
+                            ->where('i.status','=',2)
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('expedientes.fecha_ingreso','!=',NULL)
+                            ->where('expedientes.valor_escrituras','!=',0)
+                            ->where('expedientes.fecha_infonavit','!=',NULL)
+                            ->where('expedientes.liquidado','=',0)
+                            
+                            ->where($criterio, '=', $buscar)
+                            ->where('lotes.num_lote', '=', $b_lote)
+                            ->orderBy('contratos.id','asc')
+                            ->get();
+                    }
+                    elseif($b_etapa == '' && $b_manzana !='' && $b_lote != ''){
+                        $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                            ->leftJoin('avaluos','contratos.id','=','avaluos.contrato_id')
+                            ->join('expedientes','contratos.id','=','expedientes.id')
+                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                            ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                            ->join('personal as c', 'clientes.id', '=', 'c.id')
+                            ->join('personal as v', 'vendedores.id', '=', 'v.id')
+                            ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                            ->select(
+                                'contratos.id as folio',
+                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
+                                'creditos.fraccionamiento as proyecto',
+                                'creditos.etapa',
+                                'creditos.manzana',
+                                'creditos.num_lote',
+                                'creditos.precio_venta',
+                                'creditos.credito_solic',
+                                'licencias.avance as avance_lote',
+                                'contratos.fecha_status',
+                                'i.tipo_credito',
+                                'i.institucion',
+                                'i.fecha_vigencia',
+                                'contratos.avaluo_preventivo',
+                                'contratos.aviso_prev',
+                                'contratos.aviso_prev_venc',
+                                'lotes.regimen_condom',
+                                'lotes.credito_puente',
+                                DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
+                                DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
+                                DB::raw('DATEDIFF(current_date,i.fecha_vigencia) as vigencia'),
+                                'clientes.coacreditado',
+                                'contratos.integracion',
+                                'lotes.fraccionamiento_id',
+                                'expedientes.valor_escrituras',
+                                'expedientes.fecha_ingreso',
+                                'expedientes.fecha_integracion',
+                                'expedientes.fecha_liquidacion',
+                                'expedientes.liquidado',
+                                'expedientes.infonavit',
+                                'expedientes.fovissste',
+                                'expedientes.total_liquidar',
+                                'expedientes.fecha_infonavit',
+                                'lotes.calle','lotes.numero','lotes.interior',
+                                'avaluos.resultado','avaluos.fecha_recibido'
+                            )
+                            ->where('i.elegido', '=', 1)
+                            ->where('i.status','=',2)
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('expedientes.fecha_ingreso','!=',NULL)
+                            ->where('expedientes.valor_escrituras','!=',0)
+                            ->where('expedientes.fecha_infonavit','!=',NULL)
+                            ->where('expedientes.liquidado','=',0)
+                            
+                            ->where($criterio, '=', $buscar)
+                            ->where('lotes.num_lote', '=', $b_lote)
+                            ->where('lotes.manzana', '=', $b_manzana)
+                            ->orderBy('contratos.id','asc')
+                            ->get();
+                    }
+                }
+            }
+
+        }
+
+        $contador = $contratos->count();
+        
+
+        return [
+            
+            'contratos' => $contratos,
+            'contador' => $contador
+        ];
     }
 
 }

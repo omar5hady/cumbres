@@ -25,6 +25,9 @@ class CreateInstSeleccionadasTable extends Migration
             $table->date('fecha_vigencia')->nullable();
             $table->integer('plazo_credito')->nullable();
             $table->double('monto_credito')->nullable();
+            $table->double('cobrado')->default(0)->nullable();
+            $table->boolean('tipo')->default(0)->nullable();
+            $table->double('segundo_credito')->default(0)->nullable();
             $table->timestamps();
             
             $table->foreign('credito_id')->references('id')->on('creditos')->onDelete('cascade');
