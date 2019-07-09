@@ -261,7 +261,7 @@
                                 <div class="form-group row" v-if="tipoAccion==1">
                                     <label class="col-md-3 form-control-label" for="text-input">Saldo Restante</label>
                                     <div class="col-md-4">
-                                        <p v-text="'$'+formatNumber(restante-cant_depo)"></p>
+                                        <p v-text="'$'+formatNumber(restanteTotal = totalRestante)"></p>
                                     </div>
                                 </div>
 
@@ -357,6 +357,7 @@
                 banco:'',
                 concepto:'',
                 restante:0,
+                restanteTotal:0,
                 monto_pagare:0,
                 pago_id:0,
                 diferencia:0,
@@ -378,6 +379,13 @@
             }
         },
         computed:{
+            
+            totalRestante: function(){
+                var totalRestante = parseFloat(this.restante) + parseFloat(this.interes_mor) + parseFloat(this.interes_ord) - parseFloat(this.cant_depo);
+                return totalRestante;
+
+            },
+
             isActived: function(){
                 return this.pagination.current_page;
             },
@@ -404,6 +412,9 @@
                 }
                 return pagesArray;
             },
+
+
+
         },
         methods : {
             /**Metodo para mostrar los registros */
@@ -542,7 +553,7 @@
                     'banco':this.banco,
                     'concepto':this.concepto,
                     'fecha_pago':this.fecha_deposito,
-                    'restante':this.restante
+                    'restante':this.restanteTotal
                 }).then(function (response){
                     me.cerrarModal(); //al guardar el registro se cierra el modal
                     me.listarDepositos(); //se enlistan nuevamente los registros

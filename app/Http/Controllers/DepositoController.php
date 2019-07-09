@@ -327,8 +327,10 @@ class DepositoController extends Controller
         $deposito->concepto = $request->concepto;
         $deposito->fecha_pago = $request->fecha_pago;
 
+        $pago = $request->cant_depo - $request->interes_mor - $request->interes_ord;
+
         $pago_contrato = Pago_contrato::findOrFail($request->pago_id);
-        $pago_contrato->restante = $request->restante;
+        $pago_contrato->restante =  $pago_contrato->restante - $pago;
         if($pago_contrato->restante == 0)
             $pago_contrato->pagado = 2;
         else{
@@ -344,6 +346,10 @@ class DepositoController extends Controller
             $gasto->observacion = '';
             $gasto->save();
         }
+
+        $contrato = Contrato::findOrFail($pago_contrato->contrato_id);
+        $contrato->saldo = $contrato->saldo + $request->interes_ord - $pago;
+        $contrato->save(); 
 
         $pago_contrato->save();
 

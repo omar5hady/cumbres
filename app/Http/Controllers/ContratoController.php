@@ -13,6 +13,9 @@ use App\inst_seleccionada;
 use App\Cliente;
 use App\Personal;
 use App\Licencia;
+use App\Expediente;
+use App\Gasto_admin;
+use App\Deposito;
 use App\Lote;
 use NumerosEnLetras;
 use Illuminate\Support\Facades\Mail;
@@ -2545,7 +2548,7 @@ class ContratoController extends Controller
             $contrato->observacion = $request->observacion;
 
             $credito = Credito::findOrFail($request->id);
-            $contrato->saldo = $credito->precio_venta;
+            $contrato->saldo = $request->precio_venta;
             
             $credito->paquete =  $request->paquete;
             $credito->descripcion_paquete = $request->descripcion_paquete;
@@ -3269,7 +3272,26 @@ class ContratoController extends Controller
         $contrato->ext_empresa_coa = $request->ext_empresa_coa;
         $contrato->observacion = $request->observacion;
 
-        $contrato->saldo = $credito->precio_venta;
+        $sumaIntereses = Expediente::select(DB::raw("SUM(interes_ord) as suma"))->where('id','=',$request->contrato_id)->get();
+        if($sumaIntereses[0]->suma == NULL){
+            $sumaIntereses[0]->suma = 0;
+        }
+
+        $sumaGastos = Gasto_admin::select(DB::raw("SUM(costo) as suma"))->where('contrato_id','=',$request->contrato_id)->get();
+        if($sumaGastos[0]->suma == NULL){
+            $sumaGastos[0]->suma = 0;
+        }
+
+        $sumaDeposito = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
+        ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
+        ->select(DB::raw("SUM(depositos.cant_depo) as suma"))->where('contratos.id','=',$request->contrato_id)->get();
+        if($sumaDeposito[0]->suma == NULL){
+            $sumaDeposito[0]->suma = 0;
+        }
+
+        $sumaTotal =  $sumaIntereses[0]->suma + $sumaGastos[0]->suma - $sumaDeposito[0]->suma;
+
+        $contrato->saldo = $credito->precio_venta + $sumaTotal;
 
         $lote->save();
         $credito->save();
