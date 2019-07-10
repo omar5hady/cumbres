@@ -23,7 +23,7 @@
                                 <a class="nav-link" id="liquidacion-tab" data-toggle="tab" href="#liquidacion" role="tab" aria-controls="liquidacion" aria-selected="false" v-text="'Liquidación (' + contadorLiquidacion +')'"></a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="programacion-tab" data-toggle="tab" href="#programacion" role="tab" aria-controls="programacion" aria-selected="false" v-text="'Programación de firma'"></a>
+                                <a class="nav-link" id="programacion-tab" data-toggle="tab" href="#programacion" role="tab" aria-controls="programacion" aria-selected="false" v-text="'Programación de firma (' + contadorProgramacion +')'"></a>
                             </li>
                         </ul>
 
@@ -99,7 +99,7 @@
                                                 <td class="td2" v-text="ingresar.num_lote"></td>
                                                 <td class="td2" v-if="ingresar.interior" v-text="ingresar.calle + ' '+ ingresar.numero + ' '+ ingresar.interior"></td>
                                                 <td class="td2" v-else v-text="ingresar.calle + ' '+ ingresar.numero"></td>
-                                                <td class="td2" v-text="ingresar.avance_lote"></td>
+                                                <td class="td2" v-text="ingresar.avance_lote+ '%'"></td>
                                                 <td class="td2" v-text="ingresar.fecha_status"></td>
 
                                                 <td v-if="ingresar.avaluo_preventivo!='0000-01-01'" class="td2" v-text="'$'+formatNumber(ingresar.resultado)"></td>
@@ -213,16 +213,16 @@
                                                 <td class="td2" v-text="preautorizados.manzana"></td>
                                                 <td class="td2" v-text="preautorizados.num_lote"></td>
                                                 <td class="td2" v-text="preautorizados.calle + ' '+ preautorizados.numero + ' '+ preautorizados.interior"></td>
-                                                <td class="td2" v-text="preautorizados.avance_lote"></td>
+                                                <td class="td2" v-text="preautorizados.avance_lote+ '%'"></td>
                                                 <td class="td2" v-text="preautorizados.fecha_status"></td>
 
                                                 <td v-if="preautorizados.avaluo_preventivo!='0000-01-01'" class="td2" v-text="'$'+formatNumber(preautorizados.resultado)"></td>
                                                 <td v-if="preautorizados.avaluo_preventivo=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
 
-                                                <td @dblclick="abrirModal('fecha_recibido',ingresar)" v-if="preautorizados.aviso_prev!='0000-01-01' && !preautorizados.aviso_prev_venc" class="td2" v-text="'Fecha solicitud: ' 
+                                                <td @dblclick="abrirModal('fecha_recibido',preautorizados)" v-if="preautorizados.aviso_prev!='0000-01-01' && !preautorizados.aviso_prev_venc" class="td2" v-text="'Fecha solicitud: ' 
                                                 + this.moment(preautorizados.aviso_prev).locale('es').format('DD/MMM/YYYY')"></td>
 
-                                                <td  @dblclick="abrirModal('fecha_recibido',ingresar)" v-if="preautorizados.aviso_prev!='0000-01-01' && preautorizados.aviso_prev_venc" class="td2">
+                                                <td  @dblclick="abrirModal('fecha_recibido',preautorizados)" v-if="preautorizados.aviso_prev!='0000-01-01' && preautorizados.aviso_prev_venc" class="td2">
                                                     
                                                     <span v-if = "preautorizados.diferencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: ' 
                                                     + this.moment(preautorizados.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
@@ -292,7 +292,7 @@
                                                 <option value="lotes.fraccionamiento_id">Proyecto</option>
                                                 <option value="c.nombre">Cliente</option>
                                                 <option value="g.nombre">Gestor</option>
-                                                <option value="contraos.id"># Folio</option>
+                                                <option value="contratos.id"># Folio</option>
                                             </select>
 
                                             
@@ -356,16 +356,16 @@
                                                 <td class="td2" v-text="liquidacion.manzana"></td>
                                                 <td class="td2" v-text="liquidacion.num_lote"></td>
                                                 <td class="td2" v-text="liquidacion.calle + ' '+ liquidacion.numero + ' '+ liquidacion.interior"></td>
-                                                <td class="td2" v-text="liquidacion.avance_lote"></td>
+                                                <td class="td2" v-text="liquidacion.avance_lote+ '%'"></td>
                                                 <td class="td2" v-text="liquidacion.fecha_status"></td>
 
                                                 <td v-if="liquidacion.avaluo_preventivo!='0000-01-01'" class="td2" v-text="'$'+formatNumber(liquidacion.resultado)"></td>
                                                 <td v-if="liquidacion.avaluo_preventivo=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
 
-                                                <td @dblclick="abrirModal('fecha_recibido',ingresar)" v-if="liquidacion.aviso_prev!='0000-01-01' && !liquidacion.aviso_prev_venc" class="td2" v-text="'Fecha solicitud: ' 
+                                                <td @dblclick="abrirModal('fecha_recibido',liquidacion)" v-if="liquidacion.aviso_prev!='0000-01-01' && !liquidacion.aviso_prev_venc" class="td2" v-text="'Fecha solicitud: ' 
                                                 + this.moment(liquidacion.aviso_prev).locale('es').format('DD/MMM/YYYY')"></td>
 
-                                                <td  @dblclick="abrirModal('fecha_recibido',ingresar)" v-if="liquidacion.aviso_prev!='0000-01-01' && liquidacion.aviso_prev_venc" class="td2">
+                                                <td  @dblclick="abrirModal('fecha_recibido',liquidacion)" v-if="liquidacion.aviso_prev!='0000-01-01' && liquidacion.aviso_prev_venc" class="td2">
                                                     
                                                     <span v-if = "liquidacion.diferencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: ' 
                                                     + this.moment(liquidacion.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
@@ -436,7 +436,7 @@
                                                 <option value="lotes.fraccionamiento_id">Proyecto</option>
                                                 <option value="c.nombre">Cliente</option>
                                                 <option value="g.nombre">Gestor</option>
-                                                <option value="contraos.id"># Folio</option>
+                                                <option value="contratos.id"># Folio</option>
                                             </select>
 
                                             
@@ -454,7 +454,7 @@
                                             <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_manzana" class="form-control" placeholder="Manzana a buscar">
                                             <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
 
-                                            <input v-else type="text"  v-model="buscar" @keyup.enter="listarContratos(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
+                                            <input v-else type="datetime-local"  v-model="buscar" @keyup.enter="listarContratos(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
                                             <button type="submit" @click="listarContratos(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                         
                                         </div>
@@ -498,29 +498,77 @@
                                                 
                                                 <td class="td2" v-text="programacion.folio"></td>
                                                 <td class="td2" v-text="programacion.nombre_cliente"></td>
+                                                <td class="td2" v-text="programacion.nombre_vendedor"></td>
                                                 <td class="td2" v-text="programacion.proyecto"></td>
                                                 <td class="td2" v-text="programacion.etapa"></td>
                                                 <td class="td2" v-text="programacion.manzana"></td>
                                                 <td class="td2" v-text="programacion.num_lote"></td>
-                                                <td class="td2" v-text="programacion.nombre_gestor"></td>
+                                                <td class="td2" v-text="programacion.calle + ' '+ programacion.numero + ' ' + programacion.interior"></td>
+                                                <td class="td2" v-text="programacion.avance_lote + '%'"></td>
+                                                <td class="td2" v-text="this.moment(programacion.fecha_status).locale('es').format('DD/MMM/YYYY')"></td>
+                                                
+                                                <td v-if="programacion.avaluo_preventivo!='0000-01-01'" class="td2" v-text="'$'+formatNumber(programacion.resultado)"></td>
+                                                <td v-if="programacion.avaluo_preventivo=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
+
+                                                <td @dblclick="abrirModal('fecha_recibido',programacion)" v-if="programacion.aviso_prev!='0000-01-01' && !programacion.aviso_prev_venc" class="td2" v-text="'Fecha solicitud: ' 
+                                                + this.moment(programacion.aviso_prev).locale('es').format('DD/MMM/YYYY')"></td>
+                                                <td  @dblclick="abrirModal('fecha_recibido',programacion)" v-if="programacion.aviso_prev!='0000-01-01' && programacion.aviso_prev_venc" class="td2">
+                                                    
+                                                    <span v-if = "programacion.diferencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: ' 
+                                                    + this.moment(programacion.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
+
+                                                    <span v-if = "programacion.diferencia < 0 && programacion.diferencia >= -15 " class="badge2 badge-warning" v-text="'Fecha vencimiento: ' 
+                                                    + this.moment(programacion.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
+
+                                                    <span v-if = "programacion.diferencia < -15 " class="badge2 badge-success" v-text="'Fecha vencimiento: ' 
+                                                    + this.moment(programacion.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
+                                                    
+                                                </td>
+
+                                                <td class="td2" v-text="this.moment(programacion.fecha_ingreso).locale('es').format('DD/MMM/YYYY')"></td>
                                                 <td class="td2" v-text="programacion.tipo_credito"></td>
                                                 <td class="td2" v-text="programacion.institucion"></td>
-                                                <td class="td2" v-text="programacion.folio"></td>
-                                                <td class="td2" v-text="programacion.nombre_cliente"></td>
-                                                <td class="td2" v-text="programacion.proyecto"></td>
-                                                <td class="td2" v-text="programacion.etapa"></td>
-                                                <td class="td2" v-text="programacion.manzana"></td>
-                                                <td class="td2" v-text="programacion.num_lote"></td>
-                                                <td class="td2" v-text="programacion.nombre_gestor"></td>
-                                                <td class="td2" v-text="programacion.tipo_credito"></td>
-                                                <td class="td2" v-text="programacion.institucion"></td>
-                                                <td class="td2" v-text="programacion.proyecto"></td>
-                                                <td class="td2" v-text="programacion.etapa"></td>
-                                                <td class="td2" v-text="programacion.manzana"></td>
-                                                <td class="td2" v-text="programacion.num_lote"></td>
-                                                <td class="td2" v-text="programacion.nombre_gestor"></td>
-                                                <td class="td2" v-text="programacion.tipo_credito"></td>
-                                                <td class="td2" v-text="programacion.institucion"></td>
+                                                <td class="td2" v-text="'$'+formatNumber(programacion.credito_solic)"></td>
+                                                
+                                                <td class="td2">
+                                                    
+                                                    <span v-if = "programacion.vigencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: ' 
+                                                    + this.moment(programacion.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
+
+                                                    <span v-if = "programacion.vigencia < 0 && programacion.vigencia >= -15 " class="badge2 badge-warning" v-text="'Fecha vencimiento: ' 
+                                                    + this.moment(programacion.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
+
+                                                    <span v-if = "programacion.vigencia < -15 " class="badge2 badge-success" v-text="'Fecha vencimiento: ' 
+                                                    + this.moment(programacion.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
+                                                    
+                                                </td>
+
+                                                <td class="td2" v-text="'$'+formatNumber(programacion.precio_venta)"></td>
+                                                <td class="td2" v-text="'$'+formatNumber(programacion.valor_escrituras)"></td>
+                                                
+                                                <template v-if="programacion.fecha_infonavit">
+                                                    <td v-if="programacion.fecha_infonavit!='0000-01-01'" class="td2" v-text="this.moment(programacion.fecha_infonavit).locale('es').format('DD/MMM/YYYY')"></td>
+                                                    <td v-if="programacion.fecha_infonavit=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
+                                                </template>
+
+                                                <td class="td2">
+                                                    <button title="Imprimir liquidación" type="button" class="btn btn-warning pull-right" 
+                                                        @click="imprimir(programacion)">Imprimir</button>
+                                                </td>
+                                                <td class="td2" v-if="!fecha_firma_esc">
+                                                    <button title="Imprimir liquidación" type="button" class="btn btn-warning pull-right" 
+                                                        @click="abrirModal('firma_esc',programacion)">Generar</button>
+                                                </td>
+                                                <td class="td2" v-else v-text="programacion.fecha_firma_esc"></td>
+
+                                                <td class="td2" v-text="'$'+formatNumber(programacion.saldo)"></td>
+                                                <td class="td2" v-text="'FALTAN DOCUMENTOS'"></td>
+                                                <td class="td2" v-text="'Saldo Pendiente ó sin solicitud'"></td>
+
+                                                <td class="td2">
+                                                    <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
+                                                        @click="abrirModal3(programacion.folio)">Ver Observaciones</button>
+                                                </td>
                                             </tr>                               
                                         </tbody>
                                     </table>  
@@ -1220,6 +1268,7 @@
                 contadorIngresar : 0,
                 contadorAutorizados : 0,
                 contadorLiquidacion : 0,
+                contadorProgramacion : 0,
                 
                
             }
@@ -1696,6 +1745,20 @@
                 
             },
 
+            listarProgramacion(page, buscar, b_etapa, b_manzana, b_lote, criterio){
+                let me = this;
+                var url = '/expediente/ProgramacionIndex?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayProgramacion = respuesta.contratos;
+                    me.contadorProgramacion = respuesta.contador;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+                
+            },
+
             mostrarPagares(){
                 let me = this;
                 var url = '/expediente/pagaresExpediente?folio=' + this.id;
@@ -1940,6 +2003,7 @@
             this.listarIngresoExp(1, this.buscar, this.b_etapa, this.b_manzana, this.b_lote, this.criterio);
             this.listarAutorizados(1, this.buscar_preauto, this.b_etapa_preauto, this.b_manzana_preauto, this.b_lote_preauto, this.criterio_preauto);
             this.listarLiquidacion(1, this.buscar_preauto, this.b_etapa_preauto, this.b_manzana_preauto, this.b_lote_preauto, this.criterio_preauto);
+            this.listarProgramacion(1, this.buscar_preauto, this.b_etapa_preauto, this.b_manzana_preauto, this.b_lote_preauto, this.criterio_preauto);
             
         }
     }
