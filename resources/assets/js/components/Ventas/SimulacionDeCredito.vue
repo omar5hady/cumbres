@@ -2872,6 +2872,7 @@
                 })
             },
             cambiarTitular(){
+                let me = this;
                 //Con axios se llama el metodo store del controller
                 axios.put('/creditos/cambiarTitular',{
                     //datos cliente
@@ -2879,6 +2880,7 @@
                     'rfc_coa':this.rfc_coa,
                     'cliente_id':this.prospecto_id,
                 }).then(function (response){
+                    me.listado=1;
                     me.listarProspectos(me.pagination.current_page,me.buscar,me.criterio);
                     me.limpiarDatos();
                     //window.alert("Cambios guardados correctamente");

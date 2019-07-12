@@ -3700,15 +3700,18 @@ class ExpedienteController extends Controller
                             'creditos.manzana',
                             'creditos.num_lote',
                             'creditos.precio_venta',
-                            'creditos.credito_solic',
                             'licencias.avance as avance_lote',
                             'contratos.fecha_status',
                             'i.tipo_credito',
                             'i.institucion',
                             'i.fecha_vigencia',
+                            'i.monto_credito as credito_solic',
+                            'i.cobrado',
+                            'i.segundo_credito',
                             'contratos.avaluo_preventivo',
                             'contratos.aviso_prev',
                             'contratos.aviso_prev_venc',
+                            'contratos.saldo',
                             'lotes.regimen_condom',
                             'lotes.credito_puente',
                             DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
@@ -3726,6 +3729,7 @@ class ExpedienteController extends Controller
                             'expedientes.fovissste',
                             'expedientes.total_liquidar',
                             'expedientes.fecha_infonavit',
+                            'expedientes.fecha_firma_esc',
                             'lotes.calle','lotes.numero','lotes.interior',
                             'avaluos.resultado','avaluos.fecha_recibido'
                         )
@@ -3736,16 +3740,17 @@ class ExpedienteController extends Controller
                         ->where('expedientes.fecha_ingreso','!=',NULL)
                         ->where('expedientes.valor_escrituras','!=',0)
                         ->where('expedientes.fecha_infonavit','!=',NULL)
-                        ->where('expedientes.liquidado','=',0)
+                        ->where('expedientes.liquidado','=',1)
                         ->where('c.nombre','like','%'. $buscar . '%')
 
                         ->orWhere('i.elegido', '=', 1)
+                        ->where('i.status','=',2)
                         ->where('contratos.status', '!=', 0)
                         ->where('contratos.status', '!=', 2)
                         ->where('expedientes.fecha_ingreso','!=',NULL)
                         ->where('expedientes.valor_escrituras','!=',0)
                         ->where('expedientes.fecha_infonavit','!=',NULL)
-                        ->where('expedientes.liquidado','=',0)
+                        ->where('expedientes.liquidado','=',1)
                         ->where('c.apellidos','like','%'. $buscar . '%')
                         ->orderBy('contratos.id','asc')
                         ->get();
@@ -3771,15 +3776,18 @@ class ExpedienteController extends Controller
                             'creditos.manzana',
                             'creditos.num_lote',
                             'creditos.precio_venta',
-                            'creditos.credito_solic',
                             'licencias.avance as avance_lote',
                             'contratos.fecha_status',
                             'i.tipo_credito',
                             'i.institucion',
                             'i.fecha_vigencia',
+                            'i.monto_credito as credito_solic',
+                            'i.cobrado',
+                            'i.segundo_credito',
                             'contratos.avaluo_preventivo',
                             'contratos.aviso_prev',
                             'contratos.aviso_prev_venc',
+                            'contratos.saldo',
                             'lotes.regimen_condom',
                             'lotes.credito_puente',
                             DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
@@ -3797,6 +3805,7 @@ class ExpedienteController extends Controller
                             'expedientes.fovissste',
                             'expedientes.total_liquidar',
                             'expedientes.fecha_infonavit',
+                            'expedientes.fecha_firma_esc',
                             'lotes.calle','lotes.numero','lotes.interior',
                             'avaluos.resultado','avaluos.fecha_recibido'
                         )
@@ -3807,7 +3816,7 @@ class ExpedienteController extends Controller
                         ->where('expedientes.fecha_ingreso','!=',NULL)
                         ->where('expedientes.valor_escrituras','!=',0)
                         ->where('expedientes.fecha_infonavit','!=',NULL)
-                        ->where('expedientes.liquidado','=',0)
+                        ->where('expedientes.liquidado','=',1)
                         
                         ->where($criterio,'=',$buscar)
                         ->orderBy('contratos.id','asc')
@@ -3816,7 +3825,7 @@ class ExpedienteController extends Controller
                 }
                 case 'lotes.fraccionamiento_id':{
                     if($b_etapa == '' && $b_manzana =='' && $b_lote == '' ){
-                        $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                        $contratos =Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                             ->leftJoin('avaluos','contratos.id','=','avaluos.contrato_id')
                             ->join('expedientes','contratos.id','=','expedientes.id')
                             ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
@@ -3835,15 +3844,18 @@ class ExpedienteController extends Controller
                                 'creditos.manzana',
                                 'creditos.num_lote',
                                 'creditos.precio_venta',
-                                'creditos.credito_solic',
                                 'licencias.avance as avance_lote',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
                                 'i.fecha_vigencia',
+                                'i.monto_credito as credito_solic',
+                                'i.cobrado',
+                                'i.segundo_credito',
                                 'contratos.avaluo_preventivo',
                                 'contratos.aviso_prev',
                                 'contratos.aviso_prev_venc',
+                                'contratos.saldo',
                                 'lotes.regimen_condom',
                                 'lotes.credito_puente',
                                 DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
@@ -3861,6 +3873,7 @@ class ExpedienteController extends Controller
                                 'expedientes.fovissste',
                                 'expedientes.total_liquidar',
                                 'expedientes.fecha_infonavit',
+                                'expedientes.fecha_firma_esc',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido'
                             )
@@ -3871,7 +3884,7 @@ class ExpedienteController extends Controller
                             ->where('expedientes.fecha_ingreso','!=',NULL)
                             ->where('expedientes.valor_escrituras','!=',0)
                             ->where('expedientes.fecha_infonavit','!=',NULL)
-                            ->where('expedientes.liquidado','=',0)
+                            ->where('expedientes.liquidado','=',1)
                             
                             ->where($criterio, '=', $buscar)
                             ->orderBy('contratos.id','asc')
@@ -3897,15 +3910,18 @@ class ExpedienteController extends Controller
                                 'creditos.manzana',
                                 'creditos.num_lote',
                                 'creditos.precio_venta',
-                                'creditos.credito_solic',
                                 'licencias.avance as avance_lote',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
                                 'i.fecha_vigencia',
+                                'i.monto_credito as credito_solic',
+                                'i.cobrado',
+                                'i.segundo_credito',
                                 'contratos.avaluo_preventivo',
                                 'contratos.aviso_prev',
                                 'contratos.aviso_prev_venc',
+                                'contratos.saldo',
                                 'lotes.regimen_condom',
                                 'lotes.credito_puente',
                                 DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
@@ -3923,6 +3939,7 @@ class ExpedienteController extends Controller
                                 'expedientes.fovissste',
                                 'expedientes.total_liquidar',
                                 'expedientes.fecha_infonavit',
+                                'expedientes.fecha_firma_esc',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido'
                             )
@@ -3933,7 +3950,7 @@ class ExpedienteController extends Controller
                             ->where('expedientes.fecha_ingreso','!=',NULL)
                             ->where('expedientes.valor_escrituras','!=',0)
                             ->where('expedientes.fecha_infonavit','!=',NULL)
-                            ->where('expedientes.liquidado','=',0)
+                            ->where('expedientes.liquidado','=',1)
                             
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.etapa_id', '=', $b_etapa)
@@ -3960,15 +3977,18 @@ class ExpedienteController extends Controller
                                 'creditos.manzana',
                                 'creditos.num_lote',
                                 'creditos.precio_venta',
-                                'creditos.credito_solic',
                                 'licencias.avance as avance_lote',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
                                 'i.fecha_vigencia',
+                                'i.monto_credito as credito_solic',
+                                'i.cobrado',
+                                'i.segundo_credito',
                                 'contratos.avaluo_preventivo',
                                 'contratos.aviso_prev',
                                 'contratos.aviso_prev_venc',
+                                'contratos.saldo',
                                 'lotes.regimen_condom',
                                 'lotes.credito_puente',
                                 DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
@@ -3986,6 +4006,7 @@ class ExpedienteController extends Controller
                                 'expedientes.fovissste',
                                 'expedientes.total_liquidar',
                                 'expedientes.fecha_infonavit',
+                                'expedientes.fecha_firma_esc',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido'
                             )
@@ -3996,7 +4017,7 @@ class ExpedienteController extends Controller
                             ->where('expedientes.fecha_ingreso','!=',NULL)
                             ->where('expedientes.valor_escrituras','!=',0)
                             ->where('expedientes.fecha_infonavit','!=',NULL)
-                            ->where('expedientes.liquidado','=',0)
+                            ->where('expedientes.liquidado','=',1)
                             
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.etapa_id', '=', $b_etapa)
@@ -4024,15 +4045,18 @@ class ExpedienteController extends Controller
                                 'creditos.manzana',
                                 'creditos.num_lote',
                                 'creditos.precio_venta',
-                                'creditos.credito_solic',
                                 'licencias.avance as avance_lote',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
                                 'i.fecha_vigencia',
+                                'i.monto_credito as credito_solic',
+                                'i.cobrado',
+                                'i.segundo_credito',
                                 'contratos.avaluo_preventivo',
                                 'contratos.aviso_prev',
                                 'contratos.aviso_prev_venc',
+                                'contratos.saldo',
                                 'lotes.regimen_condom',
                                 'lotes.credito_puente',
                                 DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
@@ -4050,6 +4074,7 @@ class ExpedienteController extends Controller
                                 'expedientes.fovissste',
                                 'expedientes.total_liquidar',
                                 'expedientes.fecha_infonavit',
+                                'expedientes.fecha_firma_esc',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido'
                             )
@@ -4060,7 +4085,7 @@ class ExpedienteController extends Controller
                             ->where('expedientes.fecha_ingreso','!=',NULL)
                             ->where('expedientes.valor_escrituras','!=',0)
                             ->where('expedientes.fecha_infonavit','!=',NULL)
-                            ->where('expedientes.liquidado','=',0)
+                            ->where('expedientes.liquidado','=',1)
                             
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.etapa_id', '=', $b_etapa)
@@ -4089,15 +4114,18 @@ class ExpedienteController extends Controller
                                 'creditos.manzana',
                                 'creditos.num_lote',
                                 'creditos.precio_venta',
-                                'creditos.credito_solic',
                                 'licencias.avance as avance_lote',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
                                 'i.fecha_vigencia',
+                                'i.monto_credito as credito_solic',
+                                'i.cobrado',
+                                'i.segundo_credito',
                                 'contratos.avaluo_preventivo',
                                 'contratos.aviso_prev',
                                 'contratos.aviso_prev_venc',
+                                'contratos.saldo',
                                 'lotes.regimen_condom',
                                 'lotes.credito_puente',
                                 DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
@@ -4115,6 +4143,7 @@ class ExpedienteController extends Controller
                                 'expedientes.fovissste',
                                 'expedientes.total_liquidar',
                                 'expedientes.fecha_infonavit',
+                                'expedientes.fecha_firma_esc',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido'
                             )
@@ -4125,7 +4154,7 @@ class ExpedienteController extends Controller
                             ->where('expedientes.fecha_ingreso','!=',NULL)
                             ->where('expedientes.valor_escrituras','!=',0)
                             ->where('expedientes.fecha_infonavit','!=',NULL)
-                            ->where('expedientes.liquidado','=',0)
+                            ->where('expedientes.liquidado','=',1)
                             
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.etapa_id', '=', $b_etapa)
@@ -4153,15 +4182,18 @@ class ExpedienteController extends Controller
                                 'creditos.manzana',
                                 'creditos.num_lote',
                                 'creditos.precio_venta',
-                                'creditos.credito_solic',
                                 'licencias.avance as avance_lote',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
                                 'i.fecha_vigencia',
+                                'i.monto_credito as credito_solic',
+                                'i.cobrado',
+                                'i.segundo_credito',
                                 'contratos.avaluo_preventivo',
                                 'contratos.aviso_prev',
                                 'contratos.aviso_prev_venc',
+                                'contratos.saldo',
                                 'lotes.regimen_condom',
                                 'lotes.credito_puente',
                                 DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
@@ -4179,6 +4211,7 @@ class ExpedienteController extends Controller
                                 'expedientes.fovissste',
                                 'expedientes.total_liquidar',
                                 'expedientes.fecha_infonavit',
+                                'expedientes.fecha_firma_esc',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido'
                             )
@@ -4189,7 +4222,7 @@ class ExpedienteController extends Controller
                             ->where('expedientes.fecha_ingreso','!=',NULL)
                             ->where('expedientes.valor_escrituras','!=',0)
                             ->where('expedientes.fecha_infonavit','!=',NULL)
-                            ->where('expedientes.liquidado','=',0)
+                            ->where('expedientes.liquidado','=',1)
                             
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.manzana', '=', $b_manzana)
@@ -4216,15 +4249,18 @@ class ExpedienteController extends Controller
                                 'creditos.manzana',
                                 'creditos.num_lote',
                                 'creditos.precio_venta',
-                                'creditos.credito_solic',
                                 'licencias.avance as avance_lote',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
                                 'i.fecha_vigencia',
+                                'i.monto_credito as credito_solic',
+                                'i.cobrado',
+                                'i.segundo_credito',
                                 'contratos.avaluo_preventivo',
                                 'contratos.aviso_prev',
                                 'contratos.aviso_prev_venc',
+                                'contratos.saldo',
                                 'lotes.regimen_condom',
                                 'lotes.credito_puente',
                                 DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
@@ -4242,6 +4278,7 @@ class ExpedienteController extends Controller
                                 'expedientes.fovissste',
                                 'expedientes.total_liquidar',
                                 'expedientes.fecha_infonavit',
+                                'expedientes.fecha_firma_esc',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido'
                             )
@@ -4252,7 +4289,7 @@ class ExpedienteController extends Controller
                             ->where('expedientes.fecha_ingreso','!=',NULL)
                             ->where('expedientes.valor_escrituras','!=',0)
                             ->where('expedientes.fecha_infonavit','!=',NULL)
-                            ->where('expedientes.liquidado','=',0)
+                            ->where('expedientes.liquidado','=',1)
                             
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.num_lote', '=', $b_lote)
@@ -4279,15 +4316,18 @@ class ExpedienteController extends Controller
                                 'creditos.manzana',
                                 'creditos.num_lote',
                                 'creditos.precio_venta',
-                                'creditos.credito_solic',
                                 'licencias.avance as avance_lote',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
                                 'i.fecha_vigencia',
+                                'i.monto_credito as credito_solic',
+                                'i.cobrado',
+                                'i.segundo_credito',
                                 'contratos.avaluo_preventivo',
                                 'contratos.aviso_prev',
                                 'contratos.aviso_prev_venc',
+                                'contratos.saldo',
                                 'lotes.regimen_condom',
                                 'lotes.credito_puente',
                                 DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
@@ -4305,6 +4345,7 @@ class ExpedienteController extends Controller
                                 'expedientes.fovissste',
                                 'expedientes.total_liquidar',
                                 'expedientes.fecha_infonavit',
+                                'expedientes.fecha_firma_esc',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido'
                             )
@@ -4315,7 +4356,7 @@ class ExpedienteController extends Controller
                             ->where('expedientes.fecha_ingreso','!=',NULL)
                             ->where('expedientes.valor_escrituras','!=',0)
                             ->where('expedientes.fecha_infonavit','!=',NULL)
-                            ->where('expedientes.liquidado','=',0)
+                            ->where('expedientes.liquidado','=',1)
                             
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.num_lote', '=', $b_lote)
@@ -4463,6 +4504,17 @@ class ExpedienteController extends Controller
 
         $pdf = \PDF::loadview('pdf.contratos.liquidacion', ['liquidacion' => $liquidacion , 'gastos' => $gastos, 'pagares' => $pagares]);
         return $pdf->stream('Liquidacion.pdf');
+    }
+
+    public function generarInstruccionNot(Request $request){
+        $asignar = Expediente::findOrFail($request->folio);
+        $asignar->fecha_firma_esc =  $request->fecha_firma_esc;
+        $asignar->notaria_id =  $request->notaria_id;
+        $asignar->notario =  $request->notario;
+        $asignar->notaria =  $request->notaria;
+        $asignar->hora_firma =  $request->hora_firma;
+        $asignar->direccion_firma =  $request->direccion_firma;
+        $asignar->save();
     }
 
 }

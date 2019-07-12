@@ -9,6 +9,7 @@ use App\Personal;
 use App\Cliente;
 use App\inst_seleccionada;
 use App\Vendedor;
+use App\Cliente_observacion;
 use DB;
 use App\User;
 use App\Notifications\NotifyAdmin;

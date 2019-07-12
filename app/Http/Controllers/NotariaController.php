@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Notaria;
+use Mockery\Matcher\Not;
 
 class NotariaController extends Controller
 {
@@ -86,5 +87,14 @@ class NotariaController extends Controller
                              ->get();
 
         return['notarias' => $notarias];
+    }
+
+    public function getDatosNotaria (Request $request){
+        
+        $datos = Notaria::select('notaria','titular','direccion','colonia','cp')
+                            ->where('id','=', $request->id)->get();
+
+        
+        return ['notarias' => $datos];
     }
 }

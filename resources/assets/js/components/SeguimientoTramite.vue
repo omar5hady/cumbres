@@ -454,8 +454,8 @@
                                             <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_manzana" class="form-control" placeholder="Manzana a buscar">
                                             <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
 
-                                            <input v-else type="datetime-local"  v-model="buscar" @keyup.enter="listarContratos(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
-                                            <button type="submit" @click="listarContratos(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                            <input v-else type="text"  v-model="buscar" @keyup.enter="listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
+                                            <button type="submit" @click="listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                         
                                         </div>
                                     </div>
@@ -546,7 +546,7 @@
                                                 <td class="td2" v-text="'$'+formatNumber(programacion.precio_venta)"></td>
                                                 <td class="td2" v-text="'$'+formatNumber(programacion.valor_escrituras)"></td>
                                                 
-                                                <template v-if="programacion.fecha_infonavit">
+                                                <template>
                                                     <td v-if="programacion.fecha_infonavit!='0000-01-01'" class="td2" v-text="this.moment(programacion.fecha_infonavit).locale('es').format('DD/MMM/YYYY')"></td>
                                                     <td v-if="programacion.fecha_infonavit=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
                                                 </template>
@@ -554,11 +554,13 @@
                                                 <td class="td2">
                                                   <a class="btn btn-warning btn-sm" target="_blank" v-bind:href="'/expediente/liquidacionPDF/'+programacion.folio">Imprimir</a>
                                                 </td>
-                                                <td class="td2" v-if="!fecha_firma_esc">
-                                                    <button title="Imprimir liquidación" type="button" class="btn btn-warning pull-right" 
-                                                        @click="abrirModal('firma_esc',programacion)">Generar</button>
+
+                                                
+                                                <td class="td2" v-if="programacion.fecha_firma_esc" v-text="programacion.fecha_firma_esc"></td>
+                                                <td class="td2" v-else>
+                                                    <button title="Programar Firma" type="button" class="btn btn-warning pull-right" 
+                                                    @click="abrirModal('firma_esc',programacion)">Generar</button>
                                                 </td>
-                                                <td class="td2" v-else v-text="programacion.fecha_firma_esc"></td>
 
                                                 <td class="td2" v-text="'$'+formatNumber(programacion.saldo)"></td>
                                                 <td class="td2" v-text="'FALTAN DOCUMENTOS'"></td>
@@ -679,7 +681,7 @@
             </div>
             <!--Fin del modal -->
 
-              <!--Inicio modal Liquidación-->
+            <!--Inicio modal Liquidación-->
             <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
                 <div class="modal-dialog modal-primary modal-lg" role="document">
                     <div class="modal-content">
@@ -1104,6 +1106,200 @@
             </div>
             <!--Fin del modal -->
 
+            <!--Inicio modal Firma de escrituras-->
+            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal5}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" v-text="tituloModal"></h4>
+                            <button type="button" class="close" @click="cerrarModal5()" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- form para captura de fecha recibido -->
+                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input">Estado</label>
+                                        <div class="col-md-3">
+                                            <select class="form-control" v-model="estado" @click="selectCiudades(estado)">
+                                                <option value=""> Seleccione </option>
+                                                <option value="San Luis Potosí">San Luis Potosí</option>
+                                                <option value="Baja California">Baja California</option>
+                                                <option value="Baja California Sur">Baja California Sur</option>
+                                                <option value="Coahuila de Zaragoza">Coahuila de Zaragoza</option>
+                                                <option value="Colima">Colima</option>
+                                                <option value="Chiapas">Chiapas</option>
+                                                <option value="Chihuahua">Chihuahua</option>
+                                                <option value="Ciudad de México">Ciudad de México</option>
+                                                <option value="Durango">Durango</option>
+                                                <option value="Guanajuato">Guanajuato</option>
+                                                <option value="Guerrero">Guerrero</option>
+                                                <option value="Hidalgo">Hidalgo</option>
+                                                <option value="Jalisco">Jalisco</option>
+                                                <option value="México">México</option>
+                                                <option value="Michoacán de Ocampo">Michoacán de Ocampo</option>
+                                                <option value="Morelos">Morelos</option>
+                                                <option value="Nayarit">Nayarit</option>
+                                                <option value="Nuevo León">Nuevo León</option>
+                                                <option value="Oaxaca">Oaxaca</option>
+                                                <option value="Puebla">Puebla</option>
+                                                <option value="Querétaro">Querétaro</option>
+                                                <option value="Quintana Roo">Quintana Roo</option>
+                                                <option value="Sinaloa">Sinaloa</option>
+                                                <option value="Sonora">Sonora</option>
+                                                <option value="Tabasco">Tabasco</option>
+                                                <option value="Tamaulipas">Tamaulipas</option>
+                                                <option value="Tlaxcala">Tlaxcala</option>
+                                                <option value="Veracruz de Ignacio de la Llave">Veracruz de Ignacio de la Llave</option>
+                                                <option value="Yucatán">Yucatán</option>
+                                                <option value="Zacatecas">Zacatecas</option>
+                                            </select>
+                                            <!--<input type="text" v-model="estado" class="form-control" placeholder="Estado">-->
+                                        </div>
+                                        <label class="col-md-2 form-control-label" for="text-input">Ciudad</label>
+                                        <div class="col-md-3">
+                                            <select class="form-control" v-model="ciudad" @click="selectNotarias(estado,ciudad)">
+                                                <option value=""> Seleccione </option>
+                                                <option v-for="ciudades in arrayCiudades" :key="ciudades.municipio" :value="ciudades.municipio" v-text="ciudades.municipio"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input">Notarias</label>
+                                        <div class="col-md-3">
+                                            <select class="form-control" v-model="notaria_id" @click="mostrarDatosNotaria(notaria_id)">
+                                                <option value=0> Seleccione </option>
+                                                <option v-for="notarias in arrayNotarias" :key="notarias.id" :value="notarias.id" v-text="notarias.notaria"></option>
+                                            </select>
+                                        </div>
+
+                                        <label class="col-md-2 form-control-label" for="text-input" v-if="notaria_id != 0">Notario</label>
+                                        <div class="col-md-4" v-if="notaria_id != 0">
+                                            <input type="text" disabled v-model="notario" class="form-control">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row" v-if="notaria_id != 0">
+                                        <label class="col-md-2 form-control-label" for="text-input">Direccion</label>
+                                        <div class="col-md-6">
+                                           <input type="text" v-model="direccion_firma" class="form-control">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row line-separator"></div>
+
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input">Proyecto</label>
+                                        <div class="col-md-3">
+                                            <input type="text" disabled v-model="proyecto" class="form-control" >
+                                        </div>
+
+                                        <label class="col-md-1 form-control-label" for="text-input">Etapa</label>
+                                        <div class="col-md-2">
+                                            <input type="text" disabled v-model="etapa" class="form-control">
+                                        </div>
+
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input">Manzana</label>
+                                        <div class="col-md-3">
+                                            <input type="text" disabled v-model="manzana" class="form-control" >
+                                        </div>
+
+                                        <label class="col-md-1 form-control-label" for="text-input">Lote</label>
+                                        <div class="col-md-2">
+                                            <input type="text" disabled v-model="lote" class="form-control">
+                                        </div>
+
+                                    </div>
+
+                                    <div class="form-group row line-separator"></div>
+
+                                    
+
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input"><strong> Valor de venta </strong></label>
+                                        <div class="col-md-3">
+                                            <h6><strong> ${{ formatNumber(valor_venta)}} </strong></h6>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input"> Credito autorizado </label>
+                                        <div class="col-md-3">
+                                            <h6> ${{ formatNumber(monto_credito)}} </h6>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row" v-if="infonavit!=0">
+                                        <label class="col-md-2 form-control-label" for="text-input"> Infonavit </label>
+                                        <div class="col-md-3">
+                                            <h6> ${{ formatNumber(infonavit)}} </h6>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row" v-if="fovissste!=0">
+                                        <label class="col-md-2 form-control-label" for="text-input"> Fovissste </label>
+                                        <div class="col-md-3">
+                                            <h6> ${{ formatNumber(fovissste)}} </h6>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-md-2 form-control-label" for="text-input"> Diferencia </label>
+                                        <div class="col-md-3">
+                                            <h6> ${{ formatNumber(diferencia)}} </h6>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row line-separator"></div>
+
+                                    <div class="form-group row">  
+                                        <label class="col-md-3 form-control-label" for="text-input">Fecha firma de escrituras</label>
+                                        <div class="col-md-3">
+                                            <input type="date" v-model="fecha_firma_esc" class="form-control">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">  
+                                        <label class="col-md-3 form-control-label" for="text-input">Hora</label>
+                                        <div class="col-md-3">
+                                            <input type="time" v-model="hora_firma" class="form-control">
+                                        </div>
+                                    </div>
+
+
+                                    <!-- Div para mostrar los errores que mande validerDepartamento -->
+                                <div v-show="errorProgramacionFirma" class="form-group row div-error">
+                                    <div class="text-center text-error">
+                                        <div v-for="error in errorMostrarMsjProgramacion" :key="error" v-text="error">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                
+                                    
+                                    
+                            </form>
+                            
+
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal5()">Cerrar</button>
+                            <button type="button" class="btn btn-primary" @click="generarInstNot()">Generar</button>
+                        </div>
+                    </div>
+                      <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!--Fin del modal -->
+
             <!--Inicio del modal observaciones-->
             <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal3}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
                 <div class="modal-dialog modal-primary modal-lg" role="document">
@@ -1187,12 +1383,18 @@
                 arrayGastos:[],
 
                 arrayPagos: [],
+                arrayCiudades:[],
+                arrayNotarias:[],
+                arrayDatosNotaria: [],
 
                 errorIngreso:0,
                 errorMostrarMsjIngreso:[],
 
                 errorLiquidacion: 0,
                 errorMostrarMsjLiquidacion: [],
+
+                errorProgramacionFirma: 0,
+                errorMostrarMsjProgramacion: [],
                 
                 //variables para filtros de Por ingresar
                 criterio:'lotes.fraccionamiento_id',
@@ -1243,6 +1445,15 @@
                 avaluo:0,
                 total_liquidar:0,
                 total_liquidar1:0,
+                estado:'',
+                ciudad:'',
+                notaria_id:0,
+                notaria:'',
+                direccion_firma:'',
+                fecha_firma_esc: '',
+                notario:'',
+                diferencia: 0,
+                hora_firma:'',
 
                 int_oridinario:0,
                 int_moratorio:0,
@@ -1261,6 +1472,7 @@
                 modal2:0,
                 modal3 :0,
                 modal4:0,
+                modal5:0,
                 tituloModal:'',
                 tituloModal3:'Observaciones',
                 observacion:'',
@@ -1317,6 +1529,49 @@
                     console.log(error);
                 });
                 
+            },
+
+            selectCiudades(buscar){
+                let me = this;
+                me.arrayCiudades=[];
+                var url = '/select_ciudades?buscar=' + buscar;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayCiudades = respuesta.ciudades;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
+            selectNotarias(estado, ciudad){
+                let me = this;
+                me.arrayNotarias=[];
+                var url = '/select_notarias?estado=' + estado + '&ciudad=' + ciudad;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayNotarias = respuesta.notarias;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
+             mostrarDatosNotaria(notaria){
+                let me = this;
+                me.arrayDatosNotaria=[];
+                var url = '/select_datos_notaria?id=' + notaria;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                        me.arrayDatosNotaria = respuesta.notarias;
+                        me.notaria = me.arrayDatosNotaria[0]['notaria'];
+                        me.notario = me.arrayDatosNotaria[0]['titular'];
+                        me.direccion_firma = me.arrayDatosNotaria[0]['direccion'] + ', ' + me.arrayDatosNotaria[0]['colonia'] + ', C.P. ' + me.arrayDatosNotaria[0]['cp'];
+
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
             },
 
             selectFraccionamientos(){
@@ -1576,6 +1831,7 @@
                     me.listarIngresoExp(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
                     me.listarAutorizados(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
                     me.listarLiquidacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                    me.listarProgramacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
                     //window.alert("Cambios guardados correctamente");
                     const toast = Swal.mixin({
                         toast: true,
@@ -1614,6 +1870,7 @@
                     me.listarIngresoExp(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
                     me.listarAutorizados(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
                     me.listarLiquidacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                    me.listarProgramacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
                     //window.alert("Cambios guardados correctamente");
                     const toast = Swal.mixin({
                         toast: true,
@@ -1624,6 +1881,45 @@
                         toast({
                         type: 'success',
                         title: 'Liquidacion generada correctamente'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
+            generarInstNot(){
+                if(this.validarProgramacion()){
+                    return;
+                }
+
+                let me = this;
+                //Con axios se llama el metodo update de LoteController
+                axios.put('/expediente/generarInstruccionNot',{
+                    'folio':this.id,
+                    'fecha_firma_esc' : this.fecha_firma_esc,
+                    'notaria_id' : this.notaria_id,
+                    'notaria' : this.notaria,
+                    'notario' : this.notario,
+                    'hora_firma' : this.hora_firma,
+                    'direccion_firma': this.direccion_firma
+                    
+                }).then(function (response){
+                   
+                    me.cerrarModal5();
+                    me.listarIngresoExp(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                    me.listarAutorizados(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                    me.listarLiquidacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                    me.listarProgramacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                    //window.alert("Cambios guardados correctamente");
+                    const toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                        });
+                        toast({
+                        type: 'success',
+                        title: 'Programacion de firma generada correctamente'
                     })
                 }).catch(function (error){
                     console.log(error);
@@ -1653,6 +1949,7 @@
                     me.listarIngresoExp(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
                     me.listarAutorizados(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
                     me.listarLiquidacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                    me.listarProgramacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
                     //window.alert("Cambios guardados correctamente");
                     const toast = Swal.mixin({
                         toast: true,
@@ -1686,6 +1983,7 @@
                     me.listarIngresoExp(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
                     me.listarAutorizados(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
                     me.listarLiquidacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                    me.listarProgramacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
                     //window.alert("Cambios guardados correctamente");
                     const toast = Swal.mixin({
                         toast: true,
@@ -1833,6 +2131,23 @@
                 return this.errorLiquidacion;
             },
 
+            validarProgramacion(){
+                this.errorProgramacionFirma=0;
+                this.errorMostrarMsjProgramacion=[];
+
+                if(this.notaria== '') //Si la variable departamento esta vacia
+                    this.errorMostrarMsjProgramacion.push("Seleccionar notaria.");
+
+                if(this.fecha_firma_esc== '') //Si la variable departamento esta vacia
+                    this.errorMostrarMsjProgramacion.push("Ingresar fecha para firma de escrituras.");
+
+                              
+                if(this.errorMostrarMsjProgramacion.length)//Si el mensaje tiene almacenado algo en el array
+                    this.errorProgramacionFirma = 1;
+
+                return this.errorProgramacionFirma;
+            },
+
             noAplicaInfonavit(id){
                 this.id = id;
                 swal({
@@ -1964,6 +2279,31 @@
 
                         break;
                     }
+
+                    case 'firma_esc': 
+                    {
+                        this.modal5 = 1;
+                        this.tituloModal='Instrucción Notarial';
+                        this.id = data['folio'];
+                        this.proyecto = data['proyecto'];
+                        this.etapa = data['etapa'];
+                        this.manzana = data['manzana'];
+                        this.lote = data['num_lote'];
+                        this.valor_venta = data['precio_venta'];
+                        this.monto_credito = data['credito_solic'];
+                        this.infonavit = data['infonavit'];
+                        this.fovissste = data['fovissste'];
+                        this.diferencia = parseFloat(this.valor_venta) - parseFloat(this.monto_credito) - 
+                                            parseFloat(this.infonavit) - parseFloat(this.fovissste);
+
+                        this.hora_firma = '';
+                        this.notaria_id = 0;
+                        this.estado = '';
+                        this.ciudad = '';
+                    
+
+                        break;
+                    }
                 }
 
             },
@@ -1985,6 +2325,26 @@
             cerrarModal4(){
                 this.tituloModal = '';
                 this.modal4 = 0;                
+            },
+
+            cerrarModal5(){
+                this.modal5 = 0;
+                this.tituloModal='';
+                this.id = 0;
+                this.proyecto = "";
+                this.etapa = "";
+                this.manzana = "";
+                this.lote = "";
+                this.valor_venta = 0;
+                this.monto_credito = 0;
+                this.infonavit = 0;
+                this.fovissste = 0;
+                this.diferencia = 0;
+
+                this.hora_firma = '';
+                this.notaria_id = 0;
+                this.estado = '';
+                this.ciudad = '';
             },
 
             cerrarModal3(){

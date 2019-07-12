@@ -378,6 +378,9 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/deposito/actualizar','DepositoController@update');
         Route::get('deposito/reciboPDF/{id}','DepositoController@reciboPDF');
 
+        //////////////////////////////// RUTAS MODULO SALDOS ////////////////////////////
+        Route::get('/estadoCuenta/index','DepositoController@indexEstadoCuenta');
+
 
 
         /************************** RUTAS ESTADISTICAS ***************************/
@@ -437,6 +440,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/expediente/inscInfonavit','ExpedienteController@inscribirInfonavit');
         Route::put('/expediente/InfonavitNoAplica','ExpedienteController@noAplicaInfonavit');
         Route::put('/expediente/generarLiquidacion','ExpedienteController@setLiquidacion');
+        Route::put('/expediente/generarInstruccionNot','ExpedienteController@generarInstruccionNot');
 
         Route::post('/expediente/generarPagares','ExpedienteController@generarPagares');
 
@@ -504,6 +508,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/select_rfcs','PersonalController@selectRFC');
         Route::get('/select_notarias','NotariaController@select_notarias');
         Route::get('/select_gestores','PersonalController@select_gestores');
+
+        Route::get('/select_datos_notaria','NotariaController@getDatosNotaria'); 
     
     
 });
