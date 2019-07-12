@@ -33,7 +33,7 @@
                             </div>
                         </div>
                         <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-sm">
+                            <table class="table1 table-bordered table-striped table-sm">
                                 <thead>
                                     <tr>
                                         <th>Opciones</th>
@@ -466,6 +466,17 @@
     }
 </script>
 <style>
+
+    .table1{
+    margin: auto;
+    border-collapse: collapse;
+    overflow-x: auto;
+    display: block;
+    width: fit-content;
+    max-width: 120%;
+    box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
+    }
+
     .modal-content{
         width: 100% !important;
         position: absolute !important;

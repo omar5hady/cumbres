@@ -443,6 +443,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/expediente/pagaresExpediente','ExpedienteController@pagaresExpediente');
         Route::get('/expediente/gastosExpediente','GastosAdministrativosController@getGastos');
 
+        Route::get('/expediente/liquidacionPDF/{id}','ExpedienteController@liquidacionPDF');
+
     });
 
 

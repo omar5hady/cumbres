@@ -24,7 +24,7 @@
                     </div>
                     <div class="card-body" v-if="resumen==0">
                         
-                        <table class="table table-bordered table-striped table-sm">
+                        <table class="table1 table-bordered table-striped table-sm">
                             <thead>
                                 <tr>
                                     <th>Opciones</th>
@@ -678,6 +678,16 @@
         position: absolute !important;
         
     }
+    .table1{
+    margin: auto;
+    border-collapse: collapse;
+    overflow-x: auto;
+    display: block;
+    width: fit-content;
+    max-width: 100%;
+    box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
+    }
+
     .mostrar{
         display: list-item !important;
         opacity: 1 !important;

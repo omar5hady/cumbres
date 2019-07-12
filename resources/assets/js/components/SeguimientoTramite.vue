@@ -552,8 +552,7 @@
                                                 </template>
 
                                                 <td class="td2">
-                                                    <button title="Imprimir liquidación" type="button" class="btn btn-warning pull-right" 
-                                                        @click="imprimir(programacion)">Imprimir</button>
+                                                  <a class="btn btn-warning btn-sm" target="_blank" v-bind:href="'/expediente/liquidacionPDF/'+programacion.folio">Imprimir</a>
                                                 </td>
                                                 <td class="td2" v-if="!fecha_firma_esc">
                                                     <button title="Imprimir liquidación" type="button" class="btn btn-warning pull-right" 

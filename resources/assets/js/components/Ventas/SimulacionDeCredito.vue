@@ -746,7 +746,7 @@
                                                     
                                                     <div class="col-md-3">
                                                         <div class="form-group">
-                                                            <select class="form-control" v-model="manzana" @click="selectLotes(manzana, etapa)">
+                                                            <select class="form-control" v-model="manzana" @click="selectLotes(manzana, etapa, proyecto_interes_id)">
                                                                     <option v-for="manzanas in arrayManzanas" :key="manzanas.manzana" :value="manzanas.manzana" v-text="manzanas.manzana"></option>
                                                             </select>
                                                         </div>
@@ -2641,10 +2641,10 @@
                     me.costoPaquete=0;
                 }
             },
-            selectLotes(manzana,etapa){
+            selectLotes(manzana,etapa, fraccionamiento){
                 let me = this;
                 me.arrayLotes=[];
-                var url = '/select_lotes_disp?buscar=' + manzana + '&buscar2=' + etapa;
+                var url = '/select_lotes_disp?buscar=' + manzana + '&buscar2=' + etapa + '&buscar3=' + fraccionamiento;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                      me.arrayLotes = respuesta.lotes_disp;
@@ -3511,7 +3511,7 @@
             this.selectEtapa(this.proyecto_interes_id);
             this.selectManzana(this.etapa);
             this.datosPaquetes(this.paquete_id);
-            this.selectLotes(this.manzana, this.etapa);
+            this.selectLotes(this.manzana, this.etapa, this.proyecto_interes_id);
             this.mostrarDatosLote(this.lote);
             this.selectLugarContacto();
             this.selectCreditos();

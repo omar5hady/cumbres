@@ -13,7 +13,8 @@ use Carbon\Carbon;
 use App\Pago_contrato;
 use App\Liquidacion;
 use App\inst_seleccionada;
-
+use App\Gasto_admin;
+use NumerosEnLetras;
 
 class ExpedienteController extends Controller
 {
@@ -3674,9 +3675,6 @@ class ExpedienteController extends Controller
                 ->where('expedientes.valor_escrituras','!=',0)
                 ->where('expedientes.fecha_infonavit','!=',NULL)
                 ->where('expedientes.liquidado','=',1)
-
-                
-                
                 ->orderBy('contratos.id','asc')
                 ->get();
         }
@@ -4337,6 +4335,134 @@ class ExpedienteController extends Controller
             'contratos' => $contratos,
             'contador' => $contador
         ];
+    }
+    
+    public function liquidacionPDF($id){
+        $liquidacion = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+        ->leftJoin('avaluos','contratos.id','=','avaluos.contrato_id')
+        ->join('expedientes','contratos.id','=','expedientes.id')
+        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+        ->join('licencias', 'lotes.id', '=', 'licencias.id')
+        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+        ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+        ->join('personal as c', 'clientes.id', '=', 'c.id')
+        ->join('personal as v', 'vendedores.id', '=', 'v.id')
+        ->join('personal as g', 'expedientes.gestor_id','=','g.id')
+        ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+        ->select(
+            'contratos.id as folio',
+            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+            DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
+            DB::raw("CONCAT(g.nombre,' ',g.apellidos) AS nombre_gestor"),
+            'c.rfc as rfc_cliente',
+            'c.homoclave as homoclave_cliente',
+            'c.direccion','c.colonia','c.cp','c.telefono',
+            'clientes.ciudad','clientes.estado',
+            'creditos.fraccionamiento as proyecto',
+            'creditos.etapa',
+            'creditos.manzana',
+            'creditos.num_lote',
+            'creditos.modelo',
+            'creditos.precio_venta',
+            'contratos.fecha_status',
+            'i.tipo_credito',
+            'i.institucion',
+            'i.fecha_vigencia',
+            'i.monto_credito as credito_solic',
+            'i.cobrado',
+            'i.segundo_credito',
+            'contratos.avaluo_preventivo',
+            'contratos.aviso_prev',
+            'contratos.aviso_prev_venc',
+            'contratos.saldo',
+            DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
+            'clientes.rfc_coa as rfc_conyuge',
+            'clientes.homoclave_coa as homoclave_coa',
+            'clientes.coacreditado',
+            'contratos.integracion',
+            'lotes.fraccionamiento_id',
+            'expedientes.valor_escrituras',
+            'expedientes.fecha_liquidacion',
+            'expedientes.liquidado',
+            'expedientes.infonavit',
+            'expedientes.fovissste',
+            'expedientes.total_liquidar',
+            'expedientes.notaria',
+            'expedientes.fecha_firma_esc',
+            'expedientes.interes_ord',
+            'expedientes.descuento',
+            'lotes.calle','lotes.numero','lotes.interior',
+            'avaluos.resultado','avaluos.fecha_recibido'
+        )
+        ->where('i.elegido', '=', 1)
+        ->where('i.status','=',2)
+        ->where('contratos.status', '!=', 0)
+        ->where('contratos.status', '!=', 2)
+        ->where('expedientes.fecha_ingreso','!=',NULL)
+        ->where('expedientes.valor_escrituras','!=',0)
+        ->where('expedientes.fecha_infonavit','!=',NULL)
+        ->where('expedientes.liquidado','=',1)
+        ->where('contratos.id', '=', $id)
+        ->orderBy('contratos.id','asc')
+        ->get();
+
+        $depositos = Pago_contrato::select('monto_pago','restante')->where('contrato_id','=',$id)->get();
+        $suma= 0;
+        for($i = 0; $i < count($depositos); $i++){
+             $resta = $depositos[$i]->monto_pago - $depositos[$i]->restante;
+             $suma = $suma + $resta;
+             $liquidacion[0]->sumaDepositos = $suma;
+        }
+
+        $gastos=Gasto_admin::select('concepto','costo','id')
+        ->where('contrato_id','=',$id)
+        ->get();
+
+        for($i = 0; $i < count($gastos); $i++){
+            $gastos[$i]->costo = number_format((float)$gastos[$i]->costo, 2, '.', ',');
+        }
+
+       $pagares = Pago_contrato::select('fecha_pago','restante','num_pago')->where('pagado','<',2)->where('contrato_id','=',$id)->get();
+       setlocale(LC_TIME, 'es_MX.utf8');
+
+       for($i = 0; $i < count($pagares); $i++){
+        $pagares[$i]->restante1 = number_format((float)$pagares[$i]->restante, 2, '.', ',');
+        $fecha3 = $pagares[$i]->fecha_pago;
+        $tiempo4 = new Carbon($fecha3);
+        $pagares[$i]->fecha_pago_letra = $tiempo4->formatLocalized('%d de %B de %Y');
+        $pagares[$i]->montoPagoLetra = NumerosEnLetras::convertir($pagares[$i]->restante, 'Pesos', true, 'Centavos');
+       }
+
+       $totalRestante = Pago_contrato::select(DB::raw("SUM(restante) as sumRestante"))
+       ->groupBy('contrato_id')
+       ->where('pagado','<',2)
+       ->where('contrato_id','=',$id)
+       ->get();
+       
+       $liquidacion[0]->totalRestante = $totalRestante[0]->sumRestante;
+
+
+        $liquidacion[0]->valor_escrituras = number_format((float)$liquidacion[0]->valor_escrituras, 2, '.', ',');
+        $liquidacion[0]->precio_venta = number_format((float)$liquidacion[0]->precio_venta, 2, '.', ',');
+        $liquidacion[0]->interes_ord = number_format((float)$liquidacion[0]->interes_ord, 2, '.', ',');
+        $liquidacion[0]->credito_solic = number_format((float)$liquidacion[0]->credito_solic, 2, '.', ',');
+        $liquidacion[0]->sumaDepositos = number_format((float)$liquidacion[0]->sumaDepositos, 2, '.', ',');
+        $liquidacion[0]->fovissste = number_format((float)$liquidacion[0]->fovissste, 2, '.', ',');
+        $liquidacion[0]->infonavit = number_format((float)$liquidacion[0]->infonavit, 2, '.', ',');
+        $liquidacion[0]->descuento = number_format((float)$liquidacion[0]->descuento, 2, '.', ',');
+        $liquidacion[0]->totalRestante = number_format((float)$liquidacion[0]->totalRestante, 2, '.', ',');
+
+        
+        $fecha1 = new Carbon($liquidacion[0]->fecha_firma_esc);
+        $liquidacion[0]->fecha_firma_esc = $fecha1->formatLocalized('%d de %B de %Y');
+
+        $fecha2 = new Carbon($liquidacion[0]->fecha_liquidacion);
+        $liquidacion[0]->fecha_liquidacion = $fecha2->formatLocalized('%d de %B de %Y');
+
+
+
+        $pdf = \PDF::loadview('pdf.contratos.liquidacion', ['liquidacion' => $liquidacion , 'gastos' => $gastos, 'pagares' => $pagares]);
+        return $pdf->stream('Liquidacion.pdf');
     }
 
 }

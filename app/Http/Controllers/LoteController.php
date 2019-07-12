@@ -2584,6 +2584,7 @@ class LoteController extends Controller
         
         $manzana = $request->buscar;
         $etapa = $request->buscar2;
+        $fraccionamiento = $request->buscar3;
         $lotes_disp = Lote::join('etapas','lotes.etapa_id','=','etapas.id')
                     ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
                     ->select('lotes.num_lote','lotes.id')
@@ -2592,11 +2593,13 @@ class LoteController extends Controller
                     ->where('lotes.contrato','=',0)
                     ->where('etapas.num_etapa', 'like', '%'. $etapa .'%' )
                     ->where('lotes.manzana','=',$manzana)
+                    ->where('lotes.fraccionamiento_id','=',$fraccionamiento)
                     ->orWhere('lotes.habilitado','=',1)
                     ->where('apartados.vendedor_id','=',Auth::user()->id)
                     ->where('lotes.contrato','=',0)
                     ->where('etapas.num_etapa', 'like', '%'. $etapa .'%' )
                     ->where('lotes.manzana','=',$manzana)
+                    ->where('lotes.fraccionamiento_id','=',$fraccionamiento)
                     ->orderBy('lotes.num_lote','ASC')
                     ->get();
         return ['lotes_disp' => $lotes_disp];

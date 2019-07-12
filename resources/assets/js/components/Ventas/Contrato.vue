@@ -1513,7 +1513,7 @@
                             <div class="form-group row" v-if="tipoAccion==2">
                                 <label class="col-md-3 form-control-label" for="text-input">Manzana</label>
                                 <div class="col-md-9">
-                                    <select class="form-control" v-model="sel_manzana" @click="selectLotes(sel_manzana, sel_etapa)">
+                                    <select class="form-control" v-model="sel_manzana" @click="selectLotes(sel_manzana, sel_etapa, sel_proyecto)">
                                             <option value=''> Seleccione </option>
                                             <option v-for="manzanas in arrayManzanas" :key="manzanas.manzana" :value="manzanas.manzana" v-text="manzanas.manzana"></option>
                                     </select>
@@ -1962,10 +1962,10 @@
                     console.log(error);
                 });
             },
-            selectLotes(manzana,etapa){
+            selectLotes(manzana,etapa,fraccionamiento){
                 let me = this;
                 me.arrayLotes=[];
-                var url = '/select_lotes_disp?buscar=' + manzana + '&buscar2=' + etapa;
+                var url = '/select_lotes_disp?buscar=' + manzana + '&buscar2=' + etapa + '&buscar3=' + fraccionamiento;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                      me.arrayLotes = respuesta.lotes_disp;
