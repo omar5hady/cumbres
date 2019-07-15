@@ -93,6 +93,7 @@ Vue.component('listar-notifications', require('./components/ListarNotifications.
 Vue.component('datos-extra', require('./components/EstaditicaDatosExtra.vue'));
 Vue.component('avaluos', require('./components/Avaluos.vue'));
 Vue.component('gastos-admin', require('./components/GastosAdministrativos.vue'));
+Vue.component('estado-cuenta', require('./components/EstadoCuenta.vue'));
 
 const app = new Vue({
     el: '#app',

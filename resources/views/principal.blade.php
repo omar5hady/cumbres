@@ -71,7 +71,7 @@
                         <a class="nav-link active" href="#"><i class="icon-speedometer"></i> Escritorio</a>
                     </li>
                     <li class="nav-title">
-                    <strong>ADMINISTRADOR</strong> 
+                    <strong>Menu</strong> 
                     </li>
                     @if(Auth::user()->administracion == 1)
                         <li class="nav-item nav-dropdown">
@@ -312,12 +312,16 @@
                         <li class="nav-item nav-dropdown">
                             <a class="nav-link nav-dropdown-toggle" href="#"><i class="fa fa-calculator"></i> Saldos</a>
                             <ul class="nav-dropdown-items">
+                                    <li @click="menu=206" class="nav-item">
+                                            <a class="nav-link" href="#"><i class="fa fa-dollar"></i> Estado de cuenta</a>
+                                        </li>
                                     <li @click="menu=200" class="nav-item">
                                         <a class="nav-link" href="#"><i class="fa fa-money"></i> Depositos</a>
                                     </li>
                                     <li @click="menu=205" class="nav-item">
                                         <a class="nav-link" href="#"><i class="fa fa-money"></i> Gastos administrativos</a>
                                     </li>
+                                    
                             </ul>
                         </li>
                     @endif

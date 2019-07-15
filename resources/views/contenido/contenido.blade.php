@@ -279,8 +279,6 @@
         <template v-if="menu==201">
             <expediente></expediente>
         </template>
-
-        
         <template v-if="menu==202">
             <asignargestor></asignargestor>
         </template>
@@ -292,6 +290,9 @@
         </template>
         <template v-if="menu==205">
             <gastos-admin></gastos-admin>
+        </template>
+        <template v-if="menu==206">
+            <estado-cuenta></estado-cuenta>
         </template>
 
         

@@ -556,14 +556,21 @@
                                                 </td>
 
                                                 
-                                                <td class="td2" v-if="programacion.fecha_firma_esc" v-text="programacion.fecha_firma_esc"></td>
+                                                <td class="td2" v-if="programacion.fecha_firma_esc" v-text="this.moment(programacion.fecha_firma_esc).locale('es').format('DD/MMM/YYYY')"></td>
                                                 <td class="td2" v-else>
                                                     <button title="Programar Firma" type="button" class="btn btn-warning pull-right" 
                                                     @click="abrirModal('firma_esc',programacion)">Generar</button>
                                                 </td>
 
                                                 <td class="td2" v-text="'$'+formatNumber(programacion.saldo)"></td>
-                                                <td class="td2" v-text="'FALTAN DOCUMENTOS'"></td>
+
+                                                <td class="td2" v-if="programacion.fecha_firma_esc">
+                                                    <button title="Programar Firma" type="button" class="btn btn-warning pull-right" 
+                                                        @click="abrirModal('firma_esc',programacion)">Solicitar
+                                                    </button>
+                                                </td>
+                                                <td class="td2" v-else>Faltan Documentos
+                                                </td>
                                                 <td class="td2" v-text="'Saldo Pendiente ó sin solicitud'"></td>
 
                                                 <td class="td2">

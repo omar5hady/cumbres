@@ -911,7 +911,7 @@ class UserController extends Controller
                                 'users.acceso','users.reportes','users.rol_id',
                                 //Administracion
                                 'users.departamentos','users.personas','users.empresas','users.medios_public','users.lugares_contacto','users.servicios',
-                                'users.inst_financiamiento','users.tipos_credito','users.asig_servicios','users.mis_asesores','users.cuenta',
+                                'users.inst_financiamiento','users.tipos_credito','users.asig_servicios','users.mis_asesores','users.cuenta','users.notaria',
                                 //Desarrollo
                                 'users.fraccionamiento','users.etapas','users.modelos','users.lotes','users.asign_modelos','users.licencias',
                                 'users.acta_terminacion','users.p_etapa','users.p_fraccionamiento',

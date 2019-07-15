@@ -410,8 +410,8 @@ class DepositoController extends Controller
         $b_manzana = $request->b_manzana;
         $criterio = $request->criterio;
 
-        if($buscar == ''){
-            $prueba = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
+        if($buscar == '' && $criterio!='c.nombre'){
+            $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
                             ->leftJoin('creditos','contratos.id','=','creditos.id')
                             ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                             ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -453,14 +453,16 @@ class DepositoController extends Controller
 
                                     )
                             ->where('i.elegido', '=', 1)
-                            ->get();
+                            ->orderBy('contratos.saldo','desc')
+                            ->orderBy('contratos.id','asc')
+                            ->paginate(15);
 
         }
         else{
             switch($criterio){
                 case 'c.nombre':{
                     if($buscar2 == ''){
-                        $prueba = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
+                        $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
                             ->leftJoin('creditos','contratos.id','=','creditos.id')
                             ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                             ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -503,10 +505,12 @@ class DepositoController extends Controller
                                     )
                             ->where('i.elegido', '=', 1)
                             ->where('c.nombre','like','%'. $buscar . '%')
-                            ->get();
+                            ->orderBy('contratos.saldo','desc')
+                            ->orderBy('contratos.id','asc')
+                            ->paginate(15);
                     }
                     else{
-                        $prueba = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
+                        $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
                             ->leftJoin('creditos','contratos.id','=','creditos.id')
                             ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                             ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -550,13 +554,15 @@ class DepositoController extends Controller
                             ->where('i.elegido', '=', 1)
                             ->where('c.nombre','like','%'. $buscar . '%')
                             ->where('c.apellidos','like','%'. $buscar2 . '%')
-                            ->get();
+                            ->orderBy('contratos.saldo','desc')
+                            ->orderBy('contratos.id','asc')
+                            ->paginate(15);
                     }
                     break;
                 }
 
                 case 'contratos.id':{
-                    $prueba = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
+                    $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
                             ->leftJoin('creditos','contratos.id','=','creditos.id')
                             ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                             ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -599,7 +605,9 @@ class DepositoController extends Controller
                                     )
                             ->where('i.elegido', '=', 1)
                             ->where('contratos.id','=', $buscar )
-                            ->get();
+                            ->orderBy('contratos.saldo','desc')
+                            ->orderBy('contratos.id','asc')
+                            ->paginate(15);
 
                             break;
                 }
@@ -607,7 +615,7 @@ class DepositoController extends Controller
                 case 'lotes.fraccionamiento_id':{
                     if($buscar != '' && $buscar2 == '' && $b_manzana == '' && $b_lote == ''){
 
-                        $prueba = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
+                        $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
                             ->leftJoin('creditos','contratos.id','=','creditos.id')
                             ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                             ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -652,14 +660,13 @@ class DepositoController extends Controller
                                     )
                             ->where('i.elegido', '=', 1)
                             ->where($criterio, '=', $buscar)
-                            //->where('lotes.etapa_id', '=', $buscar2)
-                            //->where('lotes.manzana', '=', $b_manzana)
-                            //->where('lotes.num_lote', '=', $b_lote)
-                            ->get();
+                            ->orderBy('contratos.saldo','desc')
+                            ->orderBy('contratos.id','asc')
+                            ->paginate(15);
                     }
                     elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote == ''){
 
-                        $prueba = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
+                        $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
                             ->leftJoin('creditos','contratos.id','=','creditos.id')
                             ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                             ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -705,14 +712,14 @@ class DepositoController extends Controller
                             ->where('i.elegido', '=', 1)
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.etapa_id', '=', $buscar2)
-                            //->where('lotes.manzana', '=', $b_manzana)
-                            //->where('lotes.num_lote', '=', $b_lote)
-                            ->get();
+                            ->orderBy('contratos.saldo','desc')
+                            ->orderBy('contratos.id','asc')
+                            ->paginate(15);
                     }
 
                     elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote == ''){
 
-                        $prueba = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
+                        $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
                             ->leftJoin('creditos','contratos.id','=','creditos.id')
                             ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                             ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -759,13 +766,14 @@ class DepositoController extends Controller
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.etapa_id', '=', $buscar2)
                             ->where('lotes.manzana', '=', $b_manzana)
-                            //->where('lotes.num_lote', '=', $b_lote)
-                            ->get();
+                            ->orderBy('contratos.saldo','desc')
+                            ->orderBy('contratos.id','asc')
+                            ->paginate(15);
                     }
 
                     elseif($buscar != '' && $buscar2 != '' && $b_manzana != '' && $b_lote != ''){
 
-                        $prueba = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
+                        $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
                             ->leftJoin('creditos','contratos.id','=','creditos.id')
                             ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                             ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -813,12 +821,14 @@ class DepositoController extends Controller
                             ->where('lotes.etapa_id', '=', $buscar2)
                             ->where('lotes.manzana', '=', $b_manzana)
                             ->where('lotes.num_lote', '=', $b_lote)
-                            ->get();
+                            ->orderBy('contratos.saldo','desc')
+                            ->orderBy('contratos.id','asc')
+                            ->paginate(15);
                     }
 
                     elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote != ''){
 
-                        $prueba = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
+                        $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
                             ->leftJoin('creditos','contratos.id','=','creditos.id')
                             ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                             ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -866,12 +876,14 @@ class DepositoController extends Controller
                             //->where('lotes.etapa_id', '=', $buscar2)
                             ->where('lotes.manzana', '=', $b_manzana)
                             ->where('lotes.num_lote', '=', $b_lote)
-                            ->get();
+                            ->orderBy('contratos.saldo','desc')
+                            ->orderBy('contratos.id','asc')
+                            ->paginate(15);
                     }
                     
                     elseif($buscar != '' && $buscar2 == '' && $b_manzana != '' && $b_lote == ''){
 
-                        $prueba = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
+                        $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
                             ->leftJoin('creditos','contratos.id','=','creditos.id')
                             ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                             ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -919,12 +931,14 @@ class DepositoController extends Controller
                             //->where('lotes.etapa_id', '=', $buscar2)
                             ->where('lotes.manzana', '=', $b_manzana)
                             //->where('lotes.num_lote', '=', $b_lote)
-                            ->get();
+                            ->orderBy('contratos.saldo','desc')
+                            ->orderBy('contratos.id','asc')
+                            ->paginate(15);
                     }
 
                     elseif($buscar != '' && $buscar2 != '' && $b_manzana == '' && $b_lote != ''){
 
-                        $prueba = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
+                        $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
                             ->leftJoin('creditos','contratos.id','=','creditos.id')
                             ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                             ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -972,7 +986,9 @@ class DepositoController extends Controller
                             ->where('lotes.etapa_id', '=', $buscar2)
                             //->where('lotes.manzana', '=', $b_manzana)
                             ->where('lotes.num_lote', '=', $b_lote)
-                            ->get();
+                            ->orderBy('contratos.saldo','desc')
+                            ->orderBy('contratos.id','asc')
+                            ->paginate(15);
                     }
 
                     break;
@@ -981,6 +997,14 @@ class DepositoController extends Controller
             
         
         }
-        return ['prueba' => $prueba];
+        return [
+            'pagination' => [
+                'total'         => $contratos->total(),
+                'current_page'  => $contratos->currentPage(),
+                'per_page'      => $contratos->perPage(),
+                'last_page'     => $contratos->lastPage(),
+                'from'          => $contratos->firstItem(),
+                'to'            => $contratos->lastItem(),
+            ],'contratos' => $contratos];
     }
 }
