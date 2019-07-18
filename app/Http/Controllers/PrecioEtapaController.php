@@ -119,6 +119,8 @@ class PrecioEtapaController extends Controller
         $lotes = Lote::select('modelo_id','id','terreno')
             ->where('contrato','=','0')
             ->where('habilitado','=','1')
+            ->where('fraccionamiento_id','=',$request->fraccionamiento_id)
+            ->where('etapa_id','=',$request->etapa_id)
             ->get();
         
         //if($lotes)

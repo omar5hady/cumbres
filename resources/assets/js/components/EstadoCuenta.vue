@@ -8,7 +8,7 @@
                 <!-- Ejemplo de tabla Listado -->
                 <div class="card scroll-box">
                     <div class="card-header">
-                        <i class="fa fa-align-justify"></i>Integracion de expediente
+                        <i class="fa fa-align-justify"></i>Estado de cuenta
 
                     </div>
                     <div class="card-body">
@@ -40,9 +40,7 @@
                                     <input v-else type="text"  v-model="buscar" @keyup.enter="listarContratos(1,buscar,buscar2,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
                                     <input v-if="criterio=='c.nombre'" type="text"  v-model="buscar2" @keyup.enter="listarContratos(1,buscar,buscar2,b_manzana,b_lote,criterio)" class="form-control" placeholder="Apellidos">
                                     <button type="submit" @click="listarContratos(1,buscar,buscar2,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                    <a class="btn btn-success" v-bind:href="'/expediente/Excel?buscar=' + buscar + '&buscar2=' + buscar2 + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio">
-                                        <i class="icon-pencil"></i>&nbsp;Excel
-                                    </a>
+                                   
                                 </div>
                             </div>
                         </div>
@@ -72,7 +70,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="contratos in arrayContratos" :key="contratos.folio">
+                                    <tr v-for="contratos in arrayContratos" :key="contratos.folio" v-on:dblclick="abrirPDF(contratos.folio)">
                                         <td class="td2" v-text="contratos.folio"></td>
                                         <td class="td2" v-text="contratos.nombre_cliente"></td>
                                         <td class="td2" v-text="contratos.fraccionamiento"></td>
@@ -89,7 +87,7 @@
 
                                         <td class="td2" v-text="'$'+formatNumber(contratos.pendiente_enganche)"></td>
                                         <td class="td2" v-text="'$'+formatNumber(contratos.credito_solic)"></td>
-                                        <td class="td2" v-text="'$'+formatNumber(contratos.cobrado)"></td>
+                                        <td class="td2" v-text="'$'+formatNumber(contratos.credito_solic - contratos.cobrado)"></td>
                                         <td class="td2" v-text="'$'+formatNumber(contratos.gastos)"></td>
                                         <td class="td2" v-text="'$'+formatNumber(contratos.descuento)"></td>
                                         <td class="td2" v-text="'$'+formatNumber(contratos.saldo)"></td>
@@ -211,18 +209,9 @@
                 
             },
 
-            listarObservacion(buscar){
-                let me = this;
-                var url = '/observacionExpediente?folio=' + buscar ;
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayObservacion = respuesta.observacion;
-                    console.log(url);
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-                
+            abrirPDF(id){
+                const win = window.open('/estadoCuenta/estadoPDF/'+id, '_blank');
+                win.focus();
             },
             
             selectFraccionamientos(){
@@ -249,19 +238,6 @@
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayEtapas = respuesta.etapas;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            },
-
-            selectCiudades(buscar){
-                let me = this;
-                me.arrayCiudades=[];
-                var url = '/select_ciudades?buscar=' + buscar;
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayCiudades = respuesta.ciudades;
                 })
                 .catch(function (error) {
                     console.log(error);

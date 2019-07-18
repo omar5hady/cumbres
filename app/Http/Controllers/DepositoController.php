@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use DB;
 use NumerosEnLetras;
 use App\Gasto_admin;
+use App\Dep_credito;
 
 class DepositoController extends Controller
 {
@@ -1006,5 +1007,112 @@ class DepositoController extends Controller
                 'from'          => $contratos->firstItem(),
                 'to'            => $contratos->lastItem(),
             ],'contratos' => $contratos];
+    }
+
+    public function estadoPDF ($id){
+        $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
+        ->leftJoin('creditos','contratos.id','=','creditos.id')
+        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+        ->join('personal as c', 'clientes.id', '=', 'c.id')
+        ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+        
+        ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
+                'creditos.manzana','creditos.num_lote','creditos.modelo',
+                'creditos.precio_venta',
+                'expedientes.valor_escrituras', 
+                'expedientes.descuento', 
+                'contratos.enganche_total',
+                'contratos.fecha',
+                'contratos.saldo',
+                'i.monto_credito as credito_solic',
+                'i.cobrado',
+                'i.segundo_credito',
+                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                'c.rfc','c.homoclave',
+
+                DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
+                    WHERE pagos_contratos.contrato_id = contratos.id AND 
+                    (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
+                    GROUP BY pagos_contratos.contrato_id) as pendiente_enganche"),
+
+                DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
+                    WHERE pagos_contratos.contrato_id = contratos.id 
+                    GROUP BY pagos_contratos.contrato_id) as totalRestante"),
+                
+                DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
+                    WHERE pagos_contratos.contrato_id = contratos.id 
+                    GROUP BY pagos_contratos.contrato_id) as totalPagares"),
+
+                DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
+                    WHERE pagos_contratos.contrato_id = contratos.id AND 
+                    (pagos_contratos.pagado = 0 or pagos_contratos.pagado = 1)
+                    GROUP BY pagos_contratos.contrato_id) as pagares"),
+
+                DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
+                    WHERE gastos_admin.contrato_id = contratos.id 
+                    GROUP BY gastos_admin.contrato_id) as gastos")
+
+                )
+        ->where('i.elegido', '=', 1)
+        ->where('contratos.id',$id)
+        ->get();
+
+        $contratos[0]->totalCargo = $contratos[0]->enganche_total + $contratos[0]->gastos;
+
+        $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
+                             ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
+                             ->select('depositos.cant_depo','depositos.num_recibo','depositos.fecha_pago','depositos.banco')
+                             ->where('contratos.id','=',$id)
+                             ->get();
+
+        for ($i = 0; $i < count($depositos); $i++) {
+        $depositos[$i]->cant_depo = number_format((float)$depositos[$i]->cant_depo, 2, '.', ',');
+        }
+
+        $totalDepositos =  Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
+        ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
+        ->select(DB::raw("SUM(depositos.cant_depo) as sumDeposito"))
+        ->where('contratos.id','=',$id)
+        ->get();
+
+        $contratos[0]->sumDeposito = $totalDepositos[0]->sumDeposito;
+
+        $contratos[0]->gastos = number_format((float)$contratos[0]->gastos, 2, '.', ',');
+        $contratos[0]->enganche_total = number_format((float)$contratos[0]->enganche_total, 2, '.', ',');
+
+        $gastos_admin = Gasto_admin::select('concepto','costo','fecha')
+        ->where('contrato_id','=',$id)
+        ->get();
+
+        for($i = 0; $i < count($gastos_admin); $i++){
+            $gastos_admin[$i]->costo = number_format((float)$gastos_admin[$i]->costo, 2, '.', ',');
+        }
+
+        $depositos_credito = Dep_credito::join('inst_seleccionadas','dep_creditos.inst_sel_id','=','inst_seleccionadas.id')
+                                        ->join('creditos','inst_seleccionadas.credito_id','=','creditos.id')
+                                        ->select('dep_creditos.cant_depo','dep_creditos.banco','dep_creditos.fecha_deposito','inst_seleccionadas.institucion')
+                                        ->where('creditos.id','=',$id)
+                                        ->get();
+
+        for($i = 0; $i < count($depositos_credito); $i++){
+            $depositos_credito[$i]->cant_depo = number_format((float)$depositos_credito[$i]->cant_depo, 2, '.', ',');
+        }
+
+        $total_depositos_credito = Dep_credito::join('inst_seleccionadas','dep_creditos.inst_sel_id','=','inst_seleccionadas.id')
+                                        ->join('creditos','inst_seleccionadas.credito_id','=','creditos.id')
+                                        ->select(DB::raw("SUM(dep_creditos.cant_depo) as sumDepositoCredito"))
+                                        ->where('creditos.id','=',$id)
+                                        ->get();
+
+        $contratos[0]->sumDepositoCredito = $total_depositos_credito[0]->sumDepositoCredito;
+        $contratos[0]->totalAbono = $contratos[0]->sumDeposito + $contratos[0]->sumDepositoCredito;
+        $contratos[0]->sumDepositoCredito = number_format((float)$contratos[0]->sumDepositoCredito, 2, '.', ',');
+        $contratos[0]->sumDeposito = number_format((float)$contratos[0]->sumDeposito, 2, '.', ',');
+        $contratos[0]->totalAbono = number_format((float)$contratos[0]->totalAbono, 2, '.', ',');
+        $contratos[0]->totalCargo = number_format((float)$contratos[0]->totalCargo, 2, '.', ',');
+        $contratos[0]->saldo = number_format((float)$contratos[0]->saldo, 2, '.', ',');
+        
+        $pdf = \PDF::loadview('pdf.contratos.estadoDeCuenta', ['contratos' => $contratos, 'depositos' => $depositos, 'gastos_admin' => $gastos_admin, 'depositos_credito' => $depositos_credito]);
+        return $pdf->stream('EstadoDeCuenta.pdf');
     }
 }
