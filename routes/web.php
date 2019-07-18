@@ -449,6 +449,12 @@ Route::group(['middleware' => ['auth']],function(){
 
         Route::get('/expediente/liquidacionPDF/{id}','ExpedienteController@liquidacionPDF');
 
+        //////////////////////  RUTAS COBRO CREDITO //////////////////////////////////////
+        Route::get('/cobroCredito/indexCreditos','InstSeleccionadasController@indexCreditoSel');
+        Route::get('/cobroCredito/indexDepositos','InstSeleccionadasController@indexDepCredito');
+        Route::post('/cobroCredito/registrar','InstSeleccionadasController@storeDepositoCredito');
+        Route::put('/cobroCredito/update','InstSeleccionadasController@updateDepositoCredito');
+
     });
 
 

@@ -321,6 +321,9 @@
                                     <li @click="menu=205" class="nav-item">
                                         <a class="nav-link" href="#"><i class="fa fa-money"></i> Gastos administrativos</a>
                                     </li>
+                                    <li @click="menu=207" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="fa fa-credit-card-alt"></i> Cobro de crédito</a>
+                                    </li>
                                     
                             </ul>
                         </li>

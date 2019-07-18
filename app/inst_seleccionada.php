@@ -24,4 +24,9 @@ class inst_seleccionada extends Model
     {
         return $this->hasMany('App\Observacion_institucion_seleccionada');
     }
+
+    public function Dep_credito()
+    {
+        return $this->hasMany('App\Dep_credito');
+    }
 }

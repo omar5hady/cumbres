@@ -294,6 +294,9 @@
         <template v-if="menu==206">
             <estado-cuenta></estado-cuenta>
         </template>
+        <template v-if="menu==207">
+            <cobro-credito></cobro-credito>
+        </template>
 
         
     @endif
