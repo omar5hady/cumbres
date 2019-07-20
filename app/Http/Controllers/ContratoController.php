@@ -8,6 +8,11 @@ use App\Contrato;
 use App\Pago_contrato;
 use DB;
 use Auth;
+
+use App\Precio_etapa;
+use App\Precio_modelo;
+use App\Sobreprecio_modelo;
+
 use Carbon\Carbon;
 use App\inst_seleccionada;
 use App\Cliente;
@@ -17,6 +22,7 @@ use App\Expediente;
 use App\Gasto_admin;
 use App\Deposito;
 use App\Lote;
+use App\Modelo;
 use NumerosEnLetras;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\NotificationReceived;
@@ -2494,7 +2500,16 @@ class ContratoController extends Controller
 
         $credito = Credito::findOrFail($request->id);
         $credito->num_dep_economicos =  $request->num_dep_economicos;
+        $credito->credito_solic = $request->credito_solic;
         $credito->contrato = 1;
+
+        $inst_sel = inst_seleccionada::select('id')
+                    ->where('credito_id','=',$request->id)
+                    ->where('elegido','=',1)->get();
+        
+        $credito_sol = inst_seleccionada::findOrFail($inst_sel[0]->id);
+        $credito_sol->monto_credito = $request->credito_solic;
+        $credito_sol->save();
 
         $lote = Lote::findOrFail($request->lote_id);
         $lote->contrato = 1;
@@ -3238,7 +3253,16 @@ class ContratoController extends Controller
         $credito->descripcion_paquete = $request->descripcion_paquete;
         $credito->costo_paquete = $request->costo_paquete;
         $credito->precio_venta = $request->precio_venta;
+        $credito->credito_solic = $request->credito_solic;
         $credito->contrato = 1;
+
+        $inst_sel = inst_seleccionada::select('id')
+        ->where('credito_id','=',$request->contrato_id)
+        ->where('elegido','=',1)->get();
+
+        $credito_sol = inst_seleccionada::findOrFail($inst_sel[0]->id);
+        $credito_sol->monto_credito = $request->credito_solic;
+        $credito_sol->save();
 
         $lote = Lote::findOrFail($request->lote_id);
         $lote->contrato = 1;
@@ -3309,29 +3333,65 @@ class ContratoController extends Controller
         $lote_ant->paquete = '';
         $lote_ant->save();
 
-        $lote_new = Lote::findOrFail($loteNuevo_id);
-        $lote_new->contrato = 1;
-        $lote_new->save();
+        try {
+            DB::beginTransaction();
 
-        $credito = Credito::findOrFail($request->id);
-        $credito->fraccionamiento = $request->fraccionamiento;
-        $credito->etapa = $request->etapa;
-        $credito->manzana = $request->manzana;
-        $credito->num_lote = $request->num_lote;
-        $credito->modelo = $request->modelo;
-        $credito->precio_base = $request->precio_base;
-        $credito->superficie = $request->superficie;
-        $credito->terreno_excedente = $request->terreno_excedente;
-        $credito->precio_terreno_excedente = $request->precio_terreno_excedente;
-        $credito->precio_obra_extra = $request->precio_obra_extra;
-        $credito->promocion = $request->promocion;
-        $credito->descripcion_promocion = $request->descripcion_promocion;
-        $credito->descuento_promocion = $request->descuento_promocion;
-        $credito->paquete = '';
-        $credito->descripcion_paquete = '';
-        $credito->costo_paquete = 0;
-        $credito->precio_venta = $request->precio_venta;
-        $credito->lote_id = $loteNuevo_id;
-        $credito->save();
+            $lote_new = Lote::findOrFail($loteNuevo_id);
+
+            /////////////////////////////////////////////////////////////////
+            $precio_etapa = Precio_etapa::select('id','precio_excedente')
+                            ->where('fraccionamiento_id','=',$lote_new->fraccionamiento_id)
+                            ->where('etapa_id','=',$lote_new->etapa_id)->get();
+            
+            $precio_modelo = Precio_modelo::select('precio_modelo')->where('precio_etapa_id','=',$precio_etapa[0]->id)
+                            ->where('modelo_id','=',$lote_new->modelo_id)->get();
+            
+            $sobreprecios = Sobreprecio_modelo::join('sobreprecios_etapas','sobreprecios_modelos.sobreprecio_etapa_id','=','sobreprecios_etapas.id')
+            ->select(DB::raw("SUM(sobreprecios_etapas.sobreprecio) as sobreprecios"))
+            ->where('sobreprecios_modelos.lote_id','=',$loteNuevo_id)->get();
+            
+            $modelo = Modelo::select('terreno')->where('id','=',$lote_new->modelo_id)->get();
+            $terrenoExcedente = round(($lote_new->terreno - $modelo[0]->terreno),2);
+                if((double)$terrenoExcedente > 0)
+                    $lote_new->excedente_terreno = round(($terrenoExcedente * $precio_etapa[0]->precio_excedente), 2);
+                else {
+                    $lote_new->excedente_terreno = 0;
+                }
+            
+            $lote_new->precio_base = round(($precio_modelo[0]->precio_modelo + $lote_new->ajuste), 2);
+            $precio_venta = round(($sobreprecios[0]->sobreprecios + $lote_new->precio_base + $lote_new->excedente_terreno + $lote_new->obra_extra),2);
+            $terreno_tam_excedente = round(($lote_new->terreno - $modelo[0]->terreno),2);
+            $lote_new->contrato = 1;
+
+            ////////////////////////////////////////////////////////////////////////////////////////
+            
+
+            $credito = Credito::findOrFail($request->id);
+            $credito->fraccionamiento = $request->fraccionamiento;
+            $credito->etapa = $request->etapa;
+            $credito->manzana = $request->manzana;
+            $credito->num_lote = $request->num_lote;
+            $credito->modelo = $request->modelo;
+            $credito->precio_base = $lote_new->precio_base;
+            $credito->superficie = $request->superficie;
+            $credito->terreno_excedente = $terreno_tam_excedente;
+            $credito->precio_terreno_excedente = $lote_new->excedente_terreno;
+            $credito->precio_obra_extra = $request->precio_obra_extra;
+            $credito->promocion = $request->promocion;
+            $credito->descripcion_promocion = $request->descripcion_promocion;
+            $credito->descuento_promocion = $request->descuento_promocion;
+            $credito->paquete = '';
+            $credito->descripcion_paquete = '';
+            $credito->costo_paquete = 0;
+            $credito->precio_venta = round($precio_venta - $request->descuento_promocion,2);
+            $credito->lote_id = $loteNuevo_id;
+            $credito->save();
+            $lote_new->save();
+            DB::commit();
+
+
+            } catch (Exception $e) { 
+                DB::rollBack();
+        }
     }
 }

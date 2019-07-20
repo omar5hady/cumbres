@@ -1097,7 +1097,8 @@
                                                     <div class="col-md-3" v-if="monto_credito!=0">
                                                         <div class="form-group">
                                                             <h6 style="color:#2271b3;" for=""><strong> Credito Solicitado: </strong></h6>
-                                                            <h6 v-text="'$'+formatNumber(monto_credito)"></h6>
+                                                            <h6 v-if="change_credito==0" @click="change_credito=1" v-text="'$'+formatNumber(monto_credito)"></h6>
+                                                            <input v-if="change_credito==1" type="text" pattern="\d*" v-model="monto_credito" maxlength="10" @keyup.enter="change_credito=0" v-on:keypress="isNumber($event)" class="form-control" >
                                                         </div>
                                                     </div> 
 
@@ -1564,6 +1565,7 @@
                 id:0,
                 id_contrato:0,
                 proceso:false,
+                change_credito:0,
 
                 arraySimulaciones:[],
                 arrayContratos:[],
@@ -1984,6 +1986,22 @@
                     me.arrayDatosLotes = respuesta.lotes;
 
                     me.reasignar(me.arrayDatosLotes[0]);
+                    me.getNewDatosLote(lote)
+                    
+                    me.selectPaquetes(me.etapa,me.proyecto);
+                    me.cerrarModal();
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            getNewDatosLote(lote){
+                let me = this;
+                me.arrayDatosLotes=[];
+                var url = '/select_datos_lotes_disp?buscar=' + lote;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayDatosLotes = respuesta.lotes;
                     
                     me.modelo = me.arrayDatosLotes[0]['modelo'];
                     me.superficie = me.arrayDatosLotes[0]['terreno'];
@@ -1999,11 +2017,9 @@
                     me.etapa = me.arrayDatosLotes[0]['etapa'];
                     me.precioObraExtra = me.arrayDatosLotes[0]['obra_extra'];
                     me.proyecto = me.arrayDatosLotes[0]['proyecto'];
-                    me.lote_id =  me.sel_lote;
+                    me.lote_id = lote;
 
                     me.precioVenta = me.precioVenta - me.descuentoPromo;
-                    me.selectPaquetes(me.etapa,me.proyecto);
-                    me.cerrarModal();
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -2342,6 +2358,7 @@
                     'monto_total_credito':this.monto_total_credito,
                     'enganche_total':this.enganche_total,
                     'observacion' : this.observacion,
+                    'credito_solic' : this.monto_credito,
 
                     'paquete' : this.paquete,
                     'descripcion_paquete' : this.descripcionPaquete,
@@ -2734,6 +2751,7 @@
                 let me = this;
                 //Con axios se llama el metodo store de FraccionaminetoController
                 axios.post('/contrato/registrar',{
+
                     'id': this.id,
                     'infonavit':this.infonavit,
                     'fovisste':this.fovissste,
@@ -2841,6 +2859,7 @@
                 'id':this.id,
                 'num_dep_economicos':this.dep_economicos,
                 'lote_id': this.lote_id,
+                'credito_solic': this.monto_credito,
                 })
             },
 

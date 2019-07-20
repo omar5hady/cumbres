@@ -873,6 +873,8 @@ class UserController extends Controller
             ->select('personal.id', 
             DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"))
             ->where('users.rol_id','=','2')
+            ->orderBy('personal.nombre', 'asc')
+            ->orderBy('personal.apellidos', 'asc')
             ->get();
 
         return['vendedores' => $personas];
@@ -897,8 +899,8 @@ class UserController extends Controller
             //->where('vendedores.supervisor_id','=',Auth::user()->id)
             ->where('users.condicion','=',1)
             ->orWhere('vendedores.tipo','=',1)
-            ->orderBy('personal.apellidos', 'asc')
             ->orderBy('personal.nombre', 'asc')
+            ->orderBy('personal.apellidos', 'asc')
             ->get();
     
         return ['personas' => $personas];

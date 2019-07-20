@@ -114,6 +114,7 @@
                                         <th>Termino</th>
                                         <th>Porcentaje de avance</th>
                                         <th>Paquete</th>
+                                        <th>Especificaciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -124,15 +125,29 @@
                                             </button>
                                         </td>
                                         <td v-text="avancepro.aviso"></td>
-                                        <td v-text="avancepro.proyecto"></td>
-                                        <td v-text="avancepro.modelos"></td>
-                                        <td v-text="avancepro.manzana"></td>
-                                        <td v-text="avancepro.lote"></td>
+                                        <td v-if = "avancepro.contrato==0" v-text="avancepro.proyecto"></td>
+                                        <td v-else>
+                                            <span v-if = "avancepro.contrato==1" class="badge badge-success" v-text="avancepro.proyecto"></span>
+                                        </td>
+                                        <td v-if = "avancepro.contrato==0" v-text="avancepro.modelos"></td>
+                                        <td v-else>
+                                            <span v-if = "avancepro.contrato==1" class="badge badge-success" v-text="avancepro.modelos"></span>
+                                        </td>
+                                        <td v-if = "avancepro.contrato==0" v-text="avancepro.manzana"></td>
+                                        <td v-else>
+                                            <span v-if = "avancepro.contrato==1" class="badge badge-success" v-text="avancepro.manzana"></span>
+                                        </td>
+                                        <td v-if = "avancepro.contrato==0" v-text="avancepro.lote"></td>
+                                        <td v-else>
+                                            <span v-if = "avancepro.contrato==1" class="badge badge-success" v-text="avancepro.lote"></span>
+                                        </td>
                                         <td v-text="avancepro.etapa_servicios"></td>
                                         <td v-text="avancepro.fecha_ini"></td>
                                         <td v-text="avancepro.fecha_fin"></td>
                                         <td v-text="formatNumber(avancepro.porcentajeTotal) + '%'"></td>
-                                        <td> <button v-if="avancepro.paquete != NULL" title="Ver paquete" type="button" class="btn btn-info pull-right" @click="mostrarPaquete(avancepro.paquete)">Ver paquete</button> </td>
+                                        <td> <button v-if="avancepro.paquete != NULL && avancepro.paquete != ''" title="Ver paquete" type="button" class="btn btn-info pull-right" @click="mostrarPaquete(avancepro.paquete)">Ver paquete</button> </td>
+                                        <td style="width:7%" v-if = "avancepro.archivo"><a class="btn btn-default btn-sm" v-bind:href="'/downloadModelo/'+avancepro.archivo"><i class="icon-cloud-download"></i></a></td>
+                                        <td v-else></td>
                                     
                                         
                                     </tr>                               
