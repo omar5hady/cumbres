@@ -150,8 +150,9 @@ class IniObraController extends Controller
                     $lote->aviso=$ini_obra->clave;
                     $lote->fecha_ini = $fecha_ini;
                     $lote->fecha_fin = $fecha_fin;
+                    $lote->obra_extra=$det['obra_extra'];
                     if($lote->contrato==0){
-                        $lote->obra_extra=$det['obra_extra'];
+                        
 
                         $credito_id = Credito::select('id','precio_obra_extra','precio_venta')->where('lote_id','=',$det['lote_id'])
                         ->where('contrato','=',0)->get();
@@ -291,8 +292,9 @@ class IniObraController extends Controller
                     $lote->aviso=$ini_obra->clave;
                     $lote->fecha_ini = $fecha_ini;
                     $lote->fecha_fin = $fecha_fin;
+                    $lote->obra_extra=$det['obra_extra'];
                     if($lote->contrato==0){
-                        $lote->obra_extra=$det['obra_extra'];
+                        
 
                         $credito_id = Credito::select('id','precio_obra_extra','precio_venta')->where('lote_id','=',$det['lote_id'])
                         ->where('contrato','=',0)->get();

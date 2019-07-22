@@ -11,11 +11,11 @@
                         <i class="fa fa-align-justify"></i>Licencias
 
                         <!--   Boton   -->
-                        <a class="btn btn-success" v-bind:href="'/licencias/resume_excel'" >
+                        <a v-if="rolId != '5'" class="btn btn-success" v-bind:href="'/licencias/resume_excel'" >
                             <i class="icon-pencil"></i>&nbsp;Descargar resumen
                         </a>
                         <!---->
-                        <button class="btn btn-info" @click="abrirModal5('lote','asignarMasa')"  v-if="allLic.length > 0" >
+                        <button class="btn btn-info" @click="abrirModal5('lote','asignarMasa')"  v-if="allLic.length > 0 && rolId != '5'" >
                             <i class="icon-pencil"></i>&nbsp;Asignar en masa
                         </button>
                     </div>
@@ -57,7 +57,7 @@
                     
                                     <input v-if="criterio!='lotes.fraccionamiento_id' && criterio!='licencias.f_planos' && criterio!='lotes.siembra' && criterio!='licencias.perito_dro' " type="text"  v-model="buscar" @keyup.enter="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)" class="form-control" placeholder="Texto a buscar">
                                     <button type="submit" @click="listarLicencias(1,buscar,b_manzana,b_lote,b_modelo,b_arquitecto,criterio,buscar2)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                    <a class="btn btn-success" v-bind:href="'/licencias/excel?buscar=' + buscar + '&b_manzana=' + b_manzana + '&b_lote='+ b_lote + '&b_modelo='+ b_modelo + '&b_arquitecto='+ b_arquitecto + '&criterio=' + criterio + '&buscar2=' + buscar2" >
+                                    <a v-if="rolId != '5'" class="btn btn-success" v-bind:href="'/licencias/excel?buscar=' + buscar + '&b_manzana=' + b_manzana + '&b_lote='+ b_lote + '&b_modelo='+ b_modelo + '&b_arquitecto='+ b_arquitecto + '&criterio=' + criterio + '&buscar2=' + buscar2" >
                                         <i class="icon-pencil"></i>&nbsp;Excel
                                     </a>
                                 </div>
@@ -67,10 +67,10 @@
                             <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
                                     <tr>
-                                        <th>
+                                        <th v-if="rolId != '5'">
                                             <input type="checkbox" @click="selectAll" v-model="allSelected">
                                         </th>
-                                        <th>Opciones</th>
+                                        <th v-if="rolId != '5'">Opciones</th>
                                         <th>Proyecto</th>
                                         <th>Manzana</th>
                                         <th># Lote</th>
@@ -78,25 +78,25 @@
                                         <th>Construcción mts&sup2;</th>
                                         <th>Modelo</th>
                                         <th>Arquitecto</th>
-                                        <th>Siembra</th>
-                                        <th>Planos obra</th>
-                                        <th>Planos licencia</th>
+                                        <th v-if="rolId != '5'">Siembra</th>
+                                        <th v-if="rolId != '5'">Planos obra</th>
+                                        <th v-if="rolId != '5'">Planos licencia</th>
                                         <th>DRO</th>
-                                        <th>Ingreso</th>
-                                        <th>Salida</th>
+                                        <th v-if="rolId != '5'">Ingreso</th>
+                                        <th v-if="rolId != '5'">Salida</th>
                                         <th>Num. Licencia</th>
-                                        <th>Credito puente</th>
-                                
+                                        <th v-if="rolId != '5'">Credito puente</th>
+                                        <th v-if="rolId == '5'">Catalogo de especificaciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr v-on:dblclick="abrirModal2('lote','ver',licencias)" v-for="licencias in arrayLicencias" :key="licencias.id">
 
-                                        <td class="td2">
+                                        <td v-if="rolId != '5'" class="td2">
                                         <input type="checkbox"  @click="select" :id="licencias.id" :value="licencias.id" v-model="allLic" >
                                         </td>
                                         
-                                        <td class="td2" >
+                                        <td v-if="rolId != '5'" class="td2" >
                                             <button title="Editar" type="button" @click="abrirModal('lote','actualizar',licencias)" class="btn btn-warning btn-sm">
                                             <i class="icon-pencil"></i>
                                             </button> 
@@ -126,14 +126,23 @@
                                             <span v-else class="badge badge-danger"> Por Asignar </span>
                                         </td>
                                         <!-- SIEMBRA -->
-                                        <td class="td2" v-if="!licencias.siembra" v-text="''"></td>
-                                        <td class="td2" v-else v-text="this.moment(licencias.siembra).locale('es').format('DD/MMM/YYYY')"></td>
+                                        <template v-if="rolId != '5'">
+                                             <td class="td2" v-if="!licencias.siembra" v-text="''"></td>
+                                             <td class="td2" v-else v-text="this.moment(licencias.siembra).locale('es').format('DD/MMM/YYYY')"></td>
+                                        </template>
+                                       
                                             <!-- Fecha planos obra -->
-                                         <td class="td2" v-if="!licencias.f_planos_obra" v-text="''"></td>
-                                        <td class="td2" v-else v-text="this.moment(licencias.f_planos_obra).locale('es').format('DD/MMM/YYYY')"></td>
-                                        <!-- Fecha planos licencias-->    
-                                        <td class="td2" v-if="!licencias.f_planos" v-text="''"></td>
-                                        <td class="td2" v-else v-text="this.moment(licencias.f_planos).locale('es').format('DD/MMM/YYYY')"></td>
+                                        <template v-if="rolId != '5'">
+                                            <td class="td2" v-if="!licencias.f_planos_obra" v-text="''"></td>
+                                            <td class="td2" v-else v-text="this.moment(licencias.f_planos_obra).locale('es').format('DD/MMM/YYYY')"></td>
+                                        </template>
+                                       
+                                        <!-- Fecha planos licencias--> 
+                                        <template v-if="rolId != '5'">
+                                            <td class="td2" v-if="!licencias.f_planos" v-text="''"></td>
+                                            <td class="td2" v-else v-text="this.moment(licencias.f_planos).locale('es').format('DD/MMM/YYYY')"></td>
+                                        </template>   
+                                        
                                         <!-- perito -->
                                         <td class="td2">
                                             <span v-if = "licencias.perito!='Sin Asignar  '" class="badge badge-success" v-text="licencias.perito"></span>
@@ -141,16 +150,28 @@
                                         </td>
 
                                         <!-- Fecha Ingreso -->
-                                        <td class="td2" v-if="!licencias.f_ingreso" v-text="''"></td>
-                                        <td class="td2" v-else v-text="this.moment(licencias.f_ingreso).locale('es').format('DD/MMM/YYYY')"></td>
+                                        <template v-if="rolId != '5'">
+                                             <td class="td2" v-if="!licencias.f_ingreso" v-text="''"></td>
+                                             <td class="td2" v-else v-text="this.moment(licencias.f_ingreso).locale('es').format('DD/MMM/YYYY')"></td>
+                                        </template>
+                                       
                                         <!-- Fecha Salida -->
-                                        <td class="td2" v-if="!licencias.f_salida" v-text="''"></td>
-                                        <td class="td2" v-else v-text="this.moment(licencias.f_salida).locale('es').format('DD/MMM/YYYY')"></td>
+                                        <template v-if="rolId != '5'">
+                                              <td class="td2" v-if="!licencias.f_salida" v-text="''"></td>
+                                              <td class="td2" v-else v-text="this.moment(licencias.f_salida).locale('es').format('DD/MMM/YYYY')"></td>
+                                        </template>
+                                     
+                                       <template>
+                                              <td class="td2"  v-if="!licencias.foto_lic" v-text="licencias.num_licencia"></td>
+                                              <td class="td2" v-else style="width:7%"><a class="btn btn-default btn-sm"  v-text="licencias.num_licencia" v-bind:href="'/downloadLicencias/'+licencias.foto_lic"></a></td>
+                                       </template>
                                         
-                                        <td class="td2"  v-if="!licencias.foto_lic" v-text="licencias.num_licencia"></td>
-                                        <td class="td2" v-else style="width:7%"><a class="btn btn-default btn-sm"  v-text="licencias.num_licencia" v-bind:href="'/downloadLicencias/'+licencias.foto_lic"></a></td>
-                                        <td class="td2"  v-text="licencias.credito_puente"></td>
+                                        <td v-if="rolId != '5'" class="td2"  v-text="licencias.credito_puente"></td>
                                         
+                                        <template v-if="rolId == '5'">
+                                            <td class="td2" style="width:7%" v-if="licencias.archivo"><a class="btn btn-default btn-sm" v-bind:href="'/downloadModelo/'+licencias.archivo"><i class="icon-cloud-download"></i></a></td>
+                                            <td class="td2" v-else ></td>
+                                        </template>
                                         
                                         
                                     </tr>                               
@@ -609,6 +630,9 @@
 
 <script>
     export default {
+        props:{
+            rolId:{type: String}
+        },
         data(){
             return{
                 proceso:false,
@@ -761,7 +785,7 @@
                         timer: 2000
                         })
                     me.cerrarModal4();
-                   me.listarLicencias(1,'','','','','','fraccionamientos.nombre','');
+                   me.listarLicencias(me.pagination.current_page,me.buscar,me.b_manzana,me.b_lote,me.b_modelo,me.b_arquitecto,me.criterio,me.buscar2);
 
                 })
 
@@ -803,7 +827,8 @@
                         timer: 2000
                         })
                     me.cerrarModal4();
-                   me.listarLicencias(1,'','','','','','fraccionamientos.nombre','');
+                    me.listarLicencias(me.pagination.current_page,me.buscar,me.b_manzana,me.b_lote,me.b_modelo,me.b_arquitecto,me.criterio,me.buscar2);
+
 
                 })
 
@@ -966,7 +991,7 @@
                 })
                     me.proceso=false;
                     me.cerrarModal5();
-                    me.listarLicencias(1,'','','','','','fraccionamientos.nombre','');
+                    me.listarLicencias(me.pagination.current_page,me.buscar,me.b_manzana,me.b_lote,me.b_modelo,me.b_arquitecto,me.criterio,me.buscar2);
                      Swal({
                         title: 'Hecho!',
                         text: 'Se han asignado',
@@ -998,7 +1023,7 @@
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal();
-                    me.listarLicencias(1,'','','','','','fraccionamientos.nombre','');
+                    me.listarLicencias(me.pagination.current_page,me.buscar,me.b_manzana,me.b_lote,me.b_modelo,me.b_arquitecto,me.criterio,me.buscar2);
                     //window.alert("Cambios guardados correctamente");
                     swal({
                         position: 'top-end',

@@ -62,7 +62,7 @@
 
         @if(Auth::user()->licencias == 1)
             <template v-if="menu==6">
-                <licencias></licencias>
+                <licencias rol-id="{{Auth::user()->rol_id}}"></licencias>
             </template>
         @endif
 

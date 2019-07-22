@@ -261,7 +261,7 @@
                     'costo':this.costo,
                 }).then(function (response){
                     me.cerrarModal(); //al guardar el registro se cierra el modal
-                    me.listarPartidas(1,'','','partida'); //se enlistan nuevamente los registros
+                    me.listarPartidas(me.pagination.current_page,me.buscar,me.buscar2,me.criterio); //se enlistan nuevamente los registros
                     //Se muestra mensaje Success
                     swal({
                         position: 'top-end',
@@ -298,7 +298,7 @@
                     'id' : this.id
                 }).then(function (response){
                     me.cerrarModal();
-                    me.listarPartidas(1,'','','partida');
+                    me.listarPartidas(me.pagination.current_page,me.buscar,me.buscar2,me.criterio);
                     //window.alert("Cambios guardados correctamente");
                     swal({
                         position: 'top-end',
@@ -321,7 +321,7 @@
                     'costo':costo,
                     'id' : id
                 }).then(function (response){
-                    me.listarPartidas(1,modelo,'','partidas.modelo_id');
+                    me.listarPartidas(me.pagination.current_page,me.buscar,me.buscar2,me.criterio);
                     //window.alert("Cambios guardados correctamente");
                 const toast = Swal.mixin({
                     toast: true,
@@ -364,7 +364,7 @@
                         'Partida borrada correctamente.',
                         'success'
                         )
-                        me.listarPartidas(1,'','','partida');
+                        me.listarPartidas(me.pagination.current_page,me.buscar,me.buscar2,me.criterio);
                     }).catch(function (error){
                         console.log(error);
                     });

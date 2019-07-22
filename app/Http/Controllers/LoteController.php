@@ -2801,8 +2801,9 @@ class LoteController extends Controller
         if(!$request->ajax())return redirect('/');
 
         $buscar = $request->buscar;
-        $buscar2 = $request->buscar2;
-        $buscar3 = $request->buscar3;
+        $b_etapa = $request->b_etapa;
+        $b_manzana = $request->b_manzana;
+        $b_lote = $request->b_lote;
         $criterio = $request->criterio;
 
         if($buscar==''){
@@ -2817,7 +2818,7 @@ class LoteController extends Controller
             ->paginate(8);  
         }
         else{
-            if($buscar2=='' && $buscar3=='')
+            if($b_etapa=='' && $b_manzana=='' && $b_lote=='')
             {
                 $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
                 ->join('etapas','lotes.etapa_id','=','etapas.id')
@@ -2831,7 +2832,7 @@ class LoteController extends Controller
                 ->paginate(8);
             }
             else{
-                if($buscar3=='')
+                if($b_manzana=='' && $b_lote=='' && $b_etapa != '')
                 {
                     $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
                     ->join('etapas','lotes.etapa_id','=','etapas.id')
@@ -2841,23 +2842,100 @@ class LoteController extends Controller
                     ->where('lotes.precio_base','>','0')
                     ->where('lotes.contrato','=','0')
                     ->where($criterio, 'like', '%'. $buscar . '%')
-                    ->where('etapas.num_etapa', 'like', '%'. $buscar2 . '%')
+                    ->where('etapas.num_etapa', 'like', '%'. $b_etapa . '%')
                     ->orderBy('fraccionamientos.nombre','DESC')
                     ->paginate(8);
                 }
                 else{
-                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                    ->select('lotes.id','lotes.num_lote','lotes.sublote','lotes.precio_base','lotes.manzana',
-                    'lotes.ajuste','fraccionamientos.nombre as proyecto','etapas.num_etapa','modelos.nombre as modelo')
-                    ->where('lotes.precio_base','>','0')
-                    ->where('lotes.contrato','=','0')
-                    ->where($criterio, 'like', '%'. $buscar . '%')
-                    ->where('etapas.num_etapa', 'like', '%'. $buscar2 . '%')
-                    ->where('lotes.manzana', 'like', '%'. $buscar3 . '%')
-                    ->orderBy('fraccionamientos.nombre','DESC')
-                    ->paginate(8);
+                    if($b_manzana !='' && $b_lote=='' && $b_etapa != ''){
+                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                        ->join('etapas','lotes.etapa_id','=','etapas.id')
+                        ->join('modelos','lotes.modelo_id','=','modelos.id')
+                        ->select('lotes.id','lotes.num_lote','lotes.sublote','lotes.precio_base','lotes.manzana',
+                        'lotes.ajuste','fraccionamientos.nombre as proyecto','etapas.num_etapa','modelos.nombre as modelo')
+                        ->where('lotes.precio_base','>','0')
+                        ->where('lotes.contrato','=','0')
+                        ->where($criterio, 'like', '%'. $buscar . '%')
+                        ->where('etapas.num_etapa', 'like', '%'. $b_etapa . '%')
+                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
+                        ->orderBy('fraccionamientos.nombre','DESC')
+                        ->paginate(8);
+                    }else{
+                        if($b_manzana !='' && $b_lote !='' && $b_etapa != ''){
+                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                            ->join('etapas','lotes.etapa_id','=','etapas.id')
+                            ->join('modelos','lotes.modelo_id','=','modelos.id')
+                            ->select('lotes.id','lotes.num_lote','lotes.sublote','lotes.precio_base','lotes.manzana',
+                            'lotes.ajuste','fraccionamientos.nombre as proyecto','etapas.num_etapa','modelos.nombre as modelo')
+                            ->where('lotes.precio_base','>','0')
+                            ->where('lotes.contrato','=','0')
+                            ->where($criterio, 'like', '%'. $buscar . '%')
+                            ->where('etapas.num_etapa', 'like', '%'. $b_etapa . '%')
+                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
+                            ->where('lotes.num_lote', '=', $b_lote)
+                            ->orderBy('fraccionamientos.nombre','DESC')
+                            ->paginate(8);
+                        }else {
+                            if($buscar !='' && $b_lote !='' && $b_etapa == '' && $b_manzana == ''){
+                                $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                ->join('modelos','lotes.modelo_id','=','modelos.id')
+                                ->select('lotes.id','lotes.num_lote','lotes.sublote','lotes.precio_base','lotes.manzana',
+                                'lotes.ajuste','fraccionamientos.nombre as proyecto','etapas.num_etapa','modelos.nombre as modelo')
+                                ->where('lotes.precio_base','>','0')
+                                ->where('lotes.contrato','=','0')
+                                ->where($criterio, 'like', '%'. $buscar . '%')
+                                ->where('lotes.num_lote', '=', $b_lote)
+                                ->orderBy('fraccionamientos.nombre','DESC')
+                                ->paginate(8);
+                            }else{
+                                if($buscar !='' && $b_lote !='' && $b_etapa != '' && $b_manzana == ''){
+                                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                    ->join('modelos','lotes.modelo_id','=','modelos.id')
+                                    ->select('lotes.id','lotes.num_lote','lotes.sublote','lotes.precio_base','lotes.manzana',
+                                    'lotes.ajuste','fraccionamientos.nombre as proyecto','etapas.num_etapa','modelos.nombre as modelo')
+                                    ->where('lotes.precio_base','>','0')
+                                    ->where('lotes.contrato','=','0')
+                                    ->where($criterio, 'like', '%'. $buscar . '%')
+                                    ->where('etapas.num_etapa', 'like', '%'. $b_etapa . '%')
+                                    ->where('lotes.num_lote', '=', $b_lote)
+                                    ->orderBy('fraccionamientos.nombre','DESC')
+                                    ->paginate(8);
+                                }else{
+                                    if($buscar !='' && $b_lote !='' && $b_etapa == '' && $b_manzana != ''){
+                                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                        ->join('modelos','lotes.modelo_id','=','modelos.id')
+                                        ->select('lotes.id','lotes.num_lote','lotes.sublote','lotes.precio_base','lotes.manzana',
+                                        'lotes.ajuste','fraccionamientos.nombre as proyecto','etapas.num_etapa','modelos.nombre as modelo')
+                                        ->where('lotes.precio_base','>','0')
+                                        ->where('lotes.contrato','=','0')
+                                        ->where($criterio, 'like', '%'. $buscar . '%')
+                                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
+                                        ->where('lotes.num_lote', '=', $b_lote)
+                                        ->orderBy('fraccionamientos.nombre','DESC')
+                                        ->paginate(8);
+                                    }else{
+                                        if($buscar !='' && $b_lote =='' && $b_etapa == '' && $b_manzana != ''){
+                                            $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                            ->join('modelos','lotes.modelo_id','=','modelos.id')
+                                            ->select('lotes.id','lotes.num_lote','lotes.sublote','lotes.precio_base','lotes.manzana',
+                                            'lotes.ajuste','fraccionamientos.nombre as proyecto','etapas.num_etapa','modelos.nombre as modelo')
+                                            ->where('lotes.precio_base','>','0')
+                                            ->where('lotes.contrato','=','0')
+                                            ->where($criterio, 'like', '%'. $buscar . '%')
+                                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
+                                            ->orderBy('fraccionamientos.nombre','DESC')
+                                            ->paginate(8);
+                                        } 
+                                    }
+                                }
+                            } 
+                        } 
+                    }
+                   
                 }
             }
         }

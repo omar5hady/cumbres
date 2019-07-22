@@ -21,23 +21,28 @@
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
                                     <select class="form-control col-md-5" v-model="criterio" @click="selectFraccionamientos()">
-                                        <option value="lotes.fraccionamiento_id">Proyecto</option>
+                                        <option value="fraccionamientos.nombre">Proyecto</option>
                                         <option value="modelos.nombre">Modelo</option>
                                     </select>
                                     
-                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" >
+                                    <select class="form-control" v-if="criterio=='fraccionamientos.nombre'" @click="selectEtapa(buscar)" v-model="buscar" >
                                         <option value="">Seleccione</option>
-                                        <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                                        <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.nombre" v-text="fraccionamientos.nombre"></option>
                                     </select>
 
-                                    <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar2" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio)" class="form-control" placeholder="Etapa">
-                                    <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar3" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio)" class="form-control" placeholder="Manzana a buscar">
+                                    <select class="form-control" v-if="criterio=='fraccionamientos.nombre'" v-model="b_etapa" > 
+                                        <option value="">Etapa</option>
+                                        <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.num_etapa" v-text="etapas.num_etapa"></option>
+                                    </select>
 
-                                    <input type="text" v-if="criterio=='modelos.nombre'" v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio)" class="form-control" placeholder="Texto a buscar">
-                                    <input type="text" v-if="criterio=='lotes.calle'" v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio)" class="form-control" placeholder="Texto a buscar">
+                                    <input type="text" v-if="criterio=='fraccionamientos.nombre'" v-model="b_manzana" @keyup.enter="listarLote(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Manzana a buscar">
+                                    <input type="text" v-if="criterio=='fraccionamientos.nombre'" v-model="b_lote" @keyup.enter="listarLote(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="# Lote">
+
+                                    <input type="text" v-if="criterio=='modelos.nombre'" v-model="buscar" @keyup.enter="listarLote(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
+                                    <input type="text" v-if="criterio=='lotes.calle'" v-model="buscar" @keyup.enter="listarLote(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
                                                                         
-                                    <input type="text" v-if="criterio=='fraccionamientos.nombre'" v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,criterio)" class="form-control" placeholder="Texto a buscar">
-                                    <button type="submit" @click="listarLote(1,buscar,buscar2,buscar3,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <!-- <input type="text" v-if="criterio=='fraccionamientos.nombre'" v-model="buscar" @keyup.enter="listarLote(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar"> -->
+                                    <button type="submit" @click="listarLote(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
                         </div>
@@ -119,6 +124,7 @@
                 fraccionamiento_id:0,
                 arrayLote : [],
                 arrayFraccionamientos :[],
+                arrayEtapas: [],
                 errorLote : 0,
                 errorMostrarMsjLote : [],
                 pagination : {
@@ -131,8 +137,9 @@
                 },
                 offset : 3,
                 criterio : 'modelos.nombre', 
-                buscar2 : '',
-                buscar3 : '',
+                b_etapa: '',
+                b_manzana: '',
+                b_lote: '',
                 buscar : '',
             }
         },
@@ -169,9 +176,9 @@
 
         methods : {
             /**Metodo para mostrar los registros */
-            listarLote(page, buscar, buscar2, buscar3, criterio){
+            listarLote(page, buscar, b_etapa, b_manzana,b_lote, criterio){
                 let me = this;
-                var url = '/lotes/con_precio_base?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2+ '&buscar3=' + buscar3 + '&criterio=' + criterio;
+                var url = '/lotes/con_precio_base?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana +  '&b_lote=' + b_lote + '&criterio=' + criterio;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayLote = respuesta.lotes.data;
@@ -196,13 +203,26 @@
                     console.log(error);
                 });
             },
+
+            selectEtapa(buscar){
+                let me = this;       
+                me.arrayEtapas=[];
+                var url = '/select_etapa?buscar=' + buscar;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayEtapas = respuesta.etapas;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
            
-            cambiarPagina(page, buscar, buscar2, buscar3, criterio){
+            cambiarPagina(page, buscar, b_etapa,b_manzana,b_lote, criterio){
                 let me = this;
                 //Actualiza la pagina actual
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
-                me.listarLote(page,buscar,buscar2,buscar3,criterio);
+                me.listarLote(page,buscar,b_etapa,b_manzana,b_lote,criterio);
             },
              actualizarAjuste(id,ajuste){
                 let me = this;
@@ -210,7 +230,7 @@
                     'ajuste':ajuste,
                     'id' : id
                 }).then(function (response){ 
-                me.listarLote(1,'','','','lotes.id');
+                me.listarLote(me.pagination.current_page,me.buscar,me.b_etapa,me.b_manzana,me.b_lote,me.criterio);
                 const toast = Swal.mixin({
                     toast: true,
                     position: 'top-end',
@@ -244,7 +264,7 @@
             
         },
         mounted() {
-            this.listarLote(1,this.buscar,this.buscar2,this.buscar3,this.criterio);
+            this.listarLote(1,this.buscar,this.b_etapa,this.b_manzana,this.b_lote,this.criterio);
             this.selectFraccionamientos();
            
         }

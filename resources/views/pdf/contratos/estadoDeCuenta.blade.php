@@ -34,17 +34,17 @@
 
                 <div class="table-row">
                     <div class="table-cell">Proyecto: </div>
-                    <div colspan="2" class="table-cell">{{$contratos[0]->fraccionamiento}} </div>
+                    <div colspan="2" class="table-cell">{{mb_strtoupper($contratos[0]->fraccionamiento)}} </div>
                 </div>
 
                 <div class="table-row">
                     <div class="table-cell">Etapa: </div>
-                    <div colspan="2" class="table-cell">{{$contratos[0]->etapa}} </div>
+                    <div colspan="2" class="table-cell">{{mb_strtoupper($contratos[0]->etapa)}} </div>
                 </div>
 
                 <div class="table-row">
                     <div class="table-cell">Manzana/Nivel: </div>
-                    <div class="table-cell">{{$contratos[0]->manzana}}</div>
+                    <div class="table-cell">{{mb_strtoupper($contratos[0]->manzana)}}</div>
                     <div class="table-cell"></div>   
                 </div>
 
@@ -56,12 +56,12 @@
 
                 <div class="table-row">
                     <div class="table-cell">Cliente: </div>
-                    <div colspan="2" class="table-cell">{{$contratos[0]->nombre_cliente}}</div>
+                    <div colspan="2" class="table-cell">{{mb_strtoupper($contratos[0]->nombre_cliente)}}</div>
                 </div>
 
                 <div class="table-row">
                     <div class="table-cell">RFC: </div>
-                    <div class="table-cell">{{$contratos[0]->rfc}}-{{$contratos[0]->homoclave}}</div>
+                    <div class="table-cell">{{mb_strtoupper($contratos[0]->rfc)}}-{{mb_strtoupper($contratos[0]->homoclave)}}</div>
                     <div class="table-cell"></div>   
                 </div>
                
@@ -86,7 +86,7 @@
                 </div>
 
                 <div class="table-row">
-                    <div colspan="2" class="table-cell">{{$contratos[0]->fraccionamiento}} Mza: {{$contratos[0]->manzana}} Lote: {{$contratos[0]->num_lote}}</div>
+                    <div colspan="2" class="table-cell">{{mb_strtoupper($contratos[0]->fraccionamiento)}} Mza: {{mb_strtoupper($contratos[0]->manzana)}} Lote: {{$contratos[0]->num_lote}}</div>
                     <div class="table-cell">{{$contratos[0]->fecha}}</div>
                     <div colspan="3" class="table-cell"></div>  
                     <div class="table-cell">${{$contratos[0]->enganche_total}}</div> 
@@ -136,7 +136,7 @@
 
             @for($i=0; $i < count($gastos_admin); $i++)
                 <div class="table-row">
-                    <div class="table-cell">{{$gastos_admin[$i]->concepto}}</div>
+                    <div class="table-cell">{{mb_strtoupper($gastos_admin[$i]->concepto)}}</div>
                     <div class="table-cell"></div>
                     <div class="table-cell">{{$gastos_admin[$i]->fecha}}</div>
                     <div class="table-cell">---</div>    
@@ -159,7 +159,7 @@
             
             @for($i=0; $i < count($depositos_credito); $i++)
                 <div class="table-row">
-                    <div class="table-cell">{{$depositos_credito[$i]->institucion}}</div>
+                    <div class="table-cell">{{mb_strtoupper($depositos_credito[$i]->institucion)}}</div>
                     <div class="table-cell"></div>
                     <div class="table-cell">{{$depositos_credito[$i]->fecha_deposito}}</div>
                     <div class="table-cell"></div>    
