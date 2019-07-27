@@ -285,6 +285,11 @@ class CreditoController extends Controller
             }
         $inst_seleccionada->plazo_credito = $request->plazo_credito;
         $inst_seleccionada->monto_credito = $request->monto_credito;
+
+        if($request->fecha_vigencia != ""){
+            $inst_seleccionada->fecha_vigencia = $request->fecha_vigencia;
+        }
+
         $inst_seleccionada->save();
 
         $observacion = new Obs_inst_selec();
@@ -1202,7 +1207,8 @@ class CreditoController extends Controller
                 ->join('personal as v','clientes.vendedor_id','=','v.id')
                 ->select('inst_seleccionadas.tipo_credito','inst_seleccionadas.institucion','inst_seleccionadas.fecha_ingreso',
                         'personal.nombre as nombre', 'personal.apellidos as apellidos','inst_seleccionadas.id','inst_seleccionadas.status',
-                        'v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos','inst_seleccionadas.monto_credito','inst_seleccionadas.plazo_credito',
+                        'v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos','inst_seleccionadas.monto_credito','inst_seleccionadas.plazo_credito', 
+                        'inst_seleccionadas.fecha_vigencia',
                         'creditos.id as id_credito')
                 ->where('inst_seleccionadas.status','=',$buscar2)
                 ->orderBy('id','desc')->paginate(8);
@@ -1224,7 +1230,8 @@ class CreditoController extends Controller
                 ->join('personal as v','clientes.vendedor_id','=','v.id')
                 ->select('inst_seleccionadas.tipo_credito','inst_seleccionadas.institucion','inst_seleccionadas.fecha_ingreso',
                          'personal.nombre as nombre', 'personal.apellidos as apellidos','inst_seleccionadas.id','inst_seleccionadas.status',
-                         'v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos','inst_seleccionadas.monto_credito','inst_seleccionadas.plazo_credito',
+                         'v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos','inst_seleccionadas.monto_credito','inst_seleccionadas.plazo_credito', 
+                         'inst_seleccionadas.fecha_vigencia',
                          'creditos.id as id_credito')
                 ->where('inst_seleccionadas.status','=',$buscar2)
                 ->where($criterio,'like','%'.$buscar.'%')
@@ -1254,7 +1261,8 @@ class CreditoController extends Controller
                 ->join('personal as v','clientes.vendedor_id','=','v.id')
                 ->select('inst_seleccionadas.tipo_credito','inst_seleccionadas.institucion','inst_seleccionadas.fecha_ingreso',
                          'personal.nombre as nombre', 'personal.apellidos as apellidos','inst_seleccionadas.id','inst_seleccionadas.status',
-                         'v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos','inst_seleccionadas.monto_credito','inst_seleccionadas.plazo_credito',
+                         'v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos','inst_seleccionadas.monto_credito','inst_seleccionadas.plazo_credito', 
+                         'inst_seleccionadas.fecha_vigencia',
                          'creditos.id as id_credito')
                 ->where('inst_seleccionadas.status','=',$buscar2)
                 ->where($criterio,'like','%'.$buscar.'%')
@@ -1283,7 +1291,8 @@ class CreditoController extends Controller
                 ->join('personal as v','clientes.vendedor_id','=','v.id')
                 ->select('inst_seleccionadas.tipo_credito','inst_seleccionadas.institucion','inst_seleccionadas.fecha_ingreso',
                          'personal.nombre as nombre', 'personal.apellidos as apellidos','inst_seleccionadas.id','inst_seleccionadas.status',
-                         'v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos','inst_seleccionadas.monto_credito','inst_seleccionadas.plazo_credito',
+                         'v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos','inst_seleccionadas.monto_credito','inst_seleccionadas.plazo_credito', 
+                         'inst_seleccionadas.fecha_vigencia',
                          'creditos.id as id_credito')
                 ->where('inst_seleccionadas.status','=',$buscar2)
                 ->where($criterio,'like','%'.$buscar.'%')
@@ -1516,6 +1525,18 @@ class CreditoController extends Controller
             DB::rollBack();
         }
 
+    }
+
+    public function updateFechaVigencia (Request $request){
+
+        $inst = inst_seleccionada::select('id')
+                ->where('credito_id','=',$request->folio)
+                ->where('elegido','=',1)
+                ->get();
+        
+        $instSel = inst_seleccionada::findOrFail($inst[0]->id);
+        $instSel->fecha_vigencia = $request->fecha_vigencia;
+        $instSel->save();
     }
 
 }

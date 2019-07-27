@@ -58,13 +58,15 @@
                                         <th>Etapa</th>
                                         <th>Manzana</th>
                                         <th>Lote</th>
+                                        <th>Predial</th>
                                         <th>Avance</th>
+                                        <th>Fecha de visita para avaluo</th>
                                         <th>Firma</th>
                                         <th>Tipo de credito</th>
                                         <th>Institucion de Fin.</th>
                                         <th>Solicitud de avaluo</th>
                                         <th>Aviso preventivo</th>
-                                        <th>Regimen en condominio</th>
+                                        <th>Crédito puente</th>
                                         <th>Conyuge</th>
                                         <th>Integracion</th>
                                         <th>Observaciones</th>
@@ -81,7 +83,18 @@
                                         <td class="td2" v-text="contratos.etapa"></td>
                                         <td class="td2" v-text="contratos.manzana"></td>
                                         <td class="td2" v-text="contratos.num_lote"></td>
+                                        <td class="td2" v-if="contratos.foto_predial">
+                                            <a  title="Descargar predial" v-if ="contratos.foto_predial" class="btn btn-success btn-sm" v-bind:href="'/downloadPredial/'+contratos.foto_predial">
+                                                <i class="fa fa-arrow-circle-down fa-lg"></i>
+                                            </a>
+                                        </td>
+                                        <td class="td2" v-else>
+                                            Sin archivo
+                                        </td>
                                         <td class="td2" v-text="contratos.avance_lote+'%'"></td>
+                                        
+                                        <td class="td2" v-if="contratos.visita_avaluo" v-text="this.moment(contratos.visita_avaluo).locale('es').format('DD/MMM/YYYY')"></td>
+                                        <td class="td2" v-else v-text="'Sin fecha'"></td>
                                         <td class="td2" v-text="this.moment(contratos.fecha_status).locale('es').format('DD/MMM/YYYY')"></td>
                                         <td class="td2" v-text="contratos.tipo_credito"></td>
                                         <td class="td2" v-text="contratos.institucion"></td>
@@ -128,10 +141,7 @@
                                                 </button>
                                             </td>
                                         </template>
-                                        <td class="td2" >
-                                            <span v-if = "contratos.regimen_condom == 0" class="badge2 badge-danger">No</span>
-                                            <span v-if = "contratos.regimen_condom == 1" class="badge2 badge-success">Si</span>
-                                        </td>
+                                        <td class="td2" v-text="contratos.credito_puente"></td>
                                         <td v-if="contratos.coacreditado == 1" class="td2" v-text="contratos.nombre_conyuge"></td>
                                         <td v-else class="td2">Sin conyuge</td>
                                         <td class="td2">

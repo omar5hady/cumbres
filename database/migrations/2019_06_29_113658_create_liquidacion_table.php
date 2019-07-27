@@ -21,6 +21,9 @@ class CreateLiquidacionTable extends Migration
             $table->string('nombre_aval')->nullable();
             $table->string('direccion')->nullable();
             $table->string('telefono',10)->nullable();
+            $table->string('nombre_aval2')->nullable();
+            $table->string('direccion2')->nullable();
+            $table->string('telefono2',10)->nullable();
             $table->timestamps();
 
             $table->foreign('id')->references('id')->on('expedientes');

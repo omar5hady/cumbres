@@ -215,6 +215,13 @@
                                     </div>
                                 </div>
 
+                                <div class="form-group row" v-if="tipoAccion==2 && tipoAccion == 2">
+                                    <label class="col-md-3 form-control-label" for="text-input">Fecha de vigencia</label>
+                                    <div class="col-md-6">
+                                        <input type="date" v-model="fecha_vigencia" class="form-control" placeholder="Fecha vigencia">
+                                    </div>
+                                </div>
+
                                 <div class="form-group row" v-if="tipoAccion==2">
                                     <label class="col-md-3 form-control-label" for="text-input">Observación </label>
                                     <div class="col-md-6">
@@ -271,6 +278,7 @@
                 plazo_credito: 0,
                 monto_credito: 0,
                 fecha_ingreso : '',
+                fecha_vigencia: '',
                 estatus: '',
                 observacion : '',
                 id:0,
@@ -442,6 +450,7 @@
                 axios.put('/creditos_select/actualizar',{
                     'id': this.id,
                     'fecha_ingreso': this.fecha_ingreso,
+                    'fecha_vigencia' : this.fecha_vigencia,
                     'plazo_credito': this.plazo_credito,
                     'monto_credito': this.monto_credito,
                     'status': this.estatus,
@@ -569,6 +578,7 @@
                         this.plazo_credito=data['plazo_credito'];
                         this.monto_credito=data['monto_credito'];
                         this.fecha_ingreso =data['fecha_ingreso'];
+                        this.fecha_vigencia = data['fecha_vigencia'];
                         this.estatus=data['status'];
                         this.observacion ='';
                         this.id=data['id'];

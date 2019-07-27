@@ -90,13 +90,28 @@
                                         <tbody>
                                             <tr v-for="ingresar in arrayPorIngresar" :key="ingresar.id"> 
                                                 
-                                                <td class="td2" v-text="ingresar.folio"></td>
+                                                <td class="td2">
+                                                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{ingresar.folio}}</a>
+                                                    <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                        <a class="dropdown-item" @click="abrirPDF(ingresar.folio)">Estado de cuenta</a>
+                                                        <a class="dropdown-item" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+ ingresar.folio">Contrato de compra venta</a>
+                                                        <a class="dropdown-item" target="_blank" v-bind:href="'/cartaServicios/pdf/'+ ingresar.folio">Carta de servicios</a>
+                                                        <a class="dropdown-item" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+ ingresar.folio">Servicios de telecomunición</a>
+                                                        <a class="dropdown-item" v-bind:href="'/descargarReglamento/contrato/'+ ingresar.folio">Reglamento de la etapa</a>
+                                                        <a class="dropdown-item" @click="selectNombreArchivoModelo(ingresar.folio)">Catalogo de especificaciones</a>
+                                                    </div>
+                                                </td>
                                                 <td class="td2" v-text="ingresar.nombre_cliente"></td>
                                                 <td class="td2" v-text="ingresar.nombre_vendedor"></td>
                                                 <td class="td2" v-text="ingresar.proyecto"></td>
                                                 <td class="td2" v-text="ingresar.etapa"></td>
                                                 <td class="td2" v-text="ingresar.manzana"></td>
-                                                <td class="td2" v-text="ingresar.num_lote"></td>
+                                                <td class="td2" >
+                                                    {{ingresar.num_lote}}
+                                                    <a title="Descargar predial" v-if ="ingresar.foto_predial" class="btn" v-bind:href="'/downloadPredial/'+ingresar.foto_predial">
+                                                        <i class="fa fa-arrow-circle-down fa-lg"></i>
+                                                    </a>
+                                                </td>
                                                 <td class="td2" v-if="ingresar.interior" v-text="ingresar.calle + ' '+ ingresar.numero + ' '+ ingresar.interior"></td>
                                                 <td class="td2" v-else v-text="ingresar.calle + ' '+ ingresar.numero"></td>
                                                 <td class="td2" v-text="ingresar.avance_lote+ '%'"></td>
@@ -205,13 +220,28 @@
                                         <tbody>
                                             <tr v-for="preautorizados in arrayPreautorizados" :key="preautorizados.id"> 
                                                 
-                                                <td class="td2" v-text="preautorizados.folio"></td>
+                                                <td class="td2">
+                                                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{preautorizados.folio}}</a>
+                                                    <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                        <a class="dropdown-item" @click="abrirPDF(preautorizados.folio)">Estado de cuenta</a>
+                                                        <a class="dropdown-item" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+ preautorizados.folio">Contrato de compra venta</a>
+                                                        <a class="dropdown-item" target="_blank" v-bind:href="'/cartaServicios/pdf/'+ preautorizados.folio">Carta de servicios</a>
+                                                        <a class="dropdown-item" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+ preautorizados.folio">Servicios de telecomunición</a>
+                                                        <a class="dropdown-item" v-bind:href="'/descargarReglamento/contrato/'+ preautorizados.folio">Reglamento de la etapa</a>
+                                                        <a class="dropdown-item" @click="selectNombreArchivoModelo(preautorizados.folio)">Catalogo de especificaciones</a>
+                                                    </div>
+                                                </td>
                                                 <td class="td2" v-text="preautorizados.nombre_cliente"></td>
                                                 <td class="td2" v-text="preautorizados.nombre_vendedor"></td>
                                                 <td class="td2" v-text="preautorizados.proyecto"></td>
                                                 <td class="td2" v-text="preautorizados.etapa"></td>
                                                 <td class="td2" v-text="preautorizados.manzana"></td>
-                                                <td class="td2" v-text="preautorizados.num_lote"></td>
+                                                <td class="td2" >
+                                                    {{preautorizados.num_lote}}
+                                                    <a title="Descargar predial" v-if ="preautorizados.foto_predial" class="btn" v-bind:href="'/downloadPredial/'+preautorizados.foto_predial">
+                                                        <i class="fa fa-arrow-circle-down fa-lg"></i>
+                                                    </a>
+                                                </td>
                                                 <td class="td2" v-text="preautorizados.calle + ' '+ preautorizados.numero + ' '+ preautorizados.interior"></td>
                                                 <td class="td2" v-text="preautorizados.avance_lote+ '%'"></td>
                                                 <td class="td2" v-text="preautorizados.fecha_status"></td>
@@ -240,7 +270,7 @@
                                                 <td class="td2" v-text="preautorizados.institucion"></td>
                                                 <td class="td2" v-text="'$'+formatNumber(preautorizados.credito_solic)"></td>
 
-                                                <td class="td2">
+                                                <td class="td2" v-if="band==0" @dblclick="band=1">
                                                     
                                                     <span v-if = "preautorizados.vigencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: ' 
                                                     + this.moment(preautorizados.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
@@ -251,6 +281,9 @@
                                                     <span v-if = "preautorizados.vigencia < -15 " class="badge2 badge-success" v-text="'Fecha vencimiento: ' 
                                                     + this.moment(preautorizados.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
                                                     
+                                                </td>
+                                                <td class="td2" v-if="band==1">
+                                                    <input type="date"  @keyup.esc="band=0" @keyup.enter="actualizarVigencia(preautorizados.folio,$event.target.value)" :id="preautorizados.folio" :value="preautorizados.fecha_vigencia" class="form-control Fields" > 
                                                 </td>
                                                 
                                                 <td class="td2" v-text="'$'+formatNumber(preautorizados.precio_venta)"></td>
@@ -348,13 +381,28 @@
                                         <tbody>
                                             <tr v-for="liquidacion in arrayLiquidados" :key="liquidacion.id"> 
                                                 
-                                                <td class="td2" v-text="liquidacion.folio"></td>
+                                                <td class="td2">
+                                                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{liquidacion.folio}}</a>
+                                                    <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                        <a class="dropdown-item" @click="abrirPDF(liquidacion.folio)">Estado de cuenta</a>
+                                                        <a class="dropdown-item" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+ liquidacion.folio">Contrato de compra venta</a>
+                                                        <a class="dropdown-item" target="_blank" v-bind:href="'/cartaServicios/pdf/'+ liquidacion.folio">Carta de servicios</a>
+                                                        <a class="dropdown-item" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+ liquidacion.folio">Servicios de telecomunición</a>
+                                                        <a class="dropdown-item" v-bind:href="'/descargarReglamento/contrato/'+ liquidacion.folio">Reglamento de la etapa</a>
+                                                        <a class="dropdown-item" @click="selectNombreArchivoModelo(liquidacion.folio)">Catalogo de especificaciones</a>
+                                                    </div>
+                                                </td>
                                                 <td class="td2" v-text="liquidacion.nombre_cliente"></td>
                                                 <td class="td2" v-text="liquidacion.nombre_vendedor"></td>
                                                 <td class="td2" v-text="liquidacion.proyecto"></td>
                                                 <td class="td2" v-text="liquidacion.etapa"></td>
                                                 <td class="td2" v-text="liquidacion.manzana"></td>
-                                                <td class="td2" v-text="liquidacion.num_lote"></td>
+                                                <td class="td2" >
+                                                    {{liquidacion.num_lote}}
+                                                    <a title="Descargar predial" v-if ="liquidacion.foto_predial" class="btn" v-bind:href="'/downloadPredial/'+liquidacion.foto_predial">
+                                                        <i class="fa fa-arrow-circle-down fa-lg"></i>
+                                                    </a>
+                                                </td>
                                                 <td class="td2" v-text="liquidacion.calle + ' '+ liquidacion.numero + ' '+ liquidacion.interior"></td>
                                                 <td class="td2" v-text="liquidacion.avance_lote+ '%'"></td>
                                                 <td class="td2" v-text="liquidacion.fecha_status"></td>
@@ -383,7 +431,7 @@
                                                 <td class="td2" v-text="liquidacion.institucion"></td>
                                                 <td class="td2" v-text="'$'+formatNumber(liquidacion.credito_solic)"></td>
 
-                                                <td class="td2">
+                                                <td class="td2" v-if="band==0" @dblclick="band=1">
                                                     
                                                     <span v-if = "liquidacion.vigencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: ' 
                                                     + this.moment(liquidacion.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
@@ -394,6 +442,9 @@
                                                     <span v-if = "liquidacion.vigencia < -15 " class="badge2 badge-success" v-text="'Fecha vencimiento: ' 
                                                     + this.moment(liquidacion.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
                                                     
+                                                </td>
+                                                <td class="td2" v-if="band==1">
+                                                    <input type="date" @keyup.esc="band=0" @keyup.enter="actualizarVigencia(liquidacion.folio,$event.target.value)" :id="liquidacion.folio" :value="liquidacion.fecha_vigencia" class="form-control Fields" > 
                                                 </td>
                                                 
                                                 <td class="td2" v-text="'$'+formatNumber(liquidacion.precio_venta)"></td>
@@ -496,13 +547,28 @@
                                         <tbody>
                                             <tr v-for="programacion in arrayProgramacion" :key="programacion.id"> 
                                                 
-                                                <td class="td2" v-text="programacion.folio"></td>
+                                                <td class="td2">
+                                                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{programacion.folio}}</a>
+                                                    <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                        <a class="dropdown-item" @click="abrirPDF(programacion.folio)">Estado de cuenta</a>
+                                                        <a class="dropdown-item" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+ programacion.folio">Contrato de compra venta</a>
+                                                        <a class="dropdown-item" target="_blank" v-bind:href="'/cartaServicios/pdf/'+ programacion.folio">Carta de servicios</a>
+                                                        <a class="dropdown-item" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+ programacion.folio">Servicios de telecomunición</a>
+                                                        <a class="dropdown-item" v-bind:href="'/descargarReglamento/contrato/'+ programacion.folio">Reglamento de la etapa</a>
+                                                        <a class="dropdown-item" @click="selectNombreArchivoModelo(programacion.folio)">Catalogo de especificaciones</a>
+                                                    </div>
+                                                </td>
                                                 <td class="td2" v-text="programacion.nombre_cliente"></td>
                                                 <td class="td2" v-text="programacion.nombre_vendedor"></td>
                                                 <td class="td2" v-text="programacion.proyecto"></td>
                                                 <td class="td2" v-text="programacion.etapa"></td>
                                                 <td class="td2" v-text="programacion.manzana"></td>
-                                                <td class="td2" v-text="programacion.num_lote"></td>
+                                                <td class="td2" >
+                                                    {{programacion.num_lote}}
+                                                    <a title="Descargar predial" v-if ="programacion.foto_predial" class="btn" v-bind:href="'/downloadPredial/'+programacion.foto_predial">
+                                                        <i class="fa fa-arrow-circle-down fa-lg"></i>
+                                                    </a>
+                                                </td>
                                                 <td class="td2" v-text="programacion.calle + ' '+ programacion.numero + ' ' + programacion.interior"></td>
                                                 <td class="td2" v-text="programacion.avance_lote + '%'"></td>
                                                 <td class="td2" v-text="this.moment(programacion.fecha_status).locale('es').format('DD/MMM/YYYY')"></td>
@@ -530,7 +596,7 @@
                                                 <td class="td2" v-text="programacion.institucion"></td>
                                                 <td class="td2" v-text="'$'+formatNumber(programacion.credito_solic)"></td>
                                                 
-                                                <td class="td2">
+                                                <td class="td2" v-if="band==0" @dblclick="band=1">
                                                     
                                                     <span v-if = "programacion.vigencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: ' 
                                                     + this.moment(programacion.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
@@ -541,6 +607,9 @@
                                                     <span v-if = "programacion.vigencia < -15 " class="badge2 badge-success" v-text="'Fecha vencimiento: ' 
                                                     + this.moment(programacion.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
                                                     
+                                                </td>
+                                                <td class="td2" v-if="band==1">
+                                                    <input type="date" @keyup.esc="band=0" @keyup.enter="actualizarVigencia(programacion.folio,$event.target.value)" :id="programacion.folio" :value="programacion.fecha_vigencia" class="form-control Fields" > 
                                                 </td>
 
                                                 <td class="td2" v-text="'$'+formatNumber(programacion.precio_venta)"></td>
@@ -799,6 +868,13 @@
                                         <div class="col-md-3">
                                             <h6 v-text="'$'+formatNumber(pagado=totalEnganghe-totalRestante)"></h6>
                                         </div>
+
+                                        <label v-if="avaluo" class="col-md-2 form-control-label" for="text-input">Resultado avaluo</label>
+                                        <div class="col-md-2" v-if="avaluo">
+                                            <h6 v-text="'$'+formatNumber(avaluo)"></h6>
+                                        </div>
+
+                                        
                                     </div>
 
                                     <div class="form-group row">
@@ -1062,7 +1138,7 @@
 
                                     <div class="col-md-12">
                                         <div class="form-group">
-                                            <center> <h5>Aval</h5> </center>
+                                            <center> <h5>Primer Aval</h5> </center>
                                         </div>
                                     </div>  
 
@@ -1084,6 +1160,35 @@
                                         <label class="col-md-3 form-control-label" for="text-input">Telefono</label>
                                         <div class="col-md-6">
                                             <input type="text" pattern="\d*" maxlength="10" v-on:keypress="isNumber($event)" v-model="telefono_aval" class="form-control" placeholder="Telefono" >
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row line-separator"></div>
+
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <center> <h5>Segundo Aval</h5> </center>
+                                        </div>
+                                    </div>  
+
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Nombre</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="nombre_aval2" class="form-control" placeholder="Nombre" >
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Dirección</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="direccion_aval2" class="form-control" placeholder="Direccion" >
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Telefono</label>
+                                        <div class="col-md-6">
+                                            <input type="text" pattern="\d*" maxlength="10" v-on:keypress="isNumber($event)" v-model="telefono_aval2" class="form-control" placeholder="Telefono" >
                                         </div>
                                     </div>
 
@@ -1402,6 +1507,8 @@
 
                 errorProgramacionFirma: 0,
                 errorMostrarMsjProgramacion: [],
+
+                band: 0,
                 
                 //variables para filtros de Por ingresar
                 criterio:'lotes.fraccionamiento_id',
@@ -1471,6 +1578,10 @@
                 nombre_aval: '',
                 direccion_aval: '',
                 telefono_aval: '',
+
+                nombre_aval2: '',
+                direccion_aval2: '',
+                telefono_aval2: '',
                 dias: 0,
                 interes: 0,
 
@@ -1564,7 +1675,7 @@
                 });
             },
 
-             mostrarDatosNotaria(notaria){
+            mostrarDatosNotaria(notaria){
                 let me = this;
                 me.arrayDatosNotaria=[];
                 var url = '/select_datos_notaria?id=' + notaria;
@@ -1575,6 +1686,25 @@
                         me.notario = me.arrayDatosNotaria[0]['titular'];
                         me.direccion_firma = me.arrayDatosNotaria[0]['direccion'] + ', ' + me.arrayDatosNotaria[0]['colonia'] + ', C.P. ' + me.arrayDatosNotaria[0]['cp'];
 
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
+            abrirPDF(id){
+                const win = window.open('/estadoCuenta/estadoPDF/'+id, '_blank');
+                win.focus();
+            },
+
+            selectNombreArchivoModelo(id){
+                let me = this;
+                me.nombre_archivo_modelo='';
+                var url = '/contrato/modelo/caracteristicas/pdf/' + id;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                        me.nombre_archivo_modelo = respuesta.modelo[0].archivo;
+                        window.open('/files/modelos/'+me.nombre_archivo_modelo, '_blank')
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -1855,6 +1985,39 @@
                 });
             },
 
+            actualizarVigencia(id,fecha_vigencia){
+                let me = this;
+                //Con axios se llama el metodo update de PartidaController
+                if(fecha_vigencia=="")
+                    return
+                else{
+                    axios.put('/creditos_select/setFechaVigencia',{
+                        'folio':id,
+                        'fecha_vigencia': fecha_vigencia,
+                    }).then(function (response){
+                        
+                        me.listarAutorizados(1, me.buscar_preauto, me.b_etapa_preauto, me.b_manzana_preauto, me.b_lote_preauto, me.criterio_preauto);
+                        me.band = 0;
+                        //window.alert("Cambios guardados correctamente");
+                    const toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+
+                        });
+
+                        toast({
+                        type: 'success',
+                        title: 'Cambios guardados'
+                        })
+                    }).catch(function (error){
+                        console.log(error);
+                    });
+                }
+                
+            },
+
             generarLiquidacion(){
                 if(this.validarLiquidacion()){
                     return;
@@ -1948,6 +2111,9 @@
                     'nombre_aval' : this.nombre_aval,
                     'direccion_aval' : this.direccion_aval,
                     'telefono_aval': this.telefono_aval,
+                    'nombre_aval2' : this.nombre_aval2,
+                    'direccion_aval2' : this.direccion_aval2,
+                    'telefono_aval2': this.telefono_aval2,
                     'pagares' : this.arrayPagos
                     
                 }).then(function (response){
@@ -2281,6 +2447,9 @@
                         this.nombre_aval = '';
                         this.direccion_aval = '';
                         this.telefono_aval = '';
+                        this.nombre_aval2 = '';
+                        this.direccion_aval2 = '';
+                        this.telefono_aval2 = '';
                         this.arrayPagos = [];
                         this.restante_pago=this.total_liquidar1;
 

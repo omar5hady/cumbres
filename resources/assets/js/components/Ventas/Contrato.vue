@@ -387,7 +387,7 @@
                                                 <div class="col-md-2">
                                                 <div class="form-group">
                                                     <label for="">RFC <span style="color:red;" v-show="rfc==''">(*)</span></label>
-                                                    <input :readonly="listado==4 && btn_actualizar==0" type="text" maxlength="10" class="form-control"  v-model="rfc" placeholder="RFC">
+                                                    <input readonly type="text" maxlength="10" class="form-control"  v-model="rfc" placeholder="RFC">
                                                 </div>
                                                 </div>
                                                     

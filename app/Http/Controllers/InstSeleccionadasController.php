@@ -16,252 +16,976 @@ class InstSeleccionadasController extends Controller
         $buscar2 = $request->buscar2;
         $buscar3 = $request->buscar3;
         $buscar4 = $request->buscar4;
+        $b_cobrados = $request->b_cobrados;
         $criterio = $request->criterio;
 
-        if($buscar == '' && $criterio != 'personal.nombre'){
-            $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                ->join('contratos','contratos.id','=','creditos.id')
-                ->join('personal','personal.id','=','creditos.prospecto_id')
-                ->select('contratos.id as folio', 
-                        'contratos.id as folio','creditos.fraccionamiento as proyecto',
-                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                        'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-                        'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                        'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
-                ->where('inst_seleccionadas.elegido', '=', 1)
-                ->where('contratos.status', '=', 3)
-                ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                ->where('contratos.status', '=', 3)
-                
-                ->paginate(10);
-        }
-        else{
-            switch($criterio){
-                case 'personal.nombre':{
-                    if($buscar2 == ''){
-                        $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                            ->join('contratos','contratos.id','=','creditos.id')
-                            ->join('personal','personal.id','=','creditos.prospecto_id')
-                            ->select('contratos.id as folio', 
-                                    'contratos.id as folio','creditos.fraccionamiento as proyecto',
-                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                                    'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-                                    'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                                    'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
-                            ->where('inst_seleccionadas.elegido', '=', 1)
-                            ->where('contratos.status', '=', 3)
-                            ->where($criterio, 'like', '%' . $buscar . '%')
-                            ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                            ->where('contratos.status', '=', 3)
-                            ->where($criterio, 'like', '%' . $buscar . '%')
-                            ->paginate(10);
-                    }
-                    elseif ($buscar2 != '' && $buscar == '') {
-                        $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                            ->join('contratos','contratos.id','=','creditos.id')
-                            ->join('personal','personal.id','=','creditos.prospecto_id')
-                            ->select('contratos.id as folio', 
-                                    'contratos.id as folio','creditos.fraccionamiento as proyecto',
-                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                                    'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-                                    'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                                    'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
-                            ->where('inst_seleccionadas.elegido', '=', 1)
-                            ->where('contratos.status', '=', 3)
-                            ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-                            ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                            ->where('contratos.status', '=', 3)
-                            ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-                            ->paginate(10);
-                    }
-                    else{
-                        $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                            ->join('contratos','contratos.id','=','creditos.id')
-                            ->join('personal','personal.id','=','creditos.prospecto_id')
-                            ->select('contratos.id as folio', 
-                                    'contratos.id as folio','creditos.fraccionamiento as proyecto',
-                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                                    'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-                                    'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                                    'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
-                            ->where('inst_seleccionadas.elegido', '=', 1)
-                            ->where('contratos.status', '=', 3)
-                            ->where($criterio, 'like', '%' . $buscar . '%')
-                            ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
+        if($b_cobrados == 0){
+            if($buscar == '' && $criterio != 'personal.nombre'){
+                $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                    ->join('contratos','contratos.id','=','creditos.id')
+                    ->join('lotes','lotes.id','=','creditos.lote_id')
+                    ->join('personal','personal.id','=','creditos.prospecto_id')
+                    ->select('contratos.id as folio', 'lotes.credito_puente',
+                            'creditos.fraccionamiento as proyecto',
+                            'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
+                            'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
+                            'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
+                            'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
+                    ->where('inst_seleccionadas.cobrado','=','0')
+                    ->where('inst_seleccionadas.elegido', '=', 1)
+                    ->where('contratos.status', '=', 3)
+                    ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                    ->where('inst_seleccionadas.cobrado','=','0')
+                    ->where('contratos.status', '=', 3)
+                    ->orderBy('inst_seleccionadas.cobrado','asc')
+                    
+                    ->paginate(10);
 
-                            ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                            ->where('contratos.status', '=', 3)
-                            ->where($criterio, 'like', '%' . $buscar . '%')
-                            ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
-                            ->paginate(10);
-                    }
-                    break;
+                    $contador = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                        ->join('contratos','contratos.id','=','creditos.id')
+                        ->join('lotes','lotes.id','=','creditos.lote_id')
+                        ->join('personal','personal.id','=','creditos.prospecto_id')
+                        ->select('contratos.id as folio')
+                        ->where('inst_seleccionadas.cobrado','=','0')
+                        ->where('inst_seleccionadas.elegido', '=', 1)
+                        ->where('contratos.status', '=', 3)
+                        ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                        ->where('inst_seleccionadas.cobrado','=','0')
+                        ->where('contratos.status', '=', 3)
+                        ->orderBy('inst_seleccionadas.cobrado','asc')
+                        
+                        ->count();
+            }
+            else{
+                switch($criterio){
+                    case 'personal.nombre':{
+                        if($buscar2 == ''){
+                            $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                                ->join('contratos','contratos.id','=','creditos.id')
+                                ->join('lotes','lotes.id','=','creditos.lote_id')
+                                ->join('personal','personal.id','=','creditos.prospecto_id')
+                                ->select('contratos.id as folio', 'lotes.credito_puente',
+                                        'creditos.fraccionamiento as proyecto',
+                                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
+                                        'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
+                                        'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
+                                        'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, 'like', '%' . $buscar . '%')
+                                ->where('inst_seleccionadas.cobrado','=','0')
+                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, 'like', '%' . $buscar . '%')
+                                ->where('inst_seleccionadas.cobrado','=','0')
+                                ->orderBy('inst_seleccionadas.cobrado','asc')
+                                ->paginate(10);
 
+                                $contador = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                                    ->join('contratos','contratos.id','=','creditos.id')
+                                    ->join('lotes','lotes.id','=','creditos.lote_id')
+                                    ->join('personal','personal.id','=','creditos.prospecto_id')
+                                    ->select('contratos.id as folio')
+                                    ->where('inst_seleccionadas.elegido', '=', 1)
+                                    ->where('contratos.status', '=', 3)
+                                    ->where($criterio, 'like', '%' . $buscar . '%')
+                                    ->where('inst_seleccionadas.cobrado','=','0')
+                                    ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                                    ->where('contratos.status', '=', 3)
+                                    ->where($criterio, 'like', '%' . $buscar . '%')
+                                    ->where('inst_seleccionadas.cobrado','=','0')
+                                    ->orderBy('inst_seleccionadas.cobrado','asc')
+                                    ->count();
+                        }
+                        elseif ($buscar2 != '' && $buscar == '') {
+                            $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                                ->join('contratos','contratos.id','=','creditos.id')
+                                ->join('lotes','lotes.id','=','creditos.lote_id')
+                                ->join('personal','personal.id','=','creditos.prospecto_id')
+                                ->select('contratos.id as folio', 'lotes.credito_puente',
+                                        'creditos.fraccionamiento as proyecto',
+                                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
+                                        'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
+                                        'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
+                                        'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
+                                ->where('inst_seleccionadas.cobrado','=','0')
+                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
+                                ->where('inst_seleccionadas.cobrado','=','0')
+                                ->orderBy('inst_seleccionadas.cobrado','asc')
+                                ->paginate(10);
+
+                                $contador = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                                    ->join('contratos','contratos.id','=','creditos.id')
+                                    ->join('lotes','lotes.id','=','creditos.lote_id')
+                                    ->join('personal','personal.id','=','creditos.prospecto_id')
+                                    ->select('contratos.id as folio')
+                                    ->where('inst_seleccionadas.elegido', '=', 1)
+                                    ->where('contratos.status', '=', 3)
+                                    ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
+                                    ->where('inst_seleccionadas.cobrado','=','0')
+                                    ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                                    ->where('contratos.status', '=', 3)
+                                    ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
+                                    ->where('inst_seleccionadas.cobrado','=','0')
+                                    ->orderBy('inst_seleccionadas.cobrado','asc')
+                                    ->count();
+                        }
+                        else{
+                            $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                                ->join('contratos','contratos.id','=','creditos.id')
+                                ->join('lotes','lotes.id','=','creditos.lote_id')
+                                ->join('personal','personal.id','=','creditos.prospecto_id')
+                                ->select('contratos.id as folio', 'lotes.credito_puente',
+                                        'creditos.fraccionamiento as proyecto',
+                                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
+                                        'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
+                                        'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
+                                        'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, 'like', '%' . $buscar . '%')
+                                ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
+                                ->where('inst_seleccionadas.cobrado','=','0')
+    
+                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, 'like', '%' . $buscar . '%')
+                                ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
+                                ->where('inst_seleccionadas.cobrado','=','0')
+                                ->orderBy('inst_seleccionadas.cobrado','asc')
+                                ->paginate(10);
+                            
+                                $contador = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                                    ->join('contratos','contratos.id','=','creditos.id')
+                                    ->join('lotes','lotes.id','=','creditos.lote_id')
+                                    ->join('personal','personal.id','=','creditos.prospecto_id')
+                                    ->select('contratos.id as folio')
+                                    ->where('inst_seleccionadas.elegido', '=', 1)
+                                    ->where('contratos.status', '=', 3)
+                                    ->where($criterio, 'like', '%' . $buscar . '%')
+                                    ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
+                                    ->where('inst_seleccionadas.cobrado','=','0')
+        
+                                    ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                                    ->where('contratos.status', '=', 3)
+                                    ->where($criterio, 'like', '%' . $buscar . '%')
+                                    ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
+                                    ->where('inst_seleccionadas.cobrado','=','0')
+                                    ->orderBy('inst_seleccionadas.cobrado','asc')
+                                    ->count();
+                        }
+                        break;
+    
+                    }
+                    case 'creditos.fraccionamiento': {
+                        if($buscar2 == '' && $buscar3 == '' && $buscar4 == ''){
+                            $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                                ->join('contratos','contratos.id','=','creditos.id')
+                                ->join('lotes','lotes.id','=','creditos.lote_id')
+                                ->join('personal','personal.id','=','creditos.prospecto_id')
+                                ->select('contratos.id as folio', 'lotes.credito_puente',
+                                        'creditos.fraccionamiento as proyecto',
+                                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
+                                        'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
+                                        'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
+                                        'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('inst_seleccionadas.cobrado','=','0')
+                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('inst_seleccionadas.cobrado','=','0')
+                                ->orderBy('inst_seleccionadas.cobrado','asc')
+                                ->paginate(10);
+
+                            $contador = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                                ->join('contratos','contratos.id','=','creditos.id')
+                                ->join('lotes','lotes.id','=','creditos.lote_id')
+                                ->join('personal','personal.id','=','creditos.prospecto_id')
+                                ->select('contratos.id as folio')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('inst_seleccionadas.cobrado','=','0')
+                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('inst_seleccionadas.cobrado','=','0')
+                                ->orderBy('inst_seleccionadas.cobrado','asc')
+                                ->count();
+                        }
+                        elseif ($buscar2 != '' && $buscar3 == '' && $buscar4 == '') {
+                            $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                                ->join('contratos','contratos.id','=','creditos.id')
+                                ->join('lotes','lotes.id','=','creditos.lote_id')
+                                ->join('personal','personal.id','=','creditos.prospecto_id')
+                                ->select('contratos.id as folio', 'lotes.credito_puente',
+                                        'creditos.fraccionamiento as proyecto',
+                                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
+                                        'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
+                                        'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
+                                        'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('creditos.etapa', '=', $buscar2)
+                                ->where('inst_seleccionadas.cobrado','=','0')
+                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('creditos.etapa', '=', $buscar2)
+                                ->where('inst_seleccionadas.cobrado','=','0')
+                                ->orderBy('inst_seleccionadas.cobrado','asc')
+                                ->paginate(10);
+
+                            $contador = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                                ->join('contratos','contratos.id','=','creditos.id')
+                                ->join('lotes','lotes.id','=','creditos.lote_id')
+                                ->join('personal','personal.id','=','creditos.prospecto_id')
+                                ->select('contratos.id as folio')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('creditos.etapa', '=', $buscar2)
+                                ->where('inst_seleccionadas.cobrado','=','0')
+                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('creditos.etapa', '=', $buscar2)
+                                ->where('inst_seleccionadas.cobrado','=','0')
+                                ->orderBy('inst_seleccionadas.cobrado','asc')
+                                ->count();
+                        }
+                        elseif ($buscar2 != '' && $buscar3 != '' && $buscar4 == '') {
+                            $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                                ->join('contratos','contratos.id','=','creditos.id')
+                                ->join('lotes','lotes.id','=','creditos.lote_id')
+                                ->join('personal','personal.id','=','creditos.prospecto_id')
+                                ->select('contratos.id as folio', 'lotes.credito_puente',
+                                        'creditos.fraccionamiento as proyecto',
+                                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
+                                        'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
+                                        'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
+                                        'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('creditos.etapa', '=', $buscar2)
+                                ->where('creditos.manzana', '=', $buscar3)
+                                ->where('inst_seleccionadas.cobrado','=','0')
+                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('creditos.etapa', '=', $buscar2)
+                                ->where('creditos.manzana', '=', $buscar3)
+                                ->where('inst_seleccionadas.cobrado','=','0')
+                                ->orderBy('inst_seleccionadas.cobrado','asc')
+                                ->paginate(10);
+
+                            $contador = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                                ->join('contratos','contratos.id','=','creditos.id')
+                                ->join('lotes','lotes.id','=','creditos.lote_id')
+                                ->join('personal','personal.id','=','creditos.prospecto_id')
+                                ->select('contratos.id as folio')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('creditos.etapa', '=', $buscar2)
+                                ->where('creditos.manzana', '=', $buscar3)
+                                ->where('inst_seleccionadas.cobrado','=','0')
+                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('creditos.etapa', '=', $buscar2)
+                                ->where('creditos.manzana', '=', $buscar3)
+                                ->where('inst_seleccionadas.cobrado','=','0')
+                                ->orderBy('inst_seleccionadas.cobrado','asc')
+                                ->count();
+                        }
+                        elseif ($buscar2 != '' && $buscar3 != '' && $buscar4 != '') {
+                            $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                                ->join('contratos','contratos.id','=','creditos.id')
+                                ->join('lotes','lotes.id','=','creditos.lote_id')
+                                ->join('personal','personal.id','=','creditos.prospecto_id')
+                                ->select('contratos.id as folio', 'lotes.credito_puente',
+                                        'creditos.fraccionamiento as proyecto',
+                                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
+                                        'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
+                                        'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
+                                        'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('creditos.etapa', '=', $buscar2)
+                                ->where('creditos.manzana', '=', $buscar3)
+                                ->where('creditos.num_lote', '=', $buscar4)
+                                ->where('inst_seleccionadas.cobrado','=','0')
+    
+                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('creditos.etapa', '=', $buscar2)
+                                ->where('creditos.manzana', '=', $buscar3)
+                                ->where('creditos.num_lote', '=', $buscar4)
+                                ->where('inst_seleccionadas.cobrado','=','0')
+                                ->orderBy('inst_seleccionadas.cobrado','asc')
+                                ->paginate(10);
+
+                            $contador = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                                ->join('contratos','contratos.id','=','creditos.id')
+                                ->join('lotes','lotes.id','=','creditos.lote_id')
+                                ->join('personal','personal.id','=','creditos.prospecto_id')
+                                ->select('contratos.id as folio')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('creditos.etapa', '=', $buscar2)
+                                ->where('creditos.manzana', '=', $buscar3)
+                                ->where('creditos.num_lote', '=', $buscar4)
+                                ->where('inst_seleccionadas.cobrado','=','0')
+    
+                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('creditos.etapa', '=', $buscar2)
+                                ->where('creditos.manzana', '=', $buscar3)
+                                ->where('creditos.num_lote', '=', $buscar4)
+                                ->where('inst_seleccionadas.cobrado','=','0')
+                                ->orderBy('inst_seleccionadas.cobrado','asc')
+                                ->count();
+                        }
+                        elseif ($buscar2 == '' && $buscar3 == '' && $buscar4 != '') {
+                            $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                                ->join('contratos','contratos.id','=','creditos.id')
+                                ->join('lotes','lotes.id','=','creditos.lote_id')
+                                ->join('personal','personal.id','=','creditos.prospecto_id')
+                                ->select('contratos.id as folio', 'lotes.credito_puente',
+                                        'creditos.fraccionamiento as proyecto',
+                                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
+                                        'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
+                                        'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
+                                        'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('creditos.num_lote', '=', $buscar4)
+                                ->where('inst_seleccionadas.cobrado','=','0')
+                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('creditos.num_lote', '=', $buscar4)
+                                ->where('inst_seleccionadas.cobrado','=','0')
+                                ->orderBy('inst_seleccionadas.cobrado','asc')
+                                ->paginate(10);
+
+                            $contador = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                                ->join('contratos','contratos.id','=','creditos.id')
+                                ->join('lotes','lotes.id','=','creditos.lote_id')
+                                ->join('personal','personal.id','=','creditos.prospecto_id')
+                                ->select('contratos.id as folio')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('creditos.num_lote', '=', $buscar4)
+                                ->where('inst_seleccionadas.cobrado','=','0')
+                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('creditos.num_lote', '=', $buscar4)
+                                ->where('inst_seleccionadas.cobrado','=','0')
+                                ->orderBy('inst_seleccionadas.cobrado','asc')
+                                ->count();
+                        }
+                        elseif ($buscar2 != '' && $buscar3 == '' && $buscar4 != '') {
+                            $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                                ->join('contratos','contratos.id','=','creditos.id')
+                                ->join('lotes','lotes.id','=','creditos.lote_id')
+                                ->join('personal','personal.id','=','creditos.prospecto_id')
+                                ->select('contratos.id as folio', 'lotes.credito_puente',
+                                        'creditos.fraccionamiento as proyecto',
+                                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
+                                        'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
+                                        'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
+                                        'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('creditos.etapa', '=', $buscar2)
+                                ->where('creditos.num_lote', '=', $buscar4)
+                                ->where('inst_seleccionadas.cobrado','=','0')
+                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('creditos.etapa', '=', $buscar2)
+                                ->where('creditos.num_lote', '=', $buscar4)
+                                ->where('inst_seleccionadas.cobrado','=','0')
+                                ->orderBy('inst_seleccionadas.cobrado','asc')
+                                ->paginate(10);
+
+                            $contador = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                                ->join('contratos','contratos.id','=','creditos.id')
+                                ->join('lotes','lotes.id','=','creditos.lote_id')
+                                ->join('personal','personal.id','=','creditos.prospecto_id')
+                                ->select('contratos.id as folio')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('creditos.etapa', '=', $buscar2)
+                                ->where('creditos.num_lote', '=', $buscar4)
+                                ->where('inst_seleccionadas.cobrado','=','0')
+                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('creditos.etapa', '=', $buscar2)
+                                ->where('creditos.num_lote', '=', $buscar4)
+                                ->where('inst_seleccionadas.cobrado','=','0')
+                                ->orderBy('inst_seleccionadas.cobrado','asc')
+                                ->count();
+                        }
+                        break;
+                    }
+    
+                    case 'contratos.id': {
+                        $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                                ->join('contratos','contratos.id','=','creditos.id')
+                                ->join('lotes','lotes.id','=','creditos.lote_id')
+                                ->join('personal','personal.id','=','creditos.prospecto_id')
+                                ->select('contratos.id as folio', 'lotes.credito_puente',
+                                        'creditos.fraccionamiento as proyecto',
+                                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
+                                        'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
+                                        'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
+                                        'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('inst_seleccionadas.cobrado','=','0')
+                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('inst_seleccionadas.cobrado','=','0')
+                                ->orderBy('inst_seleccionadas.cobrado','asc')
+                                ->paginate(10);
+
+                            $contador = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                                ->join('contratos','contratos.id','=','creditos.id')
+                                ->join('lotes','lotes.id','=','creditos.lote_id')
+                                ->join('personal','personal.id','=','creditos.prospecto_id')
+                                ->select('contratos.id as folio')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('inst_seleccionadas.cobrado','=','0')
+                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('inst_seleccionadas.cobrado','=','0')
+                                ->orderBy('inst_seleccionadas.cobrado','asc')
+                                ->count();
+                    }
+    
                 }
-                case 'creditos.fraccionamiento': {
-                    if($buscar2 == '' && $buscar3 == '' && $buscar4 == ''){
-                        $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                            ->join('contratos','contratos.id','=','creditos.id')
-                            ->join('personal','personal.id','=','creditos.prospecto_id')
-                            ->select('contratos.id as folio', 
-                                    'contratos.id as folio','creditos.fraccionamiento as proyecto',
-                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                                    'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-                                    'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                                    'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
-                            ->where('inst_seleccionadas.elegido', '=', 1)
-                            ->where('contratos.status', '=', 3)
-                            ->where($criterio, '=', $buscar)
-                            ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                            ->where('contratos.status', '=', 3)
-                            ->where($criterio, '=', $buscar)
-                            ->paginate(10);
-                    }
-                    elseif ($buscar2 != '' && $buscar3 == '' && $buscar4 == '') {
-                        $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                            ->join('contratos','contratos.id','=','creditos.id')
-                            ->join('personal','personal.id','=','creditos.prospecto_id')
-                            ->select('contratos.id as folio', 
-                                    'contratos.id as folio','creditos.fraccionamiento as proyecto',
-                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                                    'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-                                    'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                                    'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
-                            ->where('inst_seleccionadas.elegido', '=', 1)
-                            ->where('contratos.status', '=', 3)
-                            ->where($criterio, '=', $buscar)
-                            ->where('creditos.etapa', '=', $buscar2)
-                            ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                            ->where('contratos.status', '=', 3)
-                            ->where($criterio, '=', $buscar)
-                            ->where('creditos.etapa', '=', $buscar2)
-                            ->paginate(10);
-                    }
-                    elseif ($buscar2 != '' && $buscar3 != '' && $buscar4 == '') {
-                        $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                            ->join('contratos','contratos.id','=','creditos.id')
-                            ->join('personal','personal.id','=','creditos.prospecto_id')
-                            ->select('contratos.id as folio', 
-                                    'contratos.id as folio','creditos.fraccionamiento as proyecto',
-                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                                    'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-                                    'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                                    'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
-                            ->where('inst_seleccionadas.elegido', '=', 1)
-                            ->where('contratos.status', '=', 3)
-                            ->where($criterio, '=', $buscar)
-                            ->where('creditos.etapa', '=', $buscar2)
-                            ->where('creditos.manzana', '=', $buscar3)
-                            ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                            ->where('contratos.status', '=', 3)
-                            ->where($criterio, '=', $buscar)
-                            ->where('creditos.etapa', '=', $buscar2)
-                            ->where('creditos.manzana', '=', $buscar3)
-                            ->paginate(10);
-                    }
-                    elseif ($buscar2 != '' && $buscar3 != '' && $buscar4 != '') {
-                        $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                            ->join('contratos','contratos.id','=','creditos.id')
-                            ->join('personal','personal.id','=','creditos.prospecto_id')
-                            ->select('contratos.id as folio', 
-                                    'contratos.id as folio','creditos.fraccionamiento as proyecto',
-                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                                    'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-                                    'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                                    'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
-                            ->where('inst_seleccionadas.elegido', '=', 1)
-                            ->where('contratos.status', '=', 3)
-                            ->where($criterio, '=', $buscar)
-                            ->where('creditos.etapa', '=', $buscar2)
-                            ->where('creditos.manzana', '=', $buscar3)
-                            ->where('creditos.num_lote', '=', $buscar4)
-
-                            ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                            ->where('contratos.status', '=', 3)
-                            ->where($criterio, '=', $buscar)
-                            ->where('creditos.etapa', '=', $buscar2)
-                            ->where('creditos.manzana', '=', $buscar3)
-                            ->where('creditos.num_lote', '=', $buscar4)
-                            ->paginate(10);
-                    }
-                    elseif ($buscar2 == '' && $buscar3 == '' && $buscar4 != '') {
-                        $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                            ->join('contratos','contratos.id','=','creditos.id')
-                            ->join('personal','personal.id','=','creditos.prospecto_id')
-                            ->select('contratos.id as folio', 
-                                    'contratos.id as folio','creditos.fraccionamiento as proyecto',
-                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                                    'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-                                    'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                                    'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
-                            ->where('inst_seleccionadas.elegido', '=', 1)
-                            ->where('contratos.status', '=', 3)
-                            ->where($criterio, '=', $buscar)
-                            ->where('creditos.num_lote', '=', $buscar4)
-                            ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                            ->where('contratos.status', '=', 3)
-                            ->where($criterio, '=', $buscar)
-                            ->where('creditos.num_lote', '=', $buscar4)
-                            ->paginate(10);
-                    }
-                    elseif ($buscar2 != '' && $buscar3 == '' && $buscar4 != '') {
-                        $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                            ->join('contratos','contratos.id','=','creditos.id')
-                            ->join('personal','personal.id','=','creditos.prospecto_id')
-                            ->select('contratos.id as folio', 
-                                    'contratos.id as folio','creditos.fraccionamiento as proyecto',
-                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                                    'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-                                    'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                                    'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
-                            ->where('inst_seleccionadas.elegido', '=', 1)
-                            ->where('contratos.status', '=', 3)
-                            ->where($criterio, '=', $buscar)
-                            ->where('creditos.etapa', '=', $buscar2)
-                            ->where('creditos.num_lote', '=', $buscar4)
-                            ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                            ->where('contratos.status', '=', 3)
-                            ->where($criterio, '=', $buscar)
-                            ->where('creditos.etapa', '=', $buscar2)
-                            ->where('creditos.num_lote', '=', $buscar4)
-                            ->paginate(10);
-                    }
-                    break;
-                }
-
-                case 'contratos.id': {
-                    $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
-                            ->join('contratos','contratos.id','=','creditos.id')
-                            ->join('personal','personal.id','=','creditos.prospecto_id')
-                            ->select('contratos.id as folio', 
-                                    'contratos.id as folio','creditos.fraccionamiento as proyecto',
-                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
-                                    'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
-                                    'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
-                                    'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
-                            ->where('inst_seleccionadas.elegido', '=', 1)
-                            ->where('contratos.status', '=', 3)
-                            ->where($criterio, '=', $buscar)
-                            ->orWhere('inst_seleccionadas.tipo', '=', 1)
-                            ->where('contratos.status', '=', 3)
-                            ->where($criterio, '=', $buscar)
-                            ->paginate(10);
-                }
-
             }
         }
+        else{
+            if($buscar == '' && $criterio != 'personal.nombre'){
+                $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                    ->join('contratos','contratos.id','=','creditos.id')
+                    ->join('lotes','lotes.id','=','creditos.lote_id')
+                    ->join('personal','personal.id','=','creditos.prospecto_id')
+                    ->select('contratos.id as folio', 'lotes.credito_puente',
+                            'creditos.fraccionamiento as proyecto',
+                            'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
+                            'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
+                            'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
+                            'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
+                    ->where('inst_seleccionadas.cobrado','!=','0')
+                    ->where('inst_seleccionadas.elegido', '=', 1)
+                    ->where('contratos.status', '=', 3)
+                    ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                    ->where('inst_seleccionadas.cobrado','!=','0')
+                    ->where('contratos.status', '=', 3)
+                    ->orderBy('inst_seleccionadas.cobrado','asc')
+                    
+                    ->paginate(10);
+
+                    $contador = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                    ->join('contratos','contratos.id','=','creditos.id')
+                    ->join('lotes','lotes.id','=','creditos.lote_id')
+                    ->join('personal','personal.id','=','creditos.prospecto_id')
+                    ->select('contratos.id as folio')
+                    ->where('inst_seleccionadas.cobrado','!=','0')
+                    ->where('inst_seleccionadas.elegido', '=', 1)
+                    ->where('contratos.status', '=', 3)
+                    ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                    ->where('inst_seleccionadas.cobrado','!=','0')
+                    ->where('contratos.status', '=', 3)
+                    ->orderBy('inst_seleccionadas.cobrado','asc')
+                    
+                    ->count();
+            }
+            else{
+                switch($criterio){
+                    case 'personal.nombre':{
+                        if($buscar2 == ''){
+                            $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                                ->join('contratos','contratos.id','=','creditos.id')
+                                ->join('lotes','lotes.id','=','creditos.lote_id')
+                                ->join('personal','personal.id','=','creditos.prospecto_id')
+                                ->select('contratos.id as folio', 'lotes.credito_puente',
+                                        'creditos.fraccionamiento as proyecto',
+                                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
+                                        'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
+                                        'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
+                                        'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, 'like', '%' . $buscar . '%')
+                                ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, 'like', '%' . $buscar . '%')
+                                ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->orderBy('inst_seleccionadas.cobrado','asc')
+                                ->paginate(10);
+
+                                $contador = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                                ->join('contratos','contratos.id','=','creditos.id')
+                                ->join('lotes','lotes.id','=','creditos.lote_id')
+                                ->join('personal','personal.id','=','creditos.prospecto_id')
+                                ->select('contratos.id as folio')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, 'like', '%' . $buscar . '%')
+                                ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, 'like', '%' . $buscar . '%')
+                                ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->orderBy('inst_seleccionadas.cobrado','asc')
+                                ->count();
+                        }
+                        elseif ($buscar2 != '' && $buscar == '') {
+                            $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                                ->join('contratos','contratos.id','=','creditos.id')
+                                ->join('lotes','lotes.id','=','creditos.lote_id')
+                                ->join('personal','personal.id','=','creditos.prospecto_id')
+                                ->select('contratos.id as folio', 'lotes.credito_puente',
+                                        'creditos.fraccionamiento as proyecto',
+                                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
+                                        'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
+                                        'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
+                                        'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
+                                ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
+                                ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->orderBy('inst_seleccionadas.cobrado','asc')
+                                ->paginate(10);
+
+                                $contador = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                                ->join('contratos','contratos.id','=','creditos.id')
+                                ->join('lotes','lotes.id','=','creditos.lote_id')
+                                ->join('personal','personal.id','=','creditos.prospecto_id')
+                                ->select('contratos.id as folio')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
+                                ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
+                                ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->orderBy('inst_seleccionadas.cobrado','asc')
+                                ->count();
+                        }
+                        else{
+                            $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                                ->join('contratos','contratos.id','=','creditos.id')
+                                ->join('lotes','lotes.id','=','creditos.lote_id')
+                                ->join('personal','personal.id','=','creditos.prospecto_id')
+                                ->select('contratos.id as folio', 'lotes.credito_puente',
+                                        'creditos.fraccionamiento as proyecto',
+                                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
+                                        'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
+                                        'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
+                                        'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, 'like', '%' . $buscar . '%')
+                                ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
+                                ->where('inst_seleccionadas.cobrado','!=','0')
+    
+                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, 'like', '%' . $buscar . '%')
+                                ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
+                                ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->orderBy('inst_seleccionadas.cobrado','asc')
+                                ->paginate(10);
+
+                                $contador = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                                ->join('contratos','contratos.id','=','creditos.id')
+                                ->join('lotes','lotes.id','=','creditos.lote_id')
+                                ->join('personal','personal.id','=','creditos.prospecto_id')
+                                ->select('contratos.id as folio')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, 'like', '%' . $buscar . '%')
+                                ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
+                                ->where('inst_seleccionadas.cobrado','!=','0')
+    
+                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, 'like', '%' . $buscar . '%')
+                                ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
+                                ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->orderBy('inst_seleccionadas.cobrado','asc')
+                                ->count();
+                        }
+                        break;
+    
+                    }
+                    case 'creditos.fraccionamiento': {
+                        if($buscar2 == '' && $buscar3 == '' && $buscar4 == ''){
+                            $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                                ->join('contratos','contratos.id','=','creditos.id')
+                                ->join('lotes','lotes.id','=','creditos.lote_id')
+                                ->join('personal','personal.id','=','creditos.prospecto_id')
+                                ->select('contratos.id as folio', 'lotes.credito_puente',
+                                        'creditos.fraccionamiento as proyecto',
+                                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
+                                        'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
+                                        'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
+                                        'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->orderBy('inst_seleccionadas.cobrado','asc')
+                                ->paginate(10);
+
+                                $contador = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                                ->join('contratos','contratos.id','=','creditos.id')
+                                ->join('lotes','lotes.id','=','creditos.lote_id')
+                                ->join('personal','personal.id','=','creditos.prospecto_id')
+                                ->select('contratos.id as folio')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->orderBy('inst_seleccionadas.cobrado','asc')
+                                ->count();
+                        }
+                        elseif ($buscar2 != '' && $buscar3 == '' && $buscar4 == '') {
+                            $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                                ->join('contratos','contratos.id','=','creditos.id')
+                                ->join('lotes','lotes.id','=','creditos.lote_id')
+                                ->join('personal','personal.id','=','creditos.prospecto_id')
+                                ->select('contratos.id as folio', 'lotes.credito_puente',
+                                        'creditos.fraccionamiento as proyecto',
+                                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
+                                        'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
+                                        'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
+                                        'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('creditos.etapa', '=', $buscar2)
+                                ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('creditos.etapa', '=', $buscar2)
+                                ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->orderBy('inst_seleccionadas.cobrado','asc')
+                                ->paginate(10);
+
+                                $contador = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                                ->join('contratos','contratos.id','=','creditos.id')
+                                ->join('lotes','lotes.id','=','creditos.lote_id')
+                                ->join('personal','personal.id','=','creditos.prospecto_id')
+                                ->select('contratos.id as folio')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('creditos.etapa', '=', $buscar2)
+                                ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('creditos.etapa', '=', $buscar2)
+                                ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->orderBy('inst_seleccionadas.cobrado','asc')
+                                ->count();
+                        }
+                        elseif ($buscar2 != '' && $buscar3 != '' && $buscar4 == '') {
+                            $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                                ->join('contratos','contratos.id','=','creditos.id')
+                                ->join('lotes','lotes.id','=','creditos.lote_id')
+                                ->join('personal','personal.id','=','creditos.prospecto_id')
+                                ->select('contratos.id as folio', 'lotes.credito_puente',
+                                        'creditos.fraccionamiento as proyecto',
+                                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
+                                        'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
+                                        'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
+                                        'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('creditos.etapa', '=', $buscar2)
+                                ->where('creditos.manzana', '=', $buscar3)
+                                ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('creditos.etapa', '=', $buscar2)
+                                ->where('creditos.manzana', '=', $buscar3)
+                                ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->orderBy('inst_seleccionadas.cobrado','asc')
+                                ->paginate(10);
+
+                                $contador = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                                ->join('contratos','contratos.id','=','creditos.id')
+                                ->join('lotes','lotes.id','=','creditos.lote_id')
+                                ->join('personal','personal.id','=','creditos.prospecto_id')
+                                ->select('contratos.id as folio')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('creditos.etapa', '=', $buscar2)
+                                ->where('creditos.manzana', '=', $buscar3)
+                                ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('creditos.etapa', '=', $buscar2)
+                                ->where('creditos.manzana', '=', $buscar3)
+                                ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->orderBy('inst_seleccionadas.cobrado','asc')
+                                ->count();
+                        }
+                        elseif ($buscar2 != '' && $buscar3 != '' && $buscar4 != '') {
+                            $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                                ->join('contratos','contratos.id','=','creditos.id')
+                                ->join('lotes','lotes.id','=','creditos.lote_id')
+                                ->join('personal','personal.id','=','creditos.prospecto_id')
+                                ->select('contratos.id as folio', 'lotes.credito_puente',
+                                        'creditos.fraccionamiento as proyecto',
+                                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
+                                        'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
+                                        'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
+                                        'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('creditos.etapa', '=', $buscar2)
+                                ->where('creditos.manzana', '=', $buscar3)
+                                ->where('creditos.num_lote', '=', $buscar4)
+                                ->where('inst_seleccionadas.cobrado','!=','0')
+    
+                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('creditos.etapa', '=', $buscar2)
+                                ->where('creditos.manzana', '=', $buscar3)
+                                ->where('creditos.num_lote', '=', $buscar4)
+                                ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->orderBy('inst_seleccionadas.cobrado','asc')
+                                ->paginate(10);
+
+                                $contador = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                                ->join('contratos','contratos.id','=','creditos.id')
+                                ->join('lotes','lotes.id','=','creditos.lote_id')
+                                ->join('personal','personal.id','=','creditos.prospecto_id')
+                                ->select('contratos.id as folio')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('creditos.etapa', '=', $buscar2)
+                                ->where('creditos.manzana', '=', $buscar3)
+                                ->where('creditos.num_lote', '=', $buscar4)
+                                ->where('inst_seleccionadas.cobrado','!=','0')
+    
+                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('creditos.etapa', '=', $buscar2)
+                                ->where('creditos.manzana', '=', $buscar3)
+                                ->where('creditos.num_lote', '=', $buscar4)
+                                ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->orderBy('inst_seleccionadas.cobrado','asc')
+                                ->count();
+                        }
+                        elseif ($buscar2 == '' && $buscar3 == '' && $buscar4 != '') {
+                            $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                                ->join('contratos','contratos.id','=','creditos.id')
+                                ->join('lotes','lotes.id','=','creditos.lote_id')
+                                ->join('personal','personal.id','=','creditos.prospecto_id')
+                                ->select('contratos.id as folio', 'lotes.credito_puente',
+                                        'creditos.fraccionamiento as proyecto',
+                                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
+                                        'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
+                                        'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
+                                        'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('creditos.num_lote', '=', $buscar4)
+                                ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('creditos.num_lote', '=', $buscar4)
+                                ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->orderBy('inst_seleccionadas.cobrado','asc')
+                                ->paginate(10);
+
+                                $contador = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                                ->join('contratos','contratos.id','=','creditos.id')
+                                ->join('lotes','lotes.id','=','creditos.lote_id')
+                                ->join('personal','personal.id','=','creditos.prospecto_id')
+                                ->select('contratos.id as folio')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('creditos.num_lote', '=', $buscar4)
+                                ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('creditos.num_lote', '=', $buscar4)
+                                ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->orderBy('inst_seleccionadas.cobrado','asc')
+                                ->count();
+                        }
+                        elseif ($buscar2 != '' && $buscar3 == '' && $buscar4 != '') {
+                            $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                                ->join('contratos','contratos.id','=','creditos.id')
+                                ->join('lotes','lotes.id','=','creditos.lote_id')
+                                ->join('personal','personal.id','=','creditos.prospecto_id')
+                                ->select('contratos.id as folio', 'lotes.credito_puente',
+                                        'creditos.fraccionamiento as proyecto',
+                                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
+                                        'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
+                                        'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
+                                        'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('creditos.etapa', '=', $buscar2)
+                                ->where('creditos.num_lote', '=', $buscar4)
+                                ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('creditos.etapa', '=', $buscar2)
+                                ->where('creditos.num_lote', '=', $buscar4)
+                                ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->orderBy('inst_seleccionadas.cobrado','asc')
+                                ->paginate(10);
+
+                                $contador = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                                ->join('contratos','contratos.id','=','creditos.id')
+                                ->join('lotes','lotes.id','=','creditos.lote_id')
+                                ->join('personal','personal.id','=','creditos.prospecto_id')
+                                ->select('contratos.id as folio')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('creditos.etapa', '=', $buscar2)
+                                ->where('creditos.num_lote', '=', $buscar4)
+                                ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('creditos.etapa', '=', $buscar2)
+                                ->where('creditos.num_lote', '=', $buscar4)
+                                ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->orderBy('inst_seleccionadas.cobrado','asc')
+                                ->count();
+                        }
+                        break;
+                    }
+    
+                    case 'contratos.id': {
+                        $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                                ->join('contratos','contratos.id','=','creditos.id')
+                                ->join('lotes','lotes.id','=','creditos.lote_id')
+                                ->join('personal','personal.id','=','creditos.prospecto_id')
+                                ->select('contratos.id as folio', 'lotes.credito_puente',
+                                        'creditos.fraccionamiento as proyecto',
+                                        'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
+                                        'personal.nombre','personal.apellidos', 'inst_seleccionadas.id as inst_sel_id',
+                                        'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
+                                        'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->orderBy('inst_seleccionadas.cobrado','asc')
+                                ->paginate(10);
+
+                                $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                                ->join('contratos','contratos.id','=','creditos.id')
+                                ->join('lotes','lotes.id','=','creditos.lote_id')
+                                ->join('personal','personal.id','=','creditos.prospecto_id')
+                                ->select('contratos.id as folio')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                                ->where('contratos.status', '=', 3)
+                                ->where($criterio, '=', $buscar)
+                                ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->orderBy('inst_seleccionadas.cobrado','asc')
+                                ->count();
+
+                                
+                    }
+    
+                }
+            }
+
+        }
+
+        
 
 
         return[
-            'pagination' => [
-            'total'         => $creditos->total(),
-            'current_page'  => $creditos->currentPage(),
-            'per_page'      => $creditos->perPage(),
-            'last_page'     => $creditos->lastPage(),
-            'from'          => $creditos->firstItem(),
-            'to'            => $creditos->lastItem(),
-        ],
-            'creditos' => $creditos
+                'pagination' => [
+                'total'         => $creditos->total(),
+                'current_page'  => $creditos->currentPage(),
+                'per_page'      => $creditos->perPage(),
+                'last_page'     => $creditos->lastPage(),
+                'from'          => $creditos->firstItem(),
+                'to'            => $creditos->lastItem(),
+            ],
+            'creditos' => $creditos, 'contador' => $contador
         ];
     }
 

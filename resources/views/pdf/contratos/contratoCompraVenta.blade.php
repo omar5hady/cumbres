@@ -53,7 +53,7 @@ body {
     </div>
 </div>
     
-    <div style="position: static;  margin-top: -20px;">
+    <div style="position: static;  margin-top: -25px;">
     <p align="left" style="border: ridge #0B173B 1px; font-size:10pt; color:white; margin-right: 450px; background-color: #0B173B;">DATOS DEL COMPRADOR</p>
         <div class="table" style="border: ridge #0B173B 1px; color:black; margin-top: -10px;">
                 <div class="table-row">
@@ -71,31 +71,37 @@ body {
                     <div class="table-cell"></div>
                 </div>
                 <div class="table-row">
-                @if ($contratos[0]->edo_civil === 1)
+                @if ($contratos[0]->edo_civil == 1)
                     <div class="table-cell">ESTADO CIVIL: <u>CASADO</u></div>
                     <div class="table-cell"></div>
+                @endif
                     <div class="table-cell" colspan="2">REGIMEN DE MATRIMONIO: <u>SEPARACION DE BIENES</u></div>
-                @elseif ($contratos[0]->edo_civil === 2)
+                @if ($contratos[0]->edo_civil == 2)
                     <div class="table-cell">ESTADO CIVIL: <u>CASADO</u></div>
                     <div class="table-cell"></div>
                     <div class="table-cell" colspan="2">REGIMEN DE MATRIMONIO: <u>SOCIEDAD CONYUGAL</u></div>
-                @elseif ($contratos[0]->edo_civil === 3)
+                    @endif
+                @if ($contratos[0]->edo_civil == 3)
                     <div class="table-cell">ESTADO CIVIL: <u>DIVORICIADO</u></div>
                     <div class="table-cell"></div>
                     <div class="table-cell" colspan="2"></div>
-                @elseif ($contratos[0]->edo_civil === 4)
+                    @endif
+                @if ($contratos[0]->edo_civil == 4)
                     <div class="table-cell">ESTADO CIVIL: <u>SOLTERO</u></div>
                     <div class="table-cell"></div>
                     <div class="table-cell" colspan="2"></div>
-                @elseif ($contratos[0]->edo_civil === 5)
+                    @endif
+                @if ($contratos[0]->edo_civil == 5)
                     <div class="table-cell">ESTADO CIVIL: <u>UNION LIBRE</u></div>
                     <div class="table-cell"></div>
                     <div class="table-cell" colspan="2"></div>
-                @elseif ($contratos[0]->edo_civil === 6)
+                    @endif
+                @if ($contratos[0]->edo_civil == 6)
                     <div class="table-cell">ESTADO CIVIL: <u>VIUDO</u></div>
                     <div class="table-cell"></div>
                     <div class="table-cell" colspan="2"></div>
-                @elseif ($contratos[0]->edo_civil === 6)
+                    @endif
+                @if ($contratos[0]->edo_civil == 7)
                     <div class="table-cell">ESTADO CIVIL: <u>OTRO</u></div>
                     <div class="table-cell"></div>
                     <div class="table-cell" colspan="2"></div>
@@ -142,7 +148,7 @@ body {
         </div>
 </div>
 @if($contratos[0]->coacreditado == 1)
-    <div style="position: static; margin-top: -20px;">
+    <div style="position: static; margin-top: -25px;">
     <p align="left" style="border: ridge #0B173B 1px; font-size:10pt; color:white; margin-right: 350px; background-color: #0B173B;">DATOS DEL CONYUGE O COACREDITADO</p>        
         <div class="table" style="border: ridge #0B173B 1px; color:black; margin-top: -10px;">
                 <div class="table-row">
@@ -207,10 +213,10 @@ body {
                     <div class="table-cell"></div>
                 </div> 
                 <div class="table-row">
-                    <div colspan="3" class="table-cell">PAQUETE: {{mb_strtoupper($contratos[0]->descripcion_paquete)}} </div>
+                    <div colspan="3" class="table-cell">PAQUETE: {{mb_strtoupper($contratos[0]->paquete)}} </div>
                 </div>     
                 <div class="table-row">
-                    <div colspan="3" class="table-cell">PROMOCION: {{mb_strtoupper($contratos[0]->descripcion_promocion)}} </div>
+                    <div colspan="3" class="table-cell">PROMOCION: {{mb_strtoupper($contratos[0]->promocion)}} </div>
                 </div>                
         </div>
 </div>

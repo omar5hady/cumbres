@@ -17,7 +17,7 @@
                         <button v-if="saldo!=0" type="button" @click="abrirModal('registrar')" class="btn btn-primary">
                             <i class="icon-plus"></i>&nbsp;Nuevo Abono
                         </button>
-                        <button type="button" @click="listarCreditos(1,buscar, buscar2, buscar3, criterio)" class="btn btn-secondary">
+                        <button type="button" @click="listarCreditos(1,buscar, buscar2, buscar3, buscar4, b_cobrados, criterio)" class="btn btn-secondary">
                             <i class="fa fa-mail-reply"></i>&nbsp;Regresar
                         </button>
                         <!---->
@@ -37,18 +37,21 @@
                                         <option value="">Seleccionar</option>
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.nombre" v-text="fraccionamientos.nombre"></option>
                                     </select>
-                                     <select class="form-control" v-if="criterio=='creditos.fraccionamiento'" v-model="buscar2"  @keyup.enter="listarCreditos(1,buscar, buscar2, buscar3, buscar4, criterio)" @click="selectManzana(buscar, buscar2)"> 
+                                     <select class="form-control" v-if="criterio=='creditos.fraccionamiento'" v-model="buscar2"  @keyup.enter="listarCreditos(1,buscar, buscar2, buscar3, buscar4, b_cobrados, criterio)" @click="selectManzana(buscar, buscar2)"> 
                                         <option value="">Etapa</option>
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.num_etapa" v-text="etapas.num_etapa"></option>
                                     </select>
-                                    <select class="form-control" v-if="criterio=='creditos.fraccionamiento'" v-model="buscar3" @keyup.enter="listarCreditos(1,buscar, buscar2, buscar3, buscar4, criterio)"> 
+                                    <select class="form-control" v-if="criterio=='creditos.fraccionamiento'" v-model="buscar3" @keyup.enter="listarCreditos(1,buscar, buscar2, buscar3, buscar4, b_cobrados, criterio)"> 
                                         <option value="">Manzana</option>
                                         <option v-for="manzana in arrayManzana" :key="manzana.manzana" :value="manzana.manzana" v-text="manzana.manzana"></option>
                                     </select>
-                                    <input type="text" v-if="criterio=='creditos.fraccionamiento'" v-model="buscar4" @keyup.enter="listarCreditos(1,buscar, buscar2, buscar3, buscar4, criterio)" class="form-control" placeholder="# Lote">
-                                    <input type="text" v-if="criterio=='contratos.id'|| criterio=='personal.nombre'" v-model="buscar" @keyup.enter="listarCreditos(1,buscar, buscar2, buscar3, buscar4, criterio)" class="form-control" placeholder="Texto a buscar">
-                                    <input type="text" v-if="criterio=='personal.nombre'" v-model="buscar2" @keyup.enter="listarCreditos(1,buscar, buscar2, buscar3, buscar4, criterio)" class="form-control" placeholder="Apellidos">
-                                    <button type="submit" @click="listarCreditos(1,buscar, buscar2, buscar3, buscar4, criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <input type="text" v-if="criterio=='creditos.fraccionamiento'" v-model="buscar4" @keyup.enter="listarCreditos(1,buscar, buscar2, buscar3, buscar4, b_cobrados, criterio)" class="form-control" placeholder="# Lote">
+                                    <input type="text" v-if="criterio=='contratos.id'|| criterio=='personal.nombre'" v-model="buscar" @keyup.enter="listarCreditos(1,buscar, buscar2, buscar3, buscar4, b_cobrados, criterio)" class="form-control" placeholder="Texto a buscar">
+                                    <input type="text" v-if="criterio=='personal.nombre'" v-model="buscar2" @keyup.enter="listarCreditos(1,buscar, buscar2, buscar3, buscar4, b_cobrados, criterio)" class="form-control" placeholder="Apellidos">
+                                    <button v-if="b_cobrados==1" type="submit" @click="b_cobrados=0" class="btn btn-success"><i class="fa fa-check-square"></i> Cobrados / Abonados</button>
+                                    <button v-if="b_cobrados==0" type="submit" @click="b_cobrados=1" class="btn btn-danger"><i class="fa fa-window-close-o"></i> Pendiente</button>
+                                    <button type="submit" @click="listarCreditos(1,buscar, buscar2, buscar3, buscar4, b_cobrados, criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Total: '+ contador"> </span>
                                 </div>
                             </div>
                         </div>
@@ -63,6 +66,7 @@
                                         <th>Etapa</th>
                                         <th>Manzana</th>
                                         <th># Lote</th>
+                                        <th>Credito puente</th>
                                         <th>Institución</th>
                                         <th>Crédito</th>
                                         <th>Cobrado</th>
@@ -82,6 +86,7 @@
                                         <td v-text="credito.etapa"></td>
                                         <td v-text="credito.manzana"></td>
                                         <td v-text="credito.num_lote"></td>
+                                        <td v-text="credito.credito_puente"></td>
                                         <td v-text="credito.institucion"></td>
                                         <td v-text="'$'+formatNumber(credito.monto_credito)"></td>
                                         <td v-text="'$'+formatNumber(credito.cobrado)"></td>
@@ -94,13 +99,13 @@
                             <!--Botones de paginacion -->
                             <ul class="pagination">
                                 <li class="page-item" v-if="pagination.current_page > 1">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar, buscar2, buscar3, buscar4, criterio)">Ant</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar, buscar2, buscar3, buscar4, b_cobrados, criterio)">Ant</a>
                                 </li>
                                 <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar, buscar2, buscar3, buscar4, criterio)" v-text="page"></a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar, buscar2, buscar3, buscar4, b_cobrados, criterio)" v-text="page"></a>
                                 </li>
                                 <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar, buscar2, buscar3, buscar4, criterio)">Sig</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar, buscar2, buscar3, buscar4, b_cobrados, criterio)">Sig</a>
                                 </li>
                             </ul>
                         </nav>
@@ -276,6 +281,9 @@
                 concepto:'',
                 inst_sel_id:0,
                 dep_id:0,
+                contador:0,
+
+                b_cobrados:0,
 
                 pagination : {
                     'total' : 0,         
@@ -328,7 +336,7 @@
         },
         methods : {
             /**Metodo para mostrar los registros */
-            listarCreditos(page, buscar,buscar2,buscar3, buscar4, criterio){
+            listarCreditos(page, buscar,buscar2,buscar3, buscar4, b_cobrados, criterio){
                 let me = this;
                 me.cliente='';
                 me.referencia='';
@@ -353,11 +361,12 @@
                 me.monto_pagare=0;
                 me.pago_id=0;
                 me.diferencia=0;
-                var url = '/cobroCredito/indexCreditos?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3 + '&buscar4=' + buscar4 + '&criterio=' + criterio;
+                var url = '/cobroCredito/indexCreditos?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3 + '&buscar4=' + buscar4 + '&b_cobrados=' + b_cobrados + '&criterio=' + criterio;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayCreditos = respuesta.creditos.data;
                     me.pagination = respuesta.pagination;
+                    me.contador = respuesta.contador;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -376,12 +385,12 @@
                     return true;
                 }
             },
-            cambiarPagina(page, buscar, buscar2, buscar3, buscar4,  criterio){
+            cambiarPagina(page, buscar, buscar2, buscar3, buscar4, b_cobrados,  criterio){
                 let me = this;
                 //Actualiza la pagina actual
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
-                me.listarCreditos(page,buscar, buscar2,buscar3,buscar4, criterio);
+                me.listarCreditos(page,buscar, buscar2,buscar3,buscar4, b_cobrados, criterio);
             },
             selectFraccionamiento(){
                 let me = this;
@@ -593,7 +602,7 @@
             }
         },
         mounted() {
-            this.listarCreditos(1,this.buscar, this.buscar2, this.buscar3, this.buscar4, this.criterio);
+            this.listarCreditos(1,this.buscar, this.buscar2, this.buscar3, this.buscar4, this.b_cobrados, this.criterio);
             this.selectFraccionamiento();
 
         }

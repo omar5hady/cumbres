@@ -103,8 +103,8 @@
                                             <button title="Subir foto y predial" type="button" @click="abrirModal('lote','subirArchivo',licencias)" class="btn btn-default btn-sm">
                                             <i class="icon-cloud-upload"></i>
                                             </button>
-                                            <a  title="Descargar predial" v-if ="licencias.foto_predial" class="btn btn-success btn-sm" v-bind:href="'/downloadPredial/'+licencias.foto_predial">
-                                            <i class="fa fa-arrow-circle-down fa-lg"></i>
+                                            <a title="Descargar predial" v-if ="licencias.foto_predial" class="btn btn-success btn-sm" v-bind:href="'/downloadPredial/'+licencias.foto_predial">
+                                                <i class="fa fa-arrow-circle-down fa-lg"></i>
                                             </a>
                                         
                                         </td>

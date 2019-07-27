@@ -22,7 +22,7 @@
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
                                     <select class="form-control col-md-5" @click="limpiarBusqueda()"  v-model="criterio">
-                                      <option value="personal.nombre">Nombre</option>
+                                      <option value="personal.id">Nombre</option>
                                       <option value="users.usuario">Usuario</option>
                                       <option value="vendedores.tipo">Tipo</option>
                                       <option value="vendedores.inmobiliaria">Inmobiliaria</option>
@@ -33,6 +33,12 @@
                                         <option value="0" >Interno</option>
                                         <option value="1" >Externo</option>
                                     </select>
+
+                                    <select class="form-control" v-if="criterio=='personal.id'" v-model="buscar" >
+                                        <option value="">Seleccione</option>
+                                        <option v-for="asesor in arrayAsesores" :key="asesor.id" :value="asesor.id" v-text="asesor.nombre + ' '+ asesor.apellidos"></option>
+                                    </select>
+
                                     <input v-else type="text" v-model="buscar" @keyup.enter="listarPersonal(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">                                     
                                     <button type="submit" @click="listarPersonal(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
@@ -125,14 +131,25 @@
                                     <div class="input-group">
                                         <!--Criterios para el listado de busqueda -->
                                         <select class="form-control col-md-5" @click="limpiarBusqueda()"  v-model="criterio2">
-                                        <option value="personal.nombre">Nombre</option>
-                                        <option value="personal.rfc">RFC</option>
-                                        <option value="personal.id"># Identificador</option>
+                                            <option value="personal.nombre">Nombre</option>
+                                            <option value="personal.rfc">RFC</option>
+                                            <option value="personal.id"># Identificador</option>
                                         </select>
-                                        
                                     
-                                        <input type="text" v-model="buscar2" @keyup.enter="listarProspectos(1,buscar2,criterio2,id_vendedor)" class="form-control" placeholder="Texto a buscar">                                     
-                                        <button type="submit" @click="listarProspectos(1,buscar2,criterio2,id_vendedor)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                        <input type="text" v-model="buscar2" @keyup.enter="listarProspectos(1,buscar2,b_clasificacion,criterio2,id_vendedor)" class="form-control" placeholder="Texto a buscar">
+
+                                        <select class="form-control" v-model="b_clasificacion" >
+                                            <option value="">Clasificación</option>
+                                            <option value="1">No viable</option>
+                                            <option value="2">Tipo A</option>
+                                            <option value="3">Tipo B</option>
+                                            <option value="4">Tipo C</option>
+                                            <option value="5">Ventas</option>
+                                            <option value="6">Cancelado</option>                               
+                                        </select>
+
+                                        <button type="submit" @click="listarProspectos(1,buscar2,b_clasificacion,criterio2,id_vendedor)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                        <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Total: '+ contador"> </span>
                                     </div>
                                 </div>
                             </div>
@@ -188,13 +205,13 @@
                                 <!--Botones de paginacion -->
                                 <ul class="pagination">
                                     <li class="page-item" v-if="pagination2.current_page > 1">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page - 1,buscar2,criterio2,id_vendedor)">Ant</a>
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page - 1,buscar2,b_clasificacion,criterio2,id_vendedor)">Ant</a>
                                     </li>
                                     <li class="page-item" v-for="page in pagesNumber2" :key="page" :class="[page == isActived ? 'active' : '']">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina2(page,buscar2,criterio2,id_vendedor)" v-text="page"></a>
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina2(page,buscar2,b_clasificacion,criterio2,id_vendedor)" v-text="page"></a>
                                     </li>
                                     <li class="page-item" v-if="pagination2.current_page < pagination2.last_page">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page + 1,buscar2,criterio2,id_vendedor)">Sig</a>
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page + 1,buscar2,b_clasificacion,criterio2,id_vendedor)">Sig</a>
                                     </li>
                                 </ul>
                             </nav>
@@ -665,6 +682,7 @@
                 email: '',
                 activo: 1, 
                 tipo_vendedor:0,
+                contador:0,
 
                 nombreProspecto:'',
                 apellidosProspecto:'',
@@ -721,9 +739,10 @@
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'personal.nombre', 
+                criterio : 'personal.id', 
                 buscar : '',
                 buscar2 : '',
+                b_clasificacion:'',
                 criterio2 : 'personal.nombre',
                 arrayColonias : []
 
@@ -798,13 +817,14 @@
                     console.log(error);
                 });
             },
-            listarProspectos(page, buscar, criterio,vendedor){
+            listarProspectos(page, buscar, b_clasificacion, criterio,vendedor){
                 let me = this;
-                var url = '/asesores/clientes?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio + '&vendedor=' + vendedor;
+                var url = '/asesores/clientes?page=' + page + '&buscar=' + buscar + '&b_clasificacion=' + b_clasificacion + '&criterio=' + criterio + '&vendedor=' + vendedor;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayProspectos = respuesta.personas.data;
                     me.pagination2 = respuesta.pagination;
+                    me.contador = respuesta.contador;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -896,16 +916,16 @@
                 //Envia la petición para visualizar la data de esta pagina
                 me.listarPersonal(page,buscar,criterio);
             },
-             cambiarPagina2(page, buscar, criterio,id_vendedor){
+             cambiarPagina2(page, buscar, b_clasificacion, criterio,id_vendedor){
                 let me = this;
                 //Actualiza la pagina actual
                 me.pagination2.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
-                me.listarProspectos(page,buscar,criterio,id_vendedor);
+                me.listarProspectos(page,buscar,b_clasificacion,criterio,id_vendedor);
             },
             mostrarProspectos(nombre,id){
                 this.id_vendedor = id;
-                this.listarProspectos(1,this.buscar2,this.criterio2,id)
+                this.listarProspectos(1,this.buscar2,this.b_clasificacion,this.criterio2,id)
                 this.listadoProspectos=1;
                 this.asesor = nombre;
             },
@@ -1077,7 +1097,7 @@
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal4();
-                    me.listarProspectos(1,'','personal.nombre',me.id_vendedor);
+                    me.listarProspectos(1,'','','personal.nombre',me.id_vendedor);
                     
                     //Se muestra mensaje Success
                     swal({
@@ -1151,7 +1171,7 @@
                         'id': prospecto,
                         'asesor_id':asesor
                     }).then(function (response) {
-                        me.listarProspectos(1,'','personal.nombre',me.id_vendedor);
+                        me.listarProspectos(1,'','','personal.nombre',me.id_vendedor);
                         me.cerrarModal();
                         swal(
                         'Hecho!',
@@ -1499,6 +1519,7 @@
         },
         mounted() {
             this.listarPersonal(1,this.buscar,this.criterio);
+            this.selectAsesores();
         }
     }
 </script>

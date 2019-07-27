@@ -242,7 +242,7 @@
                                   <div class="col-md-2">
                                     <div class="form-group">
                                         <label for="">RFC  <span style="color:red;" v-show="encuentraRFC==1"> Ya se encuentra este rfc registrado</span> <span style="color:red;" v-show="rfc==''">(*)</span></label>
-                                        <input type="text" maxlength="10" style="text-transform:uppercase" class="form-control" @keyup="selectRFC(rfc)"  v-model="rfc" placeholder="RFC">
+                                        <input type="text" v-on:keypress="isSpace($event)" maxlength="10" style="text-transform:uppercase" class="form-control" @keyup="selectRFC(rfc)"  v-model="rfc" placeholder="RFC">
                                     </div>
                                  </div>
                                        
@@ -1099,6 +1099,15 @@
                     console.log(error);
                 });
             },
+            isSpace: function(evt) {
+                evt = (evt) ? evt : window.event;
+                var charCode = (evt.which) ? evt.which : evt.keyCode;
+                if ((charCode == 32)) {
+                    evt.preventDefault();;
+                } else {
+                    return true;
+                }
+            },
             limpiarBusqueda(){
                 let me=this;
                 me.buscar= "";
@@ -1338,7 +1347,7 @@
                     swal({
                         position: 'top-end',
                         type: 'success',
-                        title: 'Etapa agregada correctamente',
+                        title: 'Prospecto agregado correctamente',
                         showConfirmButton: false,
                         timer: 1500
                         })
