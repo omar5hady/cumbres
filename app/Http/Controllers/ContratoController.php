@@ -2775,6 +2775,10 @@ class ContratoController extends Controller
         $contratos[0]->infonavit = number_format((float)$contratos[0]->infonavit, 2, '.', ',');
         $contratos[0]->fovisste = number_format((float)$contratos[0]->fovisste, 2, '.', ',');
 
+        if($contratos[0]->terreno_excedente <= 0){
+            $contratos[0]->terreno_excedente = 0;
+        }
+
         $pagos = Pago_contrato::select('monto_pago', 'num_pago', 'fecha_pago')->where('contrato_id', '=', $id)->orderBy('fecha_pago', 'asc')->get();
         for ($i = 0; $i < count($pagos); $i++) {
             $pagos[$i]->monto_pago = number_format((float)$pagos[$i]->monto_pago, 2, '.', ',');
@@ -3164,8 +3168,8 @@ class ContratoController extends Controller
                 $personal = Personal::join('users', 'personal.id', '=', 'users.id')->select('personal.email', 'personal.id')->where('users.condicion', '=', 1)->get();
 
                 foreach ($personal as $personas) {
-                    $correo = $personas->email;
-                    Mail::to($correo)->send(new NotificationReceived($msj));
+                    //$correo = $personas->email;
+                    //Mail::to($correo)->send(new NotificationReceived($msj));
                     User::findOrFail($personas->id)->notify(new NotifyAdmin($arregloAceptado));
                 }
             }

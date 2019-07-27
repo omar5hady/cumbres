@@ -10,6 +10,7 @@ use DB;
 use File;
 use App\Contrato;
 use App\Sobreprecio;
+use App\Modelo;
 
 class EtapaController extends Controller
 {
@@ -300,7 +301,7 @@ class EtapaController extends Controller
         return response()->download($pathtoFile);
     }
 
-    public function descargarReglamentoContrato (Request $request, $id)
+    public function descargarReglamentoContrato ($id)
     {
          $reglamento = Contrato::join('creditos','contratos.id','=','creditos.id')
         ->join('lotes','creditos.lote_id','=','lotes.id')
@@ -327,5 +328,18 @@ class EtapaController extends Controller
             $costoMantenimiento->save();
         }
         
+    }
+
+    public function descargaReglamentoDocs($etapa_id){
+        $archivos = Modelo::join('fraccionamientos','modelos.fraccionamiento_id','=','fraccionamientos.id')
+                          ->join('etapas','fraccionamientos.id','=','etapas.fraccionamiento_id')
+                          ->select('etapas.archivo_reglamento')
+                          ->where('modelos.nombre','!=','Por Asignar')
+                          ->where('etapas.num_etapa','!=','Sin Asignar')
+                          ->where('etapas.id','=',$etapa_id)
+                          ->get();
+
+        $pathtoFile = public_path().'/files/etapas/reglamentos/'.$archivos[0]->archivo_reglamento;
+        return response()->download($pathtoFile);
     }
 }

@@ -89,7 +89,7 @@
                     <div colspan="2" class="table-cell">{{mb_strtoupper($contratos[0]->fraccionamiento)}} Mza: {{mb_strtoupper($contratos[0]->manzana)}} Lote: {{$contratos[0]->num_lote}}</div>
                     <div class="table-cell">{{$contratos[0]->fecha}}</div>
                     <div colspan="3" class="table-cell"></div>  
-                    <div class="table-cell">${{$contratos[0]->enganche_total}}</div> 
+                    <div class="table-cell">${{$contratos[0]->precio_venta}}</div> 
                     <div class="table-cell">$ 0.00</div>   
                 </div>
 
@@ -97,7 +97,7 @@
                 <div class="table-row">
                     <div colspan="4" class="table-cell"></div>
                     <div colspan="2" class="table-cell"><b>TOTAL(VENTA)</div>
-                    <div class="table-cell"><b>${{$contratos[0]->enganche_total}}</div>  
+                    <div class="table-cell"><b>${{$contratos[0]->precio_venta}}</div>  
                     <div class="table-cell"></div>    
                 </div>
 

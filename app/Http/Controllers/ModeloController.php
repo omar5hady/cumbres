@@ -287,28 +287,7 @@ class ModeloController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
+ 
     /**
      * Update the specified resource in storage.
      *
@@ -364,7 +343,6 @@ class ModeloController extends Controller
     }
 
     public function downloadFile($fileName){
-        
         $pathtoFile = public_path().'/files/modelos/'.$fileName;
         return response()->download($pathtoFile);
       }
@@ -402,6 +380,110 @@ class ModeloController extends Controller
 
         return ['modelo' => $modelo];
     }
+
+    public function indexDocs (Request $request){
+
+        $criterio = $request->criterio;
+        $b_fraccionamiento = $request->b_fraccionamiento;
+        $b_etapa = $request->b_etapa;
+        $b_modelo = $request->b_modelo;
+
+        if($b_fraccionamiento == '' && $b_etapa == '' && $b_modelo == ''){
+            $archivos = Modelo::join('fraccionamientos','modelos.fraccionamiento_id','=','fraccionamientos.id')
+            ->join('etapas','fraccionamientos.id','=','etapas.fraccionamiento_id')
+            ->select('modelos.archivo','modelos.nombre as modelo','etapas.num_etapa','etapas.archivo_reglamento',
+            'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento','fraccionamientos.plantilla_telecom',
+            'fraccionamientos.nombre as proyecto','fraccionamientos.empresas_telecom','fraccionamientos.empresas_telecom_satelital',
+            'modelos.id as modeloID','etapas.id as etapaID','fraccionamientos.id as fraccionamientoID')
+            ->where('modelos.nombre','!=','Por Asignar')
+            ->where('etapas.num_etapa','!=','Sin Asignar')
+            ->orderBy('modelos.nombre','asc')->distinct()->paginate(10);
+        }else{
+            if($b_fraccionamiento != '' && $b_etapa != '' && $b_modelo != ''){
+                $archivos = Modelo::join('fraccionamientos','modelos.fraccionamiento_id','=','fraccionamientos.id')
+                ->join('etapas','fraccionamientos.id','=','etapas.fraccionamiento_id')
+                ->select('modelos.archivo','modelos.nombre as modelo','etapas.num_etapa','etapas.archivo_reglamento',
+                'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento','fraccionamientos.plantilla_telecom',
+                'fraccionamientos.nombre as proyecto','fraccionamientos.empresas_telecom','fraccionamientos.empresas_telecom_satelital',
+                'modelos.id as modeloID','etapas.id as etapaID','fraccionamientos.id as fraccionamientoID')
+                ->where('modelos.nombre','!=','Por Asignar')
+                ->where('etapas.num_etapa','!=','Sin Asignar')
+                ->where($criterio,'=',$b_fraccionamiento)
+                ->where('etapas.id','=',$b_etapa)
+                ->where('modelos.id','=',$b_modelo)
+                ->orderBy('modelos.nombre','asc')->distinct()->paginate(10);
+            }else{
+                if($b_fraccionamiento != '' && $b_etapa != '' && $b_modelo == ''){
+                    $archivos = Modelo::join('fraccionamientos','modelos.fraccionamiento_id','=','fraccionamientos.id')
+                    ->join('etapas','fraccionamientos.id','=','etapas.fraccionamiento_id')
+                    ->select('modelos.archivo','modelos.nombre as modelo','etapas.num_etapa','etapas.archivo_reglamento',
+                    'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento','fraccionamientos.plantilla_telecom',
+                    'fraccionamientos.nombre as proyecto','fraccionamientos.empresas_telecom','fraccionamientos.empresas_telecom_satelital',
+                    'modelos.id as modeloID','etapas.id as etapaID','fraccionamientos.id as fraccionamientoID')
+                    ->where('modelos.nombre','!=','Por Asignar')
+                    ->where('etapas.num_etapa','!=','Sin Asignar')
+                    ->where($criterio,'=',$b_fraccionamiento)
+                    ->where('etapas.id','=',$b_etapa)
+                    ->orderBy('modelos.nombre','asc')->distinct()->paginate(10);
+            }else{
+                if($b_fraccionamiento != '' && $b_etapa == '' && $b_modelo != ''){
+                    $archivos = Modelo::join('fraccionamientos','modelos.fraccionamiento_id','=','fraccionamientos.id')
+                    ->join('etapas','fraccionamientos.id','=','etapas.fraccionamiento_id')
+                    ->select('modelos.archivo','modelos.nombre as modelo','etapas.num_etapa','etapas.archivo_reglamento',
+                    'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento','fraccionamientos.plantilla_telecom',
+                    'fraccionamientos.nombre as proyecto','fraccionamientos.empresas_telecom','fraccionamientos.empresas_telecom_satelital',
+                    'modelos.id as modeloID','etapas.id as etapaID','fraccionamientos.id as fraccionamientoID')
+                    ->where('modelos.nombre','!=','Por Asignar')
+                    ->where('etapas.num_etapa','!=','Sin Asignar')
+                    ->where($criterio,'=',$b_fraccionamiento)
+                    ->where('modelos.id','=',$b_modelo)
+                    ->orderBy('modelos.nombre','asc')->distinct()->paginate(10);
+            }else{
+                if($b_fraccionamiento != '' && $b_etapa == '' && $b_modelo == ''){
+                    $archivos = Modelo::join('fraccionamientos','modelos.fraccionamiento_id','=','fraccionamientos.id')
+                    ->join('etapas','fraccionamientos.id','=','etapas.fraccionamiento_id')
+                    ->select('modelos.archivo','modelos.nombre as modelo','etapas.num_etapa','etapas.archivo_reglamento',
+                    'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento','fraccionamientos.plantilla_telecom',
+                    'fraccionamientos.nombre as proyecto','fraccionamientos.empresas_telecom','fraccionamientos.empresas_telecom_satelital',
+                    'modelos.id as modeloID','etapas.id as etapaID','fraccionamientos.id as fraccionamientoID')
+                    ->where('modelos.nombre','!=','Por Asignar')
+                    ->where('etapas.num_etapa','!=','Sin Asignar')
+                    ->where($criterio,'=',$b_fraccionamiento)
+                    ->orderBy('modelos.nombre','asc')->distinct()->paginate(10);
+            }
+            }
+        }
+    }
+}  
+        
+
+        return [
+        'pagination' => [
+            'total'         => $archivos->total(),
+            'current_page'  => $archivos->currentPage(),
+            'per_page'      => $archivos->perPage(),
+            'last_page'     => $archivos->lastPage(),
+            'from'          => $archivos->firstItem(),
+            'to'            => $archivos->lastItem(),
+        ],
+        'archivos' => $archivos
+        ];
+    }
+
+    public function descargaCatalogoDocs($modelo_id){
+        $archivos = Modelo::join('fraccionamientos','modelos.fraccionamiento_id','=','fraccionamientos.id')
+        ->join('etapas','fraccionamientos.id','=','etapas.fraccionamiento_id')
+        ->select('modelos.archivo')
+        ->where('modelos.nombre','!=','Por Asignar')
+        ->where('etapas.num_etapa','!=','Sin Asignar')
+        ->where('modelos.id','=',$modelo_id)
+        ->get();
+
+        $pathtoFile = public_path().'/files/modelos/'.$archivos[0]->archivo;
+        return response()->download($pathtoFile);
+    }
+    
+    
 
 
 }

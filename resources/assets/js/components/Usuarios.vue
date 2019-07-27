@@ -214,6 +214,9 @@
                                                     <li class="nav-item">
                                                         <a class="nav-link"><i class="fa fa-archive"></i> <input v-model="contratos" type="checkbox" value="1"/> Realizar contrato</a>
                                                     </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="fa fa-archive"></i> <input v-model="docs" type="checkbox" value="1"/> Docs</a>
+                                                    </li>
                                                 </ul>
                                     </div>
                                 </div>
@@ -625,6 +628,7 @@
                     hist_simulaciones:0,
                     hist_creditos:0,
                     contratos:0,
+                    docs: 0,
 
                     //Acceso
                     usuarios:0,
@@ -792,6 +796,7 @@
                 this.hist_simulaciones=0;
                 this.hist_creditos=0;
                 this.contratos=0;
+                this.docs=0;
             },
             limpiarAcceso(){
                  //Acceso
@@ -882,6 +887,7 @@
                     me.hist_simulaciones=usuarios[0].hist_simulaciones;
                     me.hist_creditos=usuarios[0].hist_creditos;
                     me.contratos=usuarios[0].contratos;
+                    me.docs=usuarios[0].docs;
 
                     //Acceso
                     me.usuarios=usuarios[0].usuarios;
@@ -1135,6 +1141,7 @@
                     'hist_simulaciones':this.hist_simulaciones,
                     'hist_creditos':this.hist_creditos,
                     'contratos':this.contratos,
+                    'docs':this.docs,
                         //Acceso
                     'usuarios':this.usuarios,
                     'roles':this.roles,
@@ -1405,6 +1412,7 @@
                 me.hist_simulaciones=0;
                 me.hist_creditos=0;
                 me.contratos=0;
+                me.docs=0;
 
                     //Acceso
                 me.usuarios=0;

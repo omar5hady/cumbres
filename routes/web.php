@@ -342,6 +342,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/creditos/seleccionar','CreditoController@seleccionarCredito');
         Route::put('/creditos_select/actualizar','CreditoController@updateDatosCredito');
         Route::get('/inst_select/observacion','ObservacionInstSeleccionadaController@index');
+        Route::put('/creditos_select/setFechaVigencia','CreditoController@updateFechaVigencia');
     
         Route::get('/serviciosTelecom/pdf/{id}','ServicioController@servicioTelecomPdf')->name('servicios.pdf');
         Route::get('/cartaServicios/pdf/{id}','ServicioController@cartaDeServicioPdf')->name('CartaDeservicios.pdf');
@@ -377,6 +378,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/deposito/registrar','DepositoController@store');
         Route::put('/deposito/actualizar','DepositoController@update');
         Route::get('deposito/reciboPDF/{id}','DepositoController@reciboPDF');
+        Route::delete('/deposito/eliminar','DepositoController@delete');
 
         //////////////////////////////// RUTAS MODULO SALDOS ////////////////////////////
         Route::get('/estadoCuenta/index','DepositoController@indexEstadoCuenta');
@@ -454,6 +456,12 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/cobroCredito/indexDepositos','InstSeleccionadasController@indexDepCredito');
         Route::post('/cobroCredito/registrar','InstSeleccionadasController@storeDepositoCredito');
         Route::put('/cobroCredito/update','InstSeleccionadasController@updateDepositoCredito');
+
+        Route::get('/archivos/indexDocs','ModeloController@indexDocs');
+        Route::get('/archivos/reglamentoEtapa/{etapa_id}','EtapaController@descargaReglamentoDocs');
+        Route::get('/archivos/catalogoEspecificaciones/{modelo_id}','ModeloController@descargaCatalogoDocs');
+        Route::get('/archivos/cartaServicios/{etapa_id}','ServicioController@cartaDeServicioDocs');
+        Route::get('/archivos/cartaServiciosTelecomunicaciones/{fraccionamiento_id}','ServicioController@cartaDeTelecomunicacionesDocs');
 
     });
 

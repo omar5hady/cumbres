@@ -70,6 +70,7 @@ class User extends Authenticatable
         'hist_simulaciones',
         'hist_creditos',
         'contratos',
+        'docs',
 
         //Acceso
         'usuarios',

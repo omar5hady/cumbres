@@ -81,6 +81,7 @@ class CreateUsersTable extends Migration
             $table->boolean('hist_simulaciones')->default(0);
             $table->boolean('hist_creditos')->default(0);
             $table->boolean('contratos')->default(0);
+            $table->boolean('docs')->default(0);
 
             //Acceso
             $table->boolean('usuarios')->default(0);

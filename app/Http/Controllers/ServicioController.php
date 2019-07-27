@@ -7,6 +7,7 @@ use App\Servicio;
 use App\Contrato;
 use Carbon\Carbon;
 use NumerosEnLetras;
+use App\Modelo;
 
 class ServicioController extends Controller
 {
@@ -68,7 +69,7 @@ class ServicioController extends Controller
         return ['servicios' => $servicios];
     }
 
-    public function servicioTelecomPdf(Request $request, $id)
+    public function servicioTelecomPdf($id)
     {
         $serviciosTele = Contrato::join('creditos','contratos.id','=','creditos.id')
         ->join('personal','creditos.prospecto_id','=','personal.id')
@@ -83,10 +84,11 @@ class ServicioController extends Controller
             $pdf = \PDF::loadview('pdf.contratos.serviciosDeTelecom',['serviciosTele' => $serviciosTele]);
             return $pdf->stream('servicios.pdf');
             // return ['cabecera' => $cabecera];
-     }
+    }
 
-     public function cartaDeServicioPdf(Request $request, $id)
-     {
+   
+    public function cartaDeServicioPdf($id)
+    {
          
          $datos = Contrato::join('creditos','contratos.id','=','creditos.id')
          ->join('personal','creditos.prospecto_id','=','personal.id')
@@ -114,8 +116,50 @@ class ServicioController extends Controller
  
              $pdf = \PDF::loadview('pdf.contratos.cartaDeServicios',['datos' => $datos , 'servicios' => $servicios]);
              return $pdf->stream('CartaDeservicios.pdf');
-             // return ['cabecera' => $cabecera];
-      }
+             
+    }
+
+    public function cartaDeServicioDocs($etapa_id){
+        $archivos = Modelo::join('fraccionamientos','modelos.fraccionamiento_id','=','fraccionamientos.id')
+        ->join('etapas','fraccionamientos.id','=','etapas.fraccionamiento_id')
+        ->select('etapas.plantilla_carta_servicios','etapas.costo_mantenimiento')
+        ->where('modelos.nombre','!=','Por Asignar')
+        ->where('etapas.num_etapa','!=','Sin Asignar')
+        ->where('etapas.id','=',$etapa_id)
+        ->get();
+
+        $servicios = Modelo::join('fraccionamientos','modelos.fraccionamiento_id','=','fraccionamientos.id')
+        ->join('etapas','fraccionamientos.id','=','etapas.fraccionamiento_id')
+        ->join('serv_etapas','etapas.id','=','serv_etapas.etapa_id')
+        ->join('servicios','serv_etapas.serv_id','=','servicios.id')
+        ->select('servicios.descripcion')
+        ->where('etapas.id','=',$etapa_id)
+        ->distinct()->get();
+
+        setlocale(LC_TIME, 'es_MX.utf8');
+        $now= Carbon::now();
+        $archivos[0]->fecha_hoy = $now->formatLocalized('%d de %B de %Y');
+
+        $archivos[0]->costoMantenimientoLetra = NumerosEnLetras::convertir($archivos[0]->costo_mantenimiento,'Pesos M.N.',true,'Centavos');
+
+        $pdf = \PDF::loadview('pdf.Docs.cartaDeServicios',['archivos' => $archivos , 'servicios' => $servicios]);
+        return $pdf->stream('CartaDeservicios.pdf');
+    }
+
+    public function cartaDeTelecomunicacionesDocs($fraccionamiento_id){
+        $archivos = Modelo::join('fraccionamientos','modelos.fraccionamiento_id','=','fraccionamientos.id')
+        ->join('etapas','fraccionamientos.id','=','etapas.fraccionamiento_id')
+        ->select('fraccionamientos.plantilla_telecom','fraccionamientos.nombre as proyecto','fraccionamientos.empresas_telecom',
+        'fraccionamientos.empresas_telecom_satelital')
+        ->where('modelos.nombre','!=','Por Asignar')
+        ->where('etapas.num_etapa','!=','Sin Asignar')
+        ->where('fraccionamientos.id','=',$fraccionamiento_id)
+        ->distinct()->get();
+
+        
+        $pdf = \PDF::loadview('pdf.Docs.serviciosDeTelecom',['archivos' => $archivos]);
+        return $pdf->stream('servicios.pdf');
+    }
 
 
      

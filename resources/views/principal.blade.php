@@ -303,6 +303,12 @@
                                         <a class="nav-link" href="#"><i class="fa fa-archive"></i> Realizar contrato</a>
                                     </li>
                                 @endif
+                                @if(Auth::user()->docs == 1)
+                                    <li @click="menu=208" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="fa fa-credit-card-alt"></i> Docs</a>
+                                    </li>
+                                @endif
+                                
                             </ul>
                         </li>
                     @endif
@@ -324,6 +330,7 @@
                                     <li @click="menu=207" class="nav-item">
                                         <a class="nav-link" href="#"><i class="fa fa-credit-card-alt"></i> Cobro de crédito</a>
                                     </li>
+                                    
                                     
                             </ul>
                         </li>
@@ -384,9 +391,19 @@
                             </ul>
                         </li>
                     @endif
+
+                    <!-- Manual para el administrador -->
+                @if(Auth::user()->rol_id == 1)
                     <li @click="menu=31" class="nav-item">
-                        <a class="nav-link" onclick="window.open('/pdf/manualUsuario.pdf','_blank')"><i class="icon-book-open"></i> Ayuda <span class="badge badge-danger">PDF</span></a>
+                        <a class="nav-link" onclick="window.open('/pdf/manualUsuarioAdm.pdf','_blank')"><i class="icon-book-open"></i> Ayuda <span class="badge badge-danger">PDF</span></a>
                     </li>
+                @endif
+                <!-- Manual para los asesores -->
+                @if(Auth::user()->rol_id == 2)
+                    <li @click="menu=31" class="nav-item">
+                        <a class="nav-link" onclick="window.open('/pdf/manualUsuarioAsesor.pdf','_blank')"><i class="icon-book-open"></i> Ayuda <span class="badge badge-danger">PDF</span></a>
+                    </li>
+                @endif
                     <li @click="menu=32" class="nav-item">
                         <a class="nav-link" href="#"><i class="icon-info"></i> Acerca de...<span class="badge badge-info">IT</span></a>
                     </li>

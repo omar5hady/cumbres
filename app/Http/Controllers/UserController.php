@@ -94,7 +94,7 @@ class UserController extends Controller
                 'personal.celular','personal.activo','personal.empresa_id','personal.apellidos',
                 'personal.email','users.usuario','users.password',
                 'users.condicion','users.rol_id','roles.nombre as rol','vendedores.inmobiliaria','vendedores.tipo')   
-                ->where($criterio, 'like', '%'. $buscar . '%')
+                ->where($criterio, '=',  $buscar )
                 ->orderBy('users.condicion', 'desc')
                 ->orderBy('personal.apellidos', 'asc')
                 ->orderBy('personal.nombre', 'asc')
@@ -238,6 +238,7 @@ class UserController extends Controller
                     $user->hist_simulaciones=1;
                     $user->hist_creditos=1;
                     $user->contratos=1;
+                    $user->docs=1;
                     //Acceso
                     $user->usuarios=1;
                     $user->roles=1;
@@ -283,6 +284,7 @@ class UserController extends Controller
                     $user->simulacion_credito=1;
                     $user->hist_simulaciones=1;
                     $user->contratos=1;
+                    $user->docs=1;
                     //Reportes
                     $user->mejora=1;
                     break;
@@ -331,6 +333,7 @@ class UserController extends Controller
                     $user->hist_simulaciones=1;
                     $user->hist_creditos=1;
                     $user->contratos=1;
+                    $user->docs=1;
                     //Acceso
                     $user->usuarios=1;
                     $user->roles=1;
@@ -370,6 +373,7 @@ class UserController extends Controller
                     $user->hist_simulaciones=1;
                     $user->hist_creditos=1;
                     $user->contratos=1;
+                    $user->docs=1;
                     break;
                 }
                 
@@ -498,6 +502,7 @@ class UserController extends Controller
                     $user->hist_simulaciones=1;
                     $user->hist_creditos=1;
                     $user->contratos=1;
+                    $user->docs=1;
                     //Acceso
                     $user->usuarios=1;
                     $user->roles=1;
@@ -543,6 +548,7 @@ class UserController extends Controller
                     $user->simulacion_credito=1;
                     $user->hist_simulaciones=1;
                     $user->contratos=1;
+                    $user->docs=1;
                     //Reportes
                     $user->mejora=1;
                     break;
@@ -591,6 +597,7 @@ class UserController extends Controller
                     $user->hist_simulaciones=1;
                     $user->hist_creditos=1;
                     $user->contratos=1;
+                    $user->docs=1;
                     //Acceso
                     $user->usuarios=1;
                     $user->roles=1;
@@ -630,6 +637,7 @@ class UserController extends Controller
                     $user->hist_simulaciones=1;
                     $user->hist_creditos=1;
                     $user->contratos=1;
+                    $user->docs=1;
                     break;
                 }
                 
@@ -711,6 +719,7 @@ class UserController extends Controller
                 $user->hist_simulaciones=1;
                 $user->hist_creditos=1;
                 $user->contratos=1;
+                $user->docs=1;
                 //Acceso
                 $user->usuarios=1;
                 $user->roles=1;
@@ -756,6 +765,7 @@ class UserController extends Controller
                 $user->simulacion_credito=1;
                 $user->hist_simulaciones=1;
                 $user->contratos=1;
+                $user->docs=1;
                 //Reportes
                 $user->mejora=1;
                 break;
@@ -804,6 +814,7 @@ class UserController extends Controller
                 $user->hist_simulaciones=1;
                 $user->hist_creditos=1;
                 $user->contratos=1;
+                $user->docs=1;
                 //Acceso
                 $user->usuarios=1;
                 $user->roles=1;
@@ -843,6 +854,7 @@ class UserController extends Controller
                 $user->hist_simulaciones=1;
                 $user->hist_creditos=1;
                 $user->contratos=1;
+                $user->docs=1;
                 break;
             }
             
@@ -924,7 +936,7 @@ class UserController extends Controller
                                 'users.contratistas','users.ini_obra','users.aviso_obra','users.partidas','users.avance',
                                 //Ventas
                                 'users.lotes_disp','users.mis_prospectos','users.simulacion_credito','users.hist_simulaciones',
-                                'users.hist_creditos','users.contratos',
+                                'users.hist_creditos','users.contratos','users.docs',
                                 //Acceso
                                 'users.usuarios','users.roles',
                                 //Reportes
@@ -987,6 +999,7 @@ class UserController extends Controller
         $user->hist_simulaciones = $request->hist_simulaciones;
         $user->hist_creditos = $request->hist_creditos;
         $user->contratos = $request->contratos;
+        $user->docs = $request->docs;
         //Acceso
         $user->usuarios = $request->usuarios;
         $user->roles = $request->roles;

@@ -103,11 +103,12 @@
                                     <tbody>
                                         <tr v-for="prospecto in arrayProspectos" :key="prospecto.id">
                                             <td>
-                                                <button title="Editar" type="button" class="btn btn-warning btn-sm" @click="actualizarProspectoBTN(prospecto)">
-                                                    <i class="icon-pencil"></i>
+                                                <button title="Realizar una simulacion" type="button" class="btn btn-warning btn-sm" @click="actualizarProspectoBTN(prospecto)">
+                                                    
+                                                    <i class="fa fa-cc-visa"></i>
                                                 </button>
 
-                                                <button title="Simulaciones" type="button" class="btn btn-warning btn-sm" @click="listarSimulaciones(prospecto.id)">
+                                                <button title="Simulaciones" type="button" class="btn btn-primary btn-sm" @click="listarSimulaciones(prospecto.id)">
                                                     <i class="icon-eye"></i>
                                                 </button>
                                             </td>

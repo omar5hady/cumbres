@@ -248,6 +248,12 @@
             </template>
         @endif
 
+        @if(Auth::user()->docs == 1)
+            <template v-if="menu==208">
+                <docs></docs>
+            </template>
+        @endif
+
         @if(Auth::user()->p_fraccionamiento == 1)
             <template v-if="menu==110">
                 <publicidad-fraccionamiento></publicidad-fraccionamiento>
@@ -297,6 +303,7 @@
         <template v-if="menu==207">
             <cobro-credito></cobro-credito>
         </template>
+       
 
         
     @endif

@@ -261,15 +261,15 @@ body{
                     <div colspan="5" class="table-cell3"> <br> <br> </div>
                 </div>
                 <div class="table-row">
-                    <div colspan="2" class="table-cell3">GRUPO CONSTRUCTOR CUMBRES S.A DE C.V</div>
-                    <div style="width: 8%;" class="table-cell3"></div>
+                    <div colspan="3" class="table-cell3">GRUPO CONSTRUCTOR CUMBRES S.A DE C.V</div>
+                    
                     <div colspan="2" class="table-cell3">SR(A) {{mb_strtoupper($contratosDom[0]->nombre)}} {{mb_strtoupper($contratosDom[0]->apellidos)}}</div>
                 </div>
                 <div class="table-row"> 
-                    <div colspan="5" class="table-cell3">Representada por este acto por el</div>
+                    <div colspan="5" class="table-cell3"><br> Representada por este acto por el</div>
                 </div>
                 <div class="table-row">
-                    <div colspan="5" class="table-cell3"><b>ING. ALEJANDRO F. PEREZ ESPINOSA O EL ING. DAVID CALVILLO MARTINEZ</div>
+                    <div colspan="5" class="table-cell3"><b>ING. ALEJANDRO F. PEREZ ESPINOSA O <br> EL ING. DAVID CALVILLO MARTINEZ</div>
                 </div>
             </div>
 
