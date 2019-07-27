@@ -74,13 +74,15 @@ body {
                 @if ($contratos[0]->edo_civil == 1)
                     <div class="table-cell">ESTADO CIVIL: <u>CASADO</u></div>
                     <div class="table-cell"></div>
-                @endif
                     <div class="table-cell" colspan="2">REGIMEN DE MATRIMONIO: <u>SEPARACION DE BIENES</u></div>
+                @endif
+                    
                 @if ($contratos[0]->edo_civil == 2)
                     <div class="table-cell">ESTADO CIVIL: <u>CASADO</u></div>
                     <div class="table-cell"></div>
                     <div class="table-cell" colspan="2">REGIMEN DE MATRIMONIO: <u>SOCIEDAD CONYUGAL</u></div>
                     @endif
+
                 @if ($contratos[0]->edo_civil == 3)
                     <div class="table-cell">ESTADO CIVIL: <u>DIVORICIADO</u></div>
                     <div class="table-cell"></div>
@@ -265,12 +267,7 @@ body {
                     <div class="table-cell2">${{$contratos[0]->costo_paquete}}</div>
                 </div>
                 
-                <!--<div class="table-row">
-                    <div class="table-cell2">PRIMA UNICA: </div>
-                    <div class="table-cell2">${{$contratos[0]->prima_unica}}</div>
-                    <div class="table-cell2">PROMOCION: </div>
-                    <div class="table-cell2">${{$contratos[0]->descuento_promocion}}</div>
-                </div>-->
+             
                 <div class="table-row">
                     <div class="table-cell2">GASTOS DE ESCRITURACION: </div>
                     <div class="table-cell2">${{$contratos[0]->escrituras}}</div>
