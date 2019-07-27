@@ -158,13 +158,13 @@
                             <!--Botones de paginacion -->
                             <ul class="pagination">
                                 <li class="page-item" v-if="paginationResume.current_page > 1">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(paginationResume.current_page - 1,buscar,criterio)">Ant</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(paginationResume.current_page - 1,buscar,buscar1,buscar2,criterio)">Ant</a>
                                 </li>
-                                <li class="page-item" v-for="page in pagesNumber2" :key="page" :class="[page == isActived ? 'active' : '']">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(page,buscar,criterio)" v-text="page"></a>
+                                <li class="page-item" v-for="page in pagesNumber2" :key="page" :class="[page == isActived2 ? 'active' : '']">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(page,buscar,buscar1,buscar2,criterio)" v-text="page"></a>
                                 </li>
                                 <li class="page-item" v-if="paginationResume.current_page < paginationResume.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(paginationResume.current_page + 1,buscar,criterio)">Sig</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(paginationResume.current_page + 1,buscar,buscar1,buscar2,criterio)">Sig</a>
                                 </li>
                             </ul>
                         </nav>
@@ -444,12 +444,12 @@
                     console.log(error);
                 });
             },
-            cambiarPagina2(page, buscar, criterio){
+            cambiarPagina2(page, buscar, buscar1, buscar2, criterio){
                 let me = this;
                 //Actualiza la pagina actual
                 me.paginationResume.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
-                me.listarAvance(page,buscar,criterio);
+                me.listarAvancePromedio(page,buscar,buscar1,buscar2,criterio);
             },
             mostrarPaquete(paquete){
                  Swal({
