@@ -24,6 +24,8 @@ class User extends Authenticatable
        'ventas',
        'acceso',
        'reportes',
+       'saldo',
+       'gestoria',
 
         //Administracion
         'departamentos',
@@ -71,6 +73,18 @@ class User extends Authenticatable
         'hist_creditos',
         'contratos',
         'docs',
+
+        //Saldos
+        'edo_cuenta',
+        'depositos',
+        'gastos_admn',
+        'cobro_credito',
+
+        //Gestoria
+        'expediente',
+        'asig_gestor',
+        'seg_tramite',
+        'avaluos',
 
         //Acceso
         'usuarios',

@@ -922,7 +922,7 @@ class UserController extends Controller
     public function getPrivilegios(Request $request){
         $privilegios=User::join('roles','users.rol_id','=','roles.id')
                         ->select( 'users.administracion','users.desarrollo','users.precios','users.obra','users.ventas',
-                                'users.acceso','users.reportes','users.rol_id',
+                                'users.acceso','users.reportes','users.rol_id','users.saldo','users.gestoria',
                                 //Administracion
                                 'users.departamentos','users.personas','users.empresas','users.medios_public','users.lugares_contacto','users.servicios',
                                 'users.inst_financiamiento','users.tipos_credito','users.asig_servicios','users.mis_asesores','users.cuenta','users.notaria',
@@ -937,6 +937,10 @@ class UserController extends Controller
                                 //Ventas
                                 'users.lotes_disp','users.mis_prospectos','users.simulacion_credito','users.hist_simulaciones',
                                 'users.hist_creditos','users.contratos','users.docs',
+                                //Saldo
+                                'users.edo_cuenta','users.depositos','users.gastos_admn','users.cobro_credito',
+                                //Gestoria
+                                'users.expediente','users.asig_gestor','users.seg_tramite','users.avaluos',
                                 //Acceso
                                 'users.usuarios','users.roles',
                                 //Reportes

@@ -336,16 +336,16 @@
              <!----------      GESTORIA      --->
              @if(Auth::user()->rol_id == 1)
                         <li class="nav-item nav-dropdown">
-                            <a class="nav-link nav-dropdown-toggle" href="#"><i class="fa fa-calculator"></i> Gestoria</a>
+                            <a class="nav-link nav-dropdown-toggle" href="#"><i class="fa fa-bank"></i> Gestoria</a>
                             <ul class="nav-dropdown-items">
                                     <li @click="menu=201" class="nav-item">
-                                        <a class="nav-link" href="#"><i class="fa fa-money"></i> Expediente</a>
+                                        <a class="nav-link" href="#"><i class="fa fa-folder-open"></i> Expediente</a>
                                     </li>
                                     <li @click="menu=202" class="nav-item">
-                                        <a class="nav-link" href="#"><i class="fa fa-money"></i> Asignar gestor</a>
+                                        <a class="nav-link" href="#"><i class="fa fa-group"></i> Asignar gestor</a>
                                     </li>
                                     <li @click="menu=203" class="nav-item">
-                                        <a class="nav-link" href="#"><i class="fa fa-money"></i> Seguimiento de tramite</a>
+                                        <a class="nav-link" href="#"><i class="fa fa-bullseye"></i> Seguimiento de tramite</a>
                                     </li>
                                     <li @click="menu=204" class="nav-item">
                                         <a class="nav-link" href="#"><i class="fa fa-money"></i> Avaluos</a>

@@ -218,6 +218,48 @@
                                     </div>
                                 </div>
 
+                                <!-- listado para privilegios del menu Saldos -->
+                                <div class="col-md-4" v-if="rol_id==1">
+                                    <div class="form-group row border">
+                                            <a class="nav-link nav-dropdown-toggle"><i class="fa fa-calculator"></i> <input @click="limpiarSaldo()" v-model="saldo" type="checkbox" value="1"/> Modulo Saldos</a>
+                                                <ul class="nav-dropdown-items" v-if="saldo==1">
+                                                    <li class="nav-item">
+                                                        <a class="nav-link" ><i class="fa fa-dollar"></i> <input v-model="edo_cuenta" type="checkbox" value="1"/> Estado de cuenta</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link" ><i class="fa fa-money"></i> <input v-model="depositos" type="checkbox" value="1"/> Depositos</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link" ><i class="fa fa-money"></i> <input v-model="gastos_admn" type="checkbox" value="1"/> Gastos administrativos</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link" ><i class="fa fa-credit-card-alt"></i> <input v-model="cobro_credito" type="checkbox" value="1"/> Cobro de credito</a>
+                                                    </li>
+                                                </ul>
+                                    </div>
+                                </div> 
+
+                                <!-- listado para privilegios del menu Gestoria -->
+                                <div class="col-md-4" v-if="rol_id==1">
+                                    <div class="form-group row border">
+                                            <a class="nav-link nav-dropdown-toggle"><i class="fa fa-bank"></i> <input @click="limpiarGestoria()" v-model="gestoria" type="checkbox" value="1"/> Modulo Gestoria</a>
+                                                <ul class="nav-dropdown-items" v-if="gestoria==1">
+                                                    <li class="nav-item">
+                                                        <a class="nav-link" ><i class="fa fa-folder-open"></i> <input v-model="expediente" type="checkbox" value="1"/> Expediente</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link" ><i class="fa fa-group"></i> <input v-model="asig_gestor" type="checkbox" value="1"/> Asignar gestor</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link" ><i class="fa fa-bullseye"></i> <input v-model="seg_tramite" type="checkbox" value="1"/> Seguimiento de tramite</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link" ><i class="fa fa-money"></i> <input v-model="avaluos" type="checkbox" value="1"/> Avaluos</a>
+                                                    </li>
+                                                </ul>
+                                    </div>
+                                </div> 
+
                                 <!-- listado para privilegios del menu Obra -->
                                 <div class="col-md-4" v-if="rol_id==1 || rol_id==6 || rol_id==5">
                                     <div class="form-group row border">
@@ -576,6 +618,8 @@
                 ventas:0,
                 acceso:0,
                 reportes:0,
+                saldo:0,
+                gestoria:0,
 
                     //Administracion
                     departamentos:0,
@@ -626,6 +670,18 @@
                     hist_creditos:0,
                     contratos:0,
                     docs: 0,
+
+                    //Saldos
+                    edo_cuenta:0,
+                    depositos:0,
+                    gastos_admn:0,
+                    cobro_credito:0,
+
+                    //Gestoria
+                    expediente:0,
+                    asig_gestor:0,
+                    seg_tramite:0,
+                    avaluos:0,
 
                     //Acceso
                     usuarios:0,
@@ -794,6 +850,22 @@
                 this.hist_creditos=0;
                 this.contratos=0;
                 this.docs=0;
+            },
+
+            limpiarGestoria(){
+                //Gestoria
+                this.expediente=0;
+                this.asig_gestor=0;
+                this.seg_tramite=0;
+                this.avaluos=0;
+            },
+
+            limpiarSaldo(){
+                 //Saldos
+                this.edo_cuenta=0;
+                this.depositos=0;
+                this.gastos_admn=0;
+                this.cobro_credito=0;
             },
             limpiarAcceso(){
                  //Acceso
