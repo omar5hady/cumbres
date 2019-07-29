@@ -254,11 +254,6 @@
             </template>
         @endif
 
-        @if(Auth::user()->p_fraccionamiento == 1)
-            <template v-if="menu==110">
-                <publicidad-fraccionamiento></publicidad-fraccionamiento>
-            </template>
-        @endif
 
         @if(Auth::user()->p_etapa == 1)
             <template v-if="menu==111">

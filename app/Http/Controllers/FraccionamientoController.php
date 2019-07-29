@@ -358,67 +358,10 @@ class FraccionamientoController extends Controller
           return response()->download($pathtoFile);
       }
 
-      public function uploadPlantillaTelecom (Request $request, $id){
+      
 
-        $plantillaAnterior = Fraccionamiento::select('plantilla_telecom','id')
-                                            ->where('id','=',$id)
-                                            ->get();
+   
 
-  if($plantillaAnterior->isEmpty()==1){
-        $fileName = uniqid().'.'.$request->plantilla_telecom->getClientOriginalExtension();
-        $moved =  $request->plantilla_telecom->move(public_path('/files/fraccionamientos/plantillasTelecom/'), $fileName);
 
-        if($moved){
-            if(!$request->ajax())return redirect('/');
-            $plantillaTelecom = Fraccionamiento::findOrFail($request->id);
-            $plantillaTelecom->plantilla_telecom = $fileName;
-            $plantillaTelecom->id = $id;
-            $plantillaTelecom->save(); //Insert
-    
-            }
-        return back();
-      }
-    else{
-        $pathAnterior = public_path().'/files/fraccionamientos/plantillasTelecom/'.$plantillaAnterior[0]->plantilla_telecom;
-        File::delete($pathAnterior); 
-        
-        $fileName = uniqid().'.'.$request->plantilla_telecom->getClientOriginalExtension();
-        $moved =  $request->plantilla_telecom->move(public_path('/files/fraccionamientos/plantillasTelecom/'), $fileName);
-
-        if($moved){
-            if(!$request->ajax())return redirect('/');
-            $plantillaTelecom = Fraccionamiento::findOrFail($request->id);
-            $plantillaTelecom->plantilla_telecom = $fileName;
-            $plantillaTelecom->id = $id;
-            $plantillaTelecom->save(); //Insert
-    
-            }
-        return back();
-
-    }
-      }
-
-      public function downloadPlantillaTelecom ($fileName){
-        $pathtoFile = public_path().'/files/fraccionamientos/plantillasTelecom/'.$fileName;
-        return response()->download($pathtoFile);
-    }
-
-    public function registrarEmpresasTelecom(Request $request, $id){
-        $empresasAnteriores = Fraccionamiento::select('empresas_telecom','empresas_telecom_satelital')
-                                             ->where('id','=',$id)
-                                             ->get();
-        if($empresasAnteriores->isEmpty()==1){
-            $empresasTelecom = new Fraccionamiento();
-            $empresasTelecom->empresas_telecom = $request->empresas_telecom;
-            $empresasTelecom->empresas_telecom_satelital = $request->empresas_telecom_satelital;
-            $empresasTelecom->save();
-        }else{
-            $empresasTelecom = Fraccionamiento::findOrFail($request->id);
-            $empresasTelecom->empresas_telecom = $request->empresas_telecom;
-            $empresasTelecom->empresas_telecom_satelital = $request->empresas_telecom_satelital;
-            $empresasTelecom->save();
-        }
-        
-    }
 
 }

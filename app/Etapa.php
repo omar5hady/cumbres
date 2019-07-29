@@ -9,7 +9,7 @@ class Etapa extends Model
     protected $table = 'etapas'; // se referencia a que tabla pertenece el modelo
     protected $primaryKey = 'id'; //Referenciar la llave primaria
     protected $fillable = ['fraccionamiento_id','num_etapa','f_ini',
-        'f_fin','personal_id','costo_mantenimiento'];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
+        'f_fin','personal_id','costo_mantenimiento','plantilla_telecom','empresas_telecom','empresas_telecom_satelital'];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
 
     public function fraccionamiento(){
         return $this->belongsTo('App\Fraccionamiento');

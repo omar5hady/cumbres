@@ -140,9 +140,9 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/formSubmitEscrituras/{id}','FraccionamientoController@formSubmitEscrituras'); //carga de escrituras
         Route::get('/downloadEscrituras/{fileName}' , 'FraccionamientoController@downloadFileEscrituras'); //descarga de escrituras
 
-        Route::post('/formSubmitTelecom/{id}','FraccionamientoController@uploadPlantillaTelecom');
-        Route::get('/downloadPlantilla/ServiciosTelecom/{fileName}' , 'FraccionamientoController@downloadPlantillaTelecom');
-        Route::post('/fraccionamiento/empresasTelecom/registrar/{id}','FraccionamientoController@registrarEmpresasTelecom');
+        
+       
+        
 
     /////////////////////   RUTAS ETAPAS        //////////////////////////////////////
         Route::get('/etapa','EtapaController@index');
@@ -155,6 +155,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/downloadReglamento/{fileName}' , 'EtapaController@downloadReglamento');
         Route::get('/downloadPlantilla/cartaServicios/{fileName}' , 'EtapaController@downloadPlantillaCartaServicios');
         Route::post('/etapas/costoMantenimiento/registrar/{id}','EtapaController@registrarCostoMantenimiento');
+        Route::post('/formSubmitTelecom/{id}','EtapaController@uploadPlantillaTelecom');
+        Route::get('/downloadPlantilla/ServiciosTelecom/{fileName}' , 'EtapaController@downloadPlantillaTelecom');
 
         
     ///////////////////     RUTAS PERSONAL      ////////////////////////////////////
@@ -461,7 +463,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/archivos/reglamentoEtapa/{etapa_id}','EtapaController@descargaReglamentoDocs');
         Route::get('/archivos/catalogoEspecificaciones/{modelo_id}','ModeloController@descargaCatalogoDocs');
         Route::get('/archivos/cartaServicios/{etapa_id}','ServicioController@cartaDeServicioDocs');
-        Route::get('/archivos/cartaServiciosTelecomunicaciones/{fraccionamiento_id}','ServicioController@cartaDeTelecomunicacionesDocs');
+        Route::get('/archivos/cartaServiciosTelecomunicaciones/{etapa_id}','ServicioController@cartaDeTelecomunicacionesDocs');
 
     });
 

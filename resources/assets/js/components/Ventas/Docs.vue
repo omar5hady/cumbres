@@ -72,7 +72,7 @@
                                         </template>
                                         <template>
                                             <td v-if="archivos.plantilla_telecom != NULL && archivos.empresas_telecom != NULL">
-                                                <a class="btn btn-primary btn-sm" v-bind:href="'/archivos/cartaServiciosTelecomunicaciones/'+archivos.fraccionamientoID" target="_blank">Visualizar</a>
+                                                <a class="btn btn-primary btn-sm" v-bind:href="'/archivos/cartaServiciosTelecomunicaciones/'+archivos.etapaID" target="_blank">Visualizar</a>
                                             </td>
                                             <td v-else>
                                                 Aun sin cargar

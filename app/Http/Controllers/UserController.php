@@ -218,7 +218,7 @@ class UserController extends Controller
                     $user->licencias=1;
                     $user->acta_terminacion=1;
                     $user->p_etapa=0;
-                    $user->p_fraccionamiento=0;
+                   
                     //Precios
                     $user->agregar_sobreprecios=1;
                     $user->precios_etapas=1;
@@ -354,7 +354,7 @@ class UserController extends Controller
                     //Desarrollo
                     $user->modelos=1;
                     $user->p_etapa=1;
-                    $user->p_fraccionamiento=1;
+                   
                     //Reportes
                     $user->mejora=1;
                     break;
@@ -482,7 +482,7 @@ class UserController extends Controller
                     $user->licencias=1;
                     $user->acta_terminacion=1;
                     $user->p_etapa=0;
-                    $user->p_fraccionamiento=0;
+                   
                     //Precios
                     $user->agregar_sobreprecios=1;
                     $user->precios_etapas=1;
@@ -618,7 +618,7 @@ class UserController extends Controller
                     //Desarrollo
                     $user->modelos=1;
                     $user->p_etapa=1;
-                    $user->p_fraccionamiento=1;
+                  
                     //Reportes
                     $user->mejora=1;
                     break;
@@ -699,7 +699,7 @@ class UserController extends Controller
                 $user->licencias=1;
                 $user->acta_terminacion=1;
                 $user->p_etapa=0;
-                $user->p_fraccionamiento=0;
+                
                 //Precios
                 $user->agregar_sobreprecios=1;
                 $user->precios_etapas=1;
@@ -835,7 +835,7 @@ class UserController extends Controller
                 //Desarrollo
                 $user->modelos=1;
                 $user->p_etapa=0;
-                $user->p_fraccionamiento=0;
+               
                 //Reportes
                 $user->mejora=1;
                 break;
@@ -928,7 +928,7 @@ class UserController extends Controller
                                 'users.inst_financiamiento','users.tipos_credito','users.asig_servicios','users.mis_asesores','users.cuenta','users.notaria',
                                 //Desarrollo
                                 'users.fraccionamiento','users.etapas','users.modelos','users.lotes','users.asign_modelos','users.licencias',
-                                'users.acta_terminacion','users.p_etapa','users.p_fraccionamiento',
+                                'users.acta_terminacion','users.p_etapa',
                                 //Precios
                                 'users.precios_etapas','users.precios_viviendas','users.sobreprecios','users.paquetes','users.promociones',
                                 'users.agregar_sobreprecios',
@@ -978,7 +978,7 @@ class UserController extends Controller
         $user->licencias = $request->licencias;
         $user->acta_terminacion = $request->acta_terminacion;
         $user->p_etapa = $request->p_etapa;
-        $user->p_fraccionamiento = $request->p_fraccionamiento;
+      
         //Precios
         $user->agregar_sobreprecios=$request->agregar_sobreprecios;
         $user->precios_etapas = $request->precios_etapas;

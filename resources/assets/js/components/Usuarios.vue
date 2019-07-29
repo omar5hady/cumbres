@@ -182,9 +182,6 @@
                                                         <a class="nav-link"><i class="icon-bag"></i> <input v-model="acta_terminacion" type="checkbox" value="1"/> Acta de terminacion</a>
                                                     </li>
                                                     <li class="nav-item" v-if="rol_id==1 || rol_id==7">
-                                                        <a class="nav-link"><i class="icon-bag"></i> <input v-model="p_fraccionamiento" type="checkbox" value="1"/> Publicidad-Fraccionamiento</a>
-                                                    </li>
-                                                    <li class="nav-item" v-if="rol_id==1 || rol_id==7">
                                                         <a class="nav-link"><i class="icon-bag"></i> <input v-model="p_etapa" type="checkbox" value="1"/> Publicidad-Etapas</a>
                                                     </li>
                                                 </ul>
@@ -604,7 +601,7 @@
                     licencias:0,
                     acta_terminacion:0,
                     p_etapa:0,
-                    p_fraccionamiento:0,
+                   
 
                     //Precios
                     agregar_sobreprecios: 0,
@@ -769,7 +766,7 @@
                 this.licencias=0;
                 this.acta_terminacion=0;
                 this.p_etapa=0;
-                this.p_fraccionamiento=0;
+               
             },
             limpiarPrecios(){
                  //Precios
@@ -863,7 +860,7 @@
                     me.licencias=usuarios[0].licencias;
                     me.acta_terminacion=usuarios[0].acta_terminacion;
                     me.p_etapa=usuarios[0].p_etapa;
-                    me.p_fraccionamiento=usuarios[0].p_fraccionamiento;
+                   
 
                     //Precios
                     me.agregar_sobreprecios = usuarios[0].agregar_sobreprecios;
@@ -1120,7 +1117,7 @@
                     'licencias':this.licencias,
                     'acta_terminacion':this.acta_terminacion,
                     'p_etapa':this.p_etapa,
-                    'p_fraccionamiento':this.p_fraccionamiento,
+                   
                         //Precios
                     'agregar_sobreprecios':this.agregar_sobreprecios,
                     'precios_etapas':this.precios_etapas,
@@ -1388,7 +1385,7 @@
                 me.licencias=0;
                 me.acta_terminacion=0;
                 me.p_etapa=0;
-                me.p_fraccionamiento=0;
+               
 
                     //Precios
                 me.agregar_sobreprecios=0;

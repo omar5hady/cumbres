@@ -35,7 +35,8 @@ class EtapaController extends Controller
                     'etapas.f_fin','etapas.id','etapas.personal_id', 
                     DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS name"),
                     'etapas.fraccionamiento_id','fraccionamientos.nombre as fraccionamiento','etapas.archivo_reglamento',
-                    'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento')
+                    'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento','etapas.plantilla_telecom','etapas.empresas_telecom',
+                    'etapas.empresas_telecom_satelital')
                     ->where('etapas.num_etapa','!=','Sin Asignar')
                     ->orderBy('fraccionamientos.nombre','asc')
                     ->orderBy('etapas.num_etapa','asc')->paginate(8);
@@ -49,7 +50,8 @@ class EtapaController extends Controller
                         'etapas.f_fin','etapas.id','etapas.personal_id', 
                         DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS name"),
                         'etapas.fraccionamiento_id','fraccionamientos.nombre as fraccionamiento','etapas.archivo_reglamento',
-                        'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento')
+                        'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento','etapas.plantilla_telecom','etapas.empresas_telecom',
+                        'etapas.empresas_telecom_satelital')
                         ->whereBetween($criterio, [$buscar,$buscar2])
                         ->where('etapas.num_etapa','!=','Sin Asignar')
                         ->orderBy('fraccionamientos.nombre','asc')
@@ -62,7 +64,8 @@ class EtapaController extends Controller
                         'etapas.f_fin','etapas.id','etapas.personal_id', 
                         DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS name"),
                         'etapas.fraccionamiento_id','fraccionamientos.nombre as fraccionamiento','etapas.archivo_reglamento',
-                        'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento')
+                        'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento','etapas.plantilla_telecom','etapas.empresas_telecom',
+                        'etapas.empresas_telecom_satelital')
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->where('etapas.num_etapa','!=','Sin Asignar')
                         ->orderBy('fraccionamientos.nombre','asc')
@@ -315,19 +318,68 @@ class EtapaController extends Controller
 
     
     public function registrarCostoMantenimiento(Request $request, $id){
-        $costoAnterior = Etapa::select('costo_mantenimiento')
+        $costoAnterior = Etapa::select('costo_mantenimiento','empresas_telecom','empresas_telecom_satelital')
                                              ->where('id','=',$id)
                                              ->get();
         if($costoAnterior->isEmpty()==1){
             $costoMantenimiento = new Etapa();
             $costoMantenimiento->costo_mantenimiento = $request->costo_mantenimiento;
+            $costoMantenimiento->empresas_telecom = $request->empresas_telecom;
+            $costoMantenimiento->empresas_telecom_satelital = $request->empresas_telecom_satelital;
             $costoMantenimiento->save();
         }else{
             $costoMantenimiento = Etapa::findOrFail($request->id);
             $costoMantenimiento->costo_mantenimiento = $request->costo_mantenimiento;
+            $costoMantenimiento->empresas_telecom = $request->empresas_telecom;
+            $costoMantenimiento->empresas_telecom_satelital = $request->empresas_telecom_satelital;
             $costoMantenimiento->save();
         }
         
+    }
+
+    public function uploadPlantillaTelecom (Request $request, $id){
+
+        $plantillaAnterior = Etapa::select('plantilla_telecom','id')
+                                            ->where('id','=',$id)
+                                            ->get();
+
+                if($plantillaAnterior->isEmpty()==1){
+                $fileName = uniqid().'.'.$request->plantilla_telecom->getClientOriginalExtension();
+                $moved =  $request->plantilla_telecom->move(public_path('/files/etapas/plantillasTelecom/'), $fileName);
+
+                if($moved){
+                    if(!$request->ajax())return redirect('/');
+                    $plantillaTelecom = Etapa::findOrFail($request->id);
+                    $plantillaTelecom->plantilla_telecom = $fileName;
+                    $plantillaTelecom->id = $id;
+                    $plantillaTelecom->save(); //Insert
+
+                    }
+                return back();
+                }
+                else{
+                $pathAnterior = public_path().'/files/etapas/plantillasTelecom/'.$plantillaAnterior[0]->plantilla_telecom;
+                File::delete($pathAnterior); 
+                
+                $fileName = uniqid().'.'.$request->plantilla_telecom->getClientOriginalExtension();
+                $moved =  $request->plantilla_telecom->move(public_path('/files/etapas/plantillasTelecom/'), $fileName);
+
+                if($moved){
+                    if(!$request->ajax())return redirect('/');
+                    $plantillaTelecom = Etapa::findOrFail($request->id);
+                    $plantillaTelecom->plantilla_telecom = $fileName;
+                    $plantillaTelecom->id = $id;
+                    $plantillaTelecom->save(); //Insert
+
+                    }
+                return back();
+
+            }
+    }
+
+    public function downloadPlantillaTelecom ($fileName){
+        $pathtoFile = public_path().'/files/etapas/plantillasTelecom/'.$fileName;
+        return response()->download($pathtoFile);
     }
 
     public function descargaReglamentoDocs($etapa_id){

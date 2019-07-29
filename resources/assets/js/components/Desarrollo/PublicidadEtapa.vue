@@ -41,6 +41,9 @@
                                         <th>Reglamento</th>
                                         <th>Plantilla para carta de servicios</th>
                                         <th>Costo de mantenimiento</th>
+                                        <th>Empresa(s) de telecomunicacion</th>
+                                        <th>Empresa(s) de telecomunicacion satelital</th>
+                                        <th>Plantilla servicios de telecomunicacion</th>
                                         
                                     </tr>
                                 </thead>
@@ -63,6 +66,10 @@
                                         <td  v-if = "etapa.plantilla_carta_servicios"><a class="btn btn-success btn-sm" v-bind:href="'/downloadPlantilla/cartaServicios/'+etapa.plantilla_carta_servicios"><i class="fa fa-download fa-spin"></i></a></td>
                                         <td v-else></td>
                                         <td v-text="'$' + etapa.costo_mantenimiento"></td>
+                                        <td v-text="etapa.empresas_telecom"></td>
+                                        <td v-text="etapa.empresas_telecom_satelital"></td>
+                                        <td v-if = "etapa.plantilla_telecom"><a class="btn btn-success btn-sm" v-bind:href="'/downloadPlantilla/ServiciosTelecom/'+fraccionamiento.plantilla_telecom"><i class="fa fa-download fa-spin"></i></a></td>
+                                        <td v-else></td>
                                     </tr>                               
                                 </tbody>
                             </table>
@@ -114,6 +121,17 @@
                                     <button type="submit" class="btn btn-success">Cargar</button>
                                    </form>
 
+                                    <br/>   
+
+                                    <form  method="post" @submit="formSubmitTelecom" enctype="multipart/form-data">
+
+                                    <strong>Sube aqui la plantilla para los servicios de telecomunicacion <u>794 x 986</u></strong>
+
+                                    <input type="file" accept="image/*" class="form-control" v-on:change="onImageChangeTelecom">
+                                    <br/>
+                                    <button type="submit" class="btn btn-success">Cargar</button>
+                                    </form>
+
                                 </div>
                             <br>
                         <div v-if="tipoAccion != 2">
@@ -129,12 +147,27 @@
                         </div>       
                     
                         <div v-if="tipoAccion == 2" class="modal-body">
-                          <div class="form-group row">
+                                <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Costo mantenimiento</label>
                                     <div class="col-md-4">
                                         <input type="text" v-on:keypress="isNumber($event)" v-model="costo_mantenimiento" class="form-control" placeholder="$">
                                     </div>
                                 </div>
+ 
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Empresa(s) de telecomunicacion</label>
+                                    <div class="col-md-9">
+                                        <input type="text" v-model="empresas_telecom" class="form-control" placeholder="Empresa 1, Empresa 2, Empresa 3, Empresa 4">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Empresa(s) de telecomunicacion satelital</label>
+                                    <div class="col-md-9">
+                                        <input type="text" v-model="empresas_telecom_satelital" class="form-control" placeholder="Empresa 1, Empresa 2, Empresa 3, Empresa 4">
+                                    </div>
+                                </div>
+                      
                           </div>
                         <!-- Botones del modal -->
                         <div class="modal-footer">
@@ -147,6 +180,7 @@
                 <!-- /.modal-dialog -->
             </div>
             <!--Fin del modal-->
+
             
 
         </main>
@@ -166,6 +200,9 @@
                 archivo_plantilla_servicio: '',
                 archivo_reglamento: '',
                 costo_mantenimiento: 0,
+                empresas_telecom: '',
+                empresas_telecom_satelital: '',
+                archivo_plantilla_telecom: '',
                 arrayEtapa : [],
                 modal : 0,
                 tituloModal : '',
@@ -239,7 +276,7 @@
                         timer: 2000
                         })
                     me.cerrarModal4();
-                   me.listarFraccionamiento(1,'','fraccionamiento');
+                    me.listarEtapa(1,'','','fraccionamiento.nombre');
 
                 }).catch(function (error) {
                     currentObj.output = error;
@@ -247,7 +284,7 @@
                 });
 
             },
-              onImageChangeReglamento(e){
+            onImageChangeReglamento(e){
 
                 console.log(e.target.files[0]);
 
@@ -276,13 +313,47 @@
                         timer: 2000
                         })
                     me.cerrarModal4();
-                   me.listarFraccionamiento(1,'','fraccionamiento');
+                    me.listarEtapa(1,'','','fraccionamiento.nombre');
 
                 }).catch(function (error) {
                     currentObj.output = error;
                 });
 
             },
+
+            onImageChangeTelecom(e){
+                console.log(e.target.files[0]);
+                this.archivo_plantilla_telecom = e.target.files[0];
+            },
+
+            formSubmitTelecom(e) {
+                e.preventDefault();
+                let currentObj = this;
+            
+                let formData = new FormData();
+                formData.append('plantilla_telecom', this.archivo_plantilla_telecom);
+                let me = this;
+                axios.post('/formSubmitTelecom/'+this.id, formData)
+                .then(function (response) {
+                    currentObj.success = response.data.success;
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Archivo guardado correctamente',
+                        showConfirmButton: false,
+                        timer: 2000
+                        })
+                    me.cerrarModal4();
+                    me.listarEtapa(1,'','','fraccionamiento.nombre');
+
+                }).catch(function (error) {
+                    currentObj.output = error;
+
+                });
+
+            },
+           
+
              registrarCostosMantenimiento(){
                 if(this.proceso==true){
                     return;
@@ -293,7 +364,9 @@
                 //Con axios se llama el metodo store de FraccionaminetoController
                 axios.post('/etapas/costoMantenimiento/registrar/'+this.id,{
                     'costo_mantenimiento': this.costo_mantenimiento,
-                  
+                    'empresas_telecom': this.empresas_telecom,
+                    'empresas_telecom_satelital': this.empresas_telecom_satelital,
+                    
                     
                 }).then(function (response){
                     me.proceso=false;
@@ -354,9 +427,8 @@
                 this.modal = 0;
                 this.tituloModal = '';
                 this.num_etapa = '';
-
-
             },
+
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
             abrirModal(modelo, accion,data =[]){
                 switch(modelo){
@@ -371,6 +443,7 @@
                                 this.id=data['id'];
                                 this.archivo_reglamento=data['archivo_reglamento'];
                                 this.archivo_plantilla_servicio=data['plantilla_carta_servicios'];
+                                this.archivo_plantilla_telecom=data['plantilla_telecom'];
                                 this.tipoAccion = 1;
                                 break;
                             }
@@ -381,6 +454,8 @@
                                 this.num_etapa = data['num_etapa'];
                                 this.id=data['id'];
                                 this.costo_matenimiento = data['costo_mantenimiento'];
+                                this.empresas_telecom =data['empresas_telecom'];
+                                this.empresas_telecom_satelital =data['empresas_telecom_satelital'];
                                 this.tipoAccion = 2;
                                 break;
                             }

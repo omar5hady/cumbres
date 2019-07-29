@@ -75,9 +75,9 @@ class ServicioController extends Controller
         ->join('personal','creditos.prospecto_id','=','personal.id')
         ->join('clientes','creditos.prospecto_id','=','clientes.id')
         ->join('lotes','creditos.lote_id','=','lotes.id')
-        ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-        ->select('personal.nombre','personal.apellidos','creditos.fraccionamiento as proyecto','fraccionamientos.empresas_telecom',
-         'fraccionamientos.empresas_telecom_satelital','fraccionamientos.plantilla_telecom','creditos.manzana','creditos.num_lote')
+        ->join('etapas','lotes.etapa_id','=','etapas.id')
+        ->select('personal.nombre','personal.apellidos','creditos.fraccionamiento as proyecto','etapas.empresas_telecom',
+         'etapas.empresas_telecom_satelital','etapas.plantilla_telecom','creditos.manzana','creditos.num_lote')
         ->where('contratos.id','=',$id)
         ->get();
 
@@ -146,14 +146,14 @@ class ServicioController extends Controller
         return $pdf->stream('CartaDeservicios.pdf');
     }
 
-    public function cartaDeTelecomunicacionesDocs($fraccionamiento_id){
+    public function cartaDeTelecomunicacionesDocs($etapa_id){
         $archivos = Modelo::join('fraccionamientos','modelos.fraccionamiento_id','=','fraccionamientos.id')
         ->join('etapas','fraccionamientos.id','=','etapas.fraccionamiento_id')
-        ->select('fraccionamientos.plantilla_telecom','fraccionamientos.nombre as proyecto','fraccionamientos.empresas_telecom',
-        'fraccionamientos.empresas_telecom_satelital')
+        ->select('etapas.plantilla_telecom','fraccionamientos.nombre as proyecto','etapas.empresas_telecom',
+        'etapas.empresas_telecom_satelital')
         ->where('modelos.nombre','!=','Por Asignar')
         ->where('etapas.num_etapa','!=','Sin Asignar')
-        ->where('fraccionamientos.id','=',$fraccionamiento_id)
+        ->where('etapas.id','=',$etapa_id)
         ->distinct()->get();
 
         

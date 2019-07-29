@@ -23,6 +23,9 @@ class CreateEtapasTable extends Migration
             $table->string('archivo_reglamento',100)->nullable();
             $table->string('plantilla_carta_servicios',100)->nullable();         
             $table->double('costo_mantenimiento')->nullable();
+            $table->string('plantilla_telecom',100)->nullable();
+            $table->string('empresas_telecom',120)->nullable();
+            $table->string('empresas_telecom_satelital',120)->nullable();
             $table->timestamps();
 
             $table->foreign('fraccionamiento_id')->references('id')->on('fraccionamientos');
