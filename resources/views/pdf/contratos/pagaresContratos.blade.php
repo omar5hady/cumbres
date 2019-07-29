@@ -30,7 +30,7 @@ body {
 <div style="text-align: justify; margin:60px">
         <div style="text-align: right; margin-bottom: 0em;  margin-top: 0em;">
             <p style="margin-bottom: 0em;  margin-top: 0em;"> <strong> PAGARE NO. </strong> {{$pagos[$i]->num_pago + 1}}/{{count($pagos)}}</p>
-            <p style="margin-bottom: 0em;  margin-top: 0em;"> <strong>BUENO POR </strong>${{$pagos[$i]->monto_pago}}</p>
+            <p style="margin-bottom: 0em;  margin-top: 0em;"> <strong>BUENO POR </strong>${{$pagos[$i]->monto_pago1}}</p>
             <p style="margin-bottom: 0em;  margin-top: 0em;">EN SAN LUIS POTOSI, SAN LUIS POTOSI, A {{strtoupper($cliente[0]->fecha)}}</p>
         </div>
         <br>
@@ -41,7 +41,7 @@ body {
             <div>
             <p style="margin-bottom: 0em;  margin-top: 0em;">DEBE(MOS) Y PAGARE(MOS) INCONDICIONALMENTE POR ESTE PAGARE A LA ORDEN DE GRUPO CONSTRUCTOR CUMBRES, S.A DE C.V., EN SAN LUIS POTOSI, SAN LUIS POTOSI, <strong> EL {{strtoupper($pagos[$i]->fecha_pago)}}</strong></p>
             <p style="margin-bottom: 0em;  margin-top: 0em;">LA CANTIDAD DE: </p>
-            <p style="margin-bottom: 0em;  margin-top: 0em;"><strong>${{$pagos[$i]->monto_pago}} ({{strtoupper($pagos[$i]->montoPagoLetra)}} 00/100 M.N.)</strong></p>
+            <p style="margin-bottom: 0em;  margin-top: 0em;"><strong>${{strtoupper($pagos[$i]->montoPagoLetra)}}</strong></p>
             <p style="margin-bottom: 0em;  margin-top: 0em;">VALOR RECIBIDO A MI (NUESTRA) ENTERA SATISFACCION. ESTE PAGARE FORMA PARTE DE UNA SERIE NUMERADA DEL <strong>1</strong> AL <strong>{{count($pagos)}}</strong> Y TODOS ESTAN SUJETOS A LA CONDICION DE QUE, AL NO PAGARSE CUALQUIERA
                 DE ELLOS A SU VENCIMIENTO, SERAN EXIGIBLES TODOS LOS QUE LE SIGAN EN NUMERO, ADEMAS DE LOS YA VENCIDOS, DESDE LA FECHA DE VENCIMIENTO DE ESTE DOCUMENTO HASTA EL DIA DE SU LIQUIDACION,
                 CAUSARA INTERESES MORATORIOS AL TIPO DE <strong>5%</strong> MENSUAL, PAGADERO EN ESTA CIUDAD JUNTAMENTE CON EL PRINCIPAL.</p>

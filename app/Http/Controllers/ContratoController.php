@@ -2822,10 +2822,10 @@ class ContratoController extends Controller
 
 
         for ($i = 0; $i < count($pagos); $i++) {
-            $pagos[$i]->monto_pago = number_format((float)$pagos[$i]->monto_pago, 2, '.', ',');
+            $pagos[$i]->monto_pago1 = number_format((float)$pagos[$i]->monto_pago, 2, '.', ',');
             $tiempo = new Carbon($pagos[$i]->fecha_pago);
             $pagos[$i]->fecha_pago = $tiempo->formatLocalized('%d de %B de %Y');
-            $pagos[$i]->montoPagoLetra = NumerosEnLetras::convertir($pagos[$i]->monto_pago, 'Pesos', false, 'Centavos');
+            $pagos[$i]->montoPagoLetra = NumerosEnLetras::convertir($pagos[$i]->monto_pago, 'Pesos', true, 'Centavos');
         }
 
 
