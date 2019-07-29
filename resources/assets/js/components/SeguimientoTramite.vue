@@ -576,8 +576,10 @@
                                                 <td v-if="programacion.avaluo_preventivo!='0000-01-01'" class="td2" v-text="'$'+formatNumber(programacion.resultado)"></td>
                                                 <td v-if="programacion.avaluo_preventivo=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
 
+                                                <td v-if="programacion.aviso_prev=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
                                                 <td @dblclick="abrirModal('fecha_recibido',programacion)" v-if="programacion.aviso_prev!='0000-01-01' && !programacion.aviso_prev_venc" class="td2" v-text="'Fecha solicitud: ' 
                                                 + this.moment(programacion.aviso_prev).locale('es').format('DD/MMM/YYYY')"></td>
+
                                                 <td  @dblclick="abrirModal('fecha_recibido',programacion)" v-if="programacion.aviso_prev!='0000-01-01' && programacion.aviso_prev_venc" class="td2">
                                                     
                                                     <span v-if = "programacion.diferencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: ' 
