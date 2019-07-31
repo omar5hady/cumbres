@@ -1028,6 +1028,7 @@ class ContratoController extends Controller
                         if ($b_etapa != '' && $b_manzana != '' && $b_lote != '') {
                             $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                 ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
@@ -1150,28 +1151,31 @@ class ContratoController extends Controller
                                     'contratos.observacion'
                                 )
                                 ->where('inst_seleccionadas.elegido', '=', '1')
-                                ->where('creditos.fraccionamiento', '=',  $buscar)
-                                ->where('creditos.etapa', '=', $b_etapa)
-                                ->where('creditos.manzana', '=', $b_manzana)
-                                ->where('creditos.num_lote', '=', $b_lote)
+                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
+                                ->where('lotes.etapa_id', '=', $b_etapa)
+                                ->where('lotes.manzana', '=', $b_manzana)
+                                ->where('lotes.num_lote', '=', $b_lote)
                                 ->orderBy('id', 'desc')->paginate(8);
 
                             $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                 ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
                                 ->select('contratos.id as contratoId')
                                 ->where('inst_seleccionadas.elegido', '=', '1')
-                                ->where('creditos.fraccionamiento', '=',  $buscar)
-                                ->where('creditos.etapa', '=', $b_etapa)
-                                ->where('creditos.manzana', '=', $b_manzana)
-                                ->where('creditos.num_lote', '=', $b_lote)
+                                ->where('inst_seleccionadas.elegido', '=', '1')
+                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
+                                ->where('lotes.etapa_id', '=', $b_etapa)
+                                ->where('lotes.manzana', '=', $b_manzana)
+                                ->where('lotes.num_lote', '=', $b_lote)
                                 ->orderBy('id', 'desc')->count();
                         } else {
                             if ($b_etapa != '' && $b_manzana != '') {
                                 $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                     ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                     ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                     ->join('personal as v', 'clientes.vendedor_id', 'v.id')
@@ -1294,26 +1298,28 @@ class ContratoController extends Controller
                                         'contratos.observacion'
                                     )
                                     ->where('inst_seleccionadas.elegido', '=', '1')
-                                    ->where('creditos.fraccionamiento', '=',  $buscar)
-                                    ->where('creditos.etapa', 'like', '%' . $b_etapa . '%')
-                                    ->where('creditos.manzana', '=', $b_manzana)
+                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
+                                    ->where('lotes.etapa_id', 'like', '=', $b_etapa)
+                                    ->where('lotes.manzana', '=', $b_manzana)
                                     ->orderBy('id', 'desc')->paginate(8);
 
                                 $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                     ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                     ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                     ->join('personal as v', 'clientes.vendedor_id', 'v.id')
                                     ->select('contratos.id as contratoId')
                                     ->where('inst_seleccionadas.elegido', '=', '1')
-                                    ->where('creditos.fraccionamiento', '=',  $buscar)
-                                    ->where('creditos.etapa', 'like', '%' . $b_etapa . '%')
-                                    ->where('creditos.manzana', '=', $b_manzana)
+                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
+                                    ->where('lotes.etapa_id', 'like', '=', $b_etapa)
+                                    ->where('lotes.manzana', '=', $b_manzana)
                                     ->orderBy('id', 'desc')->count();
                             } else {
                                 if ($b_etapa != '') {
                                     $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                         ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                         ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                         ->join('personal as v', 'clientes.vendedor_id', 'v.id')
@@ -1436,24 +1442,26 @@ class ContratoController extends Controller
                                             'contratos.observacion'
                                         )
                                         ->where('inst_seleccionadas.elegido', '=', '1')
-                                        ->where('creditos.fraccionamiento', '=',  $buscar)
-                                        ->where('creditos.etapa', 'like', '%' . $b_etapa . '%')
+                                        ->where('lotes.fraccionamiento_id', '=',  $buscar)
+                                        ->where('lotes.etapa_id', '=',  $b_etapa )
                                         ->orderBy('id', 'desc')->paginate(8);
 
                                     $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                         ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                         ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                         ->join('personal as v', 'clientes.vendedor_id', 'v.id')
                                         ->select('contratos.id as contratoId')
                                         ->where('inst_seleccionadas.elegido', '=', '1')
-                                        ->where('creditos.fraccionamiento', '=',  $buscar)
-                                        ->where('creditos.etapa', 'like', '%' . $b_etapa . '%')
+                                        ->where('lotes.fraccionamiento_id', '=',  $buscar)
+                                        ->where('lotes.etapa_id', '=',  $b_etapa )
                                         ->orderBy('id', 'desc')->count();
                                 } else {
                                     if ($b_manzana != '') {
                                         $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                             ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                             ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                             ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                             ->join('personal as v', 'clientes.vendedor_id', 'v.id')
@@ -1576,24 +1584,26 @@ class ContratoController extends Controller
                                                 'contratos.observacion'
                                             )
                                             ->where('inst_seleccionadas.elegido', '=', '1')
-                                            ->where('creditos.fraccionamiento', '=',  $buscar)
-                                            ->where('creditos.manzana', '=', $b_manzana)
+                                            ->where('lotes.fraccionamiento_id', '=',  $buscar)
+                                            ->where('lotes.manzana', '=', $b_manzana)
                                             ->orderBy('id', 'desc')->paginate(8);
 
                                         $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                             ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                             ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                             ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                             ->join('personal as v', 'clientes.vendedor_id', 'v.id')
                                             ->select('contratos.id as contratoId')
                                             ->where('inst_seleccionadas.elegido', '=', '1')
-                                            ->where('creditos.fraccionamiento', '=',  $buscar)
-                                            ->where('creditos.manzana', '=', $b_manzana)
+                                            ->where('lotes.fraccionamiento_id', '=',  $buscar)
+                                            ->where('lotes.manzana', '=', $b_manzana)
                                             ->orderBy('id', 'desc')->count();
                                     } else {
                                         if ($b_lote != '') {
                                             $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                                 ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                                ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
@@ -1716,23 +1726,25 @@ class ContratoController extends Controller
                                                     'contratos.observacion'
                                                 )
                                                 ->where('inst_seleccionadas.elegido', '=', '1')
-                                                ->where('creditos.fraccionamiento', '=',  $buscar)
-                                                ->where('creditos.num_lote', '=', $b_lote)
+                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
+                                                ->where('lotes.num_lote', '=', $b_lote)
                                                 ->orderBy('id', 'desc')->paginate(8);
 
                                             $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                                 ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                                ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
                                                 ->select('contratos.id as contratoId')
                                                 ->where('inst_seleccionadas.elegido', '=', '1')
-                                                ->where('creditos.fraccionamiento', '=',  $buscar)
-                                                ->where('creditos.manzana', '=', $b_manzana)
+                                                ->where('lotes.fraccionamiento', '=',  $buscar)
+                                                ->where('lotes.num_lote', '=', $b_lote)
                                                 ->orderBy('id', 'desc')->count();
                                         } else {
                                             $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                                 ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                                ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
@@ -1855,17 +1867,18 @@ class ContratoController extends Controller
                                                     'contratos.observacion'
                                                 )
                                                 ->where('inst_seleccionadas.elegido', '=', '1')
-                                                ->where('creditos.fraccionamiento', '=',  $buscar)
+                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
                                                 ->orderBy('id', 'desc')->paginate(8);
 
                                             $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                                 ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                                ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
                                                 ->select('contratos.id as contratoId')
                                                 ->where('inst_seleccionadas.elegido', '=', '1')
-                                                ->where('creditos.fraccionamiento', '=',  $buscar)
+                                                ->where('creditos.fraccionamiento_id', '=',  $buscar)
                                                 ->orderBy('id', 'desc')->count();
                                         }
                                     }
@@ -2077,6 +2090,7 @@ class ContratoController extends Controller
                 case 'creditos.fraccionamiento': {
                         if ($b_etapa != '' && $b_manzana != '' && $b_lote != '') {
                             $creditos = Credito::join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
@@ -2104,15 +2118,16 @@ class ContratoController extends Controller
                                 )
                                 ->where('creditos.status', '=', '2')
                                 ->where('inst_seleccionadas.elegido', '=', '1')
-                                ->where('creditos.fraccionamiento', '=',  $buscar)
-                                ->where('creditos.etapa', '=', $b_etapa)
-                                ->where('creditos.manzana', '=', $b_manzana)
-                                ->where('creditos.num_lote', '=', $b_lote)
+                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
+                                ->where('lotes.etapa_id', '=', $b_etapa)
+                                ->where('lotes.manzana', '=', $b_manzana)
+                                ->where('lotes.num_lote', '=', $b_lote)
                                 ->where('creditos.contrato', '=', '0')
                                 ->orderBy('id', 'desc')->paginate(8);
                         } else {
                             if ($b_etapa != '' && $b_manzana != '') {
                                 $creditos = Credito::join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                     ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                     ->join('personal as v', 'clientes.vendedor_id', 'v.id')
@@ -2140,14 +2155,15 @@ class ContratoController extends Controller
                                     )
                                     ->where('creditos.status', '=', '2')
                                     ->where('inst_seleccionadas.elegido', '=', '1')
-                                    ->where('creditos.fraccionamiento', '=',  $buscar)
-                                    ->where('creditos.etapa', 'like', '%' . $b_etapa . '%')
-                                    ->where('creditos.manzana', '=', $b_manzana)
+                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
+                                    ->where('lotes.etapa_id', '=', $b_etapa )
+                                    ->where('lotes.manzana', '=', $b_manzana)
                                     ->where('creditos.contrato', '=', '0')
                                     ->orderBy('id', 'desc')->paginate(8);
                             } else {
                                 if ($b_etapa != '') {
                                     $creditos = Credito::join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                         ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                         ->join('personal as v', 'clientes.vendedor_id', 'v.id')
@@ -2175,13 +2191,14 @@ class ContratoController extends Controller
                                         )
                                         ->where('creditos.status', '=', '2')
                                         ->where('inst_seleccionadas.elegido', '=', '1')
-                                        ->where('creditos.fraccionamiento', '=',  $buscar)
-                                        ->where('creditos.etapa', 'like', '%' . $b_etapa . '%')
+                                        ->where('lotes.fraccionamiento_id', '=',  $buscar)
+                                        ->where('lotes.etapa_id', '=',  $b_etapa )
                                         ->where('creditos.contrato', '=', '0')
                                         ->orderBy('id', 'desc')->paginate(8);
                                 } else {
                                     if ($b_manzana != '') {
                                         $creditos = Credito::join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                             ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                             ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                             ->join('personal as v', 'clientes.vendedor_id', 'v.id')
@@ -2209,13 +2226,14 @@ class ContratoController extends Controller
                                             )
                                             ->where('creditos.status', '=', '2')
                                             ->where('inst_seleccionadas.elegido', '=', '1')
-                                            ->where('creditos.fraccionamiento', '=',  $buscar)
-                                            ->where('creditos.manzana', '=', $b_manzana)
+                                            ->where('lotes.fraccionamiento_id', '=',  $buscar)
+                                            ->where('lotes.manzana', '=', $b_manzana)
                                             ->where('creditos.contrato', '=', '0')
                                             ->orderBy('id', 'desc')->paginate(8);
                                     } else {
                                         if ($b_lote != '') {
                                             $creditos = Credito::join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                                ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
@@ -2243,12 +2261,13 @@ class ContratoController extends Controller
                                                 )
                                                 ->where('creditos.status', '=', '2')
                                                 ->where('inst_seleccionadas.elegido', '=', '1')
-                                                ->where('creditos.fraccionamiento', '=',  $buscar)
-                                                ->where('creditos.num_lote', '=', $b_lote)
+                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
+                                                ->where('lotes.num_lote', '=', $b_lote)
                                                 ->where('creditos.contrato', '=', '0')
                                                 ->orderBy('id', 'desc')->paginate(8);
                                         } else {
                                             $creditos = Credito::join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                                ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
@@ -2276,7 +2295,7 @@ class ContratoController extends Controller
                                                 )
                                                 ->where('creditos.status', '=', '2')
                                                 ->where('inst_seleccionadas.elegido', '=', '1')
-                                                ->where('creditos.fraccionamiento', '=',  $buscar)
+                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
                                                 ->where('creditos.contrato', '=', '0')
                                                 ->orderBy('id', 'desc')->paginate(8);
                                         }

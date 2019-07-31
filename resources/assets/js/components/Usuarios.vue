@@ -219,7 +219,7 @@
                                 </div>
 
                                 <!-- listado para privilegios del menu Saldos -->
-                                <div class="col-md-4" v-if="rol_id==1">
+                                <div class="col-md-4" v-if="rol_id==1 || rol_id==6 || rol_id==9">
                                     <div class="form-group row border">
                                             <a class="nav-link nav-dropdown-toggle"><i class="fa fa-calculator"></i> <input @click="limpiarSaldo()" v-model="saldo" type="checkbox" value="1"/> Modulo Saldos</a>
                                                 <ul class="nav-dropdown-items" v-if="saldo==1">
@@ -240,20 +240,20 @@
                                 </div> 
 
                                 <!-- listado para privilegios del menu Gestoria -->
-                                <div class="col-md-4" v-if="rol_id==1">
+                                <div class="col-md-4" v-if="rol_id==1 || rol_id==5 || rol_id==6 || rol_id==8">
                                     <div class="form-group row border">
                                             <a class="nav-link nav-dropdown-toggle"><i class="fa fa-bank"></i> <input @click="limpiarGestoria()" v-model="gestoria" type="checkbox" value="1"/> Modulo Gestoria</a>
                                                 <ul class="nav-dropdown-items" v-if="gestoria==1">
-                                                    <li class="nav-item">
+                                                    <li class="nav-item" v-if="rol_id != 5">
                                                         <a class="nav-link" ><i class="fa fa-folder-open"></i> <input v-model="expediente" type="checkbox" value="1"/> Expediente</a>
                                                     </li>
-                                                    <li class="nav-item">
+                                                    <li class="nav-item" v-if="rol_id != 5">
                                                         <a class="nav-link" ><i class="fa fa-group"></i> <input v-model="asig_gestor" type="checkbox" value="1"/> Asignar gestor</a>
                                                     </li>
-                                                    <li class="nav-item">
+                                                    <li class="nav-item" v-if="rol_id != 5">
                                                         <a class="nav-link" ><i class="fa fa-bullseye"></i> <input v-model="seg_tramite" type="checkbox" value="1"/> Seguimiento de tramite</a>
                                                     </li>
-                                                    <li class="nav-item">
+                                                    <li class="nav-item" v-if="rol_id == 5 || rol_id == 1 || rol_id == 6">
                                                         <a class="nav-link" ><i class="fa fa-money"></i> <input v-model="avaluos" type="checkbox" value="1"/> Avaluos</a>
                                                     </li>
                                                 </ul>
@@ -907,6 +907,8 @@
                     me.ventas=usuarios[0].ventas;
                     me.acceso=usuarios[0].acceso;
                     me.reportes=usuarios[0].reportes;
+                    me.saldo = usuarios[0].saldo;
+                    me.gestoria = usuarios[0].gestoria;
 
                     //Administracion
                     me.departamentos=usuarios[0].departamentos;
@@ -922,7 +924,6 @@
                     me.cuenta = usuarios[0].cuenta;
                     me.notaria = usuarios[0].notaria;
 
-
                     //Desarrollo
                     me.fraccionamiento=usuarios[0].fraccionamiento;
                     me.etapas=usuarios[0].etapas;
@@ -932,7 +933,6 @@
                     me.licencias=usuarios[0].licencias;
                     me.acta_terminacion=usuarios[0].acta_terminacion;
                     me.p_etapa=usuarios[0].p_etapa;
-                   
 
                     //Precios
                     me.agregar_sobreprecios = usuarios[0].agregar_sobreprecios;
@@ -957,6 +957,18 @@
                     me.hist_creditos=usuarios[0].hist_creditos;
                     me.contratos=usuarios[0].contratos;
                     me.docs=usuarios[0].docs;
+
+                    //Saldos
+                    me.edo_cuenta = usuarios[0].edo_cuenta;
+                    me.depositos = usuarios[0].depositos;
+                    me.gastos_admn = usuarios[0].gastos_admn;
+                    me.cobro_credito = usuarios[0].cobro_credito;
+
+                    //Gestoria
+                    me.expediente = usuarios[0].expediente;
+                    me.asig_gestor = usuarios[0].asig_gestor;
+                    me.seg_tramite = usuarios[0].seg_tramite;
+                    me.avaluos = usuarios[0].avaluos;
 
                     //Acceso
                     me.usuarios=usuarios[0].usuarios;
@@ -1167,6 +1179,8 @@
                     'ventas':this.ventas,
                     'acceso':this.acceso,
                     'reportes':this.reportes,
+                    'saldo':this.saldo,
+                    'gestoria':this.gestoria,
                         //Administracion
                     'departamentos':this.departamentos,
                     'personas':this.personas,
@@ -1211,6 +1225,16 @@
                     'hist_creditos':this.hist_creditos,
                     'contratos':this.contratos,
                     'docs':this.docs,
+                        //Saldo
+                    'edo_cuenta':this.edo_cuenta,
+                    'depositos':this.depositos,
+                    'gastos_admn':this.gastos_admn,
+                    'cobro_credito':this.cobro_credito,
+                        //Gestoria
+                    'expediente':this.expediente,
+                    'asig_gestor':this.asig_gestor,
+                    'seg_tramite':this.seg_tramite,
+                    'avaluos':this.avaluos,
                         //Acceso
                     'usuarios':this.usuarios,
                     'roles':this.roles,

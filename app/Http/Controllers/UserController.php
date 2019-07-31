@@ -961,6 +961,8 @@ class UserController extends Controller
         $user->ventas = $request->ventas;
         $user->acceso = $request->acceso;
         $user->reportes = $request->reportes;
+        $user->saldo = $request->saldo;
+        $user->gestoria = $request->gestoria;
         //Administracion
         $user->departamentos = $request->departamentos;
         $user->personas = $request->personas;
@@ -1004,12 +1006,23 @@ class UserController extends Controller
         $user->hist_creditos = $request->hist_creditos;
         $user->contratos = $request->contratos;
         $user->docs = $request->docs;
+        //Saldos
+        $user->edo_cuenta = $request->edo_cuenta;
+        $user->depositos = $request->depositos;
+        $user->gastos_admn = $request->gastos_admn;
+        $user->cobro_credito = $request->cobro_credito;
+        //Gestoria
+        $user->expediente = $request->expediente;
+        $user->asig_gestor = $request->asig_gestor;
+        $user->seg_tramite = $request->seg_tramite;
+        $user->avaluos = $request->avaluos;
         //Acceso
         $user->usuarios = $request->usuarios;
         $user->roles = $request->roles;
         //Reportes
         $user->mejora = $request->mejora;
         $user->save();
+
     }
 
     public function updateProfile(Request $request, $id){

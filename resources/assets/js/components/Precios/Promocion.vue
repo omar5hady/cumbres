@@ -240,7 +240,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Lote</label>
                                     <div class="col-md-6">
-                                       <select class="form-control" v-model="lote_id">
+                                       <select class="form-control" name = 'lotes_promo[]' multiple size = 6 v-model="lotes_promo">
                                             <option value="0">Seleccione</option>
                                             <option v-for="lotes in arrayLotes" :key="lotes.id" :value="lotes.id" v-text="lotes.num_lote"></option>
                                         </select>
@@ -328,6 +328,7 @@
                 etapa_id : 0,
                 lote_id : 0,
                 lote_promocion_id : 0,
+                lotes_promo:[],
                 nombre : '',
                 v_ini : new Date().toISOString().substr(0, 10),
                 v_fin : '',
@@ -523,28 +524,44 @@
                     return;
                 }
                 this.proceso=true;
-
                 let me = this;
-                //Con axios se llama el metodo store de DepartamentoController
-                axios.post('/lote_promocion/registrar',{
-                    'promocion_id': this.id,
-                    'lote_id': this.lote_id
-                }).then(function (response){
+                //Con axios se llama el metodo update de DepartamentoController
+
+               Swal({
+                    title: 'Estas seguro?',
+                    animation: false,
+                    customClass: 'animated bounceInDown',
+                    text: "La promoción se asignara a los lotes seleccionados",
+                    type: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'Cancelar',
+                    
+                    confirmButtonText: 'Si, asignar!'
+                    }).then((result) => {
+
+                    if (result.value) {
+                        me.lotes_promo.forEach(element => {
+                        axios.post('/lote_promocion/registrar',{
+                            'promocion_id': this.id,
+                            'lote_id': element
+                            }); 
+                        });
+                   // me.listarLote(1,'','','','','','','lote');   
                     me.proceso=false;
                     me.cerrarModal2(); //al guardar el registro se cierra el modal
                     me.listarPromociones(me.pagination.current_page,me.buscar,me.buscar2,me.criterio); //se enlistan nuevamente los registros
-                    //Se muestra mensaje Success
-                    swal({
-                        position: 'top-end',
+                    Swal({
+                        title: 'Hecho!',
+                        text: 'Promocion asignada correctamente',
                         type: 'success',
-                        title: 'Promocion asignada correctamente',
-                        showConfirmButton: false,
-                        timer: 1500
+                        animation: false,
+                        customClass: 'animated bounceInRight'
                         })
-                }).catch(function (error){
-                    console.log(error);
-                });
+                    }})
             },
+            
             actualizarPromociones(){
                 if(this.validarPromociones() || this.proceso==true) //Se verifica si hay un error (campo vacio)
                 {
@@ -728,7 +745,7 @@
                 this.errorLotePromocion=0;
                 this.errorMostrarMsjLotePromocion=[];
 
-                if(!this.lote_id) //Si la variable departamento esta vacia
+                if(!this.lotes_promo) //Si la variable departamento esta vacia
                     this.errorMostrarMsjLotePromocion.push("Selecciona el lote que tendra la promoción.");
                 
                 if(this.errorMostrarMsjLotePromocion.length)//Si el mensaje tiene almacenado algo en el array
@@ -748,6 +765,7 @@
                 this.descripcion = '';
                 this.errorPromocion = 0;
                 this.errorMostrarMsjPromocion = [];
+                this.lotes_promo = [];
 
             },
             cerrarModal2(){
@@ -756,10 +774,12 @@
                 this.fraccionamiento_id = '';
                 this.etapa_id = '';
                 this.lote_id = '';
+                this.lotes_promo = [];
                 this.lote_promocion_id = '';
                 this.errorLotePromocion = 0;
                 this.errorMostrarMsjLotePromocion = [];
                 this.mostrar = 0;
+                this.arrayLotes = [];
 
             },
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */

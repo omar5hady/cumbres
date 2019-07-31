@@ -110,7 +110,10 @@
                                         <td class="td2" v-text="'$'+formatNumber(lote.obra_extra)"></td>
                                         <td class="td2" v-text="'$'+formatNumber(lote.sobreprecio)"></td>
                                         <td class="td2" style="width:20%" v-text="'$'+formatNumber(lote.precio_venta)"></td>
-                                        <td class="td2" v-text="lote.promocion"></td>
+                                        <td class="td2" v-if="lote.promocion != 'Sin Promoción'">
+                                            <button title="Ver paquete" type="button" class="btn btn-info pull-right" @click="mostrarPromo(lote.promocion)">Ver promoción</button>
+                                        </td>
+                                        <td class="td2" v-else v-text="lote.promocion"></td>
                                         <td class="td2" v-text="this.moment(lote.fecha_termino_ventas).locale('es').format('MMMM YYYY')"></td>
                                         <td class="td2" style="width:40%" v-text="lote.comentarios"></td>
                                     </tr>                               
@@ -377,6 +380,14 @@
                 });
             },
 
+            mostrarPromo(promo){
+                 Swal({
+                    title: promo,
+                    animation: false,
+                    customClass: 'animated tada'
+                    })
+            },
+
             selectVendedores(){
                 let me = this;
                 me.arrayVendedores=[];
@@ -475,7 +486,7 @@
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal(); //al guardar el registro se cierra el modal
-                    me.listarLote(1,'','','','','','lote', 1); //se enlistan nuevamente los registros
+                    me.listarLote(me.pagination.current_page,me.buscar,me.buscar2,me.buscar3,me.b_modelo,me.b_lote,me.criterio,me.rolId); //se enlistan nuevamente los registros
                     //Se muestra mensaje Success
                     swal({
                         position: 'top-end',
@@ -509,7 +520,7 @@
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal(); //al guardar el registro se cierra el modal
-                    me.listarLote(1,'','','','','','lote', 1); //se enlistan nuevamente los registros
+                    me.listarLote(me.pagination.current_page,me.buscar,me.buscar2,me.buscar3,me.b_modelo,me.b_lote,me.criterio,me.rolId); //se enlistan nuevamente los registros
                     //Se muestra mensaje Success
                     swal({
                         position: 'top-end',
@@ -547,7 +558,7 @@
                         'success'
                         )
                         me.cerrarModal();
-                        me.listarLote(1,'','','','','','lote',1);
+                        me.listarLote(me.pagination.current_page,me.buscar,me.buscar2,me.buscar3,me.b_modelo,me.b_lote,me.criterio,me.rolId);
                     }).catch(function (error){
                         console.log(error);
                     });
@@ -621,7 +632,7 @@
                         }
                     }
                 }
-                this.selectFraccionamientos();
+                //this.selectFraccionamientos();
                 this.selectVendedores();
                 this.selectClientes(this.vendedor_id);
 

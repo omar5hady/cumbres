@@ -310,22 +310,30 @@
                     @endif
 
         <!----------      SALDOS      --->
-                    @if(Auth::user()->rol_id == 1)
+                    @if(Auth::user()->saldo == 1)
                         <li class="nav-item nav-dropdown">
                             <a class="nav-link nav-dropdown-toggle" href="#"><i class="fa fa-calculator"></i> Saldos</a>
                             <ul class="nav-dropdown-items">
+                                @if(Auth::user()->edo_cuenta == 1)
                                     <li @click="menu=206" class="nav-item">
-                                            <a class="nav-link" href="#"><i class="fa fa-dollar"></i> Estado de cuenta</a>
-                                        </li>
+                                        <a class="nav-link" href="#"><i class="fa fa-dollar"></i> Estado de cuenta</a>
+                                    </li>
+                                @endif
+                                @if(Auth::user()->depositos == 1)
                                     <li @click="menu=200" class="nav-item">
                                         <a class="nav-link" href="#"><i class="fa fa-money"></i> Depositos</a>
                                     </li>
+                                @endif
+                                @if(Auth::user()->gastos_admn == 1)
                                     <li @click="menu=205" class="nav-item">
                                         <a class="nav-link" href="#"><i class="fa fa-money"></i> Gastos administrativos</a>
                                     </li>
+                                @endif
+                                @if(Auth::user()->cobro_credito == 1)
                                     <li @click="menu=207" class="nav-item">
                                         <a class="nav-link" href="#"><i class="fa fa-credit-card-alt"></i> Cobro de crédito</a>
                                     </li>
+                                @endif
                                     
                                     
                             </ul>
@@ -334,22 +342,30 @@
         <!----------     FIN SALDOS      --->
 
              <!----------      GESTORIA      --->
-             @if(Auth::user()->rol_id == 1)
+             @if(Auth::user()->gestoria == 1)
                         <li class="nav-item nav-dropdown">
                             <a class="nav-link nav-dropdown-toggle" href="#"><i class="fa fa-bank"></i> Gestoria</a>
                             <ul class="nav-dropdown-items">
+                                @if(Auth::user()->expediente == 1)
                                     <li @click="menu=201" class="nav-item">
                                         <a class="nav-link" href="#"><i class="fa fa-folder-open"></i> Expediente</a>
                                     </li>
+                                @endif
+                                @if(Auth::user()->asig_gestor == 1)
                                     <li @click="menu=202" class="nav-item">
                                         <a class="nav-link" href="#"><i class="fa fa-group"></i> Asignar gestor</a>
                                     </li>
+                                @endif
+                                @if(Auth::user()->seg_tramite == 1)
                                     <li @click="menu=203" class="nav-item">
                                         <a class="nav-link" href="#"><i class="fa fa-bullseye"></i> Seguimiento de tramite</a>
                                     </li>
+                                @endif
+                                @if(Auth::user()->avaluos == 1)
                                     <li @click="menu=204" class="nav-item">
                                         <a class="nav-link" href="#"><i class="fa fa-money"></i> Avaluos</a>
                                     </li>
+                                @endif
                             </ul>
                         </li>
                     @endif

@@ -942,6 +942,8 @@ class ClienteController extends Controller
             ->select('personal.id', 
             DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"))
             ->where('clientes.vendedor_id','=',$request->vendedor_id)
+            ->orderBy('personal.nombre','asc')
+            ->orderBy('personal.apellidos','asc')
             ->get();
 
         return['clientes' => $personas];

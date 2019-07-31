@@ -58,14 +58,29 @@
                                             <option value="contratos.fecha">Fecha</option>
                                             <option value="contratos.status">Status</option>
                                         </select>
-                                          <select class="form-control" v-if="criterio2=='creditos.fraccionamiento'" v-model="buscar2" >
+                                        <select class="form-control" v-if="criterio2=='creditos.fraccionamiento'"  @click="selectEtapas(buscar2)" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" v-model="buscar2" >
                                             <option value="">Seleccione</option>
-                                            <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id" :value="proyecto.nombre" v-text="proyecto.nombre"></option>
-                                         </select>
+                                            <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
+                                        </select>
+
+                                        <select class="form-control" v-if="criterio2=='creditos.fraccionamiento'" @click="selectManzanas(buscar2,b_etapa2)" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" v-model="b_etapa2" >
+                                            <option value="">Seleccione</option>
+                                            <option v-for="etapa in arrayAllEtapas" :key="etapa.id" :value="etapa.id" v-text="etapa.num_etapa"></option>
+                                        </select>
+
+                                        <select class="form-control" v-if="criterio2=='creditos.fraccionamiento'" @click="selectLotesManzana(buscar2,b_etapa2,b_manzana2)" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" v-model="b_manzana2" >
+                                            <option value="">Seleccione</option>
+                                            <option v-for="manzana in arrayAllManzanas" :key="manzana.manzana" :value="manzana.manzana" v-text="manzana.manzana"></option>
+                                        </select>
+
+                                        <select class="form-control" v-if="criterio2=='creditos.fraccionamiento'" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" v-model="b_lote2" >
+                                            <option value="">Seleccione</option>
+                                            <option v-for="lotes in arrayAllLotes" :key="lotes.id" :value="lotes.num_lote" v-text="lotes.num_lote"></option>
+                                        </select>
                                   
-                                    <input v-if="criterio2=='creditos.fraccionamiento'" type="text"  v-model="b_etapa2" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="Etapa">
+                                    <!-- <input v-if="criterio2=='creditos.fraccionamiento'" type="text"  v-model="b_etapa2" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="Etapa">
                                     <input v-if="criterio2=='creditos.fraccionamiento'" type="text"  v-model="b_manzana2" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="Manzana">
-                                    <input v-if="criterio2=='creditos.fraccionamiento'" type="text"  v-model="b_lote2" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="# Lote">
+                                    <input v-if="criterio2=='creditos.fraccionamiento'" type="text"  v-model="b_lote2" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="# Lote"> -->
                                         <select class="form-control col-md-4" v-if="criterio2=='contratos.status'" v-model="buscar2">
                                             <option value="0">Cancelado</option>
                                             <option value="1">Pendiente</option>
@@ -75,8 +90,14 @@
                                         <input  v-if="criterio2=='contratos.fecha'" type="date" v-model="buscar2" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control">
                                         <input  v-if="criterio2=='contratos.fecha'" type="date" v-model="buscar3" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control">
                                         <input  v-if="criterio2=='personal.nombre' || criterio2=='v.nombre' || criterio2=='creditos.id'" type="text" v-model="buscar2" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control">
+                                        <select class="form-control col-md-4" v-model="b_status">
+                                            <option value="0">Cancelado</option>
+                                            <option value="1">Pendiente</option>
+                                            <option value="2">No firmado</option>
+                                            <option value="3">Firmado</option>
+                                        </select>
                                         <button type="submit" @click="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                         <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Total: '+ contador"> </span>
+                                        <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Total: '+ contador"> </span>
                                     </div>
                                    
                                 </div>
@@ -129,13 +150,13 @@
                                 <!--Botones de paginacion -->
                                 <ul class="pagination">
                                     <li class="page-item" v-if="pagination2.current_page > 1">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page - 1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)">Ant</a>
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page - 1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)">Ant</a>
                                     </li>
                                     <li class="page-item" v-for="page2 in pagesNumber2" :key="page2" :class="[page2 == isActived ? 'active' : '']">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina2(page2,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" v-text="page2"></a>
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina2(page2,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" v-text="page2"></a>
                                     </li>
                                     <li class="page-item" v-if="pagination2.current_page < pagination2.last_page">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page + 1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)">Sig</a>
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page + 1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)">Sig</a>
                                     </li>
                                 </ul>
                             </nav>
@@ -157,13 +178,29 @@
                                             <option value="creditos.fraccionamiento">Proyecto</option>
                                             <option value="inst_seleccionadas.tipo_credito">Tipo de credito</option>
                                         </select>
-                                          <select class="form-control" v-if="criterio=='creditos.fraccionamiento'" v-model="buscar" >
-                                        <option value="">Seleccione</option>
-                                        <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.nombre" :value="fraccionamientos.nombre" v-text="fraccionamientos.nombre"></option>
-                                         </select>
-                                    <input v-if="criterio=='creditos.fraccionamiento'" type="text"  v-model="b_etapa" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Etapa">
+                                        
+                                        <select class="form-control" v-if="criterio=='creditos.fraccionamiento'"  @click="selectEtapas(buscar)" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" v-model="buscar" >
+                                            <option value="">Seleccione</option>
+                                            <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
+                                        </select>
+
+                                        <select class="form-control" v-if="criterio=='creditos.fraccionamiento'" @click="selectManzanas(buscar,b_etapa)" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" v-model="b_etapa" >
+                                            <option value="">Seleccione</option>
+                                            <option v-for="etapa in arrayAllEtapas" :key="etapa.id" :value="etapa.id" v-text="etapa.num_etapa"></option>
+                                        </select>
+
+                                        <select class="form-control" v-if="criterio=='creditos.fraccionamiento'" @click="selectLotesManzana(buscar,b_etapa,b_manzana)" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" v-model="b_manzana" >
+                                            <option value="">Seleccione</option>
+                                            <option v-for="manzana in arrayAllManzanas" :key="manzana.manzana" :value="manzana.manzana" v-text="manzana.manzana"></option>
+                                        </select>
+
+                                        <select class="form-control" v-if="criterio=='creditos.fraccionamiento'" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" v-model="b_lote" >
+                                            <option value="">Seleccione</option>
+                                            <option v-for="lotes in arrayAllLotes" :key="lotes.id" :value="lotes.num_lote" v-text="lotes.num_lote"></option>
+                                        </select>
+                                    <!-- <input v-if="criterio=='creditos.fraccionamiento'" type="text"  v-model="b_etapa" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Etapa">
                                     <input v-if="criterio=='creditos.fraccionamiento'" type="text"  v-model="b_manzana" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Manzana">
-                                    <input v-if="criterio=='creditos.fraccionamiento'" type="text"  v-model="b_lote" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="# Lote">
+                                    <input v-if="criterio=='creditos.fraccionamiento'" type="text"  v-model="b_lote" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="# Lote"> -->
                                         <input  v-else type="text" v-model="buscar" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control">
                                         <button type="submit" @click="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                     </div>
@@ -1571,6 +1608,9 @@
                 arrayContratos:[],
                 arrayDatosSimulacion:[],
                 arrayFraccionamientos: [],
+                arrayAllEtapas:[],
+                arrayAllManzanas:[],
+                arrayAllLotes:[],
                 arrayEtapas:[],
                 arrayManzanas:[],
                 arrayLotes:[],
@@ -1753,6 +1793,7 @@
                 b_etapa2: '',
                 b_manzana2: '',
                 b_lote2: '',
+                b_status:1,
                 listado:0,
                 modal: 0,
                 tituloModal: '',
@@ -1938,6 +1979,55 @@
                     console.log(error);
                 });
             },
+            //Select todas las etapas
+            selectEtapas(buscar){
+                let me = this;
+                me.b_etapa2="";
+                me.b_manzana2="";
+                me.b_lote2="";
+                
+                me.arrayAllEtapas=[];
+                var url = '/select_etapa_proyecto?buscar=' + buscar;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayAllEtapas = respuesta.etapas;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            //Select todas las manzanas
+            selectManzanas(buscar1, buscar2){
+                let me = this;
+                me.b_manzana2="";
+                me.b_lote2="";
+
+                me.arrayAllManzanas=[];
+                var url = '/select_manzanas_etapa?buscar=' + buscar1 + '&buscar1='+ buscar2;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayAllManzanas = respuesta.manzana;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            //Select todos los lotes
+            selectLotesManzana(buscar1, buscar2, buscar3){
+                let me = this;
+                me.b_lote2="";
+
+                me.arrayAllLotes=[];
+                var url = '/select_lotes_manzana?buscar=' + buscar1 + '&buscar1='+ buscar2 + '&buscar2='+ buscar3;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayAllLotes = respuesta.lote_manzana;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            //Select etapas disponibles
             selectEtapa(fraccionamiento){
                 let me = this;
                 me.arrayEtapas=[];
