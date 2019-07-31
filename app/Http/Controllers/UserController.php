@@ -376,6 +376,18 @@ class UserController extends Controller
                     $user->docs=1;
                     break;
                 }
+                case 9: // Contabilidad
+                {
+                    $user->administracion=1;
+                    $user->saldo=1;
+                    //Administracion
+                    $user->cuenta=1;
+                    //Saldos
+                    $user->edo_cuenta=1;
+                    $user->depositos=1;
+                    $user->gastos_admn=1;
+                    break;
+                }
                 
             }
  
@@ -857,6 +869,18 @@ class UserController extends Controller
                 $user->docs=1;
                 break;
             }
+            case 9: // Contabilidad
+            {
+                $user->administracion=1;
+                $user->saldo=1;
+                //Administracion
+                $user->cuenta=1;
+                //Saldos
+                $user->edo_cuenta=1;
+                $user->depositos=1;
+                $user->gastos_admn=1;
+                break;
+            }
             
         }
 
@@ -917,7 +941,6 @@ class UserController extends Controller
     
         return ['personas' => $personas];
     }
-    
 
     public function getPrivilegios(Request $request){
         $privilegios=User::join('roles','users.rol_id','=','roles.id')
@@ -1095,9 +1118,6 @@ class UserController extends Controller
         $persona->save();
     }
            
-                            
-
-
     public function select_users_gerentes (){
         $gerentes = User::join('personal','users.id','=','personal.id')
                         ->select('users.usuario','personal.id','personal.nombre','personal.apellidos')

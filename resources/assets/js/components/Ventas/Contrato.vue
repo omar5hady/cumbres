@@ -82,6 +82,7 @@
                                     <input v-if="criterio2=='creditos.fraccionamiento'" type="text"  v-model="b_manzana2" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="Manzana">
                                     <input v-if="criterio2=='creditos.fraccionamiento'" type="text"  v-model="b_lote2" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="# Lote"> -->
                                         <select class="form-control col-md-4" v-if="criterio2=='contratos.status'" v-model="buscar2">
+                                            <option value="">Status</option>
                                             <option value="0">Cancelado</option>
                                             <option value="1">Pendiente</option>
                                             <option value="2">No firmado</option>
@@ -91,6 +92,7 @@
                                         <input  v-if="criterio2=='contratos.fecha'" type="date" v-model="buscar3" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control">
                                         <input  v-if="criterio2=='personal.nombre' || criterio2=='v.nombre' || criterio2=='creditos.id'" type="text" v-model="buscar2" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control">
                                         <select class="form-control col-md-4" v-model="b_status">
+                                            <option value="">Seleccionar Status</option>
                                             <option value="0">Cancelado</option>
                                             <option value="1">Pendiente</option>
                                             <option value="2">No firmado</option>
@@ -1913,7 +1915,7 @@
             },
             listarContratos(page, buscar,buscar3, b_etapa, b_manzana,b_lote,criterio){
                 let me = this;
-                var url = '/contratos?page=' + page + '&buscar=' + buscar + '&buscar3=' + buscar3 + '&b_etapa=' +b_etapa+ '&b_manzana=' + b_manzana + '&b_lote='+ b_lote + '&criterio=' + criterio;
+                var url = '/contratos?page=' + page + '&buscar=' + buscar + '&buscar3=' + buscar3 + '&b_etapa=' +b_etapa+ '&b_manzana=' + b_manzana + '&b_lote='+ b_lote + '&b_status='+ me.b_status + '&criterio=' + criterio;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayContratos = respuesta.contratos.data;
