@@ -37,9 +37,9 @@
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                     </select>
                                     <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_modelo" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)">
-                                            <option value="">Modelo</option>
-                                            <option v-for="modelos in arrayModelos" :key="modelos.id" :value="modelos.id" v-text="modelos.nombre"></option>
-                                        </select>
+                                        <option value="">Modelo</option>
+                                        <option v-for="modelos in arrayModelos" :key="modelos.id" :value="modelos.id" v-text="modelos.nombre"></option>
+                                    </select>
 
                                     <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar3" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)" class="form-control" placeholder="Manzana a buscar">
                                     <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)" class="form-control" placeholder="Lote a buscar">
@@ -47,6 +47,12 @@
                                     <input type="text" v-if="criterio=='lotes.calle'" v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)" class="form-control" placeholder="Texto a buscar">
                                     <input type="date" v-if="criterio=='lotes.fecha_termino_ventas'" v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)" class="form-control" placeholder="Texto a buscar">                                    
                                     <input type="text" v-if="criterio=='fraccionamientos.nombre'" v-model="buscar" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)" class="form-control" placeholder="Texto a buscar">
+                                    <select class="form-control" v-if="rolId!='2'" v-model="b_apartado" @keyup.enter="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)">
+                                        <option value="">Todos</option>
+                                        <option value=0>Sin apartar</option>
+                                        <option value=1>Apartados</option>
+                                        
+                                    </select>
                                     <button type="submit" @click="listarLote(1,buscar,buscar2,buscar3,b_modelo,b_lote,criterio,rolId)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                     <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Total: '+ contador"> </span>
                                 </div>
@@ -84,10 +90,14 @@
                                             <button v-if="lote.apartado == 0" title="Apartar" type="button" @click="abrirModal('lote','apartar',lote)" class="btn btn-warning btn-sm">
                                             <i class="icon-lock"></i>
                                             </button>
-
-                                            <button v-else title="Mostrar Apartado" type="button" @click="abrirModal('lote','mostrarApartado',lote)" class="btn btn-primary btn-sm">
-                                            <i class="icon-magnifier"></i>
-                                            </button>
+                                            <template v-else>
+                                                <button title="Mostrar Apartado" type="button" @click="abrirModal('lote','mostrarApartado',lote)" class="btn btn-primary btn-sm">
+                                                <i class="icon-magnifier"></i>
+                                                </button>
+                                                <span class="badge2 badge-light"> Cliente: {{lote.c_nombre}} {{lote.c_apellidos}}/Vendedor: {{lote.v_nombre}}/ {{lote.fecha_apartado}}</span>
+                                            </template>
+                                            
+                                            
                                         </td>
                                         
                                         <td class="td2" style="width:20%" v-text="lote.proyecto"></td>
@@ -95,7 +105,7 @@
                                         <td class="td2" v-text="lote.manzana"></td>
                                             <td v-if="!lote.sublote" v-text="lote.num_lote"></td>
                                             <td v-else v-text="lote.num_lote + '-' + lote.sublote"></td>
-                                        <td class="td2" v-text="lote.avance"></td>
+                                        <td class="td2" v-text="lote.avance + '%'"></td>
                                         <td class="td2">
                                             <span class="badge badge-success" v-text="lote.modelo"></span>
                                             <span v-if="lote.casa_muestra == 1" class="badge badge-danger">Casa muestra</span>
@@ -274,6 +284,7 @@
                 buscar2 : '',
                 buscar3 : '',
                 buscar : '',
+                b_apartado : '',
             }
         },
         computed:{
@@ -312,7 +323,7 @@
             /**Metodo para mostrar los registros */
             listarLote(page, buscar, buscar2, buscar3, b_modelo, b_lote, criterio,rol){
                 let me = this;
-                var url = '/lotesDisponibles?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2+ '&buscar3=' + buscar3 + '&b_modelo='+ b_modelo + '&b_lote='+ b_lote +'&criterio=' + criterio + '&rolId=' + rol; 
+                var url = '/lotesDisponibles?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2+ '&buscar3=' + buscar3 + '&b_modelo='+ b_modelo + '&b_lote='+ b_lote + '&b_apartado='+ this.b_apartado +'&criterio=' + criterio + '&rolId=' + rol; 
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayLote = respuesta.lotes.data;
@@ -665,6 +676,17 @@
         color: red !important;
         font-weight: bold;
     }
+    .badge2 {
+    display: inline-block;
+    padding: 0.25em 0.4em;
+    font-size: 90%;
+    font-weight: bold;
+    line-height: 1;
+    color: #080808c9;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+}
 .table2 {
     margin: auto;
     border-collapse: collapse;
