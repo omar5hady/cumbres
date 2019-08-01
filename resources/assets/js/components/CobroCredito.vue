@@ -49,8 +49,9 @@
                                     <input type="text" v-if="criterio=='contratos.id'|| criterio=='personal.nombre'" v-model="buscar" @keyup.enter="listarCreditos(1,buscar, buscar2, buscar3, buscar4, b_cobrados, criterio)" class="form-control" placeholder="Texto a buscar">
                                     <input type="text" v-if="criterio=='personal.nombre'" v-model="buscar2" @keyup.enter="listarCreditos(1,buscar, buscar2, buscar3, buscar4, b_cobrados, criterio)" class="form-control" placeholder="Apellidos">
                                     <button v-if="b_cobrados==1" type="submit" @click="b_cobrados=0" class="btn btn-success"><i class="fa fa-check-square"></i> Cobrados / Abonados</button>
-                                    <button v-if="b_cobrados==0" type="submit" @click="b_cobrados=1" class="btn btn-danger"><i class="fa fa-window-close-o"></i> Pendiente</button>
+                                    <button v-if="b_cobrados==0" type="submit" @click="b_cobrados=1" class="btn btn-danger"><i class="fa fa-window-close-o"></i> Pendiente</button>                           
                                     <button type="submit" @click="listarCreditos(1,buscar, buscar2, buscar3, buscar4, b_cobrados, criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <a  :href="'/cobroCredito/excel?buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3 + '&buscar4=' + buscar4 + '&b_cobrados=' + b_cobrados + '&criterio=' + criterio "  class="btn btn-success"><i class="fa fa-file-text"></i> Excel</a>
                                     <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Total: '+ contador"> </span>
                                 </div>
                             </div>

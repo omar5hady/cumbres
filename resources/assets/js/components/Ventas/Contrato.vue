@@ -78,9 +78,7 @@
                                             <option v-for="lotes in arrayAllLotes" :key="lotes.id" :value="lotes.num_lote" v-text="lotes.num_lote"></option>
                                         </select>
                                   
-                                    <!-- <input v-if="criterio2=='creditos.fraccionamiento'" type="text"  v-model="b_etapa2" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="Etapa">
-                                    <input v-if="criterio2=='creditos.fraccionamiento'" type="text"  v-model="b_manzana2" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="Manzana">
-                                    <input v-if="criterio2=='creditos.fraccionamiento'" type="text"  v-model="b_lote2" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="# Lote"> -->
+                                    
                                         <select class="form-control col-md-4" v-if="criterio2=='contratos.status'" v-model="buscar2">
                                             <option value="">Status</option>
                                             <option value="0">Cancelado</option>
@@ -99,6 +97,7 @@
                                             <option value="3">Firmado</option>
                                         </select>
                                         <button type="submit" @click="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                        <a  :href="'/contratos/excel?buscar=' + buscar + '&buscar3=' + buscar3 + '&b_etapa=' +b_etapa+ '&b_manzana=' + b_manzana + '&b_lote='+ b_lote + '&b_status='+ b_status + '&criterio=' + criterio "  class="btn btn-success"><i class="fa fa-file-text"></i> Excel</a>
                                         <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Total: '+ contador"> </span>
                                     </div>
                                    
@@ -200,9 +199,7 @@
                                             <option value="">Seleccione</option>
                                             <option v-for="lotes in arrayAllLotes" :key="lotes.id" :value="lotes.num_lote" v-text="lotes.num_lote"></option>
                                         </select>
-                                    <!-- <input v-if="criterio=='creditos.fraccionamiento'" type="text"  v-model="b_etapa" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Etapa">
-                                    <input v-if="criterio=='creditos.fraccionamiento'" type="text"  v-model="b_manzana" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Manzana">
-                                    <input v-if="criterio=='creditos.fraccionamiento'" type="text"  v-model="b_lote" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="# Lote"> -->
+                         
                                         <input  v-else type="text" v-model="buscar" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control">
                                         <button type="submit" @click="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                     </div>

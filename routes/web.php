@@ -373,6 +373,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/contrato/promesaCredito/pdf/{id}','ContratoController@contratoDePromesaCredito')->name('contrato_promesa_credito.pdf');
         Route::get('/contrato/modelo/caracteristicas/pdf/{id}','ModeloController@modeloArchivoContrato');
         Route::put('/contrato/status/fecha','ContratoController@statusContrato');
+        Route::get('/contratos/excel','ContratoController@excelContratos');
 
         /************************** RUTAS Depositos y Pagares ***************************/
         Route::get('/pagares','DepositoController@indexPagares');
@@ -458,6 +459,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/cobroCredito/indexDepositos','InstSeleccionadasController@indexDepCredito');
         Route::post('/cobroCredito/registrar','InstSeleccionadasController@storeDepositoCredito');
         Route::put('/cobroCredito/update','InstSeleccionadasController@updateDepositoCredito');
+        Route::get('/cobroCredito/excel','InstSeleccionadasController@excelCobroCredito');
 
         Route::get('/archivos/indexDocs','ModeloController@indexDocs');
         Route::get('/archivos/reglamentoEtapa/{etapa_id}','EtapaController@descargaReglamentoDocs');
