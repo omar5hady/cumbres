@@ -8312,4 +8312,17 @@ class ContratoController extends Controller
         )->download('xls');
     }
 
+    public function validarLoteEnContrato(Request $request){
+        $idLote = $request->lote_id;
+        $lote = Contrato::join('creditos','contratos.id','=','creditos.id')
+                        ->select('creditos.id')
+                        ->where('contratos.status','=',1)
+                        ->where('creditos.lote_id','=',$idLote)
+                        ->orwhere('contratos.status','=',3)
+                        ->where('creditos.lote_id','=',$idLote)
+                        ->count();
+
+        return ['lote' => $lote];
+    }
+
 }

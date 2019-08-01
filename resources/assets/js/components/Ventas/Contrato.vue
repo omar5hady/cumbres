@@ -1759,6 +1759,7 @@
                 arrayDatosPaquetes: [],
                 btn_actualizar: 0,
 
+                loteEnContrato: 0,
                 errorContrato : 0,
                 contador: 0,
                 errorMostrarMsjContrato : [],
@@ -2358,6 +2359,7 @@
 
                 this.getDatosEmpresa(this.empresa,0);
                 this.getDatosEmpresa(this.empresa_coa,1);
+                this.validarLoteContrato(this.lote_id);
             },
             
             actualizarContrato(){
@@ -2817,9 +2819,33 @@
                 return this.errorContrato;
             },
 
+            validarLoteContrato(id){
+                let me = this;
+                me.loteEnContrato = 0;
+                var url = '/contratos/validarLotes?lote_id=' + id;
+                 axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.loteEnContrato = respuesta.lote;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                })
+
+                return this.loteEnContrato;
+            },
+
             crearContrato(){
                 if(this.validarRegistro() || this.proceso==true) //Se verifica si hay un error (campo vacio)
                 {
+                    return;
+                }
+
+                if(this.loteEnContrato > 0){
+                Swal({
+                    title: 'lote ya se encuentra registrado',
+                    animation: false,
+                    customClass: 'animated tada'
+                    })
                     return;
                 }
 

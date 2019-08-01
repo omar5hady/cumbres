@@ -374,6 +374,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/contrato/modelo/caracteristicas/pdf/{id}','ModeloController@modeloArchivoContrato');
         Route::put('/contrato/status/fecha','ContratoController@statusContrato');
         Route::get('/contratos/excel','ContratoController@excelContratos');
+        Route::get('/contratos/validarLotes','ContratoController@validarLoteEnContrato');
 
         /************************** RUTAS Depositos y Pagares ***************************/
         Route::get('/pagares','DepositoController@indexPagares');
