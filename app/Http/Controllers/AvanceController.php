@@ -652,7 +652,7 @@ class AvanceController extends Controller
                         ->addSelect('modelos.nombre as modelo')
                         ->where('lotes.aviso', '=', $contrato)
                         ->groupBy('avances.lote_id')
-                        ->paginate(8);
+                        ->get();
    
         
             return Excel::create('Avance_general', function($excel) use ($avances){
