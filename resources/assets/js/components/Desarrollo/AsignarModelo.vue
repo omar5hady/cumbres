@@ -254,6 +254,17 @@
                                   
                                     </div>
                                 </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Fecha de termino (Ventas)</label>
+                                    <div class="col-md-7">
+
+                                        <input type="date" v-model="fecha_termino_ventas"  class="form-control" placeholder="Credito puente">
+                                  
+                                    </div>
+                                </div>
+
+
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Comentarios </label>
                                     <div class="col-md-7">
@@ -478,7 +489,9 @@
                 arrayModelos : [],
                 arrayModelosTC: [],
                 arrayEmpresas : [],
-                arrayManzanas: []
+                arrayManzanas: [],
+
+                fecha_termino_ventas: ''
             }
         },
         computed:{
@@ -708,6 +721,7 @@
                     'credito_puente':this.credito_puente,
                     'comentarios': this.comentarios,
                     'regimen':this.regimen,
+                    'fecha_termino_ventas' : this.fecha_termino_ventas,
                     
                 }).then(function (response){
                     me.proceso=false;
@@ -815,6 +829,7 @@
                 this.lote_comercial= '';
                 this.credito_puente='';
                 this.comentarios= '';
+                this.fecha_termino_ventas = '';
                 
                 this.errorLote = 0;
                 this.errorMostrarMsjLote = [];
@@ -879,6 +894,7 @@
                                 this.credito_puente=data['credito_puente'];
                                 this.comentarios=data['comentarios'];
                                 this.regimen = data['regimen_condom'];
+                                this.fecha_termino_ventas = data['fecha_termino_ventas'];
                  
                                 break;
                             }

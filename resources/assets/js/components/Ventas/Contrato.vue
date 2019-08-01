@@ -97,7 +97,7 @@
                                             <option value="3">Firmado</option>
                                         </select>
                                         <button type="submit" @click="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                        <a  :href="'/contratos/excel?buscar=' + buscar + '&buscar3=' + buscar3 + '&b_etapa=' +b_etapa+ '&b_manzana=' + b_manzana + '&b_lote='+ b_lote + '&b_status='+ b_status + '&criterio=' + criterio "  class="btn btn-success"><i class="fa fa-file-text"></i> Excel</a>
+                                        <a  :href="'/contratos/excel?buscar=' + buscar2 + '&buscar3=' + buscar3 + '&b_etapa=' +b_etapa2+ '&b_manzana=' + b_manzana2 + '&b_lote='+ b_lote2 + '&b_status='+ b_status + '&criterio=' + criterio "  class="btn btn-success"><i class="fa fa-file-text"></i> Excel</a>
                                         <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Total: '+ contador"> </span>
                                     </div>
                                    
@@ -132,13 +132,13 @@
                                             <td class="td2" v-text="contrato.modelo"></td>
                                             <td class="td2" v-text="this.moment(contrato.fecha).locale('es').format('DD/MMM/YYYY')"></td>
                                             <td class="td2" v-if="contrato.status == '0'">
-                                                <span class="badge badge-danger">Cancelado</span>
+                                                <span class="badge badge-danger">Cancelado/ {{this.moment(contrato.fecha_status).locale('es').format('DD/MMM/YYYY')}}</span>
                                             </td>
                                             <td class="td2" v-if="contrato.status == '1'">
                                                 <span class="badge badge-warning">Pendiente</span>
                                             </td>
                                             <td class="td2" v-if="contrato.status == '2'">
-                                                <span class="badge badge-danger">No firmado</span>
+                                                <span class="badge badge-danger">No firmado/ {{this.moment(contrato.fecha_status).locale('es').format('DD/MMM/YYYY')}}</span>
                                             </td>
                                             <td class="td2" v-if="contrato.status == '3'">
                                                 <span class="badge badge-success">Firmado</span>
@@ -2619,20 +2619,14 @@
                 if(me.monto_pago == 0 || me.monto_pago=='' || me.fecha_pago==''){
 
                 }else{
-                    if(me.monto_pago > me.restante){
-                         swal({
-                        type: 'error',
-                        title: 'Error',
-                        text: 'El monto supera al restante',
-                        })
-                    }else{
+                    
                     me.arrayPagos.push({
                     monto_pago: me.monto_pago,
                     fecha_pago: me.fecha_pago,
                     });
                     me.fecha_pago = '';
                     me.monto_pago = 0;
-                    }
+                    
                 }
 
             },
@@ -2641,13 +2635,7 @@
                 if(me.monto_pago == 0 || me.monto_pago=='' || me.fecha_pago==''){
 
                 }else{
-                    if(me.monto_pago > me.restante){
-                         swal({
-                        type: 'error',
-                        title: 'Error',
-                        text: 'El monto supera al restante',
-                        })
-                    }else{
+                    
                 axios.post('/contrato/pagos/agregar',{
                                 'contrato_id': this.id,
                                 'num_pago': this.numero_pago-1 ,
@@ -2667,7 +2655,7 @@
                             }).catch(function (error){
                                 console.log(error);
                             });
-                        }
+                        
                         
                     }
             },
