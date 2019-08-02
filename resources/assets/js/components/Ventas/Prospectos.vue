@@ -84,6 +84,9 @@
                                                 <button title="Editar" type="button" class="btn btn-warning btn-sm" @click="actualizarProspectoBTN(prospecto.id)">
                                                     <i class="icon-pencil"></i>
                                                 </button>
+                                                <button v-if="rolId != 2" type="button" @click="abrirModalCambio(prospecto)" class="btn btn-primary btn-sm">
+                                                    <i class="fa fa-exchange"></i>
+                                                </button>
                                             </td>
                                             <td v-text="prospecto.nombre + ' ' + prospecto.apellidos "></td>
                                             <td >
@@ -905,6 +908,68 @@
             </div>
             <!--Fin del modal-->
 
+            <!--Inicio del modal asignar prospecto-->
+            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" v-text="'Reasignar cliente a: ' + tituloModal2"></h4>
+                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+
+                                    <!--Criterios para el listado de busqueda -->
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Asesor</label>
+                                    <div class="col-md-6">
+                                        <select class="form-control" v-model="asesor_id" >
+                                            <option value="0">Seleccione</option>
+                                            <option v-for="asesor in arrayAsesores" :key="asesor.id" :value="asesor.id" v-text="asesor.nombre + ' '+ asesor.apellidos"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">CLasificación</label>
+                                    <div class="col-md-6">
+                                        <select class="form-control" v-model="clasificacion" >
+                                            <option value="1">No viable</option>
+                                            <option value="2">Tipo A</option>
+                                            <option value="3">Tipo B</option>
+                                            <option value="4">Tipo C</option>
+                                            <option value="5">Ventas</option>
+                                            <option value="6">Cancelado</option>                               
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Observación</label>
+                                    <div class="col-md-9">
+                                        <textarea rows="1" cols="30" class="form-control" v-model="observacion" placeholder="Observaciones"></textarea>
+                                    </div>
+                                </div>
+
+                                
+                            </form>
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                            <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
+                            <button type="button" class="btn btn-primary" @click="asignarProspecto()">Reasignar </button>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!--Fin del modal-->
+
                <!--Inicio del modal observaciones-->
             <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal3}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
                 <div class="modal-dialog modal-primary modal-lg" role="document">
@@ -1017,11 +1082,14 @@
                 arrayMediosPublicidad:[],
                 arrayEstados:[],
                 encuentraRFC:0,
+                asesor_id:0,
 
                 modal : 0,
+                modal2 : 0,
                 modal3: 0,
                 listado:1,
                 tituloModal : '',
+                tituloModal2 : '',
                 tituloModal3 : '',
                 tipoAccion: 0,
                 errorProspecto : 0,
@@ -1047,6 +1115,7 @@
                 arrayFraccionamientos2 : [],
                 arrayFraccionamientosVue : [],
                 arrayObservacion: [],
+                arrayAsesores : [],
                 fraccionamiento:''
                 
             }
@@ -1243,6 +1312,19 @@
                 .catch(function (error) {
                     console.log(error);
                 });
+            },
+            selectAsesores(){
+                let me = this;
+                me.arrayAsesores=[];
+                var url = '/select/asesores';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayAsesores = respuesta.personas;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+              
             },
             getDatosCoacreditado(val1){
                 let me = this;
@@ -1707,6 +1789,49 @@
 
 
             },
+            asignarProspecto(){
+               swal({
+                title: 'Esta seguro de reasignar a este cliente?',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Aceptar!',
+                cancelButtonText: 'Cancelar',
+                confirmButtonClass: 'btn btn-success',
+                cancelButtonClass: 'btn btn-danger',
+                buttonsStyling: false,
+                reverseButtons: true
+                }).then((result) => {
+                if (result.value) {
+                    let me = this;
+
+                    axios.post('/cliente/reasignar2',{
+                        'id': me.id,
+                        'asesor_id':me.asesor_id,
+                        'clasificacion':me.clasificacion,
+                        'observacion':me.observacion
+                    }).then(function (response) {
+                        me.listarProspectos(1,me.buscar,me.b_clasificacion,me.criterio);
+                        me.cerrarModal();
+                        swal(
+                        'Hecho!',
+                        'El cliente ha sido reasignado con éxito.',
+                        'success'
+                        )
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                    
+                    
+                } else if (
+                    // Read more about handling dismissals
+                    result.dismiss === swal.DismissReason.cancel
+                ) {
+                    
+                }
+                }) 
+            },
 
             actualizarProspectoBTN(id){
               
@@ -1778,6 +1903,8 @@
                 this.errorCoacreditado=0;
                 this.errorMostrarMsjCoacreditado=[];
                 this.lugar_nacimiento_coa='';
+                this.modal2 = 0;
+                this.tituloModal2 = '';
             },
 
              cerrarModal3(){
@@ -1786,6 +1913,14 @@
               
             },
             
+            abrirModalCambio(data=[]){
+                this.selectAsesores();
+                this.tituloModal2 = data['nombre'] + ' ' + data['apellidos'];
+                this.modal2=1;
+                this.id = data['id'];
+                this.asesor_id = data['vendedor_id'];
+                this.clasificacion = data['clasificacion'];
+            },
   
              abrirModal3(prospectos,accion,prospecto){
              switch(prospectos){

@@ -91,6 +91,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/asesores/clientes','ClienteController@indexProspectos');
         Route::get('/select/asesores','UserController@selectAsesores');
         Route::put('/cliente/reasignar','ClienteController@asignarCliente');
+        Route::post('/cliente/reasignar2','ClienteController@asignarCliente2'); // desde vista mis Prospectos
 
     ///////////////////        RUTAS Prospectos    //////////////////////////////////
         Route::get('/clientes','ClienteController@index');

@@ -1576,6 +1576,31 @@ class ClienteController extends Controller
         $cliente->save();
     }
 
+    public function asignarCliente2(Request $request)
+    {
+        if(!$request->ajax())return redirect('/');
+         
+        try{
+            DB::beginTransaction();
+            //FindOrFail se utiliza para buscar lo que recibe de argumento
+            $cliente = Cliente::findOrFail($request->id);
+            $cliente->vendedor_id = $request->asesor_id;
+            $cliente->clasificacion = $request->clasificacion;
+            $cliente->save();
+            
+            $observacion = new Cliente_observacion();
+            $observacion->cliente_id = $request->id;
+            $observacion->comentario = $request->observacion;
+            $observacion->usuario = Auth::user()->usuario;
+            $observacion->save();
+
+            DB::commit();
+ 
+        } catch (Exception $e){
+            DB::rollBack();
+        }
+    }
+
     public function exportExcelClientesAsesor(Request $request)
     {
         //if (!$request->ajax()) return redirect('/');
