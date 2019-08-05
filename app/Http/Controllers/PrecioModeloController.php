@@ -95,6 +95,7 @@ class PrecioModeloController extends Controller
 
             $precio = Lote::findOrFail($loteid->id);
             $precio->precio_base=$request->precio_modelo;
+            $precio->ajuste = 0;
             $precio->save();
         }
         

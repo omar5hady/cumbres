@@ -4144,7 +4144,8 @@ class LoteController extends Controller
         $manzana = $request->buscar;
         $etapa = $request->buscar2;
         $fraccionamiento = $request->buscar3;
-        $lotes_disp = Lote::join('etapas','lotes.etapa_id','=','etapas.id')
+        if(Auth::user()->id == 2){
+            $lotes_disp = Lote::join('etapas','lotes.etapa_id','=','etapas.id')
                     ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
                     ->select('lotes.num_lote','lotes.id')
                     ->where('lotes.habilitado','=',1)
@@ -4161,6 +4162,21 @@ class LoteController extends Controller
                     ->where('lotes.fraccionamiento_id','=',$fraccionamiento)
                     ->orderBy('lotes.num_lote','ASC')
                     ->get();
+        }
+        else{
+            $lotes_disp = Lote::join('etapas','lotes.etapa_id','=','etapas.id')
+                    ->leftJoin('apartados','lotes.id','=','apartados.lote_id')
+                    ->select('lotes.num_lote','lotes.id')
+                    ->where('lotes.habilitado','=',1)
+                    ->where('lotes.contrato','=',0)
+                    ->where('etapas.num_etapa', 'like', '%'. $etapa .'%' )
+                    ->where('lotes.manzana','=',$manzana)
+                    ->where('lotes.fraccionamiento_id','=',$fraccionamiento)
+                    
+                    ->orderBy('lotes.num_lote','ASC')
+                    ->get();
+        }
+        
         return ['lotes_disp' => $lotes_disp];
     }
 
@@ -4181,7 +4197,7 @@ class LoteController extends Controller
                     ->orderBy('lotes.etapa_servicios','DESC')->get();
 
         foreach($lotes as $index => $lote) {
-            $lote->precio_base = $lote->precio_base + $lote->ajuste;
+            $lote->precio_base = $lote->precio_base;
             $lote->precio_venta= $lote->sobreprecio + $lote->precio_base + $lote->excedente_terreno + $lote->obra_extra;
             $promocion=[];
             $promocion = Lote_promocion::join('promociones','lotes_promocion.promocion_id','=','promociones.id')
