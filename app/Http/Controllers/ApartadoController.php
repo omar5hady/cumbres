@@ -12,6 +12,7 @@ class ApartadoController extends Controller
 
 {
     public function store(Request $request){
+        if(!$request->ajax())return redirect('/');
         $apartado = new Apartado();
         $apartado->lote_id = $request->lote_id;
         $apartado->vendedor_id = $request->vendedor_id;
@@ -29,6 +30,7 @@ class ApartadoController extends Controller
     }
 
     public function update(Request $request){
+        if(!$request->ajax())return redirect('/');
         $apartado = Apartado::findOrFail($request->id);
         $apartado->lote_id = $request->lote_id;
         $apartado->vendedor_id = $request->vendedor_id;
@@ -56,6 +58,7 @@ class ApartadoController extends Controller
     }
 
     public function select_datos_apartado(Request $request){
+        if(!$request->ajax())return redirect('/');
         $apartados = Apartado::select('cliente_id','vendedor_id','tipo_credito','fecha_apartado','comentario')
                 ->where('lote_id','=',$request->lote_id)
                 ->get();

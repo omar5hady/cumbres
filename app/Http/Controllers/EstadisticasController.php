@@ -11,7 +11,7 @@ class EstadisticasController extends Controller
 {
     public function estad_datos_extra(Request $request)
     {
-
+        if(!$request->ajax())return redirect('/');
         $proyecto = $request->buscar;
 
         $edades = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')

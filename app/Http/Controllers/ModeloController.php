@@ -326,6 +326,7 @@ class ModeloController extends Controller
 
     public function formSubmit(Request $request, $id)
     {
+        if(!$request->ajax())return redirect('/');
 
         $fileName = time().'.'.$request->archivo->getClientOriginalExtension();
         $moved =  $request->archivo->move(public_path('/files/modelos'), $fileName);
@@ -361,7 +362,7 @@ class ModeloController extends Controller
 
     public function selectConsYTerreno(Request $request){
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
-       // if(!$request->ajax())return redirect('/');
+        if(!$request->ajax())return redirect('/');
 
         $buscar = $request->buscar;
         $modelosTc = Modelo::select('id','terreno','construccion')
@@ -382,6 +383,7 @@ class ModeloController extends Controller
     }
 
     public function indexDocs (Request $request){
+        if(!$request->ajax())return redirect('/');
 
         $criterio = $request->criterio;
         $b_fraccionamiento = $request->b_fraccionamiento;
@@ -425,36 +427,36 @@ class ModeloController extends Controller
                     ->where($criterio,'=',$b_fraccionamiento)
                     ->where('etapas.id','=',$b_etapa)
                     ->orderBy('modelos.nombre','asc')->distinct()->paginate(10);
-            }else{
-                if($b_fraccionamiento != '' && $b_etapa == '' && $b_modelo != ''){
-                    $archivos = Modelo::join('fraccionamientos','modelos.fraccionamiento_id','=','fraccionamientos.id')
-                    ->join('etapas','fraccionamientos.id','=','etapas.fraccionamiento_id')
-                    ->select('modelos.archivo','modelos.nombre as modelo','etapas.num_etapa','etapas.archivo_reglamento',
-                    'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento','fraccionamientos.plantilla_telecom',
-                    'fraccionamientos.nombre as proyecto','fraccionamientos.empresas_telecom','fraccionamientos.empresas_telecom_satelital',
-                    'modelos.id as modeloID','etapas.id as etapaID','fraccionamientos.id as fraccionamientoID')
-                    ->where('modelos.nombre','!=','Por Asignar')
-                    ->where('etapas.num_etapa','!=','Sin Asignar')
-                    ->where($criterio,'=',$b_fraccionamiento)
-                    ->where('modelos.id','=',$b_modelo)
-                    ->orderBy('modelos.nombre','asc')->distinct()->paginate(10);
-            }else{
-                if($b_fraccionamiento != '' && $b_etapa == '' && $b_modelo == ''){
-                    $archivos = Modelo::join('fraccionamientos','modelos.fraccionamiento_id','=','fraccionamientos.id')
-                    ->join('etapas','fraccionamientos.id','=','etapas.fraccionamiento_id')
-                    ->select('modelos.archivo','modelos.nombre as modelo','etapas.num_etapa','etapas.archivo_reglamento',
-                    'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento','fraccionamientos.plantilla_telecom',
-                    'fraccionamientos.nombre as proyecto','fraccionamientos.empresas_telecom','fraccionamientos.empresas_telecom_satelital',
-                    'modelos.id as modeloID','etapas.id as etapaID','fraccionamientos.id as fraccionamientoID')
-                    ->where('modelos.nombre','!=','Por Asignar')
-                    ->where('etapas.num_etapa','!=','Sin Asignar')
-                    ->where($criterio,'=',$b_fraccionamiento)
-                    ->orderBy('modelos.nombre','asc')->distinct()->paginate(10);
+                }else{
+                    if($b_fraccionamiento != '' && $b_etapa == '' && $b_modelo != ''){
+                        $archivos = Modelo::join('fraccionamientos','modelos.fraccionamiento_id','=','fraccionamientos.id')
+                        ->join('etapas','fraccionamientos.id','=','etapas.fraccionamiento_id')
+                        ->select('modelos.archivo','modelos.nombre as modelo','etapas.num_etapa','etapas.archivo_reglamento',
+                        'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento','fraccionamientos.plantilla_telecom',
+                        'fraccionamientos.nombre as proyecto','fraccionamientos.empresas_telecom','fraccionamientos.empresas_telecom_satelital',
+                        'modelos.id as modeloID','etapas.id as etapaID','fraccionamientos.id as fraccionamientoID')
+                        ->where('modelos.nombre','!=','Por Asignar')
+                        ->where('etapas.num_etapa','!=','Sin Asignar')
+                        ->where($criterio,'=',$b_fraccionamiento)
+                        ->where('modelos.id','=',$b_modelo)
+                        ->orderBy('modelos.nombre','asc')->distinct()->paginate(10);
+                }else{
+                    if($b_fraccionamiento != '' && $b_etapa == '' && $b_modelo == ''){
+                        $archivos = Modelo::join('fraccionamientos','modelos.fraccionamiento_id','=','fraccionamientos.id')
+                        ->join('etapas','fraccionamientos.id','=','etapas.fraccionamiento_id')
+                        ->select('modelos.archivo','modelos.nombre as modelo','etapas.num_etapa','etapas.archivo_reglamento',
+                        'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento','fraccionamientos.plantilla_telecom',
+                        'fraccionamientos.nombre as proyecto','fraccionamientos.empresas_telecom','fraccionamientos.empresas_telecom_satelital',
+                        'modelos.id as modeloID','etapas.id as etapaID','fraccionamientos.id as fraccionamientoID')
+                        ->where('modelos.nombre','!=','Por Asignar')
+                        ->where('etapas.num_etapa','!=','Sin Asignar')
+                        ->where($criterio,'=',$b_fraccionamiento)
+                        ->orderBy('modelos.nombre','asc')->distinct()->paginate(10);
+                    }
+                }
+                }
             }
-            }
-        }
-    }
-}  
+        }  
         
 
         return [
@@ -482,8 +484,5 @@ class ModeloController extends Controller
         $pathtoFile = public_path().'/files/modelos/'.$archivos[0]->archivo;
         return response()->download($pathtoFile);
     }
-    
-    
-
 
 }

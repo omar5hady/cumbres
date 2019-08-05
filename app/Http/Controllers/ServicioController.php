@@ -12,6 +12,7 @@ use App\Modelo;
 class ServicioController extends Controller
 {
     public function index(Request $request){
+        if(!$request->ajax())return redirect('/');
 
         $buscar = $request->buscar;
         $criterio = $request->criterio;

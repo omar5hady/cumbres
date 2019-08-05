@@ -81,18 +81,18 @@ class TipoCreditoController extends Controller
         return['Tipos_creditos' => $Tipos_creditos];
 }
 
-public function select_institucion(Request $request){
-    //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
-    if(!$request->ajax())return redirect('/');
-    $credito = $request->buscar;
+    public function select_institucion(Request $request){
+        //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
+        if(!$request->ajax())return redirect('/');
+        $credito = $request->buscar;
 
-    $instituciones = Tipo_credito::select('institucion_fin')
-    ->where('nombre','=',$credito)
-    ->distinct()
-    ->get();
+        $instituciones = Tipo_credito::select('institucion_fin')
+        ->where('nombre','=',$credito)
+        ->distinct()
+        ->get();
 
-    return['instituciones' => $instituciones];
-}
+        return['instituciones' => $instituciones];
+    }
 
 
 }

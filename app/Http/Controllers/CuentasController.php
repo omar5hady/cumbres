@@ -63,6 +63,7 @@ class CuentasController extends Controller
     }
 
     public function selectCuenta(Request $request){
+        if(!$request->ajax())return redirect('/');
         $cuentas = Cuenta::select('num_cuenta','sucursal','banco')->get();
 
         return ['cuentas' => $cuentas];

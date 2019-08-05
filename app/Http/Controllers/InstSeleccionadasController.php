@@ -13,6 +13,7 @@ use Excel;
 class InstSeleccionadasController extends Controller
 {
     public function indexCreditoSel(Request $request){
+        if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
         $buscar2 = $request->buscar2;
         $buscar3 = $request->buscar3;
@@ -1035,6 +1036,7 @@ class InstSeleccionadasController extends Controller
     }
 
     public function indexDepCredito(Request $request){
+        if(!$request->ajax())return redirect('/');
 
         $depositos = Dep_credito::join('inst_seleccionadas','inst_seleccionadas.id','=','dep_creditos.inst_sel_id')
                             ->select('dep_creditos.id','dep_creditos.cant_depo', 'dep_creditos.banco', 'dep_creditos.fecha_deposito',
@@ -1047,6 +1049,7 @@ class InstSeleccionadasController extends Controller
     }
 
     public function storeDepositoCredito(Request $request){
+        if(!$request->ajax())return redirect('/');
         $deposito = new Dep_credito();
         $deposito->inst_sel_id = $request->inst_sel_id;
         $deposito->cant_depo = $request->cant_depo;
@@ -1061,6 +1064,7 @@ class InstSeleccionadasController extends Controller
     }
 
     public function updateDepositoCredito(Request $request){
+        if(!$request->ajax())return redirect('/');
 
         $deposito = Dep_credito::findOrFail($request->dep_id);
         $credito = inst_seleccionada::findOrFail($request->inst_sel_id);
@@ -1075,6 +1079,7 @@ class InstSeleccionadasController extends Controller
     }
 
     public function excelCobroCredito (Request $request){
+        if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
         $buscar2 = $request->buscar2;
         $buscar3 = $request->buscar3;

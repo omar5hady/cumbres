@@ -8,6 +8,7 @@ use App\Rol;
 class RolController extends Controller
 {
     public function index(Request $request){
+        if(!$request->ajax())return redirect('/');
 
         $buscar = $request->buscar;
         $criterio = $request->criterio;
@@ -35,6 +36,7 @@ class RolController extends Controller
 
 
     public function store(Request $request){
+        if(!$request->ajax())return redirect('/');
         $rol = new Rol();
         $rol->nombre = $request->nombre;
         $rol->descripcion = $request->descripcion;
@@ -44,6 +46,7 @@ class RolController extends Controller
     }
 
     public function update(Request $request){
+        if(!$request->ajax())return redirect('/');
         $rol = Rol::findOrFail($request->id);
         $rol->nombre = $request->nombre;
         $rol->descripcion = $request->descripcion;
@@ -61,6 +64,7 @@ class RolController extends Controller
  
     public function selectRol(Request $request)
     {
+        if(!$request->ajax())return redirect('/');
         $roles = Rol::where('condicion', '=', '1')
         ->select('id','nombre')
         ->orderBy('nombre', 'asc')->get();

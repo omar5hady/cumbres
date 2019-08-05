@@ -20,6 +20,7 @@ class ExpedienteController extends Controller
 {
     public function indexContratos(Request $request)
     {
+        if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
         $b_etapa = $request->b_etapa;
         $b_manzana = $request->b_manzana;
@@ -534,6 +535,7 @@ class ExpedienteController extends Controller
     }
 
     public function listarObservaciones(Request $request){
+        if(!$request->ajax())return redirect('/');
         $observaciones = Obs_expediente::select('observacion','usuario','created_at')
         ->where('contrato_id','=', $request->folio)->orderBy('created_at','desc')->get();
 
@@ -553,6 +555,7 @@ class ExpedienteController extends Controller
     }
 
     public function exportExcel(Request $request){
+        if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
         $b_etapa = $request->b_etapa;
         $b_manzana = $request->b_manzana;
@@ -1104,6 +1107,7 @@ class ExpedienteController extends Controller
 
     public function indexAsignarGestor(Request $request)
     {
+        if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
         $b_etapa = $request->b_etapa;
         $b_manzana = $request->b_manzana;
@@ -1486,6 +1490,7 @@ class ExpedienteController extends Controller
     }
 
     public function asignarGestor(Request $request){
+        if(!$request->ajax())return redirect('/');
         $asignar = Expediente::findOrFail($request->folio);
         $asignar->gestor_id =  $request->gestor_id;
         $asignar->save();
@@ -1493,6 +1498,7 @@ class ExpedienteController extends Controller
 
     public function indexIngresarExp(Request $request)
     {
+        if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
         $b_etapa = $request->b_etapa;
         $b_manzana = $request->b_manzana;
@@ -2075,6 +2081,7 @@ class ExpedienteController extends Controller
     }
 
     public function ingresarExp(Request $request){
+        if(!$request->ajax())return redirect('/');
         $asignar = Expediente::findOrFail($request->folio);
         $asignar->fecha_ingreso =  $request->fecha_ingreso;
         $asignar->valor_escrituras =  $request->valor_escrituras;
@@ -2082,6 +2089,7 @@ class ExpedienteController extends Controller
     }
 
     public function inscribirInfonavit(Request $request){
+        if(!$request->ajax())return redirect('/');
         $expediente = Expediente::findOrFail($request->folio);
         $expediente->fecha_infonavit =  $request->fecha_infonavit;
         $expediente->save();
@@ -2089,6 +2097,7 @@ class ExpedienteController extends Controller
 
     public function indexAutorizados(Request $request)
     {
+        if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
         $b_etapa = $request->b_etapa;
         $b_manzana = $request->b_manzana;
@@ -2783,6 +2792,7 @@ class ExpedienteController extends Controller
 
     public function indexLiquidacion(Request $request)
     {
+        if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
         $b_etapa = $request->b_etapa;
         $b_manzana = $request->b_manzana;
@@ -3527,6 +3537,7 @@ class ExpedienteController extends Controller
 
     public function pagaresExpediente(Request $request)
     {
+        if(!$request->ajax())return redirect('/');
         $folio = $request->folio;
         $pagares = Pago_contrato::select('contrato_id','num_pago','fecha_pago','monto_pago','restante','pagado')
                     ->where('contrato_id','=',$folio)
@@ -3545,6 +3556,7 @@ class ExpedienteController extends Controller
     }
 
     public function setLiquidacion(Request $request){
+        if(!$request->ajax())return redirect('/');
         try{
             DB::beginTransaction();
             $expediente = Expediente::findOrFail($request->folio);
@@ -3604,7 +3616,7 @@ class ExpedienteController extends Controller
     }
 
     public function generarPagares(Request $request){
-
+        if(!$request->ajax())return redirect('/');
         try{
             DB::beginTransaction();
             $intereses = 0;
@@ -3675,6 +3687,7 @@ class ExpedienteController extends Controller
 
     public function indexProgramacion(Request $request)
     {
+        if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
         $b_etapa = $request->b_etapa;
         $b_manzana = $request->b_manzana;
@@ -4588,6 +4601,7 @@ class ExpedienteController extends Controller
     }
 
     public function generarInstruccionNot(Request $request){
+        if(!$request->ajax())return redirect('/');
         $asignar = Expediente::findOrFail($request->folio);
         $asignar->fecha_firma_esc =  $request->fecha_firma_esc;
         $asignar->notaria_id =  $request->notaria_id;

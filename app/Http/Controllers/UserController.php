@@ -14,7 +14,7 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        //if (!$request->ajax()) return redirect('/');
+        if (!$request->ajax()) return redirect('/');
  
         $buscar = $request->buscar;
         $criterio = $request->criterio;
@@ -63,7 +63,7 @@ class UserController extends Controller
 
     public function indexAsesores(Request $request)
     {
-        //if (!$request->ajax()) return redirect('/');
+        if (!$request->ajax()) return redirect('/');
  
         $buscar = $request->buscar;
         $criterio = $request->criterio;
@@ -917,6 +917,7 @@ class UserController extends Controller
     }
 
     public function obtenerDatos(Request $request){
+        if (!$request->ajax()) return redirect('/');
         $usuario = User::join('personal','users.id','=','personal.id')
             ->select('users.usuario','users.foto_user','users.id',
             'personal.celular','personal.email','personal.colonia','personal.direccion',
@@ -929,6 +930,7 @@ class UserController extends Controller
 
     public function selectAsesores(Request $request)
     {
+        if (!$request->ajax()) return redirect('/');
             $personas = User::join('personal','users.id','=','personal.id')
             ->join('vendedores','personal.id','=','vendedores.id')
             ->select('personal.id','personal.nombre','personal.apellidos')
@@ -943,6 +945,7 @@ class UserController extends Controller
     }
 
     public function getPrivilegios(Request $request){
+        if (!$request->ajax()) return redirect('/');
         $privilegios=User::join('roles','users.rol_id','=','roles.id')
                         ->select( 'users.administracion','users.desarrollo','users.precios','users.obra','users.ventas',
                                 'users.acceso','users.reportes','users.rol_id','users.saldo','users.gestoria',
@@ -1049,6 +1052,7 @@ class UserController extends Controller
     }
 
     public function updateProfile(Request $request, $id){
+        if (!$request->ajax()) return redirect('/');
 
         $imgAnterior = User::select('foto_user','id')
                             ->where('foto_user','!=','default-image.gif')
@@ -1099,6 +1103,7 @@ class UserController extends Controller
 
     public function updatePassword(Request $request){
 
+        if (!$request->ajax()) return redirect('/');
         
         if($request->password != ''){
             $user = User::findOrFail($request->id);
@@ -1128,6 +1133,7 @@ class UserController extends Controller
     }
 
     public function asignarGerentes (Request $request){
+        if (!$request->ajax()) return redirect('/');
         $asignar = Vendedor::findOrFail($request->id);
         $asignar->supervisor_id = $request->supervisor_id;
         $asignar->save();

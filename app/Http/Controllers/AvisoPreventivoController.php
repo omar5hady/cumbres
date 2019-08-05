@@ -11,6 +11,7 @@ use Carbon\Carbon;
 class AvisoPreventivoController extends Controller
 {
     public function store(Request $request){
+        if(!$request->ajax())return redirect('/');
         $folio = $request->folio;
         
         $aviso = new Aviso_preventivo();
@@ -31,6 +32,7 @@ class AvisoPreventivoController extends Controller
     }
 
     public function registrarFechaRecibido(Request $request){
+        if(!$request->ajax())return redirect('/');
         $avisoid = Aviso_preventivo::select('id')->where('contrato_id','=',$request->folio)->get();
         $fecha = Aviso_preventivo::findOrFail($avisoid[0]->id);
         $fecha->fecha_recibido = $request->fecha_recibido ;

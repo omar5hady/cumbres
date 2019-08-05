@@ -687,7 +687,7 @@ class LicenciasController extends Controller
 
     public function indexVisita(Request $request) //Index para modulo de licencias
     {
-        //if (!$request->ajax()) return redirect('/');
+        if (!$request->ajax()) return redirect('/');
 
         $buscar = $request->buscar;
         $b_etapa = $request->b_etapa;
@@ -1086,7 +1086,7 @@ class LicenciasController extends Controller
     //funcion para exportar el resumen de licencias en excel
     public function exportExcel(Request $request)
     {
-
+        if(!$request->ajax())return redirect('/');
         $licencias = Lote::join('fraccionamientos', 'lotes.fraccionamiento_id', '=', 'fraccionamientos.id')
             ->join('licencias', 'lotes.id', '=', 'licencias.id')
             ->join('personal', 'lotes.arquitecto_id', '=', 'personal.id')
@@ -1307,6 +1307,7 @@ class LicenciasController extends Controller
 
     public function formSubmit(Request $request, $id)
     {
+        if(!$request->ajax())return redirect('/');
         $licenciaAnterior = Licencia::select('foto_lic', 'id')
             ->where('id', '=', $id)
             ->get();
@@ -1355,6 +1356,7 @@ class LicenciasController extends Controller
 
     public function formSubmitActa(Request $request, $id)
     {
+        if(!$request->ajax())return redirect('/');
         $actaAnterior = Licencia::select('foto_acta', 'id')
             ->where('id', '=', $id)
             ->get();
@@ -1403,6 +1405,7 @@ class LicenciasController extends Controller
 
     public function formSubmitPredial(Request $request, $id)
     {
+        if(!$request->ajax())return redirect('/');
         $predialAnterior = Licencia::select('foto_predial', 'id')
             ->where('id', '=', $id)
             ->get();
@@ -1450,7 +1453,7 @@ class LicenciasController extends Controller
 
     public function exportExcelLicencias(Request $request)
     {
-
+        if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
         $buscar2 = $request->buscar2;
         $b_arquitecto = $request->b_arquitecto;
@@ -1938,7 +1941,7 @@ class LicenciasController extends Controller
 
     public function exportExcelActaTerminacion(Request $request)
     {
-
+        if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
         $buscar2 = $request->buscar2;
         $b_lote = $request->b_lote;

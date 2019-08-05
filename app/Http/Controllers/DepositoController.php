@@ -15,6 +15,7 @@ use App\Dep_credito;
 class DepositoController extends Controller
 {
     public function indexPagares(Request $request){
+        if(!$request->ajax())return redirect('/');
         setlocale(LC_TIME, 'es_MX.utf8');
         $hoy = Carbon::today()->toDateString();
 
@@ -726,6 +727,7 @@ class DepositoController extends Controller
     }
 
     public function indexDepositos(Request $request){
+        if(!$request->ajax())return redirect('/');
         $depositos = Deposito::select('id', 'pago_id', 'cant_depo','interes_mor','interes_ord',
                                 'obs_mor','obs_ord','num_recibo','banco','concepto','fecha_pago')
                             ->where('pago_id','=',$request->buscar)
@@ -839,6 +841,7 @@ class DepositoController extends Controller
     }
 
     public function indexEstadoCuenta(Request $request){
+        if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
         $buscar2 = $request->buscar2;
         $b_lote = $request->b_lote;

@@ -12,14 +12,15 @@ use Excel;
 
 class AvanceController extends Controller
 {
-    public function store($lote_id, $partida_id){
-        $avance = new Avance();
-        $avance->lote_id = $lote_id;
-        $avance->partida_id = $partida_id;
-        $avance->save();
-    }
+    // public function store($lote_id, $partida_id){
+    //     $avance = new Avance();
+    //     $avance->lote_id = $lote_id;
+    //     $avance->partida_id = $partida_id;
+    //     $avance->save();
+    // }
 
     public function indexProm(Request $request){
+        if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
         $buscar1 = $request->buscar1;
         $buscar2 = $request->buscar2;
@@ -240,6 +241,7 @@ class AvanceController extends Controller
 
     public function excelLotesPartidas(Request $request, $contrato)
     {
+        if(!$request->ajax())return redirect('/');
 
             $avances = Avance::join('lotes','avances.lote_id','=','lotes.id')
             ->join('partidas','avances.partida_id','=','partidas.id')
@@ -641,6 +643,7 @@ class AvanceController extends Controller
 
     public function exportExcel(Request $request, $contrato)
     {
+        if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
         $avances = Avance::join('lotes','avances.lote_id','=','lotes.id')
                         ->select('lotes.num_lote as lote', 

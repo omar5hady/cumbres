@@ -11,6 +11,7 @@ use DB;
 class GastosAdministrativosController extends Controller
 {
     public function index(Request $request){
+        if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
         $buscar2 = $request->buscar2;
         $buscar3 = $request->buscar3;
@@ -144,6 +145,7 @@ class GastosAdministrativosController extends Controller
     }
 
     public function storeAvaluo(Request $request){
+        if(!$request->ajax())return redirect('/');
         try{
             DB::beginTransaction();
             $gasto = new Gasto_admin();
@@ -167,6 +169,7 @@ class GastosAdministrativosController extends Controller
     }
 
     public function getDatosAvaluo(Request $request){
+        if(!$request->ajax())return redirect('/');
         $gasto = Gasto_admin::select('id','fecha')
                 ->where('contrato_id','=',$request->folio)
                 ->where('concepto','=','Avaluo')
@@ -177,6 +180,7 @@ class GastosAdministrativosController extends Controller
     }
 
     public function updateAvaluo(Request $request){
+        if(!$request->ajax())return redirect('/');
         $gasto = Gasto_admin::findOrFail($request->gasto_id);
         $gasto->costo = $request->costo;
         $gasto->fecha = $request->fecha;
@@ -339,11 +343,12 @@ class GastosAdministrativosController extends Controller
         $gastos->delete();
     }
 
-   public function getGastos(Request $request){
+    public function getGastos(Request $request){
+        if(!$request->ajax())return redirect('/');
         $gastos=Gasto_admin::select('concepto','costo','id')
                     ->where('contrato_id','=',$request->folio)
                     ->get();
-        
+
         $totalGastos = Gasto_admin::select(DB::raw("SUM(costo) as sumGasto"))
                     ->groupBy('contrato_id')
                     ->where('contrato_id','=',$request->folio)

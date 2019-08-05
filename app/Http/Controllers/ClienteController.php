@@ -19,7 +19,7 @@ class ClienteController extends Controller
 {
     public function index(Request $request)
     {
-        //if (!$request->ajax()) return redirect('/');
+        if (!$request->ajax()) return redirect('/');
  
         $buscar = $request->buscar;
         $criterio = $request->criterio;
@@ -863,33 +863,33 @@ class ClienteController extends Controller
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
         if(!$request->ajax())return redirect('/');
         $filtro = $request->filtro;
-    if(Auth::user()->rol_id == 4 || Auth::user()->rol_id == 6 || Auth::user()->rol_id == 8 || Auth::user()->rol_id == 1){
-        $coacreditados = Cliente::join('personal','clientes.id','=','personal.id')
-        ->select('personal.nombre','personal.apellidos','personal.id','personal.rfc','personal.homoclave','personal.f_nacimiento',
-            'personal.telefono','personal.celular','personal.email','clientes.sexo',
-            'clientes.email_institucional','clientes.edo_civil','clientes.nss','clientes.curp','clientes.tipo_casa','clientes.lugar_nacimiento',
-            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"))
-        ->where('nombre','like','%'.$filtro.'%')
-        ->orWhere('apellidos','like','%'.$filtro.'%')
-        ->get();
-        }else{
+        if(Auth::user()->rol_id == 4 || Auth::user()->rol_id == 6 || Auth::user()->rol_id == 8 || Auth::user()->rol_id == 1){
             $coacreditados = Cliente::join('personal','clientes.id','=','personal.id')
             ->select('personal.nombre','personal.apellidos','personal.id','personal.rfc','personal.homoclave','personal.f_nacimiento',
                 'personal.telefono','personal.celular','personal.email','clientes.sexo',
                 'clientes.email_institucional','clientes.edo_civil','clientes.nss','clientes.curp','clientes.tipo_casa','clientes.lugar_nacimiento',
                 DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"))
-            ->where('vendedor_id','=',Auth::user()->id)
             ->where('nombre','like','%'.$filtro.'%')
             ->orWhere('apellidos','like','%'.$filtro.'%')
-            ->where('vendedor_id','=',Auth::user()->id)
             ->get();
-        }
-       
+            }else{
+                $coacreditados = Cliente::join('personal','clientes.id','=','personal.id')
+                ->select('personal.nombre','personal.apellidos','personal.id','personal.rfc','personal.homoclave','personal.f_nacimiento',
+                    'personal.telefono','personal.celular','personal.email','clientes.sexo',
+                    'clientes.email_institucional','clientes.edo_civil','clientes.nss','clientes.curp','clientes.tipo_casa','clientes.lugar_nacimiento',
+                    DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"))
+                ->where('vendedor_id','=',Auth::user()->id)
+                ->where('nombre','like','%'.$filtro.'%')
+                ->orWhere('apellidos','like','%'.$filtro.'%')
+                ->where('vendedor_id','=',Auth::user()->id)
+                ->get();
+            }
+        
         return['coacreditados' => $coacreditados];
     }
 
     public function listarObservacion(Request $request){
-
+        if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
         $observacion = Cliente_observacion::select('comentario','usuario','created_at')
                     ->where('cliente_id','=', $buscar)->orderBy('created_at','desc')->paginate(40);
@@ -1293,7 +1293,7 @@ class ClienteController extends Controller
 
     public function indexProspectos(Request $request)
     {
-        //if (!$request->ajax()) return redirect('/');
+        if (!$request->ajax()) return redirect('/');
  
         $vendedor = $request->vendedor;
         $buscar = $request->buscar;
@@ -1603,7 +1603,7 @@ class ClienteController extends Controller
 
     public function exportExcelClientesAsesor(Request $request)
     {
-        //if (!$request->ajax()) return redirect('/');
+        if (!$request->ajax()) return redirect('/');
  
         $buscar = $request->buscar;
         $criterio = $request->criterio;
@@ -2120,7 +2120,7 @@ class ClienteController extends Controller
 
     public function exportExcelClientesGerente(Request $request)
     {
-        //if (!$request->ajax()) return redirect('/');
+        if (!$request->ajax()) return redirect('/');
  
         $buscar = $request->buscar;
         $criterio = $request->criterio;

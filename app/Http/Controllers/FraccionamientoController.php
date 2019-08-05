@@ -273,6 +273,7 @@ class FraccionamientoController extends Controller
 
      public function formSubmitPlanos(Request $request, $id)
      {
+        if(!$request->ajax())return redirect('/');
  
          $fileName = time().'.'.$request->archivo_planos->getClientOriginalExtension();
          $moved =  $request->archivo_planos->move(public_path('/files/fraccionamientos/planos'), $fileName);
@@ -318,38 +319,39 @@ class FraccionamientoController extends Controller
 
       public function formSubmitEscrituras(Request $request, $id)
       {
+        if(!$request->ajax())return redirect('/');
   
-          $fileName = time().'.'.$request->archivo_escrituras->getClientOriginalExtension();
-          $moved =  $request->archivo_escrituras->move(public_path('/files/fraccionamientos/escrituras'), $fileName);
-  
-          if($moved){
-              if(!$request->ajax())return redirect('/');
-              $escrituras = Fraccionamiento::findOrFail($request->id);
-              $escrituras->archivo_escrituras = $fileName;
-              $escrituras->id = $id;
-              $escrituras->save(); //Insert
+        $fileName = time().'.'.$request->archivo_escrituras->getClientOriginalExtension();
+        $moved =  $request->archivo_escrituras->move(public_path('/files/fraccionamientos/escrituras'), $fileName);
 
-              $imagenUsuario = DB::table('users')->select('foto_user','usuario')->where('id','=',Auth::user()->id)->get();
-                $fecha = Carbon::now();
-                $arregloSimPendientes = [
-                    'notificacion' => [
-                        'usuario' => $imagenUsuario[0]->usuario,
-                        'foto' => $imagenUsuario[0]->foto_user,
-                        'fecha' => $fecha,
-                        'msj' => 'Se han subido las escrituras para el proyecto '. $escrituras->nombre,
-                        'titulo' => 'Nuevas escrituras agregados'
-                    ]
-                ];
+        if($moved){
+            if(!$request->ajax())return redirect('/');
+            $escrituras = Fraccionamiento::findOrFail($request->id);
+            $escrituras->archivo_escrituras = $fileName;
+            $escrituras->id = $id;
+            $escrituras->save(); //Insert
 
-                $users = User::select('id')->where('rol_id','=','3')->get();
+            $imagenUsuario = DB::table('users')->select('foto_user','usuario')->where('id','=',Auth::user()->id)->get();
+            $fecha = Carbon::now();
+            $arregloSimPendientes = [
+                'notificacion' => [
+                    'usuario' => $imagenUsuario[0]->usuario,
+                    'foto' => $imagenUsuario[0]->foto_user,
+                    'fecha' => $fecha,
+                    'msj' => 'Se han subido las escrituras para el proyecto '. $escrituras->nombre,
+                    'titulo' => 'Nuevas escrituras agregados'
+                ]
+            ];
 
-                foreach($users as $notificar){
-                    User::findOrFail($notificar->id)->notify(new NotifyAdmin($arregloSimPendientes));
-                }
-      
-              }
-          
-          return response()->json(['success'=>'You have successfully upload file.']);
+            $users = User::select('id')->where('rol_id','=','3')->get();
+
+            foreach($users as $notificar){
+                User::findOrFail($notificar->id)->notify(new NotifyAdmin($arregloSimPendientes));
+            }
+    
+            }
+        
+        return response()->json(['success'=>'You have successfully upload file.']);
       }
   
       public function downloadFileEscrituras($fileName){

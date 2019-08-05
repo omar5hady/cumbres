@@ -8,6 +8,7 @@ use App\Serv_etapa;
 class ServEtapaController extends Controller
 {
     public function index(Request $request){
+        if(!$request->ajax())return redirect('/');
         $etapa_id = $request->etapa_id;
         $servicios = Serv_etapa::join('servicios','serv_etapas.serv_id','=','servicios.id')
             ->select('serv_etapas.id','serv_etapas.etapa_id','serv_etapas.serv_id','servicios.descripcion')
@@ -17,6 +18,7 @@ class ServEtapaController extends Controller
     }
 
     public function store(Request $request){
+        if(!$request->ajax())return redirect('/');
         $etapa_id = $request->etapa_id;
         $servicio = new Serv_etapa();
         $servicio->etapa_id = $request->etapa_id;

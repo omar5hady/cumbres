@@ -10,6 +10,7 @@ use App\Avaluo_status;
 class HistVisitasController extends Controller
 {
     public function index(Request $request){
+        if(!$request->ajax())return redirect('/');
         $historial = Hist_visita::select('id','fecha_visita','observacion')
                 ->where('contrato_id','=',$request->buscar)
                 ->get();
@@ -18,6 +19,7 @@ class HistVisitasController extends Controller
     }
 
     public function store(Request $request){
+        if(!$request->ajax())return redirect('/');
         $visita = new Hist_visita();
         $visita->contrato_id = $request->contrato_id;
         $visita->fecha_visita = $request->visita_avaluo;
@@ -26,6 +28,7 @@ class HistVisitasController extends Controller
     }
 
     public function indexStatus(Request $request){
+        if(!$request->ajax())return redirect('/');
         $status = Avaluo_status::select('id','created_at','observacion','status')
                 ->where('avaluo_id','=',$request->buscar)
                 ->get();
@@ -34,6 +37,7 @@ class HistVisitasController extends Controller
     }
 
     public function storeStatus(Request $request){
+        if(!$request->ajax())return redirect('/');
         $visita = new Avaluo_status();
         $visita->avaluo_id = $request->avaluoId;
         $visita->status = $request->status;

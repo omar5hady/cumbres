@@ -77,6 +77,7 @@ class NotariaController extends Controller
     }
 
     public function select_notarias(Request $request){
+        if(!$request->ajax())return redirect('/');
         $estado = $request->estado;
         $ciudad = $request->ciudad;
 
@@ -90,7 +91,7 @@ class NotariaController extends Controller
     }
 
     public function getDatosNotaria (Request $request){
-        
+        if(!$request->ajax())return redirect('/');
         $datos = Notaria::select('notaria','titular','direccion','colonia','cp')
                             ->where('id','=', $request->id)->get();
 

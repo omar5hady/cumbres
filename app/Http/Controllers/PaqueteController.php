@@ -156,6 +156,7 @@ class PaqueteController extends Controller
 
 
     public function select_paquetes(Request $request){
+        if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
         $proyecto = $request->proyecto;
 
@@ -173,6 +174,7 @@ class PaqueteController extends Controller
     }
 
     public function select_datos_paquetes(Request $request){
+        if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
         $datos_paquetes = Paquete::select('paquetes.descripcion','paquetes.costo','paquetes.v_ini','paquetes.v_fin','paquetes.nombre')
                           ->where('paquetes.id','=',$buscar)

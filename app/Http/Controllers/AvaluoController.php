@@ -33,6 +33,7 @@ class AvaluoController extends Controller
     }
 
     public function index(Request $request){
+        if(!$request->ajax())return redirect('/');
         $avaluos = Avaluo::join('contratos','avaluos.contrato_id','=','contratos.id')
                     ->join('creditos','contratos.id','=','creditos.id')
                     ->join('clientes','creditos.prospecto_id','=','clientes.id')
@@ -65,6 +66,7 @@ class AvaluoController extends Controller
     }
 
     public function setFechaSolicitud(Request $request){
+        if(!$request->ajax())return redirect('/');
         $avaluo_id = $request->avaluoId;
 
         $avaluo=Avaluo::findOrFail($avaluo_id);
@@ -73,6 +75,7 @@ class AvaluoController extends Controller
     }
 
     public function setFechaPago(Request $request){
+        if(!$request->ajax())return redirect('/');
         $avaluo_id = $request->avaluoId;
 
         $avaluo=Avaluo::findOrFail($avaluo_id);
@@ -81,6 +84,7 @@ class AvaluoController extends Controller
     }
 
     public function setFechaConcluido(Request $request){
+        if(!$request->ajax())return redirect('/');
         $avaluo_id = $request->avaluoId;
 
         $avaluo=Avaluo::findOrFail($avaluo_id);
@@ -90,6 +94,7 @@ class AvaluoController extends Controller
     }
 
     public function enviarVentas(Request $request){
+        if(!$request->ajax())return redirect('/');
         $avaluo_id = $request->id;
         setlocale(LC_TIME, 'es_MX.utf8');
         $hoy = Carbon::today()->toDateString();

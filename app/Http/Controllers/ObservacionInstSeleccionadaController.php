@@ -13,7 +13,7 @@ class ObservacionInstSeleccionadaController extends Controller
     public function select_ultima(Request $request)
     {
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
-        //if(!$request->ajax())return redirect('/');
+        if(!$request->ajax())return redirect('/');
 
         $buscar = $request->buscar;;
         
@@ -40,6 +40,7 @@ class ObservacionInstSeleccionadaController extends Controller
 
 
     public function index(Request $request){
+        if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
         $observacion = Obs_inst_selec::select('comentario','usuario','created_at')
                     ->where('inst_selec_id','=', $buscar)->orderBy('created_at','desc')->paginate(20);

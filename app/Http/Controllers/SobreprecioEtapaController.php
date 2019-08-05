@@ -154,7 +154,7 @@ class SobreprecioEtapaController extends Controller
 
 
     public function select_sobreprecios_etapa(Request $request){
-        // if(!$request->ajax())return redirect('/');
+        if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
         $sobreprecio_etapaM = 
             Sobreprecio_etapa::join('sobreprecios','sobreprecios_etapas.sobreprecio_id','=','sobreprecios.id')

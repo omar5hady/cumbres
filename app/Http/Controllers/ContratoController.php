@@ -34,6 +34,7 @@ class ContratoController extends Controller
 {
     public function indexContrato(Request $request)
     {
+        if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
         $buscar3 = $request->buscar3;
         $criterio = $request->criterio;
@@ -3509,7 +3510,7 @@ class ContratoController extends Controller
 
     public function indexCreditosAprobados(Request $request)
     {
-
+        if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
         $criterio = $request->criterio;
         $b_etapa = $request->b_etapa;
@@ -3927,6 +3928,7 @@ class ContratoController extends Controller
 
     public function getDatosCredito(Request $request)
     {
+        if(!$request->ajax())return redirect('/');
         $folio = $request->folio;
         $creditos = Credito::join('datos_extra', 'creditos.id', '=', 'datos_extra.id')
             ->select(
@@ -4218,6 +4220,7 @@ class ContratoController extends Controller
 
     public function listarPagos(Request $request)
     {
+        if(!$request->ajax())return redirect('/');
         $pagos = Pago_contrato::select('id', 'num_pago', 'monto_pago', 'fecha_pago')
             ->where('contrato_id', '=', $request->contrato_id)
             ->orderBy('fecha_pago', 'ASC')
@@ -4228,6 +4231,7 @@ class ContratoController extends Controller
 
     public function contratoCompraVentaPdf(Request $request, $id)
     {
+        if(!$request->ajax())return redirect('/');
         $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
             ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
             ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
@@ -4419,6 +4423,7 @@ class ContratoController extends Controller
 
     public function pagareContratopdf(Request $request, $id)
     {
+        if(!$request->ajax())return redirect('/');
 
         $cliente = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
             ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
@@ -4463,6 +4468,7 @@ class ContratoController extends Controller
 
     public function contratoConReservaDeDominio(Request $request, $id)
     {
+        if(!$request->ajax())return redirect('/');
 
         $contratosDom = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
             ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
@@ -4590,6 +4596,7 @@ class ContratoController extends Controller
 
     public function contratoDePromesaCredito(Request $request, $id)
     {
+        if(!$request->ajax())return redirect('/');
 
         $contratoPromesa = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
             ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
@@ -4731,6 +4738,7 @@ class ContratoController extends Controller
 
     public function statusContrato(Request $request)
     {
+        if(!$request->ajax())return redirect('/');
 
         $id_lote = $request->lote_id;
 
@@ -4802,6 +4810,7 @@ class ContratoController extends Controller
 
     public function agregarPago(Request $request)
     {
+        if(!$request->ajax())return redirect('/');
         $pago = new Pago_contrato();
         $pago->contrato_id = $request->contrato_id;
         $pago->num_pago = $request->num_pago;
@@ -4813,6 +4822,7 @@ class ContratoController extends Controller
 
     public function eliminarPago(Request $request)
     {
+        if(!$request->ajax())return redirect('/');
         $pago = Pago_contrato::findOrFail($request->id);
         $pago->delete();
     }
@@ -4954,6 +4964,7 @@ class ContratoController extends Controller
 
     public function reasignarCliente(Request $request)
     {
+        if(!$request->ajax())return redirect('/');
         $loteNuevo_id = $request->sel_lote;
 
         $lote_ant = Lote::findOrFail($request->lote_id);
@@ -5024,6 +5035,7 @@ class ContratoController extends Controller
     }
 
     public function excelContratos (Request $request){
+        if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
         $buscar3 = $request->buscar3;
         $criterio = $request->criterio;
@@ -8313,6 +8325,7 @@ class ContratoController extends Controller
     }
 
     public function validarLoteEnContrato(Request $request){
+        if(!$request->ajax())return redirect('/');
         $idLote = $request->lote_id;
         $lote = Contrato::join('creditos','contratos.id','=','creditos.id')
                         ->select('creditos.id')

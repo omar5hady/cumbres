@@ -697,7 +697,7 @@ class LoteController extends Controller
     //funcion para actualizar los datos
     public function update(Request $request)
     {
-       if(!$request->ajax())return redirect('/');
+        if(!$request->ajax())return redirect('/');
         //FindOrFail se utiliza para buscar lo que recibe de argumento
         $lote = Lote::findOrFail($request->id);
         $lote->fraccionamiento_id = $request->fraccionamiento_id;
@@ -889,7 +889,7 @@ class LoteController extends Controller
 
     public function enviarAviso(Request $request)
     {
-       //if(!$request->ajax())return redirect('/');
+       if(!$request->ajax())return redirect('/');
        $aviso = $request->aviso;
        $id = $request->id;
         //FindOrFail se utiliza para buscar lo que recibe de argumento
@@ -954,6 +954,7 @@ class LoteController extends Controller
     }
 
     public function import(Request $request){
+        if(!$request->ajax())return redirect('/');
         //validate the xls file
         $this->validate($request, array(
             'file'      => 'required'
@@ -1189,7 +1190,6 @@ class LoteController extends Controller
 
     public function excelLotes (Request $request, $fraccionamiento_id)
     {
-
 
         $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
         ->join('etapas','lotes.etapa_id','=','etapas.id')
@@ -4097,6 +4097,7 @@ class LoteController extends Controller
 
     public function select_etapas_disp(Request $request)
     {
+        if(!$request->ajax())return redirect('/');
         
         $fraccionamiento = $request->buscar;
         $lotes_etapas = Lote::join('etapas','lotes.etapa_id','=','etapas.id')
@@ -4119,6 +4120,7 @@ class LoteController extends Controller
 
     public function select_manzanas_disp(Request $request)
     {
+        if(!$request->ajax())return redirect('/');
         
         $etapa = $request->buscar;
         $lotes_manzanas = Lote::join('etapas','lotes.etapa_id','=','etapas.id')
@@ -4140,6 +4142,7 @@ class LoteController extends Controller
 
     public function select_lotes_disp(Request $request)
     {
+        if(!$request->ajax())return redirect('/');
         
         $manzana = $request->buscar;
         $etapa = $request->buscar2;
@@ -4182,6 +4185,7 @@ class LoteController extends Controller
 
     public function select_datos_lotes_disp(Request $request){
 
+        if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
         $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
         ->join('licencias','lotes.id','=','licencias.id')
@@ -4229,7 +4233,7 @@ class LoteController extends Controller
 
     public function exportExcelLotesDisp(Request $request)
     {
-       
+        if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
         $buscar2 = $request->buscar2;
         $buscar3 = $request->buscar3;
@@ -5288,6 +5292,7 @@ class LoteController extends Controller
 
 
     public function updateAjuste(Request $request){
+        if(!$request->ajax())return redirect('/');
         $ajuste = Lote::findOrFail($request->id);
         $cambio = $ajuste->ajuste;
         $ajuste->ajuste = $request->ajuste;
@@ -5306,7 +5311,7 @@ class LoteController extends Controller
     }
 
     public function exportExcelAsignarModelo(Request $request){
-
+        if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
         $buscar2 = $request->buscar2;
         $buscar3 = $request->buscar3;

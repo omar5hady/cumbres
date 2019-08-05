@@ -25,7 +25,7 @@ class CreditoController extends Controller
 {
 
     public function indexCreditos(Request $request){
-        //if (!$request->ajax()) return redirect('/');
+        if (!$request->ajax()) return redirect('/');
 
         $creditos = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
             ->select('creditos.id','creditos.prospecto_id','creditos.num_dep_economicos','creditos.tipo_economia',
@@ -235,6 +235,7 @@ class CreditoController extends Controller
 
     }
     public function selectTipCreditosSimulacion(Request $request){
+        if(!$request->ajax())return redirect('/');
         $simulacion= $request->simulacion_id;
         $creditos = Inst_seleccionada::select('id','tipo_credito','institucion','elegido','monto_credito','plazo_credito',
                         'status','fecha_ingreso','fecha_respuesta')
@@ -261,6 +262,7 @@ class CreditoController extends Controller
     }
 
     public function storeCreditoSelect(Request $request){
+        if(!$request->ajax())return redirect('/');
         $inst_seleccionada = new inst_seleccionada();
         $inst_seleccionada->credito_id = $request->credito_id;
         $inst_seleccionada->tipo_credito = $request->tipo_credito;
@@ -333,6 +335,7 @@ class CreditoController extends Controller
     }
 
     public function rechazarSolicitud(Request $request){
+        if(!$request->ajax())return redirect('/');
         $simulacion = Credito::findOrFail($request->id);
         $simulacion->status=0;
         $simulacion->save();
@@ -356,6 +359,7 @@ class CreditoController extends Controller
     }
 
     public function aceptarSolicitud(Request $request){
+        if(!$request->ajax())return redirect('/');
         $simulacion = Credito::findOrFail($request->id);
         $simulacion->status=2;
         $simulacion->save();
@@ -386,6 +390,7 @@ class CreditoController extends Controller
     }
 
     public function selectManzana(Request $request){
+        if(!$request->ajax())return redirect('/');
         $buscar=$request->buscar;
         $buscar2=$request->buscar2;
 
@@ -398,7 +403,7 @@ class CreditoController extends Controller
     }
 
     public function indexHistorial(Request $request){
-        
+        if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
         $criterio = $request->criterio;
         $criterio2 = $request->criterio2;
@@ -1194,11 +1199,10 @@ class CreditoController extends Controller
     }
 
     public function HistorialDeCreditos (Request $request){
+        if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
         $buscar2 = $request->buscar2;
         $criterio = $request->criterio;
-
-
 
         if($buscar == ''){
             $Historialcreditos = inst_seleccionada::join('creditos','inst_seleccionadas.credito_id','=','creditos.id')
@@ -1419,6 +1423,7 @@ class CreditoController extends Controller
     }
 
     public function cambiarTitularCredito(Request $request){
+        if(!$request->ajax())return redirect('/');
         $credito_id = $request->id;
         $titular_id = $request->cliente_id;
         $rfc_coa = $request->rfc_coa;
@@ -1528,7 +1533,7 @@ class CreditoController extends Controller
     }
 
     public function updateFechaVigencia (Request $request){
-
+        if(!$request->ajax())return redirect('/');
         $inst = inst_seleccionada::select('id')
                 ->where('credito_id','=',$request->folio)
                 ->where('elegido','=',1)

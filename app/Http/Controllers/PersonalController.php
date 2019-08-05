@@ -212,6 +212,7 @@ class PersonalController extends Controller
 
 
     public function select_Pers_sinUser(Request $request){
+        if(!$request->ajax())return redirect('/');
         $personas = Personal::leftJoin('users as users','personal.id','=','users.id')
                              ->select('nombre','users.id as UserId','personal.id as personalId')
                              ->where('users.id','=',NULL)

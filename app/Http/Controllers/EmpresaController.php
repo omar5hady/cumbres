@@ -88,6 +88,7 @@ class EmpresaController extends Controller
 
     public function getDatosEmpresa(Request $request)
     {
+        if(!$request->ajax())return redirect('/');
         $nombre = $request->nombre;
         $empresas = Empresa::select('direccion','cp','colonia','estado','ciudad','telefono','ext')
                              ->where('nombre','=',$nombre)->get();

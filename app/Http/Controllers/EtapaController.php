@@ -22,7 +22,7 @@ class EtapaController extends Controller
     public function index(Request $request)
     {
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
-        //if(!$request->ajax())return redirect('/');
+        if(!$request->ajax())return redirect('/');
 
         $buscar = $request->buscar;
         $buscar2 = $request->buscar2;
@@ -190,6 +190,7 @@ class EtapaController extends Controller
 
     public function contEtapa(Request $request)
     {
+        if(!$request->ajax())return redirect('/');
         $fraccionamiento_id = $request->fraccionamiento_id;
         $etapas = Etapa::where('fraccionamiento_id','=',$fraccionamiento_id)->get();
         $contador = $etapas->count();
@@ -210,6 +211,7 @@ class EtapaController extends Controller
     }
 
     public function selectEtapa(Request $request){
+        if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
 
         $etapas = Etapa::join('fraccionamientos','etapas.fraccionamiento_id','=','fraccionamientos.id')
@@ -222,6 +224,7 @@ class EtapaController extends Controller
     }
 
     public function uploadReglamento (Request $request, $id){
+        if(!$request->ajax())return redirect('/');
         $ultimoReglamento = Etapa::select('archivo_reglamento','id')
                                  ->where('id','=',$id)
                                  ->get();
@@ -258,6 +261,7 @@ class EtapaController extends Controller
     }
 
     public function uploadPlantillaCartaServicios (Request $request, $id){
+        if(!$request->ajax())return redirect('/');
         $ultimaPlantilla = Etapa::select('plantilla_carta_servicios','id')
                                  ->where('id','=',$id)
                                  ->get();
@@ -318,6 +322,7 @@ class EtapaController extends Controller
 
     
     public function registrarCostoMantenimiento(Request $request, $id){
+        if(!$request->ajax())return redirect('/');
         $costoAnterior = Etapa::select('costo_mantenimiento','empresas_telecom','empresas_telecom_satelital')
                                              ->where('id','=',$id)
                                              ->get();
@@ -338,7 +343,7 @@ class EtapaController extends Controller
     }
 
     public function uploadPlantillaTelecom (Request $request, $id){
-
+        if(!$request->ajax())return redirect('/');
         $plantillaAnterior = Etapa::select('plantilla_telecom','id')
                                             ->where('id','=',$id)
                                             ->get();
