@@ -29,6 +29,7 @@
                                             <option value="clientes.nss">NSS</option>
                                             <option value="fraccionamientos.nombre">Proyecto</option>
                                             <option value="clientes.created_at">Fecha de alta</option>
+                                            <option v-if="rolId != 2" value="v.nombre">Asesor</option>
                                         </select>
                 
                                         <input v-if="criterio=='clientes.created_at'" type="date" v-model="buscar" @keyup.enter="listarProspectos(1,buscar,b_clasificacion,criterio)" class="form-control">

@@ -298,6 +298,10 @@
         <template v-if="menu==207">
             <cobro-credito></cobro-credito>
         </template>
+
+        <template v-if="menu==209">
+            <devolucion-cancelacion></devolucion-cancelacion>
+        </template>
        
 
         

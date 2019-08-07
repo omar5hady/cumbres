@@ -469,6 +469,9 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/archivos/cartaServicios/{etapa_id}','ServicioController@cartaDeServicioDocs');
         Route::get('/archivos/cartaServiciosTelecomunicaciones/{etapa_id}','ServicioController@cartaDeTelecomunicacionesDocs');
 
+        ////////////////////// RUTAS DEVOLUCION (CANCELACION)
+        Route::get('/devolucion/index','DevolucionController@indexCancelaciones');
+
     });
 
 

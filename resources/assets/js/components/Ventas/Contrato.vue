@@ -1527,6 +1527,13 @@
                                 </div>
                             </div>
 
+                            <div class="form-group row" v-if="tipoAccion==1 && status == 0">
+                                <label class="col-md-3 form-control-label" for="text-input">Motivo de cancelación</label>
+                                <div class="col-md-9">
+                                   <textarea rows="3" cols="30" v-model="motivo_cancel" class="form-control" placeholder="Observaciones"></textarea>
+                                </div>
+                            </div>
+
                             <div class="form-group row" v-if="tipoAccion==2">
                                 <label class="col-md-3 form-control-label" for="text-input">Fraccionamiento</label>
                                 <div class="col-md-9">
@@ -1626,6 +1633,7 @@
                 status: 1,
                 fecha_status: '',
                 nombre_archivo_modelo: '',
+                motivo_cancel:'',
 
                 /// variables datos del prospecto //
                     nombre:'',
@@ -2480,6 +2488,7 @@
 
             cerrarDetalle(){
                 this.limpiarDatos();
+                this.listarContratos(this.pagination.current_page,this.buscar,this.buscar3,this.b_etapa,this.b_manzana,this.b_lote,this.criterio);
                 this.listado = 0;
             },
 
@@ -2735,7 +2744,8 @@
                     'id': this.id_contrato,
                     'status':this.status,
                     'fecha_status':this.fecha_status,
-                    'lote_id':this.lote_id
+                    'lote_id':this.lote_id,
+                    'motivo_cancel':this.motivo_cancel,
                     }).then(function (response){
                     me.listado=4;
                     me.cerrarModal();
@@ -3152,6 +3162,7 @@
                         this.id=data['id'];
                         this.fecha_status=data['fecha_status'];
                         this.tipoAccion = 1;
+                        this.motivo_cancel = '';
                         break;
                     }
                     case 'reasignar':

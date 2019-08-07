@@ -4231,7 +4231,6 @@ class ContratoController extends Controller
 
     public function contratoCompraVentaPdf(Request $request, $id)
     {
-        if(!$request->ajax())return redirect('/');
         $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
             ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
             ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
@@ -4382,6 +4381,8 @@ class ContratoController extends Controller
         $fecha_nac_coa = new Carbon($contratos[0]->f_nacimiento_coa);
         $contratos[0]->f_nacimiento_coa = $fecha_nac_coa->formatLocalized('%d-%m-%Y');
 
+        $contratos[0]->precio_base = $contratos[0]->precio_base - $contratos[0]->descuento_promocion;
+
         $contratos[0]->precio_base = number_format((float)$contratos[0]->precio_base, 2, '.', ',');
         $contratos[0]->credito_solic = number_format((float)$contratos[0]->credito_solic, 2, '.', ',');
         $contratos[0]->precio_terreno_excedente = number_format((float)$contratos[0]->precio_terreno_excedente, 2, '.', ',');
@@ -4423,7 +4424,6 @@ class ContratoController extends Controller
 
     public function pagareContratopdf(Request $request, $id)
     {
-        if(!$request->ajax())return redirect('/');
 
         $cliente = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
             ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
@@ -4468,7 +4468,6 @@ class ContratoController extends Controller
 
     public function contratoConReservaDeDominio(Request $request, $id)
     {
-        if(!$request->ajax())return redirect('/');
 
         $contratosDom = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
             ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
@@ -4596,7 +4595,6 @@ class ContratoController extends Controller
 
     public function contratoDePromesaCredito(Request $request, $id)
     {
-        if(!$request->ajax())return redirect('/');
 
         $contratoPromesa = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
             ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
@@ -4747,7 +4745,13 @@ class ContratoController extends Controller
             $status = Contrato::findOrFail($request->id);
             $status->status = $request->status;
             $status->fecha_status = $fecha;
+            $status->motivo_cancel = $request->motivo_cancel;
             $status->save();
+            if ($request->status == 1) {
+                $contrato = Lote::findOrFail($id_lote);
+                $contrato->contrato = 1;
+                $contrato->save();
+            }
             if ($request->status == 0 || $request->status == 2) {
                 $contrato = Lote::findOrFail($id_lote);
                 $contrato->contrato = 0;
@@ -4758,6 +4762,7 @@ class ContratoController extends Controller
             $status = Contrato::findOrFail($request->id);
             $status->status = $request->status;
             $status->fecha_status = $request->fecha_status;
+            $status->motivo_cancel = $request->motivo_cancel;
             $status->save();
             if ($request->status == 0 || $request->status == 2) {
                 $contrato = Lote::findOrFail($id_lote);
@@ -4778,6 +4783,7 @@ class ContratoController extends Controller
                     ->get();
                 $paquete = Lote::findOrFail($id_lote);
                 $paquete->paquete = $credito[0]->descripcion_paquete;
+                $paquete->contrato = 1;
                 $paquete->save();
                 $cliente = Cliente::findOrFail($credito[0]->prospecto_id);
                 $cliente->clasificacion = 5;
@@ -5035,7 +5041,6 @@ class ContratoController extends Controller
     }
 
     public function excelContratos (Request $request){
-        if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
         $buscar3 = $request->buscar3;
         $criterio = $request->criterio;

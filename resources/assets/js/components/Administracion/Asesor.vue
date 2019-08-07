@@ -1171,7 +1171,7 @@
                         'id': prospecto,
                         'asesor_id':asesor
                     }).then(function (response) {
-                        me.listarProspectos(1,'','','personal.nombre',me.id_vendedor);
+                        me.listarProspectos(1,me.buscar2,me.b_clasificacion,me.criterio2,me.id_vendedor);
                         me.cerrarModal();
                         swal(
                         'Hecho!',

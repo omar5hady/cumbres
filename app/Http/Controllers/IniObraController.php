@@ -361,7 +361,6 @@ class IniObraController extends Controller
 
     public function contratoObraPDF(Request $request, $id)
     {
-        if(!$request->ajax())return redirect('/');
         
         $cabecera = Ini_obra::join('contratistas','ini_obras.contratista_id','=','contratistas.id')
         ->join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
@@ -402,7 +401,6 @@ class IniObraController extends Controller
 
     public function exportExcel(Request $request, $id)
     {
-        if(!$request->ajax())return redirect('/');
         //Codigo para exportar vista PRE a excell
         $id = $request->id;
         $detalles = Ini_obra_lote::select('ini_obra_lotes.costo_directo',

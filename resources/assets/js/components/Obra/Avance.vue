@@ -524,7 +524,7 @@
                     'id' : this.id
                 }).then(function (response){
                     me.cerrarModal();
-                    me.listarAvance(1,'','fraccionamientos.nombre');
+                    me.listarAvance(1,this.lote_id,'avances.lote_id');
                     //window.alert("Cambios guardados correctamente");
                     swal({
                         position: 'top-end',
@@ -548,7 +548,7 @@
                     'id' : id
                 }).then(function (response){
                     
-                    me.listarAvance(1,lote,'lotes.id');
+                    me.listarAvance(1,lote,'avances.lote_id');
                     //window.alert("Cambios guardados correctamente");
                 const toast = Swal.mixin({
                     toast: true,

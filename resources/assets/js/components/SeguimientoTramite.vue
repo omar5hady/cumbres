@@ -850,12 +850,12 @@
                                     </div>
 
                                     <div v-if="arrayGastos.length">
-                                     <div class="form-group row"  v-for="gasto in arrayGastos" :key="gasto.id">
-                                        <label class="col-md-2 form-control-label" for="text-input" v-text="gasto.concepto"></label>
-                                        <div class="col-md-3">
-                                            <h6>${{ formatNumber(gasto.costo)}}</h6>
+                                        <div class="form-group row"  v-for="gasto in arrayGastos" :key="gasto.id">
+                                            <label class="col-md-2 form-control-label" for="text-input" v-text="gasto.concepto"></label>
+                                            <div class="col-md-3">
+                                                <h6>${{ formatNumber(gasto.costo)}}</h6>
+                                            </div>
                                         </div>
-                                    </div>
                                     </div>
 
                                     <div class="form-group row">

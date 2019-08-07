@@ -1079,7 +1079,6 @@ class InstSeleccionadasController extends Controller
     }
 
     public function excelCobroCredito (Request $request){
-        if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
         $buscar2 = $request->buscar2;
         $buscar3 = $request->buscar3;

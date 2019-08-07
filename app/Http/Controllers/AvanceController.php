@@ -165,7 +165,7 @@ class AvanceController extends Controller
                 ->orderBy('avances.id','ASC')->paginate(49);
         }
        else{
-           if($criterio == 'avances.lote_id'){
+           if($criterio == 'avances.lote_id' || $criterio == 'lotes.id'){
             $avance = Avance::join('lotes','avances.lote_id','=','lotes.id')
             ->join('partidas','avances.partida_id','=','partidas.id')
             ->select('lotes.num_lote as lote','avances.avance', 'avances.avance_porcentaje', 
@@ -241,7 +241,6 @@ class AvanceController extends Controller
 
     public function excelLotesPartidas(Request $request, $contrato)
     {
-        if(!$request->ajax())return redirect('/');
 
             $avances = Avance::join('lotes','avances.lote_id','=','lotes.id')
             ->join('partidas','avances.partida_id','=','partidas.id')
@@ -643,7 +642,6 @@ class AvanceController extends Controller
 
     public function exportExcel(Request $request, $contrato)
     {
-        if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
         $avances = Avance::join('lotes','avances.lote_id','=','lotes.id')
                         ->select('lotes.num_lote as lote', 

@@ -366,6 +366,11 @@
                                         <a class="nav-link" href="#"><i class="fa fa-money"></i> Avaluos</a>
                                     </li>
                                 @endif
+                                @if(Auth::user()->rol_id == 1)
+                                    <li @click="menu=209" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="icon-reload"></i> Devolución por cancelación</a>
+                                    </li>
+                                @endif
                             </ul>
                         </li>
                     @endif
