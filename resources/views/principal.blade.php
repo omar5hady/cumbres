@@ -334,6 +334,11 @@
                                         <a class="nav-link" href="#"><i class="fa fa-credit-card-alt"></i> Cobro de crédito</a>
                                     </li>
                                 @endif
+                                @if(Auth::user()->rol_id == 1)
+                                    <li @click="menu=209" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="icon-reload"></i> Devolución por cancelación</a>
+                                    </li>
+                                @endif
                                     
                                     
                             </ul>
@@ -366,11 +371,7 @@
                                         <a class="nav-link" href="#"><i class="fa fa-money"></i> Avaluos</a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->rol_id == 1)
-                                    <li @click="menu=209" class="nav-item">
-                                        <a class="nav-link" href="#"><i class="icon-reload"></i> Devolución por cancelación</a>
-                                    </li>
-                                @endif
+                                
                             </ul>
                         </li>
                     @endif

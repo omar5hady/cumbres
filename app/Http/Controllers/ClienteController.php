@@ -94,6 +94,9 @@ class ClienteController extends Controller
                         ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
                         ->where('vendedor_id','=',Auth::user()->id)
                         ->where('clientes.clasificacion', '=', $buscarC)
+                        ->orWhere(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
+                        ->where('vendedor_id','=',Auth::user()->id)
+                        ->where('clientes.clasificacion', '=', $buscarC)
                         ->orderBy('personal.nombre', 'asc')
                         ->orderBy('personal.apellidos', 'asc')
 
@@ -107,6 +110,9 @@ class ClienteController extends Controller
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->where('clientes.clasificacion', '=', $buscarC)
                         ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
+                        ->where('vendedor_id','=',Auth::user()->id)
+                        ->where('clientes.clasificacion', '=', $buscarC)
+                        ->orWhere(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
                         ->where('vendedor_id','=',Auth::user()->id)
                         ->where('clientes.clasificacion', '=', $buscarC)
                         ->orderBy('personal.nombre', 'asc')
@@ -223,6 +229,8 @@ class ClienteController extends Controller
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
                         ->where('vendedor_id','=',Auth::user()->id)
+                        ->orWhere(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
+                        ->where('vendedor_id','=',Auth::user()->id)
                         ->orderBy('personal.nombre', 'asc')
                         ->orderBy('personal.apellidos', 'asc')
 
@@ -235,6 +243,8 @@ class ClienteController extends Controller
                         ->where('vendedor_id','=',Auth::user()->id)     
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
+                        ->where('vendedor_id','=',Auth::user()->id)
+                        ->orWhere(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
                         ->where('vendedor_id','=',Auth::user()->id)
                         ->orderBy('personal.nombre', 'asc')
                         ->orderBy('personal.apellidos', 'asc')
@@ -361,6 +371,8 @@ class ClienteController extends Controller
                         ->where('clientes.clasificacion', '=', $buscarC)
                         ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
                         ->where('clientes.clasificacion', '=', $buscarC)
+                        ->orWhere(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
+                        ->where('clientes.clasificacion', '=', $buscarC)
                         ->orderBy('personal.nombre', 'asc')
                         ->orderBy('personal.apellidos', 'asc')
 
@@ -374,6 +386,8 @@ class ClienteController extends Controller
                             ->where($criterio, 'like', '%'. $buscar . '%')
                             ->where('clientes.clasificacion', '=', $buscarC)
                             ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
+                            ->where('clientes.clasificacion', '=', $buscarC)
+                            ->orWhere(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
                             ->where('clientes.clasificacion', '=', $buscarC)
                             ->orderBy('personal.nombre', 'asc')
                             ->orderBy('personal.apellidos', 'asc')
@@ -551,6 +565,8 @@ class ClienteController extends Controller
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         //->where('clientes.clasificacion', '=', $buscarC)
                         ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
+                        ->orWhere(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
+                        //->where('clientes.clasificacion', '=', $buscarC)
                         //->where('clientes.clasificacion', '=', $buscarC)
                         ->orderBy('personal.nombre', 'asc')
                         ->orderBy('personal.apellidos', 'asc')
@@ -565,6 +581,7 @@ class ClienteController extends Controller
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         //->where('clientes.clasificacion', '=', $buscarC)
                         ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
+                        ->orWhere(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
                         //->where('clientes.clasificacion', '=', $buscarC)
                         ->orderBy('personal.nombre', 'asc')
                         ->orderBy('personal.apellidos', 'asc')
@@ -1467,6 +1484,9 @@ class ClienteController extends Controller
                     ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
                     ->where('vendedor_id','=',$vendedor)     
                     ->where('clientes.clasificacion', '=', $b_clasificacion)
+                    ->orWhere(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
+                    ->where('vendedor_id','=',$vendedor)     
+                    ->where('clientes.clasificacion', '=', $b_clasificacion)
                     ->orderBy('personal.apellidos', 'desc')
                     ->orderBy('personal.nombre', 'desc')
                    ->paginate(8);
@@ -1479,6 +1499,9 @@ class ClienteController extends Controller
                     ->where($criterio, 'like', '%'. $buscar . '%')
                     ->where('clientes.clasificacion', '=', $b_clasificacion)
                     ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
+                    ->where('vendedor_id','=',$vendedor)     
+                    ->where('clientes.clasificacion', '=', $b_clasificacion)
+                    ->orWhere(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
                     ->where('vendedor_id','=',$vendedor)     
                     ->where('clientes.clasificacion', '=', $b_clasificacion)
                     ->orderBy('personal.apellidos', 'desc')
@@ -1590,6 +1613,9 @@ class ClienteController extends Controller
                     ->where($criterio, 'like', '%'. $buscar . '%')
                     
                     ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
+                    ->where('vendedor_id','=',$vendedor)   
+                    
+                    ->orWhere(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
                     ->where('vendedor_id','=',$vendedor)     
                     
                     ->orderBy('personal.apellidos', 'desc')
@@ -1604,6 +1630,9 @@ class ClienteController extends Controller
                     ->where($criterio, 'like', '%'. $buscar . '%')
                     
                     ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
+                    ->where('vendedor_id','=',$vendedor)     
+
+                    ->orWhere(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
                     ->where('vendedor_id','=',$vendedor)     
                     
                     ->orderBy('personal.apellidos', 'desc')

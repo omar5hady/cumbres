@@ -113,8 +113,8 @@
                               <span aria-hidden="true">×</span>
                             </button>
                         </div>
+                        <!-- form para generar devolucion -->
                         <div class="modal-body">
-                            <!-- form para solicitud de avaluo -->
                             <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
 
                                 <div class="form-group row">
@@ -162,36 +162,48 @@
                                 <div class="form-group row">
                                     <label class="col-md-2 form-control-label" for="text-input">Otro cargo</label>
                                     <div class="col-md-3">
-                                        <input type="text" disabled v-model="concepto" class="form-control" >
+                                        <input type="text" v-model="concepto" class="form-control" >
                                     </div>
 
-                                    <label class="col-md-2 form-control-label" for="text-input">Monto</label>
-                                    <div class="col-md-4">
-                                        <input type="text" disabled v-model="monto_cargo" class="form-control" >
+                                    <label class="col-md-1 form-control-label" for="text-input">Monto</label>
+                                    <div class="col-md-2">
+                                        <input type="text" v-model="monto_cargo" class="form-control" placeholder="Concepto" >
+                                    </div>
+                                    <div class="col-md-2">
                                         <h6><strong> ${{ formatNumber(monto_cargo)}} </strong></h6>
                                     </div>
                                 </div>
 
                                 <div class="form-group row" v-if="arrayGastos.length">
                                     <div class="col-md-12">
-                                        <h6 align="center"><strong> GASTOS ADMINISTRATIVOS </strong></h6>
+                                        <h6><strong> GASTOS ADMINISTRATIVOS </strong></h6>
                                     </div>
                                 </div>
 
                                 <div v-if="arrayGastos.length">
                                         <div class="form-group row"  v-for="gasto in arrayGastos" :key="gasto.id">
-                                            <label class="col-md-2 form-control-label" for="text-input" v-text="gasto.concepto"></label>
+                                            <label class="col-md-3 form-control-label" for="text-input" v-text="gasto.concepto"></label>
                                             <div class="col-md-3">
                                                 <h6>${{ formatNumber(gasto.costo)}}</h6>
                                             </div>
                                         </div>
                                     </div>
 
+                                
+                                <div class="form-group row">
+                                    <div class="col-md-12">
+                                        <h5 align="center"><strong> Total a devolver </strong></h5>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <h5 align="center"><strong> ${{ formatNumber(devolver = depositos - monto_cargo - totalGastos)}} </strong></h5>
+                                    </div>
+                                </div>
+
                                 <div class="form-group row line-separator"></div>
 
                                 <div class="form-group row"> 
                                     <label class="col-md-3 form-control-label" for="text-input">Fecha</label>
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <input type="date" v-model="fecha_devolucion" class="form-control">
                                     </div>
                                 </div>
@@ -231,7 +243,7 @@
                         <!-- Botones del modal -->
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <button v-if="tipoAccion==1" type="button" class="btn btn-primary" @click="asignarGestor()">Asignar</button>
+                            <button type="button" class="btn btn-primary" @click="generarDevolucion()">Generar</button>
                         </div>
                     </div>
                       <!-- /.modal-content -->
@@ -275,6 +287,10 @@
                 fecha_devolucion:'',
                 cheque:'',
                 observaciones: '',
+                concepto:'',
+                monto_cargo:0,
+                totalGastos:0,
+                devolver : 0,
                 
                 tituloModal : '',
            
@@ -425,6 +441,10 @@
                     console.log(error);
                 });
             },
+            
+            generarDevolucion(){
+
+            },
 
 
             cambiarPagina(page,buscar, b_etapa, b_manzana, b_lote, criterio){
@@ -439,6 +459,22 @@
             cerrarModal(){
                 this.modal = 0;
                 this.tituloModal = '';
+                this.depositos = 0;
+                this.proyecto = "";
+                this.etapa = "";
+                this.manzana = "";
+                this.lote = "";
+                this.cliente = "";
+                this.banco = "";
+                this.depositos = 0;
+                this.fecha_devolucion = '';
+                this.cheque = '';
+                this.observaciones =  '';
+                this.concepto = '';
+                this.monto_cargo = 0;
+                this.totalGastos = 0;
+                this.arrayGastos = [];
+                this.cheque = '';
                 
             },
         
@@ -459,6 +495,9 @@
                         this.lote = data['num_lote'];
                         this.cliente = data['nombre_cliente'];
                         this.depositos = data['sumaPagares'] - data['sumaRestante'];
+                        this.devolver = 0;
+                        this.cheque ='';
+                        this.observaciones = '';
 
                         this.listarGastos();
                         this.selectCuenta();

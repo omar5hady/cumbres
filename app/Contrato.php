@@ -51,4 +51,8 @@ class Contrato extends Model
     public function expediente(){
         return $this->hasOne('App/Expediente');
     }
+
+    public function devolucion(){
+        return $this->hasOne('App/Devolucion');
+    }
 }

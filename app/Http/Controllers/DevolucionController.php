@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Credito;
+//use App\Credito;
 use App\Contrato;
-use App\Pago_contrato;
+use App\Devolucion;
+//use App\Pago_contrato;
 use DB;
-use Excel;
+//use Excel;
 
 class DevolucionController extends Controller
 {
@@ -578,5 +579,30 @@ class DevolucionController extends Controller
                 'to'            => $contratos->lastItem(),
             ], 'contratos' => $contratos//, 'contadorContrato' => $contadorContratos
         ];
+    }
+
+    public function storeDevolucion(Request $request){
+        try{
+            DB::beginTransaction();
+        
+            $devolucion = new Devolucion();
+            $devolucion->id = $request->id;
+            $devolucion->concepto = $request->concepto;
+            $devolucion->monto_cargo = $request->monto_cargo;
+            $devolucion->devolver = $request->devolver;
+            $devolucion->fecha = $request->fecha;
+            $devolucion->cheque = $request->cheque;
+            $devolucion->cuenta = $request->cuenta;
+            $devolucion->observaciones = $request->observaciones;
+            $devolucion->save();
+
+            $contrato = Contrato::findOrFail($request->id);
+            $contrato->devolucion = 1;
+            $contrato->save();
+
+            DB::commit();
+        } catch (Exception $e){
+            DB::rollBack();
+        }       
     }
 }

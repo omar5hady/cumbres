@@ -471,6 +471,7 @@ Route::group(['middleware' => ['auth']],function(){
 
         ////////////////////// RUTAS DEVOLUCION (CANCELACION)
         Route::get('/devolucion/index','DevolucionController@indexCancelaciones');
+        Route::post('/devolucion/registrar','DevolucionController@storeDevolucion');
 
     });
 
