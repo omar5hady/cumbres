@@ -28,12 +28,16 @@
                                             <option value="clientes.curp">CURP</option>
                                             <option value="clientes.nss">NSS</option>
                                             <option value="fraccionamientos.nombre">Proyecto</option>
-                                            <option value="clientes.created_at">Fecha de alta</option>
+                                            <option v-if="rolId != 2" value="clientes.created_at">Fecha de alta</option>
                                             <option v-if="rolId != 2" value="v.nombre">Asesor</option>
                                         </select>
                 
-                                        <input v-if="criterio=='clientes.created_at'" type="date" v-model="buscar" @keyup.enter="listarProspectos(1,buscar,b_clasificacion,criterio)" class="form-control">
-                                        <input v-else type="text" v-model="buscar" @keyup.enter="listarProspectos(1,buscar,b_clasificacion,criterio)" class="form-control">
+                                        <input v-if="criterio=='clientes.created_at'" type="text" placeholder="Desde" onfocus="(this.type='date')" onblur="(this.type='text')" v-model="buscar" class="form-control">
+                                        <input v-if="criterio=='clientes.created_at'" type="text" placeholder="Hasta" onfocus="(this.type='date')" onblur="(this.type='text')" v-model="buscar2" class="form-control">
+                                        <select class="form-control" v-if="criterio=='clientes.created_at'" v-model="buscar3" >
+                                            <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
+                                        </select>
+                                        <input v-else type="text" v-model="buscar" @keyup.enter="listarProspectos(1,buscar,buscar2,buscar3,b_clasificacion,criterio)" class="form-control">
                                         <select class="form-control" v-model="b_clasificacion" >
                                             <option value="">Clasificación</option>
                                             <option value="1">No viable</option>
@@ -43,9 +47,9 @@
                                             <option value="5">Ventas</option>
                                             <option value="6">Cancelado</option>                               
                                         </select>
-                                        <button type="submit" @click="listarProspectos(1,buscar,b_clasificacion,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                        <button type="submit" @click="listarProspectos(1,buscar,buscar2,buscar3,b_clasificacion,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                         <a v-if="rolId == 2" :href="'/prospectos/excel?buscar=' + buscar+ '&b_clasificacion=' + b_clasificacion + '&criterio=' + criterio "  class="btn btn-success"><i class="fa fa-file-text"></i>Excel</a>
-                                        <a v-if="rolId != 2" :href="'/prospectos/excel/gerente?buscar=' + buscar+ '&b_clasificacion=' + b_clasificacion + '&criterio=' + criterio "  class="btn btn-success"><i class="fa fa-file-text"></i>Excel</a>
+                                        <a v-if="rolId != 2" :href="'/prospectos/excel/gerente?buscar=' + buscar+ '&buscar2='+ buscar2 + '&buscar3=' + buscar3 + '&b_clasificacion=' + b_clasificacion + '&criterio=' + criterio "  class="btn btn-success"><i class="fa fa-file-text"></i>Excel</a>
                                         <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Clientes en total: '+ contador"> </span>
                                     </div>
                                 </div>
@@ -1108,6 +1112,8 @@
                 offset : 3,
                 criterio : 'personal.nombre', 
                 buscar : '',
+                buscar2: '',
+                buscar3:'2',
                 b_clasificacion: 2,
                 arrayCoacreditados : [],
                 arrayProspectos: [],
@@ -1156,9 +1162,9 @@
        
         methods : {
             /**Metodo para mostrar los registros */
-            listarProspectos(page, buscar, b_clasificacion, criterio){
+            listarProspectos(page, buscar, buscar2, buscar3, b_clasificacion, criterio){
                 let me = this;
-                var url = '/clientes?page=' + page + '&buscar=' + buscar+ '&b_clasificacion=' + b_clasificacion + '&criterio=' + criterio;
+                var url = '/clientes?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3 + '&b_clasificacion=' + b_clasificacion + '&criterio=' + criterio;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayProspectos = respuesta.personas.data;
@@ -1362,12 +1368,12 @@
                 
             },
 
-            cambiarPagina(page, buscar,b_clasificacion, criterio){
+            cambiarPagina(page, buscar, buscar2, buscar3, b_clasificacion, criterio){
                 let me = this;
                 //Actualiza la pagina actual
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
-                me.listarProspectos(page,buscar,b_clasificacion,criterio);
+                me.listarProspectos(page,buscar,buscar2,buscar3,b_clasificacion,criterio);
             },
             /**Metodo para registrar  */
             registrarProspecto(){
@@ -1425,7 +1431,7 @@
                     me.proceso=false;
                     me.listado=1;
                     me.limpiarDatos();
-                    me.listarProspectos(1,me.buscar,me.b_clasificacion,me.criterio);
+                    me.listarProspectos(1,me.buscar,me.buscar2,me.buscar3,me.b_clasificacion,me.criterio);
                     //Se muestra mensaje Success
                     swal({
                         position: 'top-end',
@@ -1542,7 +1548,7 @@
                     me.proceso=false;
                     me.listado=1;
                     me.limpiarDatos();
-                    me.listarProspectos(me.pagination.current_page,me.buscar,me.b_clasificacion,me.criterio);
+                    me.listarProspectos(me.pagination.current_page,me.buscar,me.buscar2,me.buscar3,me.b_clasificacion,me.criterio);
                     
                     //Se muestra mensaje Success
                     swal({
@@ -1578,7 +1584,7 @@
                     }).then(function (response) {
                         me.listado=1;
                         me.limpiarDatos();
-                        me.listarProspectos(1,me.buscar,me.b_clasificacion,me.criterio);
+                        me.listarProspectos(1,me.buscar,me.buscar2,me.buscar3,me.b_clasificacion,me.criterio);
                         swal(
                         'Desactivado!',
                         'El registro ha sido desactivado con éxito.',
@@ -1619,7 +1625,7 @@
                     }).then(function (response) {
                     me.listado=1;
                     me.limpiarDatos();
-                    me.listarProspectos(1,me.buscar,me.b_clasificacion,me.criterio);
+                    me.listarProspectos(1,me.buscar,me.buscar2,me.buscar3,me.b_clasificacion,me.criterio);
                         swal(
                         'Activado!',
                         'El registro ha sido activado con éxito.',
@@ -1813,7 +1819,7 @@
                         'clasificacion':me.clasificacion,
                         'observacion':me.observacion
                     }).then(function (response) {
-                        me.listarProspectos(1,me.buscar,me.b_clasificacion,me.criterio);
+                        me.listarProspectos(1,me.buscar,me.buscar2,me.buscar3,me.b_clasificacion,me.criterio);
                         me.cerrarModal();
                         swal(
                         'Hecho!',
@@ -1981,7 +1987,7 @@
            
         },
         mounted() {
-            this.listarProspectos(1,this.buscar,this.b_clasificacion,this.criterio);
+            this.listarProspectos(1,this.buscar,this.buscar2,this.buscar3,this.b_clasificacion,this.criterio);
             this.selectMedioPublicidad();
             this.selectFraccionamientos();
             this.selectFraccionamientos2();

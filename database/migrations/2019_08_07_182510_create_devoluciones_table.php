@@ -23,7 +23,7 @@ class CreateDevolucionesTable extends Migration
             $table->string('cuenta');
             $table->string('observaciones')->nullable();
             
-            $table->timestamps();
+            $table->timestamps(); 
 
             
             $table->foreign('id')->references('id')->on('contratos');

@@ -9,9 +9,12 @@
                 <div class="card scroll-box">
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i>Devoluciones
-
+                        <button class="btn btn-danger" v-if="listado == 1" @click="listado = 2 , listarDevoluciones(1, buscar_d, b_etapa_d, b_manzana_d, b_lote_d, criterio_d)">Historial de devoluciones</button>
+                        <button class="btn btn-warning" v-if="listado == 2" @click="listado = 1">Volver a las devoluciones</button>
                     </div>
-                    <div class="card-body">
+
+                    <!-- listado de devoluciones -->
+                    <div v-if="listado == 1" class="card-body">
                         <div class="form-group row">
                             <div class="col-md-10">
                                 <div class="input-group">
@@ -51,8 +54,7 @@
                                     <tr> 
                                         
                                         <th># Ref</th>
-                                        <th>Cliente</th>
-                                       
+                                        <th>Cliente</th> 
                                         <th>Proyecto</th>
                                         <th>Etapa</th>
                                         <th>Manzana</th>
@@ -94,6 +96,106 @@
                                 </li>
                                 <li class="page-item" v-if="pagination.last_page > 7 && pagination.current_page<pagination.last_page">
                                     <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.last_page,buscar, b_etapa, b_manzana, b_lote, criterio)">Ultimo</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+
+                    <!-- listado de historial de devoluciones -->
+                    <div v-if="listado == 2" class="card-body">
+                        <div class="form-group row">
+                            <div class="col-md-10">
+                                <div class="input-group">
+                                    <!--Criterios para el listado de busqueda -->
+                                    <select class="form-control col-md-5" v-model="criterio_d" @click="selectFraccionamientos()">
+                                        <option value="lotes.fraccionamiento_id">Proyecto</option>
+                                        <option value="personal.nombre">Cliente</option>
+                                        <option value="creditos.id"># Folio</option>
+                                    </select>
+                                    
+                                    <select class="form-control" v-if="criterio_d=='lotes.fraccionamiento_id'" v-model="buscar_d"  @keyup.enter="listarDevoluciones(1, buscar_d, b_etapa_d, b_manzana_d, b_lote_d, criterio_d)" @click="selectEtapa(buscar_d)">
+                                        <option value="">Seleccione</option>
+                                        <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                                    </select>
+
+                                    <select class="form-control" v-if="criterio_d=='lotes.fraccionamiento_id'" v-model="b_etapa_d"  @keyup.enter="listarDevoluciones(1, buscar_d, b_etapa_d, b_manzana_d, b_lote_d, criterio_d)" @click="selectManzanas(buscar_d,b_etapa_d)"> 
+                                        <option value="">Etapa</option>
+                                        <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
+                                    </select>
+
+                                    <select class="form-control" v-if="criterio_d=='lotes.fraccionamiento_id'" v-model="b_manzana_d" >
+                                        <option value="">Seleccione</option>
+                                        <option v-for="manzana in arrayManzanas" :key="manzana.manzana" :value="manzana.manzana" v-text="manzana.manzana"></option>
+                                    </select>
+
+                                    <input type="text" v-if="criterio_d=='lotes.fraccionamiento_id'" v-model="b_lote_d" class="form-control" placeholder="Lote a buscar">
+
+                                    <input v-else type="text"  v-model="buscar_d" @keyup.enter="listarDevoluciones(1, buscar_d, b_etapa_d, b_manzana_d, b_lote_d, criterio_d)" class="form-control" placeholder="Texto a buscar">
+                                    <button type="submit" @click="listarDevoluciones(1, buscar_d, b_etapa_d, b_manzana_d, b_lote_d, criterio_d)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                   
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table2 table-bordered table-striped table-sm">
+                                <thead>
+                                    <tr> 
+                                        
+                                        <th># Ref</th>
+                                        <th>Cliente</th> 
+                                        <th>Proyecto</th>
+                                        <th>Etapa</th>
+                                        <th>Manzana</th>
+                                        <th>Lote</th>
+                                        <th>Depositos</th>
+                                        <th>Fecha cancelación</th>
+                                        <th>Fecha de devolucion</th>
+                                        <th>Concepto</th>
+                                        <th>Cargo</th>
+                                        <th>Cheque</th>
+                                        <th>Cuenta</th>
+                                        <th>Observacion</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="devoluciones in arrayDevoluciones" :key="devoluciones.id"> 
+                                    <template v-if="(devoluciones.sumaPagares - devoluciones.sumaRestante) > 0">
+                                        <td class="td2" v-text="devoluciones.id"></td>
+                                        <td class="td2" v-text="devoluciones.nombre_cliente"></td>
+                                        <td class="td2" v-text="devoluciones.proyecto"></td>
+                                        <td class="td2" v-text="devoluciones.etapa"></td>
+                                        <td class="td2" v-text="devoluciones.manzana"></td>
+                                        <td class="td2" v-text="devoluciones.num_lote"></td>
+                                        <td class="td2" v-text="devoluciones.sumaPagares - devoluciones.sumaRestante"></td>
+                                        <td class="td2" v-text="this.moment(devoluciones.fecha_status).locale('es').format('DD/MMM/YYYY')"></td>
+                                        <td class="td2" v-text="this.moment(devoluciones.fecha).locale('es').format('DD/MMM/YYYY')"></td>
+                                        <td class="td2" v-text="devoluciones.concepto"></td>
+                                        <td class="td2" v-text="devoluciones.monto_cargo"></td>
+                                        <td class="td2" v-text="devoluciones.cheque"></td>
+                                        <td class="td2" v-text="devoluciones.cuenta"></td>
+                                        <td class="td2" v-text="devoluciones.observaciones"></td>
+                                    </template>
+                                    </tr>                               
+                                </tbody>
+                            </table>  
+                        </div>
+                        <nav>
+                            <!--Botones de paginacion -->
+                            <ul class="pagination">
+                                <li class="page-item" v-if="pagination2.last_page > 7 && pagination2.current_page > 7">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(1, buscar_d, b_etapa_d, b_manzana_d, b_lote_d, criterio_d)">Inicio</a>
+                                </li>
+                                <li class="page-item" v-if="pagination2.current_page > 1">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page - 1, buscar_d, b_etapa_d, b_manzana_d, b_lote_d, criterio_d)">Ant</a>
+                                </li>
+                                <li class="page-item" v-for="page in pagesNumber2" :key="page" :class="[page == isActived ? 'active' : '']">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(page, buscar_d, b_etapa_d, b_manzana_d, b_lote_d, criterio_d)" v-text="page"></a>
+                                </li>
+                                <li class="page-item" v-if="pagination2.current_page < pagination2.last_page">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page + 1, buscar_d, b_etapa_d, b_manzana_d, b_lote_d, criterio_d)">Sig</a>
+                                </li>
+                                <li class="page-item" v-if="pagination2.last_page > 7 && pagination2.current_page<pagination2.last_page">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.last_page, buscar_d, b_etapa_d, b_manzana_d, b_lote_d, criterio_d)">Ultimo</a>
                                 </li>
                             </ul>
                         </nav>
@@ -275,6 +377,7 @@
                 arrayManzanas:[],
                 arrayBancos : [],
                 arrayGastos : [],
+                arrayDevoluciones: [],
 
                 modal : 0,
                 depositos : 0,
@@ -305,12 +408,27 @@
                     'from' : 0,
                     'to' : 0,
                 },
+                pagination2 : {
+                    'total' : 0,         
+                    'current_page' : 0,
+                    'per_page' : 0,
+                    'last_page' : 0,
+                    'from' : 0,
+                    'to' : 0,
+                },
                 offset : 3,
+                offset2 : 3,
                 criterio : 'lotes.fraccionamiento_id', 
                 buscar : '',
                 b_etapa: '',
                 b_manzana: '',
-                b_lote: ''
+                b_lote: '',
+                buscar_d: '',
+                b_etapa_d:'',
+                b_manzana_d:'',
+                b_lote_d:'',
+                criterio_d:'lotes.fraccionamiento_id',
+                listado : 1
                
             }
         },
@@ -343,6 +461,34 @@
                 return pagesArray;
             },
 
+            // Funciones de la paginacion del historial de devoluciones
+            isActived2: function(){
+                return this.pagination2.current_page;
+            },
+            //Calcula los elementos de la paginación
+            pagesNumber2:function(){
+                if(!this.pagination2.to){
+                    return [];
+                }
+
+                var from = this.pagination2.current_page - this.offset2;
+                if(from < 1){
+                    from = 1;
+                }
+
+                var to = from + (this.offset2 * 2);
+                if(to >= this.pagination2.last_page){
+                    to = this.pagination2.last_page;
+                }
+
+                var pagesArray = [];
+                while(from <= to){
+                    pagesArray.push(from);
+                    from++;
+                }
+                return pagesArray;
+            },
+
         },
 
         
@@ -356,6 +502,20 @@
                     var respuesta = response.data;
                     me.arrayContratos = respuesta.contratos.data;
                     me.pagination = respuesta.pagination;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+                
+            },
+
+            listarDevoluciones(page, buscar_d, b_etapa_d, b_manzana_d, b_lote_d, criterio_d){
+                let me = this;
+                var url = '/devolucion/indexDevoluciones?page=' + page + '&buscar=' + buscar_d + '&b_etapa=' + b_etapa_d + '&b_manzana=' + b_manzana_d + '&b_lote=' + b_lote_d +  '&criterio=' + criterio_d;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayDevoluciones = respuesta.devoluciones.data;
+                    me.pagination2 = respuesta.pagination;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -443,9 +603,37 @@
             },
             
             generarDevolucion(){
-
+                if(this.proceso==true) //Se verifica si hay un error (campo vacio)
+                {
+                    return;
+                }
+                let me = this;
+                me.proceso = true;
+                axios.post('/devolucion/registrar',{
+                'id': this.id,
+                'concepto': this.concepto,
+                'monto_cargo': this.monto_cargo,
+                'devolver': this.devolver,
+                'fecha': this.fecha_devolucion,
+                'cheque': this.cheque,
+                'cuenta': this.banco,
+                'observaciones': this.observaciones
+            }).then(function (response){
+                me.proceso=false;
+                me.cerrarModal(); //al guardar el registro se cierra el modal
+                me.listarContratos(me.pagination.current_page,me.buscar,me.b_etapa, me.b_manzana, me.b_lote, me.criterio); //se enlistan nuevamente los registros
+                //Se muestra mensaje Success
+                swal({
+                    position: 'top-end',
+                    type: 'success',
+                    title: 'Devolucion generada correctamente',
+                    showConfirmButton: false,
+                    timer: 1500
+                    })
+            }).catch(function (error){
+                console.log(error);
+            });
             },
-
 
             cambiarPagina(page,buscar, b_etapa, b_manzana, b_lote, criterio){
                 let me = this;
@@ -453,6 +641,14 @@
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
                 me.listarContratos(page,buscar, b_etapa, b_manzana, b_lote, criterio);
+            },
+
+            cambiarPagina2(page, buscar_d, b_etapa_d, b_manzana_d, b_lote_d, criterio_d){
+                let me = this;
+                //Actualiza la pagina actual
+                me.pagination2.current_page = page;
+                //Envia la petición para visualizar la data de esta pagina
+                me.listarDevoluciones(page, buscar_d, b_etapa_d, b_manzana_d, b_lote_d, criterio_d);
             },
        
 

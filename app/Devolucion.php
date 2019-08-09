@@ -14,6 +14,6 @@ class Devolucion extends Model
 
     public function contrato()
     {
-        return $this->belongsTo('App\Contrato');
+        return $this->belongsTo('App\Contrato'); 
     }
 }
