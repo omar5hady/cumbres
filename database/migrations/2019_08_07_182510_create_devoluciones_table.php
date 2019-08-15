@@ -14,9 +14,8 @@ class CreateDevolucionesTable extends Migration
     public function up()
     {
         Schema::create('devoluciones', function (Blueprint $table) {
-            $table->unsignedInteger('id');
-            $table->string('concepto')->nullable();
-            $table->double('monto_cargo')->default(0)->nullable();
+            $table->increments('id');
+            $table->unsignedInteger('contrato_id');
             $table->double('devolver')->default(0);
             $table->date('fecha');
             $table->string('cheque');
@@ -26,7 +25,7 @@ class CreateDevolucionesTable extends Migration
             $table->timestamps(); 
 
             
-            $table->foreign('id')->references('id')->on('contratos');
+            $table->foreign('contrato_id')->references('id')->on('contratos');
         });
     }
 

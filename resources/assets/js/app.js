@@ -87,6 +87,7 @@ Vue.component('expediente', require('./components/IntegracionExp.vue'));
 Vue.component('asignargestor', require('./components/AsignarGestor.vue'));
 Vue.component('seguimiento-tramite', require('./components/SeguimientoTramite.vue'));
 Vue.component('devolucion-cancelacion', require('./components/Devolucion.vue'));
+Vue.component('devolucion-credito', require('./components/CreditoDevolucion.vue'));
 
 Vue.component('notification', require('./components/Notification.vue'));
 Vue.component('perfil-user', require('./components/Perfil.vue'));

@@ -640,10 +640,12 @@ class AvanceController extends Controller
     }
 
 
-    public function exportExcel(Request $request, $contrato)
+    public function exportExcel(Request $request)
     {
         $buscar = $request->buscar;
-        $avances = Avance::join('lotes','avances.lote_id','=','lotes.id')
+        $contrato = $request->contrato;
+        if($contrato != ''){
+            $avances = Avance::join('lotes','avances.lote_id','=','lotes.id')
                         ->select('lotes.num_lote as lote', 
                             DB::raw("SUM(avances.avance_porcentaje) as porcentajeTotal"), 
                             'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id','lotes.aviso')
@@ -654,6 +656,22 @@ class AvanceController extends Controller
                         ->where('lotes.aviso', '=', $contrato)
                         ->groupBy('avances.lote_id')
                         ->get();
+        }
+        else{
+            $avances = Avance::join('lotes','avances.lote_id','=','lotes.id')
+                        ->select('lotes.num_lote as lote', 
+                            DB::raw("SUM(avances.avance_porcentaje) as porcentajeTotal"), 
+                            'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id','lotes.aviso')
+                        ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                        ->addSelect('fraccionamientos.nombre as proyecto')
+                        ->join('modelos','lotes.modelo_id','=','modelos.id')
+                        ->addSelect('modelos.nombre as modelo')
+                        ->where('lotes.fraccionamiento_id', '=', $buscar)
+                        ->where('lotes.aviso', '!=', 0)
+                        ->groupBy('avances.lote_id')
+                        ->get();
+        }
+        
    
         
             return Excel::create('Avance_general', function($excel) use ($avances){

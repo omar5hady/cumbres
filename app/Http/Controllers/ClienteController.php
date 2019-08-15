@@ -3075,12 +3075,12 @@ class ClienteController extends Controller
             $excel->sheet('clientes', function($sheet) use ($personas){
                 
                 $sheet->row(1, [
-                    'Nombre', 'Celular', 'Email', 'RFC', 'IMSS', 'CURP',
+                    'Nombre', 'Celular','Telefono' ,'Email', 'RFC', 'IMSS', 'CURP',
                     'Proyecto de interes','Clasificación','Vendedor'
                 ]);
 
 
-                $sheet->cells('A1:I1', function ($cells) {
+                $sheet->cells('A1:J1', function ($cells) {
                     $cells->setBackground('#052154');
                     $cells->setFontColor('#ffffff');
                     // Set font family
@@ -3147,6 +3147,7 @@ class ClienteController extends Controller
                     $sheet->row($index+2, [
                         $persona->n_completo, 
                         $persona->celular, 
+                        $persona->telefono, 
                         $persona->email, 
                         mb_strtoupper($persona->rfc), 
                         $persona->nss,
@@ -3156,7 +3157,7 @@ class ClienteController extends Controller
                         $persona->v_completo
                     ]);	
                 }
-                $num='A1:I' . $cont;
+                $num='A1:J' . $cont;
                 $sheet->setBorder($num, 'thin');
             });
         }

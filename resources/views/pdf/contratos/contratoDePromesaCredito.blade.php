@@ -219,21 +219,15 @@ el presente contrato se rescindirá en forma automática.
 
 <p>
 <strong>SEXTA.-</strong> Este contrato podrá ser rescindido de pleno derecho y sin necesidad de declaración judicial en caso de incumplimiento a lo pactado en este contrato. 
-        En forma enunciativa y no limitativa, se mencionan algunas causales en que puede incurrir el comprador: 
-        a).- No cubrir cualquiera de los pagos pactados en los incisos b) y c) de la cláusula cuarta; 
-        b).- No obtener la totalidad del crédito para el pago de la cantidad establecida en el inciso 
-        a) de la cláusula cuarta, en el plazo de 45 días contados a partir de la terminación de la vivienda; 
-        c).- No entregar en forma oportuna la documentación a que se compromete en términos de la cláusula tercera.
+        En forma enunciativa y no limitativa, se mencionan algunas causales en que puede incurrir el comprador: a).- No cubrir cualquiera de los pagos pactados en los incisos b) y c) de la cláusula cuarta; b).- No obtener la totalidad del crédito para el pago de la cantidad establecida en el inciso 
+        a) de la cláusula cuarta, en el plazo de 45 días contados a partir de la terminación de la vivienda; c).- No entregar en forma oportuna la documentación a que se compromete en términos de la cláusula tercera.
 </p>
 
 <p>
 La falta de pago puntual por parte de <strong>EL PROMITENTE COMPRADOR</strong> faculta a <strong>EL PROMITENTE VENDEDOR</strong> al cobro de intereses calculados 
 a razón del 5% mensual por cada día de retraso y calculados sobre la cantidad adeudada. 
-El cobro de intereses por parte de <strong>EL PROMITENTE VENDEDOR</strong>, no implica una renuncia al derecho a ejercer la recisión de pleno derecho 
-y sin necesidad de declaración judicial que en este mismo contrato se prevé.
-</p>
-
-<p>
+El cobro de intereses por parte de <strong>EL PROMITENTE VENDEDOR</strong>, no implica una renuncia al derecho a ejercer la recisión de pleno derecho y sin necesidad de declaración judicial que en este mismo contrato se prevé.
+<br>
 En caso de rescisión del presente contrato, por causa imputable a <strong>EL PROMITENTE COMPRADOR, EL PROMITENTE VENDEDOR</strong> deberá reintegrar 
 el importe recibido hasta la fecha por parte de <strong>EL PROMITENTE COMPRADOR</strong>, descontándose la cantidad de $ 25,000.00 (Veinticinco Mil Pesos 00/100 Moneda Nacional), 
 como pena convencional por los daños y perjuicios ocasionados. El importe se reintegrara hasta que <strong>EL PROMITENTE VENDEDOR</strong> recupere la inversión realizada 
@@ -278,9 +272,7 @@ en tres ejemplares de un mismo tenor y para un solo efecto, a los <strong>{{$con
 
         <br>
         <br>
-        <br>
-        
-        
+   
 
             <div class="table3">
                 <div class="table-row">

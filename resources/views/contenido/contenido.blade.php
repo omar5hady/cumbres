@@ -302,6 +302,10 @@
         <template v-if="menu==209">
             <devolucion-cancelacion></devolucion-cancelacion>
         </template>
+
+        <template v-if="menu==210">
+            <devolucion-credito></devolucion-credito>
+        </template>
        
 
         

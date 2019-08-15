@@ -740,83 +740,137 @@ class DepositoController extends Controller
 
     public function store(Request $request){
         if(!$request->ajax())return redirect('/');
-        $deposito = new Deposito();
-        $deposito->pago_id = $request->pago_id;
-        $deposito->cant_depo = $request->cant_depo;
-        $deposito->interes_mor = $request->interes_mor;
-        $deposito->interes_ord = $request->interes_ord;
-        $deposito->obs_mor = $request->obs_mor;
-        $deposito->obs_ord = $request->obs_ord;
-        $deposito->num_recibo = $request->num_recibo;
-        $deposito->banco = $request->banco;
-        $deposito->concepto = $request->concepto;
-        $deposito->fecha_pago = $request->fecha_pago;
+        try{
+            DB::beginTransaction();
+            $deposito = new Deposito();
+            $deposito->pago_id = $request->pago_id;
+            $deposito->cant_depo = $request->cant_depo;
+            $deposito->interes_mor = $request->interes_mor;
+            $deposito->interes_ord = $request->interes_ord;
+            $deposito->obs_mor = $request->obs_mor;
+            $deposito->obs_ord = $request->obs_ord;
+            $deposito->num_recibo = $request->num_recibo;
+            $deposito->banco = $request->banco;
+            $deposito->concepto = $request->concepto;
+            $deposito->fecha_pago = $request->fecha_pago;
 
-        $pago = $request->cant_depo - $request->interes_mor - $request->interes_ord;
+            $pago = $request->cant_depo - $request->interes_mor - $request->interes_ord;
 
-        $pago_contrato = Pago_contrato::findOrFail($request->pago_id);
-        $pago_contrato->restante =  $pago_contrato->restante - $pago;
-        if($pago_contrato->restante == 0)
-            $pago_contrato->pagado = 2;
-        else{
-            $pago_contrato->pagado = 1;
-        }
+            $pago_contrato = Pago_contrato::findOrFail($request->pago_id);
+            $pago_contrato->restante =  $pago_contrato->restante - $pago;
+            if($pago_contrato->restante == 0)
+                $pago_contrato->pagado = 2;
+            else{
+                $pago_contrato->pagado = 1;
+            }
 
-        if($request->interes_ord != 0){
-            $gasto = new Gasto_admin();
-            $gasto->contrato_id = $pago_contrato->contrato_id;
-            $gasto->concepto = 'Interes Ordinario';
-            $gasto->costo = $request->interes_ord;
-            $gasto->fecha = $request->fecha;
-            $gasto->observacion = '';
-            $gasto->save();
-        }
+            if($request->interes_ord != 0){
+                $gasto = new Gasto_admin();
+                $gasto->contrato_id = $pago_contrato->contrato_id;
+                $gasto->concepto = 'Interes Ordinario';
+                $gasto->costo = $request->interes_ord;
+                $gasto->fecha = $request->fecha;
+                $gasto->observacion = '';
+                $gasto->save();
+            }
 
-        $contrato = Contrato::findOrFail($pago_contrato->contrato_id);
-        $contrato->saldo = $contrato->saldo + $request->interes_ord - $pago;
-        $contrato->save(); 
+            $contrato = Contrato::findOrFail($pago_contrato->contrato_id);
+            $contrato->saldo = $contrato->saldo - $pago;
+            $contrato->save(); 
 
-        $pago_contrato->save();
+            $pago_contrato->save();
 
-        $deposito->save();
+            $deposito->save();
+            DB::commit();
+        } catch (Exception $e){
+            DB::rollBack();
+        }       
     }
 
     public function update(Request $request){
         if(!$request->ajax())return redirect('/');
-        $deposito = Deposito::findOrFail($request->id);
+        try{
+            DB::beginTransaction();
+            $deposito = Deposito::findOrFail($request->id);
+            $pago_contrato = Pago_contrato::findOrFail($request->pago_id);
 
-        if($deposito->cant_depo != $request->cant_depo){
-            $diferencia = $deposito->cant_depo - $request->cant_depo;
-        }
+            if($deposito->cant_depo != $request->cant_depo){
+                $diferencia = $deposito->cant_depo - $request->cant_depo;
+            }
 
-        $deposito->cant_depo = $request->cant_depo;
-        $deposito->interes_mor = $request->interes_mor;
-        $deposito->interes_ord = $request->interes_ord;
-        $deposito->obs_mor = $request->obs_mor;
-        $deposito->obs_ord = $request->obs_ord;
-        $deposito->num_recibo = $request->num_recibo;
-        $deposito->banco = $request->banco;
-        $deposito->concepto = $request->concepto;
-        $deposito->fecha_pago = $request->fecha_pago;
+            $pagoAnt = $deposito->cant_depo - $deposito->interes_mor - $deposito->interes_ord;
+            $pago = $request->cant_depo - $request->interes_mor - $request->interes_ord;
+            
+            if($request->interes_ord != $deposito->interes_ord){
+                $b_gasto = Gasto_admin::select('id')
+                            ->where('concepto','=','Interes Ordinario')
+                            ->where('costo','=',$deposito->interes_ord)
+                            ->where('contrato_id','=',$pago_contrato->contrato_id)
+                            ->get();
 
-        $pago_contrato = Pago_contrato::findOrFail($request->pago_id);
-        $pago_contrato->restante = $pago_contrato->restante + $diferencia;
-        if($pago_contrato->restante == 0)
-            $pago_contrato->pagado = 2;
-        else{
-            $pago_contrato->pagado = 1;
-        }
-        $pago_contrato->save();
+                $gasto = Gasto_admin::findOrFail($b_gasto[0]->id);
+                $gasto->costo = $request->interes_ord;
+                $gasto->save();
+            }
 
-        $deposito->save();
+            $deposito->cant_depo = $request->cant_depo;
+            $deposito->interes_mor = $request->interes_mor;
+            $interesAnt = $deposito->interes_ord;
+            $deposito->interes_ord = $request->interes_ord;
+            $deposito->obs_mor = $request->obs_mor;
+            $deposito->obs_ord = $request->obs_ord;
+            $deposito->num_recibo = $request->num_recibo;
+            $deposito->banco = $request->banco;
+            $deposito->concepto = $request->concepto;
+            $deposito->fecha_pago = $request->fecha_pago;
+
+           
+            $pago_contrato->restante = $pago_contrato->restante + $diferencia;
+            if($pago_contrato->restante == 0)
+                $pago_contrato->pagado = 2;
+            else{
+                $pago_contrato->pagado = 1;
+            }
+
+            $contrato = Contrato::findOrFail($pago_contrato->contrato_id);
+            $contrato->saldo = $contrato->saldo + $pagoAnt - $pago;
+            $contrato->save(); 
+
+            $pago_contrato->save();
+
+            $deposito->save();
+            DB::commit();
+        } catch (Exception $e){
+            DB::rollBack();
+        }       
     }
 
     public function delete(Request $request){
         if(!$request->ajax())return redirect('/');
         $deposito = Deposito::findOrFail($request->id);
+
+        $pagoAnt = $deposito->cant_depo - $deposito->interes_mor - $deposito->interes_ord;
+
         $pago_contrato = Pago_contrato::findOrFail($request->pago_id);
         $pago = $deposito->cant_depo - $deposito->interes_mor - $deposito->interes_ord;
         $pago_contrato->restante = $pago_contrato->restante + $pago;
+
+        $contrato = Contrato::findOrFail($pago_contrato->contrato_id);
+        $contrato->saldo = $contrato->saldo + $pagoAnt;
+
+        if($deposito->interes_ord != 0){
+            $b_gasto = Gasto_admin::select('id')
+                        ->where('concepto','=','Interes Ordinario')
+                        ->where('costo','=',$deposito->interes_ord)
+                        ->where('contrato_id','=',$pago_contrato->contrato_id)
+                        ->get();
+
+            $gasto = Gasto_admin::findOrFail($b_gasto[0]->id);
+            $gasto->delete();
+        }
+
+        $contrato->save(); 
+
         $pago_contrato->save();
 
         $deposito->delete();

@@ -339,6 +339,12 @@
                                         <a class="nav-link" href="#"><i class="icon-reload"></i> Devolución por cancelación</a>
                                     </li>
                                 @endif
+
+                                @if(Auth::user()->rol_id == 1)
+                                    <li @click="menu=210" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="icon-reload"></i> Devolución por credito excedente</a>
+                                    </li>
+                                @endif
                                     
                                     
                             </ul>
@@ -455,7 +461,7 @@
 
     <footer class="app-footer">
         
-        <span><a href="http://www.casascumbres.mx/" target="_blank">Grupo constructor cumbres</a> &copy; 2018</span>
+        <span><a href="http://www.casascumbres.mx/" target="_blank">Grupo constructor cumbres</a> &copy; 2019</span>
         
         <span class="ml-auto">Desarrollado por <a href="http://www.casascumbres.mx/" target="_blank">Casas Cumbres</a></span>
     </footer>

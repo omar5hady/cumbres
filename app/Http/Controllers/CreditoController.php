@@ -148,6 +148,8 @@ class CreditoController extends Controller
         if (!$request->ajax()) return redirect('/');
         try{
             DB::beginTransaction();
+
+            $asesor = Cliente::findOrFail($prospecto);
             $credito = new Credito();
             $credito->prospecto_id = $prospecto;
             $credito->num_dep_economicos = $request->dep_economicos;
@@ -178,7 +180,7 @@ class CreditoController extends Controller
             $credito->credito_solic = $request->monto_credito;
             $credito->lote_id = $request->lote_id;
             $credito->fraccionamiento = $request->fraccionamiento;
-            $credito->vendedor_id = Auth::user()->id;
+            $credito->vendedor_id = $asesor->vendedor_id;
 
 
             $credito->save();

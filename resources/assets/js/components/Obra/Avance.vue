@@ -275,7 +275,7 @@
                             <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
                              <!--   Boton   -->
                             <template v-if="tipoAccion == 5">
-                                <a class="btn btn-success" v-bind:href="'/avances/resume_excel/'+numContrato" >
+                                <a class="btn btn-success" v-bind:href="'/avances/resume_excel?buscar=' + fraccionamiento_id + '&contrato=' + numContrato" >
                                     <i class="icon-share-alt"></i>&nbsp;Descargar
                                 </a>
                             </template> 

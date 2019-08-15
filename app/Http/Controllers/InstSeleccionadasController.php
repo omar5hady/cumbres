@@ -9,6 +9,7 @@ use Auth;
 use Carbon\Carbon;
 use App\Dep_credito;
 use Excel;
+use App\Contrato;
 
 class InstSeleccionadasController extends Controller
 {
@@ -1058,6 +1059,11 @@ class InstSeleccionadasController extends Controller
         
         $credito = inst_seleccionada::findOrFail($request->inst_sel_id);
         $credito->cobrado = $credito->cobrado + $request->cant_depo;
+
+        $contrato = Contrato::findOrFail($credito->credito_id);
+        $contrato->saldo = $contrato->saldo - $deposito->cant_depo;
+        $contrato->save();
+
         $credito->save();
 
         $deposito->save();
@@ -1069,6 +1075,11 @@ class InstSeleccionadasController extends Controller
         $deposito = Dep_credito::findOrFail($request->dep_id);
         $credito = inst_seleccionada::findOrFail($request->inst_sel_id);
         $credito->cobrado = $credito->cobrado - $deposito->cant_depo + $request->cant_depo;
+
+        $contrato = Contrato::findOrFail($credito->credito_id);
+        $contrato->saldo = $contrato->saldo + $deposito->cant_depo - $request->cant_depo;
+        $contrato->save();
+
         $credito->save();
         $deposito->inst_sel_id = $request->inst_sel_id;
         $deposito->cant_depo = $request->cant_depo;
@@ -1751,5 +1762,465 @@ class InstSeleccionadasController extends Controller
         }
         
         )->download('xls');
+    }
+
+    public function indexDevolucion (Request $request){
+        $buscar = $request->buscar;
+        $b_etapa = $request->b_etapa;
+        $b_manzana = $request->b_manzana;
+        $b_lote = $request->b_lote;
+        $criterio = $request->criterio;
+
+        if($buscar == ''){
+            $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                    ->join('contratos','contratos.id','=','creditos.id')
+                    ->join('lotes','lotes.id','=','creditos.lote_id')
+                    ->join('personal','personal.id','=','creditos.prospecto_id')
+                    ->select('contratos.id', 'lotes.credito_puente',
+                            'creditos.fraccionamiento as proyecto',
+                            'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
+                            'personal.nombre','personal.apellidos', 
+                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
+                            'inst_seleccionadas.id as inst_sel_id',
+                            'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
+                            'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado',
+
+                            DB::raw("(SELECT SUM(inst_seleccionadas.cobrado) FROM inst_seleccionadas
+                            WHERE inst_seleccionadas.credito_id = contratos.id AND 
+                            (inst_seleccionadas.elegido = 1 or inst_seleccionadas.tipo = 1)
+                            GROUP BY inst_seleccionadas.credito_id) as sumCobrado"),
+                            
+                            DB::raw("(SELECT SUM(inst_seleccionadas.monto_credito) FROM inst_seleccionadas
+                            WHERE inst_seleccionadas.credito_id = contratos.id AND 
+                            (inst_seleccionadas.elegido = 1 or inst_seleccionadas.tipo = 1)
+                            GROUP BY inst_seleccionadas.credito_id) as sumCredito")
+                            )
+
+                   ->where(DB::raw("(SELECT SUM(inst_seleccionadas.cobrado) FROM inst_seleccionadas
+                        WHERE inst_seleccionadas.credito_id = contratos.id AND 
+                        (inst_seleccionadas.elegido = 1 or inst_seleccionadas.tipo = 1)
+                        GROUP BY inst_seleccionadas.credito_id)"),
+                        '>',
+                        DB::raw("(SELECT SUM(inst_seleccionadas.monto_credito) FROM inst_seleccionadas
+                        WHERE inst_seleccionadas.credito_id = contratos.id AND 
+                        (inst_seleccionadas.elegido = 1 or inst_seleccionadas.tipo = 1)
+                        GROUP BY inst_seleccionadas.credito_id)"))
+                    // ->where('inst_seleccionadas.cobrado','>','0')
+                     ->where('inst_seleccionadas.elegido', '=', 1)
+                     ->where('contratos.status', '=', 3)
+                    // ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                    // ->where('inst_seleccionadas.cobrado','>','0')
+                    // ->where('contratos.status', '=', 3)
+                    ->orderBy('inst_seleccionadas.cobrado','asc')
+                    ->orderBy('inst_seleccionadas.monto_credito','desc')
+                    
+                    ->paginate(10);
+        }
+        else{
+            switch($criterio){
+                case 'creditos.id':{
+                    $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                        ->join('contratos','contratos.id','=','creditos.id')
+                        ->join('lotes','lotes.id','=','creditos.lote_id')
+                        ->join('personal','personal.id','=','creditos.prospecto_id')
+                        ->select('contratos.id', 'lotes.credito_puente',
+                                'creditos.fraccionamiento as proyecto',
+                                'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
+                                'personal.nombre','personal.apellidos', 
+                                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
+                                'inst_seleccionadas.id as inst_sel_id',
+                                'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
+                                'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado',
+                                DB::raw("(SELECT SUM(inst_seleccionadas.cobrado) FROM inst_seleccionadas
+                                WHERE inst_seleccionadas.credito_id = contratos.id AND 
+                                (inst_seleccionadas.elegido = 1 or inst_seleccionadas.tipo = 1)
+                                GROUP BY inst_seleccionadas.credito_id) as sumCobrado"),
+                                
+                                DB::raw("(SELECT SUM(inst_seleccionadas.monto_credito) FROM inst_seleccionadas
+                                WHERE inst_seleccionadas.credito_id = contratos.id AND 
+                                (inst_seleccionadas.elegido = 1 or inst_seleccionadas.tipo = 1)
+                                GROUP BY inst_seleccionadas.credito_id) as sumCredito")
+                                )
+
+                        ->where(DB::raw("(SELECT SUM(inst_seleccionadas.cobrado) FROM inst_seleccionadas
+                                WHERE inst_seleccionadas.credito_id = contratos.id AND 
+                                (inst_seleccionadas.elegido = 1 or inst_seleccionadas.tipo = 1)
+                                GROUP BY inst_seleccionadas.credito_id)"),
+                                '>',
+                                DB::raw("(SELECT SUM(inst_seleccionadas.monto_credito) FROM inst_seleccionadas
+                                WHERE inst_seleccionadas.credito_id = contratos.id AND 
+                                (inst_seleccionadas.elegido = 1 or inst_seleccionadas.tipo = 1)
+                                GROUP BY inst_seleccionadas.credito_id)"))
+                        // ->where('inst_seleccionadas.cobrado','>','0')
+                        ->where('inst_seleccionadas.elegido', '=', 1)
+                        ->where($criterio,'=',$buscar)
+                        ->where('contratos.status', '=', 3)
+                        // ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                        // ->where('inst_seleccionadas.cobrado','>','0')
+                        // ->where($criterio,'=',$buscar)
+                        // ->where('contratos.status', '=', 3)
+                        ->orderBy('inst_seleccionadas.cobrado','asc')
+                        ->orderBy('inst_seleccionadas.monto_credito','desc')
+                        
+                        ->paginate(10);
+
+                    break;
+                }
+                case 'personal.nombre':{
+                    $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                        ->join('contratos','contratos.id','=','creditos.id')
+                        ->join('lotes','lotes.id','=','creditos.lote_id')
+                        ->join('personal','personal.id','=','creditos.prospecto_id')
+                        ->select('contratos.id', 'lotes.credito_puente',
+                                'creditos.fraccionamiento as proyecto',
+                                'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
+                                'personal.nombre','personal.apellidos', 
+                                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
+                                'inst_seleccionadas.id as inst_sel_id',
+                                'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
+                                'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado',
+                                DB::raw("(SELECT SUM(inst_seleccionadas.cobrado) FROM inst_seleccionadas
+                                WHERE inst_seleccionadas.credito_id = contratos.id AND 
+                                (inst_seleccionadas.elegido = 1 or inst_seleccionadas.tipo = 1)
+                                GROUP BY inst_seleccionadas.credito_id) as sumCobrado"),
+                                
+                                DB::raw("(SELECT SUM(inst_seleccionadas.monto_credito) FROM inst_seleccionadas
+                                WHERE inst_seleccionadas.credito_id = contratos.id AND 
+                                (inst_seleccionadas.elegido = 1 or inst_seleccionadas.tipo = 1)
+                                GROUP BY inst_seleccionadas.credito_id) as sumCredito")
+                            )
+                        ->where(DB::raw("(SELECT SUM(inst_seleccionadas.cobrado) FROM inst_seleccionadas
+                            WHERE inst_seleccionadas.credito_id = contratos.id AND 
+                            (inst_seleccionadas.elegido = 1 or inst_seleccionadas.tipo = 1)
+                            GROUP BY inst_seleccionadas.credito_id)"),
+                            '>',
+                            DB::raw("(SELECT SUM(inst_seleccionadas.monto_credito) FROM inst_seleccionadas
+                            WHERE inst_seleccionadas.credito_id = contratos.id AND 
+                            (inst_seleccionadas.elegido = 1 or inst_seleccionadas.tipo = 1)
+                            GROUP BY inst_seleccionadas.credito_id)"))
+                        // ->where('inst_seleccionadas.cobrado','>','0')
+                        ->where('inst_seleccionadas.elegido', '=', 1)
+                        ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
+                        ->where('contratos.status', '=', 3)
+                        // ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                        // ->where('inst_seleccionadas.cobrado','>','0')
+                        // ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
+                        // ->where('contratos.status', '=', 3)
+                        ->orderBy('inst_seleccionadas.cobrado','asc')
+                        ->orderBy('inst_seleccionadas.monto_credito','desc')
+                        
+                        ->paginate(10);
+                    break;
+                }
+                case 'lotes.fraccionamiento_id':{
+                    if($b_etapa == '' && $b_manzana == '' && $b_lote == ''){
+                        $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                        ->join('contratos','contratos.id','=','creditos.id')
+                        ->join('lotes','lotes.id','=','creditos.lote_id')
+                        ->join('personal','personal.id','=','creditos.prospecto_id')
+                        ->select('contratos.id', 'lotes.credito_puente',
+                                'creditos.fraccionamiento as proyecto',
+                                'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
+                                'personal.nombre','personal.apellidos', 
+                                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
+                                'inst_seleccionadas.id as inst_sel_id',
+                                'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
+                                'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado',
+                                DB::raw("(SELECT SUM(inst_seleccionadas.cobrado) FROM inst_seleccionadas
+                                WHERE inst_seleccionadas.credito_id = contratos.id AND 
+                                (inst_seleccionadas.elegido = 1 or inst_seleccionadas.tipo = 1)
+                                GROUP BY inst_seleccionadas.credito_id) as sumCobrado"),
+                                
+                                DB::raw("(SELECT SUM(inst_seleccionadas.monto_credito) FROM inst_seleccionadas
+                                WHERE inst_seleccionadas.credito_id = contratos.id AND 
+                                (inst_seleccionadas.elegido = 1 or inst_seleccionadas.tipo = 1)
+                                GROUP BY inst_seleccionadas.credito_id) as sumCredito")
+                                )
+                        ->where(DB::raw("(SELECT SUM(inst_seleccionadas.cobrado) FROM inst_seleccionadas
+                                WHERE inst_seleccionadas.credito_id = contratos.id AND 
+                                (inst_seleccionadas.elegido = 1 or inst_seleccionadas.tipo = 1)
+                                GROUP BY inst_seleccionadas.credito_id)"),
+                                '>',
+                                DB::raw("(SELECT SUM(inst_seleccionadas.monto_credito) FROM inst_seleccionadas
+                                WHERE inst_seleccionadas.credito_id = contratos.id AND 
+                                (inst_seleccionadas.elegido = 1 or inst_seleccionadas.tipo = 1)
+                                GROUP BY inst_seleccionadas.credito_id)"))
+                        // ->where('inst_seleccionadas.cobrado','>','0')
+                        ->where('inst_seleccionadas.elegido', '=', 1)
+                        ->where($criterio,'=',$buscar)
+                        ->where('contratos.status', '=', 3)
+                        // ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                        // ->where('inst_seleccionadas.cobrado','>','0')
+                        // ->where($criterio,'=',$buscar)
+                        // ->where('contratos.status', '=', 3)
+                        ->orderBy('inst_seleccionadas.cobrado','asc')
+                        ->orderBy('inst_seleccionadas.monto_credito','desc')
+                        
+                        ->paginate(10);
+                        
+                    }
+                    elseif($b_etapa != '' && $b_manzana == '' && $b_lote == ''){
+                        $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                        ->join('contratos','contratos.id','=','creditos.id')
+                        ->join('lotes','lotes.id','=','creditos.lote_id')
+                        ->join('personal','personal.id','=','creditos.prospecto_id')
+                        ->select('contratos.id', 'lotes.credito_puente',
+                                'creditos.fraccionamiento as proyecto',
+                                'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
+                                'personal.nombre','personal.apellidos', 
+                                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
+                                'inst_seleccionadas.id as inst_sel_id',
+                                'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
+                                'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado',
+                                DB::raw("(SELECT SUM(inst_seleccionadas.cobrado) FROM inst_seleccionadas
+                                WHERE inst_seleccionadas.credito_id = contratos.id AND 
+                                (inst_seleccionadas.elegido = 1 or inst_seleccionadas.tipo = 1)
+                                GROUP BY inst_seleccionadas.credito_id) as sumCobrado"),
+                                
+                                DB::raw("(SELECT SUM(inst_seleccionadas.monto_credito) FROM inst_seleccionadas
+                                WHERE inst_seleccionadas.credito_id = contratos.id AND 
+                                (inst_seleccionadas.elegido = 1 or inst_seleccionadas.tipo = 1)
+                                GROUP BY inst_seleccionadas.credito_id) as sumCredito")
+                                )
+                        ->where(DB::raw("(SELECT SUM(inst_seleccionadas.cobrado) FROM inst_seleccionadas
+                                WHERE inst_seleccionadas.credito_id = contratos.id AND 
+                                (inst_seleccionadas.elegido = 1 or inst_seleccionadas.tipo = 1)
+                                GROUP BY inst_seleccionadas.credito_id)"),
+                                '>',
+                                DB::raw("(SELECT SUM(inst_seleccionadas.monto_credito) FROM inst_seleccionadas
+                                WHERE inst_seleccionadas.credito_id = contratos.id AND 
+                                (inst_seleccionadas.elegido = 1 or inst_seleccionadas.tipo = 1)
+                                GROUP BY inst_seleccionadas.credito_id)"))
+                        // ->where('inst_seleccionadas.cobrado','>','0')
+                        ->where('inst_seleccionadas.elegido', '=', 1)
+                        ->where($criterio,'=',$buscar)
+                        ->where('lotes.etapa_id','=',$b_etapa)
+                        ->where('contratos.status', '=', 3)
+                        // ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                        // ->where('inst_seleccionadas.cobrado','>','0')
+                        // ->where($criterio,'=',$buscar)
+                        // ->where('lotes.etapa_id','=',$b_etapa)
+                        // ->where('contratos.status', '=', 3)
+                        ->orderBy('inst_seleccionadas.cobrado','asc')
+                        ->orderBy('inst_seleccionadas.monto_credito','desc')
+                        
+                        ->paginate(10);
+                        
+                    }
+                    elseif($b_etapa != '' && $b_manzana != '' && $b_lote == ''){
+                        $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                        ->join('contratos','contratos.id','=','creditos.id')
+                        ->join('lotes','lotes.id','=','creditos.lote_id')
+                        ->join('personal','personal.id','=','creditos.prospecto_id')
+                        ->select('contratos.id', 'lotes.credito_puente',
+                                'creditos.fraccionamiento as proyecto',
+                                'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
+                                'personal.nombre','personal.apellidos', 
+                                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
+                                'inst_seleccionadas.id as inst_sel_id',
+                                'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
+                                'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado',
+                                DB::raw("(SELECT SUM(inst_seleccionadas.cobrado) FROM inst_seleccionadas
+                                WHERE inst_seleccionadas.credito_id = contratos.id AND 
+                                (inst_seleccionadas.elegido = 1 or inst_seleccionadas.tipo = 1)
+                                GROUP BY inst_seleccionadas.credito_id) as sumCobrado"),
+                                
+                                DB::raw("(SELECT SUM(inst_seleccionadas.monto_credito) FROM inst_seleccionadas
+                                WHERE inst_seleccionadas.credito_id = contratos.id AND 
+                                (inst_seleccionadas.elegido = 1 or inst_seleccionadas.tipo = 1)
+                                GROUP BY inst_seleccionadas.credito_id) as sumCredito")
+                                )
+                        ->where(DB::raw("(SELECT SUM(inst_seleccionadas.cobrado) FROM inst_seleccionadas
+                                WHERE inst_seleccionadas.credito_id = contratos.id AND 
+                                (inst_seleccionadas.elegido = 1 or inst_seleccionadas.tipo = 1)
+                                GROUP BY inst_seleccionadas.credito_id)"),
+                                '>',
+                                DB::raw("(SELECT SUM(inst_seleccionadas.monto_credito) FROM inst_seleccionadas
+                                WHERE inst_seleccionadas.credito_id = contratos.id AND 
+                                (inst_seleccionadas.elegido = 1 or inst_seleccionadas.tipo = 1)
+                                GROUP BY inst_seleccionadas.credito_id)"))
+                        // ->where('inst_seleccionadas.cobrado','>','0')
+                        ->where('inst_seleccionadas.elegido', '=', 1)
+                        ->where($criterio,'=',$buscar)
+                        ->where('lotes.etapa_id','=',$b_etapa)
+                        ->where('lotes.manzana','=',$b_manzana)
+                        ->where('contratos.status', '=', 3)
+                        // ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                        // ->where('inst_seleccionadas.cobrado','>','0')
+                        // ->where($criterio,'=',$buscar)
+                        // ->where('lotes.etapa_id','=',$b_etapa)
+                        // ->where('lotes.manzana','=',$b_manzana)
+                        // ->where('contratos.status', '=', 3)
+                        ->orderBy('inst_seleccionadas.cobrado','asc')
+                        ->orderBy('inst_seleccionadas.monto_credito','desc')
+                        
+                        ->paginate(10);
+                    }
+                    elseif($b_etapa != '' && $b_manzana != '' && $b_lote != ''){
+                        $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                        ->join('contratos','contratos.id','=','creditos.id')
+                        ->join('lotes','lotes.id','=','creditos.lote_id')
+                        ->join('personal','personal.id','=','creditos.prospecto_id')
+                        ->select('contratos.id', 'lotes.credito_puente',
+                                'creditos.fraccionamiento as proyecto',
+                                'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
+                                'personal.nombre','personal.apellidos', 
+                                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
+                                'inst_seleccionadas.id as inst_sel_id',
+                                'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
+                                'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado',
+                                DB::raw("(SELECT SUM(inst_seleccionadas.cobrado) FROM inst_seleccionadas
+                                WHERE inst_seleccionadas.credito_id = contratos.id AND 
+                                (inst_seleccionadas.elegido = 1 or inst_seleccionadas.tipo = 1)
+                                GROUP BY inst_seleccionadas.credito_id) as sumCobrado"),
+                                
+                                DB::raw("(SELECT SUM(inst_seleccionadas.monto_credito) FROM inst_seleccionadas
+                                WHERE inst_seleccionadas.credito_id = contratos.id AND 
+                                (inst_seleccionadas.elegido = 1 or inst_seleccionadas.tipo = 1)
+                                GROUP BY inst_seleccionadas.credito_id) as sumCredito")
+                                )
+                        ->where(DB::raw("(SELECT SUM(inst_seleccionadas.cobrado) FROM inst_seleccionadas
+                                WHERE inst_seleccionadas.credito_id = contratos.id AND 
+                                (inst_seleccionadas.elegido = 1 or inst_seleccionadas.tipo = 1)
+                                GROUP BY inst_seleccionadas.credito_id)"),
+                                '>',
+                                DB::raw("(SELECT SUM(inst_seleccionadas.monto_credito) FROM inst_seleccionadas
+                                WHERE inst_seleccionadas.credito_id = contratos.id AND 
+                                (inst_seleccionadas.elegido = 1 or inst_seleccionadas.tipo = 1)
+                                GROUP BY inst_seleccionadas.credito_id)"))
+                        // ->where('inst_seleccionadas.cobrado','>','0')
+                        ->where('inst_seleccionadas.elegido', '=', 1)
+                        ->where($criterio,'=',$buscar)
+                        ->where('lotes.etapa_id','=',$b_etapa)
+                        ->where('lotes.manzana','=',$b_manzana)
+                        ->where('lotes.num_lote','=',$b_lote)
+                        ->where('contratos.status', '=', 3)
+                        // ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                        // ->where('inst_seleccionadas.cobrado','>','0')
+                        // ->where($criterio,'=',$buscar)
+                        // ->where('lotes.etapa_id','=',$b_etapa)
+                        // ->where('lotes.manzana','=',$b_manzana)
+                        // ->where('lotes.num_lote','=',$b_lote)
+                        // ->where('contratos.status', '=', 3)
+                        ->orderBy('inst_seleccionadas.cobrado','asc')
+                        ->orderBy('inst_seleccionadas.monto_credito','desc')
+                        
+                        ->paginate(10);
+                    }
+                    elseif($b_etapa != '' && $b_manzana == '' && $b_lote != ''){
+                        $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                        ->join('contratos','contratos.id','=','creditos.id')
+                        ->join('lotes','lotes.id','=','creditos.lote_id')
+                        ->join('personal','personal.id','=','creditos.prospecto_id')
+                        ->select('contratos.id', 'lotes.credito_puente',
+                                'creditos.fraccionamiento as proyecto',
+                                'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
+                                'personal.nombre','personal.apellidos', 
+                                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
+                                'inst_seleccionadas.id as inst_sel_id',
+                                'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
+                                'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado',
+                                DB::raw("(SELECT SUM(inst_seleccionadas.cobrado) FROM inst_seleccionadas
+                                WHERE inst_seleccionadas.credito_id = contratos.id AND 
+                                (inst_seleccionadas.elegido = 1 or inst_seleccionadas.tipo = 1)
+                                GROUP BY inst_seleccionadas.credito_id) as sumCobrado"),
+                                
+                                DB::raw("(SELECT SUM(inst_seleccionadas.monto_credito) FROM inst_seleccionadas
+                                WHERE inst_seleccionadas.credito_id = contratos.id AND 
+                                (inst_seleccionadas.elegido = 1 or inst_seleccionadas.tipo = 1)
+                                GROUP BY inst_seleccionadas.credito_id) as sumCredito")
+                                )
+                        ->where(DB::raw("(SELECT SUM(inst_seleccionadas.cobrado) FROM inst_seleccionadas
+                                WHERE inst_seleccionadas.credito_id = contratos.id AND 
+                                (inst_seleccionadas.elegido = 1 or inst_seleccionadas.tipo = 1)
+                                GROUP BY inst_seleccionadas.credito_id)"),
+                                '>',
+                                DB::raw("(SELECT SUM(inst_seleccionadas.monto_credito) FROM inst_seleccionadas
+                                WHERE inst_seleccionadas.credito_id = contratos.id AND 
+                                (inst_seleccionadas.elegido = 1 or inst_seleccionadas.tipo = 1)
+                                GROUP BY inst_seleccionadas.credito_id)"))
+                        // ->where('inst_seleccionadas.cobrado','>','0')
+                        ->where('inst_seleccionadas.elegido', '=', 1)
+                        ->where($criterio,'=',$buscar)
+                        ->where('lotes.etapa_id','=',$b_etapa)
+                        ->where('lotes.num_lote','=',$b_lote)
+                        ->where('contratos.status', '=', 3)
+                        // ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                        // ->where('inst_seleccionadas.cobrado','>','0')
+                        // ->where($criterio,'=',$buscar)
+                        // ->where('lotes.etapa_id','=',$b_etapa)
+                        // ->where('lotes.num_lote','=',$b_lote)
+                        // ->where('contratos.status', '=', 3)
+                        ->orderBy('inst_seleccionadas.cobrado','asc')
+                        ->orderBy('inst_seleccionadas.monto_credito','desc')
+                        
+                        ->paginate(10);
+                    }
+                    elseif($b_etapa == '' && $b_manzana == '' && $b_lote != ''){
+                        $creditos = inst_seleccionada::join('creditos','creditos.id','=','inst_seleccionadas.credito_id')
+                        ->join('contratos','contratos.id','=','creditos.id')
+                        ->join('lotes','lotes.id','=','creditos.lote_id')
+                        ->join('personal','personal.id','=','creditos.prospecto_id')
+                        ->select('contratos.id', 'lotes.credito_puente',
+                                'creditos.fraccionamiento as proyecto',
+                                'creditos.etapa', 'creditos.manzana', 'creditos.num_lote', 
+                                'personal.nombre','personal.apellidos', 
+                                DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
+                                'inst_seleccionadas.id as inst_sel_id',
+                                'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
+                                'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado',
+                                DB::raw("(SELECT SUM(inst_seleccionadas.cobrado) FROM inst_seleccionadas
+                                WHERE inst_seleccionadas.credito_id = contratos.id AND 
+                                (inst_seleccionadas.elegido = 1 or inst_seleccionadas.tipo = 1)
+                                GROUP BY inst_seleccionadas.credito_id) as sumCobrado"),
+                                
+                                DB::raw("(SELECT SUM(inst_seleccionadas.monto_credito) FROM inst_seleccionadas
+                                WHERE inst_seleccionadas.credito_id = contratos.id AND 
+                                (inst_seleccionadas.elegido = 1 or inst_seleccionadas.tipo = 1)
+                                GROUP BY inst_seleccionadas.credito_id) as sumCredito")
+                                )
+                        ->where(DB::raw("(SELECT SUM(inst_seleccionadas.cobrado) FROM inst_seleccionadas
+                                WHERE inst_seleccionadas.credito_id = contratos.id AND 
+                                (inst_seleccionadas.elegido = 1 or inst_seleccionadas.tipo = 1)
+                                GROUP BY inst_seleccionadas.credito_id)"),
+                                '>',
+                                DB::raw("(SELECT SUM(inst_seleccionadas.monto_credito) FROM inst_seleccionadas
+                                WHERE inst_seleccionadas.credito_id = contratos.id AND 
+                                (inst_seleccionadas.elegido = 1 or inst_seleccionadas.tipo = 1)
+                                GROUP BY inst_seleccionadas.credito_id)"))
+                        // ->where('inst_seleccionadas.cobrado','>','0')
+                        ->where('inst_seleccionadas.elegido', '=', 1)
+                        ->where($criterio,'=',$buscar)
+                        ->where('lotes.num_lote','=',$b_lote)
+                        ->where('contratos.status', '=', 3)
+                        // ->orWhere('inst_seleccionadas.tipo', '=', 1)
+                        // ->where('inst_seleccionadas.cobrado','>','0')
+                        // ->where($criterio,'=',$buscar)
+                        // ->where('lotes.num_lote','=',$b_lote)
+                        // ->where('contratos.status', '=', 3)
+                        ->orderBy('inst_seleccionadas.cobrado','asc')
+                        ->orderBy('inst_seleccionadas.monto_credito','desc')
+                        
+                        ->paginate(10);
+                    }
+
+                    break;
+                }
+            }
+        }
+        
+
+        return[
+                'pagination' => [
+                'total'         => $creditos->total(),
+                'current_page'  => $creditos->currentPage(),
+                'per_page'      => $creditos->perPage(),
+                'last_page'     => $creditos->lastPage(),
+                'from'          => $creditos->firstItem(),
+                'to'            => $creditos->lastItem(),
+            ],
+            'creditos' => $creditos
+        ];
+        
     }
 }

@@ -326,7 +326,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/avance','AvanceController@index');
         Route::get('/avanceProm','AvanceController@indexProm');
         Route::put('/avance/actualizar','AvanceController@update');
-        Route::get('/avances/resume_excel/{contrato}','AvanceController@exportExcel');
+        Route::get('/avances/resume_excel','AvanceController@exportExcel');
         Route::get('/avances/res_partidas/{contrato}','AvanceController@excelLotesPartidas');
 
     
@@ -473,6 +473,9 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/devolucion/index','DevolucionController@indexCancelaciones');
         Route::post('/devolucion/registrar','DevolucionController@storeDevolucion');
         Route::get('/devolucion/indexDevoluciones','DevolucionController@indexDevoluciones');
+
+        ////////////////////// RUTAS DEVOLUCION (Credito)
+        Route::get('/credito_devolucion/index','InstSeleccionadasController@indexDevolucion');
 
     });
 

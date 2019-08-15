@@ -1878,12 +1878,28 @@
 
             totalCreditoSolic: function(){
                 var total_credito =0;
+                if(this.monto_credito == '')
+                    this.monto_credito = 0;
+                if(this.comision_apertura == '')
+                    this.comision_apertura = 0;
+                if(this.investigacion == '')
+                    this.investigacion = 0;
+                if(this.avaluo == '')
+                    this.avaluo = 0;
+                if(this.prima_unica == '')
+                    this.prima_unica = 0;
+                if(this.escrituras == '')
+                    this.escrituras = 0;
                     total_credito = parseFloat(this.monto_credito) - parseFloat(this.comision_apertura)-parseFloat(this.investigacion)-parseFloat(this.avaluo)-parseFloat(this.prima_unica)-parseFloat(this.escrituras); 
                 return total_credito;
             },
 
             netoCredito: function(){
                 var neto_credito =0;
+                if(this.infonavit == '')
+                    this.infonavit = 0;
+                if(this.fovissste == '')
+                    this.fovissste = 0;
                     neto_credito = parseFloat(this.infonavit) + parseFloat(this.fovissste) + parseFloat(this.credito_neto); 
                 return neto_credito;
             },

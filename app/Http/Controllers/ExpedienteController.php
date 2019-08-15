@@ -3563,6 +3563,10 @@ class ExpedienteController extends Controller
             $expediente->valor_escrituras = $request->valor_escrituras;
             $expediente->descuento = $request->descuento;
 
+            $contrato = Contrato::findOrFail($request->folio);
+            $contrato->saldo = $contrato->saldo - round($request->descuento,2);
+            $contrato->save();
+
             if($request->total_liquidar == 0){
                 $expediente->liquidado = 1;
             }else{
@@ -3656,7 +3660,7 @@ class ExpedienteController extends Controller
             foreach($pagares as $ep=>$det)
             {
                 $pagos = new Pago_contrato();
-                $pagos->contrato_id = $request->folio;
+                $pagos->contrato_id = c;
                 $pagos->num_pago = $ep;
                 $pagos->monto_pago = $det['monto_pago'];
                 $pagos->fecha_pago = $det['fecha_pago'];
@@ -3671,6 +3675,17 @@ class ExpedienteController extends Controller
 
             $intereses -= $expediente->total_liquidar;
             $expediente->interes_ord = round($intereses,2);
+
+            if($expediente->interes_ord != 0){
+                $gasto = new Gasto_admin();
+                $gasto->contrato_id = $request->folio;
+                $gasto->concepto = 'Interes Ordinario';
+                $gasto->costo = $request->interes_ord;
+                $gasto->fecha = $request->fecha_ini_interes;;
+                $gasto->observacion = 'Intereses ordinarios al generar liquidación';
+                $gasto->save();
+            }
+
 
             $expediente->save();
 

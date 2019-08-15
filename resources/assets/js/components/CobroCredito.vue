@@ -24,7 +24,7 @@
                     </div>
                     <div class="card-body" v-if="deposito==0">
                         <div class="form-group row">
-                            <div class="col-md-8">
+                            <div class="col-md-10">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
                                     <select class="form-control col-md-3" v-model="criterio" @click="buscar='', buscar2=''">

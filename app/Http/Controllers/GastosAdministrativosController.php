@@ -159,6 +159,7 @@ class GastosAdministrativosController extends Controller
             $avaluo = Avaluo::findOrFail($request->avaluoId);
             $avaluo->costo = $request->costo;
             $avaluo->save();
+
             $contrato = Contrato::findOrFail($request->id);
             $contrato->saldo = $contrato->saldo + $request->costo;
             $contrato->save(); 
@@ -181,14 +182,26 @@ class GastosAdministrativosController extends Controller
 
     public function updateAvaluo(Request $request){
         if(!$request->ajax())return redirect('/');
-        $gasto = Gasto_admin::findOrFail($request->gasto_id);
-        $gasto->costo = $request->costo;
-        $gasto->fecha = $request->fecha;
-        $gasto->save();
+        try{
+            DB::beginTransaction();
+            $gasto = Gasto_admin::findOrFail($request->gasto_id);
+            $costo_ant = $gasto->costo;
+            $contrato_id = $gasto->contrato_id;
+            $gasto->costo = $request->costo;
+            $gasto->fecha = $request->fecha;
+            $gasto->save();
 
-        $avaluo = Avaluo::findOrFail($request->avaluoId);
-        $avaluo->costo = $request->costo;
-        $avaluo->save();
+            $avaluo = Avaluo::findOrFail($request->avaluoId);
+            $avaluo->costo = $request->costo;
+            $avaluo->save();
+
+            $contrato = Contrato::findOrFail($contrato_id);
+            $contrato->saldo = $contrato->saldo - $costo_ant + $request->costo;
+            $contrato->save(); 
+            DB::commit();
+        } catch (Exception $e){
+            DB::rollBack();
+        }  
     }
 
     public function indexContratos (Request $request){
@@ -318,29 +331,63 @@ class GastosAdministrativosController extends Controller
 
     public function store(Request $request){
         if(!$request->ajax())return redirect('/');
-        $gastos = new Gasto_admin();
-        $gastos->contrato_id = $request->contrato_id;
-        $gastos->concepto = $request->concepto;
-        $gastos->costo = $request->costo;
-        $gastos->observacion = $request->observacion;
-        $gastos->fecha = $request->fecha;
-        $gastos->save();
+        try{
+            DB::beginTransaction();
+            $gastos = new Gasto_admin();
+            $gastos->contrato_id = $request->contrato_id;
+            $gastos->concepto = $request->concepto;
+            $gastos->costo = $request->costo;
+            $gastos->observacion = $request->observacion;
+            $gastos->fecha = $request->fecha;
+            $gastos->save();
+
+            $contrato = Contrato::findOrFail($request->contrato_id);
+            $contrato->saldo = $contrato->saldo + $request->costo;
+            $contrato->save(); 
+            DB::commit();
+        } catch (Exception $e){
+            DB::rollBack();
+        }  
     }
 
     public function update(Request $request){
         if(!$request->ajax())return redirect('/');
-        $gastos = Gasto_admin::findOrFail($request->id);
-        $gastos->concepto = $request->concepto;
-        $gastos->observacion = $request->observacion;
-        $gastos->fecha = $request->fecha;
-        $gastos->costo = $request->costo;
-        $gastos->save();
+        try{
+            DB::beginTransaction();
+            $gastos = Gasto_admin::findOrFail($request->id);
+            $costo_ant = $gastos->costo;
+            $contrato_id = $gastos->contrato_id;
+            $gastos->concepto = $request->concepto;
+            $gastos->observacion = $request->observacion;
+            $gastos->fecha = $request->fecha;
+            $gastos->costo = $request->costo;
+            $gastos->save();
+
+            $contrato = Contrato::findOrFail($contrato_id);
+            $contrato->saldo = $contrato->saldo - $costo_ant + $request->costo;
+            $contrato->save(); 
+            DB::commit();
+        } catch (Exception $e){
+            DB::rollBack();
+        }  
     }
 
     public function delete(Request $request){
         if(!$request->ajax())return redirect('/');
-        $gastos = Gasto_admin::findOrFail($request->id);
-        $gastos->delete();
+        try{
+            DB::beginTransaction();
+            $gastos = Gasto_admin::findOrFail($request->id);
+            $costo_ant = $gastos->costo;
+            $contrato_id = $gastos->contrato_id;
+            $gastos->delete();
+
+            $contrato = Contrato::findOrFail($contrato_id);
+            $contrato->saldo = $contrato->saldo - $costo_ant;
+            $contrato->save(); 
+            DB::commit();
+        } catch (Exception $e){
+            DB::rollBack();
+        }  
     }
 
     public function getGastos(Request $request){

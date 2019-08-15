@@ -28,15 +28,16 @@
                                             <option value="clientes.curp">CURP</option>
                                             <option value="clientes.nss">NSS</option>
                                             <option value="fraccionamientos.nombre">Proyecto</option>
-                                            <option v-if="rolId != 2" value="clientes.created_at">Fecha de alta</option>
+                                            <option value="clientes.created_at">Fecha de alta</option>
                                             <option v-if="rolId != 2" value="v.nombre">Asesor</option>
                                         </select>
-                
-                                        <input v-if="criterio=='clientes.created_at'" type="text" placeholder="Desde" onfocus="(this.type='date')" onblur="(this.type='text')" v-model="buscar" class="form-control">
-                                        <input v-if="criterio=='clientes.created_at'" type="text" placeholder="Hasta" onfocus="(this.type='date')" onblur="(this.type='text')" v-model="buscar2" class="form-control">
-                                        <select class="form-control" v-if="criterio=='clientes.created_at'" v-model="buscar3" >
-                                            <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
-                                        </select>
+                                        <template v-if="criterio=='clientes.created_at'">
+                                            <input v-if="criterio=='clientes.created_at'" type="text" placeholder="Desde" onfocus="(this.type='date')" onblur="(this.type='text')" v-model="buscar" class="form-control">
+                                            <input v-if="criterio=='clientes.created_at' && rolId != 2" type="text" placeholder="Hasta" onfocus="(this.type='date')" onblur="(this.type='text')" v-model="buscar2" class="form-control">
+                                            <select class="form-control" v-if="criterio=='clientes.created_at' && rolId != 2" v-model="buscar3" >
+                                                <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
+                                            </select>
+                                        </template>
                                         <input v-else type="text" v-model="buscar" @keyup.enter="listarProspectos(1,buscar,buscar2,buscar3,b_clasificacion,criterio)" class="form-control">
                                         <select class="form-control" v-model="b_clasificacion" >
                                             <option value="">Clasificación</option>
@@ -125,13 +126,13 @@
                                 <!--Botones de paginacion -->
                                 <ul class="pagination">
                                     <li class="page-item" v-if="pagination.current_page > 1">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,b_clasificacion,criterio)">Ant</a>
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,buscar2,buscar3,b_clasificacion,criterio)">Ant</a>
                                     </li>
                                     <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,b_clasificacion,criterio)" v-text="page"></a>
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,buscar2,buscar3,b_clasificacion,criterio)" v-text="page"></a>
                                     </li>
                                     <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,criterio)">Sig</a>
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,buscar2,buscar3,b_clasificacion,criterio)">Sig</a>
                                     </li>
                                 </ul>
                             </nav>
