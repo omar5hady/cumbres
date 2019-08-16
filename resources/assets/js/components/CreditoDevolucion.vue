@@ -8,7 +8,7 @@
                 <!-- Ejemplo de tabla Listado -->
                 <div class="card scroll-box">
                     <div class="card-header">
-                        <i class="fa fa-align-justify"></i>Devoluciones por credito excedente &nbsp;
+                        <i class="fa fa-align-justify"></i>Devoluciones por excedente &nbsp;
                         <button class="btn btn-danger" v-if="listado == 1" @click="listado = 2 , listarDevoluciones(1, buscar_d, b_etapa_d, b_manzana_d, b_lote_d, criterio_d)">Historial de devoluciones</button>
                         <button class="btn btn-warning" v-if="listado == 2" @click="listado = 1">Volver a las devoluciones</button>
                     </div>
@@ -63,14 +63,14 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="contratos in arrayContratos" :key="contratos.id" v-on:dblclick="abrirModal('devolucion',contratos)"> 
+                                    <tr v-if="contratos.saldo < 0" v-for="contratos in arrayContratos" :key="contratos.id" v-on:dblclick="abrirModal('devolucion',contratos)"> 
                                         <td class="td2" v-text="contratos.id"></td>
                                         <td class="td2" v-text="contratos.nombre_cliente"></td>
                                         <td class="td2" v-text="contratos.proyecto"></td>
                                         <td class="td2" v-text="contratos.etapa"></td>
                                         <td class="td2" v-text="contratos.manzana"></td>
                                         <td class="td2" v-text="contratos.num_lote"></td>
-                                        <td class="td2" v-text="'$'+formatNumber(contratos.sumCobrado - contratos.sumCredito)"></td>
+                                        <td class="td2" v-text="'$'+formatNumber(contratos.saldo*(-1))"></td>
                                     </tr>                               
                                 </tbody>
                             </table>  
@@ -244,50 +244,31 @@
 
                                 <div class="form-group row line-separator"></div>
 
-                                <div class="form-group row">
-                                    <label class="col-md-2 form-control-label" for="text-input">Depositos</label>
-                                    <div class="col-md-4">
-                                        <h6><strong> ${{ formatNumber(depositos)}} </strong></h6>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-2 form-control-label" for="text-input">Otro cargo</label>
-                                    <div class="col-md-3">
-                                        <input type="text" :disabled="tipoAccion==2" v-model="concepto" class="form-control" >
-                                    </div>
-
-                                    <label class="col-md-1 form-control-label" for="text-input">Monto</label>
-                                    <div v-if="tipoAccion==1" class="col-md-2">
-                                        <input type="text" v-model="monto_cargo" class="form-control" placeholder="Concepto" >
-                                    </div>
-                                    <div class="col-md-2">
-                                        <h6><strong> ${{ formatNumber(monto_cargo)}} </strong></h6>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row" v-if="arrayGastos.length">
-                                    <div class="col-md-12">
-                                        <h6><strong> GASTOS ADMINISTRATIVOS </strong></h6>
-                                    </div>
-                                </div>
-
-                                <div v-if="arrayGastos.length">
-                                        <div class="form-group row"  v-for="gasto in arrayGastos" :key="gasto.id">
-                                            <label class="col-md-3 form-control-label" for="text-input" v-text="gasto.concepto"></label>
-                                            <div class="col-md-3">
-                                                <h6>${{ formatNumber(gasto.costo)}}</h6>
-                                            </div>
-                                        </div>
-                                    </div>
-
+                                
                                 
                                 <div class="form-group row">
-                                    <div class="col-md-12">
-                                        <h5 align="center"><strong> Total a devolver </strong></h5>
+                                    <div class="col-md-12" v-if="tipoAccion == 1">
+                                        <h6 align="center"><strong> Cant. Maxima a devolver </strong></h6>
                                     </div>
-                                    <div class="col-md-12">
-                                        <h5 align="center"><strong> ${{ formatNumber(devolver = depositos - monto_cargo - totalGastos)}} </strong></h5>
+                                    <div class="col-md-12" v-if="tipoAccion == 1">
+                                        <h5 align="center"><strong> ${{ formatNumber(devolver)}} </strong></h5>
+                                    </div>
+
+                                    <div class="col-md-12" v-if="tipoAccion == 2">
+                                        <h6 align="center"><strong> Cantidad devuelta </strong></h6>
+                                    </div>
+                                    <div class="col-md-12" v-if="tipoAccion == 2">
+                                        <h5 align="center"><strong> ${{ formatNumber(cant_dev)}} </strong></h5>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row" v-if="tipoAccion == 1">
+                                    <label class="col-md-3 form-control-label" for="text-input"  v-if="tipoAccion==1">Cantidad a devolver</label>
+                                    <div v-if="tipoAccion==1" class="col-md-2">
+                                        <input type="text" pattern="\d*" v-on:keypress="isNumber($event)" v-model="cant_dev" class="form-control" placeholder="Concepto" >
+                                    </div>
+                                    <div class="col-md-2">
+                                        <h6><strong> ${{ formatNumber(cant_dev = TotalDev)}} </strong></h6>
                                     </div>
                                 </div>
 
@@ -323,12 +304,17 @@
                                     <textarea :disabled="tipoAccion==2" rows="3" cols="30" v-model="observaciones" class="form-control" placeholder="Observaciones"></textarea>
                                     </div>
                                 </div>
-
-                                
-                                
                                 
                             </form>
                             <!-- fin del form solicitud de avaluo -->
+
+                             <!-- Div para mostrar los errores que mande validerDepartamento -->
+                            <div v-show="errorDev" class="form-group row div-error">
+                                <div class="text-center text-error">
+                                    <div v-for="error in errorMostrarMsjDev" :key="error" v-text="error">
+                                    </div>
+                                </div>
+                            </div>
 
 
                         </div>
@@ -384,6 +370,10 @@
                 monto_cargo:0,
                 totalGastos:0,
                 devolver : 0,
+                cant_dev : 0,
+
+                errorDev:0,
+                errorMostrarMsjDev:[],
                 
                 tituloModal : '',
            
@@ -479,6 +469,17 @@
                 return pagesArray;
             },
 
+            TotalDev: function(){
+                var totalDev =0.0;
+                if(this.cant_dev > this.devolver)
+                    this.cant_dev = this.devolver;
+
+                if(this.cant_dev < 0)
+                    this.cant_dev = 0;
+                totalDev = Math.round( this.cant_dev);
+                return totalDev;
+            },
+
         },
 
         
@@ -501,7 +502,7 @@
 
             listarDevoluciones(page, buscar_d, b_etapa_d, b_manzana_d, b_lote_d, criterio_d){
                 let me = this;
-                var url = '/devolucion/indexDevoluciones?page=' + page + '&buscar=' + buscar_d + '&b_etapa=' + b_etapa_d + '&b_manzana=' + b_manzana_d + '&b_lote=' + b_lote_d +  '&criterio=' + criterio_d;
+                var url = '/credito_devolucion/indexDevoluciones?page=' + page + '&buscar=' + buscar_d + '&b_etapa=' + b_etapa_d + '&b_manzana=' + b_manzana_d + '&b_lote=' + b_lote_d +  '&criterio=' + criterio_d;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayDevoluciones = respuesta.devoluciones.data;
@@ -517,8 +518,17 @@
                 let val = (value/1).toFixed(2)
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             },
+
+            isNumber: function(evt) {
+                evt = (evt) ? evt : window.event;
+                var charCode = (evt.which) ? evt.which : evt.keyCode;
+                if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
+                    evt.preventDefault();;
+                } else {
+                    return true;
+                }
+            },
         
-            
             selectFraccionamientos(){
                 let me = this;
                 me.buscar="";
@@ -581,51 +591,37 @@
                 });
 
             },
-
-            listarGastos(){
-                let me = this;
-                var url = '/expediente/gastosExpediente?folio=' + this.id;
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayGastos = respuesta.gastos;
-                    me.totalGastos = respuesta.totalGastos[0].sumGasto;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            },
             
             generarDevolucion(){
-                if(this.proceso==true) //Se verifica si hay un error (campo vacio)
+                if(this.validarDev()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
                 let me = this;
                 me.proceso = true;
-                axios.post('/devolucion/registrar',{
+                axios.post('/credito_devolucion/registrar',{
                 'id': this.id,
-                'concepto': this.concepto,
-                'monto_cargo': this.monto_cargo,
                 'devolver': this.devolver,
+                'cant_dev' : this.cant_dev,
                 'fecha': this.fecha_devolucion,
                 'cheque': this.cheque,
                 'cuenta': this.banco,
                 'observaciones': this.observaciones
-            }).then(function (response){
-                me.proceso=false;
-                me.cerrarModal(); //al guardar el registro se cierra el modal
-                me.listarContratos(me.pagination.current_page,me.buscar,me.b_etapa, me.b_manzana, me.b_lote, me.criterio); //se enlistan nuevamente los registros
-                //Se muestra mensaje Success
-                swal({
-                    position: 'top-end',
-                    type: 'success',
-                    title: 'Devolucion generada correctamente',
-                    showConfirmButton: false,
-                    timer: 1500
-                    })
-            }).catch(function (error){
-                console.log(error);
-            });
+                }).then(function (response){
+                    me.proceso=false;
+                    me.cerrarModal(); //al guardar el registro se cierra el modal
+                    me.listarContratos(me.pagination.current_page,me.buscar,me.b_etapa, me.b_manzana, me.b_lote, me.criterio); //se enlistan nuevamente los registros
+                    //Se muestra mensaje Success
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Devolucion generada correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
             },
 
             cambiarPagina(page,buscar, b_etapa, b_manzana, b_lote, criterio){
@@ -666,6 +662,28 @@
                 this.cheque = '';
                 
             },
+
+            validarDev(){
+                this.errorDev=0;
+                this.errorMostrarMsjDev=[];
+
+                if(this.cant_dev== 0) //Si la variable departamento esta vacia
+                    this.errorMostrarMsjDev.push("Ingresar cantidad a devolver.");
+
+                if(this.fecha_devolucion == '') //Si la variable departamento esta vacia
+                    this.errorMostrarMsjDev.push("Ingresar fecha de devolución.");
+
+                if(this.cheque == '') //Si la variable departamento esta vacia
+                    this.errorMostrarMsjDev.push("Ingresar numero de cheque.");
+
+                if(this.banco == '') //Si la variable departamento esta vacia
+                    this.errorMostrarMsjDev.push("Seleccionar cuenta de banco.");
+              
+                if(this.errorMostrarMsjDev.length)//Si el mensaje tiene almacenado algo en el array
+                    this.errorDev = 1;
+
+                return this.errorDev;
+            },
         
       
             abrirModal(accion,data =[]){
@@ -683,12 +701,11 @@
                         this.manzana = data['manzana'];
                         this.lote = data['num_lote'];
                         this.cliente = data['nombre_cliente'];
-                        this.depositos = data['sumaPagares'] - data['sumaRestante'];
-                        this.devolver = 0;
+                        this.devolver = data['saldo'] * (-1);
+                        this.cant_dev = 0;
                         this.cheque ='';
                         this.observaciones = '';
 
-                        this.listarGastos();
                         this.selectCuenta();
                         break;
                     }      
@@ -704,16 +721,13 @@
                         this.manzana = data['manzana'];
                         this.lote = data['num_lote'];
                         this.cliente = data['nombre_cliente'];
-                        this.depositos = data['sumaPagares'] - data['sumaRestante'];
                         this.devolver = data['devolver'];
+                        this.cant_dev = data['devolver'];
                         this.cheque =data['cheque'];
                         this.observaciones = data['observaciones'];
-                        this.concepto = data['concepto'];
-                        this.monto_cargo = data['monto_cargo'];
                         this.fecha_devolucion = data['fecha'];
                         this.banco = data['cuenta'];
 
-                        this.listarGastos();
                         this.selectCuenta();
                         break;
                     }       

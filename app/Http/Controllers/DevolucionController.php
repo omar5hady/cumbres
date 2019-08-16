@@ -1192,8 +1192,7 @@ class DevolucionController extends Controller
                         'contratos.observacion',
 
                         'devoluciones.fecha',
-                        'devoluciones.concepto',
-                        'devoluciones.monto_cargo',
+                        
                         'devoluciones.cheque',
                         'devoluciones.cuenta',
                         'devoluciones.observaciones',

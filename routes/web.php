@@ -476,6 +476,8 @@ Route::group(['middleware' => ['auth']],function(){
 
         ////////////////////// RUTAS DEVOLUCION (Credito)
         Route::get('/credito_devolucion/index','InstSeleccionadasController@indexDevolucion');
+        Route::post('/credito_devolucion/registrar','InstSeleccionadasController@storeDevolucion');
+        Route::get('/credito_devolucion/indexDevoluciones','InstSeleccionadasController@indexHistorialDev');
 
     });
 

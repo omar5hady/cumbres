@@ -68,7 +68,7 @@
                                         <td v-text="'$' + etapa.costo_mantenimiento"></td>
                                         <td v-text="etapa.empresas_telecom"></td>
                                         <td v-text="etapa.empresas_telecom_satelital"></td>
-                                        <td v-if = "etapa.plantilla_telecom"><a class="btn btn-success btn-sm" v-bind:href="'/downloadPlantilla/ServiciosTelecom/'+fraccionamiento.plantilla_telecom"><i class="fa fa-download fa-spin"></i></a></td>
+                                        <td v-if = "etapa.plantilla_telecom"><a class="btn btn-success btn-sm" v-bind:href="'/downloadPlantilla/ServiciosTelecom/'+etapa.plantilla_telecom"><i class="fa fa-download fa-spin"></i></a></td>
                                         <td v-else></td>
                                     </tr>                               
                                 </tbody>

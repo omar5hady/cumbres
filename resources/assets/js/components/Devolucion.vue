@@ -273,18 +273,24 @@
                                     </div>
 
                                 
-                                <div class="form-group row" v-if="tipoAccion==1">
-                                    <div class="col-md-12">
+                                <div class="form-group row" >
+                                    <div class="col-md-12" v-if="tipoAccion==1">
                                         <h5 align="center"><strong> Total a devolver </strong></h5>
                                     </div>
-                                    <div class="col-md-12">
+                                    <div class="col-md-12" v-if="tipoAccion==1">
                                         <h5 align="center"><strong> ${{ formatNumber(devolver = depositos - totalGastos)}} </strong></h5>
+                                    </div>
+
+                                    <div class="col-md-12" v-if="tipoAccion==2">
+                                        <h5 align="center"><strong> Cantidad devuelta </strong></h5>
+                                    </div>
+                                    <div class="col-md-12" v-if="tipoAccion==2">
+                                        <h5 align="center"><strong> ${{ formatNumber(cant_dev)}} </strong></h5>
                                     </div>
                                 </div>
 
-                                <div class="form-group row">
+                                <div class="form-group row" v-if="tipoAccion==1">
                                     <label class="col-md-3 form-control-label" for="text-input"  v-if="tipoAccion==1">Cantidad a devolver</label>
-                                    <label class="col-md-3 form-control-label" for="text-input"  v-if="tipoAccion==2">Cantidad devuelta</label>
                                     <div v-if="tipoAccion==1" class="col-md-2">
                                         <input type="text" pattern="\d*" v-on:keypress="isNumber($event)" v-model="cant_dev" class="form-control" placeholder="Concepto" >
                                     </div>
@@ -734,6 +740,7 @@
                         this.devolver = 0;
                         this.cheque ='';
                         this.observaciones = '';
+                        this.cant_dev = 0;
 
                         this.listarGastos();
                         this.selectCuenta();
