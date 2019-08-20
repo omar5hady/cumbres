@@ -401,7 +401,14 @@ class GastosAdministrativosController extends Controller
                     ->where('contrato_id','=',$request->folio)
                     ->get();
 
+        $totalIntereses = Gasto_admin::select(DB::raw("SUM(costo) as sumIntereses"))
+                        ->groupBy('contrato_id')
+                        ->where('contrato_id','=',$request->folio)
+                        ->where('concepto','=','Interes Ordinario')
+                        ->get();
+
         return ['gastos' => $gastos,
-                'totalGastos' => $totalGastos ];
+                'totalGastos' => $totalGastos,
+                'totalIntereses' => $totalIntereses];
     }
 }

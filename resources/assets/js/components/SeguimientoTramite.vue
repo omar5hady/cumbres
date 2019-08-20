@@ -107,10 +107,12 @@
                                                 <td class="td2" v-text="ingresar.etapa"></td>
                                                 <td class="td2" v-text="ingresar.manzana"></td>
                                                 <td class="td2" >
-                                                    {{ingresar.num_lote}}
-                                                    <a title="Descargar predial" v-if ="ingresar.foto_predial" class="btn" v-bind:href="'/downloadPredial/'+ingresar.foto_predial">
-                                                        <i class="fa fa-arrow-circle-down fa-lg"></i>
-                                                    </a>
+                                                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{ingresar.num_lote}}</a>
+                                                    <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                        <a v-if ="ingresar.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+ingresar.foto_predial">Descargar predial</a>
+                                                        <a v-if ="ingresar.foto_lic" class="dropdown-item" v-bind:href="'/downloadLicencias/'+ingresar.foto_lic">Descargar licencia</a>
+                                                        <a v-if ="ingresar.foto_acta" class="dropdown-item" v-bind:href="'/downloadActa/'+ingresar.foto_acta">Descargar Acta de termino</a>
+                                                    </div>
                                                 </td>
                                                 <td class="td2" v-if="ingresar.interior" v-text="ingresar.calle + ' '+ ingresar.numero + ' '+ ingresar.interior"></td>
                                                 <td class="td2" v-else v-text="ingresar.calle + ' '+ ingresar.numero"></td>
@@ -237,10 +239,12 @@
                                                 <td class="td2" v-text="preautorizados.etapa"></td>
                                                 <td class="td2" v-text="preautorizados.manzana"></td>
                                                 <td class="td2" >
-                                                    {{preautorizados.num_lote}}
-                                                    <a title="Descargar predial" v-if ="preautorizados.foto_predial" class="btn" v-bind:href="'/downloadPredial/'+preautorizados.foto_predial">
-                                                        <i class="fa fa-arrow-circle-down fa-lg"></i>
-                                                    </a>
+                                                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{preautorizados.num_lote}}</a>
+                                                    <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                        <a v-if ="preautorizados.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+preautorizados.foto_predial">Descargar predial</a>
+                                                        <a v-if ="preautorizados.foto_lic" class="dropdown-item" v-bind:href="'/downloadLicencias/'+preautorizados.foto_lic">Descargar licencia</a>
+                                                        <a v-if ="preautorizados.foto_acta" class="dropdown-item" v-bind:href="'/downloadActa/'+preautorizados.foto_acta">Descargar Acta de termino</a>
+                                                    </div>
                                                 </td>
                                                 <td class="td2" v-text="preautorizados.calle + ' '+ preautorizados.numero + ' '+ preautorizados.interior"></td>
                                                 <td class="td2" v-text="preautorizados.avance_lote+ '%'"></td>
@@ -398,10 +402,12 @@
                                                 <td class="td2" v-text="liquidacion.etapa"></td>
                                                 <td class="td2" v-text="liquidacion.manzana"></td>
                                                 <td class="td2" >
-                                                    {{liquidacion.num_lote}}
-                                                    <a title="Descargar predial" v-if ="liquidacion.foto_predial" class="btn" v-bind:href="'/downloadPredial/'+liquidacion.foto_predial">
-                                                        <i class="fa fa-arrow-circle-down fa-lg"></i>
-                                                    </a>
+                                                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{liquidacion.num_lote}}</a>
+                                                    <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                        <a v-if ="liquidacion.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+liquidacion.foto_predial">Descargar predial</a>
+                                                        <a v-if ="liquidacion.foto_lic" class="dropdown-item" v-bind:href="'/downloadLicencias/'+liquidacion.foto_lic">Descargar licencia</a>
+                                                        <a v-if ="liquidacion.foto_acta" class="dropdown-item" v-bind:href="'/downloadActa/'+liquidacion.foto_acta">Descargar Acta de termino</a>
+                                                    </div>
                                                 </td>
                                                 <td class="td2" v-text="liquidacion.calle + ' '+ liquidacion.numero + ' '+ liquidacion.interior"></td>
                                                 <td class="td2" v-text="liquidacion.avance_lote+ '%'"></td>
@@ -564,10 +570,12 @@
                                                 <td class="td2" v-text="programacion.etapa"></td>
                                                 <td class="td2" v-text="programacion.manzana"></td>
                                                 <td class="td2" >
-                                                    {{programacion.num_lote}}
-                                                    <a title="Descargar predial" v-if ="programacion.foto_predial" class="btn" v-bind:href="'/downloadPredial/'+programacion.foto_predial">
-                                                        <i class="fa fa-arrow-circle-down fa-lg"></i>
-                                                    </a>
+                                                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{programacion.num_lote}}</a>
+                                                    <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                        <a v-if ="programacion.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+programacion.foto_predial">Descargar predial</a>
+                                                        <a v-if ="programacion.foto_lic" class="dropdown-item" v-bind:href="'/downloadLicencias/'+programacion.foto_lic">Descargar licencia</a>
+                                                        <a v-if ="programacion.foto_acta" class="dropdown-item" v-bind:href="'/downloadActa/'+programacion.foto_acta">Descargar Acta de termino</a>
+                                                    </div>
                                                 </td>
                                                 <td class="td2" v-text="programacion.calle + ' '+ programacion.numero + ' ' + programacion.interior"></td>
                                                 <td class="td2" v-text="programacion.avance_lote + '%'"></td>
@@ -627,7 +635,7 @@
                                                 </td>
 
                                                 
-                                                <td class="td2" v-if="programacion.fecha_firma_esc" v-text="this.moment(programacion.fecha_firma_esc).locale('es').format('DD/MMM/YYYY')"></td>
+                                                <td class="td2"  @click="abrirModal('firma_esc_act',programacion)" v-if="programacion.fecha_firma_esc" v-text="this.moment(programacion.fecha_firma_esc).locale('es').format('DD/MMM/YYYY')"></td>
                                                 <td class="td2" v-else>
                                                     <button title="Programar Firma" type="button" class="btn btn-warning pull-right" 
                                                     @click="abrirModal('firma_esc',programacion)">Generar</button>
@@ -868,7 +876,7 @@
                                     <div class="form-group row">
                                         <label class="col-md-2 form-control-label" for="text-input">Pagado</label>
                                         <div class="col-md-3">
-                                            <h6 v-text="'$'+formatNumber(pagado=totalEnganghe-totalRestante)"></h6>
+                                            <h6 v-text="'$'+formatNumber(pagado=totalEnganghe-totalRestante+totalIntOrd)"></h6>
                                         </div>
 
                                         <label v-if="avaluo" class="col-md-2 form-control-label" for="text-input">Resultado avaluo</label>
@@ -1405,7 +1413,8 @@
                         <!-- Botones del modal -->
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal5()">Cerrar</button>
-                            <button type="button" class="btn btn-primary" @click="generarInstNot()">Generar</button>
+                            <button v-if="tipoAccion==1" type="button" class="btn btn-primary" @click="generarInstNot()">Generar</button>
+                            <button v-if="tipoAccion==2" type="button" class="btn btn-primary" @click="generarInstNot()">Guardar</button>
                         </div>
                     </div>
                       <!-- /.modal-content -->
@@ -1468,6 +1477,7 @@
                 </div>
                 <!-- /.modal-dialog -->
             </div>
+
             
          
      </main>
@@ -1540,6 +1550,7 @@
                 valor_escrituras:'',
                 valor_venta:'',
                 totalGastos:0,
+                totalIntOrd:0,
 
                 fecha_infonavit:'',
                 fecha_liquidacion:'',
@@ -1593,6 +1604,7 @@
                 modal3 :0,
                 modal4:0,
                 modal5:0,
+                modal6:0,
                 tituloModal:'',
                 tituloModal3:'Observaciones',
                 observacion:'',
@@ -1998,7 +2010,10 @@
                         'fecha_vigencia': fecha_vigencia,
                     }).then(function (response){
                         
-                        me.listarAutorizados(1, me.buscar_preauto, me.b_etapa_preauto, me.b_manzana_preauto, me.b_lote_preauto, me.criterio_preauto);
+                        me.listarIngresoExp(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                        me.listarAutorizados(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                        me.listarLiquidacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                        me.listarProgramacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
                         me.band = 0;
                         //window.alert("Cambios guardados correctamente");
                     const toast = Swal.mixin({
@@ -2252,6 +2267,7 @@
                     var respuesta = response.data;
                     me.arrayGastos = respuesta.gastos;
                     me.totalGastos = respuesta.totalGastos[0].sumGasto;
+                    me.totalIntOrd = respuesta.totalIntereses[0].sumIntereses;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -2461,6 +2477,7 @@
                     case 'firma_esc': 
                     {
                         this.modal5 = 1;
+                        this.tipoAccion = 1;
                         this.tituloModal='Instrucción Notarial';
                         this.id = data['folio'];
                         this.proyecto = data['proyecto'];
@@ -2478,6 +2495,38 @@
                         this.notaria_id = 0;
                         this.estado = '';
                         this.ciudad = '';
+                    
+
+                        break;
+                    }
+
+                    case 'firma_esc_act': 
+                    {
+                        this.modal5 = 1;
+                        this.tipoAccion = 2;
+                        this.tituloModal='Instrucción Notarial';
+                        this.id = data['folio'];
+                        this.proyecto = data['proyecto'];
+                        this.etapa = data['etapa'];
+                        this.manzana = data['manzana'];
+                        this.lote = data['num_lote'];
+                        this.valor_venta = data['precio_venta'];
+                        this.monto_credito = data['credito_solic'];
+                        this.infonavit = data['infonavit'];
+                        this.fovissste = data['fovissste'];
+                        this.diferencia = parseFloat(this.valor_venta) - parseFloat(this.monto_credito) - 
+                                            parseFloat(this.infonavit) - parseFloat(this.fovissste);
+
+                        this.hora_firma = data['hora_firma'];
+                        this.notaria_id = data['notaria_id'];
+                        this.direccion_firma = data['direccion_firma'];
+                        this.notario = data['notario'];
+                        this.estado = 'San Luis Potosí';
+                        this.ciudad = 'San Luis Potosí';
+                        this.fecha_firma_esc = data['fecha_firma_esc'];
+
+                        this.selectCiudades(this.estado);
+                        this.selectNotarias(this.ciudad);
                     
 
                         break;

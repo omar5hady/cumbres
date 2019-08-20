@@ -125,7 +125,7 @@
 
                 <div class="table-row">
                     <div colspan="4" class="table-cell"></div>   
-                    <div colspan="2" class="table-cell"><b>TOTAL(ENGANCHE)</div>
+                    <div colspan="2" class="table-cell"><b>TOTAL (ENGANCHE)</div>
                     <div class="table-cell"></div>  
                     <div class="table-cell"> <b> $ {{$contratos[0]->sumDeposito}}</div>  
                 </div>
@@ -136,8 +136,8 @@
 
             @for($i=0; $i < count($gastos_admin); $i++)
                 <div class="table-row">
-                    <div class="table-cell">{{mb_strtoupper($gastos_admin[$i]->concepto)}}</div>
-                    <div class="table-cell"></div>
+                    <div colspan="2" class="table-cell">{{mb_strtoupper($gastos_admin[$i]->concepto)}}</div>
+                    
                     <div class="table-cell">{{$gastos_admin[$i]->fecha}}</div>
                     <div class="table-cell">---</div>    
                     <div colspan="2" class="table-cell">OFICINA - OFICINA</div>
@@ -159,8 +159,7 @@
             
             @for($i=0; $i < count($depositos_credito); $i++)
                 <div class="table-row">
-                    <div class="table-cell">{{mb_strtoupper($depositos_credito[$i]->institucion)}}</div>
-                    <div class="table-cell"></div>
+                    <div colspan="2" class="table-cell">{{mb_strtoupper($depositos_credito[$i]->institucion)}}</div>
                     <div class="table-cell">{{$depositos_credito[$i]->fecha_deposito}}</div>
                     <div class="table-cell"></div>    
                     <div colspan="2" class="table-cell">{{$depositos_credito[$i]->banco}}</div>

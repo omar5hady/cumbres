@@ -5107,7 +5107,7 @@ class LoteController extends Controller
                             $lote->sobreprecio,
                             $lote->precio_venta,
                             $lote->promocion,
-                            $lote->fecha_fin,
+                            $lote->fecha_termino_ventas,
                             $lote->comentarios,
                             $casaMuestra
                            

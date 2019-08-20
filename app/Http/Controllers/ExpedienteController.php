@@ -47,6 +47,8 @@ class ExpedienteController extends Controller
                     'creditos.num_lote',
                     'licencias.avance as avance_lote',
                     'licencias.foto_predial',
+                    'licencias.foto_lic',
+                    'licencias.foto_acta',
                     'licencias.visita_avaluo',
                     'contratos.fecha_status',
                     'i.tipo_credito',
@@ -88,6 +90,8 @@ class ExpedienteController extends Controller
                         'creditos.num_lote',
                         'licencias.avance as avance_lote',
                         'licencias.foto_predial',
+                        'licencias.foto_lic',
+                        'licencias.foto_acta',
                         'licencias.visita_avaluo',
                         'contratos.avance_lote',
                         'contratos.fecha_status',
@@ -131,6 +135,8 @@ class ExpedienteController extends Controller
                             'creditos.num_lote',
                             'licencias.avance as avance_lote',
                             'licencias.foto_predial',
+                            'licencias.foto_lic',
+                            'licencias.foto_acta',
                             'licencias.visita_avaluo',
                             'contratos.avance_lote',
                             'contratos.fecha_status',
@@ -173,6 +179,8 @@ class ExpedienteController extends Controller
                                 'creditos.num_lote',
                                 'licencias.avance as avance_lote',
                                 'licencias.foto_predial',
+                                'licencias.foto_lic',
+                                'licencias.foto_acta',
                                 'licencias.visita_avaluo',
                                 'contratos.avance_lote',
                                 'contratos.fecha_status',
@@ -216,6 +224,8 @@ class ExpedienteController extends Controller
                                     'creditos.num_lote',
                                     'licencias.avance as avance_lote',
                                     'licencias.foto_predial',
+                                    'licencias.foto_lic',
+                                    'licencias.foto_acta',
                                     'licencias.visita_avaluo',
                                     'contratos.avance_lote',
                                     'contratos.fecha_status',
@@ -259,6 +269,8 @@ class ExpedienteController extends Controller
                                         'creditos.num_lote',
                                         'licencias.avance as avance_lote',
                                         'licencias.foto_predial',
+                                        'licencias.foto_lic',
+                                        'licencias.foto_acta',
                                         'licencias.visita_avaluo',
                                         'contratos.avance_lote',
                                         'contratos.fecha_status',
@@ -302,6 +314,8 @@ class ExpedienteController extends Controller
                                             'creditos.num_lote',
                                             'licencias.avance as avance_lote',
                                             'licencias.foto_predial',
+                                            'licencias.foto_lic',
+                                            'licencias.foto_acta',
                                             'licencias.visita_avaluo',
                                             'contratos.avance_lote',
                                             'contratos.fecha_status',
@@ -346,6 +360,8 @@ class ExpedienteController extends Controller
                                                 'creditos.num_lote',
                                                 'licencias.avance as avance_lote',
                                                 'licencias.foto_predial',
+                                                'licencias.foto_lic',
+                                                'licencias.foto_acta',
                                                 'licencias.visita_avaluo',
                                                 'contratos.avance_lote',
                                                 'contratos.fecha_status',
@@ -391,6 +407,8 @@ class ExpedienteController extends Controller
                                                     'creditos.num_lote',
                                                     'licencias.avance as avance_lote',
                                                     'licencias.foto_predial',
+                                                    'licencias.foto_lic',
+                                                    'licencias.foto_acta',
                                                     'licencias.visita_avaluo',
                                                     'contratos.avance_lote',
                                                     'contratos.fecha_status',
@@ -435,6 +453,8 @@ class ExpedienteController extends Controller
                                                         'creditos.num_lote',
                                                         'licencias.avance as avance_lote',
                                                         'licencias.foto_predial',
+                                                        'licencias.foto_lic',
+                                                        'licencias.foto_acta',
                                                         'licencias.visita_avaluo',
                                                         'contratos.avance_lote',
                                                         'contratos.fecha_status',
@@ -482,6 +502,8 @@ class ExpedienteController extends Controller
                                                             'creditos.num_lote',
                                                             'licencias.avance as avance_lote',
                                                             'licencias.foto_predial',
+                                                            'licencias.foto_lic',
+                                                            'licencias.foto_acta',
                                                             'licencias.visita_avaluo',
                                                             'contratos.avance_lote',
                                                             'contratos.fecha_status',
@@ -1528,6 +1550,8 @@ class ExpedienteController extends Controller
                     'creditos.precio_venta',
                     'licencias.avance as avance_lote',
                     'licencias.foto_predial',
+                    'licencias.foto_lic',
+                    'licencias.foto_acta',
                     'contratos.fecha_status',
                     'i.tipo_credito',
                     'i.institucion',
@@ -1578,6 +1602,8 @@ class ExpedienteController extends Controller
                             'creditos.precio_venta',
                             'licencias.avance as avance_lote',
                             'licencias.foto_predial',
+                            'licencias.foto_lic',
+                            'licencias.foto_acta',
                             'contratos.fecha_status',
                             'i.tipo_credito',
                             'i.institucion',
@@ -1633,6 +1659,8 @@ class ExpedienteController extends Controller
                             'creditos.precio_venta',
                             'licencias.avance as avance_lote',
                             'licencias.foto_predial',
+                            'licencias.foto_lic',
+                            'licencias.foto_acta',
                             'contratos.fecha_status',
                             'i.tipo_credito',
                             'i.institucion',
@@ -1684,6 +1712,8 @@ class ExpedienteController extends Controller
                                 'creditos.precio_venta',
                                 'licencias.avance as avance_lote',
                                 'licencias.foto_predial',
+                                'licencias.foto_lic',
+                                'licencias.foto_acta',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
@@ -1733,6 +1763,8 @@ class ExpedienteController extends Controller
                                 'creditos.precio_venta',
                                 'licencias.avance as avance_lote',
                                 'licencias.foto_predial',
+                                'licencias.foto_lic',
+                                'licencias.foto_acta',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
@@ -1783,6 +1815,8 @@ class ExpedienteController extends Controller
                                 'creditos.precio_venta',
                                 'licencias.avance as avance_lote',
                                 'licencias.foto_predial',
+                                'licencias.foto_lic',
+                                'licencias.foto_acta',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
@@ -1834,6 +1868,8 @@ class ExpedienteController extends Controller
                                 'creditos.precio_venta',
                                 'licencias.avance as avance_lote',
                                 'licencias.foto_predial',
+                                'licencias.foto_lic',
+                                'licencias.foto_acta',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
@@ -1886,6 +1922,8 @@ class ExpedienteController extends Controller
                                 'creditos.precio_venta',
                                 'licencias.avance as avance_lote',
                                 'licencias.foto_predial',
+                                'licencias.foto_lic',
+                                'licencias.foto_acta',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
@@ -1937,6 +1975,8 @@ class ExpedienteController extends Controller
                                 'creditos.precio_venta',
                                 'licencias.avance as avance_lote',
                                 'licencias.foto_predial',
+                                'licencias.foto_lic',
+                                'licencias.foto_acta',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
@@ -1987,6 +2027,8 @@ class ExpedienteController extends Controller
                                 'creditos.precio_venta',
                                 'licencias.avance as avance_lote',
                                 'licencias.foto_predial',
+                                'licencias.foto_lic',
+                                'licencias.foto_acta',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
@@ -2037,6 +2079,8 @@ class ExpedienteController extends Controller
                                 'creditos.precio_venta',
                                 'licencias.avance as avance_lote',
                                 'licencias.foto_predial',
+                                'licencias.foto_lic',
+                                'licencias.foto_acta',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
@@ -2127,6 +2171,8 @@ class ExpedienteController extends Controller
                     'creditos.precio_venta',
                     'licencias.avance as avance_lote',
                     'licencias.foto_predial',
+                    'licencias.foto_lic',
+                    'licencias.foto_acta',
                     'contratos.fecha_status',
                     'i.tipo_credito',
                     'i.institucion',
@@ -2187,6 +2233,8 @@ class ExpedienteController extends Controller
                             'creditos.credito_solic',
                             'licencias.avance as avance_lote',
                             'licencias.foto_predial',
+                            'licencias.foto_lic',
+                            'licencias.foto_acta',
                             'contratos.fecha_status',
                             'i.tipo_credito',
                             'i.institucion',
@@ -2255,6 +2303,8 @@ class ExpedienteController extends Controller
                             'creditos.credito_solic',
                             'licencias.avance as avance_lote',
                             'licencias.foto_predial',
+                            'licencias.foto_lic',
+                            'licencias.foto_acta',
                             'contratos.fecha_status',
                             'i.tipo_credito',
                             'i.institucion',
@@ -2315,6 +2365,8 @@ class ExpedienteController extends Controller
                                 'creditos.credito_solic',
                                 'licencias.avance as avance_lote',
                                 'licencias.foto_predial',
+                                'licencias.foto_lic',
+                                'licencias.foto_acta',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
@@ -2373,6 +2425,8 @@ class ExpedienteController extends Controller
                                 'creditos.credito_solic',
                                 'licencias.avance as avance_lote',
                                 'licencias.foto_predial',
+                                'licencias.foto_lic',
+                                'licencias.foto_acta',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
@@ -2432,6 +2486,8 @@ class ExpedienteController extends Controller
                                 'creditos.credito_solic',
                                 'licencias.avance as avance_lote',
                                 'licencias.foto_predial',
+                                'licencias.foto_lic',
+                                'licencias.foto_acta',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
@@ -2492,6 +2548,8 @@ class ExpedienteController extends Controller
                                 'creditos.credito_solic',
                                 'licencias.avance as avance_lote',
                                 'licencias.foto_predial',
+                                'licencias.foto_lic',
+                                'licencias.foto_acta',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
@@ -2553,6 +2611,8 @@ class ExpedienteController extends Controller
                                 'creditos.credito_solic',
                                 'licencias.avance as avance_lote',
                                 'licencias.foto_predial',
+                                'licencias.foto_lic',
+                                'licencias.foto_acta',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
@@ -2613,6 +2673,8 @@ class ExpedienteController extends Controller
                                 'creditos.credito_solic',
                                 'licencias.avance as avance_lote',
                                 'licencias.foto_predial',
+                                'licencias.foto_lic',
+                                'licencias.foto_acta',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
@@ -2672,6 +2734,8 @@ class ExpedienteController extends Controller
                                 'creditos.credito_solic',
                                 'licencias.avance as avance_lote',
                                 'licencias.foto_predial',
+                                'licencias.foto_lic',
+                                'licencias.foto_acta',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
@@ -2731,6 +2795,8 @@ class ExpedienteController extends Controller
                                 'creditos.credito_solic',
                                 'licencias.avance as avance_lote',
                                 'licencias.foto_predial',
+                                'licencias.foto_lic',
+                                'licencias.foto_acta',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
@@ -2822,6 +2888,8 @@ class ExpedienteController extends Controller
                     'creditos.precio_venta',
                     'licencias.avance as avance_lote',
                     'licencias.foto_predial',
+                    'licencias.foto_lic',
+                    'licencias.foto_acta',
                     'contratos.fecha_status',
                     'i.tipo_credito',
                     'i.institucion',
@@ -2890,6 +2958,8 @@ class ExpedienteController extends Controller
                             'creditos.credito_solic',
                             'licencias.avance as avance_lote',
                             'licencias.foto_predial',
+                            'licencias.foto_lic',
+                            'licencias.foto_acta',
                             'contratos.fecha_status',
                             'i.tipo_credito',
                             'i.institucion',
@@ -2962,6 +3032,8 @@ class ExpedienteController extends Controller
                             'creditos.credito_solic',
                             'licencias.avance as avance_lote',
                             'licencias.foto_predial',
+                            'licencias.foto_lic',
+                            'licencias.foto_acta',
                             'contratos.fecha_status',
                             'i.tipo_credito',
                             'i.institucion',
@@ -3027,6 +3099,8 @@ class ExpedienteController extends Controller
                                 'creditos.credito_solic',
                                 'licencias.avance as avance_lote',
                                 'licencias.foto_predial',
+                                'licencias.foto_lic',
+                                'licencias.foto_acta',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
@@ -3090,6 +3164,8 @@ class ExpedienteController extends Controller
                                 'creditos.credito_solic',
                                 'licencias.avance as avance_lote',
                                 'licencias.foto_predial',
+                                'licencias.foto_lic',
+                                'licencias.foto_acta',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
@@ -3154,6 +3230,8 @@ class ExpedienteController extends Controller
                                 'creditos.credito_solic',
                                 'licencias.avance as avance_lote',
                                 'licencias.foto_predial',
+                                'licencias.foto_lic',
+                                'licencias.foto_acta',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
@@ -3219,6 +3297,8 @@ class ExpedienteController extends Controller
                                 'creditos.credito_solic',
                                 'licencias.avance as avance_lote',
                                 'licencias.foto_predial',
+                                'licencias.foto_lic',
+                                'licencias.foto_acta',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
@@ -3285,6 +3365,8 @@ class ExpedienteController extends Controller
                                 'creditos.credito_solic',
                                 'licencias.avance as avance_lote',
                                 'licencias.foto_predial',
+                                'licencias.foto_lic',
+                                'licencias.foto_acta',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
@@ -3350,6 +3432,8 @@ class ExpedienteController extends Controller
                                 'creditos.credito_solic',
                                 'licencias.avance as avance_lote',
                                 'licencias.foto_predial',
+                                'licencias.foto_lic',
+                                'licencias.foto_acta',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
@@ -3414,6 +3498,8 @@ class ExpedienteController extends Controller
                                 'creditos.credito_solic',
                                 'licencias.avance as avance_lote',
                                 'licencias.foto_predial',
+                                'licencias.foto_lic',
+                                'licencias.foto_acta',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
@@ -3478,6 +3564,8 @@ class ExpedienteController extends Controller
                                 'creditos.credito_solic',
                                 'licencias.avance as avance_lote',
                                 'licencias.foto_predial',
+                                'licencias.foto_lic',
+                                'licencias.foto_acta',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
@@ -3537,6 +3625,7 @@ class ExpedienteController extends Controller
     public function pagaresExpediente(Request $request)
     {
         if(!$request->ajax())return redirect('/');
+        $totalDeposito = 0;
         $folio = $request->folio;
         $pagares = Pago_contrato::select('contrato_id','num_pago','fecha_pago','monto_pago','restante','pagado')
                     ->where('contrato_id','=',$folio)
@@ -3660,7 +3749,7 @@ class ExpedienteController extends Controller
             foreach($pagares as $ep=>$det)
             {
                 $pagos = new Pago_contrato();
-                $pagos->contrato_id = c;
+                $pagos->contrato_id = $request->folio;
                 $pagos->num_pago = $ep;
                 $pagos->monto_pago = $det['monto_pago'];
                 $pagos->fecha_pago = $det['fecha_pago'];
@@ -3680,7 +3769,7 @@ class ExpedienteController extends Controller
                 $gasto = new Gasto_admin();
                 $gasto->contrato_id = $request->folio;
                 $gasto->concepto = 'Interes Ordinario';
-                $gasto->costo = $request->interes_ord;
+                $gasto->costo = $expediente->interes_ord;
                 $gasto->fecha = $request->fecha_ini_interes;;
                 $gasto->observacion = 'Intereses ordinarios al generar liquidación';
                 $gasto->save();
@@ -3733,6 +3822,8 @@ class ExpedienteController extends Controller
                     'creditos.precio_venta',
                     'licencias.avance as avance_lote',
                     'licencias.foto_predial',
+                    'licencias.foto_lic',
+                    'licencias.foto_acta',
                     'contratos.fecha_status',
                     'i.tipo_credito',
                     'i.institucion',
@@ -3762,6 +3853,16 @@ class ExpedienteController extends Controller
                     'expedientes.total_liquidar',
                     'expedientes.fecha_infonavit',
                     'expedientes.fecha_firma_esc',
+                    'expedientes.notaria_id',
+                    'expedientes.notario',
+                    'expedientes.notaria',
+                    'expedientes.hora_firma',
+                    'expedientes.direccion_firma',
+                    'expedientes.notaria_id',
+                    'expedientes.notario',
+                    'expedientes.notaria',
+                    'expedientes.hora_firma',
+                    'expedientes.direccion_firma',
                     'lotes.calle','lotes.numero','lotes.interior',
                     'avaluos.resultado','avaluos.fecha_recibido'
                 )
@@ -3800,6 +3901,8 @@ class ExpedienteController extends Controller
                             'creditos.precio_venta',
                             'licencias.avance as avance_lote',
                             'licencias.foto_predial',
+                            'licencias.foto_lic',
+                            'licencias.foto_acta',
                             'contratos.fecha_status',
                             'i.tipo_credito',
                             'i.institucion',
@@ -3829,6 +3932,11 @@ class ExpedienteController extends Controller
                             'expedientes.total_liquidar',
                             'expedientes.fecha_infonavit',
                             'expedientes.fecha_firma_esc',
+                            'expedientes.notaria_id',
+                            'expedientes.notario',
+                            'expedientes.notaria',
+                            'expedientes.hora_firma',
+                            'expedientes.direccion_firma',
                             'lotes.calle','lotes.numero','lotes.interior',
                             'avaluos.resultado','avaluos.fecha_recibido'
                         )
@@ -3877,6 +3985,8 @@ class ExpedienteController extends Controller
                             'creditos.precio_venta',
                             'licencias.avance as avance_lote',
                             'licencias.foto_predial',
+                            'licencias.foto_lic',
+                            'licencias.foto_acta',
                             'contratos.fecha_status',
                             'i.tipo_credito',
                             'i.institucion',
@@ -3906,6 +4016,11 @@ class ExpedienteController extends Controller
                             'expedientes.total_liquidar',
                             'expedientes.fecha_infonavit',
                             'expedientes.fecha_firma_esc',
+                            'expedientes.notaria_id',
+                            'expedientes.notario',
+                            'expedientes.notaria',
+                            'expedientes.hora_firma',
+                            'expedientes.direccion_firma',
                             'lotes.calle','lotes.numero','lotes.interior',
                             'avaluos.resultado','avaluos.fecha_recibido'
                         )
@@ -3946,6 +4061,8 @@ class ExpedienteController extends Controller
                                 'creditos.precio_venta',
                                 'licencias.avance as avance_lote',
                                 'licencias.foto_predial',
+                                'licencias.foto_lic',
+                                'licencias.foto_acta',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
@@ -3975,6 +4092,11 @@ class ExpedienteController extends Controller
                                 'expedientes.total_liquidar',
                                 'expedientes.fecha_infonavit',
                                 'expedientes.fecha_firma_esc',
+                                'expedientes.notaria_id',
+                                'expedientes.notario',
+                                'expedientes.notaria',
+                                'expedientes.hora_firma',
+                                'expedientes.direccion_firma',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido'
                             )
@@ -4013,6 +4135,8 @@ class ExpedienteController extends Controller
                                 'creditos.precio_venta',
                                 'licencias.avance as avance_lote',
                                 'licencias.foto_predial',
+                                'licencias.foto_lic',
+                                'licencias.foto_acta',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
@@ -4042,6 +4166,11 @@ class ExpedienteController extends Controller
                                 'expedientes.total_liquidar',
                                 'expedientes.fecha_infonavit',
                                 'expedientes.fecha_firma_esc',
+                                'expedientes.notaria_id',
+                                'expedientes.notario',
+                                'expedientes.notaria',
+                                'expedientes.hora_firma',
+                                'expedientes.direccion_firma',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido'
                             )
@@ -4081,6 +4210,8 @@ class ExpedienteController extends Controller
                                 'creditos.precio_venta',
                                 'licencias.avance as avance_lote',
                                 'licencias.foto_predial',
+                                'licencias.foto_lic',
+                                'licencias.foto_acta',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
@@ -4110,6 +4241,11 @@ class ExpedienteController extends Controller
                                 'expedientes.total_liquidar',
                                 'expedientes.fecha_infonavit',
                                 'expedientes.fecha_firma_esc',
+                                'expedientes.notaria_id',
+                                'expedientes.notario',
+                                'expedientes.notaria',
+                                'expedientes.hora_firma',
+                                'expedientes.direccion_firma',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido'
                             )
@@ -4150,6 +4286,8 @@ class ExpedienteController extends Controller
                                 'creditos.precio_venta',
                                 'licencias.avance as avance_lote',
                                 'licencias.foto_predial',
+                                'licencias.foto_lic',
+                                'licencias.foto_acta',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
@@ -4179,6 +4317,11 @@ class ExpedienteController extends Controller
                                 'expedientes.total_liquidar',
                                 'expedientes.fecha_infonavit',
                                 'expedientes.fecha_firma_esc',
+                                'expedientes.notaria_id',
+                                'expedientes.notario',
+                                'expedientes.notaria',
+                                'expedientes.hora_firma',
+                                'expedientes.direccion_firma',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido'
                             )
@@ -4220,6 +4363,8 @@ class ExpedienteController extends Controller
                                 'creditos.precio_venta',
                                 'licencias.avance as avance_lote',
                                 'licencias.foto_predial',
+                                'licencias.foto_lic',
+                                'licencias.foto_acta',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
@@ -4249,6 +4394,11 @@ class ExpedienteController extends Controller
                                 'expedientes.total_liquidar',
                                 'expedientes.fecha_infonavit',
                                 'expedientes.fecha_firma_esc',
+                                'expedientes.notaria_id',
+                                'expedientes.notario',
+                                'expedientes.notaria',
+                                'expedientes.hora_firma',
+                                'expedientes.direccion_firma',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido'
                             )
@@ -4289,6 +4439,8 @@ class ExpedienteController extends Controller
                                 'creditos.precio_venta',
                                 'licencias.avance as avance_lote',
                                 'licencias.foto_predial',
+                                'licencias.foto_lic',
+                                'licencias.foto_acta',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
@@ -4318,6 +4470,11 @@ class ExpedienteController extends Controller
                                 'expedientes.total_liquidar',
                                 'expedientes.fecha_infonavit',
                                 'expedientes.fecha_firma_esc',
+                                'expedientes.notaria_id',
+                                'expedientes.notario',
+                                'expedientes.notaria',
+                                'expedientes.hora_firma',
+                                'expedientes.direccion_firma',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido'
                             )
@@ -4357,6 +4514,8 @@ class ExpedienteController extends Controller
                                 'creditos.precio_venta',
                                 'licencias.avance as avance_lote',
                                 'licencias.foto_predial',
+                                'licencias.foto_lic',
+                                'licencias.foto_acta',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
@@ -4386,6 +4545,11 @@ class ExpedienteController extends Controller
                                 'expedientes.total_liquidar',
                                 'expedientes.fecha_infonavit',
                                 'expedientes.fecha_firma_esc',
+                                'expedientes.notaria_id',
+                                'expedientes.notario',
+                                'expedientes.notaria',
+                                'expedientes.hora_firma',
+                                'expedientes.direccion_firma',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido'
                             )
@@ -4425,6 +4589,8 @@ class ExpedienteController extends Controller
                                 'creditos.precio_venta',
                                 'licencias.avance as avance_lote',
                                 'licencias.foto_predial',
+                                'licencias.foto_lic',
+                                'licencias.foto_acta',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
@@ -4454,6 +4620,11 @@ class ExpedienteController extends Controller
                                 'expedientes.total_liquidar',
                                 'expedientes.fecha_infonavit',
                                 'expedientes.fecha_firma_esc',
+                                'expedientes.notaria_id',
+                                'expedientes.notario',
+                                'expedientes.notaria',
+                                'expedientes.hora_firma',
+                                'expedientes.direccion_firma',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido'
                             )
@@ -4582,13 +4753,19 @@ class ExpedienteController extends Controller
         $pagares[$i]->montoPagoLetra = NumerosEnLetras::convertir($pagares[$i]->restante, 'Pesos', true, 'Centavos');
        }
 
+       $totalRestante = [];
        $totalRestante = Pago_contrato::select(DB::raw("SUM(restante) as sumRestante"))
        ->groupBy('contrato_id')
        ->where('pagado','<',2)
        ->where('contrato_id','=',$id)
        ->get();
-       
-       $liquidacion[0]->totalRestante = $totalRestante[0]->sumRestante;
+
+       if(sizeof($totalRestante) > 0)
+            $cantRestante= $totalRestante[0]->sumRestante;
+        else
+            $cantRestante = 0;
+             
+       $liquidacion[0]->totalRestante = $cantRestante;
 
 
         $liquidacion[0]->valor_escrituras = number_format((float)$liquidacion[0]->valor_escrituras, 2, '.', ',');

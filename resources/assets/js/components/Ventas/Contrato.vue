@@ -24,7 +24,7 @@
                             <i class="icon-pencil"></i>&nbsp;Ocultar vista actualizar
                         </button>
                     <!-- form para cambiar el status de los contratos -->
-                     <form action="" method="post" v-if="listado == 4">
+                     <form action="" method="post" v-if="listado == 4 && status == 1 || status == 3">
                                     <div style="text-align: right;">
                                             <div>
                                                 <div>

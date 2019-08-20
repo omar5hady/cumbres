@@ -4512,7 +4512,8 @@ class ContratoController extends Controller
 
                 'contratos.enganche_total',
                 'contratos.fecha',
-                'contratos.avaluo_cliente'
+                'contratos.avaluo_cliente',
+                'contratos.total_pagar'
             )
             ->where('inst_seleccionadas.elegido', '=', '1')
             ->where('contratos.id', '=', $id)
@@ -4532,7 +4533,23 @@ class ContratoController extends Controller
         $totalDePagos = count($pagos);
         $pagos[0]->totalDePagos = NumerosEnLetras::convertir($totalDePagos, false, false, false);
 
-        $pagos[$totalDePagos - 1]->monto_pago =  $pagos[$totalDePagos - 1]->monto_pago - $contratosDom[0]->avaluo_cliente;
+            $posMayor=0;
+        for ($i = 0; $i < count($pagos); $i++) {
+            if($contratosDom[0]->avaluo_cliente < $pagos[$i]->monto_pago)
+            {
+                $posMayor = $i;
+            }
+        }
+
+        if($posMayor != 0)
+            $pagos[$posMayor]->monto_pago =  $pagos[$posMayor]->monto_pago - $contratosDom[0]->avaluo_cliente;
+        else{
+            $pagos[0]->monto_pago =  $pagos[0]->monto_pago - $contratosDom[0]->avaluo_cliente;
+            if($pagos[0]->monto_pago<0)
+                $pagos[0]->monto_pago = 0;
+        }
+            
+
 
         for ($i = 0; $i < count($pagos); $i++) {
             $tiempo = new Carbon($pagos[$i]->fecha_pago);
@@ -4644,7 +4661,8 @@ class ContratoController extends Controller
                 'contratos.infonavit',
                 'contratos.fovisste',
                 'contratos.avaluo_cliente',
-                'contratos.credito_neto'
+                'contratos.credito_neto',
+                'contratos.total_pagar'
             )
             ->where('inst_seleccionadas.elegido', '=', '1')
             ->where('contratos.id', '=', $id)
@@ -4654,6 +4672,9 @@ class ContratoController extends Controller
         setlocale(LC_TIME, 'es_MX.utf8');
         $contratoPromesa[0]->precioVentaLetra = NumerosEnLetras::convertir($contratoPromesa[0]->precio_venta, 'Pesos M.N.', true, 'Centavos');
         $contratoPromesa[0]->precio_venta = number_format((float)$contratoPromesa[0]->precio_venta, 2, '.', ',');
+
+        if($contratoPromesa[0]->total_pagar <0)
+            $contratoPromesa[0]->credito_neto=$contratoPromesa[0]->credito_neto - $contratoPromesa[0]->total_pagar;
 
         $contratoPromesa[0]->montoTotalCreditoLetra = NumerosEnLetras::convertir($contratoPromesa[0]->credito_neto, 'Pesos M.N.', true, 'Centavos');
         $contratoPromesa[0]->credito_neto = number_format((float)$contratoPromesa[0]->credito_neto, 2, '.', ',');
@@ -4673,7 +4694,21 @@ class ContratoController extends Controller
         $totalDePagos = count($pagos);
         $pagos[0]->totalDePagos = NumerosEnLetras::convertir($totalDePagos, false, false, false);
 
-        $pagos[$totalDePagos - 1]->monto_pago =  $pagos[$totalDePagos - 1]->monto_pago - $contratoPromesa[0]->avaluo_cliente;
+        $posMayor=0;
+        for ($i = 0; $i < count($pagos); $i++) {
+            if($contratoPromesa[0]->avaluo_cliente < $pagos[$i]->monto_pago)
+            {
+                $posMayor = $i;
+            }
+        }
+
+        if($posMayor != 0)
+            $pagos[$posMayor]->monto_pago =  $pagos[$posMayor]->monto_pago - $contratoPromesa[0]->avaluo_cliente;
+        else{
+            $pagos[0]->monto_pago =  $pagos[0]->monto_pago - $contratoPromesa[0]->avaluo_cliente;
+            if($pagos[0]->monto_pago<0)
+                $pagos[0]->monto_pago = 0;
+        }
 
         for ($i = 0; $i < count($pagos); $i++) {
             $tiempo = new Carbon($pagos[$i]->fecha_pago);
@@ -4917,6 +4952,7 @@ class ContratoController extends Controller
         $contrato->comision_apertura = $request->comision_apertura;
         $contrato->investigacion = $request->investigacion;
         $contrato->avaluo = $request->avaluo;
+        $contrato->avaluo_cliente = $request->avaluo_cliente;
         $contrato->prima_unica = $request->prima_unica;
         $contrato->escrituras = $request->escrituras;
         $contrato->credito_neto = $request->credito_neto;

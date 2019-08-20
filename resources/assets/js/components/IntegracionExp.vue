@@ -58,7 +58,6 @@
                                         <th>Etapa</th>
                                         <th>Manzana</th>
                                         <th>Lote</th>
-                                        <th>Predial</th>
                                         <th>Avance</th>
                                         <th>Fecha de visita para avaluo</th>
                                         <th>Firma</th>
@@ -82,14 +81,14 @@
                                         <td class="td2" v-text="contratos.proyecto"></td>
                                         <td class="td2" v-text="contratos.etapa"></td>
                                         <td class="td2" v-text="contratos.manzana"></td>
-                                        <td class="td2" v-text="contratos.num_lote"></td>
-                                        <td class="td2" v-if="contratos.foto_predial">
-                                            <a  title="Descargar predial" v-if ="contratos.foto_predial" class="btn btn-success btn-sm" v-bind:href="'/downloadPredial/'+contratos.foto_predial">
-                                                <i class="fa fa-arrow-circle-down fa-lg"></i>
-                                            </a>
-                                        </td>
-                                        <td class="td2" v-else>
-                                            Sin archivo
+                                        <td class="td2" v-text="contratos.num_lote">
+                                            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{contratos.num_lote}}</a>
+                                            <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                <a v-if ="contratos.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+contratos.foto_predial">Descargar predial</a>
+                                                <a v-if ="contratos.foto_lic" class="dropdown-item" v-bind:href="'/downloadLicencias/'+contratos.foto_lic">Descargar licencia</a>
+                                                <a v-if ="contratos.foto_acta" class="dropdown-item" v-bind:href="'/downloadActa/'+contratos.foto_acta">Descargar Acta de termino</a>
+                                            </div>
+
                                         </td>
                                         <td class="td2" v-text="contratos.avance_lote+'%'"></td>
                                         
