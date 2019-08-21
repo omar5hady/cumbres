@@ -946,7 +946,7 @@ class UserController extends Controller
     }
 
     public function getPrivilegios(Request $request){
-        if (!$request->ajax()) return redirect('/');
+        //if (!$request->ajax()) return redirect('/');
         $privilegios=User::join('roles','users.rol_id','=','roles.id')
                         ->select( 'users.administracion','users.desarrollo','users.precios','users.obra','users.ventas',
                                 'users.acceso','users.reportes','users.rol_id','users.saldo','users.gestoria',
@@ -966,6 +966,7 @@ class UserController extends Controller
                                 'users.hist_creditos','users.contratos','users.docs',
                                 //Saldo
                                 'users.edo_cuenta','users.depositos','users.gastos_admn','users.cobro_credito',
+                                'users.dev_exc','users.dev_cancel',
                                 //Gestoria
                                 'users.expediente','users.asig_gestor','users.seg_tramite','users.avaluos',
                                 //Acceso
@@ -1038,6 +1039,8 @@ class UserController extends Controller
         $user->depositos = $request->depositos;
         $user->gastos_admn = $request->gastos_admn;
         $user->cobro_credito = $request->cobro_credito;
+        $user->dev_exc = $request->dev_exc;
+        $user->dev_cancel = $request->dev_cancel;
         //Gestoria
         $user->expediente = $request->expediente;
         $user->asig_gestor = $request->asig_gestor;

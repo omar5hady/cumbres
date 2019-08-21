@@ -79,6 +79,8 @@ class User extends Authenticatable
         'depositos',
         'gastos_admn',
         'cobro_credito',
+        'dev_cancel',
+        'dev_exc',
 
         //Gestoria
         'expediente',

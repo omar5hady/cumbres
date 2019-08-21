@@ -92,6 +92,8 @@ class CreateUsersTable extends Migration
             $table->boolean('depositos')->default(0);
             $table->boolean('gastos_admn')->default(0);
             $table->boolean('cobro_credito')->default(0);
+            $table->boolean('dev_cancel')->default(0);
+            $table->boolean('dev_exc')->default(0);
 
             //Gestoria
             $table->boolean('expediente')->default(0);

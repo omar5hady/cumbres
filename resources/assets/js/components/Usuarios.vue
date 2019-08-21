@@ -110,7 +110,7 @@
                                 </div> 
 
                                 <!-- listado para privilegios del menu Administracion -->
-                                <div class="col-md-4" v-if="rol_id==1 || rol_id==4 || rol_id==6|| rol_id==7 || rol_id==8">
+                                <div class="col-md-4" v-if="rol_id==1 || rol_id==4 || rol_id==6|| rol_id==7 || rol_id==8 || rol_id == 9">
                                     <div class="form-group row border">
                                             <a class="nav-link nav-dropdown-toggle"><i class="icon-energy"></i><input @click="limpiarAdministracion()" v-model="administracion" type="checkbox" value="1"/> Modulo Administración </a>
                                             <ul v-if="administracion==1" class="nav-dropdown-items">
@@ -144,7 +144,7 @@
                                                 <li class="nav-item" v-if="rol_id!=7">
                                                     <a class="nav-link"><i class="fa fa-user-circle-o"></i> <input v-model="mis_asesores" type="checkbox" value="1"/> Mis Asesores</a>
                                                 </li>
-                                                <li class="nav-item" v-if="rol_id == 1 || rol_id == 7">
+                                                <li class="nav-item" v-if="rol_id == 1 || rol_id == 7  || rol_id == 8  || rol_id == 9">
                                                     <a class="nav-link"><i class="fa fa-credit-card"></i> <input v-model="cuenta" type="checkbox" value="1"/> Cuenta</a>
                                                 </li>
                                                 <li class="nav-item" v-if="rol_id == 1 || rol_id == 7">
@@ -219,7 +219,7 @@
                                 </div>
 
                                 <!-- listado para privilegios del menu Saldos -->
-                                <div class="col-md-4" v-if="rol_id==1 || rol_id==6 || rol_id==9">
+                                <div class="col-md-4" v-if="rol_id==1 || rol_id==6 || rol_id==9 || rol_id==8" >
                                     <div class="form-group row border">
                                             <a class="nav-link nav-dropdown-toggle"><i class="fa fa-calculator"></i> <input @click="limpiarSaldo()" v-model="saldo" type="checkbox" value="1"/> Modulo Saldos</a>
                                                 <ul class="nav-dropdown-items" v-if="saldo==1">
@@ -234,6 +234,12 @@
                                                     </li>
                                                     <li class="nav-item">
                                                         <a class="nav-link" ><i class="fa fa-credit-card-alt"></i> <input v-model="cobro_credito" type="checkbox" value="1"/> Cobro de credito</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link" ><i class="icon-reload"></i> <input v-model="dev_cancel" type="checkbox" value="1"/>Devolución por cancelación</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link" ><i class="icon-reload"></i> <input v-model="dev_exc" type="checkbox" value="1"/> Devolución por excedente</a>
                                                     </li>
                                                 </ul>
                                     </div>
@@ -676,6 +682,8 @@
                     depositos:0,
                     gastos_admn:0,
                     cobro_credito:0,
+                    dev_exc :0,
+                    dev_cancel :0,
 
                     //Gestoria
                     expediente:0,
@@ -866,6 +874,8 @@
                 this.depositos=0;
                 this.gastos_admn=0;
                 this.cobro_credito=0;
+                this.dev_exc=0;
+                this.dev_cancel=0;
             },
             limpiarAcceso(){
                  //Acceso
@@ -963,6 +973,8 @@
                     me.depositos = usuarios[0].depositos;
                     me.gastos_admn = usuarios[0].gastos_admn;
                     me.cobro_credito = usuarios[0].cobro_credito;
+                    me.dev_cancel = usuarios[0].dev_cancel;
+                    me.dev_exc = usuarios[0].dev_exc;
 
                     //Gestoria
                     me.expediente = usuarios[0].expediente;
@@ -1230,6 +1242,8 @@
                     'depositos':this.depositos,
                     'gastos_admn':this.gastos_admn,
                     'cobro_credito':this.cobro_credito,
+                    'dev_cancel':this.dev_cancel,
+                    'dev_exc':this.dev_exc,
                         //Gestoria
                     'expediente':this.expediente,
                     'asig_gestor':this.asig_gestor,
