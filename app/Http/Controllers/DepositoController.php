@@ -25,7 +25,7 @@ class DepositoController extends Controller
         $buscar3 = $request->buscar3;
         $criterio =  $request->criterio;
 
-        if($vencido == 1){
+        if($vencido == 1){ //VENCIDOS
             if($buscar == ''){
                 $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
                     ->join('creditos','creditos.id','=','contratos.id')
@@ -263,7 +263,7 @@ class DepositoController extends Controller
             }
             
         } 
-        elseif($vencido == 2){
+        elseif($vencido == 2){ //CANCELADOS
             if($buscar == ''){
                 $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
                     ->join('creditos','creditos.id','=','contratos.id')
@@ -284,11 +284,11 @@ class DepositoController extends Controller
                             'contratos.ext_empresa',
                             DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
                             DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
-                    ->where('pagos_contratos.pagado','!=',2)
-                    ->where('pagos_contratos.pagado','!=',3)
+                    //
+                
                     ->where('contratos.status','=',0)
-                    ->where('contratos.status','=',2) 
-                    ->where('pagos_contratos.fecha_pago','<',$hoy)
+                    ->orWhere('contratos.status','=',2) 
+                
                     ->orderBy('pagos_contratos.pagado', 'asc')
                     ->orderBy('pagos_contratos.fecha_pago', 'asc')
                     ->orderBy('pagos_contratos.pagado', 'asc')
@@ -316,18 +316,21 @@ class DepositoController extends Controller
                                     'contratos.ext_empresa',
                                     DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
                                     DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
-                            ->where('pagos_contratos.pagado','!=',2)
-                            ->where('pagos_contratos.pagado','!=',3)
+                            //
+                        
                             ->where('contratos.status','=',0)
-                            ->where('contratos.status','=',2)
-                            ->where('pagos_contratos.fecha_pago','<',$hoy)
                             ->where('personal.nombre','like', '%'. $buscar . '%')
-                            ->orWhere('pagos_contratos.pagado','!=',2)
-                            ->where('pagos_contratos.pagado','!=',3)
-                            ->where('contratos.status','=',0)
-                            ->where('contratos.status','=',2)
-                            ->where('pagos_contratos.fecha_pago','<',$hoy)
+
+                            ->orWhere('contratos.status','=',2)
+                            ->where('personal.nombre','like', '%'. $buscar . '%')
+
+                            ->orWhere('contratos.status','=',2)
                             ->where('personal.apellidos','like', '%'. $buscar . '%')
+
+                            ->orWhere('contratos.status','=',0)
+                            ->where('personal.apellidos','like', '%'. $buscar . '%')
+                           
+
                             ->orderBy('pagos_contratos.pagado', 'asc')
                             ->orderBy('pagos_contratos.fecha_pago', 'asc')
                             ->orderBy('pagos_contratos.pagado', 'asc')
@@ -354,11 +357,11 @@ class DepositoController extends Controller
                                     'contratos.ext_empresa',
                                     DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
                                     DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
-                            ->where('pagos_contratos.pagado','!=',2)
-                            ->where('pagos_contratos.pagado','!=',3)
+                            
                             ->where('contratos.status','=',0)
-                            ->where('contratos.status','=',2)
-                            ->where('pagos_contratos.fecha_pago','<',$hoy)
+                            ->whereBetween($criterio, [$buscar,$buscar2])
+
+                            ->orWhere('contratos.status','=',2)
                             ->whereBetween($criterio, [$buscar,$buscar2])
                             ->orderBy('pagos_contratos.pagado', 'asc')
                             ->orderBy('pagos_contratos.fecha_pago', 'asc')
@@ -387,11 +390,10 @@ class DepositoController extends Controller
                                     'contratos.ext_empresa',
                                     DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
                                     DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
-                            ->where('pagos_contratos.pagado','!=',2)
-                            ->where('pagos_contratos.pagado','!=',3)
+                            
                             ->where('contratos.status','=',0)
-                            ->where('contratos.status','=',2)
-                            ->where('pagos_contratos.fecha_pago','<',$hoy)
+                            ->where($criterio,'=',$buscar)
+                            ->orWhere('contratos.status','=',2)
                             ->where($criterio,'=',$buscar)
                             ->orderBy('pagos_contratos.pagado', 'asc')
                             ->orderBy('pagos_contratos.fecha_pago', 'asc')
@@ -418,11 +420,11 @@ class DepositoController extends Controller
                                     'contratos.ext_empresa',
                                     DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
                                     DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
-                            ->where('pagos_contratos.pagado','!=',2)
-                            ->where('pagos_contratos.pagado','!=',3)
+                            
                             ->where('contratos.status','=',0)
-                            ->where('contratos.status','=',2)
-                            ->where('pagos_contratos.fecha_pago','<',$hoy)
+                            ->where($criterio,'=',$buscar)
+                            ->where('creditos.etapa','=',$buscar2)
+                            ->orWhere('contratos.status','=',2)
                             ->where($criterio,'=',$buscar)
                             ->where('creditos.etapa','=',$buscar2)
                             ->orderBy('pagos_contratos.pagado', 'asc')
@@ -450,11 +452,12 @@ class DepositoController extends Controller
                                     'contratos.ext_empresa',
                                     DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
                                     DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
-                            ->where('pagos_contratos.pagado','!=',2)
-                            ->where('pagos_contratos.pagado','!=',3)
+                            
                             ->where('contratos.status','=',0)
-                            ->where('contratos.status','=',2)
-                            ->where('pagos_contratos.fecha_pago','<',$hoy)
+                            ->where($criterio,'=',$buscar)
+                            ->where('creditos.etapa','=',$buscar2)
+                            ->where('creditos.manzana','=',$buscar3)
+                            ->orWhere('contratos.status','=',2)
                             ->where($criterio,'=',$buscar)
                             ->where('creditos.etapa','=',$buscar2)
                             ->where('creditos.manzana','=',$buscar3)
@@ -485,11 +488,10 @@ class DepositoController extends Controller
                                     'contratos.ext_empresa',
                                     DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
                                     DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
-                            ->where('pagos_contratos.pagado','!=',2)
-                            ->where('pagos_contratos.pagado','!=',3)
+                            
                             ->where('contratos.status','=',0)
-                            ->where('contratos.status','=',2)
-                            ->where('pagos_contratos.fecha_pago','<',$hoy)
+                            ->where($criterio,'=',$buscar)
+                            ->orWhere('contratos.status','=',2)
                             ->where($criterio,'=',$buscar)
                             ->orderBy('pagos_contratos.pagado', 'asc')
                             ->orderBy('pagos_contratos.fecha_pago', 'asc')
@@ -501,7 +503,7 @@ class DepositoController extends Controller
             }
             
         }
-        else{
+        else{ //TODOS
             if($buscar==''){
                 $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
                     ->join('creditos','creditos.id','=','contratos.id')
@@ -1512,6 +1514,7 @@ class DepositoController extends Controller
                 'creditos.precio_venta',
                 'expedientes.valor_escrituras', 
                 'expedientes.descuento', 
+                'expedientes.fecha_liquidacion',
                 'contratos.enganche_total',
                 'contratos.fecha',
                 'contratos.saldo',
@@ -1547,6 +1550,9 @@ class DepositoController extends Controller
         ->where('i.elegido', '=', 1)
         ->where('contratos.id',$id)
         ->get();
+
+        if($contratos[0]->descuento == NULL)
+            $contratos[0]->descuento = 0;
 
         $contratos[0]->totalCargo = $contratos[0]->precio_venta + $contratos[0]->gastos;
 
@@ -1596,12 +1602,13 @@ class DepositoController extends Controller
                                         ->get();
 
         $contratos[0]->sumDepositoCredito = $total_depositos_credito[0]->sumDepositoCredito;
-        $contratos[0]->totalAbono = $contratos[0]->sumDeposito + $contratos[0]->sumDepositoCredito;
+        $contratos[0]->totalAbono = $contratos[0]->sumDeposito + $contratos[0]->sumDepositoCredito + $contratos[0]->descuento;
         $contratos[0]->sumDepositoCredito = number_format((float)$contratos[0]->sumDepositoCredito, 2, '.', ',');
         $contratos[0]->sumDeposito = number_format((float)$contratos[0]->sumDeposito, 2, '.', ',');
         $contratos[0]->totalAbono = number_format((float)$contratos[0]->totalAbono, 2, '.', ',');
         $contratos[0]->totalCargo = number_format((float)$contratos[0]->totalCargo, 2, '.', ',');
         $contratos[0]->saldo = number_format((float)$contratos[0]->saldo, 2, '.', ',');
+        $contratos[0]->descuento = number_format((float)$contratos[0]->descuento, 2, '.', ',');
         
         $pdf = \PDF::loadview('pdf.contratos.estadoDeCuenta', ['contratos' => $contratos, 'depositos' => $depositos, 'gastos_admin' => $gastos_admin, 'depositos_credito' => $depositos_credito]);
         return $pdf->stream('EstadoDeCuenta.pdf');

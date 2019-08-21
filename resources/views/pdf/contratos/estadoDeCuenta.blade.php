@@ -179,6 +179,29 @@
                     <div colspan="8" class="table-cell"></div>    
                 </div>
 
+                @if($contratos[0]->descuento > 0)
+                <div class="table-row">
+                    <div colspan="8" class="table-cell"><b>DESCUENTO</div>    
+                </div>
+            
+                <div class="table-row">
+                    <div colspan="2" class="table-cell">DESCUENTO</div>
+                    <div class="table-cell">{{$contratos[0]->fecha_liquidacion}}</div>
+                    <div class="table-cell"></div>    
+                    <div colspan="2" class="table-cell"></div>
+                    <div class="table-cell">$ 0.00</div>  
+                    <div class="table-cell">$ {{$contratos[0]->descuento}}</div>
+                </div>
+
+                <div class="table-row">
+                    <div colspan="4" class="table-cell"></div>   
+                    <div colspan="2" class="table-cell"><b>TOTAL(DESCUENTO)</div>
+                    <div class="table-cell"></div>  
+                    <div class="table-cell"><b>$ {{$contratos[0]->descuento}}</div>  
+                </div>
+                @endif
+
+
                 <div class="table-row">
                     <div colspan="8" class="table-cell"></div>    
                 </div>
