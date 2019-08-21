@@ -769,7 +769,7 @@ class DepositoController extends Controller
                 $gasto->contrato_id = $pago_contrato->contrato_id;
                 $gasto->concepto = 'Interes Ordinario';
                 $gasto->costo = $request->interes_ord;
-                $gasto->fecha = $request->fecha;
+                $gasto->fecha = $request->fecha_pago;
                 $gasto->observacion = '';
                 $gasto->save();
             }

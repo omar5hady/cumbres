@@ -193,8 +193,8 @@ sin que esa circunstancia releva a este último de ser el responsable de realiza
          mismo que EL PROMITENTE COMPRADOR se obliga a pagar a EL PROMITENTE VENDEDOR en los términos establecidos en la 
          cláusula de la siguiente manera: a).La cantidad de <strong>${{strtoupper($contratoPromesa[0]->montoTotalCreditoLetra)}},</strong> 
          mediante el crédito que le otorgara {{mb_strtoupper($contratoPromesa[0]->institucion)}} @if($contratoPromesa[0]->infonavit > 0) y la cantidad de <strong>${{strtoupper($contratoPromesa[0]->infonavitLetra)}}</strong> que le otorga INFONAVIT @elseif($contratoPromesa[0]->fovisste > 0) y la cantidad de <strong>${{strtoupper($contratoPromesa[0]->fovissteLetra)}}</strong> que le otorga FOVISSTE @endif, 
-         al que se refiere la cláusula segunda del presente convenio, misma que deberá ser liquidada dentro de los 45 días naturales siguientes a la conclusión de la construcción de LA VIVIENDA. b).El resto, mediante <strong>{{$pagos[0]->totalDePagos}}</strong>pagos, @for($i=0; $i < count($pagos); $i++) el <strong>{{$pagos[$i]->numeros}}</strong> por la cantidad de <strong>${{strtoupper($pagos[$i]->montoPagoLetra)}},</strong>
-         que será liquidado a más tardar el día <strong>{{$pagos[$i]->fecha_pago}}</strong>@endfor, respectivamente. 
+         al que se refiere la cláusula segunda del presente convenio, misma que deberá ser liquidada dentro de los 45 días naturales siguientes a la conclusión de la construcción de LA VIVIENDA. @if($contratoPromesa[0]->precio_venta != $contratoPromesa[0]->credito_neto) b).El resto, mediante <strong>{{$pagos[0]->totalDePagos}}</strong>pagos, @for($i=0; $i < count($pagos); $i++) el <strong>{{$pagos[$i]->numeros}}</strong> por la cantidad de <strong>${{strtoupper($pagos[$i]->montoPagoLetra)}},</strong>
+         que será liquidado a más tardar el día <strong>{{$pagos[$i]->fecha_pago}}</strong>@endfor, respectivamente. @endif
 </p>
 
 <p>
@@ -227,6 +227,12 @@ el presente contrato se rescindirá en forma automática.
 La falta de pago puntual por parte de <strong>EL PROMITENTE COMPRADOR</strong> faculta a <strong>EL PROMITENTE VENDEDOR</strong> al cobro de intereses calculados 
 a razón del 5% mensual por cada día de retraso y calculados sobre la cantidad adeudada. 
 El cobro de intereses por parte de <strong>EL PROMITENTE VENDEDOR</strong>, no implica una renuncia al derecho a ejercer la recisión de pleno derecho y sin necesidad de declaración judicial que en este mismo contrato se prevé.
+<br>
+@if($contratoPromesa[0]->precio_venta != $contratoPromesa[0]->credito_neto)
+</p>
+
+<p>
+@endif
 <br>
 En caso de rescisión del presente contrato, por causa imputable a <strong>EL PROMITENTE COMPRADOR, EL PROMITENTE VENDEDOR</strong> deberá reintegrar 
 el importe recibido hasta la fecha por parte de <strong>EL PROMITENTE COMPRADOR</strong>, descontándose la cantidad de $ 25,000.00 (Veinticinco Mil Pesos 00/100 Moneda Nacional), 

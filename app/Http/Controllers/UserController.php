@@ -9,6 +9,7 @@ use App\Vendedor;
 use Auth;
 use Illuminate\Support\Facades\DB;
 use File;
+use Excel;
 
 class UserController extends Controller
 {
@@ -1139,5 +1140,97 @@ class UserController extends Controller
         $asignar->save();
     }
 
+    public function excelAsesores (Request $request){
+        $buscar = $request->buscar;
+        $criterio = $request->criterio;
+         
+            if ($buscar==''){
+                $personas = User::join('personal','users.id','=','personal.id')
+                ->join('roles','users.rol_id','=','roles.id')
+                ->join('vendedores','personal.id','=','vendedores.id')
+                ->select('personal.id','personal.nombre','personal.rfc','personal.f_nacimiento',
+                'personal.direccion','personal.telefono','personal.departamento_id',
+                'personal.colonia','personal.ext','personal.homoclave','personal.cp',
+                'personal.celular','personal.activo','personal.empresa_id','personal.apellidos',
+                'personal.email','users.usuario','users.password',
+                'users.condicion','users.rol_id','roles.nombre as rol','vendedores.inmobiliaria','vendedores.tipo')
+                ->orderBy('users.condicion', 'desc')
+                ->orderBy('personal.apellidos', 'asc')
+                ->orderBy('personal.nombre', 'asc')
+                ->get();
+            }
+            else{
+                $personas = User::join('personal','users.id','=','personal.id')
+                ->join('roles','users.rol_id','=','roles.id')
+                ->join('vendedores','personal.id','=','vendedores.id')
+                ->select('personal.id','personal.nombre','personal.rfc','personal.f_nacimiento',
+                'personal.direccion','personal.telefono','personal.departamento_id',
+                'personal.colonia','personal.ext','personal.homoclave','personal.cp',
+                'personal.celular','personal.activo','personal.empresa_id','personal.apellidos',
+                'personal.email','users.usuario','users.password',
+                'users.condicion','users.rol_id','roles.nombre as rol','vendedores.inmobiliaria','vendedores.tipo')   
+                ->where($criterio, '=',  $buscar )
+                ->orderBy('users.condicion', 'desc')
+                ->orderBy('personal.apellidos', 'asc')
+                ->orderBy('personal.nombre', 'asc')
+               ->get(); 
+            }
 
+            return Excel::create('Asesores', function($excel) use ($personas){
+                $excel->sheet('asesores', function($sheet) use ($personas){
+                    
+                    $sheet->row(1, [
+                        'Nombre', 'Usuario','Rol' ,'Tipo', 'Inmobiliaria', 'Status'
+                    ]);
+    
+    
+                    $sheet->cells('A1:F1', function ($cells) {
+                        $cells->setBackground('#052154');
+                        $cells->setFontColor('#ffffff');
+                        // Set font family
+                        $cells->setFontFamily('Calibri');
+    
+                        // Set font size
+                        $cells->setFontSize(13);
+    
+                        // Set font weight to bold
+                        $cells->setFontWeight('bold');
+                        $cells->setAlignment('center');
+                    });
+    
+                    
+                    $cont=1;
+    
+                    foreach($personas as $index => $persona) {
+                        $cont++;
+                        
+                        if($persona->tipo==0){
+                            $tipo = 'Interno';
+                        }else{
+                            $tipo = 'Externo';
+                        }
+
+                        if($persona->condicion == 1){
+                            $clasificacion = 'Activo';
+                        }else{
+                            $clasificacion = 'Inactivo';
+                        }
+    
+                        $sheet->row($index+2, [
+                            $persona->nombre.' '.$persona->apellidos, 
+                            $persona->usuario, 
+                            $persona->rol, 
+                            $tipo,
+                            $persona->inmobiliaria,
+                            $clasificacion,
+                        ]);	
+                    }
+                    $num='A1:F' . $cont;
+                    $sheet->setBorder($num, 'thin');
+                });
+            }
+            
+            )->download('xlsx');
+
+    }
 }
