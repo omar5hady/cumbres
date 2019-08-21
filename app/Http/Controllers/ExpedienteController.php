@@ -1525,10 +1525,10 @@ class ExpedienteController extends Controller
         $b_manzana = $request->b_manzana;
         $b_lote = $request->b_lote;
         $criterio = $request->criterio;
-        $contador = 0;
+        $contador = 0; 
         $rolId = Auth::user()->rol_id;
 
-        if($rolId == 1 || $rolId == 4 || $rolId == 6 || $rolId == 8 ){
+        if($rolId == 1 || $rolId == 4 || $rolId == 6 || $rolId == 8 || Auth::user()->id == 24701){
             if ($buscar == ''){
                 $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                     ->leftJoin('avaluos','contratos.id','=','avaluos.contrato_id')
@@ -2753,7 +2753,7 @@ class ExpedienteController extends Controller
         $contador = 0;
         $rolId = Auth::user()->rol_id;
 
-        if($rolId == 1 || $rolId == 4 || $rolId == 6 || $rolId == 8 ){
+        if($rolId == 1 || $rolId == 4 || $rolId == 6 || $rolId == 8 || Auth::user()->id == 24701){
             if ($buscar == ''){
                 $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                     ->leftJoin('avaluos','contratos.id','=','avaluos.contrato_id')
@@ -4163,7 +4163,7 @@ class ExpedienteController extends Controller
         $contador = 0;
         $rolId = Auth::user()->rol_id;
 
-        if($rolId == 1 || $rolId == 4 || $rolId == 6 || $rolId == 8 ){
+        if($rolId == 1 || $rolId == 4 || $rolId == 6 || $rolId == 8 || Auth::user()->id == 24701){
             if ($buscar == ''){
                 $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                     ->leftJoin('avaluos','contratos.id','=','avaluos.contrato_id')
@@ -5848,7 +5848,7 @@ class ExpedienteController extends Controller
         $contador = 0;
         $rolId = Auth::user()->rol_id;
        
-        if($rolId == 1 || $rolId == 4 || $rolId == 6 || $rolId == 8 ){
+        if($rolId == 1 || $rolId == 4 || $rolId == 6 || $rolId == 8 || Auth::user()->id == 24701){
             if ($buscar == ''){
                 $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                     ->leftJoin('avaluos','contratos.id','=','avaluos.contrato_id')
