@@ -8,6 +8,8 @@ use App\Devolucion;
 use App\Gasto_admin;
 use DB;
 use App\Credito;
+use Excel;
+use Carbon\Carbon;
 
 class DevolucionController extends Controller
 {
@@ -1298,7 +1300,7 @@ class DevolucionController extends Controller
     }
 
     public function excelHistDev(Request $request){
-        if(!$request->ajax())return redirect('/');
+       // if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
         $b_etapa = $request->b_etapa;
         $b_manzana = $request->b_manzana;
@@ -1928,12 +1930,17 @@ class DevolucionController extends Controller
             $excel->sheet('devoluciones', function($sheet) use ($devoluciones){
                 
                 $sheet->row(1, [
-                    '# Contrato', 'Cliente', 'Vendedor', 'Proyecto', 'Etapa', 'Manzana',
-                    '# Lote','Modelo', 'Fecha del contrato', 'Status'
+                    '# Ref', 'Cliente', 'Proyecto', 'Etapa', 'Manzana',
+                    '# Lote','Devuelto', 'Fecha cancelación', 'Fecha devolución',
+                    '# Cheque', 'Cuenta'
                 ]);
 
+                $sheet->setColumnFormat(array(
+                    'G' => '$#,##0.00',
+                ));
 
-                $sheet->cells('A1:J1', function ($cells) {
+
+                $sheet->cells('A1:K1', function ($cells) {
                     $cells->setBackground('#052154');
                     $cells->setFontColor('#ffffff');
                     // Set font family
@@ -1953,45 +1960,28 @@ class DevolucionController extends Controller
                 foreach($devoluciones as $index => $devolucion) {
                     $cont++;
 
-                    switch($devolucion->status){
-                        case 0: {
-                            $status = 'Cancelado';
-                            break;
-                        }
-                        case 1:{
-                            $status = 'Pendiente';
-                            break;
-                        }
-                        case 2:{
-                            $status = 'No firmado';
-                            break;
-                        }
-                        case 3:{
-                            $status = 'Firmado';
-                            break;
-                        }
-
-                    }
-
                     setlocale(LC_TIME, 'es_MX.utf8');
                     $fecha1 = new Carbon($devolucion->fecha);
+                    $fecha2 = new Carbon($devolucion->fecha_status);
                     $devolucion->fecha = $fecha1->formatLocalized('%d de %B de %Y');
+                    $devolucion->fecha_status = $fecha2->formatLocalized('%d de %B de %Y');
 
                     $sheet->row($index+2, [
-                        $devolucion->devolucionId, 
+                        $devolucion->id, 
                         $devolucion->nombre. ' ' . $devolucion->apellidos,
-                        $devolucion->vendedor_nombre. ' ' .$devolucion->vendedor_apellidos,
                         $devolucion->proyecto,
                         $devolucion->etapa,
                         $devolucion->manzana,
                         $devolucion->num_lote,
-                        $devolucion->modelo,
+                        $devolucion->devolver,
+                        $devolucion->fecha_status,
                         $devolucion->fecha,
-                        $status
+                        $devolucion->cheque,
+                        $devolucion->cuenta,
 
                     ]);	
                 }
-                $num='A1:J' . $cont;
+                $num='A1:K' . $cont;
                 $sheet->setBorder($num, 'thin');
             });
         }

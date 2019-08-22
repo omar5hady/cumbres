@@ -2650,4 +2650,666 @@ class InstSeleccionadasController extends Controller
             ], 'devoluciones' => $devoluciones//, 'contadorContrato' => $contadorContratos
         ];
     }
+
+    public function excelHistDev(Request $request){
+        if(!$request->ajax())return redirect('/');
+        $buscar = $request->buscar;
+        $b_etapa = $request->b_etapa;
+        $b_manzana = $request->b_manzana;
+        $b_lote = $request->b_lote;
+        $criterio = $request->criterio;
+       
+        if ($buscar == '') {
+            $devoluciones = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                ->join('dev_creditos','contratos.id','=','dev_creditos.contrato_id')
+                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                ->select(
+                    'creditos.id',
+                    'creditos.prospecto_id',
+                    'creditos.etapa',
+                    'creditos.manzana',
+                    'creditos.num_lote',
+                    'creditos.modelo',
+                    'creditos.precio_base',
+                    'creditos.precio_venta',
+                    'creditos.fraccionamiento as proyecto',
+                    'creditos.lote_id',
+
+                    'personal.nombre',
+                    'personal.apellidos',
+                    'personal.telefono',
+                    'personal.celular',
+                    'personal.email',
+                    'personal.direccion',
+                    'personal.cp',
+                    'personal.colonia',
+                    'personal.f_nacimiento',
+                    'personal.rfc',
+                    'personal.homoclave',
+                    DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
+                    
+                    'v.nombre as vendedor_nombre',
+                    'v.apellidos as vendedor_apellidos',
+                    DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
+                    
+
+                    'contratos.status',
+                    'contratos.fecha_status',
+                    'contratos.total_pagar',
+                    'contratos.monto_total_credito',
+                    'contratos.enganche_total',
+                    'contratos.avance_lote',
+                    'contratos.observacion',
+
+                    'dev_creditos.fecha',
+                    'dev_creditos.cheque',
+                    'dev_creditos.cuenta',
+                    'dev_creditos.observaciones',
+                    'dev_creditos.devolver',
+
+
+                    DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
+                                WHERE pagos_contratos.contrato_id = contratos.id
+                                GROUP BY pagos_contratos.contrato_id) as sumaPagares"),
+                    
+                    DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
+                                WHERE pagos_contratos.contrato_id = contratos.id
+                                GROUP BY pagos_contratos.contrato_id) as sumaRestante")
+                )
+                ->orderBy('id', 'desc')->paginate(8);
+           
+        }
+        else{
+            switch ($criterio){
+                case 'lotes.fraccionamiento_id':{
+                    if($b_etapa == '' && $b_manzana == '' && $b_lote == '')
+                    {
+                        $devoluciones = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                        ->join('dev_creditos','contratos.id','=','dev_creditos.contrato_id')
+                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                        ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                        ->select(
+                            'creditos.id',
+                            'creditos.prospecto_id',
+                            'creditos.etapa',
+                            'creditos.manzana',
+                            'creditos.num_lote',
+                            'creditos.modelo',
+                            'creditos.precio_base',
+                            'creditos.precio_venta',
+                            'creditos.fraccionamiento as proyecto',
+                            'creditos.lote_id',
+
+                            'personal.nombre',
+                            'personal.apellidos',
+                            'personal.telefono',
+                            'personal.celular',
+                            'personal.email',
+                            'personal.direccion',
+                            'personal.cp',
+                            'personal.colonia',
+                            'personal.f_nacimiento',
+                            'personal.rfc',
+                            'personal.homoclave',
+                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
+                            
+                            'v.nombre as vendedor_nombre',
+                            'v.apellidos as vendedor_apellidos',
+                            DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
+                            
+
+                            'contratos.status',
+                            'contratos.fecha_status',
+                            'contratos.total_pagar',
+                            'contratos.monto_total_credito',
+                            'contratos.enganche_total',
+                            'contratos.avance_lote',
+                            'contratos.observacion',
+
+                            'dev_creditos.fecha',
+                            
+                            'dev_creditos.cheque',
+                            'dev_creditos.cuenta',
+                            'dev_creditos.observaciones',
+                            'dev_creditos.devolver',
+                            
+
+                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
+                                        WHERE pagos_contratos.contrato_id = contratos.id
+                                        GROUP BY pagos_contratos.contrato_id) as sumaPagares"),
+                            
+                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
+                                        WHERE pagos_contratos.contrato_id = contratos.id
+                                        GROUP BY pagos_contratos.contrato_id) as sumaRestante")
+                        )
+                        ->where($criterio, '=', $buscar)
+                        ->orderBy('id', 'desc')->paginate(8);
+                    }
+                    elseif($b_etapa != '' && $b_manzana == '' && $b_lote == ''){
+                        $devoluciones = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                        ->join('dev_creditos','contratos.id','=','dev_creditos.contrato_id')
+                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                        ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                        ->select(
+                            'creditos.id',
+                            'creditos.prospecto_id',
+                            'creditos.etapa',
+                            'creditos.manzana',
+                            'creditos.num_lote',
+                            'creditos.modelo',
+                            'creditos.precio_base',
+                            'creditos.precio_venta',
+                            'creditos.fraccionamiento as proyecto',
+                            'creditos.lote_id',
+
+                            'personal.nombre',
+                            'personal.apellidos',
+                            'personal.telefono',
+                            'personal.celular',
+                            'personal.email',
+                            'personal.direccion',
+                            'personal.cp',
+                            'personal.colonia',
+                            'personal.f_nacimiento',
+                            'personal.rfc',
+                            'personal.homoclave',
+                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
+                            
+                            'v.nombre as vendedor_nombre',
+                            'v.apellidos as vendedor_apellidos',
+                            DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
+                            
+
+                            'contratos.status',
+                            'contratos.fecha_status',
+                            'contratos.total_pagar',
+                            'contratos.monto_total_credito',
+                            'contratos.enganche_total',
+                            'contratos.avance_lote',
+                            'contratos.observacion',
+                            
+                            'dev_creditos.fecha',
+                            
+                            'dev_creditos.cheque',
+                            'dev_creditos.cuenta',
+                            'dev_creditos.observaciones',
+                            'dev_creditos.devolver',
+
+                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
+                                        WHERE pagos_contratos.contrato_id = contratos.id
+                                        GROUP BY pagos_contratos.contrato_id) as sumaPagares"),
+                            
+                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
+                                        WHERE pagos_contratos.contrato_id = contratos.id
+                                        GROUP BY pagos_contratos.contrato_id) as sumaRestante")
+                        )
+                        ->where($criterio, '=', $buscar)
+                        ->where('lotes.etapa_id', '=', $b_etapa)
+                        ->orderBy('id', 'desc')->paginate(8);
+                    }
+                    elseif($b_etapa != '' && $b_manzana != '' && $b_lote == ''){
+                        $devoluciones = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                        ->join('dev_creditos','contratos.id','=','dev_creditos.contrato_id')
+                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                        ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                        ->select(
+                            'creditos.id',
+                            'creditos.prospecto_id',
+                            'creditos.etapa',
+                            'creditos.manzana',
+                            'creditos.num_lote',
+                            'creditos.modelo',
+                            'creditos.precio_base',
+                            'creditos.precio_venta',
+                            'creditos.fraccionamiento as proyecto',
+                            'creditos.lote_id',
+
+                            'personal.nombre',
+                            'personal.apellidos',
+                            'personal.telefono',
+                            'personal.celular',
+                            'personal.email',
+                            'personal.direccion',
+                            'personal.cp',
+                            'personal.colonia',
+                            'personal.f_nacimiento',
+                            'personal.rfc',
+                            'personal.homoclave',
+                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
+                            
+                            'v.nombre as vendedor_nombre',
+                            'v.apellidos as vendedor_apellidos',
+                            DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
+                            
+
+                            'contratos.status',
+                            'contratos.fecha_status',
+                            'contratos.total_pagar',
+                            'contratos.monto_total_credito',
+                            'contratos.enganche_total',
+                            'contratos.avance_lote',
+                            'contratos.observacion',
+                            
+                            'dev_creditos.fecha',
+                            
+                            'dev_creditos.cheque',
+                            'dev_creditos.cuenta',
+                            'dev_creditos.observaciones',
+                            'dev_creditos.devolver',
+
+                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
+                                        WHERE pagos_contratos.contrato_id = contratos.id
+                                        GROUP BY pagos_contratos.contrato_id) as sumaPagares"),
+                            
+                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
+                                        WHERE pagos_contratos.contrato_id = contratos.id
+                                        GROUP BY pagos_contratos.contrato_id) as sumaRestante")
+                        )
+                        ->where($criterio, '=', $buscar)
+                        ->where('lotes.etapa_id', '=', $b_etapa)
+                        ->where('lotes.manzana', '=', $b_manzana)
+                        ->orderBy('id', 'desc')->paginate(8);
+                    }
+                    elseif($b_etapa != '' && $b_manzana != '' && $b_lote != ''){
+                        $devoluciones = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                        ->join('dev_creditos','contratos.id','=','dev_creditos.contrato_id')
+                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                        ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                        ->select(
+                            'creditos.id',
+                            'creditos.prospecto_id',
+                            'creditos.etapa',
+                            'creditos.manzana',
+                            'creditos.num_lote',
+                            'creditos.modelo',
+                            'creditos.precio_base',
+                            'creditos.precio_venta',
+                            'creditos.fraccionamiento as proyecto',
+                            'creditos.lote_id',
+
+                            'personal.nombre',
+                            'personal.apellidos',
+                            'personal.telefono',
+                            'personal.celular',
+                            'personal.email',
+                            'personal.direccion',
+                            'personal.cp',
+                            'personal.colonia',
+                            'personal.f_nacimiento',
+                            'personal.rfc',
+                            'personal.homoclave',
+                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
+                            
+                            'v.nombre as vendedor_nombre',
+                            'v.apellidos as vendedor_apellidos',
+                            DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
+                            
+
+                            'contratos.status',
+                            'contratos.fecha_status',
+                            'contratos.total_pagar',
+                            'contratos.monto_total_credito',
+                            'contratos.enganche_total',
+                            'contratos.avance_lote',
+                            'contratos.observacion',
+                            
+                            'dev_creditos.fecha',
+                            
+                            'dev_creditos.cheque',
+                            'dev_creditos.cuenta',
+                            'dev_creditos.observaciones',
+                            'dev_creditos.devolver',
+
+                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
+                                        WHERE pagos_contratos.contrato_id = contratos.id
+                                        GROUP BY pagos_contratos.contrato_id) as sumaPagares"),
+                            
+                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
+                                        WHERE pagos_contratos.contrato_id = contratos.id
+                                        GROUP BY pagos_contratos.contrato_id) as sumaRestante")
+                        )
+                        ->where($criterio, '=', $buscar)
+                        ->where('lotes.etapa_id', '=', $b_etapa)
+                        ->where('lotes.manzana', '=', $b_manzana)
+                        ->where('lotes.num_lote', '=', $b_lote)
+                        ->orderBy('id', 'desc')->paginate(8);
+                    }
+                    elseif($b_etapa != '' && $b_manzana == '' && $b_lote != ''){
+                        $devoluciones = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                        ->join('dev_creditos','contratos.id','=','dev_creditos.contrato_id')
+                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                        ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                        ->select(
+                            'creditos.id',
+                            'creditos.prospecto_id',
+                            'creditos.etapa',
+                            'creditos.manzana',
+                            'creditos.num_lote',
+                            'creditos.modelo',
+                            'creditos.precio_base',
+                            'creditos.precio_venta',
+                            'creditos.fraccionamiento as proyecto',
+                            'creditos.lote_id',
+
+                            'personal.nombre',
+                            'personal.apellidos',
+                            'personal.telefono',
+                            'personal.celular',
+                            'personal.email',
+                            'personal.direccion',
+                            'personal.cp',
+                            'personal.colonia',
+                            'personal.f_nacimiento',
+                            'personal.rfc',
+                            'personal.homoclave',
+                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
+                            
+                            'v.nombre as vendedor_nombre',
+                            'v.apellidos as vendedor_apellidos',
+                            DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
+                            
+
+                            'contratos.status',
+                            'contratos.fecha_status',
+                            'contratos.total_pagar',
+                            'contratos.monto_total_credito',
+                            'contratos.enganche_total',
+                            'contratos.avance_lote',
+                            'contratos.observacion',
+                            
+                            'dev_creditos.fecha',
+                            
+                            'dev_creditos.cheque',
+                            'dev_creditos.cuenta',
+                            'dev_creditos.observaciones',
+                            'dev_creditos.devolver',
+
+                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
+                                        WHERE pagos_contratos.contrato_id = contratos.id
+                                        GROUP BY pagos_contratos.contrato_id) as sumaPagares"),
+                            
+                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
+                                        WHERE pagos_contratos.contrato_id = contratos.id
+                                        GROUP BY pagos_contratos.contrato_id) as sumaRestante")
+                        )
+                        ->where($criterio, '=', $buscar)
+                        ->where('lotes.etapa_id', '=', $b_etapa)
+                        ->where('lotes.num_lote', '=', $b_lote)
+                        ->orderBy('id', 'desc')->paginate(8);
+                    }
+                    elseif($b_etapa == '' && $b_manzana == '' && $b_lote != ''){
+                        $devoluciones = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                        ->join('dev_creditos','contratos.id','=','dev_creditos.contrato_id')
+                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                        ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                        ->select(
+                            'creditos.id',
+                            'creditos.prospecto_id',
+                            'creditos.etapa',
+                            'creditos.manzana',
+                            'creditos.num_lote',
+                            'creditos.modelo',
+                            'creditos.precio_base',
+                            'creditos.precio_venta',
+                            'creditos.fraccionamiento as proyecto',
+                            'creditos.lote_id',
+
+                            'personal.nombre',
+                            'personal.apellidos',
+                            'personal.telefono',
+                            'personal.celular',
+                            'personal.email',
+                            'personal.direccion',
+                            'personal.cp',
+                            'personal.colonia',
+                            'personal.f_nacimiento',
+                            'personal.rfc',
+                            'personal.homoclave',
+                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
+                            
+                            'v.nombre as vendedor_nombre',
+                            'v.apellidos as vendedor_apellidos',
+                            DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
+                            
+
+                            'contratos.status',
+                            'contratos.fecha_status',
+                            'contratos.total_pagar',
+                            'contratos.monto_total_credito',
+                            'contratos.enganche_total',
+                            'contratos.avance_lote',
+                            'contratos.observacion',
+                            
+                            'dev_creditos.fecha',
+                            
+                            'dev_creditos.cheque',
+                            'dev_creditos.cuenta',
+                            'dev_creditos.observaciones',
+                            'dev_creditos.devolver',
+
+                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
+                                        WHERE pagos_contratos.contrato_id = contratos.id
+                                        GROUP BY pagos_contratos.contrato_id) as sumaPagares"),
+                            
+                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
+                                        WHERE pagos_contratos.contrato_id = contratos.id
+                                        GROUP BY pagos_contratos.contrato_id) as sumaRestante")
+                        )
+                        ->where($criterio, '=', $buscar)
+                        ->where('lotes.num_lote', '=', $b_lote)
+                        ->orderBy('id', 'desc')->paginate(8);
+                    }
+                    
+                    break;
+                }
+                case 'creditos.id':{
+                    $devoluciones = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                    ->join('dev_creditos','contratos.id','=','dev_creditos.contrato_id')
+                    ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                    ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                    ->select(
+                        'creditos.id',
+                        'creditos.prospecto_id',
+                        'creditos.etapa',
+                        'creditos.manzana',
+                        'creditos.num_lote',
+                        'creditos.modelo',
+                        'creditos.precio_base',
+                        'creditos.precio_venta',
+                        'creditos.fraccionamiento as proyecto',
+                        'creditos.lote_id',
+
+                        'personal.nombre',
+                        'personal.apellidos',
+                        'personal.telefono',
+                        'personal.celular',
+                        'personal.email',
+                        'personal.direccion',
+                        'personal.cp',
+                        'personal.colonia',
+                        'personal.f_nacimiento',
+                        'personal.rfc',
+                        'personal.homoclave',
+                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
+                        
+                        'v.nombre as vendedor_nombre',
+                        'v.apellidos as vendedor_apellidos',
+                        DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
+                        
+
+                        'contratos.status',
+                        'contratos.fecha_status',
+                        'contratos.total_pagar',
+                        'contratos.monto_total_credito',
+                        'contratos.enganche_total',
+                        'contratos.avance_lote',
+                        'contratos.observacion',
+
+                        'dev_creditos.fecha',
+                        
+                        'dev_creditos.cheque',
+                        'dev_creditos.cuenta',
+                        'dev_creditos.observaciones',
+                        'dev_creditos.devolver',
+
+                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
+                                    WHERE pagos_contratos.contrato_id = contratos.id
+                                    GROUP BY pagos_contratos.contrato_id) as sumaPagares"),
+                        
+                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
+                                    WHERE pagos_contratos.contrato_id = contratos.id
+                                    GROUP BY pagos_contratos.contrato_id) as sumaRestante")
+                    )
+                    ->where($criterio, '=', $buscar)
+                    ->orderBy('id', 'desc')->paginate(8);
+                    break;
+                }
+                case 'personal.nombre':{
+                    $devoluciones = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                        ->join('dev_creditos','contratos.id','=','dev_creditos.contrato_id')
+                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                        ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                        ->select(
+                            'creditos.id',
+                            'creditos.prospecto_id',
+                            'creditos.etapa',
+                            'creditos.manzana',
+                            'creditos.num_lote',
+                            'creditos.modelo',
+                            'creditos.precio_base',
+                            'creditos.precio_venta',
+                            'creditos.fraccionamiento as proyecto',
+                            'creditos.lote_id',
+
+                            'personal.nombre',
+                            'personal.apellidos',
+                            'personal.telefono',
+                            'personal.celular',
+                            'personal.email',
+                            'personal.direccion',
+                            'personal.cp',
+                            'personal.colonia',
+                            'personal.f_nacimiento',
+                            'personal.rfc',
+                            'personal.homoclave',
+                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS nombre_cliente"),
+                            
+                            'v.nombre as vendedor_nombre',
+                            'v.apellidos as vendedor_apellidos',
+                            DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS nombre_vendedor"),
+                            
+
+                            'contratos.status',
+                            'contratos.fecha_status',
+                            'contratos.total_pagar',
+                            'contratos.monto_total_credito',
+                            'contratos.enganche_total',
+                            'contratos.avance_lote',
+                            'contratos.observacion',
+
+                            'dev_creditos.fecha',
+                            
+                            'dev_creditos.cheque',
+                            'dev_creditos.cuenta',
+                            'dev_creditos.observaciones',
+                            'dev_creditos.devolver',
+
+                            DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
+                                        WHERE pagos_contratos.contrato_id = contratos.id
+                                        GROUP BY pagos_contratos.contrato_id) as sumaPagares"),
+                            
+                            DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
+                                        WHERE pagos_contratos.contrato_id = contratos.id
+                                        GROUP BY pagos_contratos.contrato_id) as sumaRestante")
+                        )
+                        ->where($criterio, 'like', '%' . $buscar . '%')
+                        ->orWhere('personal.apellidos', 'like', '%' . $buscar . '%')
+                        ->orderBy('id', 'desc')->paginate(8);
+                    
+                    break;
+                }
+            }
+        }
+        
+        return Excel::create('devoluciones', function($excel) use ($devoluciones){
+            $excel->sheet('devoluciones', function($sheet) use ($devoluciones){
+                
+                $sheet->row(1, [
+                    '# Ref', 'Cliente', 'Proyecto', 'Etapa', 'Manzana',
+                    '# Lote','Devuelto', 'Fecha cancelación', 'Fecha devolución',
+                    '# Cheque', 'Cuenta'
+                ]);
+
+                $sheet->setColumnFormat(array(
+                    'G' => '$#,##0.00',
+                ));
+
+
+                $sheet->cells('A1:K1', function ($cells) {
+                    $cells->setBackground('#052154');
+                    $cells->setFontColor('#ffffff');
+                    // Set font family
+                    $cells->setFontFamily('Calibri');
+
+                    // Set font size
+                    $cells->setFontSize(13);
+
+                    // Set font weight to bold
+                    $cells->setFontWeight('bold');
+                    $cells->setAlignment('center');
+                });
+
+                
+                $cont=1;
+
+                foreach($devoluciones as $index => $devolucion) {
+                    $cont++;
+
+                    setlocale(LC_TIME, 'es_MX.utf8');
+                    $fecha1 = new Carbon($devolucion->fecha);
+                    $fecha2 = new Carbon($devolucion->fecha_status);
+                    $devolucion->fecha = $fecha1->formatLocalized('%d de %B de %Y');
+                    $devolucion->fecha_status = $fecha2->formatLocalized('%d de %B de %Y');
+
+                    $sheet->row($index+2, [
+                        $devolucion->id, 
+                        $devolucion->nombre. ' ' . $devolucion->apellidos,
+                        $devolucion->proyecto,
+                        $devolucion->etapa,
+                        $devolucion->manzana,
+                        $devolucion->num_lote,
+                        $devolucion->devolver,
+                        $devolucion->fecha_status,
+                        $devolucion->fecha,
+                        $devolucion->cheque,
+                        $devolucion->cuenta,
+
+                    ]);	
+                }
+                $num='A1:K' . $cont;
+                $sheet->setBorder($num, 'thin');
+            });
+        }
+        
+        )->download('xls');
+    }
 }

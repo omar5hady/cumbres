@@ -128,6 +128,7 @@
 
                                     <input v-else type="text"  v-model="buscar_d" @keyup.enter="listarDevoluciones(1, buscar_d, b_etapa_d, b_manzana_d, b_lote_d, criterio_d)" class="form-control" placeholder="Texto a buscar">
                                     <button type="submit" @click="listarDevoluciones(1, buscar_d, b_etapa_d, b_manzana_d, b_lote_d, criterio_d)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <a  :href="'/devoluciones_credito/excel?buscar=' + buscar_d + '&b_etapa_d=' + b_etapa_d + '&b_manzana_d=' +b_manzana_d+ '&b_lote_d=' + b_lote_d +'&criterio_d=' + criterio_d "  class="btn btn-success"><i class="fa fa-file-text"></i> Excel</a>
                                    
                                 </div>
                             </div>
@@ -152,7 +153,7 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="devoluciones in arrayDevoluciones" :key="devoluciones.id" v-on:dblclick="abrirModal('info',devoluciones)"> 
-                                    <template v-if="(devoluciones.sumaPagares - devoluciones.sumaRestante) > 0">
+                                    <template >
                                         <td class="td2" v-text="devoluciones.id"></td>
                                         <td class="td2" v-text="devoluciones.nombre_cliente"></td>
                                         <td class="td2" v-text="devoluciones.proyecto"></td>
@@ -471,12 +472,12 @@
 
             TotalDev: function(){
                 var totalDev =0.0;
-                if(this.cant_dev > this.devolver)
+                if(parseFloat(this.cant_dev) > parseFloat(this.devolver))
                     this.cant_dev = this.devolver;
 
                 if(this.cant_dev < 0)
                     this.cant_dev = 0;
-                totalDev = Math.round( this.cant_dev);
+                totalDev = this.cant_dev;
                 return totalDev;
             },
 
@@ -522,7 +523,7 @@
             isNumber: function(evt) {
                 evt = (evt) ? evt : window.event;
                 var charCode = (evt.which) ? evt.which : evt.keyCode;
-                if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
+                if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46 ) {
                     evt.preventDefault();;
                 } else {
                     return true;

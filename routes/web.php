@@ -474,11 +474,13 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/devolucion/index','DevolucionController@indexCancelaciones');
         Route::post('/devolucion/registrar','DevolucionController@storeDevolucion');
         Route::get('/devolucion/indexDevoluciones','DevolucionController@indexDevoluciones');
+        Route::get('/devoluciones/excel','DevolucionController@excelHistDev');
 
         ////////////////////// RUTAS DEVOLUCION (Credito)
         Route::get('/credito_devolucion/index','InstSeleccionadasController@indexDevolucion');
         Route::post('/credito_devolucion/registrar','InstSeleccionadasController@storeDevolucion');
         Route::get('/credito_devolucion/indexDevoluciones','InstSeleccionadasController@indexHistorialDev');
+        Route::get('/devoluciones_credito/excel','InstSeleccionadasController@excelHistDev');
 
     });
 

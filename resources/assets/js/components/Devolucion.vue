@@ -478,9 +478,9 @@
 
             TotalDev: function(){
                 var totalDev =0.0;
-                if(this.cant_dev > this.devolver)
+                if(parseFloat(this.cant_dev) > parseFloat(this.devolver))
                     this.cant_dev = this.devolver;
-                totalDev = Math.round( this.cant_dev);
+                totalDev = this.cant_dev;
                 return totalDev;
             },
 
@@ -550,7 +550,7 @@
             isNumber: function(evt) {
                 evt = (evt) ? evt : window.event;
                 var charCode = (evt.which) ? evt.which : evt.keyCode;
-                if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
+                if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46 ) {
                     evt.preventDefault();;
                 } else {
                     return true;
