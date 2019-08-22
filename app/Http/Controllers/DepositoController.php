@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Deposito;
-Use App\Contrato;
-Use App\Pago_contrato;
+use App\Contrato;
+use App\Pago_contrato;
 use Carbon\Carbon;
 use DB;
 use NumerosEnLetras;
@@ -43,7 +43,7 @@ class DepositoController extends Controller
                             'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
                             'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
                             'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                            'contratos.ext_empresa',
+                            'contratos.ext_empresa','contratos.colonia_empresa',
                             DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
                             DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
                     ->where('pagos_contratos.pagado','!=',2)
@@ -75,7 +75,7 @@ class DepositoController extends Controller
                                     'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
                                     'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
                                     'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa',
+                                    'contratos.ext_empresa','contratos.colonia_empresa',
                                     DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
                                     DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
                             ->where('pagos_contratos.pagado','!=',2)
@@ -113,7 +113,7 @@ class DepositoController extends Controller
                                     'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
                                     'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
                                     'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa',
+                                    'contratos.ext_empresa','contratos.colonia_empresa',
                                     DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
                                     DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
                             ->where('pagos_contratos.pagado','!=',2)
@@ -146,7 +146,7 @@ class DepositoController extends Controller
                                     'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
                                     'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
                                     'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa',
+                                    'contratos.ext_empresa','contratos.colonia_empresa',
                                     DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
                                     DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
                             ->where('pagos_contratos.pagado','!=',2)
@@ -244,7 +244,7 @@ class DepositoController extends Controller
                                     'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
                                     'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
                                     'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa',
+                                    'contratos.ext_empresa','contratos.colonia_empresa',
                                     DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
                                     DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
                             ->where('pagos_contratos.pagado','!=',2)
@@ -281,7 +281,7 @@ class DepositoController extends Controller
                             'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
                             'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
                             'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                            'contratos.ext_empresa',
+                            'contratos.ext_empresa','contratos.colonia_empresa',
                             DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
                             DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
                     //
@@ -313,7 +313,7 @@ class DepositoController extends Controller
                                     'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
                                     'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
                                     'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa',
+                                    'contratos.ext_empresa','contratos.colonia_empresa',
                                     DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
                                     DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
                             //
@@ -354,7 +354,7 @@ class DepositoController extends Controller
                                     'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
                                     'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
                                     'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa',
+                                    'contratos.ext_empresa','contratos.colonia_empresa',
                                     DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
                                     DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
                             
@@ -387,7 +387,7 @@ class DepositoController extends Controller
                                     'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
                                     'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
                                     'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa',
+                                    'contratos.ext_empresa','contratos.colonia_empresa',
                                     DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
                                     DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
                             
@@ -485,7 +485,7 @@ class DepositoController extends Controller
                                     'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
                                     'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
                                     'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa',
+                                    'contratos.ext_empresa','contratos.colonia_empresa',
                                     DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
                                     DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
                             
@@ -521,7 +521,7 @@ class DepositoController extends Controller
                             'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
                             'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
                             'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                            'contratos.ext_empresa',
+                            'contratos.ext_empresa','contratos.colonia_empresa',
                             DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
                             DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
                             ->where('contratos.status','!=',0)
@@ -550,7 +550,7 @@ class DepositoController extends Controller
                                     'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
                                     'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
                                     'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa',
+                                    'contratos.ext_empresa','contratos.colonia_empresa',
                                     DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
                                     DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
                             ->where('personal.nombre','like', '%'. $buscar . '%')
@@ -582,7 +582,7 @@ class DepositoController extends Controller
                                     'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
                                     'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
                                     'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa',
+                                    'contratos.ext_empresa','contratos.colonia_empresa',
                                     DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
                                     DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
                             ->whereBetween($criterio, [$buscar,$buscar2])
@@ -612,7 +612,7 @@ class DepositoController extends Controller
                                     'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
                                     'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
                                     'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa',
+                                    'contratos.ext_empresa','contratos.colonia_empresa',
                                     DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
                                     DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
                             ->where($criterio,'=',$buscar)
@@ -701,7 +701,7 @@ class DepositoController extends Controller
                                     'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
                                     'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
                                     'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa',
+                                    'contratos.ext_empresa','contratos.colonia_empresa',
                                     DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
                                     DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
                             ->where($criterio,'=',$buscar)
@@ -852,6 +852,9 @@ class DepositoController extends Controller
 
     public function delete(Request $request){
         if(!$request->ajax())return redirect('/');
+
+        try{
+        DB::beginTransaction();
         $deposito = Deposito::findOrFail($request->id);
 
         $pagoAnt = $deposito->cant_depo - $deposito->interes_mor - $deposito->interes_ord;
@@ -879,6 +882,10 @@ class DepositoController extends Controller
         $pago_contrato->save();
 
         $deposito->delete();
+        DB::commit();
+    }catch (Exception $e){
+        DB::rollBack();
+    }     
     
     }
 
@@ -932,7 +939,7 @@ class DepositoController extends Controller
                                     'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
                                     'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
                                     'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa',
+                                    'contratos.ext_empresa','contratos.colonia_empresa',
 
                                     DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
                                         WHERE pagos_contratos.contrato_id = contratos.id AND 
@@ -991,7 +998,7 @@ class DepositoController extends Controller
                                     'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
                                     'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
                                     'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa',
+                                    'contratos.ext_empresa','contratos.colonia_empresa',
 
                                     DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
                                         WHERE pagos_contratos.contrato_id = contratos.id AND 
@@ -1099,7 +1106,7 @@ class DepositoController extends Controller
                                     'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
                                     'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
                                     'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa',
+                                    'contratos.ext_empresa','contratos.colonia_empresa',
 
                                     DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
                                         WHERE pagos_contratos.contrato_id = contratos.id AND 
@@ -1162,7 +1169,7 @@ class DepositoController extends Controller
                                     'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
                                     'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
                                     'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                                    'contratos.ext_empresa',
+                                    'contratos.ext_empresa','contratos.colonia_empresa',
 
                                     DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
                                         WHERE pagos_contratos.contrato_id = contratos.id AND 

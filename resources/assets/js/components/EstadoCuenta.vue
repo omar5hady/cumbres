@@ -19,7 +19,7 @@
                                     <select class="form-control col-md-5" v-model="criterio" @click="selectFraccionamientos()">
                                         <option value="lotes.fraccionamiento_id">Proyecto</option>
                                         <option value="c.nombre">Cliente</option>
-                                        <option value="contraos.id"># Folio</option>
+                                        <option value="contratos.id"># Folio</option>
                                     </select>
 
                                     
@@ -165,7 +165,7 @@
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Email</label>
-                                    <div class="col-md-3">
+                                    <div class="col-md-6">
                                         <input type="text" v-model="email_cliente" disabled class="form-control">
                                     </div>
                                     <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+email_cliente"> <i class="fa fa-envelope-o fa-lg"></i> </a>
@@ -204,12 +204,6 @@
                                     <label class="col-md-3 form-control-label" for="text-input">Fecha de nacimiento</label>
                                     <div class="col-md-6">
                                         <input type="text" v-model="fechanac_cliente" disabled class="form-control">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Nacionalidad</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="nacionalidad_cliente" disabled class="form-control">
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -360,7 +354,6 @@
                 estado_cliente: '',
                 ciudad_cliente: '',
                 fechanac_cliente:'',
-                nacionalidad_cliente: '',
                 curp_cliente:'',
                 rfc_cliente:'',
                 homoclave_cliente:'',
@@ -509,7 +502,6 @@
                 this.estado_cliente='';
                 this.ciudad_cliente='';
                 this.fechanac_cliente='';
-                this.nacionalidad_cliente='';
                 this.curp_cliente='';
                 this.rfc_cliente='';
                 this.homoclave_cliente='';
@@ -551,7 +543,6 @@
                                 this.estado_cliente=data['estado'];
                                 this.ciudad_cliente=data['ciudad'];
                                 this.fechanac_cliente=data['f_nacimiento'];
-                                this.nacionalidad_cliente=data['nacionalidad'];
                                 this.curp_cliente=data['curp'];
                                 this.rfc_cliente=data['rfc'];
                                 this.homoclave_cliente=data['homoclave'];

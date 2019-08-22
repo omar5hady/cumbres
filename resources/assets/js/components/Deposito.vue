@@ -91,7 +91,7 @@
                                         <td v-text="pagare.folio" v-on:dblclick="abrirPDF(pagare.folio)"></td>
                                         <td v-text="pagare.nombre + ' ' +pagare.apellidos" v-on:dblclick="abrirModal('datosCliente',pagare)"></td>
                                         <template>
-                                             <td v-if="pagare.gestor == NULL"> <b>Sin asignar</b></td>
+                                             <td v-if="pagare.gestor == 'NULL'"> <b>Sin asignar</b></td>
                                              <td v-else v-text="pagare.gestor"></td>
                                         </template>
                                         <td v-text="pagare.fraccionamiento"></td>
@@ -358,7 +358,7 @@
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Email</label>
-                                    <div class="col-md-3">
+                                    <div class="col-md-6">
                                         <input type="text" v-model="email_cliente" disabled class="form-control">
                                     </div>
                                     <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+email_cliente"> <i class="fa fa-envelope-o fa-lg"></i> </a>
@@ -397,12 +397,6 @@
                                     <label class="col-md-3 form-control-label" for="text-input">Fecha de nacimiento</label>
                                     <div class="col-md-6">
                                         <input type="text" v-model="fechanac_cliente" disabled class="form-control">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Nacionalidad</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="nacionalidad_cliente" disabled class="form-control">
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -587,7 +581,6 @@
                 estado_cliente: '',
                 ciudad_cliente: '',
                 fechanac_cliente:'',
-                nacionalidad_cliente: '',
                 curp_cliente:'',
                 rfc_cliente:'',
                 homoclave_cliente:'',
@@ -854,9 +847,10 @@
                 });
             },
             eliminarDeposito(data =[]){
-                this.id=data['id'];
-                this.pago_id = data['pago_id'];
-                //console.log(this.fraccionamiento_id);
+                   let me = this;
+                me.id=data['id'];
+                me.pago_id = data['pago_id'];
+                //console.log(me.fraccionamiento_id);
                 swal({
                 title: '¿Desea eliminar?',
                 text: "Esta acción no se puede revertir!",
@@ -868,11 +862,11 @@
                 confirmButtonText: 'Si, eliminar!'
                 }).then((result) => {
                 if (result.value) {
-                    let me = this;
+                 
 
                 axios.delete('/deposito/eliminar', 
-                         {'id': this.id,
-                        'pago_id': this.pago_id}).then(function (response){
+                         { params: {'id': me.id,
+                        'pago_id': me.pago_id}}).then(function (response){
                         swal(
                         'Borrado!',
                         'Deposito borrado correctamente.',
@@ -960,7 +954,6 @@
                 this.estado_cliente='';
                 this.ciudad_cliente='';
                 this.fechanac_cliente='';
-                this.nacionalidad_cliente='';
                 this.curp_cliente='';
                 this.rfc_cliente='';
                 this.homoclave_cliente='';
@@ -1067,7 +1060,6 @@
                         this.estado_cliente=data['estado'];
                         this.ciudad_cliente=data['ciudad'];
                         this.fechanac_cliente=data['f_nacimiento'];
-                        this.nacionalidad_cliente=data['nacionalidad'];
                         this.curp_cliente=data['curp'];
                         this.rfc_cliente=data['rfc'];
                         this.homoclave_cliente=data['homoclave'];
