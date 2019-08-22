@@ -4670,19 +4670,19 @@ class ContratoController extends Controller
             ->get();
 
         setlocale(LC_TIME, 'es_MX.utf8');
-        $contratoPromesa[0]->precioVentaLetra = NumerosEnLetras::convertir($contratoPromesa[0]->precio_venta, 'Pesos M.N.', true, 'Centavos');
+        $contratoPromesa[0]->precioVentaLetra = NumerosEnLetras::convertir($contratoPromesa[0]->precio_venta, 'Pesos', true, 'Centavos');
         $contratoPromesa[0]->precio_venta = number_format((float)$contratoPromesa[0]->precio_venta, 2, '.', ',');
 
         if($contratoPromesa[0]->total_pagar <0)
             $contratoPromesa[0]->credito_neto=$contratoPromesa[0]->credito_neto - $contratoPromesa[0]->total_pagar;
 
-        $contratoPromesa[0]->montoTotalCreditoLetra = NumerosEnLetras::convertir($contratoPromesa[0]->credito_neto, 'Pesos M.N.', true, 'Centavos');
+        $contratoPromesa[0]->montoTotalCreditoLetra = NumerosEnLetras::convertir($contratoPromesa[0]->credito_neto, 'Pesos', true, 'Centavos');
         $contratoPromesa[0]->credito_neto = number_format((float)$contratoPromesa[0]->credito_neto, 2, '.', ',');
 
-        $contratoPromesa[0]->infonavitLetra = NumerosEnLetras::convertir($contratoPromesa[0]->infonavit, 'Pesos M.N.', true, 'Centavos');
+        $contratoPromesa[0]->infonavitLetra = NumerosEnLetras::convertir($contratoPromesa[0]->infonavit, 'Pesos', true, 'Centavos');
         $contratoPromesa[0]->infonavit = number_format((float)$contratoPromesa[0]->infonavit, 2, '.', ',');
 
-        $contratoPromesa[0]->fovissteLetra = NumerosEnLetras::convertir($contratoPromesa[0]->fovisste, 'Pesos M.N.', true, 'Centavos');
+        $contratoPromesa[0]->fovissteLetra = NumerosEnLetras::convertir($contratoPromesa[0]->fovisste, 'Pesos', true, 'Centavos');
         $contratoPromesa[0]->fovisste = number_format((float)$contratoPromesa[0]->fovisste, 2, '.', ',');
 
         $fechaContrato = new Carbon($contratoPromesa[0]->fecha);
@@ -4713,7 +4713,7 @@ class ContratoController extends Controller
         for ($i = 0; $i < count($pagos); $i++) {
             $tiempo = new Carbon($pagos[$i]->fecha_pago);
             $pagos[$i]->fecha_pago = $tiempo->formatLocalized('%d de %B de %Y');
-            $pagos[$i]->montoPagoLetra = NumerosEnLetras::convertir($pagos[$i]->monto_pago, 'Pesos M.N.', true, 'Centavos');
+            $pagos[$i]->montoPagoLetra = NumerosEnLetras::convertir($pagos[$i]->monto_pago, 'Pesos', true, 'Centavos');
             $pagos[$i]->monto_pago = number_format((float)$pagos[$i]->monto_pago, 2, '.', ',');
 
             switch ($i) {

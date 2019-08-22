@@ -134,6 +134,7 @@
 
                                     <input v-else type="text"  v-model="buscar_d" @keyup.enter="listarDevoluciones(1, buscar_d, b_etapa_d, b_manzana_d, b_lote_d, criterio_d)" class="form-control" placeholder="Texto a buscar">
                                     <button type="submit" @click="listarDevoluciones(1, buscar_d, b_etapa_d, b_manzana_d, b_lote_d, criterio_d)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <a  :href="'/devoluciones/excel?buscar=' + buscar_d + '&b_etapa_d=' + b_etapa_d + '&b_manzana_d=' +b_manzana_d+ '&b_lote_d=' + b_lote_d +'&criterio_d=' + criterio_d "  class="btn btn-success"><i class="fa fa-file-text"></i> Excel</a>
                                    
                                 </div>
                             </div>
