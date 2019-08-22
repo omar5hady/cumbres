@@ -202,11 +202,11 @@ body {
 @for($u=0; $u < count($pagares); $u++)
         <div style="clear:both;">
 
-        <div style="float: left; margin-top: 70px; margin-left: 50px;" >
+        <div style="float: left; margin-top: 60px; margin-left: 50px;" >
             <IMG SRC="img/contratos/logoContrato.jpg" width="110" height="110">
         </div>
 
-        <div style="text-align: justify; margin:60px">
+        <div style="text-align: justify; margin:50px">
             <div style="text-align: right; margin-bottom: 0em;  margin-top: 0em;">
                 <p style="margin-bottom: 0em;  margin-top: 0em;"> <strong> PAGARE NO. </strong> {{$pagares[$u]->num_pago + 1}}/{{count($pagares)}}</p>
                 <p style="margin-bottom: 0em;  margin-top: 0em;"> <strong>BUENO POR </strong>${{$pagares[$u]->restante1}}</p>
@@ -230,29 +230,47 @@ body {
                 <br>
         <div class="table" style="text-align:left;">
             <div class="table-row">
-                <div style="text-align:center;" colspan="4" class="table-cell1"> <b>CLIENTE</div>
-                
+                <div style="text-align:left;" colspan="2" class="table-cell1"> <b>CLIENTE</div>
+                <div style="text-align:right;" colspan="2" class="table-cell1"> <b>AVAL</div>
             </div>
             <div class="table-row">
-                <div colspan="4" class="table-cell1">NOMBRE: {{mb_strtoupper($liquidacion[0]->nombre_cliente)}}</div>
+                <div colspan="2" class="table-cell1">NOMBRE: {{mb_strtoupper($liquidacion[0]->nombre_cliente)}}</div>
+                <div colspan="2" style="text-align:right;" class="table-cell1">NOMBRE: {{mb_strtoupper($liquidacion[0]->nombre_aval)}}</div>
             </div>
 
             <div class="table-row">
-                <div colspan="4" class="table-cell1">DIRECCION: {{mb_strtoupper($liquidacion[0]->direccion)}} {{mb_strtoupper($liquidacion[0]->colonia)}}</div>
+                <div colspan="3" class="table-cell1">DIRECCION: {{mb_strtoupper($liquidacion[0]->direccion)}} {{mb_strtoupper($liquidacion[0]->colonia)}}</div>
+                <div style="text-align:right;" class="table-cell1">TEL: {{mb_strtoupper($liquidacion[0]->telefono_aval)}}</div>
             </div>
             <div class="table-row">
                 <div colspan="2" class="table-cell1">CP: {{$liquidacion[0]->cp}} </div>
-                <div class="table-cell1"></div>
-                <div class="table-cell1"></div> 
+               @if($liquidacion[0]->nombre_aval2 != '') 
+               <div colspan="2" style="text-align:right;" class="table-cell1">NOMBRE: {{mb_strtoupper($liquidacion[0]->nombre_aval2)}}</div>
+               @else
+               <div colspan="2" class="table-cell1"></div>
+               @endif
             </div>
             <div class="table-row">
-                <div class="table-cell1">TEL: {{$liquidacion[0]->telefono}}</div>
-                <div class="table-cell1"></div>
-                <div style="text-align:right;" class="table-cell1">FIRMA CLIENTE: </div>
-                <div class="table-cell1">_____________________ </div> 
+                <div colspan="2" class="table-cell1">TEL: {{$liquidacion[0]->telefono}}</div>
+                @if($liquidacion[0]->telefono_aval2 != '')
+                <div colspan="2" style="text-align:right;" class="table-cell1">TEL: {{mb_strtoupper($liquidacion[0]->telefono_aval2)}}</div>
+                @else
+                <div colspan="2" class="table-cell1"></div>
+                @endif
             </div>
+         
             <div class="table-row">
                 <div colspan="4" class="table-cell1">{{mb_strtoupper($liquidacion[0]->ciudad)}}, {{mb_strtoupper($liquidacion[0]->estado)}} </div> 
+            </div>
+            <div class="table-row">
+                <div colspan="4" class="table-cell1"> <BR></div>
+             
+            </div>
+            <div class="table-row">
+               
+                <div colspan="2" style="text-align:left;" class="table-cell1">FIRMA CLIENTE: ______________________</div>
+                <div style="text-align:right;" class="table-cell1">FIRMA AVAL: </div>
+                <div class="table-cell1">_______________________ </div> 
             </div>
         </div>   
 

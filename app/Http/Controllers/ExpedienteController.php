@@ -1528,7 +1528,7 @@ class ExpedienteController extends Controller
         $contador = 0; 
         $rolId = Auth::user()->rol_id;
 
-        if($rolId == 1 || $rolId == 4 || $rolId == 6 || $rolId == 8 || Auth::user()->id == 24701){
+        if($rolId == 1 || $rolId == 4 || $rolId == 6 || Auth::user()->id == 24701){
             if ($buscar == ''){
                 $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                     ->leftJoin('avaluos','contratos.id','=','avaluos.contrato_id')
@@ -2753,7 +2753,7 @@ class ExpedienteController extends Controller
         $contador = 0;
         $rolId = Auth::user()->rol_id;
 
-        if($rolId == 1 || $rolId == 4 || $rolId == 6 || $rolId == 8 || Auth::user()->id == 24701){
+        if($rolId == 1 || $rolId == 4 || $rolId == 6 || Auth::user()->id == 24701){
             if ($buscar == ''){
                 $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                     ->leftJoin('avaluos','contratos.id','=','avaluos.contrato_id')
@@ -4163,7 +4163,7 @@ class ExpedienteController extends Controller
         $contador = 0;
         $rolId = Auth::user()->rol_id;
 
-        if($rolId == 1 || $rolId == 4 || $rolId == 6 || $rolId == 8 || Auth::user()->id == 24701){
+        if($rolId == 1 || $rolId == 4 || $rolId == 6 || Auth::user()->id == 24701){
             if ($buscar == ''){
                 $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                     ->leftJoin('avaluos','contratos.id','=','avaluos.contrato_id')
@@ -5848,7 +5848,7 @@ class ExpedienteController extends Controller
         $contador = 0;
         $rolId = Auth::user()->rol_id;
        
-        if($rolId == 1 || $rolId == 4 || $rolId == 6 || $rolId == 8 || Auth::user()->id == 24701){
+        if($rolId == 1 || $rolId == 4 || $rolId == 6 || Auth::user()->id == 24701){
             if ($buscar == ''){
                 $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                     ->leftJoin('avaluos','contratos.id','=','avaluos.contrato_id')
@@ -7571,6 +7571,7 @@ class ExpedienteController extends Controller
         ->join('personal as v', 'vendedores.id', '=', 'v.id')
         ->join('personal as g', 'expedientes.gestor_id','=','g.id')
         ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+        ->join('liquidacion','expedientes.id','=','liquidacion.id')
         ->select(
             'contratos.id as folio',
             DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
@@ -7613,6 +7614,12 @@ class ExpedienteController extends Controller
             'expedientes.fecha_firma_esc',
             'expedientes.interes_ord',
             'expedientes.descuento',
+            'liquidacion.nombre_aval',
+            'liquidacion.direccion as direccion_aval',
+            'liquidacion.telefono as telefono_aval',
+            'liquidacion.nombre_aval2',
+            'liquidacion.direccion2 as direccion_aval2',
+            'liquidacion.telefono2 as telefono_aval2',
             'lotes.calle','lotes.numero','lotes.interior',
             'avaluos.resultado','avaluos.fecha_recibido'
         )

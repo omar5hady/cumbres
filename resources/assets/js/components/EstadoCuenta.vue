@@ -48,7 +48,7 @@
                             <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
                                     <tr> 
-                                        
+                                        <th>Opciones</th>
                                         <th># Ref</th>
                                         <th>Cliente</th>
                                         <th>Proyecto</th>
@@ -71,6 +71,11 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="contratos in arrayContratos" :key="contratos.folio" v-on:dblclick="abrirPDF(contratos.folio)">
+                                        <td class="td2">
+                                            <button type="button" title="Ver datos del cliente" @click="abrirModal('ver_personal',contratos)" class="btn btn-primary btn-sm">
+                                                <i class="fa fa-eye"></i>
+                                            </button>
+                                        </td>
                                         <td class="td2" v-text="contratos.folio"></td>
                                         <td class="td2" v-text="contratos.nombre_cliente"></td>
                                         <td class="td2" v-text="contratos.fraccionamiento"></td>
@@ -121,8 +126,208 @@
             </div>
          
 
-            <!--Inicio del modal avaluo-->
-            <!--Fin del modal consulta-->
+                <!--Inicio del modal para mostrar los datos del cliente -->
+            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" v-text="tituloModal"></h5>
+                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Nombre</label>
+                                    <div class="col-md-9">
+                                        <input type="text" disabled v-model="nombre_cliente" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Sexo</label>
+                                    <div class="col-md-3">
+                                        <input type="text" v-model="sexo_cliente" disabled class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Telefono</label>
+                                    <div class="col-md-3">
+                                        <input type="text" disabled v-model="telefono_cliente" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Celular</label>
+                                    <div class="col-md-3">
+                                        <input type="text" v-model="celular_cliente" disabled class="form-control">
+                                    </div>
+                                    <a title="Llamar" class="btn btn-dark" :href="'tel:'+celular_cliente"><i class="fa fa-phone fa-lg"></i></a>
+                                    <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+celular_cliente+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>             
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Email</label>
+                                    <div class="col-md-3">
+                                        <input type="text" v-model="email_cliente" disabled class="form-control">
+                                    </div>
+                                    <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+email_cliente"> <i class="fa fa-envelope-o fa-lg"></i> </a>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Direccion</label>
+                                    <div class="col-md-6">
+                                        <input type="text" v-model="direccion_cliente" disabled class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">C.P</label>
+                                    <div class="col-md-6">
+                                        <input type="text" v-model="cp_cliente" disabled class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Colonia</label>
+                                    <div class="col-md-6">
+                                        <input type="text" v-model="colonia_cliente" disabled class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Estado</label>
+                                    <div class="col-md-6">
+                                        <input type="text" v-model="estado_cliente" disabled class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Ciudad</label>
+                                    <div class="col-md-6">
+                                        <input type="text" v-model="ciudad_cliente" disabled class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Fecha de nacimiento</label>
+                                    <div class="col-md-6">
+                                        <input type="text" v-model="fechanac_cliente" disabled class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Nacionalidad</label>
+                                    <div class="col-md-6">
+                                        <input type="text" v-model="nacionalidad_cliente" disabled class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">CURP</label>
+                                    <div class="col-md-6">
+                                        <input type="text" v-model="curp_cliente" disabled class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">RFC</label>
+                                    <div class="col-md-3">
+                                        <input type="text" v-model="rfc_cliente" disabled class="form-control">
+                                    </div>
+                                    <label class="col-md-3 form-control-label" for="text-input">Homoclave</label>
+                                    <div class="col-md-2">
+                                        <input type="text" v-model="homoclave_cliente" disabled class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">NSS</label>
+                                    <div class="col-md-6">
+                                        <input type="text" v-model="nss_cliente" disabled class="form-control">
+                                    </div>
+                                </div>
+
+                                <hr>
+                                <h3 style="text-align:center;">LUGAR DE TRABAJO</h3>
+                                <hr>
+                                
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Tipo de economia</label>
+                                    <div class="col-md-6">
+                                        <input type="text" v-model="tipoeconomia_cliente" disabled class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Empresa</label>
+                                    <div class="col-md-6">
+                                        <input type="text" v-model="empresa_cliente" disabled class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Giro del negocio</label>
+                                    <div class="col-md-6">
+                                        <input type="text" v-model="gironegocio_cliente" disabled class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Domicilio Empresa</label>
+                                    <div class="col-md-6">
+                                        <input type="text" v-model="domicilio_empresa" disabled class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">C.P</label>
+                                    <div class="col-md-3">
+                                        <input type="text" v-model="cpempresa_cliente" disabled class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Colonia</label>
+                                    <div class="col-md-6">
+                                        <input type="text" v-model="coloniaempresa_cliente" disabled class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Estado</label>
+                                    <div class="col-md-6">
+                                        <input type="text" v-model="estadoempresa_cliente" disabled class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Ciudad</label>
+                                    <div class="col-md-6">
+                                        <input type="text" v-model="ciudadempresa_cliente" disabled class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Email institucional</label>
+                                    <div class="col-md-6">
+                                        <input type="text" v-model="emailinstitucional_cliente" disabled class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Telefono de la empresa</label>
+                                    <div class="col-md-6">
+                                        <input type="text" v-model="telefonoempresa_cliente" disabled class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">EXT</label>
+                                    <div class="col-md-6">
+                                        <input type="text" v-model="ext_cliente" disabled class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Estado civil</label>
+                                    <div class="col-md-6">
+                                        <input type="text" v-model="edocivil_cliente" disabled class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input"># Dependientes economicos</label>
+                                    <div class="col-md-6">
+                                        <input type="text" v-model="depeconomicos_cliente" disabled class="form-control">
+                                    </div>
+                                </div>
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!--Fin del modal-->
             
          
      </main>
@@ -142,6 +347,40 @@
 
                 arrayFraccionamientos:[],
                 arrayEtapas:[],
+
+                 //para los datos del cliente
+                nombre_cliente: '',
+                sexo_cliente: '',
+                telefono_cliente: '',
+                celular_cliente:'',
+                email_cliente: '',
+                direccion_cliente: '',
+                cp_cliente: 0,
+                colonia_cliente: '',
+                estado_cliente: '',
+                ciudad_cliente: '',
+                fechanac_cliente:'',
+                nacionalidad_cliente: '',
+                curp_cliente:'',
+                rfc_cliente:'',
+                homoclave_cliente:'',
+                nss_cliente:0,
+                tipoeconomia_cliente:'',
+                empresa_cliente:'',
+                gironegocio_cliente:'',
+                domicilio_empresa:'',
+                cpempresa_cliente: 0,
+                coloniaempresa_cliente: '',
+                estadoempresa_cliente: '',
+                ciudadempresa_cliente: '',
+                emailinstitucional_cliente: '',
+                telefonoempresa_cliente: '',
+                ext_cliente: 0,
+                edocivil_cliente: '',
+                depeconomicos_cliente: 0,
+
+                modal: 0,
+                tituloModal: '',
            
                 pagination : {
                     'total' : 0,         
@@ -256,6 +495,114 @@
                 let val = (value/1).toFixed(2)
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             },
+              cerrarModal(){
+                this.modal = 0;
+                this.tituloModal = '';
+                this.nombre_cliente = '';
+                this.sexo_cliente= '';
+                this.telefono_cliente = '';
+                this.celular_cliente = '';
+                this.email_cliente = '';
+                this.direccion_cliente = '';
+                this.cp_cliente=0;
+                this.colonia_cliente = '';
+                this.estado_cliente='';
+                this.ciudad_cliente='';
+                this.fechanac_cliente='';
+                this.nacionalidad_cliente='';
+                this.curp_cliente='';
+                this.rfc_cliente='';
+                this.homoclave_cliente='';
+                this.nss_cliente=0;
+                this.tipoeconomia_cliente='';
+                this.empresa_cliente='';
+                this.gironegocio_cliente='';
+                this.domicilio_empresa='';
+                this.cpempresa_cliente=0;
+                this.coloniaempresa_cliente='';
+                this.estadoempresa_cliente='';
+                this.ciudadempresa_cliente='';
+                this.emailinstitucional_cliente='';
+                this.telefonoempresa_cliente='';
+                this.ext_cliente=0;
+                this.edocivil_cliente='';
+                this.depeconomicos_cliente=0;
+            },
+
+             abrirModal(accion,data =[]){
+                        switch(accion){
+                            case 'ver_personal':
+                            {
+                                this.modal =1;
+                                this.tituloModal='Datos del prospecto';
+                                this.tipoAccion=3;
+                                this.nombre_cliente = data['nombre_cliente'];
+                                if(data['sexo'] == "M"){
+                                    this.sexo_cliente= 'Masculino';
+                                }else{
+                                    this.sexo_cliente= 'Femenino';
+                                }
+                                this.telefono_cliente = data['telefono'];
+                                this.celular_cliente = data['celular'];
+                                this.email_cliente = data['email'];
+                                this.direccion_cliente =data['direccion'];
+                                this.cp_cliente= data['cp'];
+                                this.colonia_cliente = data['colonia'];
+                                this.estado_cliente=data['estado'];
+                                this.ciudad_cliente=data['ciudad'];
+                                this.fechanac_cliente=data['f_nacimiento'];
+                                this.nacionalidad_cliente=data['nacionalidad'];
+                                this.curp_cliente=data['curp'];
+                                this.rfc_cliente=data['rfc'];
+                                this.homoclave_cliente=data['homoclave'];
+                                this.nss_cliente=data['nss'];
+                                this.tipoeconomia_cliente=data['tipo_economia'];
+                                this.empresa_cliente=data['empresa'];
+                                this.gironegocio_cliente=data['puesto'];
+                                this.domicilio_empresa=data['direccion_empresa'];
+                                this.cpempresa_cliente=data['cp_empresa'];
+                                this.coloniaempresa_cliente=data['colonia_empresa'];
+                                this.estadoempresa_cliente=data['estado_empresa'];
+                                this.ciudadempresa_cliente=data['ciudad_empresa'];
+                                this.emailinstitucional_cliente=data['email_institucional'];
+                                this.telefonoempresa_cliente=data['telefono_empresa'];
+                                this.ext_cliente=data['ext_empresa'];
+
+                                switch(data['edo_civil']){
+                                    case 1: {
+                                        this.edocivil_cliente = 'Casado - separacion de bienes';
+                                        break;
+                                    }
+                                    case 2:{
+                                        this.edocivil_cliente = 'Casado - sociedad conyugal';
+                                        break;
+                                    }
+                                    case 3:{
+                                        this.edocivil_cliente = 'Divorciado';
+                                        break;
+                                    }
+                                    case 4:{
+                                        this.edocivil_cliente = 'Soltero';
+                                        break;
+                                    }
+                                    case 5:{
+                                        this.edocivil_cliente = 'Union libre';
+                                        break;
+                                    }
+                                    case 6:{
+                                        this.edocivil_cliente = 'Viudo';
+                                        break;
+                                    }
+                                    default:{
+                                        this.edocivil_cliente = 'Otro';
+                                        break;
+                                    }
+                                }
+                                
+                                this.depeconomicos_cliente=data['num_dep_economicos'];
+                            }
+                        }
+                }
             
         },
        
