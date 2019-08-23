@@ -449,6 +449,8 @@
                 //Con axios se llama el metodo update de DepartamentoController
                 axios.put('/creditos_select/actualizar',{
                     'id': this.id,
+                    'tipo_credito': this.tipo_credito,
+                    'inst_financiera': this.inst_financiera,
                     'fecha_ingreso': this.fecha_ingreso,
                     'fecha_vigencia' : this.fecha_vigencia,
                     'plazo_credito': this.plazo_credito,

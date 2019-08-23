@@ -75,7 +75,17 @@
                                 <tbody>
                                     <tr v-for="contratos in arrayContratos" :key="contratos.id">
                                         
-                                        <td class="td2" v-text="contratos.folio"></td>
+                                        <td class="td2">
+                                            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{contratos.folio}}</a>
+                                            <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                <a class="dropdown-item" @click="abrirPDF(contratos.folio)">Estado de cuenta</a>
+                                                <a class="dropdown-item" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+ contratos.folio">Contrato de compra venta</a>
+                                                <a class="dropdown-item" target="_blank" v-bind:href="'/cartaServicios/pdf/'+ contratos.folio">Carta de servicios</a>
+                                                <a class="dropdown-item" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+ contratos.folio">Servicios de telecomunición</a>
+                                                <a class="dropdown-item" v-bind:href="'/descargarReglamento/contrato/'+ contratos.folio">Reglamento de la etapa</a>
+                                                <a class="dropdown-item" @click="selectNombreArchivoModelo(contratos.folio)">Catalogo de especificaciones</a>
+                                            </div>
+                                        </td>
                                         <td class="td2" v-text="contratos.nombre_cliente"></td>
                                         <td class="td2" v-text="contratos.nombre_vendedor"></td>
                                         <td class="td2" v-text="contratos.proyecto"></td>
@@ -567,6 +577,12 @@
                 let val = (value/1).toFixed(2)
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             },
+
+            abrirPDF(id){
+                const win = window.open('/estadoCuenta/estadoPDF/'+id, '_blank');
+                win.focus();
+            },
+
 
             fechaRecibido(){
                 if(this.proceso==true){

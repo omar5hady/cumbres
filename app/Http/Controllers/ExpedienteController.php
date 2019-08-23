@@ -1446,7 +1446,7 @@ class ExpedienteController extends Controller
                                                     ->where($criterio, 'like', '%' . $buscar . '%')
                                                     ->orWhere('c.apellidos', 'like', '%' . $buscar . '%')
                                                     ->where('i.elegido', '=', 1)
-                                                    ->where('contratos.integracion', '=', 0)
+                                                    ->where('contratos.integracion', '=', 1)
                                                     ->where('contratos.status', '!=', 0)
                                                     ->where('contratos.status', '!=', 2)
                                                     ->paginate(8);
