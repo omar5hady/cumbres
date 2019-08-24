@@ -137,9 +137,9 @@
                                             <option value="personal.id"># Identificador</option>
                                         </select>
                                     
-                                        <input type="text" v-model="buscar2" @keyup.enter="listarProspectos(1,buscar2,b_clasificacion,criterio2,id_vendedor)" class="form-control" placeholder="Texto a buscar">
+                                        <input type="text" v-model="buscar2" @keyup.enter="listarProspectos(1,buscar2,b_clasificacion,coacreditados,criterio2,id_vendedor)" class="form-control" placeholder="Texto a buscar">
 
-                                        <select class="form-control" v-model="b_clasificacion" >
+                                        <select v-if="coacreditados != 1" class="form-control" v-model="b_clasificacion" >
                                             <option value="">Clasificación</option>
                                             <option value="1">No viable</option>
                                             <option value="2">Tipo A</option>
@@ -149,7 +149,9 @@
                                             <option value="6">Cancelado</option>                               
                                         </select>
 
-                                        <button type="submit" @click="listarProspectos(1,buscar2,b_clasificacion,criterio2,id_vendedor)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                        <button type="submit" @click="listarProspectos(1,buscar2,b_clasificacion,coacreditados,criterio2,id_vendedor)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                        <button type="submit" v-if="coacreditados == 0" @click="coacreditados = 1,listarProspectos(1,buscar2,b_clasificacion,coacreditados,criterio2,id_vendedor)" class="btn btn-warning"><i class="fa fa-search"></i> Coacreditados</button>
+                                        <button type="submit" v-if="coacreditados == 1" @click="coacreditados = 0,listarProspectos(1,buscar2,b_clasificacion,coacreditados,criterio2,id_vendedor)" class="btn btn-success"><i class="fa fa-search"></i> Todos</button>
                                         <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Total: '+ contador"> </span>
                                     </div>
                                 </div>
@@ -195,6 +197,7 @@
                                                 <td class="td2" v-if="Personal.clasificacion==4" > Tipo C</td>
                                                 <td class="td2" v-if="Personal.clasificacion==5" > Ventas</td>
                                                 <td class="td2" v-if="Personal.clasificacion==6" > Cancelado</td>
+                                                <td class="td2" v-if="Personal.clasificacion==7" > Coacreditado</td>
                                             <td class="td2">
                                                 <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" @click="abrirModal3('prospecto','ver_todo',Personal.id),listarObservacion(1,Personal.id)">Ver todas</button> 
                                             </td>
@@ -744,6 +747,7 @@
                 buscar : '',
                 buscar2 : '',
                 b_clasificacion:'',
+                coacreditados: 0,
                 criterio2 : 'personal.nombre',
                 arrayColonias : []
 
@@ -818,9 +822,9 @@
                     console.log(error);
                 });
             },
-            listarProspectos(page, buscar, b_clasificacion, criterio,vendedor){
+            listarProspectos(page, buscar, b_clasificacion, coacreditados, criterio,vendedor){
                 let me = this;
-                var url = '/asesores/clientes?page=' + page + '&buscar=' + buscar + '&b_clasificacion=' + b_clasificacion + '&criterio=' + criterio + '&vendedor=' + vendedor;
+                var url = '/asesores/clientes?page=' + page + '&buscar=' + buscar + '&b_clasificacion=' + b_clasificacion + '&coacreditados=' + coacreditados +'&criterio=' + criterio + '&vendedor=' + vendedor;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayProspectos = respuesta.personas.data;
@@ -922,11 +926,11 @@
                 //Actualiza la pagina actual
                 me.pagination2.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
-                me.listarProspectos(page,buscar,b_clasificacion,criterio,id_vendedor);
+                me.listarProspectos(page,buscar,b_clasificacion,coacreditados,criterio,id_vendedor);
             },
             mostrarProspectos(nombre,id){
                 this.id_vendedor = id;
-                this.listarProspectos(1,this.buscar2,this.b_clasificacion,this.criterio2,id)
+                this.listarProspectos(1,this.buscar2,this.b_clasificacion,this.coacreditados,this.criterio2,id)
                 this.listadoProspectos=1;
                 this.asesor = nombre;
             },
@@ -1098,7 +1102,7 @@
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal4();
-                    me.listarProspectos(1,'','','personal.nombre',me.id_vendedor);
+                    me.listarProspectos(1,me.buscar2,me.b_clasificacion,me.coacreditados,me.criterio2,me.id_vendedor);
                     
                     //Se muestra mensaje Success
                     swal({
@@ -1172,7 +1176,7 @@
                         'id': prospecto,
                         'asesor_id':asesor
                     }).then(function (response) {
-                        me.listarProspectos(1,me.buscar2,me.b_clasificacion,me.criterio2,me.id_vendedor);
+                        me.listarProspectos(1,me.buscar2,me.b_clasificacion,me.coacreditados,me.criterio2,me.id_vendedor);
                         me.cerrarModal();
                         swal(
                         'Hecho!',

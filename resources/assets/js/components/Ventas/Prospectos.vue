@@ -70,7 +70,7 @@
                                             <th>Clasificación</th>
                                             <th>Observaciones</th>
                                             <th v-if="rolId != 2">Vendedor</th>
-                                            
+                                            <th v-if="rolId != 2">Publicidad</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -116,8 +116,10 @@
                                             <td v-if="prospecto.clasificacion==4">Tipo C</td>
                                             <td v-if="prospecto.clasificacion==5">Ventas</td>
                                             <td v-if="prospecto.clasificacion==6">Cancelado</td>
+                                            <td v-if="prospecto.clasificacion==7">Coacreditado</td>
                                             <td> <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" @click="abrirModal3('prospecto','ver_todo', prospecto.id),listarObservacion(1,prospecto.id)">Ver todos</button> </td>
                                             <td v-if="rolId != 2" v-text="prospecto.v_completo"></td>
+                                            <td v-if="rolId != 2" v-text="prospecto.publicidad"></td>
                                         </tr>                               
                                     </tbody>
                                 </table>

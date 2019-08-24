@@ -844,6 +844,15 @@ class ClienteController extends Controller
             }
             $cliente->empresa = $request->empresa;
             $cliente->coacreditado = $request->coacreditado;
+            if($request->coacreditado == 1){
+                $obsCoa = Personal::select('id')->where('rfc','=',$request->rfc_coa)->get();
+                $observacion1 = new Cliente_observacion();
+                $observacion1->cliente_id = $obsCoa[0]->id;
+                $observacion1->comentario = 'Dado de alta como coacreditado de '.$request->nombre.' '.$request->apellidos;
+                $observacion1->usuario = Auth::user()->usuario;
+                $observacion1->save();
+
+            }
             $cliente->clasificacion = $request->clasificacion;
             
             
@@ -920,7 +929,7 @@ class ClienteController extends Controller
             }
             $cliente->empresa = $request->empresa;
             $cliente->coacreditado = $request->coacreditado;
-            $cliente->clasificacion = $request->clasificacion;
+            $cliente->clasificacion = 7;
             $cliente->lugar_nacimiento = $request->lugar_nacimiento;
             $cliente->nombre_recomendado = $request->nombre_recomendado;
             
@@ -1512,8 +1521,11 @@ class ClienteController extends Controller
         $buscar = $request->buscar;
         $criterio = $request->criterio;
         $b_clasificacion = $request->b_clasificacion;
+        $coacreditados = $request->coacreditados;
 
-        if($b_clasificacion!=''){
+
+
+        if($coacreditados == 0  &&$b_clasificacion!=''){
             if ($buscar==''){
                 $personas = Cliente::join('personal','clientes.id','=','personal.id')
                 ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
@@ -1643,6 +1655,136 @@ class ClienteController extends Controller
                 }
             }
 
+        }
+        elseif($coacreditados == 1 && $b_clasificacion == ''){
+            if ($buscar==''){
+                $personas = Cliente::join('personal','clientes.id','=','personal.id')
+                ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
+                ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
+                ->select('personal.id','personal.nombre','personal.rfc','personal.homoclave',
+                'personal.f_nacimiento','personal.direccion','personal.telefono','personal.departamento_id',
+                'personal.colonia','personal.ext','personal.cp',
+                'personal.celular','personal.activo','personal.empresa_id','personal.apellidos',
+                'personal.email','personal.empresa_id', 
+                 DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
+                'clientes.sexo','clientes.tipo_casa','clientes.email_institucional','clientes.lugar_contacto',
+                'clientes.proyecto_interes_id','clientes.publicidad_id','clientes.edo_civil','clientes.nss',
+                'clientes.curp','clientes.vendedor_id','clientes.empresa','clientes.coacreditado','clientes.clasificacion',
+                
+                'clientes.sexo_coa', 'clientes.tipo_casa_coa','clientes.email_institucional_coa','clientes.empresa_coa',
+                'clientes.edo_civil_coa','clientes.nss_coa','clientes.curp_coa','clientes.nombre_coa','clientes.apellidos_coa',
+                'clientes.f_nacimiento_coa', 'clientes.rfc_coa','clientes.homoclave_coa','clientes.direccion_coa','clientes.colonia_coa',
+                'clientes.cp_coa','clientes.telefono_coa','clientes.ext_coa','clientes.celular_coa','clientes.email_coa','clientes.parentesco_coa',
+                 DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS n_completo_coa"),
+                'medios_publicitarios.nombre as publicidad','fraccionamientos.nombre as proyecto')
+                ->where('vendedor_id','=',$vendedor)
+                ->where('clientes.clasificacion', '=', 7)
+                ->orderBy('personal.apellidos', 'desc')
+                ->orderBy('personal.nombre', 'desc')
+                ->paginate(8);
+
+                $contador = Cliente::join('personal','clientes.id','=','personal.id')
+                ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
+                ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
+                ->select('personal.id')
+                ->where('vendedor_id','=',$vendedor)
+                ->where('clientes.clasificacion', '=',7)
+                ->orderBy('personal.apellidos', 'desc')
+                ->orderBy('personal.nombre', 'desc')
+                ->count();
+            }
+            else{
+    
+                if($criterio == 'personal.nombre'){
+                     $personas = Cliente::join('personal','clientes.id','=','personal.id')
+                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
+                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
+                    ->select('personal.id','personal.nombre','personal.rfc','personal.homoclave',
+                    'personal.f_nacimiento','personal.direccion','personal.telefono','personal.departamento_id',
+                    'personal.colonia','personal.ext','personal.cp',
+                    'personal.celular','personal.activo','personal.empresa_id','personal.apellidos',
+                    'personal.email', 
+        
+                    'clientes.sexo','clientes.tipo_casa','clientes.email_institucional','clientes.lugar_contacto',
+                    'clientes.proyecto_interes_id','clientes.publicidad_id','clientes.edo_civil','clientes.nss',
+                    'clientes.curp','clientes.vendedor_id','clientes.empresa','clientes.coacreditado','clientes.clasificacion',
+                     DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
+                    'clientes.sexo_coa', 'clientes.tipo_casa_coa','clientes.email_institucional_coa','clientes.empresa_coa',
+                    'clientes.edo_civil_coa','clientes.nss_coa','clientes.curp_coa','clientes.nombre_coa','clientes.apellidos_coa',
+                    'clientes.f_nacimiento_coa', 'clientes.rfc_coa','clientes.homoclave_coa','clientes.direccion_coa','clientes.colonia_coa',
+                    'clientes.cp_coa','clientes.telefono_coa','clientes.ext_coa','clientes.celular_coa','clientes.email_coa','clientes.parentesco_coa',
+                     DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS n_completo_coa"),
+                    'medios_publicitarios.nombre as publicidad','fraccionamientos.nombre as proyecto')   
+                    ->where('vendedor_id','=',$vendedor)     
+                    ->where($criterio, 'like', '%'. $buscar . '%')
+                    ->where('clientes.clasificacion', '=', 7)
+                    ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
+                    ->where('vendedor_id','=',$vendedor)     
+                    ->where('clientes.clasificacion', '=', 7)
+                    ->orWhere(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
+                    ->where('vendedor_id','=',$vendedor)     
+                    ->where('clientes.clasificacion', '=', 7)
+                    ->orderBy('personal.apellidos', 'desc')
+                    ->orderBy('personal.nombre', 'desc')
+                   ->paginate(8);
+
+                   $contador = Cliente::join('personal','clientes.id','=','personal.id')
+                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
+                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
+                    ->select('personal.id')   
+                    ->where('vendedor_id','=',$vendedor)     
+                    ->where($criterio, 'like', '%'. $buscar . '%')
+                    ->where('clientes.clasificacion', '=',7)
+                    ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
+                    ->where('vendedor_id','=',$vendedor)     
+                    ->where('clientes.clasificacion', '=',7)
+                    ->orWhere(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
+                    ->where('vendedor_id','=',$vendedor)     
+                    ->where('clientes.clasificacion', '=',7)
+                    ->orderBy('personal.apellidos', 'desc')
+                    ->orderBy('personal.nombre', 'desc')
+                   ->count();
+                }
+    
+                else{
+                    $personas = Cliente::join('personal','clientes.id','=','personal.id')
+                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
+                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
+                    ->select('personal.id','personal.nombre','personal.rfc','personal.homoclave',
+                    'personal.f_nacimiento','personal.direccion','personal.telefono','personal.departamento_id',
+                    'personal.colonia','personal.ext','personal.cp',
+                    'personal.celular','personal.activo','personal.empresa_id','personal.apellidos',
+                    'personal.email', 
+        
+                    'clientes.sexo','clientes.tipo_casa','clientes.email_institucional','clientes.lugar_contacto',
+                    'clientes.proyecto_interes_id','clientes.publicidad_id','clientes.edo_civil','clientes.nss',
+                    'clientes.curp','clientes.vendedor_id','clientes.empresa','clientes.coacreditado','clientes.clasificacion',
+                    DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
+                    'clientes.sexo_coa', 'clientes.tipo_casa_coa','clientes.email_institucional_coa','clientes.empresa_coa',
+                    'clientes.edo_civil_coa','clientes.nss_coa','clientes.curp_coa','clientes.nombre_coa','clientes.apellidos_coa',
+                    'clientes.f_nacimiento_coa', 'clientes.rfc_coa','clientes.homoclave_coa','clientes.direccion_coa','clientes.colonia_coa',
+                    'clientes.cp_coa','clientes.telefono_coa','clientes.ext_coa','clientes.celular_coa','clientes.email_coa','clientes.parentesco_coa',
+                    DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS n_completo_coa"),
+                    'medios_publicitarios.nombre as publicidad','fraccionamientos.nombre as proyecto')   
+                    ->where('vendedor_id','=',$vendedor)     
+                    ->where($criterio, 'like', '%'. $buscar . '%')
+                    ->where('clientes.clasificacion', '=', 7)
+                    ->orderBy('personal.apellidos', 'desc')
+                    ->orderBy('personal.nombre', 'desc')
+                    ->paginate(8);
+
+                    $contador = Cliente::join('personal','clientes.id','=','personal.id')
+                    ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
+                    ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
+                    ->select('personal.id')   
+                    ->where('vendedor_id','=',$vendedor)     
+                    ->where($criterio, 'like', '%'. $buscar . '%')
+                    ->where('clientes.clasificacion', '=', 7)
+                    ->orderBy('personal.apellidos', 'desc')
+                    ->orderBy('personal.nombre', 'desc')
+                    ->count();
+                }
+            }
         }
         else{
             if ($buscar==''){
