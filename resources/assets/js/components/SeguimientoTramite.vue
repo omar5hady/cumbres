@@ -119,7 +119,12 @@
                                                 <td class="td2" v-text="ingresar.avance_lote+ '%'"></td>
                                                 <td class="td2" v-text="ingresar.fecha_status"></td>
 
-                                                <td v-if="ingresar.avaluo_preventivo!='0000-01-01'" class="td2" v-text="'$'+formatNumber(ingresar.resultado)"></td>
+                                                <td v-if="ingresar.avaluo_preventivo!='0000-01-01'" class="td2">
+                                                    <span v-text="'$'+formatNumber(ingresar.resultado)"></span>
+                                                        <button type="button" @click="abrirModal('avaluo',ingresar)" class="btn btn-success btn-sm" title="Actualizar avaluo">
+                                                            <i class="fa fa-calendar-check-o"></i>
+                                                        </button>
+                                                </td>
                                                 <td v-if="ingresar.avaluo_preventivo=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
 
                                                 <td @dblclick="abrirModal('fecha_recibido',ingresar)" v-if="ingresar.aviso_prev!='0000-01-01' && !ingresar.aviso_prev_venc" class="td2" v-text="'Fecha solicitud: ' 
@@ -250,7 +255,12 @@
                                                 <td class="td2" v-text="preautorizados.avance_lote+ '%'"></td>
                                                 <td class="td2" v-text="preautorizados.fecha_status"></td>
 
-                                                <td v-if="preautorizados.avaluo_preventivo!='0000-01-01'" class="td2" v-text="'$'+formatNumber(preautorizados.resultado)"></td>
+                                                <td v-if="preautorizados.avaluo_preventivo!='0000-01-01'" class="td2">
+                                                    <span v-text="'$'+formatNumber(preautorizados.resultado)"></span>
+                                                        <button type="button" @click="abrirModal('avaluo',preautorizados)" class="btn btn-success btn-sm" title="Actualizar avaluo">
+                                                            <i class="fa fa-calendar-check-o"></i>
+                                                        </button>
+                                                </td>
                                                 <td v-if="preautorizados.avaluo_preventivo=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
 
                                                 <td @dblclick="abrirModal('fecha_recibido',preautorizados)" v-if="preautorizados.aviso_prev!='0000-01-01' && !preautorizados.aviso_prev_venc" class="td2" v-text="'Fecha solicitud: ' 
@@ -413,7 +423,12 @@
                                                 <td class="td2" v-text="liquidacion.avance_lote+ '%'"></td>
                                                 <td class="td2" v-text="liquidacion.fecha_status"></td>
 
-                                                <td v-if="liquidacion.avaluo_preventivo!='0000-01-01'" class="td2" v-text="'$'+formatNumber(liquidacion.resultado)"></td>
+                                                <td v-if="liquidacion.avaluo_preventivo!='0000-01-01'" class="td2">
+                                                    <span v-text="'$'+formatNumber(liquidacion.resultado)"></span>
+                                                        <button type="button" @click="abrirModal('avaluo',liquidacion)" class="btn btn-success btn-sm" title="Actualizar avaluo">
+                                                            <i class="fa fa-calendar-check-o"></i>
+                                                        </button>
+                                                </td>
                                                 <td v-if="liquidacion.avaluo_preventivo=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
 
                                                 <td @dblclick="abrirModal('fecha_recibido',liquidacion)" v-if="liquidacion.aviso_prev!='0000-01-01' && !liquidacion.aviso_prev_venc" class="td2" v-text="'Fecha solicitud: ' 
@@ -581,7 +596,12 @@
                                                 <td class="td2" v-text="programacion.avance_lote + '%'"></td>
                                                 <td class="td2" v-text="this.moment(programacion.fecha_status).locale('es').format('DD/MMM/YYYY')"></td>
                                                 
-                                                <td v-if="programacion.avaluo_preventivo!='0000-01-01'" class="td2" v-text="'$'+formatNumber(programacion.resultado)"></td>
+                                                <td v-if="programacion.avaluo_preventivo!='0000-01-01'" class="td2">
+                                                    <span v-text="'$'+formatNumber(programacion.resultado)"></span>
+                                                        <button type="button" @click="abrirModal('avaluo',programacion)" class="btn btn-success btn-sm" title="Actualizar avaluo">
+                                                            <i class="fa fa-calendar-check-o"></i>
+                                                        </button>
+                                                </td>
                                                 <td v-if="programacion.avaluo_preventivo=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
 
                                                 <td v-if="programacion.aviso_prev=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
@@ -749,6 +769,27 @@
                                 </div>
 
                             </form>
+
+                            <!-- form para solicitud de avaluo -->
+                            <form v-if="tipoAccion == 5" action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Fecha</label>
+                                    <div class="col-md-4">
+                                        <input type="date" v-model="fecha_concluido" class="form-control">
+                                    </div>
+                                </div>
+
+                                 <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Valor</label>
+                                    <div class="col-md-4">
+                                        <input type="text" maxlength="10" v-model="resultado" pattern="\d*" v-on:keypress="isNumber($event)" class="form-control" placeholder="Monto">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <h6 v-text="'$'+formatNumber(resultado)"></h6>
+                                    </div>
+                                </div>
+                            </form>
+                            <!-- fin del form solicitud de avaluo -->
                             
 
                         </div>
@@ -757,7 +798,7 @@
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
                             <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="enviarIngreso()">Ingresar</button>
                             <button type="button" v-if="tipoAccion==4" class="btn btn-primary" @click="inscribirInfonavit()">Inscribir</button>
-                            <!-- <button type="button" v-if="tipoAccion==3" class="btn btn-primary" @click="fechaRecibido()">Enviar</button> -->
+                            <button type="button" v-if="tipoAccion==5" class="btn btn-primary" @click="setFechaConcluido()">Guardar</button>
                             <a v-bind:href="'/expediente/solicitudPDF/' + id" v-if="tipoAccion==3" type="button" target="_blank" class="btn btn-primary">Imprimir</a>
                         </div>
                     </div>
@@ -1597,8 +1638,12 @@
                 telefono_aval2: '',
                 dias: 0,
                 interes: 0,
+            
+                fecha_concluido: '',
+                resultado: 0,
+                avaluoId:0,
 
-
+               
                 modal:0,
                 modal2:0,
                 modal3 :0,
@@ -2382,6 +2427,36 @@
                 }) 
             },
 
+            setFechaConcluido(){
+                let me = this;
+                //Con axios se llama el metodo update de LoteController
+                axios.put('/avaluos/fechaConcluido',{
+                    'avaluoId':this.avaluoId,
+                    'fecha_concluido' : this.fecha_concluido,
+                    'resultado' : this.resultado,
+                    
+                }).then(function (response){
+                    me.cerrarModal();
+                    me.listarIngresoExp(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                    me.listarAutorizados(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                    me.listarLiquidacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                    me.listarProgramacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                    //window.alert("Cambios guardados correctamente");
+                    const toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                        });
+                        toast({
+                        type: 'success',
+                        title: 'Fecha de pago ingresada correctamente'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
             abrirModal3(folio){
                 this.modal3 =1;
                 this.tituloModal3='Observaciones';
@@ -2531,6 +2606,16 @@
 
                         break;
                     }
+
+                    case 'avaluo':{
+                        this.modal =1;
+                        this.tituloModal='Avaluo concluido';
+                        this.tipoAccion = 5;
+                        this.fecha_concluido = data['fecha_concluido'];
+                        this.resultado = data['resultado'];
+                        this.avaluoId = data['avaluoId'];
+                        break;
+                    }
                 }
 
             },
@@ -2541,6 +2626,8 @@
                 this.fecha_ingreso='';
                 this.valor_escrituras='0';
                 this.errorIngreso=0;
+                this.fecha_concluido= '';
+                this.resultado=0;
                 this.errorMostrarMsjIngreso=[];
                 this.errorLiquidacion=0;
                 this.errorMostrarMsjLiquidacion=[];

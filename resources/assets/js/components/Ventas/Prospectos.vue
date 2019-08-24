@@ -1664,8 +1664,8 @@
                     this.errorMostrarMsjProspecto.push("Seleccionar empresa.");
                 if(this.fecha_nac=='') 
                     this.errorMostrarMsjProspecto.push("Ingresar fecha de nacimiento.");
-                if(this.rfc=='') 
-                    this.errorMostrarMsjProspecto.push("Ingresar RFC.");
+                if(this.rfc=='' || this.rfc.length < 10) 
+                    this.errorMostrarMsjProspecto.push("RFC no valido");
                 if(this.tipo_casa==0) 
                     this.errorMostrarMsjProspecto.push("Seleccionar tipo de casa.");
                 if(this.e_civil==0) 
