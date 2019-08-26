@@ -233,7 +233,6 @@ El cobro de intereses por parte de <strong>EL PROMITENTE VENDEDOR</strong>, no i
 
 <p>
 @endif
-<br>
 En caso de rescisión del presente contrato, por causa imputable a <strong>EL PROMITENTE COMPRADOR, EL PROMITENTE VENDEDOR</strong> deberá reintegrar 
 el importe recibido hasta la fecha por parte de <strong>EL PROMITENTE COMPRADOR</strong>, descontándose la cantidad de $ 25,000.00 (Veinticinco Mil Pesos 00/100 Moneda Nacional), 
 como pena convencional por los daños y perjuicios ocasionados. El importe se reintegrara hasta que <strong>EL PROMITENTE VENDEDOR</strong> recupere la inversión realizada 
@@ -276,7 +275,7 @@ en tres ejemplares de un mismo tenor y para un solo efecto, a los <strong>{{$con
 </p>
 
 
-        <br>
+        
         <br>
    
 

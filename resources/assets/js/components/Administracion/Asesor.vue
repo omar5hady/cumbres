@@ -150,8 +150,8 @@
                                         </select>
 
                                         <button type="submit" @click="listarProspectos(1,buscar2,b_clasificacion,coacreditados,criterio2,id_vendedor)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                        <button type="submit" v-if="coacreditados == 0" @click="coacreditados = 1,listarProspectos(1,buscar2,b_clasificacion,coacreditados,criterio2,id_vendedor)" class="btn btn-warning"><i class="fa fa-search"></i> Coacreditados</button>
-                                        <button type="submit" v-if="coacreditados == 1" @click="coacreditados = 0,listarProspectos(1,buscar2,b_clasificacion,coacreditados,criterio2,id_vendedor)" class="btn btn-success"><i class="fa fa-search"></i> Todos</button>
+                                        <button type="submit" v-if="coacreditados == 0" @click="coacreditados = 1,listarProspectos(1,buscar2,b_clasificacion,coacreditados,criterio2,id_vendedor)" class="btn btn-warning"><i class="fa fa-search"></i>Mostrar coacreditados</button>
+                                        <button type="submit" v-if="coacreditados == 1" @click="coacreditados = 0,listarProspectos(1,buscar2,b_clasificacion,coacreditados,criterio2,id_vendedor)" class="btn btn-info"><i class="fa fa-search"></i>Mostrar todos</button>
                                         <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Total: '+ contador"> </span>
                                     </div>
                                 </div>

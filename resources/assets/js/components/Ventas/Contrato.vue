@@ -54,6 +54,7 @@
                                             <option value="creditos.id"># Folio</option>
                                             <option value="personal.nombre">Cliente</option>
                                             <option value="v.nombre">Vendedor</option>
+                                            <option value="creditos.vendedor_id">Vendido por: </option>
                                             <option value="creditos.fraccionamiento">Proyecto</option>
                                             <option value="contratos.fecha">Fecha</option>
                                             <option value="contratos.status">Status</option>
@@ -76,6 +77,11 @@
                                         <select class="form-control" v-if="criterio2=='creditos.fraccionamiento'" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" v-model="b_lote2" >
                                             <option value="">Seleccione</option>
                                             <option v-for="lotes in arrayAllLotes" :key="lotes.id" :value="lotes.num_lote" v-text="lotes.num_lote"></option>
+                                        </select>
+
+                                        <select class="form-control" v-if="criterio2=='creditos.vendedor_id'" v-model="buscar2" >
+                                            <option value="0">Seleccione</option>
+                                            <option v-for="asesor in arrayAsesores" :key="asesor.id" :value="asesor.id" v-text="asesor.nombre + ' '+ asesor.apellidos"></option>
                                         </select>
                                   
                                     
@@ -267,7 +273,7 @@
 
             <!----------------- Vista para crear un contrato ------------------------------>
                     <!-- Div Card Body para registrar simulacion -->
-                  <template v-else-if="listado == 3 || listado == 4">
+                    <template v-else-if="listado == 3 || listado == 4">
                     <div class="card-body"> 
                             <div class="col-md-12">
                                 <div class="form-group">
@@ -1119,22 +1125,30 @@
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                         <label style="color:#2271b3;" for=""><strong>Tipo de credito </strong><span style="color:red;" v-show="tipo_credito==0">(*)</span></label>
-                                                        <p v-text="tipo_credito"></p>
+                                                        <p v-if="change_credito==0" @click="change_credito=1,selectInstitucion(tipo_credito)" v-text="tipo_credito"></p>
+                                                        <select v-if="change_credito==1" class="form-control" v-model="tipo_credito" @click="selectInstitucion(tipo_credito)" >
+                                                            <option value="0">Seleccione</option>
+                                                            <option v-for="creditos in arrayCreditos" :key="creditos.nombre" :value="creditos.nombre" v-text="creditos.nombre"></option>   
+                                                        </select>
                                                         </div>
                                                     </div>
 
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                         <label style="color:#2271b3;" for=""><strong>Institucion financiera </strong><span style="color:red;" v-show="inst_financiera==0">(*)</span></label>
-                                                        <p v-text="inst_financiera"></p>
+                                                        <p v-if="change_credito==0" @click="change_credito=1,selectInstitucion(tipo_credito)" v-text="inst_financiera"></p>
+                                                        <select v-if="change_credito==1" class="form-control" v-model="inst_financiera" >
+                                                            <option value="">Seleccione</option>
+                                                            <option v-for="institucion in arrayInstituciones" :key="institucion.institucion_fin" :value="institucion.institucion_fin" v-text="institucion.institucion_fin"></option>      
+                                                        </select>
                                                         </div>
                                                     </div>
 
                                                     <div class="col-md-3" v-if="monto_credito!=0">
                                                         <div class="form-group">
                                                             <h6 style="color:#2271b3;" for=""><strong> Credito Solicitado: </strong></h6>
-                                                            <h6 v-if="change_credito==0" @click="change_credito=1" v-text="'$'+formatNumber(monto_credito)"></h6>
-                                                            <input v-if="change_credito==1" type="text" pattern="\d*" v-model="monto_credito" maxlength="10" @keyup.enter="change_credito=0" v-on:keypress="isNumber($event)" class="form-control" >
+                                                            <h6 v-if="change_credito==0" @click="change_credito=1,selectInstitucion(tipo_credito)" v-text="'$'+formatNumber(monto_credito)"></h6>
+                                                            <input v-if="change_credito==1" type="text" pattern="\d*" v-model="monto_credito" maxlength="10" @keyup.enter="change_credito=0,actualizarContrato()" v-on:keypress="isNumber($event)" class="form-control" >
                                                         </div>
                                                     </div> 
 
@@ -1765,6 +1779,9 @@
                 arrayColonias: [],
                 arrayPaquetes: [],
                 arrayDatosPaquetes: [],
+                arrayAsesores: [],
+                arrayCreditos: [],
+                arrayInstituciones: [],
                 btn_actualizar: 0,
 
                 loteEnContrato: 0,
@@ -2109,6 +2126,19 @@
                     console.log(error);
                 });
             },
+            selectAsesores(){
+                let me = this;
+                me.arrayAsesores=[];
+                var url = '/select/asesores';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayAsesores = respuesta.personas;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+              
+            },
             getNewDatosLote(lote){
                 let me = this;
                 me.arrayDatosLotes=[];
@@ -2226,6 +2256,33 @@
                     var respuesta = response.data;
                         me.nombre_archivo_modelo = respuesta.modelo[0].archivo;
                         window.open('/files/modelos/'+me.nombre_archivo_modelo, '_blank')
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            selectCreditos(){
+                let me = this;
+                me.arrayCreditos=[];
+                var url = '/select_tipoCredito';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayCreditos = respuesta.Tipos_creditos;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            selectInstitucion(credito){
+                let me = this;
+                if(me.tipo_credito==0){
+                    me.inst_financiera="";
+                }
+                me.arrayInstituciones=[];
+                var url = '/select_institucion?buscar='+credito;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayInstituciones = respuesta.instituciones;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -2474,6 +2531,8 @@
                     'enganche_total':this.enganche_total,
                     'observacion' : this.observacion,
                     'credito_solic' : this.monto_credito,
+                    'tipo_credito' : this.tipo_credito,
+                    'institucion': this.inst_financiera,
 
                     'paquete' : this.paquete,
                     'descripcion_paquete' : this.descripcionPaquete,
@@ -3235,7 +3294,9 @@
         mounted() {          
             this.listarContratos(1,this.buscar,this.buscar3,this.b_etapa,this.b_manzana,this.b_lote,this.criterio);
             this.selectFraccionamientos();
-           
+            this.selectAsesores();
+            this.selectCreditos();
+            
         }
     }
 </script>

@@ -1548,6 +1548,7 @@ class ClienteController extends Controller
                 'medios_publicitarios.nombre as publicidad','fraccionamientos.nombre as proyecto')
                 ->where('vendedor_id','=',$vendedor)
                 ->where('clientes.clasificacion', '=', $b_clasificacion)
+                ->where('clientes.clasificacion', '!=', 7)
                 ->orderBy('personal.apellidos', 'desc')
                 ->orderBy('personal.nombre', 'desc')
                 ->paginate(8);
@@ -1558,6 +1559,7 @@ class ClienteController extends Controller
                 ->select('personal.id')
                 ->where('vendedor_id','=',$vendedor)
                 ->where('clientes.clasificacion', '=', $b_clasificacion)
+                ->where('clientes.clasificacion', '!=', 7)
                 ->orderBy('personal.apellidos', 'desc')
                 ->orderBy('personal.nombre', 'desc')
                 ->count();
@@ -1587,12 +1589,14 @@ class ClienteController extends Controller
                     ->where('vendedor_id','=',$vendedor)     
                     ->where($criterio, 'like', '%'. $buscar . '%')
                     ->where('clientes.clasificacion', '=', $b_clasificacion)
+                    ->where('clientes.clasificacion', '!=', 7)
                     ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
                     ->where('vendedor_id','=',$vendedor)     
                     ->where('clientes.clasificacion', '=', $b_clasificacion)
                     ->orWhere(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
                     ->where('vendedor_id','=',$vendedor)     
                     ->where('clientes.clasificacion', '=', $b_clasificacion)
+                    ->where('clientes.clasificacion', '!=', 7)
                     ->orderBy('personal.apellidos', 'desc')
                     ->orderBy('personal.nombre', 'desc')
                    ->paginate(8);
@@ -1604,12 +1608,14 @@ class ClienteController extends Controller
                     ->where('vendedor_id','=',$vendedor)     
                     ->where($criterio, 'like', '%'. $buscar . '%')
                     ->where('clientes.clasificacion', '=', $b_clasificacion)
+                    ->where('clientes.clasificacion', '!=', 7)
                     ->orWhere('personal.apellidos', 'like', '%'. $buscar . '%')
                     ->where('vendedor_id','=',$vendedor)     
                     ->where('clientes.clasificacion', '=', $b_clasificacion)
                     ->orWhere(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
                     ->where('vendedor_id','=',$vendedor)     
                     ->where('clientes.clasificacion', '=', $b_clasificacion)
+                    ->where('clientes.clasificacion', '!=', 7)
                     ->orderBy('personal.apellidos', 'desc')
                     ->orderBy('personal.nombre', 'desc')
                    ->count();
@@ -1638,6 +1644,7 @@ class ClienteController extends Controller
                     ->where('vendedor_id','=',$vendedor)     
                     ->where($criterio, 'like', '%'. $buscar . '%')
                     ->where('clientes.clasificacion', '=', $b_clasificacion)
+                    ->where('clientes.clasificacion', '!=', 7)
                     ->orderBy('personal.apellidos', 'desc')
                     ->orderBy('personal.nombre', 'desc')
                     ->paginate(8);
@@ -1649,6 +1656,7 @@ class ClienteController extends Controller
                     ->where('vendedor_id','=',$vendedor)     
                     ->where($criterio, 'like', '%'. $buscar . '%')
                     ->where('clientes.clasificacion', '=', $b_clasificacion)
+                    ->where('clientes.clasificacion', '!=', 7)
                     ->orderBy('personal.apellidos', 'desc')
                     ->orderBy('personal.nombre', 'desc')
                     ->count();
@@ -1808,7 +1816,7 @@ class ClienteController extends Controller
                  DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS n_completo_coa"),
                 'medios_publicitarios.nombre as publicidad','fraccionamientos.nombre as proyecto')
                 ->where('vendedor_id','=',$vendedor)
-                
+                ->where('clientes.clasificacion', '!=', 7)
                 ->orderBy('personal.apellidos', 'desc')
                 ->orderBy('personal.nombre', 'desc')
                 ->paginate(8);
@@ -1818,7 +1826,7 @@ class ClienteController extends Controller
                 ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
                 ->select('personal.id')
                 ->where('vendedor_id','=',$vendedor)
-                
+                ->where('clientes.clasificacion', '!=', 7)
                 ->orderBy('personal.apellidos', 'desc')
                 ->orderBy('personal.nombre', 'desc')
                 ->count();
@@ -1845,6 +1853,7 @@ class ClienteController extends Controller
                     'clientes.cp_coa','clientes.telefono_coa','clientes.ext_coa','clientes.celular_coa','clientes.email_coa','clientes.parentesco_coa',
                      DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS n_completo_coa"),
                     'medios_publicitarios.nombre as publicidad','fraccionamientos.nombre as proyecto')   
+                    ->where('clientes.clasificacion', '!=', 7)
                     ->where('vendedor_id','=',$vendedor)     
                     ->where($criterio, 'like', '%'. $buscar . '%')
                     
@@ -1853,7 +1862,7 @@ class ClienteController extends Controller
                     
                     ->orWhere(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
                     ->where('vendedor_id','=',$vendedor)     
-                    
+                    ->where('clientes.clasificacion', '!=', 7)
                     ->orderBy('personal.apellidos', 'desc')
                     ->orderBy('personal.nombre', 'desc')
                    ->paginate(8);
@@ -1862,6 +1871,7 @@ class ClienteController extends Controller
                     ->join('fraccionamientos','clientes.proyecto_interes_id','=','fraccionamientos.id')
                     ->join('medios_publicitarios','clientes.publicidad_id','=','medios_publicitarios.id')
                     ->select('personal.id')   
+                    ->where('clientes.clasificacion', '!=', 7)
                     ->where('vendedor_id','=',$vendedor)     
                     ->where($criterio, 'like', '%'. $buscar . '%')
                     
@@ -1870,7 +1880,7 @@ class ClienteController extends Controller
 
                     ->orWhere(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
                     ->where('vendedor_id','=',$vendedor)     
-                    
+                    ->where('clientes.clasificacion', '!=', 7)
                     ->orderBy('personal.apellidos', 'desc')
                     ->orderBy('personal.nombre', 'desc')
                     ->count();
@@ -1898,7 +1908,7 @@ class ClienteController extends Controller
                     'medios_publicitarios.nombre as publicidad','fraccionamientos.nombre as proyecto')   
                     ->where('vendedor_id','=',$vendedor)     
                     ->where($criterio, 'like', '%'. $buscar . '%')
-                    
+                    ->where('clientes.clasificacion', '!=', 7)
                     ->orderBy('personal.apellidos', 'desc')
                     ->orderBy('personal.nombre', 'desc')
                     ->paginate(8);
@@ -1909,7 +1919,7 @@ class ClienteController extends Controller
                     ->select('personal.id')   
                     ->where('vendedor_id','=',$vendedor)     
                     ->where($criterio, 'like', '%'. $buscar . '%')
-                    
+                    ->where('clientes.clasificacion', '!=', 7)
                     ->orderBy('personal.apellidos', 'desc')
                     ->orderBy('personal.nombre', 'desc')
                     ->count();

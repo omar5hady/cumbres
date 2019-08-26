@@ -202,6 +202,9 @@ class CreditoController extends Controller
             $inst_seleccionada = new inst_seleccionada();
             $inst_seleccionada->credito_id = $id_credito;
             $inst_seleccionada->tipo_credito = $request->tipo_credito;
+            if($request->tipo_credito == "Crédito Directo"){
+                $inst_seleccionada->status = 2;
+            }
             $inst_seleccionada->institucion = $request->inst_financiera;
             $inst_seleccionada->monto_credito = $request->monto_credito;
             $inst_seleccionada->plazo_credito = $request->plazo_credito;
@@ -268,6 +271,9 @@ class CreditoController extends Controller
         $inst_seleccionada = new inst_seleccionada();
         $inst_seleccionada->credito_id = $request->credito_id;
         $inst_seleccionada->tipo_credito = $request->tipo_credito;
+        if($request->tipo_credito == "Crédito Directo"){
+            $inst_seleccionada->status = 2;
+        }
         $inst_seleccionada->institucion = $request->institucion;
         $inst_seleccionada->elegido = 0;
         $inst_seleccionada->plazo_credito = $request->plazo_credito;
