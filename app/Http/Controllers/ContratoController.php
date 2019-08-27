@@ -170,7 +170,7 @@ class ContratoController extends Controller
                         'contratos.observacion'
                     )
                     ->where('inst_seleccionadas.elegido', '=', '1')
-                    ->orderBy('id', 'desc')->paginate(8);
+                    ->orderBy('id', 'desc')->paginate(20);
 
                 $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                     ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
@@ -311,7 +311,7 @@ class ContratoController extends Controller
                                 ->where('inst_seleccionadas.elegido', '=', '1')
                                 ->orWhere('personal.apellidos', 'like', '%' . $buscar . '%')
                                 ->where('inst_seleccionadas.elegido', '=', '1')
-                                ->orderBy('id', 'desc')->paginate(8);
+                                ->orderBy('id', 'desc')->paginate(20);
 
                             $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                 ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
@@ -455,7 +455,7 @@ class ContratoController extends Controller
                                 ->where('inst_seleccionadas.elegido', '=', '1')
                                 ->orWhere('v.apellidos', 'like', '%' . $buscar . '%')
                                 ->where('inst_seleccionadas.elegido', '=', '1')
-                                ->orderBy('id', 'desc')->paginate(8);
+                                ->orderBy('id', 'desc')->paginate(20);
 
                             $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                 ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
@@ -596,7 +596,7 @@ class ContratoController extends Controller
                                 )
                                 ->where($criterio, 'like', '%' . $buscar . '%')
                                 ->where('inst_seleccionadas.elegido', '=', '1')
-                                ->orderBy('id', 'desc')->paginate(8);
+                                ->orderBy('id', 'desc')->paginate(20);
 
                             $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                 ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
@@ -736,7 +736,7 @@ class ContratoController extends Controller
 
                                 ->where($criterio, 'like', '%' . $buscar . '%')
                                 ->where('inst_seleccionadas.elegido', '=', '1')
-                                ->orderBy('id', 'desc')->paginate(8);
+                                ->orderBy('id', 'desc')->paginate(20);
 
                             $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                 ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
@@ -876,7 +876,7 @@ class ContratoController extends Controller
 
                         ->where($criterio, '=',$buscar)
                         ->where('inst_seleccionadas.elegido', '=', '1')
-                        ->orderBy('id', 'desc')->paginate(8);
+                        ->orderBy('id', 'desc')->paginate(20);
 
                         $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                         ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
@@ -1016,7 +1016,7 @@ class ContratoController extends Controller
 
                                 ->whereBetween($criterio, [$buscar, $buscar3])
                                 ->where('inst_seleccionadas.elegido', '=', '1')
-                                ->orderBy('id', 'desc')->paginate(8);
+                                ->orderBy('id', 'desc')->paginate(20);
 
                             $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                 ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
@@ -1161,7 +1161,7 @@ class ContratoController extends Controller
                                     ->where('lotes.etapa_id', '=', $b_etapa)
                                     ->where('lotes.manzana', '=', $b_manzana)
                                     ->where('lotes.num_lote', '=', $b_lote)
-                                    ->orderBy('id', 'desc')->paginate(8);
+                                    ->orderBy('id', 'desc')->paginate(20);
 
                                 $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                     ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
@@ -1307,7 +1307,7 @@ class ContratoController extends Controller
                                         ->where('lotes.fraccionamiento_id', '=',  $buscar)
                                         ->where('lotes.etapa_id', 'like', '=', $b_etapa)
                                         ->where('lotes.manzana', '=', $b_manzana)
-                                        ->orderBy('id', 'desc')->paginate(8);
+                                        ->orderBy('id', 'desc')->paginate(20);
 
                                     $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                         ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
@@ -1450,7 +1450,7 @@ class ContratoController extends Controller
                                             ->where('inst_seleccionadas.elegido', '=', '1')
                                             ->where('lotes.fraccionamiento_id', '=',  $buscar)
                                             ->where('lotes.etapa_id', '=',  $b_etapa )
-                                            ->orderBy('id', 'desc')->paginate(8);
+                                            ->orderBy('id', 'desc')->paginate(20);
 
                                         $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                             ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
@@ -1592,7 +1592,7 @@ class ContratoController extends Controller
                                                 ->where('inst_seleccionadas.elegido', '=', '1')
                                                 ->where('lotes.fraccionamiento_id', '=',  $buscar)
                                                 ->where('lotes.manzana', '=', $b_manzana)
-                                                ->orderBy('id', 'desc')->paginate(8);
+                                                ->orderBy('id', 'desc')->paginate(20);
 
                                             $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                                 ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
@@ -1734,7 +1734,7 @@ class ContratoController extends Controller
                                                     ->where('inst_seleccionadas.elegido', '=', '1')
                                                     ->where('lotes.fraccionamiento_id', '=',  $buscar)
                                                     ->where('lotes.num_lote', '=', $b_lote)
-                                                    ->orderBy('id', 'desc')->paginate(8);
+                                                    ->orderBy('id', 'desc')->paginate(20);
 
                                                 $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                                     ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
@@ -1874,7 +1874,7 @@ class ContratoController extends Controller
                                                     )
                                                     ->where('inst_seleccionadas.elegido', '=', '1')
                                                     ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                    ->orderBy('id', 'desc')->paginate(8);
+                                                    ->orderBy('id', 'desc')->paginate(20);
 
                                                 $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                                     ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
@@ -2023,7 +2023,7 @@ class ContratoController extends Controller
                     )
                     ->where('inst_seleccionadas.elegido', '=', '1')
                     ->where('contratos.status','=',$b_status)
-                    ->orderBy('id', 'desc')->paginate(8);
+                    ->orderBy('id', 'desc')->paginate(20);
 
                 $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                     ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
@@ -2167,7 +2167,7 @@ class ContratoController extends Controller
                                 ->orWhere('personal.apellidos', 'like', '%' . $buscar . '%')
                                 ->where('inst_seleccionadas.elegido', '=', '1')
                                 ->where('contratos.status','=',$b_status)
-                                ->orderBy('id', 'desc')->paginate(8);
+                                ->orderBy('id', 'desc')->paginate(20);
 
                             $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                 ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
@@ -2315,7 +2315,7 @@ class ContratoController extends Controller
                                 ->orWhere('v.apellidos', 'like', '%' . $buscar . '%')
                                 ->where('inst_seleccionadas.elegido', '=', '1')
                                 ->where('contratos.status','=',$b_status)
-                                ->orderBy('id', 'desc')->paginate(8);
+                                ->orderBy('id', 'desc')->paginate(20);
 
                             $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                 ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
@@ -2459,7 +2459,7 @@ class ContratoController extends Controller
                                 ->where($criterio, 'like', '%' . $buscar . '%')
                                 ->where('inst_seleccionadas.elegido', '=', '1')
                                 ->where('contratos.status','=',$b_status)
-                                ->orderBy('id', 'desc')->paginate(8);
+                                ->orderBy('id', 'desc')->paginate(20);
 
                             $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                 ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
@@ -2601,7 +2601,7 @@ class ContratoController extends Controller
                                 ->where($criterio, 'like', '%' . $buscar . '%')
                                 ->where('inst_seleccionadas.elegido', '=', '1')
                                 ->where('contratos.status','=',$b_status)
-                                ->orderBy('id', 'desc')->paginate(8);
+                                ->orderBy('id', 'desc')->paginate(20);
 
                             $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                 ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
@@ -2743,7 +2743,7 @@ class ContratoController extends Controller
                             ->where($criterio, '=',$buscar)
                             ->where('inst_seleccionadas.elegido', '=', '1')
                             ->where('contratos.status','=',$b_status)
-                            ->orderBy('id', 'desc')->paginate(8);
+                            ->orderBy('id', 'desc')->paginate(20);
     
                             $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                             ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
@@ -2886,7 +2886,7 @@ class ContratoController extends Controller
                                 ->whereBetween($criterio, [$buscar, $buscar3])
                                 ->where('inst_seleccionadas.elegido', '=', '1')
                                 ->where('contratos.status','=',$b_status)
-                                ->orderBy('id', 'desc')->paginate(8);
+                                ->orderBy('id', 'desc')->paginate(20);
 
                             $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                 ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
@@ -3033,7 +3033,7 @@ class ContratoController extends Controller
                                     ->where('lotes.etapa_id', '=', $b_etapa)
                                     ->where('lotes.manzana', '=', $b_manzana)
                                     ->where('lotes.num_lote', '=', $b_lote)
-                                    ->orderBy('id', 'desc')->paginate(8);
+                                    ->orderBy('id', 'desc')->paginate(20);
 
                                 $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                     ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
@@ -3180,7 +3180,7 @@ class ContratoController extends Controller
                                         ->where('lotes.fraccionamiento_id', '=',  $buscar)
                                         ->where('lotes.etapa_id', '=', $b_etapa)
                                         ->where('lotes.manzana', '=', $b_manzana)
-                                        ->orderBy('id', 'desc')->paginate(8);
+                                        ->orderBy('id', 'desc')->paginate(20);
 
                                     $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                         ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
@@ -3325,7 +3325,7 @@ class ContratoController extends Controller
                                             ->where('contratos.status','=',$b_status)
                                             ->where('lotes.fraccionamiento_id', '=',  $buscar)
                                             ->where('lotes.etapa_id', '=',  $b_etapa )
-                                            ->orderBy('id', 'desc')->paginate(8);
+                                            ->orderBy('id', 'desc')->paginate(20);
 
                                         $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                             ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
@@ -3469,7 +3469,7 @@ class ContratoController extends Controller
                                                 ->where('contratos.status','=',$b_status)
                                                 ->where('lotes.fraccionamiento_id', '=',  $buscar)
                                                 ->where('lotes.manzana', '=', $b_manzana)
-                                                ->orderBy('id', 'desc')->paginate(8);
+                                                ->orderBy('id', 'desc')->paginate(20);
 
                                             $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                                 ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
@@ -3613,7 +3613,7 @@ class ContratoController extends Controller
                                                     ->where('contratos.status','=',$b_status)
                                                     ->where('lotes.fraccionamiento_id', '=',  $buscar)
                                                     ->where('lotes.num_lote', '=', $b_lote)
-                                                    ->orderBy('id', 'desc')->paginate(8);
+                                                    ->orderBy('id', 'desc')->paginate(20);
 
                                                 $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                                     ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
@@ -3755,7 +3755,7 @@ class ContratoController extends Controller
                                                     ->where('inst_seleccionadas.elegido', '=', '1')
                                                     ->where('contratos.status','=',$b_status)
                                                     ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                    ->orderBy('id', 'desc')->paginate(8);
+                                                    ->orderBy('id', 'desc')->paginate(20);
 
                                                 $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                                     ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')

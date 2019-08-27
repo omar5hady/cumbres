@@ -47,6 +47,7 @@
                                             <option value="4">Tipo C</option>
                                             <option value="5">Ventas</option>
                                             <option value="6">Cancelado</option>                               
+                                            <option value="7">Coacreditado</option>  
                                         </select>
                                         <button type="submit" @click="listarProspectos(1,buscar,buscar2,buscar3,b_clasificacion,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                         <a v-if="rolId == 2" :href="'/prospectos/excel?buscar=' + buscar+ '&b_clasificacion=' + b_clasificacion + '&criterio=' + criterio "  class="btn btn-success"><i class="fa fa-file-text"></i>Excel</a>
