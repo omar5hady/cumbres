@@ -139,6 +139,12 @@
                                         <a class="nav-link" href="#"><i class="fa fa-credit-card"></i>Notarias</a>
                                     </li>
                                 @endif
+
+                                @if(Auth::user()->rol_id == 1)
+                                    <li @click="menu=211" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="fa fa-industry"></i>Proveedores</a>
+                                    </li>
+                                @endif
                             </ul>
                         </li>
                     @endif

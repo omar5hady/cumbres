@@ -29,13 +29,19 @@
                                             <option value="clientes.nss">NSS</option>
                                             <option value="fraccionamientos.nombre">Proyecto</option>
                                             <option value="clientes.created_at">Fecha de alta</option>
-                                            <option v-if="rolId != 2" value="v.nombre">Asesor</option>
+                                            <option v-if="rolId != 2" value="clientes.vendedor_id">Asesor</option>
                                         </select>
                                         <template v-if="criterio=='clientes.created_at'">
                                             <input v-if="criterio=='clientes.created_at'" type="text" placeholder="Desde" onfocus="(this.type='date')" onblur="(this.type='text')" v-model="buscar" class="form-control">
                                             <input v-if="criterio=='clientes.created_at' && rolId != 2" type="text" placeholder="Hasta" onfocus="(this.type='date')" onblur="(this.type='text')" v-model="buscar2" class="form-control">
                                             <select class="form-control" v-if="criterio=='clientes.created_at' && rolId != 2" v-model="buscar3" >
                                                 <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
+                                            </select>
+                                        </template>
+                                        <template v-if="criterio=='clientes.vendedor_id'">
+                                            <select class="form-control" v-model="buscar" >
+                                                <option value="">Seleccione</option>
+                                                <option v-for="asesor in arrayAsesores" :key="asesor.id" :value="asesor.id" v-text="asesor.nombre + ' '+ asesor.apellidos"></option>
                                             </select>
                                         </template>
                                         <input v-else type="text" v-model="buscar" @keyup.enter="listarProspectos(1,buscar,buscar2,buscar3,b_clasificacion,criterio)" class="form-control">
@@ -1363,7 +1369,6 @@
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayObservacion = respuesta.observacion.data;
-                    me.pagination = respuesta.pagination;
                     console.log(url);
                 })
                 .catch(function (error) {
@@ -1997,6 +2002,7 @@
             this.selectFraccionamientos2();
             this.selectLugarContacto();
             this.selectEstados();
+            this.selectAsesores();
           
         }
     }

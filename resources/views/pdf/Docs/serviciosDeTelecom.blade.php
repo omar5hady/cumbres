@@ -19,7 +19,7 @@ body {
 </style>
 <body>
 <div style="margin-top: 0px; width: 100%; position: fixed; text-align: center;">
-<IMG style="margin-top: -20px;" SRC="files/fraccionamientos/plantillasTelecom/{{$archivos[0]->plantilla_telecom}}" width="794" height="1020">
+<IMG style="margin-top: -20px;" SRC="files/etapas/plantillasTelecom/{{$archivos[0]->plantilla_telecom}}" width="794" height="1020">
 <div style="margin-top: 250px; position: absolute; width: 100%; left:80px; right:80px;">
 
 

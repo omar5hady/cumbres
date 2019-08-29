@@ -41,6 +41,7 @@ Vue.component('institucion-financiamiento', require('./components/Administracion
 Vue.component('tipo-credito', require('./components/Administracion/TipoCredito.vue'));
 Vue.component('asesores', require('./components/Administracion/Asesor.vue'));
 Vue.component('notarias', require('./components/Administracion/Notaria.vue'));
+Vue.component('proveedores', require('./components/Administracion/Proveedores.vue'));
 
 //Componentes Desarrollo
 Vue.component('fraccionamiento', require('./components/Desarrollo/Fraccionamiento.vue'));

@@ -13,7 +13,7 @@
                     <div class="card-body">
                         <div class="list-group">
                             <div v-if="arrayNotificaciones.length">
-                                <a v-for="item in arrayNotificaciones.slice(0,10)" :key="item.id" class="list-group-item list-group-item-action flex-column align-items-start">
+                                <a v-for="item in arrayNotificaciones.slice(0,50)" :key="item.id" class="list-group-item list-group-item-action flex-column align-items-start">
                                     <div class="message">
                                         
                                         <div class="py-2 mr-3 float-left">

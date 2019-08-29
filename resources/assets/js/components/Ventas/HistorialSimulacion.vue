@@ -299,7 +299,7 @@
         },
        
         methods : {
-             listarSimulaciones(page, buscar, b_etapa, b_manzana,b_lote,criterio,criterio2){
+             listarSimulaciones(page,buscar,b_etapa,b_manzana,b_lote,criterio,criterio2){
                 let me = this;
                 var url = '/historial_simulaciones_credito?page=' + page + '&buscar=' + buscar + '&b_etapa=' +b_etapa+ '&b_manzana=' + b_manzana + '&b_lote='+ b_lote + '&criterio=' + criterio + '&criterio2=' + criterio2;
                 axios.get(url).then(function (response) {
@@ -343,12 +343,12 @@
                 });
                 
             },
-            cambiarPagina(page, buscar, b_etapa, b_manzana,b_lote,criterio,criterio2){
+            cambiarPagina(page,buscar,b_etapa,b_manzana,b_lote,criterio,criterio2){
                 let me = this;
                 //Actualiza la pagina actual
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
-                me.listarProspectos(page, buscar, b_etapa, b_manzana,b_lote,criterio,criterio2);
+                me.listarSimulaciones(page,buscar,b_etapa,b_manzana,b_lote,criterio,criterio2);
             },
             
             selectFraccionamientos(){

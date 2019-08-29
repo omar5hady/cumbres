@@ -306,6 +306,10 @@
         <template v-if="menu==210">
             <devolucion-credito></devolucion-credito>
         </template>
+
+        <template v-if="menu==211">
+            <proveedores></proveedores>
+        </template>
        
 
         
