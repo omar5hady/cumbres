@@ -8,6 +8,8 @@ use App\Contrato;
 use App\Avaluo_status;
 use App\Gasto_admin;
 use Carbon\Carbon;
+use App\User;
+use App\Notifications\NotifyAdmin;
 
 class AvaluoController extends Controller
 {
@@ -22,6 +24,23 @@ class AvaluoController extends Controller
         $contrato = Contrato::findOrFail($request->folio);
         $contrato->avaluo_preventivo = $request->fecha_solicitud;
         $contrato->save();
+
+        $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=', Auth::user()->id)->get();
+                $fecha = Carbon::now();
+                $msj = "Nueva solicitud de avaluo para el contrato #" . $request->folio;
+                $arregloAceptado = [
+                    'notificacion' => [
+                        'usuario' => $imagenUsuario[0]->usuario,
+                        'foto' => $imagenUsuario[0]->foto_user,
+                        'fecha' => $fecha,
+                        'msj' => $msj,
+                        'titulo' => 'Venta :)'
+                    ]
+                ];
+
+
+                User::findOrFail(3)->notify(new NotifyAdmin($arregloAceptado));
+
 
     }
 

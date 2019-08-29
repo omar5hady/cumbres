@@ -377,12 +377,12 @@
                 });
                 
             },
-            cambiarPagina(page, buscar, criterio){
+            cambiarPagina(page, buscar,buscar2,criterio){
                 let me = this;
                 //Actualiza la pagina actual
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
-                me.listarProspectos(page,buscar,criterio);
+                me.listarHistorialCreditos(page,buscar,buscar2,criterio);
             },
             
             selectFraccionamientos(){

@@ -121,9 +121,9 @@
 
                                                 <td v-if="ingresar.avaluo_preventivo!='0000-01-01'" class="td2">
                                                     <span v-text="'$'+formatNumber(ingresar.resultado)"></span>
-                                                        <button type="button" @click="abrirModal('avaluo',ingresar)" class="btn btn-success btn-sm" title="Actualizar avaluo">
+                                                        <!-- <button type="button" @click="abrirModal('avaluo',ingresar)" class="btn btn-success btn-sm" title="Actualizar avaluo">
                                                             <i class="fa fa-calendar-check-o"></i>
-                                                        </button>
+                                                        </button> -->
                                                 </td>
                                                 <td v-if="ingresar.avaluo_preventivo=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
 
@@ -257,9 +257,9 @@
 
                                                 <td v-if="preautorizados.avaluo_preventivo!='0000-01-01'" class="td2">
                                                     <span v-text="'$'+formatNumber(preautorizados.resultado)"></span>
-                                                        <button type="button" @click="abrirModal('avaluo',preautorizados)" class="btn btn-success btn-sm" title="Actualizar avaluo">
+                                                        <!-- <button type="button" @click="abrirModal('avaluo',preautorizados)" class="btn btn-success btn-sm" title="Actualizar avaluo">
                                                             <i class="fa fa-calendar-check-o"></i>
-                                                        </button>
+                                                        </button> -->
                                                 </td>
                                                 <td v-if="preautorizados.avaluo_preventivo=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
 
@@ -425,11 +425,11 @@
 
                                                 <td v-if="liquidacion.avaluo_preventivo!='0000-01-01'" class="td2">
                                                     <span v-text="'$'+formatNumber(liquidacion.resultado)"></span>
-                                                        <button type="button" @click="abrirModal('avaluo',liquidacion)" class="btn btn-success btn-sm" title="Actualizar avaluo">
+                                                        <!-- <button type="button" @click="abrirModal('avaluo',liquidacion)" class="btn btn-success btn-sm" title="Actualizar avaluo">
                                                             <i class="fa fa-calendar-check-o"></i>
-                                                        </button>
+                                                        </button> -->
                                                 </td>
-                                                <td v-if="liquidacion.avaluo_preventivo=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
+                                                <td v-if="liquidacion.avaluo_preventivo=='0000-01-01' || liquidacion.avaluo_preventivo==NULL" class="td2" v-text="'No aplica'"></td>
 
                                                 <td @dblclick="abrirModal('fecha_recibido',liquidacion)" v-if="liquidacion.aviso_prev!='0000-01-01' && !liquidacion.aviso_prev_venc" class="td2" v-text="'Fecha solicitud: ' 
                                                 + this.moment(liquidacion.aviso_prev).locale('es').format('DD/MMM/YYYY')"></td>
@@ -598,9 +598,9 @@
                                                 
                                                 <td v-if="programacion.avaluo_preventivo!='0000-01-01'" class="td2">
                                                     <span v-text="'$'+formatNumber(programacion.resultado)"></span>
-                                                        <button type="button" @click="abrirModal('avaluo',programacion)" class="btn btn-success btn-sm" title="Actualizar avaluo">
+                                                        <!-- <button type="button" @click="abrirModal('avaluo',programacion)" class="btn btn-success btn-sm" title="Actualizar avaluo">
                                                             <i class="fa fa-calendar-check-o"></i>
-                                                        </button>
+                                                        </button> -->
                                                 </td>
                                                 <td v-if="programacion.avaluo_preventivo=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
 

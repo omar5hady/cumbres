@@ -27,8 +27,13 @@
                                             <option value="contratistas.nombre">Contratista</option>
                                             <option value="ini_obras.f_ini">Fecha de inicio</option>
                                             <option value="ini_obras.f_fin">Fecha de termino</option>
+                                            <option value="ini_obras.fraccionamiento_id">Proyecto</option>
                                         </select>
-                                         <input v-if="criterio=='ini_obras.f_ini'" type="date" v-model="buscar" @keyup.enter="listarAvisos(1,buscar,criterio)" class="form-control">
+                                        <select class="form-control" v-if="criterio=='ini_obras.fraccionamiento_id'"  @keyup.enter="listarAvisos(1,buscar,criterio)" v-model="buscar" >
+                                            <option value="">Seleccione</option>
+                                            <option v-for="proyecto in arrayProyectos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
+                                        </select>
+                                         <input v-else-if="criterio=='ini_obras.f_ini'" type="date" v-model="buscar" @keyup.enter="listarAvisos(1,buscar,criterio)" class="form-control">
                                          <input v-else-if="criterio=='ini_obras.f_fin'" type="date" v-model="buscar" @keyup.enter="listarAvisos(1,buscar,criterio)" class="form-control">
                                         <input v-else type="text" v-model="buscar" @keyup.enter="listarAvisos(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
                                         <button type="submit" @click="listarAvisos(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
@@ -727,6 +732,7 @@
                 offset : 3,
                 criterio : 'ini_obras.clave', 
                 buscar : '',
+                arrayProyectos : [],
                 arrayFraccionamientos : [],
                 arrayLotes:[],
                 arrayManzanaLotes: [],
@@ -863,6 +869,18 @@
                     q: search
                     me.arrayFraccionamientos = respuesta.fraccionamientos;
                     loading(false)
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            selectProyectos(){
+                let me = this;
+                me.arrayProyectos=[];
+                var url = '/select_fraccionamiento';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayProyectos = respuesta.fraccionamientos;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -1358,6 +1376,7 @@
             this.selectManzanaLotes(this.fraccionamiento_id);
             this.selectLotes(this.manzana,this.fraccionamiento_id);
             this.selectDatosLotes(this.lote_id);
+            this.selectProyectos();
           
         }
     }

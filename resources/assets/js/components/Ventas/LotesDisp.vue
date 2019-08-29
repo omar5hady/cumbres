@@ -10,7 +10,7 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Casas Disponibles
                         <!--   Boton descargar excel    -->
-                         <a class="btn btn-success" v-bind:href="'/lotes/resume_excel_lotes_disp?buscar=' + buscar + '&buscar2=' + buscar2+ '&buscar3=' + buscar3 + '&b_modelo='+ b_modelo + '&b_lote='+ b_lote +'&criterio=' + criterio + '&rolId=' + rolId">
+                         <a class="btn btn-success" v-bind:href="'/lotes/resume_excel_lotes_disp?buscar=' + buscar + '&buscar2=' + buscar2+ '&buscar3=' + buscar3 + '&b_modelo='+ b_modelo + '&b_lote='+ b_lote + '&b_apartado='+ b_apartado +'&criterio=' + criterio + '&rolId=' + rolId">
                             <i class="fa fa-file-text"></i>&nbsp; Descargar relacion
                         </a>
                         <!---->
