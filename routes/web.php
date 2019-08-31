@@ -422,7 +422,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/avaluos/index','AvaluoController@index');
         Route::put('/avaluos/fechaSolicitud','AvaluoController@setFechaSolicitud');
         Route::put('/avaluos/fechaPago','AvaluoController@setFechaPago');
-        Route::put('/avaluos/fechaConcluido','AvaluoController@setFechaConcluido');
+        Route::post('/avaluos/fechaConcluido','AvaluoController@setFechaConcluido');
+        Route::put('/avaluos/update/fechaConcluido','AvaluoController@updateFechaConcluido');
         Route::put('/avaluos/enviarVentas','AvaluoController@enviarVentas');
         Route::get('/avaluos/historialVisita','HistVisitasController@index');
         Route::get('/getGastoAvaluo','GastosAdministrativosController@getDatosAvaluo');
@@ -431,6 +432,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/avaluos/historialStatus','HistVisitasController@indexStatus');
         Route::post('/gastos/storeAvaluo','GastosAdministrativosController@storeAvaluo');
         Route::put('/gastos/updateAvaluo','GastosAdministrativosController@updateAvaluo');
+        Route::post('/formSubmitAvaluo/{id}','AvaluoController@formSubmitAvaluo'); //carga de Avaluo
+        Route::get('/downloadAvaluo/{fileName}' , 'AvaluoController@downloadFile'); //descarga de Avaluo
 
         //////////////////// RUTAS GASTOS ADMINISTRATIVOS /////////////////////////////
         Route::get('/gastos/index','GastosAdministrativosController@index');

@@ -154,7 +154,7 @@
                                         <td v-if="contratos.coacreditado == 1" class="td2" v-text="contratos.nombre_conyuge"></td>
                                         <td v-else class="td2">Sin conyuge</td>
                                         <td class="td2">
-                                            <button type="button" @click="integrar(contratos.folio)" class="btn btn-primary btn-sm" title="Integrar">
+                                            <button type="button" @click="abrirModal('integrar',contratos)" class="btn btn-primary btn-sm" title="Integrar">
                                                  <i class="fa fa-check-square-o"> Integrar</i>
                                             </button>
                                         </td>
@@ -312,6 +312,21 @@
                             </form>
                             <!-- fin del form para captura de fecha recibido -->
 
+                            <!-- form para solicitud de avaluo -->
+                            <form v-if="tipoAccion == 4" action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Gestores</label>
+                                    <div class="col-md-4">
+                                    <select class="form-control"  v-model="gestor_id">
+                                        <option value="">Seleccione</option>
+                                        <option value="1">Sin Asignar</option>
+                                        <option v-for="gestores in arrayGestores" :key="gestores.id" :value="gestores.id" v-text="gestores.nombre_gestor"></option>
+                                    </select>
+                                    </div>
+                                </div>
+                            </form>
+                            <!-- fin del form solicitud de avaluo -->
+
                         </div>
                         <!-- Botones del modal -->
                         <div class="modal-footer">
@@ -319,6 +334,7 @@
                             <button v-if="tipoAccion==1" type="button" class="btn btn-primary" @click="solicitudAvaluo()">Enviar</button>
                             <button v-if="tipoAccion==2" type="button" class="btn btn-primary" @click="avisoPreventivo()">Enviar</button>
                             <button v-if="tipoAccion==3" type="button" class="btn btn-primary" @click="fechaRecibido()">Enviar</button>
+                            <button v-if="tipoAccion==4" type="button" class="btn btn-primary" @click="integrar()">Integrar</button>
                             <a v-bind:href="'/expediente/solicitudPDF/' + id" v-if="tipoAccion==3" type="button" target="_blank" class="btn btn-primary">Imprimir</a>
                         </div>
                     </div>
@@ -408,10 +424,12 @@
                 fecha_aviso: '',
                 fecha_recibido: '',
                 notaria:0,
+                gestor_id:0,
 
                 arrayContratos : [],
                 arrayCiudades:[],
                 arrayNotarias:[],
+                arrayGestores: [],
                 arrayObservacion:[],
 
                 arrayFraccionamientos:[],
@@ -563,6 +581,20 @@
                     console.log(error);
                 });
             },
+
+            selectGestores(){
+                let me = this;
+                me.arrayGestores=[];
+                var url = '/select_gestores';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayGestores = respuesta.gestores;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
 
 
             cambiarPagina(page,buscar,b_etapa,b_manzana,b_lote,criterio){
@@ -792,28 +824,15 @@
                 }) 
             },
 
-            integrar(id){
-                this.id = id;
-                swal({
-                title: '¿Esta seguro integrar este registro?',
-                type: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Aceptar!',
-                cancelButtonText: 'Cancelar',
-                confirmButtonClass: 'btn btn-success',
-                cancelButtonClass: 'btn btn-danger',
-                buttonsStyling: false,
-                reverseButtons: true
-                }).then((result) => {
-                if (result.value) {
+            integrar(){
                     let me = this;
 
                     axios.post('/expediente/integrar',{
-                        'folio': me.id
+                        'folio': me.id,
+                        'gestor_id' : me.gestor_id,
                     }).then(function (response) {
                         me.listarContratos(1,me.buscar,me.b_etapa,me.b_manzana,me.b_lote,me.criterio);
+                        me.cerrarModal();
                         swal(
                         'Hecho!',
                         'Contrato integrado correctamente.',
@@ -822,15 +841,7 @@
                     }).catch(function (error) {
                         console.log(error);
                     });
-                    
-                    
-                } else if (
-                    // Read more about handling dismissals
-                    result.dismiss === swal.DismissReason.cancel
-                ) {
-                    
-                }
-                }) 
+                
             },
 
             cerrarModal(){
@@ -888,6 +899,16 @@
                                 this.fecha_recibido = data['aviso_prev_venc'];
                                 this.id = data['folio'];
                                 
+                                break;
+                            }
+
+                            case 'integrar': 
+                            {
+                                this.modal = 1;
+                                this.tituloModal='Asigna un gestor';
+                                this.tipoAccion = 4;
+                                this.id = data['folio'];
+                                this.selectGestores();    
                                 break;
                             }
                             

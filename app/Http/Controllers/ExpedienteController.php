@@ -1119,6 +1119,7 @@ class ExpedienteController extends Controller
         $expediente = new Expediente();
         $expediente->id = $request->folio;
         $expediente->fecha_integracion = $hoy;
+        $expediente->gestor_id = $request->gestor_id;
         $expediente->save();
 
         $contrato = Contrato::findOrFail($request->folio);

@@ -10,7 +10,7 @@ class Avaluo extends Model
     protected $primaryKey = 'id'; //Referenciar la llave primaria
     protected $fillable = ['contrato_id','fecha_solicitud','valor_requerido','observacion',
                             'fecha_recibido','resultado','fecha_ava_sol','fecha_pago','status',
-                            'fecha_concluido','costo'];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
+                            'fecha_concluido','costo','pdf'];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
 
     public function contrato(){
         return $this->belongsTo('App\Contrato');

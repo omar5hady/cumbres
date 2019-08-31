@@ -1144,7 +1144,7 @@
                                                         </div>
                                                     </div>
 
-                                                    <div class="col-md-3" v-if="monto_credito!=0">
+                                                    <div class="col-md-3">
                                                         <div class="form-group">
                                                             <h6 style="color:#2271b3;" for=""><strong> Credito Solicitado: </strong></h6>
                                                             <h6 v-if="change_credito==0" @click="change_credito=1,selectInstitucion(tipo_credito)" v-text="'$'+formatNumber(monto_credito)"></h6>

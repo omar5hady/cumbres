@@ -45,7 +45,8 @@
                         <div class="table-responsive">
                             <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
-                                    <tr> 
+                                    <tr>
+                                        <th>PDF</th> 
                                         <th>Folio</th>
                                         <th>Cliente</th>
                                         <th>Proyecto</th>
@@ -68,7 +69,17 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="avaluos in arrayAvaluos" :key="avaluos.folio"> 
+                                    <tr v-for="avaluos in arrayAvaluos" :key="avaluos.folio">
+                                        <template>
+                                            <td class="td2" >
+                                                <button title="Subir avaluo" type="button" @click="abrirModal('subirArchivo',avaluos)" class="btn btn-default btn-sm">
+                                                <i class="icon-cloud-upload"></i>
+                                                </button>
+                                                <a class="btn btn-default btn-sm" v-if="avaluos.pdf != '' && avaluos.pdf != NULL"  v-bind:href="'/downloadAvaluo/'+avaluos.pdf">
+                                                    <i class="fa fa-download"></i>
+                                                </a>
+                                            </td>
+                                       </template> 
                                         
                                         <td class="td2" v-text="avaluos.folio"></td>
                                         <td class="td2" v-text="avaluos.nombre + ' ' + avaluos.apellidos"></td>
@@ -108,7 +119,7 @@
 
                                         <td class="td2" @click="abrirModal('visita_avaluo',avaluos)" v-text="this.moment(avaluos.visita_avaluo).locale('es').format('DD/MMM/YYYY')"></td>
                                         <td class="td2" @click="abrirModal('status',avaluos)" v-text="avaluos.status"></td>
-                                        <td class="td2" v-if="avaluos.fecha_concluido" @click="abrirModal('fecha_concluido',avaluos)"
+                                        <td class="td2" v-if="avaluos.fecha_concluido" @click="abrirModal('concluido_act',avaluos)"
                                             v-text="this.moment(avaluos.fecha_concluido).locale('es').format('DD/MMM/YYYY')">
                                         </td>
                                         <td class="td2" v-else>
@@ -121,7 +132,8 @@
                                         <td class="td2" v-else>No</td>
 
 
-                                        <td class="td2" v-text="'$'+formatNumber(avaluos.resultado)"></td>
+                                        <td class="td2"  v-if="avaluos.fecha_concluido" @click="abrirModal('concluido_act',avaluos)" v-text="'$'+formatNumber(avaluos.resultado)"></td>
+                                        <td class="td2" v-else v-text="'$'+formatNumber(avaluos.resultado)"></td>
 
                                         <td class="td2" v-if="!avaluos.costo" @click="abrirModal('costo',avaluos)" v-text="'$'+formatNumber(avaluos.costo)"></td>
                                         <td class="td2" v-else v-text="'$'+formatNumber(avaluos.costo)" @click="abrirModal('costo_act',avaluos)" ></td>
@@ -198,7 +210,7 @@
                             <!-- fin del form solicitud de avaluo -->
 
                             <!-- form para solicitud de avaluo -->
-                            <form v-if="tipoAccion == 3" action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+                            <form v-if="tipoAccion == 3 || tipoAccion == 6" action="" method="post" enctype="multipart/form-data" class="form-horizontal">
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Fecha</label>
                                     <div class="col-md-4">
@@ -207,12 +219,22 @@
                                 </div>
 
                                  <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Valor</label>
+                                    <label class="col-md-3 form-control-label" for="text-input">Valor concluido</label>
                                     <div class="col-md-4">
                                         <input type="text" maxlength="10" v-model="resultado" pattern="\d*" v-on:keypress="isNumber($event)" class="form-control" placeholder="Monto">
                                     </div>
                                     <div class="col-md-3">
                                         <h6 v-text="'$'+formatNumber(resultado)"></h6>
+                                    </div>
+                                </div>
+
+                                 <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Costo</label>
+                                    <div class="col-md-4">
+                                        <input type="text" maxlength="10" v-model="costo" pattern="\d*" v-on:keypress="isNumber($event)" class="form-control" placeholder="Costo">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <h6 v-text="'$'+formatNumber(costo)"></h6>
                                     </div>
                                 </div>
                             </form>
@@ -247,6 +269,7 @@
                             <button v-if="tipoAccion==1" type="button" class="btn btn-primary" @click="setFechaSolicitud()">Guardar</button>
                             <button v-if="tipoAccion==2" type="button" class="btn btn-primary" @click="setFechaPago()">Guardar</button>
                             <button v-if="tipoAccion==3" type="button" class="btn btn-primary" @click="setFechaConcluido()">Guardar</button>
+                            <button v-if="tipoAccion==6" type="button" class="btn btn-primary" @click="updateFechaConcluido()">Guardar Cambios</button>
                             <button v-if="tipoAccion==4" type="button" class="btn btn-primary" @click="registrarGasto()">Guardar</button>
                             <button v-if="tipoAccion==5" type="button" class="btn btn-primary" @click="updateGasto()">Guardar Cambios</button>
                         </div>
@@ -277,6 +300,7 @@
                                         <option value="Reconsideración">Reconsideración</option>
                                         <option value="Visto bueno">Visto bueno</option>
                                         <option value="Detenido">Detenido</option>
+                                        <option value="En Elaboración">En Elaboración</option>
                                     </select>
                                 </div>
                             </div>
@@ -374,6 +398,39 @@
                 <!-- /.modal-dialog -->
             </div>
             <!--Fin del modal consulta-->
+
+            <!-- Modal para la carga pdf -->
+            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal4}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" v-text="tituloModal"></h4>
+                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div>
+                                <form  method="post" @submit="formSubmit" enctype="multipart/form-data">
+
+                                        <strong>Seleccionar avaluo</strong>
+
+                                        <input type="file" class="form-control" v-on:change="onImageChange">
+                                        <br/>
+                                        <button type="submit" class="btn btn-success">Cargar</button>
+                                </form>
+                            </div>
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                            </div>
+                    </div> 
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!--Fin del modal-->
             
          
      </main>
@@ -393,6 +450,7 @@
                 visita_avaluo:'',
 
                 id_gasto:0,
+                pdf:'',
 
                 
                 arrayAvaluos : [],
@@ -415,6 +473,7 @@
                 modal : 0,
                 modal2: 0,
                 modal3: 0,
+                modal4 :0,
 
                 tituloModal : '',
            
@@ -471,6 +530,49 @@
 
         
         methods : {
+
+            //funciones para carga de los avaluos    
+
+            onImageChange(e){
+
+                console.log(e.target.files[0]);
+
+                this.pdf = e.target.files[0];
+
+            },
+
+            formSubmit(e) {
+
+                e.preventDefault();
+
+                let currentObj = this;
+            
+                let formData = new FormData();
+           
+                formData.append('pdf', this.pdf);
+                axios.post('/formSubmitAvaluo/'+this.avaluoId, formData)
+                .then(function (response) {
+                   
+                    currentObj.success = response.data.success;
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Archivo guardado correctamente',
+                        showConfirmButton: false,
+                        timer: 2000
+                        })
+                    me.cerrarModal4();
+                    me.listarAvaluos(1,me.buscar,me.b_etapa,me.b_manzana,me.b_lote,me.criterio);
+
+                })
+
+                .catch(function (error) {
+
+                    currentObj.output = error;
+
+                });
+
+            },
 
             /**Metodo para mostrar los registros */
             listarAvaluos(page, buscar, b_etapa, b_manzana, b_lote, criterio){
@@ -742,10 +844,12 @@
             setFechaConcluido(){
                 let me = this;
                 //Con axios se llama el metodo update de LoteController
-                axios.put('/avaluos/fechaConcluido',{
+                axios.post('/avaluos/fechaConcluido',{
                     'avaluoId':this.avaluoId,
                     'fecha_concluido' : this.fecha_concluido,
                     'resultado' : this.resultado,
+                    'costo' : this.costo,
+                    'id':this.id,
                     
                 }).then(function (response){
                     me.cerrarModal();
@@ -760,6 +864,37 @@
                         toast({
                         type: 'success',
                         title: 'Fecha de pago ingresada correctamente'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+            updateFechaConcluido(){
+                let me = this;
+                //Con axios se llama el metodo update de LoteController
+                axios.put('/avaluos/update/fechaConcluido',{
+                    'avaluoId':this.avaluoId,
+                    'fecha_concluido' : this.fecha_concluido,
+                    'resultado' : this.resultado,
+                    'costo' : this.costo,
+                    'id':this.id,
+                    'avaluoId':this.avaluoId,
+                    'gasto_id':this.id_gasto,
+                    'costo' : this.costo,
+                    
+                }).then(function (response){
+                    me.cerrarModal();
+                    me.listarAvaluos(1,me.buscar,me.b_etapa,me.b_manzana,me.b_lote,me.criterio);
+                    //window.alert("Cambios guardados correctamente");
+                    const toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                        });
+                        toast({
+                        type: 'success',
+                        title: 'Datos guardados correctamente'
                     })
                 }).catch(function (error){
                     console.log(error);
@@ -888,6 +1023,7 @@
                         this.fecha_concluido = data['fecha_concluido'];
                         this.resultado = data['resultado'];
                         this.avaluoId = data['avaluoId'];
+                        this.costo = data['costo'];
                         this.id = data['folio'];
                         break;
                     } 
@@ -917,6 +1053,20 @@
                         break;
                     }
 
+                    case 'concluido_act':
+                    {
+                        this.modal =1;
+                        this.tituloModal='Editar Cconcluido';
+                        this.tipoAccion = 6;
+                        this.fecha_concluido = data['fecha_concluido'];
+                        this.resultado = data['resultado'];
+                        this.avaluoId = data['avaluoId'];
+                        this.costo = data['costo'];
+                        this.id = data['folio'];
+                        this.getDatosCosto(this.id,this.costo);
+                        break;
+                    }
+
                     case 'status':
                     {
                         this.modal2 =1;
@@ -941,6 +1091,15 @@
                         this.listarHistorial(this.id);
                         break;
                     } 
+
+                    case 'subirArchivo':
+                    {
+                        this.modal4 =1;
+                        this.tituloModal='Subir Archivo';
+                        this.avaluoId=data['avaluoId'];
+                        this.pdf=data['pdf'];
+                        break;
+                    }
                 } 
             }
             

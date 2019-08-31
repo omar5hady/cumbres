@@ -763,7 +763,7 @@ class DepositoController extends Controller
 
             $pago_contrato = Pago_contrato::findOrFail($request->pago_id);
             $pago_contrato->restante =  $pago_contrato->restante - $pago;
-            if($pago_contrato->restante == 0)
+            if($pago_contrato->restante <= 0)
                 $pago_contrato->pagado = 2;
             else{
                 $pago_contrato->pagado = 1;

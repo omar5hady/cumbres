@@ -4954,6 +4954,7 @@ class ContratoController extends Controller
             ->get();
 
         setlocale(LC_TIME, 'es_MX.utf8');
+        $contratoPromesa[0]->engancheTotalLetra = NumerosEnLetras::convertir($contratoPromesa[0]->enganche_total, 'Pesos', true, 'Centavos');
         $contratoPromesa[0]->precioVentaLetra = NumerosEnLetras::convertir($contratoPromesa[0]->precio_venta, 'Pesos', true, 'Centavos');
         $contratoPromesa[0]->precio_venta = number_format((float)$contratoPromesa[0]->precio_venta, 2, '.', ',');
 
@@ -5296,6 +5297,7 @@ class ContratoController extends Controller
         $loteNuevo_id = $request->sel_lote;
 
         $lote_ant = Lote::findOrFail($request->lote_id);
+        $varContrato = $lote_ant->contrato;
         $lote_ant->contrato = 0;
         $lote_ant->paquete = '';
         $lote_ant->save();
@@ -5328,7 +5330,7 @@ class ContratoController extends Controller
             $lote_new->precio_base = round(($precio_modelo[0]->precio_modelo + $lote_new->ajuste), 2);
             $precio_venta = round(($sobreprecios[0]->sobreprecios + $lote_new->precio_base + $lote_new->excedente_terreno + $lote_new->obra_extra),2);
             $terreno_tam_excedente = round(($lote_new->terreno - $modelo[0]->terreno),2);
-            $lote_new->contrato = 1;
+            $lote_new->contrato = $varContrato;
 
             ////////////////////////////////////////////////////////////////////////////////////////
             

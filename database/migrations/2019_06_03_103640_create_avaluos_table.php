@@ -21,6 +21,7 @@ class CreateAvaluosTable extends Migration
             $table->string('observacion')->nullable();
             $table->date('fecha_recibido')->nullable();
             $table->double('resultado')->default(0);
+            $table->string('pdf')->nullable();
             $table->timestamps();
 
 
