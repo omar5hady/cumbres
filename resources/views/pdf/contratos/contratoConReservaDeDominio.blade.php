@@ -126,12 +126,7 @@ body{
 
         <p>
         Que es su deseo celebrar el presente contrato con <strong>EL VENDEDOR</strong>, en los términos y condiciones que a continuación se establecen. 
-        </p>
-
-       
         
-
-        <p>
         Conformes las partes con las declaraciones que anteceden, las cuales forman parte integrante del presente contrato, acuerdan otorgar las siguientes: 
         </p>
 
@@ -192,16 +187,16 @@ body{
         <p>
         Las características de la urbanización del terreno. La Superficie de construcción que es de <strong>{{$contratosDom[0]->construccion}} M2</strong> Las especificaciones de <strong>LA VIVIENDA</strong> según anexo, 
         el cual forma parte integral del presente contrato. El precio y la fecha de entrega.
-        </p>
-
-        <p>
+        <br>
         Por lo que <strong>LA COMPRADORA</strong> no se reserva ningún derecho de ejercitar posteriormente sobre este particular, 
         ya que <strong>EL LOTE</strong> y <strong>LA VIVIENDA</strong> se apegan a sus necesidades.
-        </p>
 
-        <p>
-       <strong>SÉPTIMA.-</strong>Todos los gastos, derechos, impuestos y honorarios que se causen con motivo de este contrato y de la celebración del mismo en Escritura Pública 
-                 serán cubiertos por <strong>EL COMPRADOR</strong>, excepto el Impuesto Sobre la Renta el cuál será a cargo de <strong>EL VENDEDOR.</strong>
+        <br>
+
+        <strong>SÉPTIMA.-</strong>Todos los gastos, derechos, impuestos y honorarios que se causen con motivo de este contrato y de la celebración del mismo en Escritura Pública 
+                 serán cubiertos por
+        
+        <strong>EL COMPRADOR</strong>, excepto el Impuesto Sobre la Renta el cuál será a cargo de <strong>EL VENDEDOR.</strong>
         </p>
 
         <p>
@@ -246,8 +241,7 @@ body{
 
         
         <br>
-        <br>
-        <br>
+
         
         
 
@@ -258,15 +252,15 @@ body{
                     <div colspan="2" class="table-cell3"><b>LA PARTE COMPRADORA</div>
                 </div>
                 <div class="table-row"> 
-                    <div colspan="5" class="table-cell3"> <br> <br> </div>
+                    <div colspan="5" class="table-cell3"><br> <br> <br> </div>
                 </div>
                 <div class="table-row">
                     <div colspan="3" class="table-cell3">GRUPO CONSTRUCTOR CUMBRES S.A DE C.V</div>
                     
-                    <div colspan="2" class="table-cell3">SR(A) {{mb_strtoupper($contratosDom[0]->nombre)}} {{mb_strtoupper($contratosDom[0]->apellidos)}}</div>
+                    <div colspan="4" class="table-cell3">SR(A) {{mb_strtoupper($contratosDom[0]->nombre)}} {{mb_strtoupper($contratosDom[0]->apellidos)}}</div>
                 </div>
                 <div class="table-row"> 
-                    <div colspan="5" class="table-cell3"><br> Representada por este acto por el</div>
+                    <div colspan="5" class="table-cell3"> Representada por este acto por el</div>
                 </div>
                 <div class="table-row">
                     <div colspan="5" class="table-cell3"><b>ING. ALEJANDRO F. PEREZ ESPINOSA O <br> EL ING. DAVID CALVILLO MARTINEZ</div>

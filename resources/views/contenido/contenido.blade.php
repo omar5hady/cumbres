@@ -310,6 +310,10 @@
         <template v-if="menu==211">
             <proveedores></proveedores>
         </template>
+
+        <template v-if="menu==212">
+            <solicitar-equipamiento></solicitar-equipamiento>
+        </template>
        
 
         

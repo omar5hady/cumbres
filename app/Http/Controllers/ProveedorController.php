@@ -66,4 +66,10 @@ class ProveedorController extends Controller
         $proveedor->poliza=$request->poliza;
         $proveedor->save();
     }
+
+    public function selectProveedor(Request $request){
+        $proveedor = Proveedor::select('id','proveedor')->get();
+
+        return ['proveedor' => $proveedor];
+    }
 }

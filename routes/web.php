@@ -489,13 +489,17 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/proveedor','ProveedorController@index');
         Route::post('/proveedor/registrar','ProveedorController@store');
         Route::put('/proveedor/actualizar','ProveedorController@update');
+        Route::get('/select_proveedor','ProveedorController@selectProveedor');
 
         ////////////////////// RUTAS EQUIPAMIENTO
         Route::get('/equipamiento','EquipamientoController@index');
         Route::post('/equipamiento/registrar','EquipamientoController@store');
         Route::put('/equipamiento/actualizar','EquipamientoController@update');
         Route::delete('/equipamiento/eliminar','EquipamientoController@destroy');
+        Route::get('/select_equipamientos','EquipamientoController@selectEquipamiento');
 
+        ///////////////////// RUTAS SOLIC EQUIPAMIENTO
+        Route::get('/equipamiento/indexContrato','EquipamientoController@indexContratos');
     });
 
 

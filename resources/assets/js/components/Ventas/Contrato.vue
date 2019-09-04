@@ -83,6 +83,16 @@
                                             <option value="0">Seleccione</option>
                                             <option v-for="asesor in arrayAsesores" :key="asesor.id" :value="asesor.id" v-text="asesor.nombre + ' '+ asesor.apellidos"></option>
                                         </select>
+
+                                        <select class="form-control" v-if="criterio2=='creditos.vendedor_id'"  @click="selectEtapas(buscar3)" v-model="buscar3" >
+                                            <option value="">Seleccione</option>
+                                            <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
+                                        </select>
+
+                                        <select class="form-control" v-if="criterio2=='creditos.vendedor_id'" v-model="b_etapa2" >
+                                            <option value="">Seleccione</option>
+                                            <option v-for="etapa in arrayAllEtapas" :key="etapa.id" :value="etapa.id" v-text="etapa.num_etapa"></option>
+                                        </select>
                                   
                                     
                                         <select class="form-control col-md-4" v-if="criterio2=='contratos.status'" v-model="buscar2">

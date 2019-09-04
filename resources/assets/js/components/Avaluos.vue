@@ -75,7 +75,7 @@
                                                 <button title="Subir avaluo" type="button" @click="abrirModal('subirArchivo',avaluos)" class="btn btn-default btn-sm">
                                                 <i class="icon-cloud-upload"></i>
                                                 </button>
-                                                <a class="btn btn-default btn-sm" v-if="avaluos.pdf != '' && avaluos.pdf != NULL"  v-bind:href="'/downloadAvaluo/'+avaluos.pdf">
+                                                <a title="Descarga de avaluo" class="btn btn-default btn-sm" v-if="avaluos.pdf != '' && avaluos.pdf != NULL"  v-bind:href="'/downloadAvaluo/'+avaluos.pdf">
                                                     <i class="fa fa-download"></i>
                                                 </a>
                                             </td>
@@ -405,7 +405,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h4 class="modal-title" v-text="tituloModal"></h4>
-                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
+                            <button type="button" class="close" @click="cerrarModal4()" aria-label="Close">
                                 <span aria-hidden="true">×</span>
                             </button>
                         </div>
@@ -423,7 +423,7 @@
                         </div>
                         <!-- Botones del modal -->
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal4()">Cerrar</button>
                             </div>
                     </div> 
                     <!-- /.modal-content -->
@@ -989,6 +989,14 @@
                 this.modal3=0;
                 this.visita_avaluo='';
             },
+
+
+            cerrarModal4(){
+                this.modal4 = 0;
+                this.tituloModal = '';
+                this.pdf='';
+            },
+
       
             abrirModal(accion,data =[]){
                 switch(accion){

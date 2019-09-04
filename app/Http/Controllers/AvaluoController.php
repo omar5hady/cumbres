@@ -80,7 +80,7 @@ class AvaluoController extends Controller
 
                     )
                     ->where('inst_seleccionadas.elegido','=','1')
-                    ->orderBy('contratos.id','asc')
+                    ->orderBy('avaluos.fecha_recibido','asc')
                     ->paginate(25);
 
         }
@@ -106,7 +106,7 @@ class AvaluoController extends Controller
                         )
                         ->where('inst_seleccionadas.elegido','=','1')
                         ->where('lotes.fraccionamiento_id','=',$buscar)
-                        ->orderBy('contratos.id','asc')
+                        ->orderBy('avaluos.fecha_recibido','asc')
                         ->paginate(25);
 
                     }
@@ -130,7 +130,7 @@ class AvaluoController extends Controller
                         ->where('inst_seleccionadas.elegido','=','1')
                         ->where('lotes.fraccionamiento_id','=',$buscar)
                         ->where('lotes.etapa_id','=',$b_etapa)
-                        ->orderBy('contratos.id','asc')
+                        ->orderBy('avaluos.fecha_recibido','asc')
                         ->paginate(25);
 
                     }
@@ -155,7 +155,7 @@ class AvaluoController extends Controller
                         ->where('lotes.fraccionamiento_id','=',$buscar)
                         ->where('lotes.etapa_id','=',$b_etapa)
                         ->where('lotes.manzana','=',$b_manzana)
-                        ->orderBy('contratos.id','asc')
+                        ->orderBy('avaluos.fecha_recibido','asc')
                         ->paginate(25);
 
                     }
@@ -181,7 +181,7 @@ class AvaluoController extends Controller
                         ->where('lotes.etapa_id','=',$b_etapa)
                         ->where('lotes.manzana','=',$b_manzana)
                         ->where('lotes.num_lote','=',$b_lote)
-                        ->orderBy('contratos.id','asc')
+                        ->orderBy('avaluos.fecha_recibido','asc')
                         ->paginate(25);
 
                     }
@@ -206,7 +206,7 @@ class AvaluoController extends Controller
                         ->where('lotes.fraccionamiento_id','=',$buscar)
                         ->where('lotes.etapa_id','=',$b_etapa)
                         ->where('lotes.num_lote','=',$b_lote)
-                        ->orderBy('contratos.id','asc')
+                        ->orderBy('avaluos.fecha_recibido','asc')
                         ->paginate(25);
 
                     }
@@ -230,7 +230,7 @@ class AvaluoController extends Controller
                         ->where('inst_seleccionadas.elegido','=','1')
                         ->where('lotes.fraccionamiento_id','=',$buscar)
                         ->where('lotes.num_lote','=',$b_lote)
-                        ->orderBy('contratos.id','asc')
+                        ->orderBy('avaluos.fecha_recibido','asc')
                         ->paginate(25);
 
                     }
@@ -255,7 +255,7 @@ class AvaluoController extends Controller
                         ->where('lotes.fraccionamiento_id','=',$buscar)
                         ->where('lotes.manzana','=',$b_manzana)
                         ->where('lotes.num_lote','=',$b_lote)
-                        ->orderBy('contratos.id','asc')
+                        ->orderBy('avaluos.fecha_recibido','asc')
                         ->paginate(25);
 
                     }
@@ -280,7 +280,7 @@ class AvaluoController extends Controller
                     )
                     ->where('inst_seleccionadas.elegido','=','1')
                     ->where('licencias.visita_avaluo','=',$buscar)
-                    ->orderBy('contratos.id','asc')
+                    ->orderBy('avaluos.fecha_recibido','asc')
                     ->paginate(25);
                     break;
                 }

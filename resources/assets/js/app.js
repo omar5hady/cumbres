@@ -77,6 +77,7 @@ Vue.component('historialsim', require('./components/Ventas/HistorialSimulacion.v
 Vue.component('historialcreditos', require('./components/Ventas/HistorialDeCreditos.vue'));
 Vue.component('crear-contrato', require('./components/Ventas/Contrato.vue'));
 Vue.component('docs', require('./components/Ventas/docs.vue'));
+Vue.component('solicitar-equipamiento', require('./components/Ventas/Equipamientos.vue'));
 
 //Componentes Acceso
 Vue.component('rol', require('./components/Rol.vue'));
