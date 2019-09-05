@@ -9,9 +9,12 @@
                 <div class="card scroll-box">
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i>Avaluos
-
+                        <button class="btn btn-warning" v-if="listado == 1" @click="listado = 2 , listarHistorialAvaluos(1, buscar2, b_etapa2, b_manzana2, b_lote2, criterio2)">Historial de avaluos</button>
+                        <button class="btn btn-secondary" v-if="listado == 2" @click="listado = 1">Volver</button>
                     </div>
-                    <div class="card-body">
+
+                    <!-- avaluos por enviar a ventas -->
+                    <div v-if="listado == 1" class="card-body">
                         <div class="form-group row">
                             <div class="col-md-10">
                                 <div class="input-group">
@@ -154,23 +157,186 @@
                             <!--Botones de paginacion -->
                             <ul class="pagination">
                                 <li class="page-item" v-if="pagination.last_page > 7 && pagination.current_page > 7">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(1,buscar,criterio)">Inicio</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(1,buscar, b_etapa, b_manzana, b_lote, criterio)">Inicio</a>
                                 </li>
                                 <li class="page-item" v-if="pagination.current_page > 1">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,criterio)">Ant</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar, b_etapa, b_manzana, b_lote, criterio)">Ant</a>
                                 </li>
                                 <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,criterio)" v-text="page"></a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar, b_etapa, b_manzana, b_lote, criterio)" v-text="page"></a>
                                 </li>
                                 <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,criterio)">Sig</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar, b_etapa, b_manzana, b_lote, criterio)">Sig</a>
                                 </li>
                                 <li class="page-item" v-if="pagination.last_page > 7 && pagination.current_page<pagination.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.last_page,buscar,criterio)">Ultimo</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.last_page,buscar, b_etapa, b_manzana, b_lote, criterio)">Ultimo</a>
                                 </li>
                             </ul>
                         </nav>
                     </div>
+
+                    <!-- historial de avaluos enviados -->
+                    <div v-if="listado == 2" class="card-body">
+                        <div class="form-group row">
+                            <div class="col-md-10">
+                                <div class="input-group">
+                                    <!--Criterios para el listado de busqueda -->
+                                    <select class="form-control col-md-5" v-model="criterio2" @click="selectFraccionamientos()">
+                                        <option value="lotes.fraccionamiento_id">Proyecto</option>
+                                        <option value="licencias.visita_avaluo">Fecha de visita</option>
+                                    </select>
+
+                                    
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar2" @click="selectEtapa(buscar)">
+                                        <option value="">Seleccione</option>
+                                        <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                                    </select>
+
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_etapa2"> 
+                                        <option value="">Etapa</option>
+                                        <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
+                                    </select>
+
+                                    
+                                    <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_manzana2" class="form-control" placeholder="Manzana a buscar">
+                                    <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote2" class="form-control" placeholder="Lote a buscar">
+
+                                    <input v-else type="date"  v-model="buscar2" @keyup.enter="listarHistorialAvaluos(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="Texto a buscar">
+                                    <button type="submit" @click="listarHistorialAvaluos(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                   
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table2 table-bordered table-striped table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>PDF</th> 
+                                        <th>Folio</th>
+                                        <th>Cliente</th>
+                                        <th>Proyecto</th>
+                                        <th>Etapa</th>
+                                        <th>Manzana</th>
+                                        <th>Lote</th>
+                                        <th>Modelo</th>
+                                        <th>Avance obra</th>
+                                        <th>Solicitud Ventas</th>
+                                        <th>Valor Solicitado</th>
+                                        <th>Fecha solicitud avaluo</th>
+                                        <th>Pago realizado</th>
+                                        <th>Fecha de visita</th>
+                                        <th>Estatus</th>
+                                        <th>Fecha concluido</th>
+                                        <th>Seguro de calidad</th>
+                                        <th>Valor concluido</th>
+                                        <th>Costo</th>
+                                        <th>Enviado a ventas</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="avaluos in arrayHistorialAvaluos" :key="avaluos.folio">
+                                        <template>
+                                            <td class="td2" >
+                                                <button title="Subir avaluo" type="button" @click="abrirModal('subirArchivo',avaluos)" class="btn btn-default btn-sm">
+                                                <i class="icon-cloud-upload"></i>
+                                                </button>
+                                                <a title="Descarga de avaluo" class="btn btn-default btn-sm" v-if="avaluos.pdf != '' && avaluos.pdf != NULL"  v-bind:href="'/downloadAvaluo/'+avaluos.pdf">
+                                                    <i class="fa fa-download"></i>
+                                                </a>
+                                            </td>
+                                       </template> 
+                                        
+                                        <td class="td2" v-text="avaluos.folio"></td>
+                                        <td class="td2" v-text="avaluos.nombre + ' ' + avaluos.apellidos"></td>
+                                        <td class="td2" v-text="avaluos.fraccionamiento"></td>
+                                        <td class="td2" v-text="avaluos.etapa"></td>
+                                        <td class="td2" v-text="avaluos.manzana"></td>
+                                        <td class="td2" v-text="avaluos.num_lote"></td>
+                                        <td class="td2" v-text="avaluos.modelo"></td>
+                                        <td class="td2" v-text="avaluos.avance + '%'"></td>
+                                        <td class="td2" v-text="this.moment(avaluos.fecha_solicitud).locale('es').format('DD/MMM/YYYY')"></td>
+                                        <td class="td2" v-text="'$'+formatNumber(avaluos.valor_requerido)"></td>
+
+                                        <td class="td2" @click="abrirModal('fecha_ava_sol',avaluos)" v-if="avaluos.fecha_ava_sol"
+                                            v-text="this.moment(avaluos.fecha_ava_sol).locale('es').format('DD/MMM/YYYY')">
+                                        </td>
+                                        <td class="td2" v-else>
+                                            <button type="button" @click="abrirModal('fecha_ava_sol',avaluos)" class="btn btn-default btn-sm" title="Ingresar fecha de solicitud">
+                                                <i class="fa fa-calendar"></i>
+                                            </button>
+                                        </td>
+
+
+                                        <template v-if="avaluos.fecha_pago">
+                                            <td @click="abrirModal('fecha_pago',avaluos)" v-if="avaluos.fecha_pago!='0000-01-01'" class="td2" v-text="this.moment(avaluos.fecha_pago).locale('es').format('DD/MMM/YYYY')"></td>
+                                            <td v-if="avaluos.fecha_pago=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
+                                        </template>
+                                        <template v-else>
+                                            <td class="td2">
+                                                <button type="button" @click="abrirModal('fecha_pago',avaluos)" class="btn btn-default btn-sm" title="Ingresar fecha de pago">
+                                                    <i class="fa fa-calendar"></i>
+                                                </button>
+                                                <button type="button" @click="noAplicaPago(avaluos.avaluoId)" class="btn btn-danger btn-sm" title="No aplica">
+                                                    <i class="fa fa-times-circle"></i>
+                                                </button>
+                                            </td>
+                                        </template> 
+
+                                        <td class="td2" @click="abrirModal('visita_avaluo',avaluos)" v-text="this.moment(avaluos.visita_avaluo).locale('es').format('DD/MMM/YYYY')"></td>
+                                        <td class="td2" @click="abrirModal('status',avaluos)" v-text="avaluos.status"></td>
+                                        <td class="td2" v-if="avaluos.fecha_concluido" @click="abrirModal('concluido_act',avaluos)"
+                                            v-text="this.moment(avaluos.fecha_concluido).locale('es').format('DD/MMM/YYYY')">
+                                        </td>
+                                        <td class="td2" v-else>
+                                            <button type="button" @click="abrirModal('fecha_concluido',avaluos)" class="btn btn-default btn-sm" title="Ingresar fecha concluido">
+                                                <i class="fa fa-calendar"></i>
+                                            </button>
+                                        </td>
+
+                                        <td class="td2" v-if="avaluos.tipo_credito == 'Alia2' || avaluos.tipo_credito == 'Fovissste' " v-text="'Si'"></td>
+                                        <td class="td2" v-else>No</td>
+
+
+                                        <td class="td2"  v-if="avaluos.fecha_concluido" @click="abrirModal('concluido_act',avaluos)" v-text="'$'+formatNumber(avaluos.resultado)"></td>
+                                        <td class="td2" v-else v-text="'$'+formatNumber(avaluos.resultado)"></td>
+
+                                        <td class="td2" v-if="!avaluos.costo" @click="abrirModal('costo',avaluos)" v-text="'$'+formatNumber(avaluos.costo)"></td>
+                                        <td class="td2" v-else v-text="'$'+formatNumber(avaluos.costo)" @click="abrirModal('costo_act',avaluos)" ></td>
+
+                                        <td class="td2" v-if="avaluos.fecha_recibido"
+                                            v-text="this.moment(avaluos.fecha_recibido).locale('es').format('DD/MMM/YYYY')">
+                                        </td>
+                                        <td class="td2" v-else>
+                                            <button type="button" @click="enviarVentas(avaluos.avaluoId)" class="btn btn-primary btn-sm" title="Enviar a ventas">
+                                                Enviar a ventas
+                                            </button>
+                                        </td>
+                                    </tr>                               
+                                </tbody>
+                            </table>  
+                        </div>
+                        <nav>
+                            <!--Botones de paginacion -->
+                            <ul class="pagination">
+                                <li class="page-item" v-if="pagination2.last_page > 7 && pagination2.current_page > 7">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)">Inicio</a>
+                                </li>
+                                <li class="page-item" v-if="pagination2.current_page > 1">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page - 1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)">Ant</a>
+                                </li>
+                                <li class="page-item" v-for="page in pagesNumber2" :key="page" :class="[page == isActived ? 'active' : '']">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(page,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" v-text="page"></a>
+                                </li>
+                                <li class="page-item" v-if="pagination2.current_page < pagination2.last_page">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page + 1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)">Sig</a>
+                                </li>
+                                <li class="page-item" v-if="pagination2.last_page > 7 && pagination2.current_page<pagination2.last_page">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.last_page,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)">Ultimo</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
@@ -454,6 +620,7 @@
 
                 
                 arrayAvaluos : [],
+                arrayHistorialAvaluos: [],
                 arrayFraccionamientos:[],
                 arrayEtapas:[],
                 arrayGastoAdmin:[],
@@ -474,6 +641,7 @@
                 modal2: 0,
                 modal3: 0,
                 modal4 :0,
+                listado: 1,
 
                 tituloModal : '',
            
@@ -488,12 +656,25 @@
                     'from' : 0,
                     'to' : 0,
                 },
+                pagination2 : {
+                    'total' : 0,         
+                    'current_page' : 0,
+                    'per_page' : 0,
+                    'last_page' : 0,
+                    'from' : 0,
+                    'to' : 0,
+                },
                 offset : 3,
                 criterio : 'lotes.fraccionamiento_id', 
                 buscar : '',
                 b_etapa: '',
                 b_manzana: '',
-                b_lote: ''
+                b_lote: '',
+                criterio2 : 'lotes.fraccionamiento_id', 
+                buscar2 : '',
+                b_etapa2: '',
+                b_manzana2: '',
+                b_lote2: ''
                
             }
         },
@@ -525,6 +706,34 @@
                 }
                 return pagesArray;
             },
+
+            isActived2: function(){
+                return this.pagination2.current_page;
+            },
+        
+            pagesNumber2:function(){
+                if(!this.pagination2.to){
+                    return [];
+                }
+
+                var from = this.pagination2.current_page - this.offset;
+                if(from < 1){
+                    from = 1;
+                }
+
+                var to = from + (this.offset * 2);
+                if(to >= this.pagination2.last_page){
+                    to = this.pagination2.last_page;
+                }
+
+                var pagesArray = [];
+                while(from <= to){
+                    pagesArray.push(from);
+                    from++;
+                }
+                return pagesArray;
+            },
+
 
         },
 
@@ -582,6 +791,21 @@
                     var respuesta = response.data;
                     me.arrayAvaluos = respuesta.avaluos.data;
                     me.pagination = respuesta.pagination;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+                
+            },
+
+                   
+            listarHistorialAvaluos(page2, buscar2, b_etapa2, b_manzana2, b_lote2, criterio2){
+                let me = this;
+                var url = '/historial/avaluos/index?page=' + page2 + '&buscar=' + buscar2 + '&b_etapa=' + b_etapa2 + '&b_manzana=' + b_manzana2 + '&b_lote=' + b_lote2 +  '&criterio=' + criterio2;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayHistorialAvaluos = respuesta.avaluos.data;
+                    me.pagination2 = respuesta.pagination;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -658,6 +882,14 @@
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
                 me.listarAvaluos(page,buscar,b_etapa,b_manzana,b_lote,criterio);
+            },
+
+            cambiarPagina2(page2,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2){
+                let me = this;
+                //Actualiza la pagina actual
+                me.pagination2.current_page = page;
+                //Envia la petición para visualizar la data de esta pagina
+                me.listarHistorialAvaluos(page2,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2);
             },
 
             setVisitaAvaluo(){

@@ -116,7 +116,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Nombre de la promoción</label>
                                     <div class="col-md-4">
-                                        <input type="text" v-model="nombre" class="form-control" placeholder="Promoción">
+                                        <textarea rows="3" cols="30" v-model="nombre" class="form-control" placeholder="Promoción"></textarea>
                                     </div>
                                 </div>
 

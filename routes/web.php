@@ -420,6 +420,7 @@ Route::group(['middleware' => ['auth']],function(){
 
         ///////////////////////// RUTAS AVALUOS /////////////////////////////////////
         Route::get('/avaluos/index','AvaluoController@index');
+        Route::get('/historial/avaluos/index','AvaluoController@indexHistorial');
         Route::put('/avaluos/fechaSolicitud','AvaluoController@setFechaSolicitud');
         Route::put('/avaluos/fechaPago','AvaluoController@setFechaPago');
         Route::post('/avaluos/fechaConcluido','AvaluoController@setFechaConcluido');

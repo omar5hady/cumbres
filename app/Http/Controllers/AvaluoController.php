@@ -80,6 +80,7 @@ class AvaluoController extends Controller
 
                     )
                     ->where('inst_seleccionadas.elegido','=','1')
+                    ->where('avaluos.fecha_recibido','=',NULL)
                     ->orderBy('avaluos.fecha_recibido','asc')
                     ->paginate(25);
 
@@ -106,6 +107,7 @@ class AvaluoController extends Controller
                         )
                         ->where('inst_seleccionadas.elegido','=','1')
                         ->where('lotes.fraccionamiento_id','=',$buscar)
+                        ->where('avaluos.fecha_recibido','=',NULL)
                         ->orderBy('avaluos.fecha_recibido','asc')
                         ->paginate(25);
 
@@ -280,6 +282,253 @@ class AvaluoController extends Controller
                     )
                     ->where('inst_seleccionadas.elegido','=','1')
                     ->where('licencias.visita_avaluo','=',$buscar)
+                    ->where('avaluos.fecha_recibido','=',NULL)
+                    ->orderBy('avaluos.fecha_recibido','asc')
+                    ->paginate(25);
+                    break;
+                }
+            }
+        }
+        
+        return [
+            'pagination' => [
+            'total'         => $avaluos->total(),
+            'current_page'  => $avaluos->currentPage(),
+            'per_page'      => $avaluos->perPage(),
+            'last_page'     => $avaluos->lastPage(),
+            'from'          => $avaluos->firstItem(),
+            'to'            => $avaluos->lastItem(),
+        ],'avaluos' => $avaluos];
+    }
+
+    public function indexHistorial(Request $request){
+        if(!$request->ajax())return redirect('/');
+        $buscar = $request->buscar;
+        $b_etapa = $request->b_etapa;
+        $b_manzana = $request->b_manzana;
+        $b_lote = $request->b_lote;
+        $criterio = $request->criterio;
+
+        if($buscar == ''){
+            $avaluos = Avaluo::join('contratos','avaluos.contrato_id','=','contratos.id')
+                    ->join('creditos','contratos.id','=','creditos.id')
+                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                    ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+                    ->join('personal','clientes.id','=','personal.id')
+                    ->join('lotes','creditos.lote_id','=','lotes.id')
+                    ->join('licencias','lotes.id','=','licencias.id')
+                    ->select(
+                        'contratos.id as folio','lotes.num_lote','personal.nombre','personal.apellidos',
+                        'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.modelo',
+                        'licencias.avance','avaluos.fecha_solicitud','avaluos.valor_requerido','avaluos.observacion',
+                        'avaluos.id as avaluoId','avaluos.fecha_recibido','avaluos.resultado','licencias.visita_avaluo',
+                        'avaluos.fecha_ava_sol','avaluos.fecha_pago','avaluos.status','avaluos.costo','avaluos.fecha_concluido',
+                        'inst_seleccionadas.tipo_credito', 'avaluos.pdf'
+
+                    )
+                    ->where('inst_seleccionadas.elegido','=','1')
+                    ->where('avaluos.fecha_recibido','!=',NULL)
+                    ->orderBy('avaluos.fecha_recibido','asc')
+                    ->paginate(25);
+
+        }
+        else{
+            switch($criterio){
+                case 'lotes.fraccionamiento_id':{
+                    if($b_etapa == '' && $b_manzana =='' && $b_lote == ''){
+                        $avaluos = Avaluo::join('contratos','avaluos.contrato_id','=','contratos.id')
+                        ->join('creditos','contratos.id','=','creditos.id')
+                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                        ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+                        ->join('personal','clientes.id','=','personal.id')
+                        ->join('lotes','creditos.lote_id','=','lotes.id')
+                        ->join('licencias','lotes.id','=','licencias.id')
+                        ->select(
+                            'contratos.id as folio','lotes.num_lote','personal.nombre','personal.apellidos',
+                            'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.modelo',
+                            'licencias.avance','avaluos.fecha_solicitud','avaluos.valor_requerido','avaluos.observacion',
+                            'avaluos.id as avaluoId','avaluos.fecha_recibido','avaluos.resultado','licencias.visita_avaluo',
+                            'avaluos.fecha_ava_sol','avaluos.fecha_pago','avaluos.status','avaluos.costo','avaluos.fecha_concluido',
+                            'inst_seleccionadas.tipo_credito', 'avaluos.pdf'
+
+                        )
+                        ->where('inst_seleccionadas.elegido','=','1')
+                        ->where('lotes.fraccionamiento_id','=',$buscar)
+                        ->where('avaluos.fecha_recibido','!=',NULL)
+                        ->orderBy('avaluos.fecha_recibido','asc')
+                        ->paginate(25);
+
+                    }
+                    elseif($b_etapa != '' && $b_manzana =='' && $b_lote == ''){
+                        $avaluos = Avaluo::join('contratos','avaluos.contrato_id','=','contratos.id')
+                        ->join('creditos','contratos.id','=','creditos.id')
+                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                        ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+                        ->join('personal','clientes.id','=','personal.id')
+                        ->join('lotes','creditos.lote_id','=','lotes.id')
+                        ->join('licencias','lotes.id','=','licencias.id')
+                        ->select(
+                            'contratos.id as folio','lotes.num_lote','personal.nombre','personal.apellidos',
+                            'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.modelo',
+                            'licencias.avance','avaluos.fecha_solicitud','avaluos.valor_requerido','avaluos.observacion',
+                            'avaluos.id as avaluoId','avaluos.fecha_recibido','avaluos.resultado','licencias.visita_avaluo',
+                            'avaluos.fecha_ava_sol','avaluos.fecha_pago','avaluos.status','avaluos.costo','avaluos.fecha_concluido',
+                            'inst_seleccionadas.tipo_credito', 'avaluos.pdf'
+
+                        )
+                        ->where('inst_seleccionadas.elegido','=','1')
+                        ->where('lotes.fraccionamiento_id','=',$buscar)
+                        ->where('lotes.etapa_id','=',$b_etapa)
+                        ->orderBy('avaluos.fecha_recibido','asc')
+                        ->paginate(25);
+
+                    }
+                    elseif($b_etapa != '' && $b_manzana !='' && $b_lote == ''){
+                        $avaluos = Avaluo::join('contratos','avaluos.contrato_id','=','contratos.id')
+                        ->join('creditos','contratos.id','=','creditos.id')
+                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                        ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+                        ->join('personal','clientes.id','=','personal.id')
+                        ->join('lotes','creditos.lote_id','=','lotes.id')
+                        ->join('licencias','lotes.id','=','licencias.id')
+                        ->select(
+                            'contratos.id as folio','lotes.num_lote','personal.nombre','personal.apellidos',
+                            'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.modelo',
+                            'licencias.avance','avaluos.fecha_solicitud','avaluos.valor_requerido','avaluos.observacion',
+                            'avaluos.id as avaluoId','avaluos.fecha_recibido','avaluos.resultado','licencias.visita_avaluo',
+                            'avaluos.fecha_ava_sol','avaluos.fecha_pago','avaluos.status','avaluos.costo','avaluos.fecha_concluido',
+                            'inst_seleccionadas.tipo_credito', 'avaluos.pdf'
+
+                        )
+                        ->where('inst_seleccionadas.elegido','=','1')
+                        ->where('lotes.fraccionamiento_id','=',$buscar)
+                        ->where('lotes.etapa_id','=',$b_etapa)
+                        ->where('lotes.manzana','=',$b_manzana)
+                        ->orderBy('avaluos.fecha_recibido','asc')
+                        ->paginate(25);
+
+                    }
+                    elseif($b_etapa != '' && $b_manzana !='' && $b_lote != ''){
+                        $avaluos = Avaluo::join('contratos','avaluos.contrato_id','=','contratos.id')
+                        ->join('creditos','contratos.id','=','creditos.id')
+                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                        ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+                        ->join('personal','clientes.id','=','personal.id')
+                        ->join('lotes','creditos.lote_id','=','lotes.id')
+                        ->join('licencias','lotes.id','=','licencias.id')
+                        ->select(
+                            'contratos.id as folio','lotes.num_lote','personal.nombre','personal.apellidos',
+                            'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.modelo',
+                            'licencias.avance','avaluos.fecha_solicitud','avaluos.valor_requerido','avaluos.observacion',
+                            'avaluos.id as avaluoId','avaluos.fecha_recibido','avaluos.resultado','licencias.visita_avaluo',
+                            'avaluos.fecha_ava_sol','avaluos.fecha_pago','avaluos.status','avaluos.costo','avaluos.fecha_concluido',
+                            'inst_seleccionadas.tipo_credito', 'avaluos.pdf'
+
+                        )
+                        ->where('inst_seleccionadas.elegido','=','1')
+                        ->where('lotes.fraccionamiento_id','=',$buscar)
+                        ->where('lotes.etapa_id','=',$b_etapa)
+                        ->where('lotes.manzana','=',$b_manzana)
+                        ->where('lotes.num_lote','=',$b_lote)
+                        ->orderBy('avaluos.fecha_recibido','asc')
+                        ->paginate(25);
+
+                    }
+                    elseif($b_etapa != '' && $b_manzana =='' && $b_lote != ''){
+                        $avaluos = Avaluo::join('contratos','avaluos.contrato_id','=','contratos.id')
+                        ->join('creditos','contratos.id','=','creditos.id')
+                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                        ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+                        ->join('personal','clientes.id','=','personal.id')
+                        ->join('lotes','creditos.lote_id','=','lotes.id')
+                        ->join('licencias','lotes.id','=','licencias.id')
+                        ->select(
+                            'contratos.id as folio','lotes.num_lote','personal.nombre','personal.apellidos',
+                            'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.modelo',
+                            'licencias.avance','avaluos.fecha_solicitud','avaluos.valor_requerido','avaluos.observacion',
+                            'avaluos.id as avaluoId','avaluos.fecha_recibido','avaluos.resultado','licencias.visita_avaluo',
+                            'avaluos.fecha_ava_sol','avaluos.fecha_pago','avaluos.status','avaluos.costo','avaluos.fecha_concluido',
+                            'inst_seleccionadas.tipo_credito', 'avaluos.pdf'
+
+                        )
+                        ->where('inst_seleccionadas.elegido','=','1')
+                        ->where('lotes.fraccionamiento_id','=',$buscar)
+                        ->where('lotes.etapa_id','=',$b_etapa)
+                        ->where('lotes.num_lote','=',$b_lote)
+                        ->orderBy('avaluos.fecha_recibido','asc')
+                        ->paginate(25);
+
+                    }
+                    elseif($b_etapa == '' && $b_manzana =='' && $b_lote != ''){
+                        $avaluos = Avaluo::join('contratos','avaluos.contrato_id','=','contratos.id')
+                        ->join('creditos','contratos.id','=','creditos.id')
+                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                        ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+                        ->join('personal','clientes.id','=','personal.id')
+                        ->join('lotes','creditos.lote_id','=','lotes.id')
+                        ->join('licencias','lotes.id','=','licencias.id')
+                        ->select(
+                            'contratos.id as folio','lotes.num_lote','personal.nombre','personal.apellidos',
+                            'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.modelo',
+                            'licencias.avance','avaluos.fecha_solicitud','avaluos.valor_requerido','avaluos.observacion',
+                            'avaluos.id as avaluoId','avaluos.fecha_recibido','avaluos.resultado','licencias.visita_avaluo',
+                            'avaluos.fecha_ava_sol','avaluos.fecha_pago','avaluos.status','avaluos.costo','avaluos.fecha_concluido',
+                            'inst_seleccionadas.tipo_credito', 'avaluos.pdf'
+
+                        )
+                        ->where('inst_seleccionadas.elegido','=','1')
+                        ->where('lotes.fraccionamiento_id','=',$buscar)
+                        ->where('lotes.num_lote','=',$b_lote)
+                        ->orderBy('avaluos.fecha_recibido','asc')
+                        ->paginate(25);
+
+                    }
+                    elseif($b_etapa == '' && $b_manzana !='' && $b_lote != ''){
+                        $avaluos = Avaluo::join('contratos','avaluos.contrato_id','=','contratos.id')
+                        ->join('creditos','contratos.id','=','creditos.id')
+                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                        ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+                        ->join('personal','clientes.id','=','personal.id')
+                        ->join('lotes','creditos.lote_id','=','lotes.id')
+                        ->join('licencias','lotes.id','=','licencias.id')
+                        ->select(
+                            'contratos.id as folio','lotes.num_lote','personal.nombre','personal.apellidos',
+                            'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.modelo',
+                            'licencias.avance','avaluos.fecha_solicitud','avaluos.valor_requerido','avaluos.observacion',
+                            'avaluos.id as avaluoId','avaluos.fecha_recibido','avaluos.resultado','licencias.visita_avaluo',
+                            'avaluos.fecha_ava_sol','avaluos.fecha_pago','avaluos.status','avaluos.costo','avaluos.fecha_concluido',
+                            'inst_seleccionadas.tipo_credito', 'avaluos.pdf'
+
+                        )
+                        ->where('inst_seleccionadas.elegido','=','1')
+                        ->where('lotes.fraccionamiento_id','=',$buscar)
+                        ->where('lotes.manzana','=',$b_manzana)
+                        ->where('lotes.num_lote','=',$b_lote)
+                        ->orderBy('avaluos.fecha_recibido','asc')
+                        ->paginate(25);
+
+                    }
+                    break;
+                }
+                case 'licencias.visita_avaluo':{
+                    $avaluos = Avaluo::join('contratos','avaluos.contrato_id','=','contratos.id')
+                    ->join('creditos','contratos.id','=','creditos.id')
+                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                    ->join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
+                    ->join('personal','clientes.id','=','personal.id')
+                    ->join('lotes','creditos.lote_id','=','lotes.id')
+                    ->join('licencias','lotes.id','=','licencias.id')
+                    ->select(
+                        'contratos.id as folio','lotes.num_lote','personal.nombre','personal.apellidos',
+                        'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.modelo',
+                        'licencias.avance','avaluos.fecha_solicitud','avaluos.valor_requerido','avaluos.observacion',
+                        'avaluos.id as avaluoId','avaluos.fecha_recibido','avaluos.resultado','licencias.visita_avaluo',
+                        'avaluos.fecha_ava_sol','avaluos.fecha_pago','avaluos.status','avaluos.costo','avaluos.fecha_concluido',
+                        'inst_seleccionadas.tipo_credito', 'avaluos.pdf'
+
+                    )
+                    ->where('inst_seleccionadas.elegido','=','1')
+                    ->where('avaluos.fecha_recibido','!=',NULL)
                     ->orderBy('avaluos.fecha_recibido','asc')
                     ->paginate(25);
                     break;
