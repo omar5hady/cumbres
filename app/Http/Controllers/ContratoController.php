@@ -5670,6 +5670,29 @@ class ContratoController extends Controller
                 $contrato = Lote::findOrFail($id_lote);
                 $contrato->contrato = 0;
                 $contrato->apartado = 0;
+                $contrato->ajuste = 0;
+                $precio_etapa = Precio_etapa::select('id','precio_excedente')
+                ->where('fraccionamiento_id','=',$contrato->fraccionamiento_id)
+                ->where('etapa_id','=',$contrato->etapa_id)->get();
+
+                $precio_modelo = Precio_modelo::select('precio_modelo')->where('precio_etapa_id','=',$precio_etapa[0]->id)
+                                ->where('modelo_id','=',$contrato->modelo_id)->get();
+
+                $sobreprecios = Sobreprecio_modelo::join('sobreprecios_etapas','sobreprecios_modelos.sobreprecio_etapa_id','=','sobreprecios_etapas.id')
+                ->select(DB::raw("SUM(sobreprecios_etapas.sobreprecio) as sobreprecios"))
+                ->where('sobreprecios_modelos.lote_id','=',$id_lote)->get();
+
+                $modelo = Modelo::select('terreno')->where('id','=',$contrato->modelo_id)->get();
+                $terrenoExcedente = round(($contrato->terreno - $modelo[0]->terreno),2);
+                if((double)$terrenoExcedente > 0)
+                    $contrato->excedente_terreno = round(($terrenoExcedente * $precio_etapa[0]->precio_excedente), 2);
+                else {
+                    $contrato->excedente_terreno = 0;
+                }
+
+                $contrato->precio_base = round(($precio_modelo[0]->precio_modelo), 2);
+                $precio_venta = round(($sobreprecios[0]->sobreprecios + $contrato->precio_base + $contrato->excedente_terreno + $contrato->obra_extra),2);
+                $terreno_tam_excedente = round(($contrato->terreno - $modelo[0]->terreno),2);
                 $contrato->save();
             }
         } else {
@@ -5682,6 +5705,29 @@ class ContratoController extends Controller
                 $contrato = Lote::findOrFail($id_lote);
                 $contrato->contrato = 0;
                 $contrato->apartado = 0;
+                $contrato->ajuste = 0;
+                $precio_etapa = Precio_etapa::select('id','precio_excedente')
+                ->where('fraccionamiento_id','=',$contrato->fraccionamiento_id)
+                ->where('etapa_id','=',$contrato->etapa_id)->get();
+
+                $precio_modelo = Precio_modelo::select('precio_modelo')->where('precio_etapa_id','=',$precio_etapa[0]->id)
+                                ->where('modelo_id','=',$contrato->modelo_id)->get();
+
+                $sobreprecios = Sobreprecio_modelo::join('sobreprecios_etapas','sobreprecios_modelos.sobreprecio_etapa_id','=','sobreprecios_etapas.id')
+                ->select(DB::raw("SUM(sobreprecios_etapas.sobreprecio) as sobreprecios"))
+                ->where('sobreprecios_modelos.lote_id','=',$id_lote)->get();
+
+                $modelo = Modelo::select('terreno')->where('id','=',$contrato->modelo_id)->get();
+                $terrenoExcedente = round(($contrato->terreno - $modelo[0]->terreno),2);
+                if((double)$terrenoExcedente > 0)
+                    $contrato->excedente_terreno = round(($terrenoExcedente * $precio_etapa[0]->precio_excedente), 2);
+                else {
+                    $contrato->excedente_terreno = 0;
+                }
+
+                $contrato->precio_base = round(($precio_modelo[0]->precio_modelo), 2);
+                $precio_venta = round(($sobreprecios[0]->sobreprecios + $contrato->precio_base + $contrato->excedente_terreno + $contrato->obra_extra),2);
+                $terreno_tam_excedente = round(($contrato->terreno - $modelo[0]->terreno),2);
                 $contrato->save();
 
                 $credito = Credito::select('prospecto_id')
