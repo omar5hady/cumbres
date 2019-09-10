@@ -33,7 +33,7 @@ body{
 CONTRATO DE PROMESA DE COMPRAVENTA SUJETO A CONDICION SUSPENSIVA, QUE CELEBRAN, POR UNA PARTE, 
 LA SOCIEDAD MERCANTIL DENOMINADA <strong>GRUPO CONSTRUCTOR CUMBRES, S.A DE C.V.</strong>, REPRESENTADA EN ESTE ACTO POR EL 
 ING. ALEJANDRO F. PEREZ ESPINOSA O EL ING. DAVID CALVILLO MARTINEZ, A QUIEN EN LO SUCESIVO Y PARA LOS EFECTOS DEL PRESENTE CONTRATO, 
-SE LE DENOMINARA COMO <strong>EL PROMITENTE VENDEDOR</strong>, Y POR LA OTRA PARTE, POR SU PROPIO DERECHO, <strong>EL SR(A). {{mb_strtoupper($contratoPromesa[0]->nombre)}} {{mb_strtoupper($contratoPromesa[0]->apellidos)}}</strong>, 
+SE LE DENOMINARA COMO <strong>EL PROMITENTE VENDEDOR</strong>, Y POR LA OTRA PARTE, POR SU PROPIO DERECHO, <strong>EL SR(A). {{mb_strtoupper($contratoPromesa[0]->nombre)}} {{mb_strtoupper($contratoPromesa[0]->apellidos)}} y @if($contratoPromesa[0]->coacreditado == 1) {{mb_strtoupper($contratoPromesa[0]->nombre_coa)}} {{mb_strtoupper($contratoPromesa[0]->apellidos_coa)}} @endif</strong>, 
 A QUIEN EN LO SUCESIVO Y PARA LOS EFECTOS DEL PRESENTE CONTRATO SE LE DENOMINARÁ COMO EL PROMITENTE COMPRADOR, 
 AL TENOR DE LAS SIGUIENTES DECLARACIONES Y CLÁUSULAS. 
 </p>

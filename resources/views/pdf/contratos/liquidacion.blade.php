@@ -147,7 +147,7 @@ body {
                     <div class="table-cell">M.N.</div>      
                 </div>
         </div>
-
+    @if($pagares)
         <div class="table2" style="border: ridge #0B173B 1px; color:black; margin-top: 0.3em; float:right;">
                     
             <div class="table-row">
@@ -160,7 +160,7 @@ body {
                 <div colspan="2" class="table-cell">${{$pagares[$i]->restante1}} </div>    
             </div>
         @endfor
-
+    @endif
 
         </div>
     </div> 
@@ -198,7 +198,7 @@ body {
     <p style="text-align:center; margin-top: 0.3em;"><strong>Nombre y firma de conformidad del Solicitante</strong></p>
 
 </div>
-
+@if($pagares)
 @for($u=0; $u < count($pagares); $u++)
         <div style="clear:both;">
 
@@ -278,6 +278,6 @@ body {
 
         </div>
 @endfor
-    
+@endif
 </body>
 </html>

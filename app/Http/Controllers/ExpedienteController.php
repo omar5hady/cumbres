@@ -15,6 +15,7 @@ use App\Liquidacion;
 use App\inst_seleccionada;
 use App\Gasto_admin;
 use NumerosEnLetras;
+use App\Credito;
 
 class ExpedienteController extends Controller
 {
@@ -7714,7 +7715,7 @@ class ExpedienteController extends Controller
         ->join('personal as v', 'vendedores.id', '=', 'v.id')
         ->join('personal as g', 'expedientes.gestor_id','=','g.id')
         ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-        ->join('liquidacion','expedientes.id','=','liquidacion.id')
+        ->leftjoin('liquidacion','expedientes.id','=','liquidacion.id')
         ->select(
             'contratos.id as folio',
             DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
@@ -7841,6 +7842,18 @@ class ExpedienteController extends Controller
 
         $pdf = \PDF::loadview('pdf.contratos.liquidacion', ['liquidacion' => $liquidacion , 'gastos' => $gastos, 'pagares' => $pagares]);
         return $pdf->stream('Liquidacion.pdf');
+    }
+
+    public function updateMontoCredito(Request $request){
+        $credito = Credito::findOrFail($request->id);
+        $credito->credito_solic = $request->monto_credito;
+        $credito->save();
+
+        $inst_selec_id = inst_seleccionada::select('id')->where('credito_id','=',$request->id)->where('elegido','=',1)->where('status','=',2)->get();
+
+        $inst_seleccionada = inst_seleccionada::findOrFail($inst_selec_id[0]->id);
+        $inst_seleccionada->monto_credito = $request->monto_credito;
+        $inst_seleccionada->save();
     }
 
     public function generarInstruccionNot(Request $request){

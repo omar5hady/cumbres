@@ -453,6 +453,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/expediente/InfonavitNoAplica','ExpedienteController@noAplicaInfonavit');
         Route::put('/expediente/generarLiquidacion','ExpedienteController@setLiquidacion');
         Route::put('/expediente/generarInstruccionNot','ExpedienteController@generarInstruccionNot');
+        Route::put('/update/montocredito/liquidacion','ExpedienteController@updateMontoCredito');
 
         Route::post('/expediente/generarPagares','ExpedienteController@generarPagares');
 

@@ -381,6 +381,7 @@
                                                 <th>Avance obra</th>
                                                 <th>Firma Contrato</th>
                                                 <th>Resultado avaluo</th>
+                                                <th>Avaluo preventivo</th>
                                                 <th>Aviso preventivo</th>
                                                 <th>Tipo de Crédito</th>
                                                 <th>Institución de Fin.</th>
@@ -945,6 +946,9 @@
 
                                     <div class="form-group row">
                                         <label class="col-md-2 form-control-label" for="text-input">Credito autorizado</label>
+                                        <div class="col-md-3">
+                                            <input v-model="monto_credito" @keyup.enter="updateMontoCredito()" pattern="\d*" v-on:keypress="isNumber($event)" class="form-control">
+                                        </div>
                                         <div class="col-md-3">
                                             <h6>${{ formatNumber(netoCredito)}}</h6>
                                         </div>
@@ -1617,6 +1621,7 @@
                 avaluo:0,
                 total_liquidar:0,
                 total_liquidar1:0,
+                totalCredito: 0,
                 estado:'',
                 ciudad:'',
                 notaria_id:0,
@@ -1675,8 +1680,8 @@
 
              netoCredito: function(){
                 var total =0;
-                    total = parseFloat(this.infonavit) + parseFloat(this.fovissste) + parseFloat(this.monto_credito); 
-                return total;
+                    total = parseFloat(this.infonavit) + parseFloat(this.fovissste) + parseFloat(this.monto_credito);
+                return total; 
             },
 
         },
@@ -2455,6 +2460,34 @@
                         toast({
                         type: 'success',
                         title: 'Fecha de pago ingresada correctamente'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
+        updateMontoCredito(){
+            let me = this;
+                //Con axios se llama el metodo update de LoteController
+                axios.put('/update/montocredito/liquidacion',{
+                    'id':this.id,
+                    'monto_credito' : this.monto_credito,
+                    
+                }).then(function (response){
+                    me.listarIngresoExp(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                    me.listarAutorizados(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                    me.listarLiquidacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                    me.listarProgramacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                    //window.alert("Cambios guardados correctamente");
+                    const toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                        });
+                        toast({
+                        type: 'success',
+                        title: 'Monto actualizado correctamente'
                     })
                 }).catch(function (error){
                     console.log(error);
