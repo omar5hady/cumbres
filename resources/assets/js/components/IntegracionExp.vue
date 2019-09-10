@@ -78,6 +78,7 @@
                                         <td class="td2">
                                             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{contratos.folio}}</a>
                                             <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                <a class="dropdown-item" v-if="contratos.pdf != '' && contratos.pdf != NULL"  v-bind:href="'/downloadAvaluo/'+contratos.pdf">Avaluo</a>
                                                 <a class="dropdown-item" @click="abrirPDF(contratos.folio)">Estado de cuenta</a>
                                                 <a class="dropdown-item" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+ contratos.folio">Contrato de compra venta</a>
                                                 <a class="dropdown-item" target="_blank" v-bind:href="'/cartaServicios/pdf/'+ contratos.folio">Carta de servicios</a>

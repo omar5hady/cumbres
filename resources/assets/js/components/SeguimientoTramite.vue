@@ -93,6 +93,7 @@
                                                 <td class="td2">
                                                     <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{ingresar.folio}}</a>
                                                     <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                        <a class="dropdown-item" v-if="ingresar.pdf != '' && ingresar.pdf != NULL"  v-bind:href="'/downloadAvaluo/'+ingresar.pdf">Avaluo</a>
                                                         <a class="dropdown-item" @click="abrirPDF(ingresar.folio)">Estado de cuenta</a>
                                                         <a class="dropdown-item" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+ ingresar.folio">Contrato de compra venta</a>
                                                         <a class="dropdown-item" target="_blank" v-bind:href="'/cartaServicios/pdf/'+ ingresar.folio">Carta de servicios</a>
@@ -230,6 +231,7 @@
                                                 <td class="td2">
                                                     <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{preautorizados.folio}}</a>
                                                     <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                        <a class="dropdown-item" v-if="preautorizados.pdf != '' && preautorizados.pdf != NULL"  v-bind:href="'/downloadAvaluo/'+preautorizados.pdf">Avaluo</a>
                                                         <a class="dropdown-item" @click="abrirPDF(preautorizados.folio)">Estado de cuenta</a>
                                                         <a class="dropdown-item" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+ preautorizados.folio">Contrato de compra venta</a>
                                                         <a class="dropdown-item" target="_blank" v-bind:href="'/cartaServicios/pdf/'+ preautorizados.folio">Carta de servicios</a>
@@ -398,6 +400,7 @@
                                                 <td class="td2">
                                                     <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{liquidacion.folio}}</a>
                                                     <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                        <a class="dropdown-item" v-if="liquidacion.pdf != '' && liquidacion.pdf != NULL"  v-bind:href="'/downloadAvaluo/'+liquidacion.pdf">Avaluo</a>
                                                         <a class="dropdown-item" @click="abrirPDF(liquidacion.folio)">Estado de cuenta</a>
                                                         <a class="dropdown-item" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+ liquidacion.folio">Contrato de compra venta</a>
                                                         <a class="dropdown-item" target="_blank" v-bind:href="'/cartaServicios/pdf/'+ liquidacion.folio">Carta de servicios</a>
@@ -571,6 +574,7 @@
                                                 <td class="td2">
                                                     <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{programacion.folio}}</a>
                                                     <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                        <a class="dropdown-item" v-if="programacion.pdf != '' && programacion.pdf != NULL"  v-bind:href="'/downloadAvaluo/'+programacion.pdf">Avaluo</a>
                                                         <a class="dropdown-item" @click="abrirPDF(programacion.folio)">Estado de cuenta</a>
                                                         <a class="dropdown-item" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+ programacion.folio">Contrato de compra venta</a>
                                                         <a class="dropdown-item" target="_blank" v-bind:href="'/cartaServicios/pdf/'+ programacion.folio">Carta de servicios</a>

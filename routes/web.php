@@ -498,6 +498,9 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/equipamiento/actualizar','EquipamientoController@update');
         Route::delete('/equipamiento/eliminar','EquipamientoController@destroy');
         Route::get('/select_equipamientos','EquipamientoController@selectEquipamiento');
+        Route::post('/equipamiento/solicitar_equipamiento','EquipamientoController@solicitud_equipamiento');
+        Route::get('/index/equipamiento/lote','EquipamientoController@index_equipamientos_lotes');
+        Route::delete('/equipamiento/lote/eliminar','EquipamientoController@eliminarSolicitud_lote');
 
         ///////////////////// RUTAS SOLIC EQUIPAMIENTO
         Route::get('/equipamiento/indexContrato','EquipamientoController@indexContratos');

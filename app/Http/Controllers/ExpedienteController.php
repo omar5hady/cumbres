@@ -37,6 +37,7 @@ class ExpedienteController extends Controller
                 ->join('personal as c', 'clientes.id', '=', 'c.id')
                 ->join('personal as v', 'vendedores.id', '=', 'v.id')
                 ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                ->leftjoin('avaluos','contratos.id','=','avaluos.contrato_id')
                 ->select(
                     'contratos.id as folio',
                     DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
@@ -62,7 +63,8 @@ class ExpedienteController extends Controller
                     'clientes.coacreditado',
                     'lotes.credito_puente',
                     'contratos.integracion',
-                    'lotes.fraccionamiento_id'
+                    'lotes.fraccionamiento_id',
+                    'avaluos.pdf'
                 )
                 ->where('i.elegido', '=', 1)
                 ->where('contratos.integracion', '=', 0)
@@ -80,6 +82,7 @@ class ExpedienteController extends Controller
                     ->join('personal as c', 'clientes.id', '=', 'c.id')
                     ->join('personal as v', 'vendedores.id', '=', 'v.id')
                     ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                    ->leftjoin('avaluos','contratos.id','=','avaluos.contrato_id')
                     ->select(
                         'contratos.id as folio',
                         DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
@@ -106,7 +109,8 @@ class ExpedienteController extends Controller
                         'clientes.coacreditado',
                         'lotes.credito_puente',
                         'contratos.integracion',
-                        'lotes.fraccionamiento_id'
+                        'lotes.fraccionamiento_id',
+                        'avaluos.pdf'
                     )
                     ->where('i.elegido', '=', 1)
                     ->where('contratos.integracion', '=', 0)
@@ -125,6 +129,7 @@ class ExpedienteController extends Controller
                         ->join('personal as c', 'clientes.id', '=', 'c.id')
                         ->join('personal as v', 'vendedores.id', '=', 'v.id')
                         ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                        ->leftjoin('avaluos','contratos.id','=','avaluos.contrato_id')
                         ->select(
                             'contratos.id as folio',
                             DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
@@ -151,7 +156,8 @@ class ExpedienteController extends Controller
                             'clientes.coacreditado',
                             'lotes.credito_puente',
                             'contratos.integracion',
-                            'lotes.fraccionamiento_id'
+                            'lotes.fraccionamiento_id',
+                            'avaluos.pdf'
                         )
                         ->where('i.elegido', '=', 1)
                         ->where('contratos.integracion', '=', 0)
@@ -169,6 +175,7 @@ class ExpedienteController extends Controller
                             ->join('personal as c', 'clientes.id', '=', 'c.id')
                             ->join('personal as v', 'vendedores.id', '=', 'v.id')
                             ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                            ->leftjoin('avaluos','contratos.id','=','avaluos.contrato_id')
                             ->select(
                                 'contratos.id as folio',
                                 DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
@@ -195,7 +202,8 @@ class ExpedienteController extends Controller
                                 'clientes.coacreditado',
                                 'lotes.credito_puente',
                                 'contratos.integracion',
-                                'lotes.fraccionamiento_id'
+                                'lotes.fraccionamiento_id',
+                                'avaluos.pdf'
                             )
                             ->where('i.elegido', '=', 1)
                             ->where('contratos.integracion', '=', 0)
@@ -214,6 +222,7 @@ class ExpedienteController extends Controller
                                 ->join('personal as c', 'clientes.id', '=', 'c.id')
                                 ->join('personal as v', 'vendedores.id', '=', 'v.id')
                                 ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                                ->leftjoin('avaluos','contratos.id','=','avaluos.contrato_id')
                                 ->select(
                                     'contratos.id as folio',
                                     DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
@@ -240,7 +249,8 @@ class ExpedienteController extends Controller
                                     'clientes.coacreditado',
                                     'lotes.credito_puente',
                                     'contratos.integracion',
-                                    'lotes.fraccionamiento_id'
+                                    'lotes.fraccionamiento_id',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('contratos.integracion', '=', 0)
@@ -259,6 +269,7 @@ class ExpedienteController extends Controller
                                     ->join('personal as c', 'clientes.id', '=', 'c.id')
                                     ->join('personal as v', 'vendedores.id', '=', 'v.id')
                                     ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                                    ->leftjoin('avaluos','contratos.id','=','avaluos.contrato_id')
                                     ->select(
                                         'contratos.id as folio',
                                         DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
@@ -285,7 +296,8 @@ class ExpedienteController extends Controller
                                         'clientes.coacreditado',
                                         'lotes.credito_puente',
                                         'contratos.integracion',
-                                        'lotes.fraccionamiento_id'
+                                        'lotes.fraccionamiento_id',
+                                        'avaluos.pdf'
                                     )
                                     ->where('i.elegido', '=', 1)
                                     ->where('contratos.integracion', '=', 0)
@@ -304,6 +316,7 @@ class ExpedienteController extends Controller
                                         ->join('personal as c', 'clientes.id', '=', 'c.id')
                                         ->join('personal as v', 'vendedores.id', '=', 'v.id')
                                         ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                                        ->leftjoin('avaluos','contratos.id','=','avaluos.contrato_id')
                                         ->select(
                                             'contratos.id as folio',
                                             DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
@@ -330,7 +343,8 @@ class ExpedienteController extends Controller
                                             'clientes.coacreditado',
                                             'lotes.credito_puente',
                                             'contratos.integracion',
-                                            'lotes.fraccionamiento_id'
+                                            'lotes.fraccionamiento_id',
+                                            'avaluos.pdf'
                                         )
                                         ->where('i.elegido', '=', 1)
                                         ->where('contratos.integracion', '=', 0)
@@ -350,6 +364,7 @@ class ExpedienteController extends Controller
                                             ->join('personal as c', 'clientes.id', '=', 'c.id')
                                             ->join('personal as v', 'vendedores.id', '=', 'v.id')
                                             ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                                            ->leftjoin('avaluos','contratos.id','=','avaluos.contrato_id')
                                             ->select(
                                                 'contratos.id as folio',
                                                 DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
@@ -376,7 +391,8 @@ class ExpedienteController extends Controller
                                                 'clientes.coacreditado',
                                                 'lotes.credito_puente',
                                                 'contratos.integracion',
-                                                'lotes.fraccionamiento_id'
+                                                'lotes.fraccionamiento_id',
+                                                'avaluos.pdf'
                                             )
                                             ->where('i.elegido', '=', 1)
                                             ->where('contratos.integracion', '=', 0)
@@ -397,6 +413,7 @@ class ExpedienteController extends Controller
                                                 ->join('personal as c', 'clientes.id', '=', 'c.id')
                                                 ->join('personal as v', 'vendedores.id', '=', 'v.id')
                                                 ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                                                ->leftjoin('avaluos','contratos.id','=','avaluos.contrato_id')
                                                 ->select(
                                                     'contratos.id as folio',
                                                     DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
@@ -423,7 +440,8 @@ class ExpedienteController extends Controller
                                                     'clientes.coacreditado',
                                                     'lotes.credito_puente',
                                                     'contratos.integracion',
-                                                    'lotes.fraccionamiento_id'
+                                                    'lotes.fraccionamiento_id',
+                                                    'avaluos.pdf'
                                                 )
                                                 ->where('i.elegido', '=', 1)
                                                 ->where('contratos.integracion', '=', 0)
@@ -443,6 +461,7 @@ class ExpedienteController extends Controller
                                                     ->join('personal as c', 'clientes.id', '=', 'c.id')
                                                     ->join('personal as v', 'vendedores.id', '=', 'v.id')
                                                     ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                                                    ->leftjoin('avaluos','contratos.id','=','avaluos.contrato_id')
                                                     ->select(
                                                         'contratos.id as folio',
                                                         DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
@@ -469,7 +488,8 @@ class ExpedienteController extends Controller
                                                         'clientes.coacreditado',
                                                         'lotes.credito_puente',
                                                         'contratos.integracion',
-                                                        'lotes.fraccionamiento_id'
+                                                        'lotes.fraccionamiento_id',
+                                                        'avaluos.pdf'
                                                     )
                                                     ->where('i.elegido', '=', 1)
                                                     ->where('contratos.integracion', '=', 0)
@@ -492,6 +512,7 @@ class ExpedienteController extends Controller
                                                         ->join('personal as c', 'clientes.id', '=', 'c.id')
                                                         ->join('personal as v', 'vendedores.id', '=', 'v.id')
                                                         ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                                                        ->leftjoin('avaluos','contratos.id','=','avaluos.contrato_id')
                                                         ->select(
                                                             'contratos.id as folio',
                                                             DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
@@ -518,7 +539,8 @@ class ExpedienteController extends Controller
                                                             'clientes.coacreditado',
                                                             'lotes.credito_puente',
                                                             'contratos.integracion',
-                                                            'lotes.fraccionamiento_id'
+                                                            'lotes.fraccionamiento_id',
+                                                            'avaluos.pdf'
                                                         )
                                                         ->where('i.elegido', '=', 1)
                                                         ->where('contratos.integracion', '=', 0)
@@ -1572,7 +1594,8 @@ class ExpedienteController extends Controller
                         'expedientes.fecha_integracion',
                         'lotes.calle','lotes.numero','lotes.interior',
                         'avaluos.resultado','avaluos.fecha_recibido',
-                        'avaluos.id as avaluoId','avaluos.fecha_concluido'
+                        'avaluos.id as avaluoId','avaluos.fecha_concluido',
+                        'avaluos.pdf'
                     )
                     ->where('i.elegido', '=', 1)
                     ->where('contratos.status', '!=', 0)
@@ -1625,7 +1648,8 @@ class ExpedienteController extends Controller
                                 'expedientes.fecha_integracion',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido',
-                                'avaluos.id as avaluoId','avaluos.fecha_concluido'
+                                'avaluos.id as avaluoId','avaluos.fecha_concluido',
+                                'avaluos.pdf'
                             )
                             ->where('i.elegido', '=', 1)
                             ->where('contratos.status', '!=', 0)
@@ -1683,7 +1707,8 @@ class ExpedienteController extends Controller
                                 'expedientes.fecha_integracion',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido',
-                                'avaluos.id as avaluoId','avaluos.fecha_concluido'
+                                'avaluos.id as avaluoId','avaluos.fecha_concluido',
+                                'avaluos.pdf'
                             )
                             ->where('i.elegido', '=', 1)
                             ->where('contratos.status', '!=', 0)
@@ -1737,7 +1762,8 @@ class ExpedienteController extends Controller
                                     'expedientes.fecha_integracion',
                                     'lotes.calle','lotes.numero','lotes.interior',
                                     'avaluos.resultado','avaluos.fecha_recibido',
-                                    'avaluos.id as avaluoId','avaluos.fecha_concluido'
+                                    'avaluos.id as avaluoId','avaluos.fecha_concluido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('contratos.status', '!=', 0)
@@ -1788,7 +1814,8 @@ class ExpedienteController extends Controller
                                     'expedientes.fecha_ingreso',
                                     'expedientes.fecha_integracion',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('contratos.status', '!=', 0)
@@ -1840,7 +1867,8 @@ class ExpedienteController extends Controller
                                     'expedientes.fecha_ingreso',
                                     'expedientes.fecha_integracion',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('contratos.status', '!=', 0)
@@ -1893,7 +1921,8 @@ class ExpedienteController extends Controller
                                     'expedientes.fecha_ingreso',
                                     'expedientes.fecha_integracion',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('contratos.status', '!=', 0)
@@ -1947,7 +1976,8 @@ class ExpedienteController extends Controller
                                     'expedientes.fecha_ingreso',
                                     'expedientes.fecha_integracion',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('contratos.status', '!=', 0)
@@ -2000,7 +2030,8 @@ class ExpedienteController extends Controller
                                     'expedientes.fecha_ingreso',
                                     'expedientes.fecha_integracion',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('contratos.status', '!=', 0)
@@ -2052,7 +2083,8 @@ class ExpedienteController extends Controller
                                     'expedientes.fecha_ingreso',
                                     'expedientes.fecha_integracion',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('contratos.status', '!=', 0)
@@ -2104,7 +2136,8 @@ class ExpedienteController extends Controller
                                     'expedientes.fecha_ingreso',
                                     'expedientes.fecha_integracion',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('contratos.status', '!=', 0)
@@ -2163,7 +2196,8 @@ class ExpedienteController extends Controller
                         'expedientes.fecha_integracion',
                         'lotes.calle','lotes.numero','lotes.interior',
                         'avaluos.resultado','avaluos.fecha_recibido',
-                        'avaluos.id as avaluoId','avaluos.fecha_concluido'
+                        'avaluos.id as avaluoId','avaluos.fecha_concluido',
+                        'avaluos.pdf'
                     )
                     ->where('i.elegido', '=', 1)
                     ->where('contratos.status', '!=', 0)
@@ -2217,7 +2251,8 @@ class ExpedienteController extends Controller
                                 'expedientes.fecha_integracion',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido',
-                                'avaluos.id as avaluoId','avaluos.fecha_concluido'
+                                'avaluos.id as avaluoId','avaluos.fecha_concluido',
+                                'avaluos.pdf'
                             )
                             ->where('i.elegido', '=', 1)
                             ->where('contratos.status', '!=', 0)
@@ -2277,7 +2312,8 @@ class ExpedienteController extends Controller
                                 'expedientes.fecha_integracion',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido',
-                                'avaluos.id as avaluoId','avaluos.fecha_concluido'
+                                'avaluos.id as avaluoId','avaluos.fecha_concluido',
+                                'avaluos.pdf'
                             )
                             ->where('i.elegido', '=', 1)
                             ->where('contratos.status', '!=', 0)
@@ -2332,7 +2368,8 @@ class ExpedienteController extends Controller
                                     'expedientes.fecha_integracion',
                                     'lotes.calle','lotes.numero','lotes.interior',
                                     'avaluos.resultado','avaluos.fecha_recibido',
-                                    'avaluos.id as avaluoId','avaluos.fecha_concluido'
+                                    'avaluos.id as avaluoId','avaluos.fecha_concluido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('contratos.status', '!=', 0)
@@ -2384,7 +2421,8 @@ class ExpedienteController extends Controller
                                     'expedientes.fecha_ingreso',
                                     'expedientes.fecha_integracion',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('contratos.status', '!=', 0)
@@ -2437,7 +2475,8 @@ class ExpedienteController extends Controller
                                     'expedientes.fecha_ingreso',
                                     'expedientes.fecha_integracion',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('contratos.status', '!=', 0)
@@ -2491,7 +2530,8 @@ class ExpedienteController extends Controller
                                     'expedientes.fecha_ingreso',
                                     'expedientes.fecha_integracion',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('contratos.status', '!=', 0)
@@ -2546,7 +2586,8 @@ class ExpedienteController extends Controller
                                     'expedientes.fecha_ingreso',
                                     'expedientes.fecha_integracion',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('contratos.status', '!=', 0)
@@ -2600,7 +2641,8 @@ class ExpedienteController extends Controller
                                     'expedientes.fecha_ingreso',
                                     'expedientes.fecha_integracion',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('contratos.status', '!=', 0)
@@ -2653,7 +2695,8 @@ class ExpedienteController extends Controller
                                     'expedientes.fecha_ingreso',
                                     'expedientes.fecha_integracion',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('contratos.status', '!=', 0)
@@ -2706,7 +2749,8 @@ class ExpedienteController extends Controller
                                     'expedientes.fecha_ingreso',
                                     'expedientes.fecha_integracion',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('contratos.status', '!=', 0)
@@ -2809,7 +2853,8 @@ class ExpedienteController extends Controller
                         'expedientes.fecha_infonavit',
                         'lotes.calle','lotes.numero','lotes.interior',
                         'avaluos.resultado','avaluos.fecha_recibido',
-                        'avaluos.id as avaluoId','avaluos.fecha_concluido'
+                        'avaluos.id as avaluoId','avaluos.fecha_concluido',
+                        'avaluos.pdf'
                     )
                     ->where('i.elegido', '=', 1)
                     ->where('i.status','=',2)
@@ -2871,7 +2916,8 @@ class ExpedienteController extends Controller
                                 'expedientes.fecha_infonavit',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido',
-                                'avaluos.id as avaluoId','avaluos.fecha_concluido'
+                                'avaluos.id as avaluoId','avaluos.fecha_concluido',
+                                'avaluos.pdf'
                             )
                             ->where('i.elegido', '=', 1)
                             ->where('i.status','=',2)
@@ -2942,7 +2988,8 @@ class ExpedienteController extends Controller
                                 'expedientes.fecha_infonavit',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido',
-                                'avaluos.id as avaluoId','avaluos.fecha_concluido'
+                                'avaluos.id as avaluoId','avaluos.fecha_concluido',
+                                'avaluos.pdf'
                             )
                             ->where('i.elegido', '=', 1)
                             ->where('i.status','=',2)
@@ -3005,7 +3052,8 @@ class ExpedienteController extends Controller
                                     'expedientes.fecha_infonavit',
                                     'lotes.calle','lotes.numero','lotes.interior',
                                     'avaluos.resultado','avaluos.fecha_recibido',
-                                    'avaluos.id as avaluoId','avaluos.fecha_concluido'
+                                    'avaluos.id as avaluoId','avaluos.fecha_concluido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.status','=',2)
@@ -3065,7 +3113,8 @@ class ExpedienteController extends Controller
                                     'expedientes.fecha_integracion',
                                     'expedientes.fecha_infonavit',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.status','=',2)
@@ -3126,7 +3175,8 @@ class ExpedienteController extends Controller
                                     'expedientes.fecha_integracion',
                                     'expedientes.fecha_infonavit',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.status','=',2)
@@ -3188,7 +3238,8 @@ class ExpedienteController extends Controller
                                     'expedientes.fecha_integracion',
                                     'expedientes.fecha_infonavit',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.status','=',2)
@@ -3251,7 +3302,8 @@ class ExpedienteController extends Controller
                                     'expedientes.fecha_integracion',
                                     'expedientes.fecha_infonavit',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.status','=',2)
@@ -3313,7 +3365,8 @@ class ExpedienteController extends Controller
                                     'expedientes.fecha_integracion',
                                     'expedientes.fecha_infonavit',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.status','=',2)
@@ -3374,7 +3427,8 @@ class ExpedienteController extends Controller
                                     'expedientes.fecha_integracion',
                                     'expedientes.fecha_infonavit',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.status','=',2)
@@ -3435,7 +3489,8 @@ class ExpedienteController extends Controller
                                     'expedientes.fecha_integracion',
                                     'expedientes.fecha_infonavit',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.status','=',2)
@@ -3503,7 +3558,8 @@ class ExpedienteController extends Controller
                         'expedientes.fecha_infonavit',
                         'lotes.calle','lotes.numero','lotes.interior',
                         'avaluos.resultado','avaluos.fecha_recibido',
-                        'avaluos.id as avaluoId','avaluos.fecha_concluido'
+                        'avaluos.id as avaluoId','avaluos.fecha_concluido',
+                        'avaluos.pdf'
                     )
                     ->where('i.elegido', '=', 1)
                     ->where('i.status','=',2)
@@ -3565,7 +3621,8 @@ class ExpedienteController extends Controller
                                 'expedientes.fecha_infonavit',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido',
-                                'avaluos.id as avaluoId','avaluos.fecha_concluido'
+                                'avaluos.id as avaluoId','avaluos.fecha_concluido',
+                                'avaluos.pdf'
                             )
                             ->where('i.elegido', '=', 1)
                             ->where('i.status','=',2)
@@ -3636,7 +3693,8 @@ class ExpedienteController extends Controller
                                 'expedientes.fecha_infonavit',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido',
-                                'avaluos.id as avaluoId','avaluos.fecha_concluido'
+                                'avaluos.id as avaluoId','avaluos.fecha_concluido',
+                                'avaluos.pdf'
                             )
                             ->where('i.elegido', '=', 1)
                             ->where('i.status','=',2)
@@ -3699,7 +3757,8 @@ class ExpedienteController extends Controller
                                     'expedientes.fecha_infonavit',
                                     'lotes.calle','lotes.numero','lotes.interior',
                                     'avaluos.resultado','avaluos.fecha_recibido',
-                                    'avaluos.id as avaluoId','avaluos.fecha_concluido'
+                                    'avaluos.id as avaluoId','avaluos.fecha_concluido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.status','=',2)
@@ -3759,7 +3818,8 @@ class ExpedienteController extends Controller
                                     'expedientes.fecha_integracion',
                                     'expedientes.fecha_infonavit',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.status','=',2)
@@ -3820,7 +3880,8 @@ class ExpedienteController extends Controller
                                     'expedientes.fecha_integracion',
                                     'expedientes.fecha_infonavit',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.status','=',2)
@@ -3882,7 +3943,8 @@ class ExpedienteController extends Controller
                                     'expedientes.fecha_integracion',
                                     'expedientes.fecha_infonavit',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.status','=',2)
@@ -3945,7 +4007,8 @@ class ExpedienteController extends Controller
                                     'expedientes.fecha_integracion',
                                     'expedientes.fecha_infonavit',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.status','=',2)
@@ -4007,7 +4070,8 @@ class ExpedienteController extends Controller
                                     'expedientes.fecha_integracion',
                                     'expedientes.fecha_infonavit',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.status','=',2)
@@ -4068,7 +4132,8 @@ class ExpedienteController extends Controller
                                     'expedientes.fecha_integracion',
                                     'expedientes.fecha_infonavit',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.status','=',2)
@@ -4129,7 +4194,8 @@ class ExpedienteController extends Controller
                                     'expedientes.fecha_integracion',
                                     'expedientes.fecha_infonavit',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.status','=',2)
@@ -4234,7 +4300,8 @@ class ExpedienteController extends Controller
                         'expedientes.fecha_infonavit',
                         'lotes.calle','lotes.numero','lotes.interior',
                         'avaluos.resultado','avaluos.fecha_recibido',
-                        'avaluos.id as avaluoId','avaluos.fecha_concluido'
+                        'avaluos.id as avaluoId','avaluos.fecha_concluido',
+                        'avaluos.pdf'
                     )
                     ->where('i.elegido', '=', 1)
                     ->where('i.status','=',2)
@@ -4302,7 +4369,8 @@ class ExpedienteController extends Controller
                                 'expedientes.fecha_infonavit',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido',
-                                'avaluos.id as avaluoId','avaluos.fecha_concluido'
+                                'avaluos.id as avaluoId','avaluos.fecha_concluido',
+                                'avaluos.pdf'
                             )
                             ->where('i.elegido', '=', 1)
                             ->where('i.status','=',2)
@@ -4377,7 +4445,8 @@ class ExpedienteController extends Controller
                                 'expedientes.fecha_infonavit',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido',
-                                'avaluos.id as avaluoId','avaluos.fecha_concluido'
+                                'avaluos.id as avaluoId','avaluos.fecha_concluido',
+                                'avaluos.pdf'
                             )
                             ->where('i.elegido', '=', 1)
                             ->where('i.status','=',2)
@@ -4445,7 +4514,8 @@ class ExpedienteController extends Controller
                                     'expedientes.fecha_infonavit',
                                     'lotes.calle','lotes.numero','lotes.interior',
                                     'avaluos.resultado','avaluos.fecha_recibido',
-                                    'avaluos.id as avaluoId','avaluos.fecha_concluido'
+                                    'avaluos.id as avaluoId','avaluos.fecha_concluido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.status','=',2)
@@ -4510,7 +4580,8 @@ class ExpedienteController extends Controller
                                     'expedientes.total_liquidar',
                                     'expedientes.fecha_infonavit',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.status','=',2)
@@ -4576,7 +4647,8 @@ class ExpedienteController extends Controller
                                     'expedientes.total_liquidar',
                                     'expedientes.fecha_infonavit',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.status','=',2)
@@ -4643,7 +4715,8 @@ class ExpedienteController extends Controller
                                     'expedientes.total_liquidar',
                                     'expedientes.fecha_infonavit',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.status','=',2)
@@ -4711,7 +4784,8 @@ class ExpedienteController extends Controller
                                     'expedientes.total_liquidar',
                                     'expedientes.fecha_infonavit',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.status','=',2)
@@ -4778,7 +4852,8 @@ class ExpedienteController extends Controller
                                     'expedientes.total_liquidar',
                                     'expedientes.fecha_infonavit',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.status','=',2)
@@ -4844,7 +4919,8 @@ class ExpedienteController extends Controller
                                     'expedientes.total_liquidar',
                                     'expedientes.fecha_infonavit',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.status','=',2)
@@ -4910,7 +4986,8 @@ class ExpedienteController extends Controller
                                     'expedientes.total_liquidar',
                                     'expedientes.fecha_infonavit',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.status','=',2)
@@ -4985,7 +5062,8 @@ class ExpedienteController extends Controller
                         'expedientes.fecha_infonavit',
                         'lotes.calle','lotes.numero','lotes.interior',
                         'avaluos.resultado','avaluos.fecha_recibido',
-                        'avaluos.id as avaluoId','avaluos.fecha_concluido'
+                        'avaluos.id as avaluoId','avaluos.fecha_concluido',
+                        'avaluos.pdf'
                     )
                     ->where('i.elegido', '=', 1)
                     ->where('i.status','=',2)
@@ -5053,7 +5131,8 @@ class ExpedienteController extends Controller
                                 'expedientes.fecha_infonavit',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido',
-                                'avaluos.id as avaluoId','avaluos.fecha_concluido'
+                                'avaluos.id as avaluoId','avaluos.fecha_concluido',
+                                'avaluos.pdf'
                             )
                             ->where('i.elegido', '=', 1)
                             ->where('i.status','=',2)
@@ -5130,7 +5209,8 @@ class ExpedienteController extends Controller
                                 'expedientes.fecha_infonavit',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido',
-                                'avaluos.id as avaluoId','avaluos.fecha_concluido'
+                                'avaluos.id as avaluoId','avaluos.fecha_concluido',
+                                'avaluos.pdf'
                             )
                             ->where('i.elegido', '=', 1)
                             ->where('i.status','=',2)
@@ -5198,7 +5278,8 @@ class ExpedienteController extends Controller
                                     'expedientes.fecha_infonavit',
                                     'lotes.calle','lotes.numero','lotes.interior',
                                     'avaluos.resultado','avaluos.fecha_recibido',
-                                    'avaluos.id as avaluoId','avaluos.fecha_concluido'
+                                    'avaluos.id as avaluoId','avaluos.fecha_concluido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.status','=',2)
@@ -5263,7 +5344,8 @@ class ExpedienteController extends Controller
                                     'expedientes.total_liquidar',
                                     'expedientes.fecha_infonavit',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.status','=',2)
@@ -5329,7 +5411,8 @@ class ExpedienteController extends Controller
                                     'expedientes.total_liquidar',
                                     'expedientes.fecha_infonavit',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.status','=',2)
@@ -5396,7 +5479,8 @@ class ExpedienteController extends Controller
                                     'expedientes.total_liquidar',
                                     'expedientes.fecha_infonavit',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.status','=',2)
@@ -5464,7 +5548,8 @@ class ExpedienteController extends Controller
                                     'expedientes.total_liquidar',
                                     'expedientes.fecha_infonavit',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.status','=',2)
@@ -5531,7 +5616,8 @@ class ExpedienteController extends Controller
                                     'expedientes.total_liquidar',
                                     'expedientes.fecha_infonavit',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.status','=',2)
@@ -5597,7 +5683,8 @@ class ExpedienteController extends Controller
                                     'expedientes.total_liquidar',
                                     'expedientes.fecha_infonavit',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.status','=',2)
@@ -5663,7 +5750,8 @@ class ExpedienteController extends Controller
                                     'expedientes.total_liquidar',
                                     'expedientes.fecha_infonavit',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.status','=',2)
@@ -5939,7 +6027,8 @@ class ExpedienteController extends Controller
                         'expedientes.direccion_firma',
                         'lotes.calle','lotes.numero','lotes.interior',
                         'avaluos.resultado','avaluos.fecha_recibido',
-                        'avaluos.id as avaluoId','avaluos.fecha_concluido'
+                        'avaluos.id as avaluoId','avaluos.fecha_concluido',
+                        'avaluos.pdf'
                     )
                     ->where('i.elegido', '=', 1)
                     ->where('i.status','=',2)
@@ -6014,7 +6103,8 @@ class ExpedienteController extends Controller
                                 'expedientes.direccion_firma',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido',
-                                'avaluos.id as avaluoId','avaluos.fecha_concluido'
+                                'avaluos.id as avaluoId','avaluos.fecha_concluido',
+                                'avaluos.pdf'
                             )
                             ->where('i.elegido', '=', 1)
                             ->where('i.status','=',2)
@@ -6099,7 +6189,8 @@ class ExpedienteController extends Controller
                                 'expedientes.direccion_firma',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido',
-                                'avaluos.id as avaluoId','avaluos.fecha_concluido'
+                                'avaluos.id as avaluoId','avaluos.fecha_concluido',
+                                'avaluos.pdf'
                             )
                             ->where('i.elegido', '=', 1)
                             ->where('i.status','=',2)
@@ -6176,7 +6267,8 @@ class ExpedienteController extends Controller
                                     'expedientes.direccion_firma',
                                     'lotes.calle','lotes.numero','lotes.interior',
                                     'avaluos.resultado','avaluos.fecha_recibido',
-                                    'avaluos.id as avaluoId','avaluos.fecha_concluido'
+                                    'avaluos.id as avaluoId','avaluos.fecha_concluido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.status','=',2)
@@ -6250,7 +6342,8 @@ class ExpedienteController extends Controller
                                     'expedientes.hora_firma',
                                     'expedientes.direccion_firma',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.status','=',2)
@@ -6325,7 +6418,8 @@ class ExpedienteController extends Controller
                                     'expedientes.hora_firma',
                                     'expedientes.direccion_firma',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.status','=',2)
@@ -6401,7 +6495,8 @@ class ExpedienteController extends Controller
                                     'expedientes.hora_firma',
                                     'expedientes.direccion_firma',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.status','=',2)
@@ -6478,7 +6573,8 @@ class ExpedienteController extends Controller
                                     'expedientes.hora_firma',
                                     'expedientes.direccion_firma',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.status','=',2)
@@ -6554,7 +6650,8 @@ class ExpedienteController extends Controller
                                     'expedientes.hora_firma',
                                     'expedientes.direccion_firma',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.status','=',2)
@@ -6629,7 +6726,8 @@ class ExpedienteController extends Controller
                                     'expedientes.hora_firma',
                                     'expedientes.direccion_firma',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.status','=',2)
@@ -6704,7 +6802,8 @@ class ExpedienteController extends Controller
                                     'expedientes.hora_firma',
                                     'expedientes.direccion_firma',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.status','=',2)
@@ -6791,7 +6890,8 @@ class ExpedienteController extends Controller
                         'expedientes.direccion_firma',
                         'lotes.calle','lotes.numero','lotes.interior',
                         'avaluos.resultado','avaluos.fecha_recibido',
-                        'avaluos.id as avaluoId','avaluos.fecha_concluido'
+                        'avaluos.id as avaluoId','avaluos.fecha_concluido',
+                        'avaluos.pdf'
                     )
                     ->where('i.elegido', '=', 1)
                     ->where('i.status','=',2)
@@ -6867,7 +6967,8 @@ class ExpedienteController extends Controller
                                 'expedientes.direccion_firma',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido',
-                                'avaluos.id as avaluoId','avaluos.fecha_concluido'
+                                'avaluos.id as avaluoId','avaluos.fecha_concluido',
+                                'avaluos.pdf'
                             )
                             ->where('i.elegido', '=', 1)
                             ->where('i.status','=',2)
@@ -6954,7 +7055,8 @@ class ExpedienteController extends Controller
                                 'expedientes.direccion_firma',
                                 'lotes.calle','lotes.numero','lotes.interior',
                                 'avaluos.resultado','avaluos.fecha_recibido',
-                                'avaluos.id as avaluoId','avaluos.fecha_concluido'
+                                'avaluos.id as avaluoId','avaluos.fecha_concluido',
+                                'avaluos.pdf'
                             )
                             ->where('i.elegido', '=', 1)
                             ->where('i.status','=',2)
@@ -7031,7 +7133,8 @@ class ExpedienteController extends Controller
                                     'expedientes.direccion_firma',
                                     'lotes.calle','lotes.numero','lotes.interior',
                                     'avaluos.resultado','avaluos.fecha_recibido',
-                                    'avaluos.id as avaluoId','avaluos.fecha_concluido'
+                                    'avaluos.id as avaluoId','avaluos.fecha_concluido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.status','=',2)
@@ -7105,7 +7208,8 @@ class ExpedienteController extends Controller
                                     'expedientes.hora_firma',
                                     'expedientes.direccion_firma',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.status','=',2)
@@ -7180,7 +7284,8 @@ class ExpedienteController extends Controller
                                     'expedientes.hora_firma',
                                     'expedientes.direccion_firma',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.status','=',2)
@@ -7256,7 +7361,8 @@ class ExpedienteController extends Controller
                                     'expedientes.hora_firma',
                                     'expedientes.direccion_firma',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.status','=',2)
@@ -7333,7 +7439,8 @@ class ExpedienteController extends Controller
                                     'expedientes.hora_firma',
                                     'expedientes.direccion_firma',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.status','=',2)
@@ -7409,7 +7516,8 @@ class ExpedienteController extends Controller
                                     'expedientes.hora_firma',
                                     'expedientes.direccion_firma',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.status','=',2)
@@ -7484,7 +7592,8 @@ class ExpedienteController extends Controller
                                     'expedientes.hora_firma',
                                     'expedientes.direccion_firma',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.status','=',2)
@@ -7559,7 +7668,8 @@ class ExpedienteController extends Controller
                                     'expedientes.hora_firma',
                                     'expedientes.direccion_firma',
                                     'lotes.calle','lotes.numero','lotes.interior',
-                                    'avaluos.resultado','avaluos.fecha_recibido'
+                                    'avaluos.resultado','avaluos.fecha_recibido',
+                                    'avaluos.pdf'
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('i.status','=',2)

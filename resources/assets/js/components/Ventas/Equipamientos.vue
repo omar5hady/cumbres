@@ -170,9 +170,35 @@
 
                             <div class="form-group row">
                                 <div class="col-md-12">
-                                    <button class="btn btn-primary" @click="SolicitarEquipamiento()">Solicitar</button>
+                                    <button class="btn btn-primary" @click="solicitarEquipamiento()">Solicitar</button>
                                 </div>
                             </div>
+
+                        <div class="table-responsive">
+                            <table class="table2 table-bordered table-striped table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Opciones</th> 
+                                        <th>Proveedor</th>
+                                        <th>Equipamiento</th>
+                                        <th>Fecha de solicitud</th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="equipamientos in arrayEquipamientosLote" :key="equipamientos.id">
+                                            <td class="td2">
+                                            <button type="button" class="btn btn-danger btn-sm" @click="eliminarEquipamiento(equipamientos)">
+                                                <i class="icon-trash"></i>
+                                            </button>
+                                            </td>
+                                            <td class="td2" v-text="equipamientos.proveedor"></td>
+                                            <td class="td2" v-text="equipamientos.equipamiento"></td>
+                                            <td class="td2" v-text="equipamientos.fecha_solicitud"></td>
+                                    </tr>
+                                </tbody>
+                            </table>  
+                        </div>
                                 
                         </div>
                         <!-- Botones del modal -->
@@ -201,6 +227,7 @@
                 observacion:'',
 
                 arrayContratos : [],
+                arrayEquipamientosLote: [],
 
                 arrayFraccionamientos:[],
                 arrayEtapas:[],
@@ -213,8 +240,12 @@
                 //variables
                 paquete:'',
                 promocion:'',
-                proveedor:'',
-                equipamiento:'',
+                proveedor: 0,
+                equipamiento: 0,
+                lote_id: 0,
+                contrato_id: 0,
+
+                solicitud_id: 0,
            
                 pagination : {
                     'total' : 0,         
@@ -275,12 +306,32 @@
                     var respuesta = response.data;
                     me.arrayContratos = respuesta.contratos.data;
                     me.pagination = respuesta.pagination;
+                    if(me.arrayContratos[0]['descripcion_promocion'] == null || me.arrayContratos[0]['descripcion_promocion'] == ""){
+                        me.arrayContratos[0]['descripcion_promocion']= 'Sin promoción';
+                    }
+                    if(me.arrayContratos[0]['descripcion_paquete'] == null || me.arrayContratos[0]['descripcion_paquete'] == ""){
+                        me.arrayContratos[0]['descripcion_paquete']= 'Sin paquete';
+                    }
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
                 
             },
+
+            listarEquipamientosLote(){
+                let me = this;
+                var url = '/index/equipamiento/lote?lote_id=' + this.lote_id + '&contrato_id=' + this.contrato_id;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayEquipamientosLote = respuesta.equipamientos;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+                
+            },
+
             
             selectFraccionamientos(){
                 let me = this;
@@ -350,6 +401,62 @@
                 me.listarContratos(page,buscar,b_etapa,b_manzana,b_lote,criterio);
             },
 
+            solicitarEquipamiento(){
+                  let me = this;
+                //Con axios se llama el metodo update de LoteController
+                axios.post('/equipamiento/solicitar_equipamiento',{
+                    'contrato_id':this.contrato_id,
+                    'lote_id' : this.lote_id,
+                    'equipamiento_id' : this.equipamiento,
+                    
+                }).then(function (response){
+                    me.listarContratos(me.pagination.current_page,me.buscar,me.b_etapa,me.b_manzana,me.b_lote,me.criterio);
+                    me.listarEquipamientosLote();
+                    const toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                        });
+                        toast({
+                        type: 'success',
+                        title: 'Equipamiento solicitado correctamente'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
+            eliminarEquipamiento(data = []){
+                this.solicitud_id=data['id'];
+                //console.log(this.departamento_id);
+                swal({
+                title: '¿Desea eliminar?',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Si, eliminar!'
+                }).then((result) => {
+                if (result.value) {
+                    let me = this;
+
+                axios.delete('/equipamiento/lote/eliminar', 
+                        {params: {'id': this.solicitud_id,'contrato_id':this.contrato_id}}).then(function (response){
+                        swal(
+                        'Borrado!',
+                        'Equipamiento borrado correctamente.',
+                        'success'
+                        )
+                        me.listarEquipamientosLote();
+                    }).catch(function (error){
+                        console.log(error);
+                    });
+                }
+                })
+            },
+
             formatNumber(value) {
                 let val = (value/1).toFixed(2)
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
@@ -368,7 +475,10 @@
                             this.tipoAccion=1;
                             this.paquete = data['descripcion_paquete'];
                             this.promocion = data['descripcion_promocion'];
+                            this.contrato_id = data['folio'];
+                            this.lote_id = data['lote_id'];
                             this.selectProveedores();
+                            this.listarEquipamientosLote();
                         }
                     }
                 }

@@ -57,6 +57,7 @@ class CreateContratosTable extends Migration
 
             $table->boolean('devolucion')->default(0);
             $table->string('motivo_cancel')->nullable();
+            $table->boolean('equipamiento')->default(0);
             
             
             $table->foreign('id')->references('id')->on('creditos');

@@ -7,6 +7,7 @@ use App\Equipamiento;
 use App\Contrato;
 use DB;
 use Carbon\Carbon;
+use App\Solic_equipamiento;
 
 class EquipamientoController extends Controller
 {
@@ -79,7 +80,8 @@ class EquipamientoController extends Controller
                     'contratos.avaluo_preventivo',
                     'contratos.aviso_prev',
                     'contratos.aviso_prev_venc',
-                    'lotes.fraccionamiento_id'
+                    'lotes.fraccionamiento_id',
+                    'lotes.id as lote_id'
                 )
                 ->where('contratos.status', '!=', 0)
                 ->where('contratos.status', '!=', 2)
@@ -106,5 +108,43 @@ class EquipamientoController extends Controller
                     ->where('proveedor_id','=',$request->buscar)->get();
 
         return ['equipamiento' => $equipamiento];
+    }
+
+    public function solicitud_equipamiento(Request $request){
+        $fecha_hoy = Carbon::today()->toDateString();
+        $solicitud = new Solic_equipamiento();
+        $solicitud->lote_id = $request->lote_id;
+        $solicitud->contrato_id = $request->contrato_id;
+        $solicitud->equipamiento_id = $request->equipamiento_id;
+        $solicitud->fecha_solicitud = $fecha_hoy;
+        $solicitud->save();
+
+        $contrato = Contrato::findOrFail($request->contrato_id);
+        $contrato->equipamiento = 1;
+        $contrato->save();
+
+    }
+
+    public function eliminarSolicitud_lote(Request $request){
+        $equipamientoLote = Solic_equipamiento::findOrFail($request->id);
+        $equipamientoLote->delete();
+        $sinEquipamiento = Solic_equipamiento::select('id')->where('contrato_id','=',$request->contrato_id)->count();
+        if($sinEquipamiento < 1){
+            $contrato = Contrato::findOrFail($request->contrato_id);
+            $contrato->equipamiento = 0;
+            $contrato->save();
+        }
+    }
+
+    public function index_equipamientos_lotes(Request $request){
+        $lote_id = $request->lote_id;
+        $contrato_id = $request->contrato_id;
+        $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
+                        ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
+                        ->select('solic_equipamientos.fecha_solicitud','proveedores.proveedor','equipamientos.equipamiento','solic_equipamientos.id')
+                        ->where('solic_equipamientos.contrato_id','=',$contrato_id)
+                        ->where('solic_equipamientos.lote_id','=',$lote_id)
+                        ->get();
+        return ['equipamientos' => $equipamientos];
     }
 }
