@@ -39,6 +39,13 @@
 
                                     <input v-else type="text"  v-model="buscar" @keyup.enter="listarContratos(1,buscar,buscar2,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
                                     <input v-if="criterio=='c.nombre'" type="text"  v-model="buscar2" @keyup.enter="listarContratos(1,buscar,buscar2,b_manzana,b_lote,criterio)" class="form-control" placeholder="Apellidos">
+                                    <select class="form-control col-md-4" v-model="b_status">
+                                            <option value="">Seleccionar Status</option>
+                                            <option value="0">Cancelado</option>
+                                            <option value="1">Pendiente</option>
+                                            <option value="2">No firmado</option>
+                                            <option value="3">Firmado</option>
+                                    </select>
                                     <button type="submit" @click="listarContratos(1,buscar,buscar2,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                    
                                 </div>
@@ -55,6 +62,7 @@
                                         <th>Etapa</th>
                                         <th>Manzana</th>
                                         <th>Lote</th>
+                                        <th>Avance</th>
                                         <th>Precio de venta</th>
                                         <th>Valor a escriturar</th>
                                         <th>Pagares</th>
@@ -82,6 +90,7 @@
                                         <td class="td2" v-text="contratos.etapa"></td>
                                         <td class="td2" v-text="contratos.manzana"></td>
                                         <td class="td2" v-text="contratos.num_lote"></td>
+                                        <td class="td2" v-text="contratos.avance+'%'"></td>
                                         <td class="td2" v-text="'$'+formatNumber(contratos.precio_venta)"></td>
                                         <td class="td2" v-text="'$'+formatNumber(contratos.valor_escrituras)"></td>
                                         <td class="td2" v-text="'$'+formatNumber(contratos.pagares)"></td>
@@ -388,7 +397,8 @@
                 buscar : '',
                 buscar2: '',
                 b_manzana: '',
-                b_lote: ''
+                b_lote: '',
+                b_status: 3
                
             }
         },
@@ -429,7 +439,7 @@
             /**Metodo para mostrar los registros */
             listarContratos(page, buscar, buscar2, b_manzana, b_lote, criterio){
                 let me = this;
-                var url = '/estadoCuenta/index?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2 + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio;
+                var url = '/estadoCuenta/index?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2 + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote + '&b_status=' + me.b_status + '&criterio=' + criterio;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayContratos = respuesta.contratos.data;
