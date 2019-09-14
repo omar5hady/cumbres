@@ -4280,8 +4280,6 @@ class ExpedienteController extends Controller
                         'contratos.avaluo_preventivo',
                         'contratos.aviso_prev',
                         'contratos.aviso_prev_venc',
-                        'contratos.infonavit',
-                        'contratos.fovisste',
                         'lotes.regimen_condom',
                         'lotes.credito_puente',
                         DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
@@ -4384,6 +4382,7 @@ class ExpedienteController extends Controller
                             ->where('c.nombre','like','%'. $buscar . '%')
     
                             ->orWhere('i.elegido', '=', 1)
+                            ->where('i.status','=',2)
                             ->where('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
                             ->where('expedientes.fecha_ingreso','!=',NULL)
@@ -5042,8 +5041,6 @@ class ExpedienteController extends Controller
                         'contratos.avaluo_preventivo',
                         'contratos.aviso_prev',
                         'contratos.aviso_prev_venc',
-                        'contratos.infonavit',
-                        'contratos.fovisste',
                         'lotes.regimen_condom',
                         'lotes.credito_puente',
                         DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),

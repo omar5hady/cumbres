@@ -2556,7 +2556,7 @@
                         this.pagado=0;
                         this.monto_credito = data['credito_solic'];
                         this.infonavit = data['infonavit'];
-                        this.fovissste = data['fovisste'];
+                        this.fovissste = data['fovissste'];
                         this.avaluo = data['resultado'];
 
                         this.mostrarPagares();
