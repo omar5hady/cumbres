@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Credito;
 use App\Contrato;
 use App\Pago_contrato;
+use App\Apartado;
 use DB;
 use Auth;
 
@@ -8325,6 +8326,13 @@ class ContratoController extends Controller
                 $contrato->contrato = 0;
                 $contrato->apartado = 0;
                 $contrato->ajuste = 0;
+
+                $apartado = Apartado::select('id')->where('lote_id','=',$id_lote)->get();
+                foreach($apartado as $ap){
+                    $borrarApartado = Apartado::findOrFail($ap->id);
+                    $borrarApartado->delete();
+                }
+
                 $precio_etapa = Precio_etapa::select('id','precio_excedente')
                 ->where('fraccionamiento_id','=',$contrato->fraccionamiento_id)
                 ->where('etapa_id','=',$contrato->etapa_id)->get();
@@ -8360,6 +8368,13 @@ class ContratoController extends Controller
                 $contrato->contrato = 0;
                 $contrato->apartado = 0;
                 $contrato->ajuste = 0;
+
+                $apartado = Apartado::select('id')->where('lote_id','=',$id_lote)->get();
+                foreach($apartado as $ap){
+                    $borrarApartado = Apartado::findOrFail($ap->id);
+                    $borrarApartado->delete();
+                }
+
                 $precio_etapa = Precio_etapa::select('id','precio_excedente')
                 ->where('fraccionamiento_id','=',$contrato->fraccionamiento_id)
                 ->where('etapa_id','=',$contrato->etapa_id)->get();
@@ -13920,6 +13935,10 @@ class ContratoController extends Controller
 
                 
                 $cont=1;
+
+                $sheet->setColumnFormat(array(
+                    'J' => '$#,##0.00',
+                ));
 
                 foreach($contratos as $index => $contrato) {
                     $cont++;

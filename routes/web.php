@@ -388,6 +388,7 @@ Route::group(['middleware' => ['auth']],function(){
 
         //////////////////////////////// RUTAS MODULO SALDOS ////////////////////////////
         Route::get('/estadoCuenta/index','DepositoController@indexEstadoCuenta');
+        Route::get('/estadoCuenta/excel','DepositoController@excelEstadoCuenta');
         Route::get('/estadoCuenta/estadoPDF/{id}','DepositoController@estadoPDF');
 
 
