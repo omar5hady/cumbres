@@ -19,7 +19,7 @@
                      <template v-if="listado == 1">
                         <div class="card-body"> 
                             <div class="form-group row">
-                                <div class="col-md-8">
+                                <div class="col-md-8" v-if="criterio =='clientes.created_at'">
                                     <div class="input-group">
                                         <!--Criterios para el listado de busqueda -->
                                         <select class="form-control col-md-4" v-model="criterio" @click="limpiarBusqueda()">
@@ -38,6 +38,38 @@
                                                 <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
                                             </select>
                                         </template>
+                                        
+                                    </div>
+                                    <div class="input-group">
+                                        <select class="form-control" v-model="b_clasificacion" >
+                                            <option value="">Clasificación</option>
+                                            <option value="1">No viable</option>
+                                            <option value="2">Tipo A</option>
+                                            <option value="3">Tipo B</option>
+                                            <option value="4">Tipo C</option>
+                                            <option value="5">Ventas</option>
+                                            <option value="6">Cancelado</option>                               
+                                            <option value="7">Coacreditado</option>  
+                                        </select>
+                                        <button type="submit" @click="listarProspectos(1,buscar,buscar2,buscar3,b_clasificacion,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    </div>
+                                    
+                                        <a v-if="rolId == 2" :href="'/prospectos/excel?buscar=' + buscar+ '&b_clasificacion=' + b_clasificacion + '&criterio=' + criterio "  class="btn btn-success"><i class="fa fa-file-text"></i>Excel</a>
+                                        <a v-if="rolId != 2" :href="'/prospectos/excel/gerente?buscar=' + buscar+ '&buscar2='+ buscar2 + '&buscar3=' + buscar3 + '&b_clasificacion=' + b_clasificacion + '&criterio=' + criterio "  class="btn btn-success"><i class="fa fa-file-text"></i>Excel</a>
+                                        <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Clientes en total: '+ contador"> </span>
+                                </div>
+                                <div class="col-md-8" v-else>
+                                    <div class="input-group">
+                                        <!--Criterios para el listado de busqueda -->
+                                        <select class="form-control col-md-4" v-model="criterio" @click="limpiarBusqueda()">
+                                            <option value="personal.nombre">Nombre</option>
+                                            <option value="personal.rfc">RFC</option>
+                                            <option value="clientes.curp">CURP</option>
+                                            <option value="clientes.nss">NSS</option>
+                                            <option value="fraccionamientos.nombre">Proyecto</option>
+                                            <option value="clientes.created_at">Fecha de alta</option>
+                                            <option v-if="rolId != 2" value="clientes.vendedor_id">Asesor</option>
+                                        </select>
                                         <template v-if="criterio=='clientes.vendedor_id'">
                                             <select class="form-control" v-model="buscar" >
                                                 <option value="">Seleccione</option>
@@ -55,11 +87,11 @@
                                             <option value="6">Cancelado</option>                               
                                             <option value="7">Coacreditado</option>  
                                         </select>
-                                        <button type="submit" @click="listarProspectos(1,buscar,buscar2,buscar3,b_clasificacion,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    </div>
+                                    <button type="submit" @click="listarProspectos(1,buscar,buscar2,buscar3,b_clasificacion,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                         <a v-if="rolId == 2" :href="'/prospectos/excel?buscar=' + buscar+ '&b_clasificacion=' + b_clasificacion + '&criterio=' + criterio "  class="btn btn-success"><i class="fa fa-file-text"></i>Excel</a>
                                         <a v-if="rolId != 2" :href="'/prospectos/excel/gerente?buscar=' + buscar+ '&buscar2='+ buscar2 + '&buscar3=' + buscar3 + '&b_clasificacion=' + b_clasificacion + '&criterio=' + criterio "  class="btn btn-success"><i class="fa fa-file-text"></i>Excel</a>
                                         <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Clientes en total: '+ contador"> </span>
-                                    </div>
                                 </div>
                             </div>
                             <div class="table-responsive">
