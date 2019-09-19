@@ -14,7 +14,7 @@ class EquipamientoController extends Controller
 
     public function index(Request $request){
 
-            $equipamientos = Equipamiento::select('id','proveedor_id','equipamiento')
+            $equipamientos = Equipamiento::select('id','proveedor_id','equipamiento','activo')
                 ->where('proveedor_id','=', $request->proveedor_id)->orderBy('equipamiento','asc')
                     ->paginate(20);
         
@@ -45,10 +45,18 @@ class EquipamientoController extends Controller
     {
         if(!$request->ajax())return redirect('/');
         $equipamiento = Equipamiento::findOrFail($request->id);
-        $equipamiento->delete();
+        $equipamiento->activo = 0;
+        $equipamiento->save();
     }
 
-    public function indexContratos (Request $request){
+    public function activar(Request $request){
+        if(!$request->ajax())return redirect('/');
+        $equipamiento = Equipamiento::findOrFail($request->id);
+        $equipamiento->activo = 1;
+        $equipamiento->save();
+    }
+
+    public function indexContratos(Request $request){
        // if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
         $b_etapa = $request->b_etapa;
@@ -105,7 +113,7 @@ class EquipamientoController extends Controller
 
     public function selectEquipamiento(Request $request){
         $equipamiento = Equipamiento::select('id','equipamiento')
-                    ->where('proveedor_id','=',$request->buscar)->get();
+                    ->where('proveedor_id','=',$request->buscar)->where('activo','=',1)->get();
 
         return ['equipamiento' => $equipamiento];
     }

@@ -497,7 +497,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/equipamiento','EquipamientoController@index');
         Route::post('/equipamiento/registrar','EquipamientoController@store');
         Route::put('/equipamiento/actualizar','EquipamientoController@update');
-        Route::delete('/equipamiento/eliminar','EquipamientoController@destroy');
+        Route::put('/equipamiento/eliminar','EquipamientoController@destroy');
+        Route::put('/equipamiento/activar','EquipamientoController@activar');
         Route::get('/select_equipamientos','EquipamientoController@selectEquipamiento');
         Route::post('/equipamiento/solicitar_equipamiento','EquipamientoController@solicitud_equipamiento');
         Route::get('/index/equipamiento/lote','EquipamientoController@index_equipamientos_lotes');

@@ -5816,7 +5816,7 @@ class ExpedienteController extends Controller
             $contrato->saldo = $contrato->saldo - round($request->descuento,2);
             $contrato->save();
 
-            if($request->total_liquidar == 0){
+            if($request->total_liquidar <= 0){
                 $expediente->liquidado = 1;
             }else{
                 $expediente->liquidado = 0;

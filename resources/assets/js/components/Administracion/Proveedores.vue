@@ -228,8 +228,11 @@
                                     <tbody>
                                         <tr v-for="equipamiento in arrayEquipamientos" :key="equipamiento.id">
                                             <td style="width:25%">
-                                                <button type="button" class="btn btn-danger btn-sm" @click="eliminarEquipamiento(equipamiento)">
-                                                <i class="icon-trash"></i>
+                                                <button type="button" v-if="equipamiento.activo == 1" class="btn btn-success btn-sm" @click="eliminarEquipamiento(equipamiento)">
+                                                <i class="fa fa-check"></i>
+                                                </button>
+                                                <button type="button" v-if="equipamiento.activo == 0" class="btn btn-danger btn-sm" @click="activarEquipamiento(equipamiento)">
+                                                <i class="fa fa-remove"></i>
                                                 </button>
                                             </td>
                                             <td v-text="equipamiento.equipamiento" ></td>
@@ -280,6 +283,7 @@
                 email : '',
                 email2 : '',
                 equipamiento : '',
+                equipamientoId: 0,
                
                 arrayProveedores : [],
                 arrayEquipamientos : [],
@@ -541,7 +545,7 @@
                 });
             },
             eliminarEquipamiento(data =[]){
-                this.id=data['id'];
+                this.equipamientoId=data['id'];
                 //console.log(this.departamento_id);
                 swal({
                 title: '¿Desea eliminar?',
@@ -556,11 +560,43 @@
                 if (result.value) {
                     let me = this;
 
-                axios.delete('/equipamiento/eliminar', 
-                        {params: {'id': this.id}}).then(function (response){
+                axios.put('/equipamiento/eliminar', 
+                         {'id': this.equipamientoId}).then(function (response){
                         swal(
                         'Borrado!',
                         'Equipamiento borrado correctamente.',
+                        'success'
+                        )
+                        me.listarEquipamiento(1,me.id);
+                        if(me.arrayEquipamientos.length==0)
+                            me.mostrar = 0;
+                    }).catch(function (error){
+                        console.log(error);
+                    });
+                }
+                })
+            },
+            activarEquipamiento(data =[]){
+                this.equipamientoId=data['id'];
+                //console.log(this.departamento_id);
+                swal({
+                title: '¿Desea activar?',
+                text: "Esta acción no se puede revertir!",
+                type: 'success',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Si, activar!'
+                }).then((result) => {
+                if (result.value) {
+                    let me = this;
+
+                axios.put('/equipamiento/activar', 
+                         {'id': this.equipamientoId}).then(function (response){
+                        swal(
+                        'Activado!',
+                        'Equipamiento activado correctamente.',
                         'success'
                         )
                         me.listarEquipamiento(1,me.id);
