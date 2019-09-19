@@ -42,6 +42,8 @@ class ContratoController extends Controller
         $b_manzana = $request->b_manzana;
         $b_lote = $request->b_lote;
         $b_status = $request->b_status;
+        $f_ini = $request->f_ini;
+        $f_fin = $request->f_fin;
        
 
         if($b_status == ''){
@@ -750,148 +752,8 @@ class ContratoController extends Controller
                             break;
                         }
                     case 'creditos.vendedor_id': {
-                        if($b_etapa == "" && $buscar3 == "" && $buscar != ""){
-                            $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
-                            ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
-                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                            ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                            ->join('personal as v', 'clientes.vendedor_id', 'v.id')
-                            ->select(
-                                'creditos.id',
-                                'creditos.prospecto_id',
-                                'creditos.num_dep_economicos',
-                                'creditos.tipo_economia',
-                                'creditos.nombre_primera_ref',
-                                'creditos.telefono_primera_ref',
-                                'creditos.celular_primera_ref',
-                                'creditos.nombre_segunda_ref',
-                                'creditos.telefono_segunda_ref',
-                                'creditos.celular_segunda_ref',
-                                'creditos.etapa',
-                                'creditos.manzana',
-                                'creditos.num_lote',
-                                'creditos.modelo',
-                                'creditos.precio_base',
-                                'creditos.superficie',
-                                'creditos.terreno_excedente',
-                                'creditos.precio_terreno_excedente',
-                                'creditos.promocion',
-                                'creditos.descripcion_promocion',
-                                'creditos.descuento_promocion',
-                                'creditos.paquete',
-                                'creditos.descripcion_paquete',
-                                'creditos.precio_venta',
-                                'creditos.plazo',
-                                'creditos.credito_solic',
-                                'creditos.costo_paquete',
-                                'inst_seleccionadas.tipo_credito',
-                                'inst_seleccionadas.id as inst_credito',
-                                'creditos.precio_obra_extra',
-                                'creditos.fraccionamiento as proyecto',
-                                'creditos.lote_id',
-    
-                                'inst_seleccionadas.institucion',
-                                'personal.nombre',
-                                'personal.apellidos',
-                                'personal.telefono',
-                                'personal.celular',
-                                'personal.email',
-                                'personal.direccion',
-                                'personal.cp',
-                                'personal.colonia',
-                                'personal.f_nacimiento',
-                                'personal.rfc',
-                                'personal.homoclave',
-                                'creditos.fraccionamiento',
-                                'clientes.id as prospecto_id',
-                                'clientes.edo_civil',
-                                'clientes.nss',
-                                'clientes.curp',
-                                'clientes.empresa',
-                                'clientes.coacreditado',
-                                'clientes.estado',
-                                'clientes.ciudad',
-                                'clientes.puesto',
-                                'clientes.nacionalidad',
-                                'clientes.sexo',
-                                'clientes.sexo_coa',
-                                'clientes.email_institucional_coa',
-                                'clientes.empresa_coa',
-                                'clientes.edo_civil_coa',
-                                'clientes.nss_coa',
-                                'clientes.curp_coa',
-                                'clientes.nombre_coa',
-                                'clientes.apellidos_coa',
-                                'clientes.f_nacimiento_coa',
-                                'clientes.nacionalidad_coa',
-                                'clientes.rfc_coa',
-                                'clientes.homoclave_coa',
-                                'clientes.direccion_coa',
-                                'clientes.colonia_coa',
-                                'clientes.ciudad_coa',
-                                'clientes.estado_coa',
-                                'clientes.cp_coa',
-                                'clientes.telefono_coa',
-                                'clientes.ext_coa',
-                                'clientes.celular_coa',
-                                'clientes.email_coa',
-                                'clientes.parentesco_coa',
-                                'clientes.lugar_nacimiento_coa',
-                                'v.nombre as vendedor_nombre',
-                                'v.apellidos as vendedor_apellidos',
-    
-                                'contratos.id as contratoId',
-                                'contratos.infonavit',
-                                'contratos.fovisste',
-                                'contratos.comision_apertura',
-                                'clientes.lugar_nacimiento',
-                                'contratos.investigacion',
-                                'contratos.avaluo',
-                                'contratos.prima_unica',
-                                'contratos.escrituras',
-                                'contratos.credito_neto',
-                                'contratos.status',
-                                'contratos.fecha_status',
-                                'contratos.avaluo_cliente',
-                                'contratos.fecha',
-                                'contratos.direccion_empresa',
-                                'contratos.cp_empresa',
-                                'contratos.colonia_empresa',
-                                'contratos.estado_empresa',
-                                'contratos.ciudad_empresa',
-                                'contratos.telefono_empresa',
-                                'contratos.ext_empresa',
-                                'contratos.direccion_empresa_coa',
-                                'contratos.cp_empresa_coa',
-                                'contratos.colonia_empresa_coa',
-                                'contratos.estado_empresa_coa',
-                                'contratos.ciudad_empresa_coa',
-                                'contratos.telefono_empresa_coa',
-                                'contratos.ext_empresa_coa',
-                                'contratos.total_pagar',
-                                'contratos.monto_total_credito',
-                                'contratos.enganche_total',
-                                'contratos.avance_lote',
-                                'contratos.observacion'
-                            )
-    
-                            ->where($criterio, '=',$buscar)
-                            ->where('inst_seleccionadas.elegido', '=', '1')
-                            ->orderBy('id', 'desc')->paginate(20);
-    
-                            $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
-                            ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
-                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                            ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                            ->join('personal as v', 'clientes.vendedor_id', 'v.id')
-                            ->select('contratos.id as contratoId')
-                            ->where($criterio, '=', $buscar)
-                            ->where('inst_seleccionadas.elegido', '=', '1')
-                            ->orderBy('id', 'desc')->count();
-                        }else{
-                            if($b_etapa == "" && $buscar3 != "" && $buscar != ""){
+                        if($f_ini =='' || $f_fin =='')
+                            if($b_etapa == "" && $buscar3 == "" && $buscar != ""){
                                 $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                 ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
                                 ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
@@ -1018,7 +880,6 @@ class ContratoController extends Controller
                                 )
         
                                 ->where($criterio, '=',$buscar)
-                                ->where('lotes.fraccionamiento_id','=',$buscar3)
                                 ->where('inst_seleccionadas.elegido', '=', '1')
                                 ->orderBy('id', 'desc')->paginate(20);
         
@@ -1030,11 +891,10 @@ class ContratoController extends Controller
                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
                                 ->select('contratos.id as contratoId')
                                 ->where($criterio, '=', $buscar)
-                                ->where('lotes.fraccionamiento_id','=',$buscar3)
                                 ->where('inst_seleccionadas.elegido', '=', '1')
                                 ->orderBy('id', 'desc')->count();
                             }else{
-                                if($b_etapa != "" && $buscar3 != "" && $buscar != ""){
+                                if($b_etapa == "" && $buscar3 != "" && $buscar != ""){
                                     $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                     ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
                                     ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
@@ -1162,7 +1022,6 @@ class ContratoController extends Controller
             
                                     ->where($criterio, '=',$buscar)
                                     ->where('lotes.fraccionamiento_id','=',$buscar3)
-                                    ->where('lotes.etapa_id','=',$b_etapa)
                                     ->where('inst_seleccionadas.elegido', '=', '1')
                                     ->orderBy('id', 'desc')->paginate(20);
             
@@ -1175,9 +1034,592 @@ class ContratoController extends Controller
                                     ->select('contratos.id as contratoId')
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.fraccionamiento_id','=',$buscar3)
-                                    ->where('lotes.etapa_id','=',$b_etapa)
                                     ->where('inst_seleccionadas.elegido', '=', '1')
                                     ->orderBy('id', 'desc')->count();
+                                }else{
+                                    if($b_etapa != "" && $buscar3 != "" && $buscar != ""){
+                                        $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                        ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                        ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                        ->select(
+                                            'creditos.id',
+                                            'creditos.prospecto_id',
+                                            'creditos.num_dep_economicos',
+                                            'creditos.tipo_economia',
+                                            'creditos.nombre_primera_ref',
+                                            'creditos.telefono_primera_ref',
+                                            'creditos.celular_primera_ref',
+                                            'creditos.nombre_segunda_ref',
+                                            'creditos.telefono_segunda_ref',
+                                            'creditos.celular_segunda_ref',
+                                            'creditos.etapa',
+                                            'creditos.manzana',
+                                            'creditos.num_lote',
+                                            'creditos.modelo',
+                                            'creditos.precio_base',
+                                            'creditos.superficie',
+                                            'creditos.terreno_excedente',
+                                            'creditos.precio_terreno_excedente',
+                                            'creditos.promocion',
+                                            'creditos.descripcion_promocion',
+                                            'creditos.descuento_promocion',
+                                            'creditos.paquete',
+                                            'creditos.descripcion_paquete',
+                                            'creditos.precio_venta',
+                                            'creditos.plazo',
+                                            'creditos.credito_solic',
+                                            'creditos.costo_paquete',
+                                            'inst_seleccionadas.tipo_credito',
+                                            'inst_seleccionadas.id as inst_credito',
+                                            'creditos.precio_obra_extra',
+                                            'creditos.fraccionamiento as proyecto',
+                                            'creditos.lote_id',
+                
+                                            'inst_seleccionadas.institucion',
+                                            'personal.nombre',
+                                            'personal.apellidos',
+                                            'personal.telefono',
+                                            'personal.celular',
+                                            'personal.email',
+                                            'personal.direccion',
+                                            'personal.cp',
+                                            'personal.colonia',
+                                            'personal.f_nacimiento',
+                                            'personal.rfc',
+                                            'personal.homoclave',
+                                            'creditos.fraccionamiento',
+                                            'clientes.id as prospecto_id',
+                                            'clientes.edo_civil',
+                                            'clientes.nss',
+                                            'clientes.curp',
+                                            'clientes.empresa',
+                                            'clientes.coacreditado',
+                                            'clientes.estado',
+                                            'clientes.ciudad',
+                                            'clientes.puesto',
+                                            'clientes.nacionalidad',
+                                            'clientes.sexo',
+                                            'clientes.sexo_coa',
+                                            'clientes.email_institucional_coa',
+                                            'clientes.empresa_coa',
+                                            'clientes.edo_civil_coa',
+                                            'clientes.nss_coa',
+                                            'clientes.curp_coa',
+                                            'clientes.nombre_coa',
+                                            'clientes.apellidos_coa',
+                                            'clientes.f_nacimiento_coa',
+                                            'clientes.nacionalidad_coa',
+                                            'clientes.rfc_coa',
+                                            'clientes.homoclave_coa',
+                                            'clientes.direccion_coa',
+                                            'clientes.colonia_coa',
+                                            'clientes.ciudad_coa',
+                                            'clientes.estado_coa',
+                                            'clientes.cp_coa',
+                                            'clientes.telefono_coa',
+                                            'clientes.ext_coa',
+                                            'clientes.celular_coa',
+                                            'clientes.email_coa',
+                                            'clientes.parentesco_coa',
+                                            'clientes.lugar_nacimiento_coa',
+                                            'v.nombre as vendedor_nombre',
+                                            'v.apellidos as vendedor_apellidos',
+                
+                                            'contratos.id as contratoId',
+                                            'contratos.infonavit',
+                                            'contratos.fovisste',
+                                            'contratos.comision_apertura',
+                                            'clientes.lugar_nacimiento',
+                                            'contratos.investigacion',
+                                            'contratos.avaluo',
+                                            'contratos.prima_unica',
+                                            'contratos.escrituras',
+                                            'contratos.credito_neto',
+                                            'contratos.status',
+                                            'contratos.fecha_status',
+                                            'contratos.avaluo_cliente',
+                                            'contratos.fecha',
+                                            'contratos.direccion_empresa',
+                                            'contratos.cp_empresa',
+                                            'contratos.colonia_empresa',
+                                            'contratos.estado_empresa',
+                                            'contratos.ciudad_empresa',
+                                            'contratos.telefono_empresa',
+                                            'contratos.ext_empresa',
+                                            'contratos.direccion_empresa_coa',
+                                            'contratos.cp_empresa_coa',
+                                            'contratos.colonia_empresa_coa',
+                                            'contratos.estado_empresa_coa',
+                                            'contratos.ciudad_empresa_coa',
+                                            'contratos.telefono_empresa_coa',
+                                            'contratos.ext_empresa_coa',
+                                            'contratos.total_pagar',
+                                            'contratos.monto_total_credito',
+                                            'contratos.enganche_total',
+                                            'contratos.avance_lote',
+                                            'contratos.observacion'
+                                        )
+                
+                                        ->where($criterio, '=',$buscar)
+                                        ->where('lotes.fraccionamiento_id','=',$buscar3)
+                                        ->where('lotes.etapa_id','=',$b_etapa)
+                                        ->where('inst_seleccionadas.elegido', '=', '1')
+                                        ->orderBy('id', 'desc')->paginate(20);
+                
+                                        $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                        ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                        ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                        ->select('contratos.id as contratoId')
+                                        ->where($criterio, '=', $buscar)
+                                        ->where('lotes.fraccionamiento_id','=',$buscar3)
+                                        ->where('lotes.etapa_id','=',$b_etapa)
+                                        ->where('inst_seleccionadas.elegido', '=', '1')
+                                        ->orderBy('id', 'desc')->count();
+                                    }
+                                }
+                            }
+                        else{
+                            if($b_etapa == "" && $buscar3 == "" && $buscar != ""){
+                                $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                ->select(
+                                    'creditos.id',
+                                    'creditos.prospecto_id',
+                                    'creditos.num_dep_economicos',
+                                    'creditos.tipo_economia',
+                                    'creditos.nombre_primera_ref',
+                                    'creditos.telefono_primera_ref',
+                                    'creditos.celular_primera_ref',
+                                    'creditos.nombre_segunda_ref',
+                                    'creditos.telefono_segunda_ref',
+                                    'creditos.celular_segunda_ref',
+                                    'creditos.etapa',
+                                    'creditos.manzana',
+                                    'creditos.num_lote',
+                                    'creditos.modelo',
+                                    'creditos.precio_base',
+                                    'creditos.superficie',
+                                    'creditos.terreno_excedente',
+                                    'creditos.precio_terreno_excedente',
+                                    'creditos.promocion',
+                                    'creditos.descripcion_promocion',
+                                    'creditos.descuento_promocion',
+                                    'creditos.paquete',
+                                    'creditos.descripcion_paquete',
+                                    'creditos.precio_venta',
+                                    'creditos.plazo',
+                                    'creditos.credito_solic',
+                                    'creditos.costo_paquete',
+                                    'inst_seleccionadas.tipo_credito',
+                                    'inst_seleccionadas.id as inst_credito',
+                                    'creditos.precio_obra_extra',
+                                    'creditos.fraccionamiento as proyecto',
+                                    'creditos.lote_id',
+        
+                                    'inst_seleccionadas.institucion',
+                                    'personal.nombre',
+                                    'personal.apellidos',
+                                    'personal.telefono',
+                                    'personal.celular',
+                                    'personal.email',
+                                    'personal.direccion',
+                                    'personal.cp',
+                                    'personal.colonia',
+                                    'personal.f_nacimiento',
+                                    'personal.rfc',
+                                    'personal.homoclave',
+                                    'creditos.fraccionamiento',
+                                    'clientes.id as prospecto_id',
+                                    'clientes.edo_civil',
+                                    'clientes.nss',
+                                    'clientes.curp',
+                                    'clientes.empresa',
+                                    'clientes.coacreditado',
+                                    'clientes.estado',
+                                    'clientes.ciudad',
+                                    'clientes.puesto',
+                                    'clientes.nacionalidad',
+                                    'clientes.sexo',
+                                    'clientes.sexo_coa',
+                                    'clientes.email_institucional_coa',
+                                    'clientes.empresa_coa',
+                                    'clientes.edo_civil_coa',
+                                    'clientes.nss_coa',
+                                    'clientes.curp_coa',
+                                    'clientes.nombre_coa',
+                                    'clientes.apellidos_coa',
+                                    'clientes.f_nacimiento_coa',
+                                    'clientes.nacionalidad_coa',
+                                    'clientes.rfc_coa',
+                                    'clientes.homoclave_coa',
+                                    'clientes.direccion_coa',
+                                    'clientes.colonia_coa',
+                                    'clientes.ciudad_coa',
+                                    'clientes.estado_coa',
+                                    'clientes.cp_coa',
+                                    'clientes.telefono_coa',
+                                    'clientes.ext_coa',
+                                    'clientes.celular_coa',
+                                    'clientes.email_coa',
+                                    'clientes.parentesco_coa',
+                                    'clientes.lugar_nacimiento_coa',
+                                    'v.nombre as vendedor_nombre',
+                                    'v.apellidos as vendedor_apellidos',
+        
+                                    'contratos.id as contratoId',
+                                    'contratos.infonavit',
+                                    'contratos.fovisste',
+                                    'contratos.comision_apertura',
+                                    'clientes.lugar_nacimiento',
+                                    'contratos.investigacion',
+                                    'contratos.avaluo',
+                                    'contratos.prima_unica',
+                                    'contratos.escrituras',
+                                    'contratos.credito_neto',
+                                    'contratos.status',
+                                    'contratos.fecha_status',
+                                    'contratos.avaluo_cliente',
+                                    'contratos.fecha',
+                                    'contratos.direccion_empresa',
+                                    'contratos.cp_empresa',
+                                    'contratos.colonia_empresa',
+                                    'contratos.estado_empresa',
+                                    'contratos.ciudad_empresa',
+                                    'contratos.telefono_empresa',
+                                    'contratos.ext_empresa',
+                                    'contratos.direccion_empresa_coa',
+                                    'contratos.cp_empresa_coa',
+                                    'contratos.colonia_empresa_coa',
+                                    'contratos.estado_empresa_coa',
+                                    'contratos.ciudad_empresa_coa',
+                                    'contratos.telefono_empresa_coa',
+                                    'contratos.ext_empresa_coa',
+                                    'contratos.total_pagar',
+                                    'contratos.monto_total_credito',
+                                    'contratos.enganche_total',
+                                    'contratos.avance_lote',
+                                    'contratos.observacion'
+                                )
+        
+                                ->where($criterio, '=',$buscar)
+                                ->where('inst_seleccionadas.elegido', '=', '1')
+                                ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
+                                ->orderBy('id', 'desc')->paginate(20);
+        
+                                $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                ->select('contratos.id as contratoId')
+                                ->where($criterio, '=', $buscar)
+                                ->where('inst_seleccionadas.elegido', '=', '1')
+                                ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
+                                ->orderBy('id', 'desc')->count();
+                            }else{
+                                if($b_etapa == "" && $buscar3 != "" && $buscar != ""){
+                                    $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                    ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                    ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                    ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                    ->select(
+                                        'creditos.id',
+                                        'creditos.prospecto_id',
+                                        'creditos.num_dep_economicos',
+                                        'creditos.tipo_economia',
+                                        'creditos.nombre_primera_ref',
+                                        'creditos.telefono_primera_ref',
+                                        'creditos.celular_primera_ref',
+                                        'creditos.nombre_segunda_ref',
+                                        'creditos.telefono_segunda_ref',
+                                        'creditos.celular_segunda_ref',
+                                        'creditos.etapa',
+                                        'creditos.manzana',
+                                        'creditos.num_lote',
+                                        'creditos.modelo',
+                                        'creditos.precio_base',
+                                        'creditos.superficie',
+                                        'creditos.terreno_excedente',
+                                        'creditos.precio_terreno_excedente',
+                                        'creditos.promocion',
+                                        'creditos.descripcion_promocion',
+                                        'creditos.descuento_promocion',
+                                        'creditos.paquete',
+                                        'creditos.descripcion_paquete',
+                                        'creditos.precio_venta',
+                                        'creditos.plazo',
+                                        'creditos.credito_solic',
+                                        'creditos.costo_paquete',
+                                        'inst_seleccionadas.tipo_credito',
+                                        'inst_seleccionadas.id as inst_credito',
+                                        'creditos.precio_obra_extra',
+                                        'creditos.fraccionamiento as proyecto',
+                                        'creditos.lote_id',
+            
+                                        'inst_seleccionadas.institucion',
+                                        'personal.nombre',
+                                        'personal.apellidos',
+                                        'personal.telefono',
+                                        'personal.celular',
+                                        'personal.email',
+                                        'personal.direccion',
+                                        'personal.cp',
+                                        'personal.colonia',
+                                        'personal.f_nacimiento',
+                                        'personal.rfc',
+                                        'personal.homoclave',
+                                        'creditos.fraccionamiento',
+                                        'clientes.id as prospecto_id',
+                                        'clientes.edo_civil',
+                                        'clientes.nss',
+                                        'clientes.curp',
+                                        'clientes.empresa',
+                                        'clientes.coacreditado',
+                                        'clientes.estado',
+                                        'clientes.ciudad',
+                                        'clientes.puesto',
+                                        'clientes.nacionalidad',
+                                        'clientes.sexo',
+                                        'clientes.sexo_coa',
+                                        'clientes.email_institucional_coa',
+                                        'clientes.empresa_coa',
+                                        'clientes.edo_civil_coa',
+                                        'clientes.nss_coa',
+                                        'clientes.curp_coa',
+                                        'clientes.nombre_coa',
+                                        'clientes.apellidos_coa',
+                                        'clientes.f_nacimiento_coa',
+                                        'clientes.nacionalidad_coa',
+                                        'clientes.rfc_coa',
+                                        'clientes.homoclave_coa',
+                                        'clientes.direccion_coa',
+                                        'clientes.colonia_coa',
+                                        'clientes.ciudad_coa',
+                                        'clientes.estado_coa',
+                                        'clientes.cp_coa',
+                                        'clientes.telefono_coa',
+                                        'clientes.ext_coa',
+                                        'clientes.celular_coa',
+                                        'clientes.email_coa',
+                                        'clientes.parentesco_coa',
+                                        'clientes.lugar_nacimiento_coa',
+                                        'v.nombre as vendedor_nombre',
+                                        'v.apellidos as vendedor_apellidos',
+            
+                                        'contratos.id as contratoId',
+                                        'contratos.infonavit',
+                                        'contratos.fovisste',
+                                        'contratos.comision_apertura',
+                                        'clientes.lugar_nacimiento',
+                                        'contratos.investigacion',
+                                        'contratos.avaluo',
+                                        'contratos.prima_unica',
+                                        'contratos.escrituras',
+                                        'contratos.credito_neto',
+                                        'contratos.status',
+                                        'contratos.fecha_status',
+                                        'contratos.avaluo_cliente',
+                                        'contratos.fecha',
+                                        'contratos.direccion_empresa',
+                                        'contratos.cp_empresa',
+                                        'contratos.colonia_empresa',
+                                        'contratos.estado_empresa',
+                                        'contratos.ciudad_empresa',
+                                        'contratos.telefono_empresa',
+                                        'contratos.ext_empresa',
+                                        'contratos.direccion_empresa_coa',
+                                        'contratos.cp_empresa_coa',
+                                        'contratos.colonia_empresa_coa',
+                                        'contratos.estado_empresa_coa',
+                                        'contratos.ciudad_empresa_coa',
+                                        'contratos.telefono_empresa_coa',
+                                        'contratos.ext_empresa_coa',
+                                        'contratos.total_pagar',
+                                        'contratos.monto_total_credito',
+                                        'contratos.enganche_total',
+                                        'contratos.avance_lote',
+                                        'contratos.observacion'
+                                    )
+            
+                                    ->where($criterio, '=',$buscar)
+                                    ->where('lotes.fraccionamiento_id','=',$buscar3)
+                                    ->where('inst_seleccionadas.elegido', '=', '1')
+                                    ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
+                                    ->orderBy('id', 'desc')->paginate(20);
+            
+                                    $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                    ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                    ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                    ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                    ->select('contratos.id as contratoId')
+                                    ->where($criterio, '=', $buscar)
+                                    ->where('lotes.fraccionamiento_id','=',$buscar3)
+                                    ->where('inst_seleccionadas.elegido', '=', '1')
+                                    ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
+                                    ->orderBy('id', 'desc')->count();
+                                }else{
+                                    if($b_etapa != "" && $buscar3 != "" && $buscar != ""){
+                                        $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                        ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                        ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                        ->select(
+                                            'creditos.id',
+                                            'creditos.prospecto_id',
+                                            'creditos.num_dep_economicos',
+                                            'creditos.tipo_economia',
+                                            'creditos.nombre_primera_ref',
+                                            'creditos.telefono_primera_ref',
+                                            'creditos.celular_primera_ref',
+                                            'creditos.nombre_segunda_ref',
+                                            'creditos.telefono_segunda_ref',
+                                            'creditos.celular_segunda_ref',
+                                            'creditos.etapa',
+                                            'creditos.manzana',
+                                            'creditos.num_lote',
+                                            'creditos.modelo',
+                                            'creditos.precio_base',
+                                            'creditos.superficie',
+                                            'creditos.terreno_excedente',
+                                            'creditos.precio_terreno_excedente',
+                                            'creditos.promocion',
+                                            'creditos.descripcion_promocion',
+                                            'creditos.descuento_promocion',
+                                            'creditos.paquete',
+                                            'creditos.descripcion_paquete',
+                                            'creditos.precio_venta',
+                                            'creditos.plazo',
+                                            'creditos.credito_solic',
+                                            'creditos.costo_paquete',
+                                            'inst_seleccionadas.tipo_credito',
+                                            'inst_seleccionadas.id as inst_credito',
+                                            'creditos.precio_obra_extra',
+                                            'creditos.fraccionamiento as proyecto',
+                                            'creditos.lote_id',
+                
+                                            'inst_seleccionadas.institucion',
+                                            'personal.nombre',
+                                            'personal.apellidos',
+                                            'personal.telefono',
+                                            'personal.celular',
+                                            'personal.email',
+                                            'personal.direccion',
+                                            'personal.cp',
+                                            'personal.colonia',
+                                            'personal.f_nacimiento',
+                                            'personal.rfc',
+                                            'personal.homoclave',
+                                            'creditos.fraccionamiento',
+                                            'clientes.id as prospecto_id',
+                                            'clientes.edo_civil',
+                                            'clientes.nss',
+                                            'clientes.curp',
+                                            'clientes.empresa',
+                                            'clientes.coacreditado',
+                                            'clientes.estado',
+                                            'clientes.ciudad',
+                                            'clientes.puesto',
+                                            'clientes.nacionalidad',
+                                            'clientes.sexo',
+                                            'clientes.sexo_coa',
+                                            'clientes.email_institucional_coa',
+                                            'clientes.empresa_coa',
+                                            'clientes.edo_civil_coa',
+                                            'clientes.nss_coa',
+                                            'clientes.curp_coa',
+                                            'clientes.nombre_coa',
+                                            'clientes.apellidos_coa',
+                                            'clientes.f_nacimiento_coa',
+                                            'clientes.nacionalidad_coa',
+                                            'clientes.rfc_coa',
+                                            'clientes.homoclave_coa',
+                                            'clientes.direccion_coa',
+                                            'clientes.colonia_coa',
+                                            'clientes.ciudad_coa',
+                                            'clientes.estado_coa',
+                                            'clientes.cp_coa',
+                                            'clientes.telefono_coa',
+                                            'clientes.ext_coa',
+                                            'clientes.celular_coa',
+                                            'clientes.email_coa',
+                                            'clientes.parentesco_coa',
+                                            'clientes.lugar_nacimiento_coa',
+                                            'v.nombre as vendedor_nombre',
+                                            'v.apellidos as vendedor_apellidos',
+                
+                                            'contratos.id as contratoId',
+                                            'contratos.infonavit',
+                                            'contratos.fovisste',
+                                            'contratos.comision_apertura',
+                                            'clientes.lugar_nacimiento',
+                                            'contratos.investigacion',
+                                            'contratos.avaluo',
+                                            'contratos.prima_unica',
+                                            'contratos.escrituras',
+                                            'contratos.credito_neto',
+                                            'contratos.status',
+                                            'contratos.fecha_status',
+                                            'contratos.avaluo_cliente',
+                                            'contratos.fecha',
+                                            'contratos.direccion_empresa',
+                                            'contratos.cp_empresa',
+                                            'contratos.colonia_empresa',
+                                            'contratos.estado_empresa',
+                                            'contratos.ciudad_empresa',
+                                            'contratos.telefono_empresa',
+                                            'contratos.ext_empresa',
+                                            'contratos.direccion_empresa_coa',
+                                            'contratos.cp_empresa_coa',
+                                            'contratos.colonia_empresa_coa',
+                                            'contratos.estado_empresa_coa',
+                                            'contratos.ciudad_empresa_coa',
+                                            'contratos.telefono_empresa_coa',
+                                            'contratos.ext_empresa_coa',
+                                            'contratos.total_pagar',
+                                            'contratos.monto_total_credito',
+                                            'contratos.enganche_total',
+                                            'contratos.avance_lote',
+                                            'contratos.observacion'
+                                        )
+                
+                                        ->where($criterio, '=',$buscar)
+                                        ->where('lotes.fraccionamiento_id','=',$buscar3)
+                                        ->where('lotes.etapa_id','=',$b_etapa)
+                                        ->where('inst_seleccionadas.elegido', '=', '1')
+                                        ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
+                                        ->orderBy('id', 'desc')->paginate(20);
+                
+                                        $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                        ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                        ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                        ->select('contratos.id as contratoId')
+                                        ->where($criterio, '=', $buscar)
+                                        ->where('lotes.fraccionamiento_id','=',$buscar3)
+                                        ->where('lotes.etapa_id','=',$b_etapa)
+                                        ->where('inst_seleccionadas.elegido', '=', '1')
+                                        ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
+                                        ->orderBy('id', 'desc')->count();
+                                    }
                                 }
                             }
                         }
@@ -1326,6 +1768,7 @@ class ContratoController extends Controller
                         }
                     
                     case 'creditos.fraccionamiento': {
+                        if($f_ini == '' || $f_fin == ''){
                             if ($b_etapa != '' && $b_manzana != '' && $b_lote != '') {
                                 $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                     ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
@@ -2179,13 +2622,888 @@ class ContratoController extends Controller
                                                     ->join('personal as v', 'clientes.vendedor_id', 'v.id')
                                                     ->select('contratos.id as contratoId')
                                                     ->where('inst_seleccionadas.elegido', '=', '1')
-                                                    ->where('creditos.fraccionamiento_id', '=',  $buscar)
+                                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
                                                     ->orderBy('id', 'desc')->count();
                                             }
                                         }
                                     }
                                 }
                             }
+                        }
+                        else{
+                            if ($b_etapa != '' && $b_manzana != '' && $b_lote != '') {
+                                $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                    ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                    ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                    ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                    ->select(
+                                        'creditos.id',
+                                        'creditos.prospecto_id',
+                                        'creditos.num_dep_economicos',
+                                        'creditos.tipo_economia',
+                                        'creditos.nombre_primera_ref',
+                                        'creditos.telefono_primera_ref',
+                                        'creditos.celular_primera_ref',
+                                        'creditos.nombre_segunda_ref',
+                                        'creditos.telefono_segunda_ref',
+                                        'creditos.celular_segunda_ref',
+                                        'creditos.etapa',
+                                        'creditos.manzana',
+                                        'creditos.num_lote',
+                                        'creditos.modelo',
+                                        'creditos.precio_base',
+                                        'creditos.superficie',
+                                        'creditos.terreno_excedente',
+                                        'creditos.precio_terreno_excedente',
+                                        'creditos.promocion',
+                                        'creditos.descripcion_promocion',
+                                        'creditos.descuento_promocion',
+                                        'creditos.paquete',
+                                        'creditos.descripcion_paquete',
+                                        'creditos.precio_venta',
+                                        'creditos.plazo',
+                                        'creditos.credito_solic',
+                                        'creditos.costo_paquete',
+                                        'inst_seleccionadas.tipo_credito',
+                                        'inst_seleccionadas.id as inst_credito',
+                                        'creditos.precio_obra_extra',
+                                        'creditos.fraccionamiento as proyecto',
+                                        'creditos.lote_id',
+
+                                        'inst_seleccionadas.institucion',
+                                        'personal.nombre',
+                                        'personal.apellidos',
+                                        'personal.telefono',
+                                        'personal.celular',
+                                        'personal.email',
+                                        'personal.direccion',
+                                        'personal.cp',
+                                        'personal.colonia',
+                                        'personal.f_nacimiento',
+                                        'personal.rfc',
+                                        'personal.homoclave',
+                                        'creditos.fraccionamiento',
+                                        'clientes.id as prospecto_id',
+                                        'clientes.edo_civil',
+                                        'clientes.nss',
+                                        'clientes.curp',
+                                        'clientes.empresa',
+                                        'clientes.coacreditado',
+                                        'clientes.estado',
+                                        'clientes.ciudad',
+                                        'clientes.puesto',
+                                        'clientes.nacionalidad',
+                                        'clientes.sexo',
+                                        'clientes.sexo_coa',
+                                        'clientes.email_institucional_coa',
+                                        'clientes.empresa_coa',
+                                        'clientes.edo_civil_coa',
+                                        'clientes.nss_coa',
+                                        'clientes.curp_coa',
+                                        'clientes.nombre_coa',
+                                        'clientes.apellidos_coa',
+                                        'clientes.f_nacimiento_coa',
+                                        'clientes.nacionalidad_coa',
+                                        'clientes.rfc_coa',
+                                        'clientes.homoclave_coa',
+                                        'clientes.direccion_coa',
+                                        'clientes.colonia_coa',
+                                        'clientes.ciudad_coa',
+                                        'clientes.estado_coa',
+                                        'clientes.cp_coa',
+                                        'clientes.telefono_coa',
+                                        'clientes.ext_coa',
+                                        'clientes.celular_coa',
+                                        'clientes.email_coa',
+                                        'clientes.parentesco_coa',
+                                        'clientes.lugar_nacimiento_coa',
+                                        'v.nombre as vendedor_nombre',
+                                        'v.apellidos as vendedor_apellidos',
+
+                                        'contratos.id as contratoId',
+                                        'contratos.infonavit',
+                                        'contratos.fovisste',
+                                        'contratos.comision_apertura',
+                                        'clientes.lugar_nacimiento',
+                                        'contratos.investigacion',
+                                        'contratos.avaluo',
+                                        'contratos.prima_unica',
+                                        'contratos.escrituras',
+                                        'contratos.credito_neto',
+                                        'contratos.status',
+                                        'contratos.fecha_status',
+                                        'contratos.avaluo_cliente',
+                                        'contratos.fecha',
+                                        'contratos.direccion_empresa',
+                                        'contratos.cp_empresa',
+                                        'contratos.colonia_empresa',
+                                        'contratos.estado_empresa',
+                                        'contratos.ciudad_empresa',
+                                        'contratos.telefono_empresa',
+                                        'contratos.ext_empresa',
+                                        'contratos.direccion_empresa_coa',
+                                        'contratos.cp_empresa_coa',
+                                        'contratos.colonia_empresa_coa',
+                                        'contratos.estado_empresa_coa',
+                                        'contratos.ciudad_empresa_coa',
+                                        'contratos.telefono_empresa_coa',
+                                        'contratos.ext_empresa_coa',
+                                        'contratos.total_pagar',
+                                        'contratos.monto_total_credito',
+                                        'contratos.enganche_total',
+                                        'contratos.avance_lote',
+                                        'contratos.observacion'
+                                    )
+                                    ->where('inst_seleccionadas.elegido', '=', '1')
+                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
+                                    ->where('lotes.etapa_id', '=', $b_etapa)
+                                    ->where('lotes.manzana', '=', $b_manzana)
+                                    ->where('lotes.num_lote', '=', $b_lote)
+                                    ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
+                                    ->orderBy('id', 'desc')->paginate(20);
+
+                                $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                    ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                    ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                    ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                    ->select('contratos.id as contratoId')
+                                    ->where('inst_seleccionadas.elegido', '=', '1')
+                                    ->where('inst_seleccionadas.elegido', '=', '1')
+                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
+                                    ->where('lotes.etapa_id', '=', $b_etapa)
+                                    ->where('lotes.manzana', '=', $b_manzana)
+                                    ->where('lotes.num_lote', '=', $b_lote)
+                                    ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
+                                    ->orderBy('id', 'desc')->count();
+                            } else {
+                                if ($b_etapa != '' && $b_manzana != '') {
+                                    $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                        ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                        ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                        ->select(
+                                            'creditos.id',
+                                            'creditos.prospecto_id',
+                                            'creditos.num_dep_economicos',
+                                            'creditos.tipo_economia',
+                                            'creditos.nombre_primera_ref',
+                                            'creditos.telefono_primera_ref',
+                                            'creditos.celular_primera_ref',
+                                            'creditos.nombre_segunda_ref',
+                                            'creditos.telefono_segunda_ref',
+                                            'creditos.celular_segunda_ref',
+                                            'creditos.etapa',
+                                            'creditos.manzana',
+                                            'creditos.num_lote',
+                                            'creditos.modelo',
+                                            'creditos.precio_base',
+                                            'creditos.superficie',
+                                            'creditos.terreno_excedente',
+                                            'creditos.precio_terreno_excedente',
+                                            'creditos.promocion',
+                                            'creditos.descripcion_promocion',
+                                            'creditos.descuento_promocion',
+                                            'creditos.paquete',
+                                            'creditos.descripcion_paquete',
+                                            'creditos.precio_venta',
+                                            'creditos.plazo',
+                                            'creditos.credito_solic',
+                                            'creditos.costo_paquete',
+                                            'inst_seleccionadas.tipo_credito',
+                                            'inst_seleccionadas.id as inst_credito',
+                                            'creditos.precio_obra_extra',
+                                            'creditos.fraccionamiento as proyecto',
+                                            'creditos.lote_id',
+
+                                            'inst_seleccionadas.institucion',
+                                            'personal.nombre',
+                                            'personal.apellidos',
+                                            'personal.telefono',
+                                            'personal.celular',
+                                            'personal.email',
+                                            'personal.direccion',
+                                            'personal.cp',
+                                            'personal.colonia',
+                                            'personal.f_nacimiento',
+                                            'personal.rfc',
+                                            'personal.homoclave',
+                                            'creditos.fraccionamiento',
+                                            'clientes.id as prospecto_id',
+                                            'clientes.edo_civil',
+                                            'clientes.nss',
+                                            'clientes.curp',
+                                            'clientes.empresa',
+                                            'clientes.coacreditado',
+                                            'clientes.estado',
+                                            'clientes.ciudad',
+                                            'clientes.puesto',
+                                            'clientes.nacionalidad',
+                                            'clientes.sexo',
+                                            'clientes.sexo_coa',
+                                            'clientes.email_institucional_coa',
+                                            'clientes.empresa_coa',
+                                            'clientes.edo_civil_coa',
+                                            'clientes.nss_coa',
+                                            'clientes.curp_coa',
+                                            'clientes.nombre_coa',
+                                            'clientes.apellidos_coa',
+                                            'clientes.f_nacimiento_coa',
+                                            'clientes.nacionalidad_coa',
+                                            'clientes.rfc_coa',
+                                            'clientes.homoclave_coa',
+                                            'clientes.direccion_coa',
+                                            'clientes.colonia_coa',
+                                            'clientes.ciudad_coa',
+                                            'clientes.estado_coa',
+                                            'clientes.cp_coa',
+                                            'clientes.telefono_coa',
+                                            'clientes.ext_coa',
+                                            'clientes.celular_coa',
+                                            'clientes.email_coa',
+                                            'clientes.parentesco_coa',
+                                            'clientes.lugar_nacimiento_coa',
+                                            'v.nombre as vendedor_nombre',
+                                            'v.apellidos as vendedor_apellidos',
+
+                                            'contratos.id as contratoId',
+                                            'contratos.infonavit',
+                                            'contratos.fovisste',
+                                            'contratos.comision_apertura',
+                                            'clientes.lugar_nacimiento',
+                                            'contratos.investigacion',
+                                            'contratos.avaluo',
+                                            'contratos.prima_unica',
+                                            'contratos.escrituras',
+                                            'contratos.credito_neto',
+                                            'contratos.status',
+                                            'contratos.fecha_status',
+                                            'contratos.avaluo_cliente',
+                                            'contratos.fecha',
+                                            'contratos.direccion_empresa',
+                                            'contratos.cp_empresa',
+                                            'contratos.colonia_empresa',
+                                            'contratos.estado_empresa',
+                                            'contratos.ciudad_empresa',
+                                            'contratos.telefono_empresa',
+                                            'contratos.ext_empresa',
+                                            'contratos.direccion_empresa_coa',
+                                            'contratos.cp_empresa_coa',
+                                            'contratos.colonia_empresa_coa',
+                                            'contratos.estado_empresa_coa',
+                                            'contratos.ciudad_empresa_coa',
+                                            'contratos.telefono_empresa_coa',
+                                            'contratos.ext_empresa_coa',
+                                            'contratos.total_pagar',
+                                            'contratos.monto_total_credito',
+                                            'contratos.enganche_total',
+                                            'contratos.avance_lote',
+                                            'contratos.observacion'
+                                        )
+                                        ->where('inst_seleccionadas.elegido', '=', '1')
+                                        ->where('lotes.fraccionamiento_id', '=',  $buscar)
+                                        ->where('lotes.etapa_id', '=', $b_etapa)
+                                        ->where('lotes.manzana', '=', $b_manzana)
+                                        ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
+                                        ->orderBy('id', 'desc')->paginate(20);
+
+                                    $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                        ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                        ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                        ->select('contratos.id as contratoId')
+                                        ->where('inst_seleccionadas.elegido', '=', '1')
+                                        ->where('lotes.fraccionamiento_id', '=',  $buscar)
+                                        ->where('lotes.etapa_id', '=', $b_etapa)
+                                        ->where('lotes.manzana', '=', $b_manzana)
+                                        ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
+                                        ->orderBy('id', 'desc')->count();
+                                } else {
+                                    if ($b_etapa != '') {
+                                        $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                            ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                            ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                            ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                            ->select(
+                                                'creditos.id',
+                                                'creditos.prospecto_id',
+                                                'creditos.num_dep_economicos',
+                                                'creditos.tipo_economia',
+                                                'creditos.nombre_primera_ref',
+                                                'creditos.telefono_primera_ref',
+                                                'creditos.celular_primera_ref',
+                                                'creditos.nombre_segunda_ref',
+                                                'creditos.telefono_segunda_ref',
+                                                'creditos.celular_segunda_ref',
+                                                'creditos.etapa',
+                                                'creditos.manzana',
+                                                'creditos.num_lote',
+                                                'creditos.modelo',
+                                                'creditos.precio_base',
+                                                'creditos.superficie',
+                                                'creditos.terreno_excedente',
+                                                'creditos.precio_terreno_excedente',
+                                                'creditos.promocion',
+                                                'creditos.descripcion_promocion',
+                                                'creditos.descuento_promocion',
+                                                'creditos.paquete',
+                                                'creditos.descripcion_paquete',
+                                                'creditos.precio_venta',
+                                                'creditos.plazo',
+                                                'creditos.credito_solic',
+                                                'creditos.costo_paquete',
+                                                'inst_seleccionadas.tipo_credito',
+                                                'inst_seleccionadas.id as inst_credito',
+                                                'creditos.precio_obra_extra',
+                                                'creditos.fraccionamiento as proyecto',
+                                                'creditos.lote_id',
+
+                                                'inst_seleccionadas.institucion',
+                                                'personal.nombre',
+                                                'personal.apellidos',
+                                                'personal.telefono',
+                                                'personal.celular',
+                                                'personal.email',
+                                                'personal.direccion',
+                                                'personal.cp',
+                                                'personal.colonia',
+                                                'personal.f_nacimiento',
+                                                'personal.rfc',
+                                                'personal.homoclave',
+                                                'creditos.fraccionamiento',
+                                                'clientes.id as prospecto_id',
+                                                'clientes.edo_civil',
+                                                'clientes.nss',
+                                                'clientes.curp',
+                                                'clientes.empresa',
+                                                'clientes.coacreditado',
+                                                'clientes.estado',
+                                                'clientes.ciudad',
+                                                'clientes.puesto',
+                                                'clientes.nacionalidad',
+                                                'clientes.sexo',
+                                                'clientes.sexo_coa',
+                                                'clientes.email_institucional_coa',
+                                                'clientes.empresa_coa',
+                                                'clientes.edo_civil_coa',
+                                                'clientes.nss_coa',
+                                                'clientes.curp_coa',
+                                                'clientes.nombre_coa',
+                                                'clientes.apellidos_coa',
+                                                'clientes.f_nacimiento_coa',
+                                                'clientes.nacionalidad_coa',
+                                                'clientes.rfc_coa',
+                                                'clientes.homoclave_coa',
+                                                'clientes.direccion_coa',
+                                                'clientes.colonia_coa',
+                                                'clientes.ciudad_coa',
+                                                'clientes.estado_coa',
+                                                'clientes.cp_coa',
+                                                'clientes.telefono_coa',
+                                                'clientes.ext_coa',
+                                                'clientes.celular_coa',
+                                                'clientes.email_coa',
+                                                'clientes.parentesco_coa',
+                                                'clientes.lugar_nacimiento_coa',
+                                                'v.nombre as vendedor_nombre',
+                                                'v.apellidos as vendedor_apellidos',
+
+                                                'contratos.id as contratoId',
+                                                'contratos.infonavit',
+                                                'contratos.fovisste',
+                                                'contratos.comision_apertura',
+                                                'clientes.lugar_nacimiento',
+                                                'contratos.investigacion',
+                                                'contratos.avaluo',
+                                                'contratos.prima_unica',
+                                                'contratos.escrituras',
+                                                'contratos.credito_neto',
+                                                'contratos.status',
+                                                'contratos.fecha_status',
+                                                'contratos.avaluo_cliente',
+                                                'contratos.fecha',
+                                                'contratos.direccion_empresa',
+                                                'contratos.cp_empresa',
+                                                'contratos.colonia_empresa',
+                                                'contratos.estado_empresa',
+                                                'contratos.ciudad_empresa',
+                                                'contratos.telefono_empresa',
+                                                'contratos.ext_empresa',
+                                                'contratos.direccion_empresa_coa',
+                                                'contratos.cp_empresa_coa',
+                                                'contratos.colonia_empresa_coa',
+                                                'contratos.estado_empresa_coa',
+                                                'contratos.ciudad_empresa_coa',
+                                                'contratos.telefono_empresa_coa',
+                                                'contratos.ext_empresa_coa',
+                                                'contratos.total_pagar',
+                                                'contratos.monto_total_credito',
+                                                'contratos.enganche_total',
+                                                'contratos.avance_lote',
+                                                'contratos.observacion'
+                                            )
+                                            ->where('inst_seleccionadas.elegido', '=', '1')
+                                            ->where('lotes.fraccionamiento_id', '=',  $buscar)
+                                            ->where('lotes.etapa_id', '=',  $b_etapa )
+                                            ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
+                                            ->orderBy('id', 'desc')->paginate(20);
+
+                                        $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                            ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                            ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                            ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                            ->select('contratos.id as contratoId')
+                                            ->where('inst_seleccionadas.elegido', '=', '1')
+                                            ->where('lotes.fraccionamiento_id', '=',  $buscar)
+                                            ->where('lotes.etapa_id', '=',  $b_etapa )
+                                            ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
+                                            ->orderBy('id', 'desc')->count();
+                                    } else {
+                                        if ($b_manzana != '') {
+                                            $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                                ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                                ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                                ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                                ->select(
+                                                    'creditos.id',
+                                                    'creditos.prospecto_id',
+                                                    'creditos.num_dep_economicos',
+                                                    'creditos.tipo_economia',
+                                                    'creditos.nombre_primera_ref',
+                                                    'creditos.telefono_primera_ref',
+                                                    'creditos.celular_primera_ref',
+                                                    'creditos.nombre_segunda_ref',
+                                                    'creditos.telefono_segunda_ref',
+                                                    'creditos.celular_segunda_ref',
+                                                    'creditos.etapa',
+                                                    'creditos.manzana',
+                                                    'creditos.num_lote',
+                                                    'creditos.modelo',
+                                                    'creditos.precio_base',
+                                                    'creditos.superficie',
+                                                    'creditos.terreno_excedente',
+                                                    'creditos.precio_terreno_excedente',
+                                                    'creditos.promocion',
+                                                    'creditos.descripcion_promocion',
+                                                    'creditos.descuento_promocion',
+                                                    'creditos.paquete',
+                                                    'creditos.descripcion_paquete',
+                                                    'creditos.precio_venta',
+                                                    'creditos.plazo',
+                                                    'creditos.credito_solic',
+                                                    'creditos.costo_paquete',
+                                                    'inst_seleccionadas.tipo_credito',
+                                                    'inst_seleccionadas.id as inst_credito',
+                                                    'creditos.precio_obra_extra',
+                                                    'creditos.fraccionamiento as proyecto',
+                                                    'creditos.lote_id',
+
+                                                    'inst_seleccionadas.institucion',
+                                                    'personal.nombre',
+                                                    'personal.apellidos',
+                                                    'personal.telefono',
+                                                    'personal.celular',
+                                                    'personal.email',
+                                                    'personal.direccion',
+                                                    'personal.cp',
+                                                    'personal.colonia',
+                                                    'personal.f_nacimiento',
+                                                    'personal.rfc',
+                                                    'personal.homoclave',
+                                                    'creditos.fraccionamiento',
+                                                    'clientes.id as prospecto_id',
+                                                    'clientes.edo_civil',
+                                                    'clientes.nss',
+                                                    'clientes.curp',
+                                                    'clientes.empresa',
+                                                    'clientes.coacreditado',
+                                                    'clientes.estado',
+                                                    'clientes.ciudad',
+                                                    'clientes.puesto',
+                                                    'clientes.nacionalidad',
+                                                    'clientes.sexo',
+                                                    'clientes.sexo_coa',
+                                                    'clientes.email_institucional_coa',
+                                                    'clientes.empresa_coa',
+                                                    'clientes.edo_civil_coa',
+                                                    'clientes.nss_coa',
+                                                    'clientes.curp_coa',
+                                                    'clientes.nombre_coa',
+                                                    'clientes.apellidos_coa',
+                                                    'clientes.f_nacimiento_coa',
+                                                    'clientes.nacionalidad_coa',
+                                                    'clientes.rfc_coa',
+                                                    'clientes.homoclave_coa',
+                                                    'clientes.direccion_coa',
+                                                    'clientes.colonia_coa',
+                                                    'clientes.ciudad_coa',
+                                                    'clientes.estado_coa',
+                                                    'clientes.cp_coa',
+                                                    'clientes.telefono_coa',
+                                                    'clientes.ext_coa',
+                                                    'clientes.celular_coa',
+                                                    'clientes.email_coa',
+                                                    'clientes.parentesco_coa',
+                                                    'clientes.lugar_nacimiento_coa',
+                                                    'v.nombre as vendedor_nombre',
+                                                    'v.apellidos as vendedor_apellidos',
+
+                                                    'contratos.id as contratoId',
+                                                    'contratos.infonavit',
+                                                    'contratos.fovisste',
+                                                    'contratos.comision_apertura',
+                                                    'clientes.lugar_nacimiento',
+                                                    'contratos.investigacion',
+                                                    'contratos.avaluo',
+                                                    'contratos.prima_unica',
+                                                    'contratos.escrituras',
+                                                    'contratos.credito_neto',
+                                                    'contratos.status',
+                                                    'contratos.fecha_status',
+                                                    'contratos.avaluo_cliente',
+                                                    'contratos.fecha',
+                                                    'contratos.direccion_empresa',
+                                                    'contratos.cp_empresa',
+                                                    'contratos.colonia_empresa',
+                                                    'contratos.estado_empresa',
+                                                    'contratos.ciudad_empresa',
+                                                    'contratos.telefono_empresa',
+                                                    'contratos.ext_empresa',
+                                                    'contratos.direccion_empresa_coa',
+                                                    'contratos.cp_empresa_coa',
+                                                    'contratos.colonia_empresa_coa',
+                                                    'contratos.estado_empresa_coa',
+                                                    'contratos.ciudad_empresa_coa',
+                                                    'contratos.telefono_empresa_coa',
+                                                    'contratos.ext_empresa_coa',
+                                                    'contratos.total_pagar',
+                                                    'contratos.monto_total_credito',
+                                                    'contratos.enganche_total',
+                                                    'contratos.avance_lote',
+                                                    'contratos.observacion'
+                                                )
+                                                ->where('inst_seleccionadas.elegido', '=', '1')
+                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
+                                                ->where('lotes.manzana', '=', $b_manzana)
+                                                ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
+                                                ->orderBy('id', 'desc')->paginate(20);
+
+                                            $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                                ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                                ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                                ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                                ->select('contratos.id as contratoId')
+                                                ->where('inst_seleccionadas.elegido', '=', '1')
+                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
+                                                ->where('lotes.manzana', '=', $b_manzana)
+                                                ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
+                                                ->orderBy('id', 'desc')->count();
+                                        } else {
+                                            if ($b_lote != '') {
+                                                $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                                    ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                                    ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                                    ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                                    ->select(
+                                                        'creditos.id',
+                                                        'creditos.prospecto_id',
+                                                        'creditos.num_dep_economicos',
+                                                        'creditos.tipo_economia',
+                                                        'creditos.nombre_primera_ref',
+                                                        'creditos.telefono_primera_ref',
+                                                        'creditos.celular_primera_ref',
+                                                        'creditos.nombre_segunda_ref',
+                                                        'creditos.telefono_segunda_ref',
+                                                        'creditos.celular_segunda_ref',
+                                                        'creditos.etapa',
+                                                        'creditos.manzana',
+                                                        'creditos.num_lote',
+                                                        'creditos.modelo',
+                                                        'creditos.precio_base',
+                                                        'creditos.superficie',
+                                                        'creditos.terreno_excedente',
+                                                        'creditos.precio_terreno_excedente',
+                                                        'creditos.promocion',
+                                                        'creditos.descripcion_promocion',
+                                                        'creditos.descuento_promocion',
+                                                        'creditos.paquete',
+                                                        'creditos.descripcion_paquete',
+                                                        'creditos.precio_venta',
+                                                        'creditos.plazo',
+                                                        'creditos.credito_solic',
+                                                        'creditos.costo_paquete',
+                                                        'inst_seleccionadas.tipo_credito',
+                                                        'inst_seleccionadas.id as inst_credito',
+                                                        'creditos.precio_obra_extra',
+                                                        'creditos.fraccionamiento as proyecto',
+                                                        'creditos.lote_id',
+
+                                                        'inst_seleccionadas.institucion',
+                                                        'personal.nombre',
+                                                        'personal.apellidos',
+                                                        'personal.telefono',
+                                                        'personal.celular',
+                                                        'personal.email',
+                                                        'personal.direccion',
+                                                        'personal.cp',
+                                                        'personal.colonia',
+                                                        'personal.f_nacimiento',
+                                                        'personal.rfc',
+                                                        'personal.homoclave',
+                                                        'creditos.fraccionamiento',
+                                                        'clientes.id as prospecto_id',
+                                                        'clientes.edo_civil',
+                                                        'clientes.nss',
+                                                        'clientes.curp',
+                                                        'clientes.empresa',
+                                                        'clientes.coacreditado',
+                                                        'clientes.estado',
+                                                        'clientes.ciudad',
+                                                        'clientes.puesto',
+                                                        'clientes.nacionalidad',
+                                                        'clientes.sexo',
+                                                        'clientes.sexo_coa',
+                                                        'clientes.email_institucional_coa',
+                                                        'clientes.empresa_coa',
+                                                        'clientes.edo_civil_coa',
+                                                        'clientes.nss_coa',
+                                                        'clientes.curp_coa',
+                                                        'clientes.nombre_coa',
+                                                        'clientes.apellidos_coa',
+                                                        'clientes.f_nacimiento_coa',
+                                                        'clientes.nacionalidad_coa',
+                                                        'clientes.rfc_coa',
+                                                        'clientes.homoclave_coa',
+                                                        'clientes.direccion_coa',
+                                                        'clientes.colonia_coa',
+                                                        'clientes.ciudad_coa',
+                                                        'clientes.estado_coa',
+                                                        'clientes.cp_coa',
+                                                        'clientes.telefono_coa',
+                                                        'clientes.ext_coa',
+                                                        'clientes.celular_coa',
+                                                        'clientes.email_coa',
+                                                        'clientes.parentesco_coa',
+                                                        'clientes.lugar_nacimiento_coa',
+                                                        'v.nombre as vendedor_nombre',
+                                                        'v.apellidos as vendedor_apellidos',
+
+                                                        'contratos.id as contratoId',
+                                                        'contratos.infonavit',
+                                                        'contratos.fovisste',
+                                                        'contratos.comision_apertura',
+                                                        'clientes.lugar_nacimiento',
+                                                        'contratos.investigacion',
+                                                        'contratos.avaluo',
+                                                        'contratos.prima_unica',
+                                                        'contratos.escrituras',
+                                                        'contratos.credito_neto',
+                                                        'contratos.status',
+                                                        'contratos.fecha_status',
+                                                        'contratos.avaluo_cliente',
+                                                        'contratos.fecha',
+                                                        'contratos.direccion_empresa',
+                                                        'contratos.cp_empresa',
+                                                        'contratos.colonia_empresa',
+                                                        'contratos.estado_empresa',
+                                                        'contratos.ciudad_empresa',
+                                                        'contratos.telefono_empresa',
+                                                        'contratos.ext_empresa',
+                                                        'contratos.direccion_empresa_coa',
+                                                        'contratos.cp_empresa_coa',
+                                                        'contratos.colonia_empresa_coa',
+                                                        'contratos.estado_empresa_coa',
+                                                        'contratos.ciudad_empresa_coa',
+                                                        'contratos.telefono_empresa_coa',
+                                                        'contratos.ext_empresa_coa',
+                                                        'contratos.total_pagar',
+                                                        'contratos.monto_total_credito',
+                                                        'contratos.enganche_total',
+                                                        'contratos.avance_lote',
+                                                        'contratos.observacion'
+                                                    )
+                                                    ->where('inst_seleccionadas.elegido', '=', '1')
+                                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
+                                                    ->where('lotes.num_lote', '=', $b_lote)
+                                                    ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
+                                                    ->orderBy('id', 'desc')->paginate(20);
+
+                                                $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                                    ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                                    ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                                    ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                                    ->select('contratos.id as contratoId')
+                                                    ->where('inst_seleccionadas.elegido', '=', '1')
+                                                    ->where('lotes.fraccionamiento', '=',  $buscar)
+                                                    ->where('lotes.num_lote', '=', $b_lote)
+                                                    ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
+                                                    ->orderBy('id', 'desc')->count();
+                                            } else {
+                                                $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                                    ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                                    ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                                    ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                                    ->select(
+                                                        'creditos.id',
+                                                        'creditos.prospecto_id',
+                                                        'creditos.num_dep_economicos',
+                                                        'creditos.tipo_economia',
+                                                        'creditos.nombre_primera_ref',
+                                                        'creditos.telefono_primera_ref',
+                                                        'creditos.celular_primera_ref',
+                                                        'creditos.nombre_segunda_ref',
+                                                        'creditos.telefono_segunda_ref',
+                                                        'creditos.celular_segunda_ref',
+                                                        'creditos.etapa',
+                                                        'creditos.manzana',
+                                                        'creditos.num_lote',
+                                                        'creditos.modelo',
+                                                        'creditos.precio_base',
+                                                        'creditos.superficie',
+                                                        'creditos.terreno_excedente',
+                                                        'creditos.precio_terreno_excedente',
+                                                        'creditos.promocion',
+                                                        'creditos.descripcion_promocion',
+                                                        'creditos.descuento_promocion',
+                                                        'creditos.paquete',
+                                                        'creditos.descripcion_paquete',
+                                                        'creditos.precio_venta',
+                                                        'creditos.plazo',
+                                                        'creditos.credito_solic',
+                                                        'creditos.costo_paquete',
+                                                        'inst_seleccionadas.tipo_credito',
+                                                        'inst_seleccionadas.id as inst_credito',
+                                                        'creditos.precio_obra_extra',
+                                                        'creditos.fraccionamiento as proyecto',
+                                                        'creditos.lote_id',
+
+                                                        'inst_seleccionadas.institucion',
+                                                        'personal.nombre',
+                                                        'personal.apellidos',
+                                                        'personal.telefono',
+                                                        'personal.celular',
+                                                        'personal.email',
+                                                        'personal.direccion',
+                                                        'personal.cp',
+                                                        'personal.colonia',
+                                                        'personal.f_nacimiento',
+                                                        'personal.rfc',
+                                                        'personal.homoclave',
+                                                        'creditos.fraccionamiento',
+                                                        'clientes.id as prospecto_id',
+                                                        'clientes.edo_civil',
+                                                        'clientes.nss',
+                                                        'clientes.curp',
+                                                        'clientes.empresa',
+                                                        'clientes.coacreditado',
+                                                        'clientes.estado',
+                                                        'clientes.ciudad',
+                                                        'clientes.puesto',
+                                                        'clientes.nacionalidad',
+                                                        'clientes.sexo',
+                                                        'clientes.sexo_coa',
+                                                        'clientes.email_institucional_coa',
+                                                        'clientes.empresa_coa',
+                                                        'clientes.edo_civil_coa',
+                                                        'clientes.nss_coa',
+                                                        'clientes.curp_coa',
+                                                        'clientes.nombre_coa',
+                                                        'clientes.apellidos_coa',
+                                                        'clientes.f_nacimiento_coa',
+                                                        'clientes.nacionalidad_coa',
+                                                        'clientes.rfc_coa',
+                                                        'clientes.homoclave_coa',
+                                                        'clientes.direccion_coa',
+                                                        'clientes.colonia_coa',
+                                                        'clientes.ciudad_coa',
+                                                        'clientes.estado_coa',
+                                                        'clientes.cp_coa',
+                                                        'clientes.telefono_coa',
+                                                        'clientes.ext_coa',
+                                                        'clientes.celular_coa',
+                                                        'clientes.email_coa',
+                                                        'clientes.parentesco_coa',
+                                                        'clientes.lugar_nacimiento_coa',
+                                                        'v.nombre as vendedor_nombre',
+                                                        'v.apellidos as vendedor_apellidos',
+
+                                                        'contratos.id as contratoId',
+                                                        'contratos.infonavit',
+                                                        'contratos.fovisste',
+                                                        'contratos.comision_apertura',
+                                                        'clientes.lugar_nacimiento',
+                                                        'contratos.investigacion',
+                                                        'contratos.avaluo',
+                                                        'contratos.prima_unica',
+                                                        'contratos.escrituras',
+                                                        'contratos.credito_neto',
+                                                        'contratos.status',
+                                                        'contratos.fecha_status',
+                                                        'contratos.avaluo_cliente',
+                                                        'contratos.fecha',
+                                                        'contratos.direccion_empresa',
+                                                        'contratos.cp_empresa',
+                                                        'contratos.colonia_empresa',
+                                                        'contratos.estado_empresa',
+                                                        'contratos.ciudad_empresa',
+                                                        'contratos.telefono_empresa',
+                                                        'contratos.ext_empresa',
+                                                        'contratos.direccion_empresa_coa',
+                                                        'contratos.cp_empresa_coa',
+                                                        'contratos.colonia_empresa_coa',
+                                                        'contratos.estado_empresa_coa',
+                                                        'contratos.ciudad_empresa_coa',
+                                                        'contratos.telefono_empresa_coa',
+                                                        'contratos.ext_empresa_coa',
+                                                        'contratos.total_pagar',
+                                                        'contratos.monto_total_credito',
+                                                        'contratos.enganche_total',
+                                                        'contratos.avance_lote',
+                                                        'contratos.observacion'
+                                                    )
+                                                    ->where('inst_seleccionadas.elegido', '=', '1')
+                                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
+                                                    ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
+                                                    ->orderBy('id', 'desc')->paginate(20);
+
+                                                $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                                    ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                                    ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                                    ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                                    ->select('contratos.id as contratoId')
+                                                    ->where('inst_seleccionadas.elegido', '=', '1')
+                                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
+                                                    ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
+                                                    ->orderBy('id', 'desc')->count();
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                             break;
                         }
                 }
@@ -2911,150 +4229,8 @@ class ContratoController extends Controller
                             break;
                         }
                     case 'creditos.vendedor_id': {
-                        if($b_etapa == "" && $buscar3 == "" && $buscar != ""){
-                            $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
-                            ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
-                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                            ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                            ->join('personal as v', 'clientes.vendedor_id', 'v.id')
-                            ->select(
-                                'creditos.id',
-                                'creditos.prospecto_id',
-                                'creditos.num_dep_economicos',
-                                'creditos.tipo_economia',
-                                'creditos.nombre_primera_ref',
-                                'creditos.telefono_primera_ref',
-                                'creditos.celular_primera_ref',
-                                'creditos.nombre_segunda_ref',
-                                'creditos.telefono_segunda_ref',
-                                'creditos.celular_segunda_ref',
-                                'creditos.etapa',
-                                'creditos.manzana',
-                                'creditos.num_lote',
-                                'creditos.modelo',
-                                'creditos.precio_base',
-                                'creditos.superficie',
-                                'creditos.terreno_excedente',
-                                'creditos.precio_terreno_excedente',
-                                'creditos.promocion',
-                                'creditos.descripcion_promocion',
-                                'creditos.descuento_promocion',
-                                'creditos.paquete',
-                                'creditos.descripcion_paquete',
-                                'creditos.precio_venta',
-                                'creditos.plazo',
-                                'creditos.credito_solic',
-                                'creditos.costo_paquete',
-                                'inst_seleccionadas.tipo_credito',
-                                'inst_seleccionadas.id as inst_credito',
-                                'creditos.precio_obra_extra',
-                                'creditos.fraccionamiento as proyecto',
-                                'creditos.lote_id',
-    
-                                'inst_seleccionadas.institucion',
-                                'personal.nombre',
-                                'personal.apellidos',
-                                'personal.telefono',
-                                'personal.celular',
-                                'personal.email',
-                                'personal.direccion',
-                                'personal.cp',
-                                'personal.colonia',
-                                'personal.f_nacimiento',
-                                'personal.rfc',
-                                'personal.homoclave',
-                                'creditos.fraccionamiento',
-                                'clientes.id as prospecto_id',
-                                'clientes.edo_civil',
-                                'clientes.nss',
-                                'clientes.curp',
-                                'clientes.empresa',
-                                'clientes.coacreditado',
-                                'clientes.estado',
-                                'clientes.ciudad',
-                                'clientes.puesto',
-                                'clientes.nacionalidad',
-                                'clientes.sexo',
-                                'clientes.sexo_coa',
-                                'clientes.email_institucional_coa',
-                                'clientes.empresa_coa',
-                                'clientes.edo_civil_coa',
-                                'clientes.nss_coa',
-                                'clientes.curp_coa',
-                                'clientes.nombre_coa',
-                                'clientes.apellidos_coa',
-                                'clientes.f_nacimiento_coa',
-                                'clientes.nacionalidad_coa',
-                                'clientes.rfc_coa',
-                                'clientes.homoclave_coa',
-                                'clientes.direccion_coa',
-                                'clientes.colonia_coa',
-                                'clientes.ciudad_coa',
-                                'clientes.estado_coa',
-                                'clientes.cp_coa',
-                                'clientes.telefono_coa',
-                                'clientes.ext_coa',
-                                'clientes.celular_coa',
-                                'clientes.email_coa',
-                                'clientes.parentesco_coa',
-                                'clientes.lugar_nacimiento_coa',
-                                'v.nombre as vendedor_nombre',
-                                'v.apellidos as vendedor_apellidos',
-    
-                                'contratos.id as contratoId',
-                                'contratos.infonavit',
-                                'contratos.fovisste',
-                                'contratos.comision_apertura',
-                                'clientes.lugar_nacimiento',
-                                'contratos.investigacion',
-                                'contratos.avaluo',
-                                'contratos.prima_unica',
-                                'contratos.escrituras',
-                                'contratos.credito_neto',
-                                'contratos.status',
-                                'contratos.fecha_status',
-                                'contratos.avaluo_cliente',
-                                'contratos.fecha',
-                                'contratos.direccion_empresa',
-                                'contratos.cp_empresa',
-                                'contratos.colonia_empresa',
-                                'contratos.estado_empresa',
-                                'contratos.ciudad_empresa',
-                                'contratos.telefono_empresa',
-                                'contratos.ext_empresa',
-                                'contratos.direccion_empresa_coa',
-                                'contratos.cp_empresa_coa',
-                                'contratos.colonia_empresa_coa',
-                                'contratos.estado_empresa_coa',
-                                'contratos.ciudad_empresa_coa',
-                                'contratos.telefono_empresa_coa',
-                                'contratos.ext_empresa_coa',
-                                'contratos.total_pagar',
-                                'contratos.monto_total_credito',
-                                'contratos.enganche_total',
-                                'contratos.avance_lote',
-                                'contratos.observacion'
-                            )
-    
-                            ->where($criterio, '=',$buscar)
-                            ->where('contratos.status','=',$b_status)
-                            ->where('inst_seleccionadas.elegido', '=', '1')
-                            ->orderBy('id', 'desc')->paginate(20);
-    
-                            $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
-                            ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
-                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                            ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                            ->join('personal as v', 'clientes.vendedor_id', 'v.id')
-                            ->select('contratos.id as contratoId')
-                            ->where($criterio, '=', $buscar)
-                            ->where('contratos.status','=',$b_status)
-                            ->where('inst_seleccionadas.elegido', '=', '1')
-                            ->orderBy('id', 'desc')->count();
-                        }else{
-                            if($b_etapa == "" && $buscar3 != "" && $buscar != ""){
+                        if($f_ini == '' || $f_fin == ''){
+                            if($b_etapa == "" && $buscar3 == "" && $buscar != ""){
                                 $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                 ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
                                 ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
@@ -3181,7 +4357,6 @@ class ContratoController extends Controller
                                 )
         
                                 ->where($criterio, '=',$buscar)
-                                ->where('lotes.fraccionamiento_id','=',$buscar3)
                                 ->where('contratos.status','=',$b_status)
                                 ->where('inst_seleccionadas.elegido', '=', '1')
                                 ->orderBy('id', 'desc')->paginate(20);
@@ -3194,12 +4369,11 @@ class ContratoController extends Controller
                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
                                 ->select('contratos.id as contratoId')
                                 ->where($criterio, '=', $buscar)
-                                ->where('lotes.fraccionamiento_id','=',$buscar3)
                                 ->where('contratos.status','=',$b_status)
                                 ->where('inst_seleccionadas.elegido', '=', '1')
                                 ->orderBy('id', 'desc')->count();
                             }else{
-                                if($b_etapa != "" && $buscar3 != "" && $buscar != ""){
+                                if($b_etapa == "" && $buscar3 != "" && $buscar != ""){
                                     $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                     ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
                                     ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
@@ -3327,7 +4501,6 @@ class ContratoController extends Controller
             
                                     ->where($criterio, '=',$buscar)
                                     ->where('lotes.fraccionamiento_id','=',$buscar3)
-                                    ->where('lotes.etapa_id','=',$b_etapa)
                                     ->where('contratos.status','=',$b_status)
                                     ->where('inst_seleccionadas.elegido', '=', '1')
                                     ->orderBy('id', 'desc')->paginate(20);
@@ -3341,18 +4514,611 @@ class ContratoController extends Controller
                                     ->select('contratos.id as contratoId')
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.fraccionamiento_id','=',$buscar3)
-                                    ->where('lotes.etapa_id','=',$b_etapa)
                                     ->where('contratos.status','=',$b_status)
                                     ->where('inst_seleccionadas.elegido', '=', '1')
                                     ->orderBy('id', 'desc')->count();
+                                }else{
+                                    if($b_etapa != "" && $buscar3 != "" && $buscar != ""){
+                                        $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                        ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                        ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                        ->select(
+                                            'creditos.id',
+                                            'creditos.prospecto_id',
+                                            'creditos.num_dep_economicos',
+                                            'creditos.tipo_economia',
+                                            'creditos.nombre_primera_ref',
+                                            'creditos.telefono_primera_ref',
+                                            'creditos.celular_primera_ref',
+                                            'creditos.nombre_segunda_ref',
+                                            'creditos.telefono_segunda_ref',
+                                            'creditos.celular_segunda_ref',
+                                            'creditos.etapa',
+                                            'creditos.manzana',
+                                            'creditos.num_lote',
+                                            'creditos.modelo',
+                                            'creditos.precio_base',
+                                            'creditos.superficie',
+                                            'creditos.terreno_excedente',
+                                            'creditos.precio_terreno_excedente',
+                                            'creditos.promocion',
+                                            'creditos.descripcion_promocion',
+                                            'creditos.descuento_promocion',
+                                            'creditos.paquete',
+                                            'creditos.descripcion_paquete',
+                                            'creditos.precio_venta',
+                                            'creditos.plazo',
+                                            'creditos.credito_solic',
+                                            'creditos.costo_paquete',
+                                            'inst_seleccionadas.tipo_credito',
+                                            'inst_seleccionadas.id as inst_credito',
+                                            'creditos.precio_obra_extra',
+                                            'creditos.fraccionamiento as proyecto',
+                                            'creditos.lote_id',
+                
+                                            'inst_seleccionadas.institucion',
+                                            'personal.nombre',
+                                            'personal.apellidos',
+                                            'personal.telefono',
+                                            'personal.celular',
+                                            'personal.email',
+                                            'personal.direccion',
+                                            'personal.cp',
+                                            'personal.colonia',
+                                            'personal.f_nacimiento',
+                                            'personal.rfc',
+                                            'personal.homoclave',
+                                            'creditos.fraccionamiento',
+                                            'clientes.id as prospecto_id',
+                                            'clientes.edo_civil',
+                                            'clientes.nss',
+                                            'clientes.curp',
+                                            'clientes.empresa',
+                                            'clientes.coacreditado',
+                                            'clientes.estado',
+                                            'clientes.ciudad',
+                                            'clientes.puesto',
+                                            'clientes.nacionalidad',
+                                            'clientes.sexo',
+                                            'clientes.sexo_coa',
+                                            'clientes.email_institucional_coa',
+                                            'clientes.empresa_coa',
+                                            'clientes.edo_civil_coa',
+                                            'clientes.nss_coa',
+                                            'clientes.curp_coa',
+                                            'clientes.nombre_coa',
+                                            'clientes.apellidos_coa',
+                                            'clientes.f_nacimiento_coa',
+                                            'clientes.nacionalidad_coa',
+                                            'clientes.rfc_coa',
+                                            'clientes.homoclave_coa',
+                                            'clientes.direccion_coa',
+                                            'clientes.colonia_coa',
+                                            'clientes.ciudad_coa',
+                                            'clientes.estado_coa',
+                                            'clientes.cp_coa',
+                                            'clientes.telefono_coa',
+                                            'clientes.ext_coa',
+                                            'clientes.celular_coa',
+                                            'clientes.email_coa',
+                                            'clientes.parentesco_coa',
+                                            'clientes.lugar_nacimiento_coa',
+                                            'v.nombre as vendedor_nombre',
+                                            'v.apellidos as vendedor_apellidos',
+                
+                                            'contratos.id as contratoId',
+                                            'contratos.infonavit',
+                                            'contratos.fovisste',
+                                            'contratos.comision_apertura',
+                                            'clientes.lugar_nacimiento',
+                                            'contratos.investigacion',
+                                            'contratos.avaluo',
+                                            'contratos.prima_unica',
+                                            'contratos.escrituras',
+                                            'contratos.credito_neto',
+                                            'contratos.status',
+                                            'contratos.fecha_status',
+                                            'contratos.avaluo_cliente',
+                                            'contratos.fecha',
+                                            'contratos.direccion_empresa',
+                                            'contratos.cp_empresa',
+                                            'contratos.colonia_empresa',
+                                            'contratos.estado_empresa',
+                                            'contratos.ciudad_empresa',
+                                            'contratos.telefono_empresa',
+                                            'contratos.ext_empresa',
+                                            'contratos.direccion_empresa_coa',
+                                            'contratos.cp_empresa_coa',
+                                            'contratos.colonia_empresa_coa',
+                                            'contratos.estado_empresa_coa',
+                                            'contratos.ciudad_empresa_coa',
+                                            'contratos.telefono_empresa_coa',
+                                            'contratos.ext_empresa_coa',
+                                            'contratos.total_pagar',
+                                            'contratos.monto_total_credito',
+                                            'contratos.enganche_total',
+                                            'contratos.avance_lote',
+                                            'contratos.observacion'
+                                        )
+                
+                                        ->where($criterio, '=',$buscar)
+                                        ->where('lotes.fraccionamiento_id','=',$buscar3)
+                                        ->where('lotes.etapa_id','=',$b_etapa)
+                                        ->where('contratos.status','=',$b_status)
+                                        ->where('inst_seleccionadas.elegido', '=', '1')
+                                        ->orderBy('id', 'desc')->paginate(20);
+                
+                                        $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                        ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                        ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                        ->select('contratos.id as contratoId')
+                                        ->where($criterio, '=', $buscar)
+                                        ->where('lotes.fraccionamiento_id','=',$buscar3)
+                                        ->where('lotes.etapa_id','=',$b_etapa)
+                                        ->where('contratos.status','=',$b_status)
+                                        ->where('inst_seleccionadas.elegido', '=', '1')
+                                        ->orderBy('id', 'desc')->count();
+                                    }
                                 }
                             }
                         }
+                        else{
+                            if($b_etapa == "" && $buscar3 == "" && $buscar != ""){
+                                $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                ->select(
+                                    'creditos.id',
+                                    'creditos.prospecto_id',
+                                    'creditos.num_dep_economicos',
+                                    'creditos.tipo_economia',
+                                    'creditos.nombre_primera_ref',
+                                    'creditos.telefono_primera_ref',
+                                    'creditos.celular_primera_ref',
+                                    'creditos.nombre_segunda_ref',
+                                    'creditos.telefono_segunda_ref',
+                                    'creditos.celular_segunda_ref',
+                                    'creditos.etapa',
+                                    'creditos.manzana',
+                                    'creditos.num_lote',
+                                    'creditos.modelo',
+                                    'creditos.precio_base',
+                                    'creditos.superficie',
+                                    'creditos.terreno_excedente',
+                                    'creditos.precio_terreno_excedente',
+                                    'creditos.promocion',
+                                    'creditos.descripcion_promocion',
+                                    'creditos.descuento_promocion',
+                                    'creditos.paquete',
+                                    'creditos.descripcion_paquete',
+                                    'creditos.precio_venta',
+                                    'creditos.plazo',
+                                    'creditos.credito_solic',
+                                    'creditos.costo_paquete',
+                                    'inst_seleccionadas.tipo_credito',
+                                    'inst_seleccionadas.id as inst_credito',
+                                    'creditos.precio_obra_extra',
+                                    'creditos.fraccionamiento as proyecto',
+                                    'creditos.lote_id',
+        
+                                    'inst_seleccionadas.institucion',
+                                    'personal.nombre',
+                                    'personal.apellidos',
+                                    'personal.telefono',
+                                    'personal.celular',
+                                    'personal.email',
+                                    'personal.direccion',
+                                    'personal.cp',
+                                    'personal.colonia',
+                                    'personal.f_nacimiento',
+                                    'personal.rfc',
+                                    'personal.homoclave',
+                                    'creditos.fraccionamiento',
+                                    'clientes.id as prospecto_id',
+                                    'clientes.edo_civil',
+                                    'clientes.nss',
+                                    'clientes.curp',
+                                    'clientes.empresa',
+                                    'clientes.coacreditado',
+                                    'clientes.estado',
+                                    'clientes.ciudad',
+                                    'clientes.puesto',
+                                    'clientes.nacionalidad',
+                                    'clientes.sexo',
+                                    'clientes.sexo_coa',
+                                    'clientes.email_institucional_coa',
+                                    'clientes.empresa_coa',
+                                    'clientes.edo_civil_coa',
+                                    'clientes.nss_coa',
+                                    'clientes.curp_coa',
+                                    'clientes.nombre_coa',
+                                    'clientes.apellidos_coa',
+                                    'clientes.f_nacimiento_coa',
+                                    'clientes.nacionalidad_coa',
+                                    'clientes.rfc_coa',
+                                    'clientes.homoclave_coa',
+                                    'clientes.direccion_coa',
+                                    'clientes.colonia_coa',
+                                    'clientes.ciudad_coa',
+                                    'clientes.estado_coa',
+                                    'clientes.cp_coa',
+                                    'clientes.telefono_coa',
+                                    'clientes.ext_coa',
+                                    'clientes.celular_coa',
+                                    'clientes.email_coa',
+                                    'clientes.parentesco_coa',
+                                    'clientes.lugar_nacimiento_coa',
+                                    'v.nombre as vendedor_nombre',
+                                    'v.apellidos as vendedor_apellidos',
+        
+                                    'contratos.id as contratoId',
+                                    'contratos.infonavit',
+                                    'contratos.fovisste',
+                                    'contratos.comision_apertura',
+                                    'clientes.lugar_nacimiento',
+                                    'contratos.investigacion',
+                                    'contratos.avaluo',
+                                    'contratos.prima_unica',
+                                    'contratos.escrituras',
+                                    'contratos.credito_neto',
+                                    'contratos.status',
+                                    'contratos.fecha_status',
+                                    'contratos.avaluo_cliente',
+                                    'contratos.fecha',
+                                    'contratos.direccion_empresa',
+                                    'contratos.cp_empresa',
+                                    'contratos.colonia_empresa',
+                                    'contratos.estado_empresa',
+                                    'contratos.ciudad_empresa',
+                                    'contratos.telefono_empresa',
+                                    'contratos.ext_empresa',
+                                    'contratos.direccion_empresa_coa',
+                                    'contratos.cp_empresa_coa',
+                                    'contratos.colonia_empresa_coa',
+                                    'contratos.estado_empresa_coa',
+                                    'contratos.ciudad_empresa_coa',
+                                    'contratos.telefono_empresa_coa',
+                                    'contratos.ext_empresa_coa',
+                                    'contratos.total_pagar',
+                                    'contratos.monto_total_credito',
+                                    'contratos.enganche_total',
+                                    'contratos.avance_lote',
+                                    'contratos.observacion'
+                                )
+        
+                                ->where($criterio, '=',$buscar)
+                                ->where('contratos.status','=',$b_status)
+                                ->where('inst_seleccionadas.elegido', '=', '1')
+                                ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
+                                ->orderBy('id', 'desc')->paginate(20);
+        
+                                $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                ->select('contratos.id as contratoId')
+                                ->where($criterio, '=', $buscar)
+                                ->where('contratos.status','=',$b_status)
+                                ->where('inst_seleccionadas.elegido', '=', '1')
+                                ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
+                                ->orderBy('id', 'desc')->count();
+                            }else{
+                                if($b_etapa == "" && $buscar3 != "" && $buscar != ""){
+                                    $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                    ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                    ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                    ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                    ->select(
+                                        'creditos.id',
+                                        'creditos.prospecto_id',
+                                        'creditos.num_dep_economicos',
+                                        'creditos.tipo_economia',
+                                        'creditos.nombre_primera_ref',
+                                        'creditos.telefono_primera_ref',
+                                        'creditos.celular_primera_ref',
+                                        'creditos.nombre_segunda_ref',
+                                        'creditos.telefono_segunda_ref',
+                                        'creditos.celular_segunda_ref',
+                                        'creditos.etapa',
+                                        'creditos.manzana',
+                                        'creditos.num_lote',
+                                        'creditos.modelo',
+                                        'creditos.precio_base',
+                                        'creditos.superficie',
+                                        'creditos.terreno_excedente',
+                                        'creditos.precio_terreno_excedente',
+                                        'creditos.promocion',
+                                        'creditos.descripcion_promocion',
+                                        'creditos.descuento_promocion',
+                                        'creditos.paquete',
+                                        'creditos.descripcion_paquete',
+                                        'creditos.precio_venta',
+                                        'creditos.plazo',
+                                        'creditos.credito_solic',
+                                        'creditos.costo_paquete',
+                                        'inst_seleccionadas.tipo_credito',
+                                        'inst_seleccionadas.id as inst_credito',
+                                        'creditos.precio_obra_extra',
+                                        'creditos.fraccionamiento as proyecto',
+                                        'creditos.lote_id',
+            
+                                        'inst_seleccionadas.institucion',
+                                        'personal.nombre',
+                                        'personal.apellidos',
+                                        'personal.telefono',
+                                        'personal.celular',
+                                        'personal.email',
+                                        'personal.direccion',
+                                        'personal.cp',
+                                        'personal.colonia',
+                                        'personal.f_nacimiento',
+                                        'personal.rfc',
+                                        'personal.homoclave',
+                                        'creditos.fraccionamiento',
+                                        'clientes.id as prospecto_id',
+                                        'clientes.edo_civil',
+                                        'clientes.nss',
+                                        'clientes.curp',
+                                        'clientes.empresa',
+                                        'clientes.coacreditado',
+                                        'clientes.estado',
+                                        'clientes.ciudad',
+                                        'clientes.puesto',
+                                        'clientes.nacionalidad',
+                                        'clientes.sexo',
+                                        'clientes.sexo_coa',
+                                        'clientes.email_institucional_coa',
+                                        'clientes.empresa_coa',
+                                        'clientes.edo_civil_coa',
+                                        'clientes.nss_coa',
+                                        'clientes.curp_coa',
+                                        'clientes.nombre_coa',
+                                        'clientes.apellidos_coa',
+                                        'clientes.f_nacimiento_coa',
+                                        'clientes.nacionalidad_coa',
+                                        'clientes.rfc_coa',
+                                        'clientes.homoclave_coa',
+                                        'clientes.direccion_coa',
+                                        'clientes.colonia_coa',
+                                        'clientes.ciudad_coa',
+                                        'clientes.estado_coa',
+                                        'clientes.cp_coa',
+                                        'clientes.telefono_coa',
+                                        'clientes.ext_coa',
+                                        'clientes.celular_coa',
+                                        'clientes.email_coa',
+                                        'clientes.parentesco_coa',
+                                        'clientes.lugar_nacimiento_coa',
+                                        'v.nombre as vendedor_nombre',
+                                        'v.apellidos as vendedor_apellidos',
+            
+                                        'contratos.id as contratoId',
+                                        'contratos.infonavit',
+                                        'contratos.fovisste',
+                                        'contratos.comision_apertura',
+                                        'clientes.lugar_nacimiento',
+                                        'contratos.investigacion',
+                                        'contratos.avaluo',
+                                        'contratos.prima_unica',
+                                        'contratos.escrituras',
+                                        'contratos.credito_neto',
+                                        'contratos.status',
+                                        'contratos.fecha_status',
+                                        'contratos.avaluo_cliente',
+                                        'contratos.fecha',
+                                        'contratos.direccion_empresa',
+                                        'contratos.cp_empresa',
+                                        'contratos.colonia_empresa',
+                                        'contratos.estado_empresa',
+                                        'contratos.ciudad_empresa',
+                                        'contratos.telefono_empresa',
+                                        'contratos.ext_empresa',
+                                        'contratos.direccion_empresa_coa',
+                                        'contratos.cp_empresa_coa',
+                                        'contratos.colonia_empresa_coa',
+                                        'contratos.estado_empresa_coa',
+                                        'contratos.ciudad_empresa_coa',
+                                        'contratos.telefono_empresa_coa',
+                                        'contratos.ext_empresa_coa',
+                                        'contratos.total_pagar',
+                                        'contratos.monto_total_credito',
+                                        'contratos.enganche_total',
+                                        'contratos.avance_lote',
+                                        'contratos.observacion'
+                                    )
+            
+                                    ->where($criterio, '=',$buscar)
+                                    ->where('lotes.fraccionamiento_id','=',$buscar3)
+                                    ->where('contratos.status','=',$b_status)
+                                    ->where('inst_seleccionadas.elegido', '=', '1')
+                                    ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
+                                    ->orderBy('id', 'desc')->paginate(20);
+            
+                                    $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                    ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                    ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                    ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                    ->select('contratos.id as contratoId')
+                                    ->where($criterio, '=', $buscar)
+                                    ->where('lotes.fraccionamiento_id','=',$buscar3)
+                                    ->where('contratos.status','=',$b_status)
+                                    ->where('inst_seleccionadas.elegido', '=', '1')
+                                    ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
+                                    ->orderBy('id', 'desc')->count();
+                                }else{
+                                    if($b_etapa != "" && $buscar3 != "" && $buscar != ""){
+                                        $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                        ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                        ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                        ->select(
+                                            'creditos.id',
+                                            'creditos.prospecto_id',
+                                            'creditos.num_dep_economicos',
+                                            'creditos.tipo_economia',
+                                            'creditos.nombre_primera_ref',
+                                            'creditos.telefono_primera_ref',
+                                            'creditos.celular_primera_ref',
+                                            'creditos.nombre_segunda_ref',
+                                            'creditos.telefono_segunda_ref',
+                                            'creditos.celular_segunda_ref',
+                                            'creditos.etapa',
+                                            'creditos.manzana',
+                                            'creditos.num_lote',
+                                            'creditos.modelo',
+                                            'creditos.precio_base',
+                                            'creditos.superficie',
+                                            'creditos.terreno_excedente',
+                                            'creditos.precio_terreno_excedente',
+                                            'creditos.promocion',
+                                            'creditos.descripcion_promocion',
+                                            'creditos.descuento_promocion',
+                                            'creditos.paquete',
+                                            'creditos.descripcion_paquete',
+                                            'creditos.precio_venta',
+                                            'creditos.plazo',
+                                            'creditos.credito_solic',
+                                            'creditos.costo_paquete',
+                                            'inst_seleccionadas.tipo_credito',
+                                            'inst_seleccionadas.id as inst_credito',
+                                            'creditos.precio_obra_extra',
+                                            'creditos.fraccionamiento as proyecto',
+                                            'creditos.lote_id',
+                
+                                            'inst_seleccionadas.institucion',
+                                            'personal.nombre',
+                                            'personal.apellidos',
+                                            'personal.telefono',
+                                            'personal.celular',
+                                            'personal.email',
+                                            'personal.direccion',
+                                            'personal.cp',
+                                            'personal.colonia',
+                                            'personal.f_nacimiento',
+                                            'personal.rfc',
+                                            'personal.homoclave',
+                                            'creditos.fraccionamiento',
+                                            'clientes.id as prospecto_id',
+                                            'clientes.edo_civil',
+                                            'clientes.nss',
+                                            'clientes.curp',
+                                            'clientes.empresa',
+                                            'clientes.coacreditado',
+                                            'clientes.estado',
+                                            'clientes.ciudad',
+                                            'clientes.puesto',
+                                            'clientes.nacionalidad',
+                                            'clientes.sexo',
+                                            'clientes.sexo_coa',
+                                            'clientes.email_institucional_coa',
+                                            'clientes.empresa_coa',
+                                            'clientes.edo_civil_coa',
+                                            'clientes.nss_coa',
+                                            'clientes.curp_coa',
+                                            'clientes.nombre_coa',
+                                            'clientes.apellidos_coa',
+                                            'clientes.f_nacimiento_coa',
+                                            'clientes.nacionalidad_coa',
+                                            'clientes.rfc_coa',
+                                            'clientes.homoclave_coa',
+                                            'clientes.direccion_coa',
+                                            'clientes.colonia_coa',
+                                            'clientes.ciudad_coa',
+                                            'clientes.estado_coa',
+                                            'clientes.cp_coa',
+                                            'clientes.telefono_coa',
+                                            'clientes.ext_coa',
+                                            'clientes.celular_coa',
+                                            'clientes.email_coa',
+                                            'clientes.parentesco_coa',
+                                            'clientes.lugar_nacimiento_coa',
+                                            'v.nombre as vendedor_nombre',
+                                            'v.apellidos as vendedor_apellidos',
+                
+                                            'contratos.id as contratoId',
+                                            'contratos.infonavit',
+                                            'contratos.fovisste',
+                                            'contratos.comision_apertura',
+                                            'clientes.lugar_nacimiento',
+                                            'contratos.investigacion',
+                                            'contratos.avaluo',
+                                            'contratos.prima_unica',
+                                            'contratos.escrituras',
+                                            'contratos.credito_neto',
+                                            'contratos.status',
+                                            'contratos.fecha_status',
+                                            'contratos.avaluo_cliente',
+                                            'contratos.fecha',
+                                            'contratos.direccion_empresa',
+                                            'contratos.cp_empresa',
+                                            'contratos.colonia_empresa',
+                                            'contratos.estado_empresa',
+                                            'contratos.ciudad_empresa',
+                                            'contratos.telefono_empresa',
+                                            'contratos.ext_empresa',
+                                            'contratos.direccion_empresa_coa',
+                                            'contratos.cp_empresa_coa',
+                                            'contratos.colonia_empresa_coa',
+                                            'contratos.estado_empresa_coa',
+                                            'contratos.ciudad_empresa_coa',
+                                            'contratos.telefono_empresa_coa',
+                                            'contratos.ext_empresa_coa',
+                                            'contratos.total_pagar',
+                                            'contratos.monto_total_credito',
+                                            'contratos.enganche_total',
+                                            'contratos.avance_lote',
+                                            'contratos.observacion'
+                                        )
+                
+                                        ->where($criterio, '=',$buscar)
+                                        ->where('lotes.fraccionamiento_id','=',$buscar3)
+                                        ->where('lotes.etapa_id','=',$b_etapa)
+                                        ->where('contratos.status','=',$b_status)
+                                        ->where('inst_seleccionadas.elegido', '=', '1')
+                                        ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
+                                        ->orderBy('id', 'desc')->paginate(20);
+                
+                                        $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                        ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                        ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                        ->select('contratos.id as contratoId')
+                                        ->where($criterio, '=', $buscar)
+                                        ->where('lotes.fraccionamiento_id','=',$buscar3)
+                                        ->where('lotes.etapa_id','=',$b_etapa)
+                                        ->where('contratos.status','=',$b_status)
+                                        ->where('inst_seleccionadas.elegido', '=', '1')
+                                        ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
+                                        ->orderBy('id', 'desc')->count();
+                                    }
+                                }
+                            }
+                        }
+                        
 
                         break;
                         }
                    
-                        case 'contratos.fecha': {
+                    case 'contratos.fecha': {
                             $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                 ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
@@ -3496,155 +5262,8 @@ class ContratoController extends Controller
                         }
                     
                     case 'creditos.fraccionamiento': {
-                            if ($b_etapa != '' && $b_manzana != '' && $b_lote != '' && $b_status!= '' && $buscar != '') {
-                                $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
-                                    ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
-                                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                                    ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as v', 'clientes.vendedor_id', 'v.id')
-                                    ->select(
-                                        'creditos.id',
-                                        'creditos.prospecto_id',
-                                        'creditos.num_dep_economicos',
-                                        'creditos.tipo_economia',
-                                        'creditos.nombre_primera_ref',
-                                        'creditos.telefono_primera_ref',
-                                        'creditos.celular_primera_ref',
-                                        'creditos.nombre_segunda_ref',
-                                        'creditos.telefono_segunda_ref',
-                                        'creditos.celular_segunda_ref',
-                                        'creditos.etapa',
-                                        'creditos.manzana',
-                                        'creditos.num_lote',
-                                        'creditos.modelo',
-                                        'creditos.precio_base',
-                                        'creditos.superficie',
-                                        'creditos.terreno_excedente',
-                                        'creditos.precio_terreno_excedente',
-                                        'creditos.promocion',
-                                        'creditos.descripcion_promocion',
-                                        'creditos.descuento_promocion',
-                                        'creditos.paquete',
-                                        'creditos.descripcion_paquete',
-                                        'creditos.precio_venta',
-                                        'creditos.plazo',
-                                        'creditos.credito_solic',
-                                        'creditos.costo_paquete',
-                                        'inst_seleccionadas.tipo_credito',
-                                        'inst_seleccionadas.id as inst_credito',
-                                        'creditos.precio_obra_extra',
-                                        'creditos.fraccionamiento as proyecto',
-                                        'creditos.lote_id',
-
-                                        'inst_seleccionadas.institucion',
-                                        'personal.nombre',
-                                        'personal.apellidos',
-                                        'personal.telefono',
-                                        'personal.celular',
-                                        'personal.email',
-                                        'personal.direccion',
-                                        'personal.cp',
-                                        'personal.colonia',
-                                        'personal.f_nacimiento',
-                                        'personal.rfc',
-                                        'personal.homoclave',
-                                        'creditos.fraccionamiento',
-                                        'clientes.id as prospecto_id',
-                                        'clientes.edo_civil',
-                                        'clientes.nss',
-                                        'clientes.curp',
-                                        'clientes.empresa',
-                                        'clientes.coacreditado',
-                                        'clientes.estado',
-                                        'clientes.ciudad',
-                                        'clientes.puesto',
-                                        'clientes.nacionalidad',
-                                        'clientes.sexo',
-                                        'clientes.sexo_coa',
-                                        'clientes.email_institucional_coa',
-                                        'clientes.empresa_coa',
-                                        'clientes.edo_civil_coa',
-                                        'clientes.nss_coa',
-                                        'clientes.curp_coa',
-                                        'clientes.nombre_coa',
-                                        'clientes.apellidos_coa',
-                                        'clientes.f_nacimiento_coa',
-                                        'clientes.nacionalidad_coa',
-                                        'clientes.rfc_coa',
-                                        'clientes.homoclave_coa',
-                                        'clientes.direccion_coa',
-                                        'clientes.colonia_coa',
-                                        'clientes.ciudad_coa',
-                                        'clientes.estado_coa',
-                                        'clientes.cp_coa',
-                                        'clientes.telefono_coa',
-                                        'clientes.ext_coa',
-                                        'clientes.celular_coa',
-                                        'clientes.email_coa',
-                                        'clientes.parentesco_coa',
-                                        'clientes.lugar_nacimiento_coa',
-                                        'v.nombre as vendedor_nombre',
-                                        'v.apellidos as vendedor_apellidos',
-
-                                        'contratos.id as contratoId',
-                                        'contratos.infonavit',
-                                        'contratos.fovisste',
-                                        'contratos.comision_apertura',
-                                        'clientes.lugar_nacimiento',
-                                        'contratos.investigacion',
-                                        'contratos.avaluo',
-                                        'contratos.prima_unica',
-                                        'contratos.escrituras',
-                                        'contratos.credito_neto',
-                                        'contratos.status',
-                                        'contratos.fecha_status',
-                                        'contratos.avaluo_cliente',
-                                        'contratos.fecha',
-                                        'contratos.direccion_empresa',
-                                        'contratos.cp_empresa',
-                                        'contratos.colonia_empresa',
-                                        'contratos.estado_empresa',
-                                        'contratos.ciudad_empresa',
-                                        'contratos.telefono_empresa',
-                                        'contratos.ext_empresa',
-                                        'contratos.direccion_empresa_coa',
-                                        'contratos.cp_empresa_coa',
-                                        'contratos.colonia_empresa_coa',
-                                        'contratos.estado_empresa_coa',
-                                        'contratos.ciudad_empresa_coa',
-                                        'contratos.telefono_empresa_coa',
-                                        'contratos.ext_empresa_coa',
-                                        'contratos.total_pagar',
-                                        'contratos.monto_total_credito',
-                                        'contratos.enganche_total',
-                                        'contratos.avance_lote',
-                                        'contratos.observacion'
-                                    )
-                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                    ->where('contratos.status','=',$b_status)
-                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                    ->where('lotes.etapa_id', '=', $b_etapa)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote)
-                                    ->orderBy('id', 'desc')->paginate(20);
-
-                                $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
-                                    ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
-                                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                                    ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('personal as v', 'clientes.vendedor_id', 'v.id')
-                                    ->select('contratos.id as contratoId')
-                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                    ->where('contratos.status','=',$b_status)
-                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                    ->where('lotes.etapa_id', '=', $b_etapa)
-                                    ->where('lotes.manzana', '=', $b_manzana)
-                                    ->where('lotes.num_lote', '=', $b_lote)
-                                    ->orderBy('id', 'desc')->count();
-                            } else {
-                                if ($b_etapa != '' && $b_manzana != '') {
+                            if($f_ini == '' || $f_fin == ''){
+                                if ($b_etapa != '' && $b_manzana != '' && $b_lote != '' && $b_status!= '' && $buscar != '') {
                                     $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                         ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
                                         ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
@@ -3684,7 +5303,7 @@ class ContratoController extends Controller
                                             'creditos.precio_obra_extra',
                                             'creditos.fraccionamiento as proyecto',
                                             'creditos.lote_id',
-
+    
                                             'inst_seleccionadas.institucion',
                                             'personal.nombre',
                                             'personal.apellidos',
@@ -3734,7 +5353,7 @@ class ContratoController extends Controller
                                             'clientes.lugar_nacimiento_coa',
                                             'v.nombre as vendedor_nombre',
                                             'v.apellidos as vendedor_apellidos',
-
+    
                                             'contratos.id as contratoId',
                                             'contratos.infonavit',
                                             'contratos.fovisste',
@@ -3774,8 +5393,9 @@ class ContratoController extends Controller
                                         ->where('lotes.fraccionamiento_id', '=',  $buscar)
                                         ->where('lotes.etapa_id', '=', $b_etapa)
                                         ->where('lotes.manzana', '=', $b_manzana)
+                                        ->where('lotes.num_lote', '=', $b_lote)
                                         ->orderBy('id', 'desc')->paginate(20);
-
+    
                                     $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                         ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
                                         ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
@@ -3788,9 +5408,10 @@ class ContratoController extends Controller
                                         ->where('lotes.fraccionamiento_id', '=',  $buscar)
                                         ->where('lotes.etapa_id', '=', $b_etapa)
                                         ->where('lotes.manzana', '=', $b_manzana)
+                                        ->where('lotes.num_lote', '=', $b_lote)
                                         ->orderBy('id', 'desc')->count();
                                 } else {
-                                    if ($b_etapa != '') {
+                                    if ($b_etapa != '' && $b_manzana != '') {
                                         $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                             ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
                                             ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
@@ -3830,7 +5451,7 @@ class ContratoController extends Controller
                                                 'creditos.precio_obra_extra',
                                                 'creditos.fraccionamiento as proyecto',
                                                 'creditos.lote_id',
-
+    
                                                 'inst_seleccionadas.institucion',
                                                 'personal.nombre',
                                                 'personal.apellidos',
@@ -3880,7 +5501,7 @@ class ContratoController extends Controller
                                                 'clientes.lugar_nacimiento_coa',
                                                 'v.nombre as vendedor_nombre',
                                                 'v.apellidos as vendedor_apellidos',
-
+    
                                                 'contratos.id as contratoId',
                                                 'contratos.infonavit',
                                                 'contratos.fovisste',
@@ -3918,9 +5539,10 @@ class ContratoController extends Controller
                                             ->where('inst_seleccionadas.elegido', '=', '1')
                                             ->where('contratos.status','=',$b_status)
                                             ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                            ->where('lotes.etapa_id', '=',  $b_etapa )
+                                            ->where('lotes.etapa_id', '=', $b_etapa)
+                                            ->where('lotes.manzana', '=', $b_manzana)
                                             ->orderBy('id', 'desc')->paginate(20);
-
+    
                                         $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                             ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
                                             ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
@@ -3931,10 +5553,11 @@ class ContratoController extends Controller
                                             ->where('inst_seleccionadas.elegido', '=', '1')
                                             ->where('contratos.status','=',$b_status)
                                             ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                            ->where('lotes.etapa_id', '=',  $b_etapa )
+                                            ->where('lotes.etapa_id', '=', $b_etapa)
+                                            ->where('lotes.manzana', '=', $b_manzana)
                                             ->orderBy('id', 'desc')->count();
                                     } else {
-                                        if ($b_manzana != '') {
+                                        if ($b_etapa != '') {
                                             $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                                 ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
                                                 ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
@@ -3974,7 +5597,7 @@ class ContratoController extends Controller
                                                     'creditos.precio_obra_extra',
                                                     'creditos.fraccionamiento as proyecto',
                                                     'creditos.lote_id',
-
+    
                                                     'inst_seleccionadas.institucion',
                                                     'personal.nombre',
                                                     'personal.apellidos',
@@ -4024,7 +5647,7 @@ class ContratoController extends Controller
                                                     'clientes.lugar_nacimiento_coa',
                                                     'v.nombre as vendedor_nombre',
                                                     'v.apellidos as vendedor_apellidos',
-
+    
                                                     'contratos.id as contratoId',
                                                     'contratos.infonavit',
                                                     'contratos.fovisste',
@@ -4062,9 +5685,9 @@ class ContratoController extends Controller
                                                 ->where('inst_seleccionadas.elegido', '=', '1')
                                                 ->where('contratos.status','=',$b_status)
                                                 ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                ->where('lotes.manzana', '=', $b_manzana)
+                                                ->where('lotes.etapa_id', '=',  $b_etapa )
                                                 ->orderBy('id', 'desc')->paginate(20);
-
+    
                                             $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                                 ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
                                                 ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
@@ -4075,10 +5698,10 @@ class ContratoController extends Controller
                                                 ->where('inst_seleccionadas.elegido', '=', '1')
                                                 ->where('contratos.status','=',$b_status)
                                                 ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                ->where('lotes.manzana', '=', $b_manzana)
+                                                ->where('lotes.etapa_id', '=',  $b_etapa )
                                                 ->orderBy('id', 'desc')->count();
                                         } else {
-                                            if ($b_lote != '') {
+                                            if ($b_manzana != '') {
                                                 $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                                     ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
                                                     ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
@@ -4118,7 +5741,7 @@ class ContratoController extends Controller
                                                         'creditos.precio_obra_extra',
                                                         'creditos.fraccionamiento as proyecto',
                                                         'creditos.lote_id',
-
+    
                                                         'inst_seleccionadas.institucion',
                                                         'personal.nombre',
                                                         'personal.apellidos',
@@ -4168,7 +5791,7 @@ class ContratoController extends Controller
                                                         'clientes.lugar_nacimiento_coa',
                                                         'v.nombre as vendedor_nombre',
                                                         'v.apellidos as vendedor_apellidos',
-
+    
                                                         'contratos.id as contratoId',
                                                         'contratos.infonavit',
                                                         'contratos.fovisste',
@@ -4206,9 +5829,9 @@ class ContratoController extends Controller
                                                     ->where('inst_seleccionadas.elegido', '=', '1')
                                                     ->where('contratos.status','=',$b_status)
                                                     ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                    ->where('lotes.num_lote', '=', $b_lote)
+                                                    ->where('lotes.manzana', '=', $b_manzana)
                                                     ->orderBy('id', 'desc')->paginate(20);
-
+    
                                                 $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                                     ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
                                                     ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
@@ -4218,155 +5841,1186 @@ class ContratoController extends Controller
                                                     ->select('contratos.id as contratoId')
                                                     ->where('inst_seleccionadas.elegido', '=', '1')
                                                     ->where('contratos.status','=',$b_status)
-                                                    ->where('lotes.fraccionamiento', '=',  $buscar)
-                                                    ->where('lotes.num_lote', '=', $b_lote)
+                                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
+                                                    ->where('lotes.manzana', '=', $b_manzana)
                                                     ->orderBy('id', 'desc')->count();
                                             } else {
-                                                $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
-                                                    ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
-                                                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                                                    ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                    ->join('personal as v', 'clientes.vendedor_id', 'v.id')
-                                                    ->select(
-                                                        'creditos.id',
-                                                        'creditos.prospecto_id',
-                                                        'creditos.num_dep_economicos',
-                                                        'creditos.tipo_economia',
-                                                        'creditos.nombre_primera_ref',
-                                                        'creditos.telefono_primera_ref',
-                                                        'creditos.celular_primera_ref',
-                                                        'creditos.nombre_segunda_ref',
-                                                        'creditos.telefono_segunda_ref',
-                                                        'creditos.celular_segunda_ref',
-                                                        'creditos.etapa',
-                                                        'creditos.manzana',
-                                                        'creditos.num_lote',
-                                                        'creditos.modelo',
-                                                        'creditos.precio_base',
-                                                        'creditos.superficie',
-                                                        'creditos.terreno_excedente',
-                                                        'creditos.precio_terreno_excedente',
-                                                        'creditos.promocion',
-                                                        'creditos.descripcion_promocion',
-                                                        'creditos.descuento_promocion',
-                                                        'creditos.paquete',
-                                                        'creditos.descripcion_paquete',
-                                                        'creditos.precio_venta',
-                                                        'creditos.plazo',
-                                                        'creditos.credito_solic',
-                                                        'creditos.costo_paquete',
-                                                        'inst_seleccionadas.tipo_credito',
-                                                        'inst_seleccionadas.id as inst_credito',
-                                                        'creditos.precio_obra_extra',
-                                                        'creditos.fraccionamiento as proyecto',
-                                                        'creditos.lote_id',
-
-                                                        'inst_seleccionadas.institucion',
-                                                        'personal.nombre',
-                                                        'personal.apellidos',
-                                                        'personal.telefono',
-                                                        'personal.celular',
-                                                        'personal.email',
-                                                        'personal.direccion',
-                                                        'personal.cp',
-                                                        'personal.colonia',
-                                                        'personal.f_nacimiento',
-                                                        'personal.rfc',
-                                                        'personal.homoclave',
-                                                        'creditos.fraccionamiento',
-                                                        'clientes.id as prospecto_id',
-                                                        'clientes.edo_civil',
-                                                        'clientes.nss',
-                                                        'clientes.curp',
-                                                        'clientes.empresa',
-                                                        'clientes.coacreditado',
-                                                        'clientes.estado',
-                                                        'clientes.ciudad',
-                                                        'clientes.puesto',
-                                                        'clientes.nacionalidad',
-                                                        'clientes.sexo',
-                                                        'clientes.sexo_coa',
-                                                        'clientes.email_institucional_coa',
-                                                        'clientes.empresa_coa',
-                                                        'clientes.edo_civil_coa',
-                                                        'clientes.nss_coa',
-                                                        'clientes.curp_coa',
-                                                        'clientes.nombre_coa',
-                                                        'clientes.apellidos_coa',
-                                                        'clientes.f_nacimiento_coa',
-                                                        'clientes.nacionalidad_coa',
-                                                        'clientes.rfc_coa',
-                                                        'clientes.homoclave_coa',
-                                                        'clientes.direccion_coa',
-                                                        'clientes.colonia_coa',
-                                                        'clientes.ciudad_coa',
-                                                        'clientes.estado_coa',
-                                                        'clientes.cp_coa',
-                                                        'clientes.telefono_coa',
-                                                        'clientes.ext_coa',
-                                                        'clientes.celular_coa',
-                                                        'clientes.email_coa',
-                                                        'clientes.parentesco_coa',
-                                                        'clientes.lugar_nacimiento_coa',
-                                                        'v.nombre as vendedor_nombre',
-                                                        'v.apellidos as vendedor_apellidos',
-
-                                                        'contratos.id as contratoId',
-                                                        'contratos.infonavit',
-                                                        'contratos.fovisste',
-                                                        'contratos.comision_apertura',
-                                                        'clientes.lugar_nacimiento',
-                                                        'contratos.investigacion',
-                                                        'contratos.avaluo',
-                                                        'contratos.prima_unica',
-                                                        'contratos.escrituras',
-                                                        'contratos.credito_neto',
-                                                        'contratos.status',
-                                                        'contratos.fecha_status',
-                                                        'contratos.avaluo_cliente',
-                                                        'contratos.fecha',
-                                                        'contratos.direccion_empresa',
-                                                        'contratos.cp_empresa',
-                                                        'contratos.colonia_empresa',
-                                                        'contratos.estado_empresa',
-                                                        'contratos.ciudad_empresa',
-                                                        'contratos.telefono_empresa',
-                                                        'contratos.ext_empresa',
-                                                        'contratos.direccion_empresa_coa',
-                                                        'contratos.cp_empresa_coa',
-                                                        'contratos.colonia_empresa_coa',
-                                                        'contratos.estado_empresa_coa',
-                                                        'contratos.ciudad_empresa_coa',
-                                                        'contratos.telefono_empresa_coa',
-                                                        'contratos.ext_empresa_coa',
-                                                        'contratos.total_pagar',
-                                                        'contratos.monto_total_credito',
-                                                        'contratos.enganche_total',
-                                                        'contratos.avance_lote',
-                                                        'contratos.observacion'
-                                                    )
-                                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                                    ->where('contratos.status','=',$b_status)
-                                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                    ->orderBy('id', 'desc')->paginate(20);
-
-                                                $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
-                                                    ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
-                                                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
-                                                    ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-                                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                                    ->join('personal as v', 'clientes.vendedor_id', 'v.id')
-                                                    ->select('contratos.id as contratoId')
-                                                    ->where('inst_seleccionadas.elegido', '=', '1')
-                                                    ->where('contratos.status','=',$b_status)
-                                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
-                                                    ->orderBy('id', 'desc')->count();
+                                                if ($b_lote != '') {
+                                                    $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                                        ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                                        ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                                        ->select(
+                                                            'creditos.id',
+                                                            'creditos.prospecto_id',
+                                                            'creditos.num_dep_economicos',
+                                                            'creditos.tipo_economia',
+                                                            'creditos.nombre_primera_ref',
+                                                            'creditos.telefono_primera_ref',
+                                                            'creditos.celular_primera_ref',
+                                                            'creditos.nombre_segunda_ref',
+                                                            'creditos.telefono_segunda_ref',
+                                                            'creditos.celular_segunda_ref',
+                                                            'creditos.etapa',
+                                                            'creditos.manzana',
+                                                            'creditos.num_lote',
+                                                            'creditos.modelo',
+                                                            'creditos.precio_base',
+                                                            'creditos.superficie',
+                                                            'creditos.terreno_excedente',
+                                                            'creditos.precio_terreno_excedente',
+                                                            'creditos.promocion',
+                                                            'creditos.descripcion_promocion',
+                                                            'creditos.descuento_promocion',
+                                                            'creditos.paquete',
+                                                            'creditos.descripcion_paquete',
+                                                            'creditos.precio_venta',
+                                                            'creditos.plazo',
+                                                            'creditos.credito_solic',
+                                                            'creditos.costo_paquete',
+                                                            'inst_seleccionadas.tipo_credito',
+                                                            'inst_seleccionadas.id as inst_credito',
+                                                            'creditos.precio_obra_extra',
+                                                            'creditos.fraccionamiento as proyecto',
+                                                            'creditos.lote_id',
+    
+                                                            'inst_seleccionadas.institucion',
+                                                            'personal.nombre',
+                                                            'personal.apellidos',
+                                                            'personal.telefono',
+                                                            'personal.celular',
+                                                            'personal.email',
+                                                            'personal.direccion',
+                                                            'personal.cp',
+                                                            'personal.colonia',
+                                                            'personal.f_nacimiento',
+                                                            'personal.rfc',
+                                                            'personal.homoclave',
+                                                            'creditos.fraccionamiento',
+                                                            'clientes.id as prospecto_id',
+                                                            'clientes.edo_civil',
+                                                            'clientes.nss',
+                                                            'clientes.curp',
+                                                            'clientes.empresa',
+                                                            'clientes.coacreditado',
+                                                            'clientes.estado',
+                                                            'clientes.ciudad',
+                                                            'clientes.puesto',
+                                                            'clientes.nacionalidad',
+                                                            'clientes.sexo',
+                                                            'clientes.sexo_coa',
+                                                            'clientes.email_institucional_coa',
+                                                            'clientes.empresa_coa',
+                                                            'clientes.edo_civil_coa',
+                                                            'clientes.nss_coa',
+                                                            'clientes.curp_coa',
+                                                            'clientes.nombre_coa',
+                                                            'clientes.apellidos_coa',
+                                                            'clientes.f_nacimiento_coa',
+                                                            'clientes.nacionalidad_coa',
+                                                            'clientes.rfc_coa',
+                                                            'clientes.homoclave_coa',
+                                                            'clientes.direccion_coa',
+                                                            'clientes.colonia_coa',
+                                                            'clientes.ciudad_coa',
+                                                            'clientes.estado_coa',
+                                                            'clientes.cp_coa',
+                                                            'clientes.telefono_coa',
+                                                            'clientes.ext_coa',
+                                                            'clientes.celular_coa',
+                                                            'clientes.email_coa',
+                                                            'clientes.parentesco_coa',
+                                                            'clientes.lugar_nacimiento_coa',
+                                                            'v.nombre as vendedor_nombre',
+                                                            'v.apellidos as vendedor_apellidos',
+    
+                                                            'contratos.id as contratoId',
+                                                            'contratos.infonavit',
+                                                            'contratos.fovisste',
+                                                            'contratos.comision_apertura',
+                                                            'clientes.lugar_nacimiento',
+                                                            'contratos.investigacion',
+                                                            'contratos.avaluo',
+                                                            'contratos.prima_unica',
+                                                            'contratos.escrituras',
+                                                            'contratos.credito_neto',
+                                                            'contratos.status',
+                                                            'contratos.fecha_status',
+                                                            'contratos.avaluo_cliente',
+                                                            'contratos.fecha',
+                                                            'contratos.direccion_empresa',
+                                                            'contratos.cp_empresa',
+                                                            'contratos.colonia_empresa',
+                                                            'contratos.estado_empresa',
+                                                            'contratos.ciudad_empresa',
+                                                            'contratos.telefono_empresa',
+                                                            'contratos.ext_empresa',
+                                                            'contratos.direccion_empresa_coa',
+                                                            'contratos.cp_empresa_coa',
+                                                            'contratos.colonia_empresa_coa',
+                                                            'contratos.estado_empresa_coa',
+                                                            'contratos.ciudad_empresa_coa',
+                                                            'contratos.telefono_empresa_coa',
+                                                            'contratos.ext_empresa_coa',
+                                                            'contratos.total_pagar',
+                                                            'contratos.monto_total_credito',
+                                                            'contratos.enganche_total',
+                                                            'contratos.avance_lote',
+                                                            'contratos.observacion'
+                                                        )
+                                                        ->where('inst_seleccionadas.elegido', '=', '1')
+                                                        ->where('contratos.status','=',$b_status)
+                                                        ->where('lotes.fraccionamiento_id', '=',  $buscar)
+                                                        ->where('lotes.num_lote', '=', $b_lote)
+                                                        ->orderBy('id', 'desc')->paginate(20);
+    
+                                                    $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                                        ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                                        ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                                        ->select('contratos.id as contratoId')
+                                                        ->where('inst_seleccionadas.elegido', '=', '1')
+                                                        ->where('contratos.status','=',$b_status)
+                                                        ->where('lotes.fraccionamiento', '=',  $buscar)
+                                                        ->where('lotes.num_lote', '=', $b_lote)
+                                                        ->orderBy('id', 'desc')->count();
+                                                } else {
+                                                    $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                                        ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                                        ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                                        ->select(
+                                                            'creditos.id',
+                                                            'creditos.prospecto_id',
+                                                            'creditos.num_dep_economicos',
+                                                            'creditos.tipo_economia',
+                                                            'creditos.nombre_primera_ref',
+                                                            'creditos.telefono_primera_ref',
+                                                            'creditos.celular_primera_ref',
+                                                            'creditos.nombre_segunda_ref',
+                                                            'creditos.telefono_segunda_ref',
+                                                            'creditos.celular_segunda_ref',
+                                                            'creditos.etapa',
+                                                            'creditos.manzana',
+                                                            'creditos.num_lote',
+                                                            'creditos.modelo',
+                                                            'creditos.precio_base',
+                                                            'creditos.superficie',
+                                                            'creditos.terreno_excedente',
+                                                            'creditos.precio_terreno_excedente',
+                                                            'creditos.promocion',
+                                                            'creditos.descripcion_promocion',
+                                                            'creditos.descuento_promocion',
+                                                            'creditos.paquete',
+                                                            'creditos.descripcion_paquete',
+                                                            'creditos.precio_venta',
+                                                            'creditos.plazo',
+                                                            'creditos.credito_solic',
+                                                            'creditos.costo_paquete',
+                                                            'inst_seleccionadas.tipo_credito',
+                                                            'inst_seleccionadas.id as inst_credito',
+                                                            'creditos.precio_obra_extra',
+                                                            'creditos.fraccionamiento as proyecto',
+                                                            'creditos.lote_id',
+    
+                                                            'inst_seleccionadas.institucion',
+                                                            'personal.nombre',
+                                                            'personal.apellidos',
+                                                            'personal.telefono',
+                                                            'personal.celular',
+                                                            'personal.email',
+                                                            'personal.direccion',
+                                                            'personal.cp',
+                                                            'personal.colonia',
+                                                            'personal.f_nacimiento',
+                                                            'personal.rfc',
+                                                            'personal.homoclave',
+                                                            'creditos.fraccionamiento',
+                                                            'clientes.id as prospecto_id',
+                                                            'clientes.edo_civil',
+                                                            'clientes.nss',
+                                                            'clientes.curp',
+                                                            'clientes.empresa',
+                                                            'clientes.coacreditado',
+                                                            'clientes.estado',
+                                                            'clientes.ciudad',
+                                                            'clientes.puesto',
+                                                            'clientes.nacionalidad',
+                                                            'clientes.sexo',
+                                                            'clientes.sexo_coa',
+                                                            'clientes.email_institucional_coa',
+                                                            'clientes.empresa_coa',
+                                                            'clientes.edo_civil_coa',
+                                                            'clientes.nss_coa',
+                                                            'clientes.curp_coa',
+                                                            'clientes.nombre_coa',
+                                                            'clientes.apellidos_coa',
+                                                            'clientes.f_nacimiento_coa',
+                                                            'clientes.nacionalidad_coa',
+                                                            'clientes.rfc_coa',
+                                                            'clientes.homoclave_coa',
+                                                            'clientes.direccion_coa',
+                                                            'clientes.colonia_coa',
+                                                            'clientes.ciudad_coa',
+                                                            'clientes.estado_coa',
+                                                            'clientes.cp_coa',
+                                                            'clientes.telefono_coa',
+                                                            'clientes.ext_coa',
+                                                            'clientes.celular_coa',
+                                                            'clientes.email_coa',
+                                                            'clientes.parentesco_coa',
+                                                            'clientes.lugar_nacimiento_coa',
+                                                            'v.nombre as vendedor_nombre',
+                                                            'v.apellidos as vendedor_apellidos',
+    
+                                                            'contratos.id as contratoId',
+                                                            'contratos.infonavit',
+                                                            'contratos.fovisste',
+                                                            'contratos.comision_apertura',
+                                                            'clientes.lugar_nacimiento',
+                                                            'contratos.investigacion',
+                                                            'contratos.avaluo',
+                                                            'contratos.prima_unica',
+                                                            'contratos.escrituras',
+                                                            'contratos.credito_neto',
+                                                            'contratos.status',
+                                                            'contratos.fecha_status',
+                                                            'contratos.avaluo_cliente',
+                                                            'contratos.fecha',
+                                                            'contratos.direccion_empresa',
+                                                            'contratos.cp_empresa',
+                                                            'contratos.colonia_empresa',
+                                                            'contratos.estado_empresa',
+                                                            'contratos.ciudad_empresa',
+                                                            'contratos.telefono_empresa',
+                                                            'contratos.ext_empresa',
+                                                            'contratos.direccion_empresa_coa',
+                                                            'contratos.cp_empresa_coa',
+                                                            'contratos.colonia_empresa_coa',
+                                                            'contratos.estado_empresa_coa',
+                                                            'contratos.ciudad_empresa_coa',
+                                                            'contratos.telefono_empresa_coa',
+                                                            'contratos.ext_empresa_coa',
+                                                            'contratos.total_pagar',
+                                                            'contratos.monto_total_credito',
+                                                            'contratos.enganche_total',
+                                                            'contratos.avance_lote',
+                                                            'contratos.observacion'
+                                                        )
+                                                        ->where('inst_seleccionadas.elegido', '=', '1')
+                                                        ->where('contratos.status','=',$b_status)
+                                                        ->where('lotes.fraccionamiento_id', '=',  $buscar)
+                                                        ->orderBy('id', 'desc')->paginate(20);
+    
+                                                    $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                                        ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                                        ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                                        ->select('contratos.id as contratoId')
+                                                        ->where('inst_seleccionadas.elegido', '=', '1')
+                                                        ->where('contratos.status','=',$b_status)
+                                                        ->where('lotes.fraccionamiento_id', '=',  $buscar)
+                                                        ->orderBy('id', 'desc')->count();
+                                                }
                                             }
                                         }
                                     }
                                 }
                             }
+                            else{
+                                if ($b_etapa != '' && $b_manzana != '' && $b_lote != '' && $b_status!= '' && $buscar != '') {
+                                    $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                        ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                        ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                        ->select(
+                                            'creditos.id',
+                                            'creditos.prospecto_id',
+                                            'creditos.num_dep_economicos',
+                                            'creditos.tipo_economia',
+                                            'creditos.nombre_primera_ref',
+                                            'creditos.telefono_primera_ref',
+                                            'creditos.celular_primera_ref',
+                                            'creditos.nombre_segunda_ref',
+                                            'creditos.telefono_segunda_ref',
+                                            'creditos.celular_segunda_ref',
+                                            'creditos.etapa',
+                                            'creditos.manzana',
+                                            'creditos.num_lote',
+                                            'creditos.modelo',
+                                            'creditos.precio_base',
+                                            'creditos.superficie',
+                                            'creditos.terreno_excedente',
+                                            'creditos.precio_terreno_excedente',
+                                            'creditos.promocion',
+                                            'creditos.descripcion_promocion',
+                                            'creditos.descuento_promocion',
+                                            'creditos.paquete',
+                                            'creditos.descripcion_paquete',
+                                            'creditos.precio_venta',
+                                            'creditos.plazo',
+                                            'creditos.credito_solic',
+                                            'creditos.costo_paquete',
+                                            'inst_seleccionadas.tipo_credito',
+                                            'inst_seleccionadas.id as inst_credito',
+                                            'creditos.precio_obra_extra',
+                                            'creditos.fraccionamiento as proyecto',
+                                            'creditos.lote_id',
+    
+                                            'inst_seleccionadas.institucion',
+                                            'personal.nombre',
+                                            'personal.apellidos',
+                                            'personal.telefono',
+                                            'personal.celular',
+                                            'personal.email',
+                                            'personal.direccion',
+                                            'personal.cp',
+                                            'personal.colonia',
+                                            'personal.f_nacimiento',
+                                            'personal.rfc',
+                                            'personal.homoclave',
+                                            'creditos.fraccionamiento',
+                                            'clientes.id as prospecto_id',
+                                            'clientes.edo_civil',
+                                            'clientes.nss',
+                                            'clientes.curp',
+                                            'clientes.empresa',
+                                            'clientes.coacreditado',
+                                            'clientes.estado',
+                                            'clientes.ciudad',
+                                            'clientes.puesto',
+                                            'clientes.nacionalidad',
+                                            'clientes.sexo',
+                                            'clientes.sexo_coa',
+                                            'clientes.email_institucional_coa',
+                                            'clientes.empresa_coa',
+                                            'clientes.edo_civil_coa',
+                                            'clientes.nss_coa',
+                                            'clientes.curp_coa',
+                                            'clientes.nombre_coa',
+                                            'clientes.apellidos_coa',
+                                            'clientes.f_nacimiento_coa',
+                                            'clientes.nacionalidad_coa',
+                                            'clientes.rfc_coa',
+                                            'clientes.homoclave_coa',
+                                            'clientes.direccion_coa',
+                                            'clientes.colonia_coa',
+                                            'clientes.ciudad_coa',
+                                            'clientes.estado_coa',
+                                            'clientes.cp_coa',
+                                            'clientes.telefono_coa',
+                                            'clientes.ext_coa',
+                                            'clientes.celular_coa',
+                                            'clientes.email_coa',
+                                            'clientes.parentesco_coa',
+                                            'clientes.lugar_nacimiento_coa',
+                                            'v.nombre as vendedor_nombre',
+                                            'v.apellidos as vendedor_apellidos',
+    
+                                            'contratos.id as contratoId',
+                                            'contratos.infonavit',
+                                            'contratos.fovisste',
+                                            'contratos.comision_apertura',
+                                            'clientes.lugar_nacimiento',
+                                            'contratos.investigacion',
+                                            'contratos.avaluo',
+                                            'contratos.prima_unica',
+                                            'contratos.escrituras',
+                                            'contratos.credito_neto',
+                                            'contratos.status',
+                                            'contratos.fecha_status',
+                                            'contratos.avaluo_cliente',
+                                            'contratos.fecha',
+                                            'contratos.direccion_empresa',
+                                            'contratos.cp_empresa',
+                                            'contratos.colonia_empresa',
+                                            'contratos.estado_empresa',
+                                            'contratos.ciudad_empresa',
+                                            'contratos.telefono_empresa',
+                                            'contratos.ext_empresa',
+                                            'contratos.direccion_empresa_coa',
+                                            'contratos.cp_empresa_coa',
+                                            'contratos.colonia_empresa_coa',
+                                            'contratos.estado_empresa_coa',
+                                            'contratos.ciudad_empresa_coa',
+                                            'contratos.telefono_empresa_coa',
+                                            'contratos.ext_empresa_coa',
+                                            'contratos.total_pagar',
+                                            'contratos.monto_total_credito',
+                                            'contratos.enganche_total',
+                                            'contratos.avance_lote',
+                                            'contratos.observacion'
+                                        )
+                                        ->where('inst_seleccionadas.elegido', '=', '1')
+                                        ->where('contratos.status','=',$b_status)
+                                        ->where('lotes.fraccionamiento_id', '=',  $buscar)
+                                        ->where('lotes.etapa_id', '=', $b_etapa)
+                                        ->where('lotes.manzana', '=', $b_manzana)
+                                        ->where('lotes.num_lote', '=', $b_lote)
+                                        ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
+                                        ->orderBy('id', 'desc')->paginate(20);
+    
+                                    $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                        ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                        ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                        ->select('contratos.id as contratoId')
+                                        ->where('inst_seleccionadas.elegido', '=', '1')
+                                        ->where('contratos.status','=',$b_status)
+                                        ->where('lotes.fraccionamiento_id', '=',  $buscar)
+                                        ->where('lotes.etapa_id', '=', $b_etapa)
+                                        ->where('lotes.manzana', '=', $b_manzana)
+                                        ->where('lotes.num_lote', '=', $b_lote)
+                                        ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
+                                        ->orderBy('id', 'desc')->count();
+                                } else {
+                                    if ($b_etapa != '' && $b_manzana != '') {
+                                        $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                            ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                            ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                            ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                            ->select(
+                                                'creditos.id',
+                                                'creditos.prospecto_id',
+                                                'creditos.num_dep_economicos',
+                                                'creditos.tipo_economia',
+                                                'creditos.nombre_primera_ref',
+                                                'creditos.telefono_primera_ref',
+                                                'creditos.celular_primera_ref',
+                                                'creditos.nombre_segunda_ref',
+                                                'creditos.telefono_segunda_ref',
+                                                'creditos.celular_segunda_ref',
+                                                'creditos.etapa',
+                                                'creditos.manzana',
+                                                'creditos.num_lote',
+                                                'creditos.modelo',
+                                                'creditos.precio_base',
+                                                'creditos.superficie',
+                                                'creditos.terreno_excedente',
+                                                'creditos.precio_terreno_excedente',
+                                                'creditos.promocion',
+                                                'creditos.descripcion_promocion',
+                                                'creditos.descuento_promocion',
+                                                'creditos.paquete',
+                                                'creditos.descripcion_paquete',
+                                                'creditos.precio_venta',
+                                                'creditos.plazo',
+                                                'creditos.credito_solic',
+                                                'creditos.costo_paquete',
+                                                'inst_seleccionadas.tipo_credito',
+                                                'inst_seleccionadas.id as inst_credito',
+                                                'creditos.precio_obra_extra',
+                                                'creditos.fraccionamiento as proyecto',
+                                                'creditos.lote_id',
+    
+                                                'inst_seleccionadas.institucion',
+                                                'personal.nombre',
+                                                'personal.apellidos',
+                                                'personal.telefono',
+                                                'personal.celular',
+                                                'personal.email',
+                                                'personal.direccion',
+                                                'personal.cp',
+                                                'personal.colonia',
+                                                'personal.f_nacimiento',
+                                                'personal.rfc',
+                                                'personal.homoclave',
+                                                'creditos.fraccionamiento',
+                                                'clientes.id as prospecto_id',
+                                                'clientes.edo_civil',
+                                                'clientes.nss',
+                                                'clientes.curp',
+                                                'clientes.empresa',
+                                                'clientes.coacreditado',
+                                                'clientes.estado',
+                                                'clientes.ciudad',
+                                                'clientes.puesto',
+                                                'clientes.nacionalidad',
+                                                'clientes.sexo',
+                                                'clientes.sexo_coa',
+                                                'clientes.email_institucional_coa',
+                                                'clientes.empresa_coa',
+                                                'clientes.edo_civil_coa',
+                                                'clientes.nss_coa',
+                                                'clientes.curp_coa',
+                                                'clientes.nombre_coa',
+                                                'clientes.apellidos_coa',
+                                                'clientes.f_nacimiento_coa',
+                                                'clientes.nacionalidad_coa',
+                                                'clientes.rfc_coa',
+                                                'clientes.homoclave_coa',
+                                                'clientes.direccion_coa',
+                                                'clientes.colonia_coa',
+                                                'clientes.ciudad_coa',
+                                                'clientes.estado_coa',
+                                                'clientes.cp_coa',
+                                                'clientes.telefono_coa',
+                                                'clientes.ext_coa',
+                                                'clientes.celular_coa',
+                                                'clientes.email_coa',
+                                                'clientes.parentesco_coa',
+                                                'clientes.lugar_nacimiento_coa',
+                                                'v.nombre as vendedor_nombre',
+                                                'v.apellidos as vendedor_apellidos',
+    
+                                                'contratos.id as contratoId',
+                                                'contratos.infonavit',
+                                                'contratos.fovisste',
+                                                'contratos.comision_apertura',
+                                                'clientes.lugar_nacimiento',
+                                                'contratos.investigacion',
+                                                'contratos.avaluo',
+                                                'contratos.prima_unica',
+                                                'contratos.escrituras',
+                                                'contratos.credito_neto',
+                                                'contratos.status',
+                                                'contratos.fecha_status',
+                                                'contratos.avaluo_cliente',
+                                                'contratos.fecha',
+                                                'contratos.direccion_empresa',
+                                                'contratos.cp_empresa',
+                                                'contratos.colonia_empresa',
+                                                'contratos.estado_empresa',
+                                                'contratos.ciudad_empresa',
+                                                'contratos.telefono_empresa',
+                                                'contratos.ext_empresa',
+                                                'contratos.direccion_empresa_coa',
+                                                'contratos.cp_empresa_coa',
+                                                'contratos.colonia_empresa_coa',
+                                                'contratos.estado_empresa_coa',
+                                                'contratos.ciudad_empresa_coa',
+                                                'contratos.telefono_empresa_coa',
+                                                'contratos.ext_empresa_coa',
+                                                'contratos.total_pagar',
+                                                'contratos.monto_total_credito',
+                                                'contratos.enganche_total',
+                                                'contratos.avance_lote',
+                                                'contratos.observacion'
+                                            )
+                                            ->where('inst_seleccionadas.elegido', '=', '1')
+                                            ->where('contratos.status','=',$b_status)
+                                            ->where('lotes.fraccionamiento_id', '=',  $buscar)
+                                            ->where('lotes.etapa_id', '=', $b_etapa)
+                                            ->where('lotes.manzana', '=', $b_manzana)
+                                            ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
+                                            ->orderBy('id', 'desc')->paginate(20);
+    
+                                        $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                            ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                            ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                            ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                            ->select('contratos.id as contratoId')
+                                            ->where('inst_seleccionadas.elegido', '=', '1')
+                                            ->where('contratos.status','=',$b_status)
+                                            ->where('lotes.fraccionamiento_id', '=',  $buscar)
+                                            ->where('lotes.etapa_id', '=', $b_etapa)
+                                            ->where('lotes.manzana', '=', $b_manzana)
+                                            ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
+                                            ->orderBy('id', 'desc')->count();
+                                    } else {
+                                        if ($b_etapa != '') {
+                                            $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                                ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                                ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                                ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                                ->select(
+                                                    'creditos.id',
+                                                    'creditos.prospecto_id',
+                                                    'creditos.num_dep_economicos',
+                                                    'creditos.tipo_economia',
+                                                    'creditos.nombre_primera_ref',
+                                                    'creditos.telefono_primera_ref',
+                                                    'creditos.celular_primera_ref',
+                                                    'creditos.nombre_segunda_ref',
+                                                    'creditos.telefono_segunda_ref',
+                                                    'creditos.celular_segunda_ref',
+                                                    'creditos.etapa',
+                                                    'creditos.manzana',
+                                                    'creditos.num_lote',
+                                                    'creditos.modelo',
+                                                    'creditos.precio_base',
+                                                    'creditos.superficie',
+                                                    'creditos.terreno_excedente',
+                                                    'creditos.precio_terreno_excedente',
+                                                    'creditos.promocion',
+                                                    'creditos.descripcion_promocion',
+                                                    'creditos.descuento_promocion',
+                                                    'creditos.paquete',
+                                                    'creditos.descripcion_paquete',
+                                                    'creditos.precio_venta',
+                                                    'creditos.plazo',
+                                                    'creditos.credito_solic',
+                                                    'creditos.costo_paquete',
+                                                    'inst_seleccionadas.tipo_credito',
+                                                    'inst_seleccionadas.id as inst_credito',
+                                                    'creditos.precio_obra_extra',
+                                                    'creditos.fraccionamiento as proyecto',
+                                                    'creditos.lote_id',
+    
+                                                    'inst_seleccionadas.institucion',
+                                                    'personal.nombre',
+                                                    'personal.apellidos',
+                                                    'personal.telefono',
+                                                    'personal.celular',
+                                                    'personal.email',
+                                                    'personal.direccion',
+                                                    'personal.cp',
+                                                    'personal.colonia',
+                                                    'personal.f_nacimiento',
+                                                    'personal.rfc',
+                                                    'personal.homoclave',
+                                                    'creditos.fraccionamiento',
+                                                    'clientes.id as prospecto_id',
+                                                    'clientes.edo_civil',
+                                                    'clientes.nss',
+                                                    'clientes.curp',
+                                                    'clientes.empresa',
+                                                    'clientes.coacreditado',
+                                                    'clientes.estado',
+                                                    'clientes.ciudad',
+                                                    'clientes.puesto',
+                                                    'clientes.nacionalidad',
+                                                    'clientes.sexo',
+                                                    'clientes.sexo_coa',
+                                                    'clientes.email_institucional_coa',
+                                                    'clientes.empresa_coa',
+                                                    'clientes.edo_civil_coa',
+                                                    'clientes.nss_coa',
+                                                    'clientes.curp_coa',
+                                                    'clientes.nombre_coa',
+                                                    'clientes.apellidos_coa',
+                                                    'clientes.f_nacimiento_coa',
+                                                    'clientes.nacionalidad_coa',
+                                                    'clientes.rfc_coa',
+                                                    'clientes.homoclave_coa',
+                                                    'clientes.direccion_coa',
+                                                    'clientes.colonia_coa',
+                                                    'clientes.ciudad_coa',
+                                                    'clientes.estado_coa',
+                                                    'clientes.cp_coa',
+                                                    'clientes.telefono_coa',
+                                                    'clientes.ext_coa',
+                                                    'clientes.celular_coa',
+                                                    'clientes.email_coa',
+                                                    'clientes.parentesco_coa',
+                                                    'clientes.lugar_nacimiento_coa',
+                                                    'v.nombre as vendedor_nombre',
+                                                    'v.apellidos as vendedor_apellidos',
+    
+                                                    'contratos.id as contratoId',
+                                                    'contratos.infonavit',
+                                                    'contratos.fovisste',
+                                                    'contratos.comision_apertura',
+                                                    'clientes.lugar_nacimiento',
+                                                    'contratos.investigacion',
+                                                    'contratos.avaluo',
+                                                    'contratos.prima_unica',
+                                                    'contratos.escrituras',
+                                                    'contratos.credito_neto',
+                                                    'contratos.status',
+                                                    'contratos.fecha_status',
+                                                    'contratos.avaluo_cliente',
+                                                    'contratos.fecha',
+                                                    'contratos.direccion_empresa',
+                                                    'contratos.cp_empresa',
+                                                    'contratos.colonia_empresa',
+                                                    'contratos.estado_empresa',
+                                                    'contratos.ciudad_empresa',
+                                                    'contratos.telefono_empresa',
+                                                    'contratos.ext_empresa',
+                                                    'contratos.direccion_empresa_coa',
+                                                    'contratos.cp_empresa_coa',
+                                                    'contratos.colonia_empresa_coa',
+                                                    'contratos.estado_empresa_coa',
+                                                    'contratos.ciudad_empresa_coa',
+                                                    'contratos.telefono_empresa_coa',
+                                                    'contratos.ext_empresa_coa',
+                                                    'contratos.total_pagar',
+                                                    'contratos.monto_total_credito',
+                                                    'contratos.enganche_total',
+                                                    'contratos.avance_lote',
+                                                    'contratos.observacion'
+                                                )
+                                                ->where('inst_seleccionadas.elegido', '=', '1')
+                                                ->where('contratos.status','=',$b_status)
+                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
+                                                ->where('lotes.etapa_id', '=',  $b_etapa )
+                                                ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
+                                                ->orderBy('id', 'desc')->paginate(20);
+    
+                                            $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                                ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                                ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                                ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                                ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                                ->select('contratos.id as contratoId')
+                                                ->where('inst_seleccionadas.elegido', '=', '1')
+                                                ->where('contratos.status','=',$b_status)
+                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
+                                                ->where('lotes.etapa_id', '=',  $b_etapa )
+                                                ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
+                                                ->orderBy('id', 'desc')->count();
+                                        } else {
+                                            if ($b_manzana != '') {
+                                                $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                                    ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                                    ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                                    ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                                    ->select(
+                                                        'creditos.id',
+                                                        'creditos.prospecto_id',
+                                                        'creditos.num_dep_economicos',
+                                                        'creditos.tipo_economia',
+                                                        'creditos.nombre_primera_ref',
+                                                        'creditos.telefono_primera_ref',
+                                                        'creditos.celular_primera_ref',
+                                                        'creditos.nombre_segunda_ref',
+                                                        'creditos.telefono_segunda_ref',
+                                                        'creditos.celular_segunda_ref',
+                                                        'creditos.etapa',
+                                                        'creditos.manzana',
+                                                        'creditos.num_lote',
+                                                        'creditos.modelo',
+                                                        'creditos.precio_base',
+                                                        'creditos.superficie',
+                                                        'creditos.terreno_excedente',
+                                                        'creditos.precio_terreno_excedente',
+                                                        'creditos.promocion',
+                                                        'creditos.descripcion_promocion',
+                                                        'creditos.descuento_promocion',
+                                                        'creditos.paquete',
+                                                        'creditos.descripcion_paquete',
+                                                        'creditos.precio_venta',
+                                                        'creditos.plazo',
+                                                        'creditos.credito_solic',
+                                                        'creditos.costo_paquete',
+                                                        'inst_seleccionadas.tipo_credito',
+                                                        'inst_seleccionadas.id as inst_credito',
+                                                        'creditos.precio_obra_extra',
+                                                        'creditos.fraccionamiento as proyecto',
+                                                        'creditos.lote_id',
+    
+                                                        'inst_seleccionadas.institucion',
+                                                        'personal.nombre',
+                                                        'personal.apellidos',
+                                                        'personal.telefono',
+                                                        'personal.celular',
+                                                        'personal.email',
+                                                        'personal.direccion',
+                                                        'personal.cp',
+                                                        'personal.colonia',
+                                                        'personal.f_nacimiento',
+                                                        'personal.rfc',
+                                                        'personal.homoclave',
+                                                        'creditos.fraccionamiento',
+                                                        'clientes.id as prospecto_id',
+                                                        'clientes.edo_civil',
+                                                        'clientes.nss',
+                                                        'clientes.curp',
+                                                        'clientes.empresa',
+                                                        'clientes.coacreditado',
+                                                        'clientes.estado',
+                                                        'clientes.ciudad',
+                                                        'clientes.puesto',
+                                                        'clientes.nacionalidad',
+                                                        'clientes.sexo',
+                                                        'clientes.sexo_coa',
+                                                        'clientes.email_institucional_coa',
+                                                        'clientes.empresa_coa',
+                                                        'clientes.edo_civil_coa',
+                                                        'clientes.nss_coa',
+                                                        'clientes.curp_coa',
+                                                        'clientes.nombre_coa',
+                                                        'clientes.apellidos_coa',
+                                                        'clientes.f_nacimiento_coa',
+                                                        'clientes.nacionalidad_coa',
+                                                        'clientes.rfc_coa',
+                                                        'clientes.homoclave_coa',
+                                                        'clientes.direccion_coa',
+                                                        'clientes.colonia_coa',
+                                                        'clientes.ciudad_coa',
+                                                        'clientes.estado_coa',
+                                                        'clientes.cp_coa',
+                                                        'clientes.telefono_coa',
+                                                        'clientes.ext_coa',
+                                                        'clientes.celular_coa',
+                                                        'clientes.email_coa',
+                                                        'clientes.parentesco_coa',
+                                                        'clientes.lugar_nacimiento_coa',
+                                                        'v.nombre as vendedor_nombre',
+                                                        'v.apellidos as vendedor_apellidos',
+    
+                                                        'contratos.id as contratoId',
+                                                        'contratos.infonavit',
+                                                        'contratos.fovisste',
+                                                        'contratos.comision_apertura',
+                                                        'clientes.lugar_nacimiento',
+                                                        'contratos.investigacion',
+                                                        'contratos.avaluo',
+                                                        'contratos.prima_unica',
+                                                        'contratos.escrituras',
+                                                        'contratos.credito_neto',
+                                                        'contratos.status',
+                                                        'contratos.fecha_status',
+                                                        'contratos.avaluo_cliente',
+                                                        'contratos.fecha',
+                                                        'contratos.direccion_empresa',
+                                                        'contratos.cp_empresa',
+                                                        'contratos.colonia_empresa',
+                                                        'contratos.estado_empresa',
+                                                        'contratos.ciudad_empresa',
+                                                        'contratos.telefono_empresa',
+                                                        'contratos.ext_empresa',
+                                                        'contratos.direccion_empresa_coa',
+                                                        'contratos.cp_empresa_coa',
+                                                        'contratos.colonia_empresa_coa',
+                                                        'contratos.estado_empresa_coa',
+                                                        'contratos.ciudad_empresa_coa',
+                                                        'contratos.telefono_empresa_coa',
+                                                        'contratos.ext_empresa_coa',
+                                                        'contratos.total_pagar',
+                                                        'contratos.monto_total_credito',
+                                                        'contratos.enganche_total',
+                                                        'contratos.avance_lote',
+                                                        'contratos.observacion'
+                                                    )
+                                                    ->where('inst_seleccionadas.elegido', '=', '1')
+                                                    ->where('contratos.status','=',$b_status)
+                                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
+                                                    ->where('lotes.manzana', '=', $b_manzana)
+                                                    ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
+                                                    ->orderBy('id', 'desc')->paginate(20);
+    
+                                                $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                                    ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                                    ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                                    ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                                    ->select('contratos.id as contratoId')
+                                                    ->where('inst_seleccionadas.elegido', '=', '1')
+                                                    ->where('contratos.status','=',$b_status)
+                                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
+                                                    ->where('lotes.manzana', '=', $b_manzana)
+                                                    ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
+                                                    ->orderBy('id', 'desc')->count();
+                                            } else {
+                                                if ($b_lote != '') {
+                                                    $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                                        ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                                        ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                                        ->select(
+                                                            'creditos.id',
+                                                            'creditos.prospecto_id',
+                                                            'creditos.num_dep_economicos',
+                                                            'creditos.tipo_economia',
+                                                            'creditos.nombre_primera_ref',
+                                                            'creditos.telefono_primera_ref',
+                                                            'creditos.celular_primera_ref',
+                                                            'creditos.nombre_segunda_ref',
+                                                            'creditos.telefono_segunda_ref',
+                                                            'creditos.celular_segunda_ref',
+                                                            'creditos.etapa',
+                                                            'creditos.manzana',
+                                                            'creditos.num_lote',
+                                                            'creditos.modelo',
+                                                            'creditos.precio_base',
+                                                            'creditos.superficie',
+                                                            'creditos.terreno_excedente',
+                                                            'creditos.precio_terreno_excedente',
+                                                            'creditos.promocion',
+                                                            'creditos.descripcion_promocion',
+                                                            'creditos.descuento_promocion',
+                                                            'creditos.paquete',
+                                                            'creditos.descripcion_paquete',
+                                                            'creditos.precio_venta',
+                                                            'creditos.plazo',
+                                                            'creditos.credito_solic',
+                                                            'creditos.costo_paquete',
+                                                            'inst_seleccionadas.tipo_credito',
+                                                            'inst_seleccionadas.id as inst_credito',
+                                                            'creditos.precio_obra_extra',
+                                                            'creditos.fraccionamiento as proyecto',
+                                                            'creditos.lote_id',
+    
+                                                            'inst_seleccionadas.institucion',
+                                                            'personal.nombre',
+                                                            'personal.apellidos',
+                                                            'personal.telefono',
+                                                            'personal.celular',
+                                                            'personal.email',
+                                                            'personal.direccion',
+                                                            'personal.cp',
+                                                            'personal.colonia',
+                                                            'personal.f_nacimiento',
+                                                            'personal.rfc',
+                                                            'personal.homoclave',
+                                                            'creditos.fraccionamiento',
+                                                            'clientes.id as prospecto_id',
+                                                            'clientes.edo_civil',
+                                                            'clientes.nss',
+                                                            'clientes.curp',
+                                                            'clientes.empresa',
+                                                            'clientes.coacreditado',
+                                                            'clientes.estado',
+                                                            'clientes.ciudad',
+                                                            'clientes.puesto',
+                                                            'clientes.nacionalidad',
+                                                            'clientes.sexo',
+                                                            'clientes.sexo_coa',
+                                                            'clientes.email_institucional_coa',
+                                                            'clientes.empresa_coa',
+                                                            'clientes.edo_civil_coa',
+                                                            'clientes.nss_coa',
+                                                            'clientes.curp_coa',
+                                                            'clientes.nombre_coa',
+                                                            'clientes.apellidos_coa',
+                                                            'clientes.f_nacimiento_coa',
+                                                            'clientes.nacionalidad_coa',
+                                                            'clientes.rfc_coa',
+                                                            'clientes.homoclave_coa',
+                                                            'clientes.direccion_coa',
+                                                            'clientes.colonia_coa',
+                                                            'clientes.ciudad_coa',
+                                                            'clientes.estado_coa',
+                                                            'clientes.cp_coa',
+                                                            'clientes.telefono_coa',
+                                                            'clientes.ext_coa',
+                                                            'clientes.celular_coa',
+                                                            'clientes.email_coa',
+                                                            'clientes.parentesco_coa',
+                                                            'clientes.lugar_nacimiento_coa',
+                                                            'v.nombre as vendedor_nombre',
+                                                            'v.apellidos as vendedor_apellidos',
+    
+                                                            'contratos.id as contratoId',
+                                                            'contratos.infonavit',
+                                                            'contratos.fovisste',
+                                                            'contratos.comision_apertura',
+                                                            'clientes.lugar_nacimiento',
+                                                            'contratos.investigacion',
+                                                            'contratos.avaluo',
+                                                            'contratos.prima_unica',
+                                                            'contratos.escrituras',
+                                                            'contratos.credito_neto',
+                                                            'contratos.status',
+                                                            'contratos.fecha_status',
+                                                            'contratos.avaluo_cliente',
+                                                            'contratos.fecha',
+                                                            'contratos.direccion_empresa',
+                                                            'contratos.cp_empresa',
+                                                            'contratos.colonia_empresa',
+                                                            'contratos.estado_empresa',
+                                                            'contratos.ciudad_empresa',
+                                                            'contratos.telefono_empresa',
+                                                            'contratos.ext_empresa',
+                                                            'contratos.direccion_empresa_coa',
+                                                            'contratos.cp_empresa_coa',
+                                                            'contratos.colonia_empresa_coa',
+                                                            'contratos.estado_empresa_coa',
+                                                            'contratos.ciudad_empresa_coa',
+                                                            'contratos.telefono_empresa_coa',
+                                                            'contratos.ext_empresa_coa',
+                                                            'contratos.total_pagar',
+                                                            'contratos.monto_total_credito',
+                                                            'contratos.enganche_total',
+                                                            'contratos.avance_lote',
+                                                            'contratos.observacion'
+                                                        )
+                                                        ->where('inst_seleccionadas.elegido', '=', '1')
+                                                        ->where('contratos.status','=',$b_status)
+                                                        ->where('lotes.fraccionamiento_id', '=',  $buscar)
+                                                        ->where('lotes.num_lote', '=', $b_lote)
+                                                        ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
+                                                        ->orderBy('id', 'desc')->paginate(20);
+    
+                                                    $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                                        ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                                        ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                                        ->select('contratos.id as contratoId')
+                                                        ->where('inst_seleccionadas.elegido', '=', '1')
+                                                        ->where('contratos.status','=',$b_status)
+                                                        ->where('lotes.fraccionamiento', '=',  $buscar)
+                                                        ->where('lotes.num_lote', '=', $b_lote)
+                                                        ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
+                                                        ->orderBy('id', 'desc')->count();
+                                                } else {
+                                                    $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                                        ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                                        ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                                        ->select(
+                                                            'creditos.id',
+                                                            'creditos.prospecto_id',
+                                                            'creditos.num_dep_economicos',
+                                                            'creditos.tipo_economia',
+                                                            'creditos.nombre_primera_ref',
+                                                            'creditos.telefono_primera_ref',
+                                                            'creditos.celular_primera_ref',
+                                                            'creditos.nombre_segunda_ref',
+                                                            'creditos.telefono_segunda_ref',
+                                                            'creditos.celular_segunda_ref',
+                                                            'creditos.etapa',
+                                                            'creditos.manzana',
+                                                            'creditos.num_lote',
+                                                            'creditos.modelo',
+                                                            'creditos.precio_base',
+                                                            'creditos.superficie',
+                                                            'creditos.terreno_excedente',
+                                                            'creditos.precio_terreno_excedente',
+                                                            'creditos.promocion',
+                                                            'creditos.descripcion_promocion',
+                                                            'creditos.descuento_promocion',
+                                                            'creditos.paquete',
+                                                            'creditos.descripcion_paquete',
+                                                            'creditos.precio_venta',
+                                                            'creditos.plazo',
+                                                            'creditos.credito_solic',
+                                                            'creditos.costo_paquete',
+                                                            'inst_seleccionadas.tipo_credito',
+                                                            'inst_seleccionadas.id as inst_credito',
+                                                            'creditos.precio_obra_extra',
+                                                            'creditos.fraccionamiento as proyecto',
+                                                            'creditos.lote_id',
+    
+                                                            'inst_seleccionadas.institucion',
+                                                            'personal.nombre',
+                                                            'personal.apellidos',
+                                                            'personal.telefono',
+                                                            'personal.celular',
+                                                            'personal.email',
+                                                            'personal.direccion',
+                                                            'personal.cp',
+                                                            'personal.colonia',
+                                                            'personal.f_nacimiento',
+                                                            'personal.rfc',
+                                                            'personal.homoclave',
+                                                            'creditos.fraccionamiento',
+                                                            'clientes.id as prospecto_id',
+                                                            'clientes.edo_civil',
+                                                            'clientes.nss',
+                                                            'clientes.curp',
+                                                            'clientes.empresa',
+                                                            'clientes.coacreditado',
+                                                            'clientes.estado',
+                                                            'clientes.ciudad',
+                                                            'clientes.puesto',
+                                                            'clientes.nacionalidad',
+                                                            'clientes.sexo',
+                                                            'clientes.sexo_coa',
+                                                            'clientes.email_institucional_coa',
+                                                            'clientes.empresa_coa',
+                                                            'clientes.edo_civil_coa',
+                                                            'clientes.nss_coa',
+                                                            'clientes.curp_coa',
+                                                            'clientes.nombre_coa',
+                                                            'clientes.apellidos_coa',
+                                                            'clientes.f_nacimiento_coa',
+                                                            'clientes.nacionalidad_coa',
+                                                            'clientes.rfc_coa',
+                                                            'clientes.homoclave_coa',
+                                                            'clientes.direccion_coa',
+                                                            'clientes.colonia_coa',
+                                                            'clientes.ciudad_coa',
+                                                            'clientes.estado_coa',
+                                                            'clientes.cp_coa',
+                                                            'clientes.telefono_coa',
+                                                            'clientes.ext_coa',
+                                                            'clientes.celular_coa',
+                                                            'clientes.email_coa',
+                                                            'clientes.parentesco_coa',
+                                                            'clientes.lugar_nacimiento_coa',
+                                                            'v.nombre as vendedor_nombre',
+                                                            'v.apellidos as vendedor_apellidos',
+    
+                                                            'contratos.id as contratoId',
+                                                            'contratos.infonavit',
+                                                            'contratos.fovisste',
+                                                            'contratos.comision_apertura',
+                                                            'clientes.lugar_nacimiento',
+                                                            'contratos.investigacion',
+                                                            'contratos.avaluo',
+                                                            'contratos.prima_unica',
+                                                            'contratos.escrituras',
+                                                            'contratos.credito_neto',
+                                                            'contratos.status',
+                                                            'contratos.fecha_status',
+                                                            'contratos.avaluo_cliente',
+                                                            'contratos.fecha',
+                                                            'contratos.direccion_empresa',
+                                                            'contratos.cp_empresa',
+                                                            'contratos.colonia_empresa',
+                                                            'contratos.estado_empresa',
+                                                            'contratos.ciudad_empresa',
+                                                            'contratos.telefono_empresa',
+                                                            'contratos.ext_empresa',
+                                                            'contratos.direccion_empresa_coa',
+                                                            'contratos.cp_empresa_coa',
+                                                            'contratos.colonia_empresa_coa',
+                                                            'contratos.estado_empresa_coa',
+                                                            'contratos.ciudad_empresa_coa',
+                                                            'contratos.telefono_empresa_coa',
+                                                            'contratos.ext_empresa_coa',
+                                                            'contratos.total_pagar',
+                                                            'contratos.monto_total_credito',
+                                                            'contratos.enganche_total',
+                                                            'contratos.avance_lote',
+                                                            'contratos.observacion'
+                                                        )
+                                                        ->where('inst_seleccionadas.elegido', '=', '1')
+                                                        ->where('contratos.status','=',$b_status)
+                                                        ->where('lotes.fraccionamiento_id', '=',  $buscar)
+                                                        ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
+                                                        ->orderBy('id', 'desc')->paginate(20);
+    
+                                                    $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                                                        ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                                        ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
+                                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                                        ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                                        ->select('contratos.id as contratoId')
+                                                        ->where('inst_seleccionadas.elegido', '=', '1')
+                                                        ->where('contratos.status','=',$b_status)
+                                                        ->where('lotes.fraccionamiento_id', '=',  $buscar)
+                                                        ->whereBetween('contratos.fecha', [$f_ini, $f_fin])
+                                                        ->orderBy('id', 'desc')->count();
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            
                             break;
                         }
                 }
