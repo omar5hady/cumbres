@@ -12,12 +12,12 @@ use Excel;
 
 class AvanceController extends Controller
 {
-    // public function store($lote_id, $partida_id){
-    //     $avance = new Avance();
-    //     $avance->lote_id = $lote_id;
-    //     $avance->partida_id = $partida_id;
-    //     $avance->save();
-    // }
+    public function store($lote_id, $partida_id){
+        $avance = new Avance();
+        $avance->lote_id = $lote_id;
+        $avance->partida_id = $partida_id;
+        $avance->save();
+    }
 
     public function indexProm(Request $request){
         if(!$request->ajax())return redirect('/');
@@ -696,19 +696,23 @@ class AvanceController extends Controller
                         $cells->setAlignment('center');
                     });
 
+                    $sheet->setColumnFormat(array(
+                        'F' => '0%'
+                    ));
+
                     
                     $cont=1;
 
                     foreach($avances as $index => $avance) {
                         $cont++;
-
+                        $avance->porcentajeTotal = $avance->porcentajeTotal/100;
                         $sheet->row($index+2, [
                             $avance->aviso, 
                             $avance->proyecto, 
                             $avance->modelo, 
                             $avance->manzana, 
                             $avance->lote,
-                            $avance->porcentajeTotal.'%'
+                            $avance->porcentajeTotal
                         ]);	
                     }
                     $num='A1:F' . $cont;

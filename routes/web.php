@@ -507,6 +507,7 @@ Route::group(['middleware' => ['auth']],function(){
 
         ///////////////////// RUTAS SOLIC EQUIPAMIENTO
         Route::get('/equipamiento/indexContrato','EquipamientoController@indexContratos');
+        Route::put('/equipamiento/terminarSolicitud','EquipamientoController@terminarSolicitud');
     });
 
 

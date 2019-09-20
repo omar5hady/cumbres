@@ -79,6 +79,8 @@ class EquipamientoController extends Controller
                     'creditos.etapa',
                     'creditos.manzana',
                     'creditos.num_lote',
+                    'creditos.paquete',
+                    'creditos.promocion',
                     'creditos.descripcion_paquete',
                     'creditos.descripcion_promocion',
                     'licencias.avance as avance_lote',
@@ -93,10 +95,473 @@ class EquipamientoController extends Controller
                 )
                 ->where('contratos.status', '!=', 0)
                 ->where('contratos.status', '!=', 2)
+                ->where('contratos.equipamiento', '!=', 2)
+                ->whereNotNull('creditos.descripcion_paquete')
+                ->orWhere('contratos.status', '!=', 0)
+                ->where('contratos.status', '!=', 2)
+                ->where('contratos.equipamiento', '!=', 2)
+                ->whereNotNull('creditos.descripcion_promocion')
                 ->orderBy('licencias.avance','desc')
                 ->orderBy('licencias.visita_avaluo','asc')
                 ->paginate(8);
-        } 
+        } else{
+            switch($criterio){
+                case 'lotes.fraccionamiento_id':{
+                    if($b_etapa == '' && $b_manzana == '' && $b_lote == ''){
+                        $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                            ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                            ->join('personal as c', 'clientes.id', '=', 'c.id')
+                            ->select(
+                                'contratos.id as folio',
+                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                'creditos.fraccionamiento as proyecto',
+                                'creditos.etapa',
+                                'creditos.manzana',
+                                'creditos.num_lote',
+                                'creditos.paquete',
+                                'creditos.promocion',
+                                'creditos.descripcion_paquete',
+                                'creditos.descripcion_promocion',
+                                'licencias.avance as avance_lote',
+                                'licencias.visita_avaluo',
+                                'contratos.fecha_status',
+                                'contratos.status',
+                                'contratos.avaluo_preventivo',
+                                'contratos.aviso_prev',
+                                'contratos.aviso_prev_venc',
+                                'lotes.fraccionamiento_id',
+                                'lotes.id as lote_id'
+                            )
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('contratos.equipamiento', '!=', 2)
+                            ->where($criterio, '=', $buscar)
+                            ->whereNotNull('creditos.descripcion_paquete')
+                            ->orWhere('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('contratos.equipamiento', '!=', 2)
+                            ->where($criterio, '=', $buscar)
+                            ->whereNotNull('creditos.descripcion_promocion')
+                            ->orderBy('licencias.avance','desc')
+                            ->orderBy('licencias.visita_avaluo','asc')
+                            ->paginate(8);
+                    }
+                    elseif($b_etapa != '' && $b_manzana == '' && $b_lote == ''){
+                        $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                            ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                            ->join('personal as c', 'clientes.id', '=', 'c.id')
+                            ->select(
+                                'contratos.id as folio',
+                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                'creditos.fraccionamiento as proyecto',
+                                'creditos.etapa',
+                                'creditos.manzana',
+                                'creditos.num_lote',
+                                'creditos.paquete',
+                                'creditos.promocion',
+                                'creditos.descripcion_paquete',
+                                'creditos.descripcion_promocion',
+                                'licencias.avance as avance_lote',
+                                'licencias.visita_avaluo',
+                                'contratos.fecha_status',
+                                'contratos.status',
+                                'contratos.avaluo_preventivo',
+                                'contratos.aviso_prev',
+                                'contratos.aviso_prev_venc',
+                                'lotes.fraccionamiento_id',
+                                'lotes.id as lote_id'
+                            )
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('contratos.equipamiento', '!=', 2)
+                            ->where($criterio, '=', $buscar)
+                            ->where('lotes.etapa_id', '=', $b_etapa)
+                            ->whereNotNull('creditos.descripcion_paquete')
+                            ->orWhere('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('contratos.equipamiento', '!=', 2)
+                            ->where($criterio, '=', $buscar)
+                            ->where('lotes.etapa_id', '=', $b_etapa)
+                            ->whereNotNull('creditos.descripcion_promocion')
+                            ->orderBy('licencias.avance','desc')
+                            ->orderBy('licencias.visita_avaluo','asc')
+                            ->paginate(8);
+                    }
+                    elseif($b_etapa != '' && $b_manzana != '' && $b_lote == ''){
+                        $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                            ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                            ->join('personal as c', 'clientes.id', '=', 'c.id')
+                            ->select(
+                                'contratos.id as folio',
+                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                'creditos.fraccionamiento as proyecto',
+                                'creditos.etapa',
+                                'creditos.manzana',
+                                'creditos.num_lote',
+                                'creditos.paquete',
+                                'creditos.promocion',
+                                'creditos.descripcion_paquete',
+                                'creditos.descripcion_promocion',
+                                'licencias.avance as avance_lote',
+                                'licencias.visita_avaluo',
+                                'contratos.fecha_status',
+                                'contratos.status',
+                                'contratos.avaluo_preventivo',
+                                'contratos.aviso_prev',
+                                'contratos.aviso_prev_venc',
+                                'lotes.fraccionamiento_id',
+                                'lotes.id as lote_id'
+                            )
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('contratos.equipamiento', '!=', 2)
+                            ->where($criterio, '=', $buscar)
+                            ->where('lotes.etapa_id', '=', $b_etapa)
+                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
+                            ->whereNotNull('creditos.descripcion_paquete')
+                            ->orWhere('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('contratos.equipamiento', '!=', 2)
+                            ->where($criterio, '=', $buscar)
+                            ->where('lotes.etapa_id', '=', $b_etapa)
+                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
+                            ->whereNotNull('creditos.descripcion_promocion')
+                            ->orderBy('licencias.avance','desc')
+                            ->orderBy('licencias.visita_avaluo','asc')
+                            ->paginate(8);
+                    }
+                    elseif($b_etapa != '' && $b_manzana != '' && $b_lote != ''){
+                        $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                            ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                            ->join('personal as c', 'clientes.id', '=', 'c.id')
+                            ->select(
+                                'contratos.id as folio',
+                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                'creditos.fraccionamiento as proyecto',
+                                'creditos.etapa',
+                                'creditos.manzana',
+                                'creditos.num_lote',
+                                'creditos.paquete',
+                                'creditos.promocion',
+                                'creditos.descripcion_paquete',
+                                'creditos.descripcion_promocion',
+                                'licencias.avance as avance_lote',
+                                'licencias.visita_avaluo',
+                                'contratos.fecha_status',
+                                'contratos.status',
+                                'contratos.avaluo_preventivo',
+                                'contratos.aviso_prev',
+                                'contratos.aviso_prev_venc',
+                                'lotes.fraccionamiento_id',
+                                'lotes.id as lote_id'
+                            )
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('contratos.equipamiento', '!=', 2)
+                            ->where($criterio, '=', $buscar)
+                            ->where('lotes.etapa_id', '=', $b_etapa)
+                            ->where('lotes.num_lote', '=', $b_lote)
+                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
+                            ->whereNotNull('creditos.descripcion_paquete')
+                            ->orWhere('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('contratos.equipamiento', '!=', 2)
+                            ->where($criterio, '=', $buscar)
+                            ->where('lotes.etapa_id', '=', $b_etapa)
+                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
+                            ->where('lotes.num_lote', '=', $b_lote)
+                            ->whereNotNull('creditos.descripcion_promocion')
+                            ->orderBy('licencias.avance','desc')
+                            ->orderBy('licencias.visita_avaluo','asc')
+                            ->paginate(8);
+                    }
+                    elseif($b_etapa != '' && $b_manzana == '' && $b_lote != ''){
+                        $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                            ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                            ->join('personal as c', 'clientes.id', '=', 'c.id')
+                            ->select(
+                                'contratos.id as folio',
+                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                'creditos.fraccionamiento as proyecto',
+                                'creditos.etapa',
+                                'creditos.manzana',
+                                'creditos.num_lote',
+                                'creditos.paquete',
+                                'creditos.promocion',
+                                'creditos.descripcion_paquete',
+                                'creditos.descripcion_promocion',
+                                'licencias.avance as avance_lote',
+                                'licencias.visita_avaluo',
+                                'contratos.fecha_status',
+                                'contratos.status',
+                                'contratos.avaluo_preventivo',
+                                'contratos.aviso_prev',
+                                'contratos.aviso_prev_venc',
+                                'lotes.fraccionamiento_id',
+                                'lotes.id as lote_id'
+                            )
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('contratos.equipamiento', '!=', 2)
+                            ->where($criterio, '=', $buscar)
+                            ->where('lotes.etapa_id', '=', $b_etapa)
+                            ->where('lotes.num_lote', '=', $b_lote)
+                            ->whereNotNull('creditos.descripcion_paquete')
+                            ->orWhere('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('contratos.equipamiento', '!=', 2)
+                            ->where($criterio, '=', $buscar)
+                            ->where('lotes.etapa_id', '=', $b_etapa)
+                            ->where('lotes.num_lote', '=', $b_lote)
+                            ->whereNotNull('creditos.descripcion_promocion')
+                            ->orderBy('licencias.avance','desc')
+                            ->orderBy('licencias.visita_avaluo','asc')
+                            ->paginate(8);
+                    }
+
+                    elseif($b_etapa == '' && $b_manzana != '' && $b_lote != ''){
+                        $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                            ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                            ->join('personal as c', 'clientes.id', '=', 'c.id')
+                            ->select(
+                                'contratos.id as folio',
+                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                'creditos.fraccionamiento as proyecto',
+                                'creditos.etapa',
+                                'creditos.manzana',
+                                'creditos.num_lote',
+                                'creditos.paquete',
+                                'creditos.promocion',
+                                'creditos.descripcion_paquete',
+                                'creditos.descripcion_promocion',
+                                'licencias.avance as avance_lote',
+                                'licencias.visita_avaluo',
+                                'contratos.fecha_status',
+                                'contratos.status',
+                                'contratos.avaluo_preventivo',
+                                'contratos.aviso_prev',
+                                'contratos.aviso_prev_venc',
+                                'lotes.fraccionamiento_id',
+                                'lotes.id as lote_id'
+                            )
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('contratos.equipamiento', '!=', 2)
+                            ->where($criterio, '=', $buscar)
+                            ->where('lotes.num_lote', '=', $b_lote)
+                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
+                            ->whereNotNull('creditos.descripcion_paquete')
+                            ->orWhere('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('contratos.equipamiento', '!=', 2)
+                            ->where($criterio, '=', $buscar)
+                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
+                            ->where('lotes.num_lote', '=', $b_lote)
+                            ->whereNotNull('creditos.descripcion_promocion')
+                            ->orderBy('licencias.avance','desc')
+                            ->orderBy('licencias.visita_avaluo','asc')
+                            ->paginate(8);
+                    }
+                    elseif($b_etapa == '' && $b_manzana == '' && $b_lote != ''){
+                        $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                            ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                            ->join('personal as c', 'clientes.id', '=', 'c.id')
+                            ->select(
+                                'contratos.id as folio',
+                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                'creditos.fraccionamiento as proyecto',
+                                'creditos.etapa',
+                                'creditos.manzana',
+                                'creditos.num_lote',
+                                'creditos.paquete',
+                                'creditos.promocion',
+                                'creditos.descripcion_paquete',
+                                'creditos.descripcion_promocion',
+                                'licencias.avance as avance_lote',
+                                'licencias.visita_avaluo',
+                                'contratos.fecha_status',
+                                'contratos.status',
+                                'contratos.avaluo_preventivo',
+                                'contratos.aviso_prev',
+                                'contratos.aviso_prev_venc',
+                                'lotes.fraccionamiento_id',
+                                'lotes.id as lote_id'
+                            )
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('contratos.equipamiento', '!=', 2)
+                            ->where($criterio, '=', $buscar)
+                            ->where('lotes.num_lote', '=', $b_lote)
+                            ->whereNotNull('creditos.descripcion_paquete')
+                            ->orWhere('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('contratos.equipamiento', '!=', 2)
+                            ->where($criterio, '=', $buscar)
+                            ->where('lotes.num_lote', '=', $b_lote)
+                            ->whereNotNull('creditos.descripcion_promocion')
+                            ->orderBy('licencias.avance','desc')
+                            ->orderBy('licencias.visita_avaluo','asc')
+                            ->paginate(8);
+                    }
+                    elseif($b_etapa == '' && $b_manzana != '' && $b_lote == ''){
+                        $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                            ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                            ->join('personal as c', 'clientes.id', '=', 'c.id')
+                            ->select(
+                                'contratos.id as folio',
+                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                'creditos.fraccionamiento as proyecto',
+                                'creditos.etapa',
+                                'creditos.manzana',
+                                'creditos.num_lote',
+                                'creditos.paquete',
+                                'creditos.promocion',
+                                'creditos.descripcion_paquete',
+                                'creditos.descripcion_promocion',
+                                'licencias.avance as avance_lote',
+                                'licencias.visita_avaluo',
+                                'contratos.fecha_status',
+                                'contratos.status',
+                                'contratos.avaluo_preventivo',
+                                'contratos.aviso_prev',
+                                'contratos.aviso_prev_venc',
+                                'lotes.fraccionamiento_id',
+                                'lotes.id as lote_id'
+                            )
+                            ->where('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('contratos.equipamiento', '!=', 2)
+                            ->where($criterio, '=', $buscar)
+                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
+                            ->whereNotNull('creditos.descripcion_paquete')
+                            ->orWhere('contratos.status', '!=', 0)
+                            ->where('contratos.status', '!=', 2)
+                            ->where('contratos.equipamiento', '!=', 2)
+                            ->where($criterio, '=', $buscar)
+                            ->where('lotes.etapa_id', '=', $b_etapa)
+                            ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
+                            ->where('lotes.num_lote', '=', $b_lote)
+                            ->whereNotNull('creditos.descripcion_promocion')
+                            ->orderBy('licencias.avance','desc')
+                            ->orderBy('licencias.visita_avaluo','asc')
+                            ->paginate(8);
+                    }
+
+                    break;
+                }
+
+                case 'c.nombre':{
+                    $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                    ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                    ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                    ->join('personal as c', 'clientes.id', '=', 'c.id')
+                    ->select(
+                        'contratos.id as folio',
+                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                        'creditos.fraccionamiento as proyecto',
+                        'creditos.etapa',
+                        'creditos.manzana',
+                        'creditos.num_lote',
+                        'creditos.paquete',
+                        'creditos.promocion',
+                        'creditos.descripcion_paquete',
+                        'creditos.descripcion_promocion',
+                        'licencias.avance as avance_lote',
+                        'licencias.visita_avaluo',
+                        'contratos.fecha_status',
+                        'contratos.status',
+                        'contratos.avaluo_preventivo',
+                        'contratos.aviso_prev',
+                        'contratos.aviso_prev_venc',
+                        'lotes.fraccionamiento_id',
+                        'lotes.id as lote_id'
+                    )
+                    ->where('contratos.status', '!=', 0)
+                    ->where('contratos.status', '!=', 2)
+                    ->where('contratos.equipamiento', '!=', 2)
+                    ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $buscar . '%')
+                    ->whereNotNull('creditos.descripcion_paquete')
+                    ->orWhere('contratos.status', '!=', 0)
+                    ->where('contratos.status', '!=', 2)
+                    ->where('contratos.equipamiento', '!=', 2)
+                    ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $buscar . '%')
+                    ->whereNotNull('creditos.descripcion_promocion')
+                    ->orderBy('licencias.avance','desc')
+                    ->orderBy('licencias.visita_avaluo','asc')
+                    ->paginate(8);
+                    break;
+                }
+                case 'contratos.id':{
+                    $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                    ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                    ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                    ->join('personal as c', 'clientes.id', '=', 'c.id')
+                    ->select(
+                        'contratos.id as folio',
+                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                        'creditos.fraccionamiento as proyecto',
+                        'creditos.etapa',
+                        'creditos.manzana',
+                        'creditos.num_lote',
+                        'creditos.paquete',
+                        'creditos.promocion',
+                        'creditos.descripcion_paquete',
+                        'creditos.descripcion_promocion',
+                        'licencias.avance as avance_lote',
+                        'licencias.visita_avaluo',
+                        'contratos.fecha_status',
+                        'contratos.status',
+                        'contratos.avaluo_preventivo',
+                        'contratos.aviso_prev',
+                        'contratos.aviso_prev_venc',
+                        'lotes.fraccionamiento_id',
+                        'lotes.id as lote_id'
+                    )
+                    ->where('contratos.status', '!=', 0)
+                    ->where('contratos.status', '!=', 2)
+                    ->where('contratos.equipamiento', '!=', 2)
+                    ->where($criterio, '=', $buscar)
+                    ->whereNotNull('creditos.descripcion_paquete')
+                    ->orWhere('contratos.status', '!=', 0)
+                    ->where('contratos.status', '!=', 2)
+                    ->where('contratos.equipamiento', '!=', 2)
+                    ->where($criterio, '=', $buscar)
+                    ->whereNotNull('creditos.descripcion_promocion')
+                    ->orderBy('licencias.avance','desc')
+                    ->orderBy('licencias.visita_avaluo','asc')
+                    ->paginate(8);
+                    break;
+                }
+            }
+        }
 
         return [
             'pagination' => [
@@ -154,5 +619,11 @@ class EquipamientoController extends Controller
                         ->where('solic_equipamientos.lote_id','=',$lote_id)
                         ->get();
         return ['equipamientos' => $equipamientos];
+    }
+
+    public function terminarSolicitud (Request $request){
+        $contrato = Contrato::findOrFail($request->contrato_id);
+        $contrato->equipamiento = 2;
+        $contrato->save();
     }
 }

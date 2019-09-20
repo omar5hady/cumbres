@@ -38,7 +38,6 @@
                                     <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
 
                                     <input v-else type="text"  v-model="buscar" @keyup.enter="listarContratos(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
-                                    <input v-if="criterio=='c.nombre'" type="text"  v-model="b_etapa" @keyup.enter="listarContratos(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Apellidos">
                                     <button type="submit" @click="listarContratos(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                    
                                 </div>
@@ -65,14 +64,14 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="contratos in arrayContratos" :key="contratos.folio">
-                                        <template  v-if="contratos.descripcion_paquete || contratos.descripcion_promocion">
+                                        <template>
                                             <td class="td2" v-text="contratos.folio"></td>
                                             <td class="td2" v-text="contratos.nombre_cliente"></td>
                                             <td class="td2" v-text="contratos.proyecto"></td>
                                             <td class="td2" v-text="contratos.etapa"></td>
                                             <td class="td2" v-text="contratos.manzana"></td>
                                             <td class="td2" v-text="contratos.num_lote"></td>
-                                            <td class="td2" v-text="contratos.descripcion_paquete + ', ' + contratos.descripcion_promocion"></td>
+                                            <td class="td2" v-text="contratos.paquete + ', ' + contratos.promocion"></td>
                                             <td class="td2" v-text="contratos.avance_lote + '%'"></td>
                                             <td class="td2" v-if="contratos.visita_avaluo" v-text="this.moment(contratos.visita_avaluo).locale('es').format('DD/MMM/YYYY')"></td>
                                             <td class="td2" v-else v-text="'Sin fecha'"></td>
@@ -88,7 +87,11 @@
                                             <td class="td2" v-else v-text="'Sin fecha'"></td>
                                             <td class="td2">
                                                 <button type="button" @click="abrirModal('solicitar',contratos)" class="btn btn-default btn-sm"> Solicitar </button>
+                                                 <button type="button" @click="terminarSolicitud(contratos.folio)" class="btn btn-success btn-sm" title="Finalizar">
+                                                    <i class="fa fa-check"></i>
+                                                </button>
                                             </td>
+                                           
                                         </template>
                                         
                                     </tr>
@@ -306,12 +309,15 @@
                     var respuesta = response.data;
                     me.arrayContratos = respuesta.contratos.data;
                     me.pagination = respuesta.pagination;
-                    if(me.arrayContratos[0]['descripcion_promocion'] == null || me.arrayContratos[0]['descripcion_promocion'] == ""){
-                        me.arrayContratos[0]['descripcion_promocion']= 'Sin promoción';
+                    for(var i=0;i<8;i++){
+                        if(me.arrayContratos[i]['promocion'] == null || me.arrayContratos[i]['promocion'] == ""){
+                            me.arrayContratos[i]['promocion']= 'Sin promoción';
+                        }
+                        if(me.arrayContratos[i]['paquete'] == null || me.arrayContratos[i]['paquete'] == ""){
+                            me.arrayContratos[i]['paquete']= 'Sin paquete';
                     }
-                    if(me.arrayContratos[0]['descripcion_paquete'] == null || me.arrayContratos[0]['descripcion_paquete'] == ""){
-                        me.arrayContratos[0]['descripcion_paquete']= 'Sin paquete';
                     }
+                    
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -450,6 +456,37 @@
                         'success'
                         )
                         me.listarEquipamientosLote();
+                    }).catch(function (error){
+                        console.log(error);
+                    });
+                }
+                })
+            },
+
+            terminarSolicitud(id){
+                this.contrato_id=data['id'];
+                //console.log(this.departamento_id);
+                swal({
+                title: '¿Desea finalizar la solicitud de equipamientos para este contrato?',
+                text: "Esta acción no se puede revertir!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Si, eliminar!'
+                }).then((result) => {
+                if (result.value) {
+                    let me = this;
+
+                axios.put('/equipamiento/terminarSolicitud', 
+                         {'id': this.contrato_id}).then(function (response){
+                        swal(
+                        'Hecho!',
+                        'La solicitud de equipamientos ha sido finalizada con exito.',
+                        'success'
+                        )
+                        me.listarContratos(page,buscar,b_etapa,b_manzana,b_lote,criterio);
                     }).catch(function (error){
                         console.log(error);
                     });
