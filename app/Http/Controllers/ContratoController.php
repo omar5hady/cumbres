@@ -8205,13 +8205,13 @@ class ContratoController extends Controller
         setlocale(LC_TIME, 'es_MX.utf8');
         $contratoPromesa[0]->engancheTotalLetra = NumerosEnLetras::convertir($contratoPromesa[0]->enganche_total, 'Pesos', true, 'Centavos');
         $contratoPromesa[0]->precioVentaLetra = NumerosEnLetras::convertir($contratoPromesa[0]->precio_venta, 'Pesos', true, 'Centavos');
-        $contratoPromesa[0]->precio_venta = number_format((float)$contratoPromesa[0]->precio_venta, 2, '.', ',');
+        //$contratoPromesa[0]->precio_venta = number_format((float)$contratoPromesa[0]->precio_venta, 2, '.', ',');
 
         if($contratoPromesa[0]->total_pagar <0)
             $contratoPromesa[0]->credito_neto=$contratoPromesa[0]->credito_neto - $contratoPromesa[0]->total_pagar;
 
         $contratoPromesa[0]->montoTotalCreditoLetra = NumerosEnLetras::convertir($contratoPromesa[0]->credito_neto, 'Pesos', true, 'Centavos');
-        $contratoPromesa[0]->credito_neto = number_format((float)$contratoPromesa[0]->credito_neto, 2, '.', ',');
+        //$contratoPromesa[0]->credito_neto = number_format((float)$contratoPromesa[0]->credito_neto, 2, '.', ',');
 
         $contratoPromesa[0]->infonavitLetra = NumerosEnLetras::convertir($contratoPromesa[0]->infonavit, 'Pesos', true, 'Centavos');
         $contratoPromesa[0]->infonavit = number_format((float)$contratoPromesa[0]->infonavit, 2, '.', ',');
