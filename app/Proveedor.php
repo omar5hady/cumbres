@@ -14,4 +14,8 @@ class Proveedor extends Model
     public function equipamiento(){
         return $this->hasMany('App\Equipamiento');
     }
+
+    public function solic_equipamiento(){
+        return $this->hasMany('App\Solic_equipamiento');
+    }
 }

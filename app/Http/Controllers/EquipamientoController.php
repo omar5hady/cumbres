@@ -41,8 +41,7 @@ class EquipamientoController extends Controller
         $equipamiento->save();
     }
 
-    public function destroy(Request $request)
-    {
+    public function destroy(Request $request){
         if(!$request->ajax())return redirect('/');
         $equipamiento = Equipamiento::findOrFail($request->id);
         $equipamiento->activo = 0;
@@ -577,6 +576,7 @@ class EquipamientoController extends Controller
     }
 
     public function selectEquipamiento(Request $request){
+        if(!$request->ajax())return redirect('/');
         $equipamiento = Equipamiento::select('id','equipamiento')
                     ->where('proveedor_id','=',$request->buscar)->where('activo','=',1)->get();
 
@@ -584,11 +584,13 @@ class EquipamientoController extends Controller
     }
 
     public function solicitud_equipamiento(Request $request){
+        if(!$request->ajax())return redirect('/');
         $fecha_hoy = Carbon::today()->toDateString();
         $solicitud = new Solic_equipamiento();
         $solicitud->lote_id = $request->lote_id;
         $solicitud->contrato_id = $request->contrato_id;
-        $solicitud->equipamiento_id = $request->equipamiento_id;
+        $solicitud->proveedor_id = $request->proveedor_id;
+        $solicitud->equipamientos = $request->equipamientos;
         $solicitud->fecha_solicitud = $fecha_hoy;
         $solicitud->save();
 
@@ -599,6 +601,7 @@ class EquipamientoController extends Controller
     }
 
     public function eliminarSolicitud_lote(Request $request){
+        if(!$request->ajax())return redirect('/');
         $equipamientoLote = Solic_equipamiento::findOrFail($request->id);
         $equipamientoLote->delete();
         $sinEquipamiento = Solic_equipamiento::select('id')->where('contrato_id','=',$request->contrato_id)->count();
@@ -612,9 +615,8 @@ class EquipamientoController extends Controller
     public function index_equipamientos_lotes(Request $request){
         $lote_id = $request->lote_id;
         $contrato_id = $request->contrato_id;
-        $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
-                        ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
-                        ->select('solic_equipamientos.fecha_solicitud','proveedores.proveedor','equipamientos.equipamiento','solic_equipamientos.id')
+        $equipamientos = Solic_equipamiento::join('proveedores','solic_equipamientos.proveedor_id','=','proveedores.id')
+                        ->select('solic_equipamientos.fecha_solicitud','proveedores.proveedor','solic_equipamientos.equipamientos','solic_equipamientos.id')
                         ->where('solic_equipamientos.contrato_id','=',$contrato_id)
                         ->where('solic_equipamientos.lote_id','=',$lote_id)
                         ->get();
@@ -622,8 +624,11 @@ class EquipamientoController extends Controller
     }
 
     public function terminarSolicitud (Request $request){
+        if(!$request->ajax())return redirect('/');
         $contrato = Contrato::findOrFail($request->contrato_id);
         $contrato->equipamiento = 2;
         $contrato->save();
     }
+
+    
 }

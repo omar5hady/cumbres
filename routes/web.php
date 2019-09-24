@@ -508,6 +508,14 @@ Route::group(['middleware' => ['auth']],function(){
         ///////////////////// RUTAS SOLIC EQUIPAMIENTO
         Route::get('/equipamiento/indexContrato','EquipamientoController@indexContratos');
         Route::put('/equipamiento/terminarSolicitud','EquipamientoController@terminarSolicitud');
+        
+        Route::put('/equipamiento/actCosto','SolEquipamientoController@actCosto');
+        Route::put('/equipamiento/actAnticipo','SolEquipamientoController@actAnticipo');
+        Route::put('/equipamiento/actColocacion','SolEquipamientoController@actColocacion');
+        Route::get('/equipamiento/indexHistorial','SolEquipamientoController@indexHistorial');
+        
+        Route::get('/equipamiento/indexObservacion','ObsservacionEquipamientoController@index');
+        Route::post('/equipamiento/registrarObservacion','ObsservacionEquipamientoController@store');
     });
 
 
