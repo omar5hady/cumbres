@@ -24,6 +24,12 @@ class CreateSolicEquipamientosTable extends Migration
             $table->date('fecha_anticipo')->nullable();
             $table->string('equipamientos');
             $table->unsignedInteger('proveedor_id');
+
+            $table->double('liquidacion')->nullable();
+            $table->date('fecha_liquidacion')->nullable();
+            $table->string('avance',40)->default('Solicitado')->nullable();
+            $table->string('num_factura', 8)->nullable();
+
             $table->timestamps();
 
             $table->foreign('lote_id')->references('id')->on('lotes');

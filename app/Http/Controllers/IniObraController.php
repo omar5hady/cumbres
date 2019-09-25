@@ -12,6 +12,7 @@ use NumerosEnLetras;
 use Excel;
 use PHPExcel_Worksheet_Drawing;
 use App\Credito;
+use File;
 
 class IniObraController extends Controller
 {
@@ -28,7 +29,7 @@ class IniObraController extends Controller
             $ini_obra = Ini_obra::join('contratistas','ini_obras.contratista_id','=','contratistas.id')
             ->join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
             ->select('ini_obras.id','ini_obras.clave','ini_obras.f_ini','ini_obras.f_fin',
-            'ini_obras.total_costo_directo','ini_obras.total_costo_indirecto','ini_obras.total_importe',
+            'ini_obras.total_costo_directo','ini_obras.total_costo_indirecto', 'ini_obras.documento','ini_obras.total_importe',
             'contratistas.nombre as contratista','fraccionamientos.nombre as proyecto')
             ->orderBy('ini_obras.id', 'desc')->paginate(8);
         }
@@ -37,7 +38,7 @@ class IniObraController extends Controller
                 $ini_obra = Ini_obra::join('contratistas','ini_obras.contratista_id','=','contratistas.id')
                 ->join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
                 ->select('ini_obras.id','ini_obras.clave','ini_obras.f_ini','ini_obras.f_fin',
-                'ini_obras.total_costo_directo','ini_obras.total_costo_indirecto','ini_obras.total_importe',
+                'ini_obras.total_costo_directo','ini_obras.total_costo_indirecto', 'ini_obras.documento','ini_obras.total_importe',
                 'contratistas.nombre as contratista','fraccionamientos.nombre as proyecto')
                 ->where($criterio, 'like', '%'. $buscar . '%')
                 ->orderBy('ini_obras.id', 'desc')->paginate(8);
@@ -46,7 +47,7 @@ class IniObraController extends Controller
                 $ini_obra = Ini_obra::join('contratistas','ini_obras.contratista_id','=','contratistas.id')
                 ->join('fraccionamientos','ini_obras.fraccionamiento_id','=','fraccionamientos.id')
                 ->select('ini_obras.id','ini_obras.clave','ini_obras.f_ini','ini_obras.f_fin',
-                'ini_obras.total_costo_directo','ini_obras.total_costo_indirecto','ini_obras.total_importe',
+                'ini_obras.total_costo_directo','ini_obras.total_costo_indirecto', 'ini_obras.documento','ini_obras.total_importe',
                 'contratistas.nombre as contratista','fraccionamientos.nombre as proyecto')
                 ->where($criterio, '=',  $buscar )
                 ->orderBy('ini_obras.id', 'desc')->paginate(8);
@@ -629,5 +630,53 @@ class IniObraController extends Controller
         )->download('xls');
     
     }
+
+    ////////////////////////////////////////////////////////////////////////////////
+
+    public function formSubmitContratoObra(Request $request, $id)
+    {
+        if(!$request->ajax())return redirect('/');
+        $pdfAnterior = Ini_obra::select('documento', 'id')
+            ->where('id', '=', $id)
+            ->get();
+        if ($pdfAnterior->isEmpty() == 1) {
+            $fileName = time() . '.' . $request->pdf->getClientOriginalExtension();
+            $moved =  $request->pdf->move(public_path('/files/contratos/obra/'), $fileName);
+
+            if ($moved) {
+                if (!$request->ajax()) return redirect('/');
+                $documento = Ini_obra::findOrFail($request->id);
+                $documento->documento = $fileName;
+                $documento->save(); //Insert
+
+            }
+
+            return back();
+        } else {
+            $pathAnterior = public_path() . '/files/contratos/obra/' . $pdfAnterior[0]->pdf;
+            File::delete($pathAnterior);
+
+            $fileName = time() . '.' . $request->pdf->getClientOriginalExtension();
+            $moved =  $request->pdf->move(public_path('/files/contratos/obra/'), $fileName);
+
+            if ($moved) {
+                if (!$request->ajax()) return redirect('/');
+                $documento = Ini_obra::findOrFail($request->id);
+                $documento->documento = $fileName;
+                $documento->save(); //Insert
+
+            }
+
+            return back();
+        }
+    }
+
+    public function downloadFile($fileName)
+    {
+
+        $pathtoFile = public_path() . '/files/contratos/obra/' . $fileName;
+        return response()->download($pathtoFile);
+    }
+
 
 }

@@ -238,7 +238,7 @@
                                         <template>
                                             <td class="td2" >
                                                 <button title="Subir avaluo" type="button" @click="abrirModal('subirArchivo',avaluos)" class="btn btn-default btn-sm">
-                                                <i class="icon-cloud-upload"></i>
+                                                    <i class="icon-cloud-upload"></i>
                                                 </button>
                                                 <a title="Descarga de avaluo" class="btn btn-default btn-sm" v-if="avaluos.pdf != '' && avaluos.pdf != NULL"  v-bind:href="'/downloadAvaluo/'+avaluos.pdf">
                                                     <i class="fa fa-download"></i>

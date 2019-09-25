@@ -32,6 +32,8 @@ class CreateIniObrasTable extends Migration
             $table->boolean('iva')->default(0);
             $table->string('tipo',30)->nullable();
 
+            $table->string('documento')->nullable();
+
             $table->timestamps();
 
             $table->foreign('fraccionamiento_id')->references('id')->on('fraccionamientos');

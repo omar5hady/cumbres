@@ -3646,6 +3646,7 @@ class DepositoController extends Controller
     public function estadoPDF ($id){
         $contratos = Contrato::leftJoin('expedientes','contratos.id','=','expedientes.id')
         ->leftJoin('creditos','contratos.id','=','creditos.id')
+        ->leftJoin('lotes','creditos.lote_id','=','lotes.id')
         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
         ->join('personal as c', 'clientes.id', '=', 'c.id')
         ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
@@ -3656,6 +3657,7 @@ class DepositoController extends Controller
                 'expedientes.valor_escrituras', 
                 'expedientes.descuento', 
                 'expedientes.fecha_liquidacion',
+                'lotes.credito_puente',
                 'contratos.enganche_total',
                 'contratos.fecha',
                 'contratos.saldo',
@@ -3717,6 +3719,7 @@ class DepositoController extends Controller
 
         $contratos[0]->gastos = number_format((float)$contratos[0]->gastos, 2, '.', ',');
         $contratos[0]->precio_venta = number_format((float)$contratos[0]->precio_venta, 2, '.', ',');
+        $contratos[0]->valor_escrituras = number_format((float)$contratos[0]->valor_escrituras, 2, '.', ',');
 
         $gastos_admin = Gasto_admin::select('concepto','costo','fecha')
         ->where('contrato_id','=',$id)

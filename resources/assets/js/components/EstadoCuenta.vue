@@ -89,7 +89,12 @@
                                                 <i class="fa fa-eye"></i>
                                             </button>
                                         </td>
-                                        <td class="td2" v-text="contratos.folio"></td>
+                                           <td class="td2">
+                                                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{contratos.folio}}</a>
+                                                <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+ contratos.folio">Contrato de compra venta</a>
+                                                </div>
+                                            </td>
                                         <td class="td2" v-text="contratos.nombre_cliente"></td>
                                         <td class="td2" v-text="contratos.fraccionamiento"></td>
                                         <td class="td2" v-text="contratos.etapa"></td>

@@ -309,6 +309,9 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/licencias/indexVisita','LicenciasController@indexVisita');
         Route::put('/licencias/progFechaVisita','LicenciasController@AsigFechaVisita');
 
+        Route::post('/formSubmitContratoObra/{id}','IniObraController@formSubmitContratoObra'); //carga de Avaluo
+        Route::get('/downloadContratoObra/{fileName}' , 'IniObraController@downloadFile'); //descarga de Avaluo
+
 
     ////////////////////        RUTAS PARTIDAS   /////////////////////////////////
         Route::get('/partidas','PartidaController@index');

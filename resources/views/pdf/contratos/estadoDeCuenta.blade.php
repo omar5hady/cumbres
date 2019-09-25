@@ -68,8 +68,21 @@
         </div>
     </div> 
 
-    <div style="position: static; margin: 30px;">
-        <div class="table" style="margin-top: 0.3em;">
+    <div style="position: static; margin: 25px;">
+        <div class="table" style="margin-top: 0.2em;">
+                <div class="table-row">
+                    <div colspan="2" class="table-cell"> <b> Valor a escriturar</div>
+                    <div colspan="2" class="table-cell">${{$contratos[0]->valor_escrituras}}</div>
+                    <div colspan="4" class="table-cell"></div>    
+                </div>
+                <div class="table-row">
+                    <div colspan="2" class="table-cell"> <b> Crédito puente</div>
+                    <div colspan="2" class="table-cell">{{$contratos[0]->credito_puente}}</div>   
+                    <div colspan="4" class="table-cell"></div>     
+                </div>
+                <div class="table-row">
+                    <div colspan="8" class="table-cell"><br></div>     
+                </div>
                 <div class="table-row">
                     <div colspan="2" class="table-cell"></div>    
                     <div class="table-cell"><b>Fecha</div>

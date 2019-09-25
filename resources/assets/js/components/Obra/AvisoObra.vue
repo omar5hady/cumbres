@@ -62,6 +62,13 @@
                                                 <button type="button" class="btn btn-warning btn-sm" @click="actualizarContrato(avisoObra.id)">
                                                     <i class="icon-pencil"></i>
                                                 </button>
+
+                                                <button title="Subir contrato" type="button" @click="abrirModal('subirArchivo',avisoObra)" class="btn btn-default btn-sm">
+                                                    <i class="icon-cloud-upload"></i>
+                                                </button>
+                                                <a title="Descargar contrato" class="btn btn-default btn-sm" v-if="avisoObra.documento != '' && avisoObra.documento != NULL"  v-bind:href="'/downloadContratoObra/'+avisoObra.documento">
+                                                    <i class="fa fa-download"></i>
+                                                </a>
                                             </td>
                                             <td v-text="avisoObra.clave"></td>
                                             <td v-text="avisoObra.contratista"></td>
@@ -676,6 +683,39 @@
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
+
+            <!-- Modal para la carga pdf -->
+            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" v-text="tituloModal"></h4>
+                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div>
+                                <form  method="post" @submit="formSubmit" enctype="multipart/form-data">
+
+                                        <strong>Seleccionar contrato</strong>
+
+                                        <input type="file" class="form-control" v-on:change="onImageChange">
+                                        <br/>
+                                        <button type="submit" class="btn btn-success">Cargar</button>
+                                </form>
+                            </div>
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                            </div>
+                    </div> 
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!--Fin del modal-->
            
             
 
@@ -716,6 +756,7 @@
                 arrayAvisoObraLotes : [],
                 arrayContratista : [],
                 modal : 0,
+                pdf:'',
                 listado:1,
                 tituloModal : '',
                 tipoAccion: 0,
@@ -825,6 +866,47 @@
         },
        
         methods : {
+
+            onImageChange(e){
+
+                console.log(e.target.files[0]);
+
+                this.pdf = e.target.files[0];
+
+            },
+
+            formSubmit(e) {
+
+                e.preventDefault();
+
+                let currentObj = this;
+            
+                let formData = new FormData();
+           
+                formData.append('pdf', this.pdf);
+                axios.post('/formSubmitContratoObra/'+this.id, formData)
+                .then(function (response) {
+                   
+                    currentObj.success = response.data.success;
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Archivo guardado correctamente',
+                        showConfirmButton: false,
+                        timer: 2000
+                        })
+                    me.cerrarModal();
+
+                })
+
+                .catch(function (error) {
+
+                    currentObj.output = error;
+
+                });
+
+            },
+
             /**Metodo para mostrar los registros */
             listarAvisos(page, buscar, criterio){
                 let me = this;
@@ -859,7 +941,7 @@
                 me.contratista_id = val1.id;
                 me.contratista = val1.nombre;
             },
-             selectFraccionamiento(search, loading){
+            selectFraccionamiento(search, loading){
                 let me = this;
                 loading(true)
 
@@ -1049,7 +1131,7 @@
                 }
 
             },
-             eliminarLote(data =[]){
+            eliminarLote(data =[]){
                 //this.lote_id=data['id'];
                 swal({
                 title: '¿Desea remover este lote?',
@@ -1324,6 +1406,26 @@
                 });
 
             },
+
+            cerrarModal(){
+                this.modal = 0;
+                this.tituloModal = '';
+                this.pdf='';
+            },
+
+            abrirModal(accion,data =[]){
+                switch(accion){
+                    case 'subirArchivo':
+                    {
+                        this.modal =1;
+                        this.tituloModal='Subir Archivo';
+                        this.id=data['id'];
+                        this.pdf=data['documento'];
+                        break;
+                    }
+                } 
+            },
+
 
             actualizarContrato(id){
                 let me= this;
