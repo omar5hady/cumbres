@@ -392,8 +392,8 @@ class IniObraController extends Controller
         $cabecera[0]->total_costo_indirecto = number_format((float)$cabecera[0]->total_costo_indirecto,2,'.','');
         $cabecera[0]->total_importe = number_format((float)$cabecera[0]->total_importe,2,'.','');
 
-        $cabecera[0]->anticipoLetra = NumerosEnLetras::convertir($cabecera[0]->total_anticipo,'Pesos',false,'Centavos');
-        $cabecera[0]->totalImporteLetra = NumerosEnLetras::convertir($cabecera[0]->total_importe,'Pesos',false,'Centavos');
+        $cabecera[0]->anticipoLetra = NumerosEnLetras::convertir($cabecera[0]->total_anticipo,'Pesos',true,'Centavos');
+        $cabecera[0]->totalImporteLetra = NumerosEnLetras::convertir($cabecera[0]->total_importe,'Pesos',true,'Centavos');
 
             $pdf = \PDF::loadview('pdf.contratoContratista',['cabecera' => $cabecera]);
             return $pdf->download('contrato.pdf');

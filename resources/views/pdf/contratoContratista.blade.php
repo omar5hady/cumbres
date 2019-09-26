@@ -151,8 +151,8 @@ de la obra </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LAN
 <br>
 <P LANG="en-GB" CLASS="western" ALIGN=JUSTIFY> <FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>6</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>.
 - </B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">El
-monto del presente contrato es por </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>$
-{{$cabecera[0]->total_importe}} ({{$cabecera[0]->totalImporteLetra}})</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">
+monto del presente contrato es por </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>
+${{$cabecera[0]->totalImporteLetra}}</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">
 @if ($cabecera[0]->iva == 1)
 Este monto incluye el impuesto al valor agregado del 16%.
 @else
@@ -203,9 +203,9 @@ se compromete a liquidar de la siguiente forma:</SPAN></FONT></FONT></P>
 	<FONT COLOR="#000000"><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">
 	<LI style="list-style-type: none; margin-left: 0.2in; text-indent: -0.2in"><P LANG="en-GB" ALIGN=JUSTIFY><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">a) Mediante
 		un anticipo correspondiente al  </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>{{$cabecera[0]->anticipo}}% </B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">
-		del monto del contrato al iniciar las obras. El total del pago es </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>$
-		{{$cabecera[0]->total_anticipo}}</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">
-	</SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>({{$cabecera[0]->anticipoLetra}}).</B></SPAN></FONT></FONT></P>
+		del monto del contrato al iniciar las obras. El total del pago es </SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>
+		</B></SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES">
+	</SPAN></FONT></FONT><FONT FACE="Arial, serif"><FONT SIZE=3><SPAN LANG="es-ES"><B>${{$cabecera[0]->anticipoLetra}}.</B></SPAN></FONT></FONT></P>
 
 </SPAN></FONT></FONT></FONT></P>
 	
