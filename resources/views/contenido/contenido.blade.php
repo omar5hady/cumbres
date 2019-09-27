@@ -314,6 +314,10 @@
         <template v-if="menu==212">
             <solicitar-equipamiento></solicitar-equipamiento>
         </template>
+
+        <template v-if="menu==213">
+            <obra-equipamiento></obra-equipamiento>
+        </template>
        
 
         

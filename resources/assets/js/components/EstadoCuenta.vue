@@ -51,9 +51,16 @@
                                             <option value="2">No firmado</option>
                                             <option value="3">Firmado</option>
                                     </select>
-                                    <button type="submit" @click="listarContratos(1,buscar,buscar2,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                    
                                 </div>
+
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <button type="submit" @click="listarContratos(1,buscar,buscar2,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Total: '+ contador"> </span>
+                                </div>    
+                            </div>
+
                             </div>
                         </div>
                         <div class="table-responsive">
@@ -390,6 +397,7 @@
                 ext_cliente: 0,
                 edocivil_cliente: '',
                 depeconomicos_cliente: 0,
+                contador:0,
 
                 modal: 0,
                 tituloModal: '',
@@ -454,6 +462,7 @@
                     var respuesta = response.data;
                     me.arrayContratos = respuesta.contratos.data;
                     me.pagination = respuesta.pagination;
+                    me.contador = respuesta.contador;
                 })
                 .catch(function (error) {
                     console.log(error);

@@ -170,6 +170,7 @@
                                             <th>RFC</th>
                                             <th>Empresa donde trabaja</th>
                                             <th>Clasificación</th>
+                                            <th>Fecha alta</th>
                                             <th>Observaciones</th>
                                         </tr>
                                     </thead>
@@ -198,6 +199,7 @@
                                                 <td class="td2" v-if="Personal.clasificacion==5" > Ventas</td>
                                                 <td class="td2" v-if="Personal.clasificacion==6" > Cancelado</td>
                                                 <td class="td2" v-if="Personal.clasificacion==7" > Coacreditado</td>
+                                                <td class="td2" v-text="this.moment(Personal.created_at).locale('es').format('DD/MMM/YYYY')" > Coacreditado</td>
                                             <td class="td2">
                                                 <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" @click="abrirModal3('prospecto','ver_todo',Personal.id),listarObservacion(1,Personal.id)">Ver todas</button> 
                                             </td>

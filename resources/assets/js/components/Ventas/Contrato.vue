@@ -58,6 +58,7 @@
                                             <option value="creditos.vendedor_id">Vendido por: </option>
                                             <option value="creditos.fraccionamiento">Proyecto</option>
                                             <option value="contratos.fecha">Fecha</option>
+                                            <option value="contratos.fecha_status">Fecha status</option>
                                         </select>
                                                                                
                                         <input  v-if="criterio2=='personal.nombre' || criterio2=='v.nombre' || criterio2=='creditos.id'" type="text" v-model="buscar2" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control">
@@ -86,6 +87,7 @@
                                             <option value="creditos.vendedor_id">Vendido por: </option>
                                             <option value="creditos.fraccionamiento">Proyecto</option>
                                             <option value="contratos.fecha">Fecha</option>
+                                            <option value="contratos.fecha_status">Fecha status</option>
                                         </select>
                                         
 
@@ -156,6 +158,7 @@
                                             <option value="creditos.vendedor_id">Vendido por: </option>
                                             <option value="creditos.fraccionamiento">Proyecto</option>
                                             <option value="contratos.fecha">Fecha</option>
+                                            <option value="contratos.fecha_status">Fecha status</option>
                                         </select>
                                         <select class="form-control" v-if="criterio2=='creditos.fraccionamiento'"  @click="selectEtapas(buscar2)" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" v-model="buscar2" >
                                             <option value="">Proyecto</option>
@@ -221,12 +224,13 @@
                                             <option value="creditos.vendedor_id">Vendido por: </option>
                                             <option value="creditos.fraccionamiento">Proyecto</option>
                                             <option value="contratos.fecha">Fecha</option>
+                                            <option value="contratos.fecha_status">Fecha status</option>
                                         </select>
                                   
                                         <input  v-if="criterio2=='contratos.fecha'" type="date" v-model="buscar2" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control">
                                         <input  v-if="criterio2=='contratos.fecha'" type="date" v-model="buscar3" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control">
-
-                                        
+                                        <input  v-if="criterio2=='contratos.fecha_status'" type="date" v-model="buscar2" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control">
+                                        <input  v-if="criterio2=='contratos.fecha_status'" type="date" v-model="buscar3" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control">
                                     </div>
                                     <select class="form-control col-md-4" v-model="b_status">
                                         <option value="">Seleccionar Status</option>
@@ -1954,6 +1958,8 @@
                 b_status:1,
                 b_fecha:'',
                 b_fecha2:'',
+                b_fecha_status: '',
+                b_fecha_status2: '',
                 listado:0,
                 modal: 0,
                 tituloModal: '',

@@ -59,7 +59,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="lotes in arrayLotes" :key="lotes.id"> 
+                                    <tr @click="abrirModal('fecha',lotes)" v-for="lotes in arrayLotes" :key="lotes.id"> 
                                         
                                         <td class="td2" v-text="lotes.proyecto"></td>
                                         <td class="td2" v-text="lotes.num_etapa"></td>
@@ -79,7 +79,7 @@
                                         </template>
                                         <td class="td2" v-text="lotes.avance+'%'"></td>
                                         <td class="td2" v-text="lotes.paquete"></td>
-                                        <td @dblclick="abrirModal('fecha',lotes)" class="td2" v-text="lotes.visita_avaluo"></td>
+                                        <td @click="abrirModal('fecha',lotes)" class="td2" v-text="lotes.visita_avaluo"></td>
                                        
                                     </tr>                               
                                 </tbody>

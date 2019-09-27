@@ -153,10 +153,11 @@ class AvanceController extends Controller
         
         if($buscar==''){
             $avance = Avance::join('lotes','avances.lote_id','=','lotes.id')
+            ->join('licencias','lotes.id','=','licencias.id')
             ->join('partidas','avances.partida_id','=','partidas.id')
             ->select('lotes.num_lote as lote','avances.avance', 'avances.avance_porcentaje', 
             'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id','avances.id'
-            ,'partidas.partida','avances.partida_id','avances.cambio_avance','lotes.aviso')
+            ,'partidas.partida','licencias.visita_avaluo','avances.partida_id','avances.cambio_avance','lotes.aviso')
             ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
             ->addSelect('fraccionamientos.nombre as proyecto')
             ->join('modelos','lotes.modelo_id','=','modelos.id')
@@ -167,10 +168,11 @@ class AvanceController extends Controller
        else{
            if($criterio == 'avances.lote_id' || $criterio == 'lotes.id'){
             $avance = Avance::join('lotes','avances.lote_id','=','lotes.id')
+            ->join('licencias','lotes.id','=','licencias.id')
             ->join('partidas','avances.partida_id','=','partidas.id')
             ->select('lotes.num_lote as lote','avances.avance', 'avances.avance_porcentaje', 
             'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id','avances.id',
-            'partidas.partida','avances.partida_id','avances.cambio_avance')
+            'partidas.partida','licencias.visita_avaluo','avances.partida_id','avances.cambio_avance')
             ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
             ->addSelect('fraccionamientos.nombre as proyecto')
             ->join('modelos','lotes.modelo_id','=','modelos.id')
@@ -182,10 +184,11 @@ class AvanceController extends Controller
            }
            else{
             $avance = Avance::join('lotes','avances.lote_id','=','lotes.id')
+            ->join('licencias','lotes.id','=','licencias.id')
             ->join('partidas','avances.partida_id','=','partidas.id')
             ->select('lotes.num_lote as lote','avances.avance', 'avances.avance_porcentaje', 
             'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id','avances.id',
-            'partidas.partida','avances.partida_id','avances.cambio_avance')
+            'partidas.partida','licencias.visita_avaluo','avances.partida_id','avances.cambio_avance')
             ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
             ->addSelect('fraccionamientos.nombre as proyecto')
             ->join('modelos','lotes.modelo_id','=','modelos.id')

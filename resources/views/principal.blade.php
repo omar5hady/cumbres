@@ -268,6 +268,11 @@
                                         <a class="nav-link" href="#"><i class="fa fa-star-half-o"></i> Visita para avaluo</a>
                                     </li>
                                 @endif
+                                @if(Auth::user()->rol_id == 1)
+                                    <li @click="menu=213" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="fa fa-archive"></i> Solic. Equipamiento</a>
+                                    </li>
+                                @endif
                             </ul>
                         </li>
                     @endif

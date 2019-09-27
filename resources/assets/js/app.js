@@ -68,6 +68,7 @@ Vue.component('aviso-obra', require('./components/Obra/AvisoObra.vue'));
 Vue.component('partidas', require('./components/Obra/Partidas.vue'));
 Vue.component('avance', require('./components/Obra/Avance.vue'));
 Vue.component('visita-avaluo', require('./components/Obra/VisitaAvaluo.vue'));
+Vue.component('solicitar-equipamiento', require('./components/Ventas/Equipamientos.vue'));
 
 //Componentes Ventas
 Vue.component('lote-disponible', require('./components/Ventas/LotesDisp.vue'));
@@ -77,7 +78,7 @@ Vue.component('historialsim', require('./components/Ventas/HistorialSimulacion.v
 Vue.component('historialcreditos', require('./components/Ventas/HistorialDeCreditos.vue'));
 Vue.component('crear-contrato', require('./components/Ventas/Contrato.vue'));
 Vue.component('docs', require('./components/Ventas/docs.vue'));
-Vue.component('solicitar-equipamiento', require('./components/Ventas/Equipamientos.vue'));
+Vue.component('obra-equipamiento', require('./components/Obra/ObraEquipamientos.vue'));
 
 //Componentes Acceso
 Vue.component('rol', require('./components/Rol.vue'));

@@ -22,6 +22,20 @@
                         </button>
                         <!---->
                     </div>
+
+                    <div v-if="resumen==0" class="card-header">
+                        <!--   Boton Nuevo    -->
+                        <div class="form-group row">
+                            <label class="col-md-2 form-control-label" for="text-input">Fecha de visita para avaluo:</label>
+                            <div class="col-md-3">
+                                <input type="date" v-model="visita_avaluo"  class="form-control">
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn2 btn-primary form-control" @click="asignarFecha()">Guardar fecha</button>
+                            </div>
+                        </div>
+                        <!---->
+                    </div>
                     <div class="card-body" v-if="resumen==0">
                         
                         <table class="table1 table-bordered table-striped table-sm">
@@ -100,7 +114,7 @@
                             </div>
                         </div>
                         <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-sm">
+                            <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
                                     <tr>
                                         <th>Opciones</th>
@@ -119,35 +133,35 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="avancepro in arrayAvanceProm" :key="avancepro.lote_id">
-                                        <td style="width:9%">
+                                        <td class="td2" style="width:9%">
                                             <button type="button" class="btn btn-primary btn-sm" @click="mostrarPartidas(avancepro.lote_id)">
                                                 <i class="icon-eye"></i>
                                             </button>
                                         </td>
-                                        <td v-text="avancepro.aviso"></td>
-                                        <td v-if = "avancepro.contrato==0" v-text="avancepro.proyecto"></td>
-                                        <td v-else>
+                                        <td class="td2" v-text="avancepro.aviso"></td>
+                                        <td class="td2" v-if = "avancepro.contrato==0" v-text="avancepro.proyecto"></td>
+                                        <td class="td2" v-else>
                                             <span v-if = "avancepro.contrato==1" class="badge badge-success" v-text="avancepro.proyecto"></span>
                                         </td>
-                                        <td v-if = "avancepro.contrato==0" v-text="avancepro.modelos"></td>
-                                        <td v-else>
+                                        <td class="td2" v-if = "avancepro.contrato==0" v-text="avancepro.modelos"></td>
+                                        <td class="td2" v-else>
                                             <span v-if = "avancepro.contrato==1" class="badge badge-success" v-text="avancepro.modelos"></span>
                                         </td>
-                                        <td v-if = "avancepro.contrato==0" v-text="avancepro.manzana"></td>
-                                        <td v-else>
+                                        <td class="td2" v-if = "avancepro.contrato==0" v-text="avancepro.manzana"></td>
+                                        <td class="td2" v-else>
                                             <span v-if = "avancepro.contrato==1" class="badge badge-success" v-text="avancepro.manzana"></span>
                                         </td>
-                                        <td v-if = "avancepro.contrato==0" v-text="avancepro.lote"></td>
-                                        <td v-else>
+                                        <td class="td2" v-if = "avancepro.contrato==0" v-text="avancepro.lote"></td>
+                                        <td class="td2" v-else>
                                             <span v-if = "avancepro.contrato==1" class="badge badge-success" v-text="avancepro.lote"></span>
                                         </td>
-                                        <td v-text="avancepro.etapa_servicios"></td>
-                                        <td v-text="avancepro.fecha_ini"></td>
-                                        <td v-text="avancepro.fecha_fin"></td>
-                                        <td v-text="formatNumber(avancepro.porcentajeTotal) + '%'"></td>
-                                        <td> <button v-if="avancepro.paquete != NULL && avancepro.paquete != ''" title="Ver paquete" type="button" class="btn btn-info pull-right" @click="mostrarPaquete(avancepro.paquete)">Ver paquete</button> </td>
-                                        <td style="width:7%" v-if = "avancepro.archivo"><a class="btn btn-default btn-sm" v-bind:href="'/downloadModelo/'+avancepro.archivo"><i class="icon-cloud-download"></i></a></td>
-                                        <td v-else></td>
+                                        <td class="td2" v-text="avancepro.etapa_servicios"></td>
+                                        <td class="td2" v-text="avancepro.fecha_ini"></td>
+                                        <td class="td2" v-text="avancepro.fecha_fin"></td>
+                                        <td class="td2" v-text="formatNumber(avancepro.porcentajeTotal) + '%'"></td>
+                                        <td class="td2"> <button v-if="avancepro.paquete != NULL && avancepro.paquete != ''" title="Ver paquete" type="button" class="btn btn-info pull-right" @click="mostrarPaquete(avancepro.paquete)">Ver paquete</button> </td>
+                                        <td class="td2" style="width:7%" v-if = "avancepro.archivo"><a class="btn btn-default btn-sm" v-bind:href="'/downloadModelo/'+avancepro.archivo"><i class="icon-cloud-download"></i></a></td>
+                                        <td class="td2" v-else></td>
                                     
                                         
                                     </tr>                               
@@ -322,6 +336,7 @@
                 fraccionamiento_id:0,
                 fraccionamiento:'',
                 modelos:'',
+                visita_avaluo:'',
                 arrayAvance : [],
                 arrayAvanceProm : [],
                 arrayFraccionamientosLote: [],
@@ -419,6 +434,7 @@
                     var respuesta = response.data;
                     me.arrayAvance = respuesta.avance.data;
                     me.pagination = respuesta.pagination;
+                    me.visita_avaluo = me.arrayAvance[0].visita_avaluo;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -457,6 +473,26 @@
                     animation: false,
                     customClass: 'animated tada'
                     })
+            },
+            asignarFecha(){
+                let me = this;
+                //Con axios se llama el metodo update de LoteController
+                axios.put('/licencias/progFechaVisita',{
+                    'id':this.lote_id,
+                    'visita_avaluo' : this.visita_avaluo,
+                    
+                }).then(function (response){
+                    //window.alert("Cambios guardados correctamente");
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'fecha agregada correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
             },
             formatNumber(value) {
                 let val = (value/1).toFixed(2)
@@ -704,12 +740,45 @@
     box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
     }
 
+    .table2 {
+    margin: auto;
+    border-collapse: collapse;
+    overflow-x: auto;
+    display: block;
+    width: fit-content;
+    max-width: 100%;
+    box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
+    }
+
+    .td2, .th2 {
+    border: solid rgb(200, 200, 200) 1px;
+    padding: .5rem;
+    }
+
+    .td2 {
+    white-space: nowrap;
+    border-bottom: none;
+    color: rgb(20, 20, 20);
+    }
+
+    .td2:first-of-type, th:first-of-type {
+    border-left: none;
+    }
+
+    .td2:last-of-type, th:last-of-type {
+    border-right: none;
+    } 
+
     .mostrar{
         display: list-item !important;
         opacity: 1 !important;
         position: fixed !important;
         background-color: #3c29297a !important;
         
+    }
+
+    .btn2 {
+        margin-top: 0.2rem;
     }
     .div-error{
         display:flex;
