@@ -202,11 +202,11 @@ body {
 @for($u=0; $u < count($pagares); $u++)
         <div style="clear:both;">
 
-        <div style="float: left; margin-top: 80px; margin-left: 50px;" >
+        <div style="float: left; margin-top: 160px; margin-left: 100px;" >
             <IMG SRC="img/contratos/logoContrato.jpg" width="110" height="110">
         </div>
 
-        <div style="text-align: justify; margin:50px">
+        <div style="text-align: justify; margin:80px">
             <div style="text-align: right; margin-bottom: 0em;  margin-top: 0em;">
                 <p style="margin-bottom: 0em;  margin-top: 0em;"> <strong> PAGARE NO. </strong> {{$pagares[$u]->num_pago + 1}}/{{count($pagares)}}</p>
                 <p style="margin-bottom: 0em;  margin-top: 0em;"> <strong>BUENO POR </strong>${{$pagares[$u]->restante1}}</p>
