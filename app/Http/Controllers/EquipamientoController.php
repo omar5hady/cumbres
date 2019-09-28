@@ -589,8 +589,7 @@ class EquipamientoController extends Controller
         $solicitud = new Solic_equipamiento();
         $solicitud->lote_id = $request->lote_id;
         $solicitud->contrato_id = $request->contrato_id;
-        $solicitud->proveedor_id = $request->proveedor_id;
-        $solicitud->equipamientos = $request->equipamientos;
+        $solicitud->equipamiento_id = $request->equipamiento_id;
         $solicitud->fecha_solicitud = $fecha_hoy;
         $solicitud->save();
 
@@ -615,8 +614,10 @@ class EquipamientoController extends Controller
     public function index_equipamientos_lotes(Request $request){
         $lote_id = $request->lote_id;
         $contrato_id = $request->contrato_id;
-        $equipamientos = Solic_equipamiento::join('proveedores','solic_equipamientos.proveedor_id','=','proveedores.id')
-                        ->select('solic_equipamientos.fecha_solicitud','proveedores.proveedor','solic_equipamientos.equipamientos','solic_equipamientos.id')
+        $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
+                        ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
+                        ->select('solic_equipamientos.fecha_solicitud','proveedores.proveedor',
+                                'solic_equipamientos.equipamiento_id','solic_equipamientos.id','equipamientos.equipamiento')
                         ->where('solic_equipamientos.contrato_id','=',$contrato_id)
                         ->where('solic_equipamientos.lote_id','=',$lote_id)
                         ->get();

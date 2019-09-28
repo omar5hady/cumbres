@@ -18,6 +18,7 @@ class CreateEquipamientosTable extends Migration
             $table->unsignedInteger('proveedor_id');
             $table->string('equipamiento',50);
             $table->boolean('activo')->default(1);
+            $table->boolean('tipoRecepcion')->default(0);
 
             $table->timestamps();
 

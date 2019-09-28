@@ -22,8 +22,7 @@ class CreateSolicEquipamientosTable extends Migration
             $table->date('fecha_colocacion')->nullable();
             $table->double('anticipo')->nullable();
             $table->date('fecha_anticipo')->nullable();
-            $table->string('equipamientos');
-            $table->unsignedInteger('proveedor_id');
+            $table->unsignedInteger('equipamiento_id');
 
             $table->double('liquidacion')->nullable();
             $table->date('fecha_liquidacion')->nullable();
@@ -34,7 +33,7 @@ class CreateSolicEquipamientosTable extends Migration
 
             $table->foreign('lote_id')->references('id')->on('lotes');
             $table->foreign('contrato_id')->references('id')->on('contratos');
-            $table->foreign('proveedor_id')->references('id')->on('proveedores');
+            $table->foreign('equipamiento_id')->references('id')->on('equipamientos');
         });
     }
 

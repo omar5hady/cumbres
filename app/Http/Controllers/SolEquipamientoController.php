@@ -21,7 +21,8 @@ class SolEquipamientoController extends Controller
         $criterio = $request->criterio;
 
         if($buscar == ''){
-            $equipamientos = Solic_equipamiento::join('proveedores','solic_equipamientos.proveedor_id','=','proveedores.id')
+            $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
+                    ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
                     ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
                     ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
                     ->join('creditos','contratos.id','=','creditos.id')
@@ -37,12 +38,12 @@ class SolEquipamientoController extends Controller
                         'solic_equipamientos.fecha_colocacion',
                         'solic_equipamientos.anticipo',
                         'solic_equipamientos.fecha_anticipo',
-                        'solic_equipamientos.equipamientos',
                         'solic_equipamientos.liquidacion',
                         'solic_equipamientos.fecha_liquidacion',
                         'solic_equipamientos.avance',
                         'solic_equipamientos.num_factura',
                         'proveedores.proveedor',
+                        'equipamientos.equipamiento',
                         'contratos.id as folio',
                         DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
                         'creditos.fraccionamiento as proyecto',
@@ -58,34 +59,35 @@ class SolEquipamientoController extends Controller
         else{
             switch($criterio){
                 case 'c.nombre':{
-                    $equipamientos = Solic_equipamiento::join('proveedores','solic_equipamientos.proveedor_id','=','proveedores.id')
-                            ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
-                            ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
-                            ->join('creditos','contratos.id','=','creditos.id')
-                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                            ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
-                            ->join('personal as c', 'clientes.id', '=', 'c.id')
+                    $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
+                            ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
+                                ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
+                                ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
+                                ->join('creditos','contratos.id','=','creditos.id')
+                                ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                                ->join('personal as c', 'clientes.id', '=', 'c.id')
 
-                        ->select('solic_equipamientos.fecha_solicitud',
-                                'solic_equipamientos.id',
-                                'solic_equipamientos.lote_id',
-                                'solic_equipamientos.costo',
-                                'solic_equipamientos.fecha_colocacion',
-                                'solic_equipamientos.anticipo',
-                                'solic_equipamientos.fecha_anticipo',
-                                'solic_equipamientos.equipamientos',
-                                'solic_equipamientos.liquidacion',
-                                'solic_equipamientos.fecha_liquidacion',
-                                'solic_equipamientos.avance',
-                                'solic_equipamientos.num_factura',
-                                'proveedores.proveedor',
-                                'contratos.id as folio',
-                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                'creditos.fraccionamiento as proyecto',
-                                'creditos.etapa',
-                                'creditos.manzana',
-                                'creditos.num_lote')
+                            ->select('solic_equipamientos.fecha_solicitud',
+                                    'solic_equipamientos.id',
+                                    'solic_equipamientos.lote_id',
+                                    'solic_equipamientos.costo',
+                                    'solic_equipamientos.fecha_colocacion',
+                                    'solic_equipamientos.anticipo',
+                                    'solic_equipamientos.fecha_anticipo',
+                                    'solic_equipamientos.liquidacion',
+                                    'solic_equipamientos.fecha_liquidacion',
+                                    'solic_equipamientos.avance',
+                                    'solic_equipamientos.num_factura',
+                                    'proveedores.proveedor',
+                                    'equipamientos.equipamiento',
+                                    'contratos.id as folio',
+                                    DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                    'creditos.fraccionamiento as proyecto',
+                                    'creditos.etapa',
+                                    'creditos.manzana',
+                                    'creditos.num_lote')
                             ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $buscar . '%')
                             ->orderBy('contratos.id','desc')
                             ->orderBy('proveedores.proveedor','asc')
@@ -94,34 +96,35 @@ class SolEquipamientoController extends Controller
                     break;
                 }
                 case 'contratos.id':{
-                    $equipamientos = Solic_equipamiento::join('proveedores','solic_equipamientos.proveedor_id','=','proveedores.id')
-                            ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
-                            ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
-                            ->join('creditos','contratos.id','=','creditos.id')
-                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                            ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
-                            ->join('personal as c', 'clientes.id', '=', 'c.id')
+                    $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
+                            ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
+                                ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
+                                ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
+                                ->join('creditos','contratos.id','=','creditos.id')
+                                ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                                ->join('personal as c', 'clientes.id', '=', 'c.id')
 
-                        ->select('solic_equipamientos.fecha_solicitud',
-                                'solic_equipamientos.id',
-                                'solic_equipamientos.lote_id',
-                                'solic_equipamientos.costo',
-                                'solic_equipamientos.fecha_colocacion',
-                                'solic_equipamientos.anticipo',
-                                'solic_equipamientos.fecha_anticipo',
-                                'solic_equipamientos.equipamientos',
-                                'solic_equipamientos.liquidacion',
-                                'solic_equipamientos.fecha_liquidacion',
-                                'solic_equipamientos.avance',
-                                'solic_equipamientos.num_factura',
-                                'proveedores.proveedor',
-                                'contratos.id as folio',
-                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                'creditos.fraccionamiento as proyecto',
-                                'creditos.etapa',
-                                'creditos.manzana',
-                                'creditos.num_lote')
+                            ->select('solic_equipamientos.fecha_solicitud',
+                                    'solic_equipamientos.id',
+                                    'solic_equipamientos.lote_id',
+                                    'solic_equipamientos.costo',
+                                    'solic_equipamientos.fecha_colocacion',
+                                    'solic_equipamientos.anticipo',
+                                    'solic_equipamientos.fecha_anticipo',
+                                    'solic_equipamientos.liquidacion',
+                                    'solic_equipamientos.fecha_liquidacion',
+                                    'solic_equipamientos.avance',
+                                    'solic_equipamientos.num_factura',
+                                    'proveedores.proveedor',
+                                    'equipamientos.equipamiento',
+                                    'contratos.id as folio',
+                                    DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                    'creditos.fraccionamiento as proyecto',
+                                    'creditos.etapa',
+                                    'creditos.manzana',
+                                    'creditos.num_lote')
                             ->where($criterio, '=', $buscar)
                             ->orderBy('contratos.id','desc')
                             ->orderBy('proveedores.proveedor','asc')
@@ -130,34 +133,35 @@ class SolEquipamientoController extends Controller
                     break;
                 }
                 case 'proveedores.proveedor':{
-                    $equipamientos = Solic_equipamiento::join('proveedores','solic_equipamientos.proveedor_id','=','proveedores.id')
-                            ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
-                            ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
-                            ->join('creditos','contratos.id','=','creditos.id')
-                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                            ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
-                            ->join('personal as c', 'clientes.id', '=', 'c.id')
+                    $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
+                            ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
+                                ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
+                                ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
+                                ->join('creditos','contratos.id','=','creditos.id')
+                                ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                                ->join('personal as c', 'clientes.id', '=', 'c.id')
 
-                        ->select('solic_equipamientos.fecha_solicitud',
-                                'solic_equipamientos.id',
-                                'solic_equipamientos.lote_id',
-                                'solic_equipamientos.costo',
-                                'solic_equipamientos.fecha_colocacion',
-                                'solic_equipamientos.anticipo',
-                                'solic_equipamientos.fecha_anticipo',
-                                'solic_equipamientos.equipamientos',
-                                'solic_equipamientos.liquidacion',
-                                'solic_equipamientos.fecha_liquidacion',
-                                'solic_equipamientos.avance',
-                                'solic_equipamientos.num_factura',
-                                'proveedores.proveedor',
-                                'contratos.id as folio',
-                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                'creditos.fraccionamiento as proyecto',
-                                'creditos.etapa',
-                                'creditos.manzana',
-                                'creditos.num_lote')
+                            ->select('solic_equipamientos.fecha_solicitud',
+                                    'solic_equipamientos.id',
+                                    'solic_equipamientos.lote_id',
+                                    'solic_equipamientos.costo',
+                                    'solic_equipamientos.fecha_colocacion',
+                                    'solic_equipamientos.anticipo',
+                                    'solic_equipamientos.fecha_anticipo',
+                                    'solic_equipamientos.liquidacion',
+                                    'solic_equipamientos.fecha_liquidacion',
+                                    'solic_equipamientos.avance',
+                                    'solic_equipamientos.num_factura',
+                                    'proveedores.proveedor',
+                                    'equipamientos.equipamiento',
+                                    'contratos.id as folio',
+                                    DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                    'creditos.fraccionamiento as proyecto',
+                                    'creditos.etapa',
+                                    'creditos.manzana',
+                                    'creditos.num_lote')
                             ->where($criterio, 'like', '%'. $buscar . '%')
                             ->orderBy('contratos.id','desc')
                             ->orderBy('proveedores.proveedor','asc')
@@ -167,34 +171,35 @@ class SolEquipamientoController extends Controller
                 }
                 case 'lotes.fraccionamiento_id':{
                     if($b_etapa == '' && $b_manzana == '' && $b_lote == ''){
-                        $equipamientos = Solic_equipamiento::join('proveedores','solic_equipamientos.proveedor_id','=','proveedores.id')
-                                ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
-                                ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
-                                ->join('creditos','contratos.id','=','creditos.id')
-                                ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
-                                ->join('personal as c', 'clientes.id', '=', 'c.id')
-            
-                            ->select('solic_equipamientos.fecha_solicitud',
-                                    'solic_equipamientos.id',
-                                    'solic_equipamientos.lote_id',
-                                    'solic_equipamientos.costo',
-                                    'solic_equipamientos.fecha_colocacion',
-                                    'solic_equipamientos.anticipo',
-                                    'solic_equipamientos.fecha_anticipo',
-                                    'solic_equipamientos.equipamientos',
-                                    'solic_equipamientos.liquidacion',
-                                    'solic_equipamientos.fecha_liquidacion',
-                                    'solic_equipamientos.avance',
-                                    'solic_equipamientos.num_factura',
-                                    'proveedores.proveedor',
-                                    'contratos.id as folio',
-                                    DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                    'creditos.fraccionamiento as proyecto',
-                                    'creditos.etapa',
-                                    'creditos.manzana',
-                                    'creditos.num_lote')
+                        $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
+                                ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
+                                    ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
+                                    ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
+                                    ->join('creditos','contratos.id','=','creditos.id')
+                                    ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                    ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
+
+                                ->select('solic_equipamientos.fecha_solicitud',
+                                        'solic_equipamientos.id',
+                                        'solic_equipamientos.lote_id',
+                                        'solic_equipamientos.costo',
+                                        'solic_equipamientos.fecha_colocacion',
+                                        'solic_equipamientos.anticipo',
+                                        'solic_equipamientos.fecha_anticipo',
+                                        'solic_equipamientos.liquidacion',
+                                        'solic_equipamientos.fecha_liquidacion',
+                                        'solic_equipamientos.avance',
+                                        'solic_equipamientos.num_factura',
+                                        'proveedores.proveedor',
+                                        'equipamientos.equipamiento',
+                                        'contratos.id as folio',
+                                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                        'creditos.fraccionamiento as proyecto',
+                                        'creditos.etapa',
+                                        'creditos.manzana',
+                                        'creditos.num_lote')
                                 ->where($criterio, '=', $buscar)
                                 ->orderBy('contratos.id','desc')
                                 ->orderBy('proveedores.proveedor','asc')
@@ -202,34 +207,35 @@ class SolEquipamientoController extends Controller
                             ->paginate(8);
                     }
                     elseif($b_etapa != '' && $b_manzana == '' && $b_lote == ''){
-                        $equipamientos = Solic_equipamiento::join('proveedores','solic_equipamientos.proveedor_id','=','proveedores.id')
-                                ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
-                                ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
-                                ->join('creditos','contratos.id','=','creditos.id')
-                                ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
-                                ->join('personal as c', 'clientes.id', '=', 'c.id')
-            
-                            ->select('solic_equipamientos.fecha_solicitud',
-                                    'solic_equipamientos.id',
-                                    'solic_equipamientos.lote_id',
-                                    'solic_equipamientos.costo',
-                                    'solic_equipamientos.fecha_colocacion',
-                                    'solic_equipamientos.anticipo',
-                                    'solic_equipamientos.fecha_anticipo',
-                                    'solic_equipamientos.equipamientos',
-                                    'solic_equipamientos.liquidacion',
-                                    'solic_equipamientos.fecha_liquidacion',
-                                    'solic_equipamientos.avance',
-                                    'solic_equipamientos.num_factura',
-                                    'proveedores.proveedor',
-                                    'contratos.id as folio',
-                                    DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                    'creditos.fraccionamiento as proyecto',
-                                    'creditos.etapa',
-                                    'creditos.manzana',
-                                    'creditos.num_lote')
+                        $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
+                                ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
+                                    ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
+                                    ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
+                                    ->join('creditos','contratos.id','=','creditos.id')
+                                    ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                    ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
+
+                                ->select('solic_equipamientos.fecha_solicitud',
+                                        'solic_equipamientos.id',
+                                        'solic_equipamientos.lote_id',
+                                        'solic_equipamientos.costo',
+                                        'solic_equipamientos.fecha_colocacion',
+                                        'solic_equipamientos.anticipo',
+                                        'solic_equipamientos.fecha_anticipo',
+                                        'solic_equipamientos.liquidacion',
+                                        'solic_equipamientos.fecha_liquidacion',
+                                        'solic_equipamientos.avance',
+                                        'solic_equipamientos.num_factura',
+                                        'proveedores.proveedor',
+                                        'equipamientos.equipamiento',
+                                        'contratos.id as folio',
+                                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                        'creditos.fraccionamiento as proyecto',
+                                        'creditos.etapa',
+                                        'creditos.manzana',
+                                        'creditos.num_lote')
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
                                 ->orderBy('contratos.id','desc')
@@ -239,34 +245,35 @@ class SolEquipamientoController extends Controller
                         
                     }
                     elseif($b_etapa != '' && $b_manzana != '' && $b_lote == ''){
-                        $equipamientos = Solic_equipamiento::join('proveedores','solic_equipamientos.proveedor_id','=','proveedores.id')
-                                ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
-                                ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
-                                ->join('creditos','contratos.id','=','creditos.id')
-                                ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
-                                ->join('personal as c', 'clientes.id', '=', 'c.id')
-            
-                            ->select('solic_equipamientos.fecha_solicitud',
-                                    'solic_equipamientos.id',
-                                    'solic_equipamientos.lote_id',
-                                    'solic_equipamientos.costo',
-                                    'solic_equipamientos.fecha_colocacion',
-                                    'solic_equipamientos.anticipo',
-                                    'solic_equipamientos.fecha_anticipo',
-                                    'solic_equipamientos.equipamientos',
-                                    'solic_equipamientos.liquidacion',
-                                    'solic_equipamientos.fecha_liquidacion',
-                                    'solic_equipamientos.avance',
-                                    'solic_equipamientos.num_factura',
-                                    'proveedores.proveedor',
-                                    'contratos.id as folio',
-                                    DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                    'creditos.fraccionamiento as proyecto',
-                                    'creditos.etapa',
-                                    'creditos.manzana',
-                                    'creditos.num_lote')
+                        $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
+                                ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
+                                    ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
+                                    ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
+                                    ->join('creditos','contratos.id','=','creditos.id')
+                                    ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                    ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
+
+                                ->select('solic_equipamientos.fecha_solicitud',
+                                        'solic_equipamientos.id',
+                                        'solic_equipamientos.lote_id',
+                                        'solic_equipamientos.costo',
+                                        'solic_equipamientos.fecha_colocacion',
+                                        'solic_equipamientos.anticipo',
+                                        'solic_equipamientos.fecha_anticipo',
+                                        'solic_equipamientos.liquidacion',
+                                        'solic_equipamientos.fecha_liquidacion',
+                                        'solic_equipamientos.avance',
+                                        'solic_equipamientos.num_factura',
+                                        'proveedores.proveedor',
+                                        'equipamientos.equipamiento',
+                                        'contratos.id as folio',
+                                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                        'creditos.fraccionamiento as proyecto',
+                                        'creditos.etapa',
+                                        'creditos.manzana',
+                                        'creditos.num_lote')
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
                                 ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
@@ -277,34 +284,35 @@ class SolEquipamientoController extends Controller
                         
                     }
                     elseif($b_etapa != '' && $b_manzana != '' && $b_lote != ''){
-                        $equipamientos = Solic_equipamiento::join('proveedores','solic_equipamientos.proveedor_id','=','proveedores.id')
-                                ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
-                                ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
-                                ->join('creditos','contratos.id','=','creditos.id')
-                                ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
-                                ->join('personal as c', 'clientes.id', '=', 'c.id')
-            
-                            ->select('solic_equipamientos.fecha_solicitud',
-                                    'solic_equipamientos.id',
-                                    'solic_equipamientos.lote_id',
-                                    'solic_equipamientos.costo',
-                                    'solic_equipamientos.fecha_colocacion',
-                                    'solic_equipamientos.anticipo',
-                                    'solic_equipamientos.fecha_anticipo',
-                                    'solic_equipamientos.equipamientos',
-                                    'solic_equipamientos.liquidacion',
-                                    'solic_equipamientos.fecha_liquidacion',
-                                    'solic_equipamientos.avance',
-                                    'solic_equipamientos.num_factura',
-                                    'proveedores.proveedor',
-                                    'contratos.id as folio',
-                                    DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                    'creditos.fraccionamiento as proyecto',
-                                    'creditos.etapa',
-                                    'creditos.manzana',
-                                    'creditos.num_lote')
+                        $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
+                                ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
+                                    ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
+                                    ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
+                                    ->join('creditos','contratos.id','=','creditos.id')
+                                    ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                    ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
+
+                                ->select('solic_equipamientos.fecha_solicitud',
+                                        'solic_equipamientos.id',
+                                        'solic_equipamientos.lote_id',
+                                        'solic_equipamientos.costo',
+                                        'solic_equipamientos.fecha_colocacion',
+                                        'solic_equipamientos.anticipo',
+                                        'solic_equipamientos.fecha_anticipo',
+                                        'solic_equipamientos.liquidacion',
+                                        'solic_equipamientos.fecha_liquidacion',
+                                        'solic_equipamientos.avance',
+                                        'solic_equipamientos.num_factura',
+                                        'proveedores.proveedor',
+                                        'equipamientos.equipamiento',
+                                        'contratos.id as folio',
+                                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                        'creditos.fraccionamiento as proyecto',
+                                        'creditos.etapa',
+                                        'creditos.manzana',
+                                        'creditos.num_lote')
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
                                 ->where('lotes.num_lote', '=', $b_lote)
@@ -316,34 +324,35 @@ class SolEquipamientoController extends Controller
                         
                     }
                     elseif($b_etapa != '' && $b_manzana == '' && $b_lote != ''){
-                        $equipamientos = Solic_equipamiento::join('proveedores','solic_equipamientos.proveedor_id','=','proveedores.id')
-                                ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
-                                ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
-                                ->join('creditos','contratos.id','=','creditos.id')
-                                ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
-                                ->join('personal as c', 'clientes.id', '=', 'c.id')
-            
-                            ->select('solic_equipamientos.fecha_solicitud',
-                                    'solic_equipamientos.id',
-                                    'solic_equipamientos.lote_id',
-                                    'solic_equipamientos.costo',
-                                    'solic_equipamientos.fecha_colocacion',
-                                    'solic_equipamientos.anticipo',
-                                    'solic_equipamientos.fecha_anticipo',
-                                    'solic_equipamientos.equipamientos',
-                                    'solic_equipamientos.liquidacion',
-                                    'solic_equipamientos.fecha_liquidacion',
-                                    'solic_equipamientos.avance',
-                                    'solic_equipamientos.num_factura',
-                                    'proveedores.proveedor',
-                                    'contratos.id as folio',
-                                    DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                    'creditos.fraccionamiento as proyecto',
-                                    'creditos.etapa',
-                                    'creditos.manzana',
-                                    'creditos.num_lote')
+                        $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
+                                ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
+                                    ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
+                                    ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
+                                    ->join('creditos','contratos.id','=','creditos.id')
+                                    ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                    ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
+
+                                ->select('solic_equipamientos.fecha_solicitud',
+                                        'solic_equipamientos.id',
+                                        'solic_equipamientos.lote_id',
+                                        'solic_equipamientos.costo',
+                                        'solic_equipamientos.fecha_colocacion',
+                                        'solic_equipamientos.anticipo',
+                                        'solic_equipamientos.fecha_anticipo',
+                                        'solic_equipamientos.liquidacion',
+                                        'solic_equipamientos.fecha_liquidacion',
+                                        'solic_equipamientos.avance',
+                                        'solic_equipamientos.num_factura',
+                                        'proveedores.proveedor',
+                                        'equipamientos.equipamiento',
+                                        'contratos.id as folio',
+                                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                        'creditos.fraccionamiento as proyecto',
+                                        'creditos.etapa',
+                                        'creditos.manzana',
+                                        'creditos.num_lote')
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
                                 ->where('lotes.num_lote', '=', $b_lote)
@@ -353,34 +362,35 @@ class SolEquipamientoController extends Controller
                             ->paginate(8);
                     }
                     elseif($b_etapa == '' && $b_manzana != '' && $b_lote != ''){
-                        $equipamientos = Solic_equipamiento::join('proveedores','solic_equipamientos.proveedor_id','=','proveedores.id')
-                                ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
-                                ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
-                                ->join('creditos','contratos.id','=','creditos.id')
-                                ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
-                                ->join('personal as c', 'clientes.id', '=', 'c.id')
-            
-                            ->select('solic_equipamientos.fecha_solicitud',
-                                    'solic_equipamientos.id',
-                                    'solic_equipamientos.lote_id',
-                                    'solic_equipamientos.costo',
-                                    'solic_equipamientos.fecha_colocacion',
-                                    'solic_equipamientos.anticipo',
-                                    'solic_equipamientos.fecha_anticipo',
-                                    'solic_equipamientos.equipamientos',
-                                    'solic_equipamientos.liquidacion',
-                                    'solic_equipamientos.fecha_liquidacion',
-                                    'solic_equipamientos.avance',
-                                    'solic_equipamientos.num_factura',
-                                    'proveedores.proveedor',
-                                    'contratos.id as folio',
-                                    DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                    'creditos.fraccionamiento as proyecto',
-                                    'creditos.etapa',
-                                    'creditos.manzana',
-                                    'creditos.num_lote')
+                        $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
+                                ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
+                                    ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
+                                    ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
+                                    ->join('creditos','contratos.id','=','creditos.id')
+                                    ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                    ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
+
+                                ->select('solic_equipamientos.fecha_solicitud',
+                                        'solic_equipamientos.id',
+                                        'solic_equipamientos.lote_id',
+                                        'solic_equipamientos.costo',
+                                        'solic_equipamientos.fecha_colocacion',
+                                        'solic_equipamientos.anticipo',
+                                        'solic_equipamientos.fecha_anticipo',
+                                        'solic_equipamientos.liquidacion',
+                                        'solic_equipamientos.fecha_liquidacion',
+                                        'solic_equipamientos.avance',
+                                        'solic_equipamientos.num_factura',
+                                        'proveedores.proveedor',
+                                        'equipamientos.equipamiento',
+                                        'contratos.id as folio',
+                                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                        'creditos.fraccionamiento as proyecto',
+                                        'creditos.etapa',
+                                        'creditos.manzana',
+                                        'creditos.num_lote')
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.num_lote', '=', $b_lote)
                                 ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
@@ -390,34 +400,35 @@ class SolEquipamientoController extends Controller
                             ->paginate(8);
                     }
                     elseif($b_etapa == '' && $b_manzana == '' && $b_lote != ''){
-                        $equipamientos = Solic_equipamiento::join('proveedores','solic_equipamientos.proveedor_id','=','proveedores.id')
-                                ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
-                                ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
-                                ->join('creditos','contratos.id','=','creditos.id')
-                                ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
-                                ->join('personal as c', 'clientes.id', '=', 'c.id')
-            
-                            ->select('solic_equipamientos.fecha_solicitud',
-                                    'solic_equipamientos.id',
-                                    'solic_equipamientos.lote_id',
-                                    'solic_equipamientos.costo',
-                                    'solic_equipamientos.fecha_colocacion',
-                                    'solic_equipamientos.anticipo',
-                                    'solic_equipamientos.fecha_anticipo',
-                                    'solic_equipamientos.equipamientos',
-                                    'solic_equipamientos.liquidacion',
-                                    'solic_equipamientos.fecha_liquidacion',
-                                    'solic_equipamientos.avance',
-                                    'solic_equipamientos.num_factura',
-                                    'proveedores.proveedor',
-                                    'contratos.id as folio',
-                                    DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                    'creditos.fraccionamiento as proyecto',
-                                    'creditos.etapa',
-                                    'creditos.manzana',
-                                    'creditos.num_lote')
+                        $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
+                                ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
+                                    ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
+                                    ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
+                                    ->join('creditos','contratos.id','=','creditos.id')
+                                    ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                    ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
+
+                                ->select('solic_equipamientos.fecha_solicitud',
+                                        'solic_equipamientos.id',
+                                        'solic_equipamientos.lote_id',
+                                        'solic_equipamientos.costo',
+                                        'solic_equipamientos.fecha_colocacion',
+                                        'solic_equipamientos.anticipo',
+                                        'solic_equipamientos.fecha_anticipo',
+                                        'solic_equipamientos.liquidacion',
+                                        'solic_equipamientos.fecha_liquidacion',
+                                        'solic_equipamientos.avance',
+                                        'solic_equipamientos.num_factura',
+                                        'proveedores.proveedor',
+                                        'equipamientos.equipamiento',
+                                        'contratos.id as folio',
+                                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                        'creditos.fraccionamiento as proyecto',
+                                        'creditos.etapa',
+                                        'creditos.manzana',
+                                        'creditos.num_lote')
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.num_lote', '=', $b_lote)
                                 ->orderBy('contratos.id','desc')
@@ -426,34 +437,35 @@ class SolEquipamientoController extends Controller
                             ->paginate(8);
                     }
                     elseif($b_etapa == '' && $b_manzana != '' && $b_lote == ''){
-                        $equipamientos = Solic_equipamiento::join('proveedores','solic_equipamientos.proveedor_id','=','proveedores.id')
-                                ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
-                                ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
-                                ->join('creditos','contratos.id','=','creditos.id')
-                                ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
-                                ->join('personal as c', 'clientes.id', '=', 'c.id')
-            
-                            ->select('solic_equipamientos.fecha_solicitud',
-                                    'solic_equipamientos.id',
-                                    'solic_equipamientos.lote_id',
-                                    'solic_equipamientos.costo',
-                                    'solic_equipamientos.fecha_colocacion',
-                                    'solic_equipamientos.anticipo',
-                                    'solic_equipamientos.fecha_anticipo',
-                                    'solic_equipamientos.equipamientos',
-                                    'solic_equipamientos.liquidacion',
-                                    'solic_equipamientos.fecha_liquidacion',
-                                    'solic_equipamientos.avance',
-                                    'solic_equipamientos.num_factura',
-                                    'proveedores.proveedor',
-                                    'contratos.id as folio',
-                                    DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                    'creditos.fraccionamiento as proyecto',
-                                    'creditos.etapa',
-                                    'creditos.manzana',
-                                    'creditos.num_lote')
+                        $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
+                                ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
+                                    ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
+                                    ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
+                                    ->join('creditos','contratos.id','=','creditos.id')
+                                    ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                    ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
+
+                                ->select('solic_equipamientos.fecha_solicitud',
+                                        'solic_equipamientos.id',
+                                        'solic_equipamientos.lote_id',
+                                        'solic_equipamientos.costo',
+                                        'solic_equipamientos.fecha_colocacion',
+                                        'solic_equipamientos.anticipo',
+                                        'solic_equipamientos.fecha_anticipo',
+                                        'solic_equipamientos.liquidacion',
+                                        'solic_equipamientos.fecha_liquidacion',
+                                        'solic_equipamientos.avance',
+                                        'solic_equipamientos.num_factura',
+                                        'proveedores.proveedor',
+                                        'equipamientos.equipamiento',
+                                        'contratos.id as folio',
+                                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                        'creditos.fraccionamiento as proyecto',
+                                        'creditos.etapa',
+                                        'creditos.manzana',
+                                        'creditos.num_lote')
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
                                 ->orderBy('contratos.id','desc')

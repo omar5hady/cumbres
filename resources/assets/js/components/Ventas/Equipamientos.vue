@@ -194,7 +194,7 @@
                                             <td class="td2" v-text="equipamientos.manzana"></td>
                                             <td class="td2" v-text="equipamientos.num_lote"></td>
                                             <td class="td2" v-text="equipamientos.proveedor"></td>
-                                            <td class="td2" v-text="equipamientos.equipamientos"></td>
+                                            <td class="td2" v-text="equipamientos.equipamiento"></td>
                                             <td class="td2" style="width:40%">
                                                 <input type="text" pattern="\d*" @keyup.enter="actCosto(equipamientos.id,$event.target.value)" :id="equipamientos.id" :value="equipamientos.costo|currency" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
                                             </td>
@@ -286,18 +286,8 @@
                                     <div class="col-md-6">
                                         <select class="form-control" v-model="equipamiento">
                                             <option value="">Seleccione</option>
-                                            <option v-for="equipamiento in arrayEquipamientos" :key="equipamiento.id" :value="equipamiento.equipamiento" v-text="equipamiento.equipamiento"></option>
+                                            <option v-for="equipamiento in arrayEquipamientos" :key="equipamiento.id" :value="equipamiento.id" v-text="equipamiento.equipamiento"></option>
                                         </select>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <button class="btn btn-primary" @click="agregarEquipamiento()">Añadir</button>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row" v-if="equipamientos != ''">
-                                    <label class="col-md-3 form-control-label" for="text-input">Equipamientos a solicitar: </label>
-                                    <div class="col-md-8">
-                                        <label v-text="equipamientos"></label>
                                     </div>
                                 </div>
 
@@ -326,7 +316,7 @@
                                                 </button>
                                                 </td>
                                                 <td class="td2" v-text="equipamientos.proveedor"></td>
-                                                <td class="td2" v-text="equipamientos.equipamientos"></td>
+                                                <td class="td2" v-text="equipamientos.equipamiento"></td>
                                                 <td class="td2" v-text="equipamientos.fecha_solicitud"></td>
                                         </tr>
                                     </tbody>
@@ -496,7 +486,6 @@
                 promocion:'',
                 proveedor: 0,
                 equipamiento: '',
-                equipamientos:'',
                 lote_id: 0,
                 contrato_id: 0,
                 solicitud_id: 0,
@@ -752,26 +741,17 @@
                 }
             },
 
-            agregarEquipamiento(){
-                if(this.equipamientos != '')
-                    this.equipamientos = this.equipamientos + ', ' + this.equipamiento;
-                else
-                    this.equipamientos = this.equipamiento;
-            },
-
             solicitarEquipamiento(){
                   let me = this;
                 //Con axios se llama el metodo update de LoteController
                 axios.post('/equipamiento/solicitar_equipamiento',{
                     'contrato_id':this.contrato_id,
                     'lote_id' : this.lote_id,
-                    'proveedor_id' : this.proveedor,
-                    'equipamientos': this.equipamientos
+                    'equipamiento_id': this.equipamiento
                     
                 }).then(function (response){
                     me.proveedor ='';
                     me.equipamiento ='';
-                    me.equipamientos = '';
                     me.listarContratos(me.pagination.current_page,me.buscar,me.b_etapa,me.b_manzana,me.b_lote,me.criterio);
                     me.listarEquipamientosLote();
                     const toast = Swal.mixin({
@@ -983,7 +963,6 @@
                 this.anticipo = '';
                 this.proveedor = '';
                 this.equipamiento = '';
-                this.equipamientos = '';
             },
 
             abrirModal(accion,data =[]){

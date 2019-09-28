@@ -8,14 +8,10 @@ class Proveedor extends Model
 {
     protected $table = 'proveedores'; // se referencia a que tabla pertenece el modelo
     protected $primaryKey = 'id'; //Referenciar la llave primaria
-    protected $fillable = ['proveedor', 'contacto', 'direccion', 'colonia',
+    protected $fillable = ['id','proveedor', 'contacto', 'direccion', 'colonia',
     'telefono', 'email', 'email2', 'poliza'];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
    
     public function equipamiento(){
         return $this->hasMany('App\Equipamiento');
-    }
-
-    public function solic_equipamiento(){
-        return $this->hasMany('App\Solic_equipamiento');
     }
 }

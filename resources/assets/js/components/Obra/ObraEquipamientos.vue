@@ -74,7 +74,7 @@
                                             <td class="td2" v-text="equipamientos.manzana"></td>
                                             <td class="td2" v-text="equipamientos.num_lote"></td>
                                             <td class="td2" v-text="equipamientos.proveedor"></td>
-                                            <td class="td2" v-text="equipamientos.equipamientos"></td>
+                                            <td class="td2" v-text="equipamientos.equipamiento"></td>
                                             <td class="td2" v-text="'$'+formatNumber(equipamientos.costo)"></td>
                                             <template>
                                                 <td v-if="equipamientos.fecha_anticipo" class="td2" v-text=" this.moment(equipamientos.fecha_anticipo).locale('es').format('DD/MMM/YYYY') + ': '+ '$'+formatNumber(equipamientos.anticipo)"></td>

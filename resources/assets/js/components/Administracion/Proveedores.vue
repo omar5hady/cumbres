@@ -110,6 +110,13 @@
                                     </div>
                                 </div>
 
+                                <div class="form-group row" v-if="tipoAccion==1">
+                                    <label class="col-md-3 form-control-label" for="text-input">RFC</label>
+                                    <div class="col-md-6">
+                                        <input type="text" v-model="rfc" maxlength="13" class="form-control" placeholder="RFC">
+                                    </div>
+                                </div>
+
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Direccion</label>
                                     <div class="col-md-8">
@@ -142,6 +149,20 @@
                                     <label class="col-md-3 form-control-label" for="text-input">Email (Opcional)</label>
                                     <div class="col-md-6">
                                         <input type="text" v-model="email2" class="form-control" placeholder="Correo electronico">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row" v-if="tipoAccion==1">
+                                    <label class="col-md-3 form-control-label" for="text-input">Usuario</label>
+                                    <div class="col-md-6">
+                                        <input type="text" v-model="usuario" class="form-control" placeholder="User">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row" v-if="tipoAccion==1">
+                                    <label class="col-md-3 form-control-label" for="text-input">Contraseña</label>
+                                    <div class="col-md-6">
+                                        <input type="password" v-model="password" class="form-control" placeholder="Password">
                                     </div>
                                 </div>
 
@@ -195,6 +216,17 @@
                                             <option value="Vestidores">Vestidores</option>
                                             <option value="Muebles">Muebles</option>
                                         </datalist>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Recepcion de documentos</label>
+                                    <div class="col-md-6">
+                                        <select class="form-control col-md-4" v-model="tipoRecepcion">
+                                            <option value="0">General</option>
+                                            <option value="1">Recepción de cocina</option>
+                                            <option value="2">Recepción de vestidores</option>
+                                        </select>
                                     </div>
                                 </div>
                                 
@@ -282,7 +314,11 @@
                 telefono : '',
                 email : '',
                 email2 : '',
+                usuario : '',
+                password : '',
+                rfc: '',
                 equipamiento : '',
+                tipoRecepcion : 0,
                 equipamientoId: 0,
                
                 arrayProveedores : [],
@@ -449,6 +485,9 @@
                     'colonia': this.colonia,
                     'telefono': this.telefono,
                     'email': this.email,
+                    'usuario': this.usuario,
+                    'password': this.password,
+                    'rfc': this.rfc,
                     'email2': this.email2
                 }).then(function (response){
                     me.proceso=false;
@@ -677,6 +716,9 @@
                                 this.email = '';
                                 this.email2 = '';
                                 this.tipoAccion = 1;
+                                this.usuario ='';
+                                this.password ='';
+                                this.rfc='';
                                 break;
                             }
                             case 'actualizar':
