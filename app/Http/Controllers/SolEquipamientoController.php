@@ -35,12 +35,13 @@ class SolEquipamientoController extends Controller
                         'solic_equipamientos.id',
                         'solic_equipamientos.lote_id',
                         'solic_equipamientos.costo',
+                        'solic_equipamientos.fecha_solicitud',
                         'solic_equipamientos.fecha_colocacion',
                         'solic_equipamientos.anticipo',
                         'solic_equipamientos.fecha_anticipo',
                         'solic_equipamientos.liquidacion',
                         'solic_equipamientos.fecha_liquidacion',
-                        'solic_equipamientos.avance',
+                        'solic_equipamientos.status',
                         'solic_equipamientos.num_factura',
                         'proveedores.proveedor',
                         'equipamientos.equipamiento',
@@ -49,7 +50,7 @@ class SolEquipamientoController extends Controller
                         'creditos.fraccionamiento as proyecto',
                         'creditos.etapa',
                         'creditos.manzana',
-                        'creditos.num_lote')
+                        'creditos.num_lote','licencias.avance')
                     ->orderBy('contratos.id','desc')
                     ->orderBy('proveedores.proveedor','asc')
                     ->orderBy('solic_equipamientos.fecha_colocacion','asc')
@@ -73,12 +74,13 @@ class SolEquipamientoController extends Controller
                                     'solic_equipamientos.id',
                                     'solic_equipamientos.lote_id',
                                     'solic_equipamientos.costo',
+                                    'solic_equipamientos.fecha_solicitud',
                                     'solic_equipamientos.fecha_colocacion',
                                     'solic_equipamientos.anticipo',
                                     'solic_equipamientos.fecha_anticipo',
                                     'solic_equipamientos.liquidacion',
                                     'solic_equipamientos.fecha_liquidacion',
-                                    'solic_equipamientos.avance',
+                                    'solic_equipamientos.status',
                                     'solic_equipamientos.num_factura',
                                     'proveedores.proveedor',
                                     'equipamientos.equipamiento',
@@ -87,7 +89,7 @@ class SolEquipamientoController extends Controller
                                     'creditos.fraccionamiento as proyecto',
                                     'creditos.etapa',
                                     'creditos.manzana',
-                                    'creditos.num_lote')
+                                    'creditos.num_lote','licencias.avance')
                             ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $buscar . '%')
                             ->orderBy('contratos.id','desc')
                             ->orderBy('proveedores.proveedor','asc')
@@ -110,12 +112,13 @@ class SolEquipamientoController extends Controller
                                     'solic_equipamientos.id',
                                     'solic_equipamientos.lote_id',
                                     'solic_equipamientos.costo',
+                                    'solic_equipamientos.fecha_solicitud',
                                     'solic_equipamientos.fecha_colocacion',
                                     'solic_equipamientos.anticipo',
                                     'solic_equipamientos.fecha_anticipo',
                                     'solic_equipamientos.liquidacion',
                                     'solic_equipamientos.fecha_liquidacion',
-                                    'solic_equipamientos.avance',
+                                    'solic_equipamientos.status',
                                     'solic_equipamientos.num_factura',
                                     'proveedores.proveedor',
                                     'equipamientos.equipamiento',
@@ -124,7 +127,7 @@ class SolEquipamientoController extends Controller
                                     'creditos.fraccionamiento as proyecto',
                                     'creditos.etapa',
                                     'creditos.manzana',
-                                    'creditos.num_lote')
+                                    'creditos.num_lote','licencias.avance')
                             ->where($criterio, '=', $buscar)
                             ->orderBy('contratos.id','desc')
                             ->orderBy('proveedores.proveedor','asc')
@@ -147,12 +150,13 @@ class SolEquipamientoController extends Controller
                                     'solic_equipamientos.id',
                                     'solic_equipamientos.lote_id',
                                     'solic_equipamientos.costo',
+                                    'solic_equipamientos.fecha_solicitud',
                                     'solic_equipamientos.fecha_colocacion',
                                     'solic_equipamientos.anticipo',
                                     'solic_equipamientos.fecha_anticipo',
                                     'solic_equipamientos.liquidacion',
                                     'solic_equipamientos.fecha_liquidacion',
-                                    'solic_equipamientos.avance',
+                                    'solic_equipamientos.status',
                                     'solic_equipamientos.num_factura',
                                     'proveedores.proveedor',
                                     'equipamientos.equipamiento',
@@ -161,7 +165,7 @@ class SolEquipamientoController extends Controller
                                     'creditos.fraccionamiento as proyecto',
                                     'creditos.etapa',
                                     'creditos.manzana',
-                                    'creditos.num_lote')
+                                    'creditos.num_lote','licencias.avance')
                             ->where($criterio, 'like', '%'. $buscar . '%')
                             ->orderBy('contratos.id','desc')
                             ->orderBy('proveedores.proveedor','asc')
@@ -185,12 +189,13 @@ class SolEquipamientoController extends Controller
                                         'solic_equipamientos.id',
                                         'solic_equipamientos.lote_id',
                                         'solic_equipamientos.costo',
+                                        'solic_equipamientos.fecha_solicitud',
                                         'solic_equipamientos.fecha_colocacion',
                                         'solic_equipamientos.anticipo',
                                         'solic_equipamientos.fecha_anticipo',
                                         'solic_equipamientos.liquidacion',
                                         'solic_equipamientos.fecha_liquidacion',
-                                        'solic_equipamientos.avance',
+                                        'solic_equipamientos.status',
                                         'solic_equipamientos.num_factura',
                                         'proveedores.proveedor',
                                         'equipamientos.equipamiento',
@@ -199,7 +204,7 @@ class SolEquipamientoController extends Controller
                                         'creditos.fraccionamiento as proyecto',
                                         'creditos.etapa',
                                         'creditos.manzana',
-                                        'creditos.num_lote')
+                                        'creditos.num_lote','licencias.avance')
                                 ->where($criterio, '=', $buscar)
                                 ->orderBy('contratos.id','desc')
                                 ->orderBy('proveedores.proveedor','asc')
@@ -221,12 +226,13 @@ class SolEquipamientoController extends Controller
                                         'solic_equipamientos.id',
                                         'solic_equipamientos.lote_id',
                                         'solic_equipamientos.costo',
+                                        'solic_equipamientos.fecha_solicitud',
                                         'solic_equipamientos.fecha_colocacion',
                                         'solic_equipamientos.anticipo',
                                         'solic_equipamientos.fecha_anticipo',
                                         'solic_equipamientos.liquidacion',
                                         'solic_equipamientos.fecha_liquidacion',
-                                        'solic_equipamientos.avance',
+                                        'solic_equipamientos.status',
                                         'solic_equipamientos.num_factura',
                                         'proveedores.proveedor',
                                         'equipamientos.equipamiento',
@@ -235,7 +241,7 @@ class SolEquipamientoController extends Controller
                                         'creditos.fraccionamiento as proyecto',
                                         'creditos.etapa',
                                         'creditos.manzana',
-                                        'creditos.num_lote')
+                                        'creditos.num_lote','licencias.avance')
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
                                 ->orderBy('contratos.id','desc')
@@ -259,12 +265,13 @@ class SolEquipamientoController extends Controller
                                         'solic_equipamientos.id',
                                         'solic_equipamientos.lote_id',
                                         'solic_equipamientos.costo',
+                                        'solic_equipamientos.fecha_solicitud',
                                         'solic_equipamientos.fecha_colocacion',
                                         'solic_equipamientos.anticipo',
                                         'solic_equipamientos.fecha_anticipo',
                                         'solic_equipamientos.liquidacion',
                                         'solic_equipamientos.fecha_liquidacion',
-                                        'solic_equipamientos.avance',
+                                        'solic_equipamientos.status',
                                         'solic_equipamientos.num_factura',
                                         'proveedores.proveedor',
                                         'equipamientos.equipamiento',
@@ -273,7 +280,7 @@ class SolEquipamientoController extends Controller
                                         'creditos.fraccionamiento as proyecto',
                                         'creditos.etapa',
                                         'creditos.manzana',
-                                        'creditos.num_lote')
+                                        'creditos.num_lote','licencias.avance')
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
                                 ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
@@ -298,12 +305,13 @@ class SolEquipamientoController extends Controller
                                         'solic_equipamientos.id',
                                         'solic_equipamientos.lote_id',
                                         'solic_equipamientos.costo',
+                                        'solic_equipamientos.fecha_solicitud',
                                         'solic_equipamientos.fecha_colocacion',
                                         'solic_equipamientos.anticipo',
                                         'solic_equipamientos.fecha_anticipo',
                                         'solic_equipamientos.liquidacion',
                                         'solic_equipamientos.fecha_liquidacion',
-                                        'solic_equipamientos.avance',
+                                        'solic_equipamientos.status',
                                         'solic_equipamientos.num_factura',
                                         'proveedores.proveedor',
                                         'equipamientos.equipamiento',
@@ -312,7 +320,7 @@ class SolEquipamientoController extends Controller
                                         'creditos.fraccionamiento as proyecto',
                                         'creditos.etapa',
                                         'creditos.manzana',
-                                        'creditos.num_lote')
+                                        'creditos.num_lote','licencias.avance')
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
                                 ->where('lotes.num_lote', '=', $b_lote)
@@ -338,12 +346,13 @@ class SolEquipamientoController extends Controller
                                         'solic_equipamientos.id',
                                         'solic_equipamientos.lote_id',
                                         'solic_equipamientos.costo',
+                                        'solic_equipamientos.fecha_solicitud',
                                         'solic_equipamientos.fecha_colocacion',
                                         'solic_equipamientos.anticipo',
                                         'solic_equipamientos.fecha_anticipo',
                                         'solic_equipamientos.liquidacion',
                                         'solic_equipamientos.fecha_liquidacion',
-                                        'solic_equipamientos.avance',
+                                        'solic_equipamientos.status',
                                         'solic_equipamientos.num_factura',
                                         'proveedores.proveedor',
                                         'equipamientos.equipamiento',
@@ -352,7 +361,7 @@ class SolEquipamientoController extends Controller
                                         'creditos.fraccionamiento as proyecto',
                                         'creditos.etapa',
                                         'creditos.manzana',
-                                        'creditos.num_lote')
+                                        'creditos.num_lote','licencias.avance')
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
                                 ->where('lotes.num_lote', '=', $b_lote)
@@ -376,12 +385,13 @@ class SolEquipamientoController extends Controller
                                         'solic_equipamientos.id',
                                         'solic_equipamientos.lote_id',
                                         'solic_equipamientos.costo',
+                                        'solic_equipamientos.fecha_solicitud',
                                         'solic_equipamientos.fecha_colocacion',
                                         'solic_equipamientos.anticipo',
                                         'solic_equipamientos.fecha_anticipo',
                                         'solic_equipamientos.liquidacion',
                                         'solic_equipamientos.fecha_liquidacion',
-                                        'solic_equipamientos.avance',
+                                        'solic_equipamientos.status',
                                         'solic_equipamientos.num_factura',
                                         'proveedores.proveedor',
                                         'equipamientos.equipamiento',
@@ -390,7 +400,7 @@ class SolEquipamientoController extends Controller
                                         'creditos.fraccionamiento as proyecto',
                                         'creditos.etapa',
                                         'creditos.manzana',
-                                        'creditos.num_lote')
+                                        'creditos.num_lote','licencias.avance')
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.num_lote', '=', $b_lote)
                                 ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
@@ -414,12 +424,13 @@ class SolEquipamientoController extends Controller
                                         'solic_equipamientos.id',
                                         'solic_equipamientos.lote_id',
                                         'solic_equipamientos.costo',
+                                        'solic_equipamientos.fecha_solicitud',
                                         'solic_equipamientos.fecha_colocacion',
                                         'solic_equipamientos.anticipo',
                                         'solic_equipamientos.fecha_anticipo',
                                         'solic_equipamientos.liquidacion',
                                         'solic_equipamientos.fecha_liquidacion',
-                                        'solic_equipamientos.avance',
+                                        'solic_equipamientos.status',
                                         'solic_equipamientos.num_factura',
                                         'proveedores.proveedor',
                                         'equipamientos.equipamiento',
@@ -428,7 +439,7 @@ class SolEquipamientoController extends Controller
                                         'creditos.fraccionamiento as proyecto',
                                         'creditos.etapa',
                                         'creditos.manzana',
-                                        'creditos.num_lote')
+                                        'creditos.num_lote','licencias.avance')
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.num_lote', '=', $b_lote)
                                 ->orderBy('contratos.id','desc')
@@ -451,12 +462,13 @@ class SolEquipamientoController extends Controller
                                         'solic_equipamientos.id',
                                         'solic_equipamientos.lote_id',
                                         'solic_equipamientos.costo',
+                                        'solic_equipamientos.fecha_solicitud',
                                         'solic_equipamientos.fecha_colocacion',
                                         'solic_equipamientos.anticipo',
                                         'solic_equipamientos.fecha_anticipo',
                                         'solic_equipamientos.liquidacion',
                                         'solic_equipamientos.fecha_liquidacion',
-                                        'solic_equipamientos.avance',
+                                        'solic_equipamientos.status',
                                         'solic_equipamientos.num_factura',
                                         'proveedores.proveedor',
                                         'equipamientos.equipamiento',
@@ -465,7 +477,7 @@ class SolEquipamientoController extends Controller
                                         'creditos.fraccionamiento as proyecto',
                                         'creditos.etapa',
                                         'creditos.manzana',
-                                        'creditos.num_lote')
+                                        'creditos.num_lote','licencias.avance')
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
                                 ->orderBy('contratos.id','desc')
@@ -511,11 +523,12 @@ class SolEquipamientoController extends Controller
         if(!$request->ajax())return redirect('/'); 
         $solicitud = Solic_equipamiento::findOrFail($request->id);
         $solicitud->fecha_colocacion = $request->fecha_colocacion;
+        $solicitud->status = 2;
         $solicitud->save();
 
         $observacion = new Obs_solic_equipamiento();
         $observacion->solic_id = $request->id;
-        $observacion->comentario = $request->comentario;
+        $observacion->comentario ='Fecha de colocación: '.$request->comentario;
         $observacion->usuario = Auth::user()->usuario;
         $observacion->save();
     }

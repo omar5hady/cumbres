@@ -175,6 +175,7 @@
                                         <th>Etapa</th>
                                         <th>Manzana</th>
                                         <th>Lote</th>
+                                        <th>Avance de obra</th>
                                         <th>Proveedor</th>
                                         <th>Equipamiento</th>
                                         <th>&nbsp; Costo del equipamiento &nbsp;</th>
@@ -193,6 +194,7 @@
                                             <td class="td2" v-text="equipamientos.etapa"></td>
                                             <td class="td2" v-text="equipamientos.manzana"></td>
                                             <td class="td2" v-text="equipamientos.num_lote"></td>
+                                            <td class="td2" v-text="equipamientos.avance + '%'"></td>
                                             <td class="td2" v-text="equipamientos.proveedor"></td>
                                             <td class="td2" v-text="equipamientos.equipamiento"></td>
                                             <td class="td2" style="width:40%">

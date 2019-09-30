@@ -318,6 +318,10 @@
         <template v-if="menu==213">
             <obra-equipamiento></obra-equipamiento>
         </template>
+
+        <template v-if="menu==214">
+            <proveedor-seguimiento></proveedor-seguimiento>
+        </template>
        
 
         

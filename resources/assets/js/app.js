@@ -92,6 +92,10 @@ Vue.component('seguimiento-tramite', require('./components/SeguimientoTramite.vu
 Vue.component('devolucion-cancelacion', require('./components/Devolucion.vue'));
 Vue.component('devolucion-credito', require('./components/CreditoDevolucion.vue'));
 
+// Proveedores
+Vue.component('proveedor-seguimiento', require('./components/Proveedor/SegInstalacion.vue'));
+
+
 Vue.component('notification', require('./components/Notification.vue'));
 Vue.component('perfil-user', require('./components/Perfil.vue'));
 Vue.component('listar-notifications', require('./components/ListarNotifications.vue'));
