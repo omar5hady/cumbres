@@ -57,9 +57,10 @@
                                         <th>Lote</th>
                                         <th>Proveedor</th>
                                         <th>Equipamiento</th>
-                                        <th>&nbsp; Costo del equipamiento &nbsp;</th>
-                                        <th>Anticipo</th>
                                         <th>Fecha colocación</th>
+                                        <th>Fecha fin de instalación</th>
+                                        <th>Status</th>
+                                        <th>Recepción</th>
                                         <th>Observaciones</th>
                                         
                                     </tr>
@@ -75,14 +76,30 @@
                                             <td class="td2" v-text="equipamientos.num_lote"></td>
                                             <td class="td2" v-text="equipamientos.proveedor"></td>
                                             <td class="td2" v-text="equipamientos.equipamiento"></td>
-                                            <td class="td2" v-text="'$'+formatNumber(equipamientos.costo)"></td>
-                                            <template>
-                                                <td v-if="equipamientos.fecha_anticipo" class="td2" v-text=" this.moment(equipamientos.fecha_anticipo).locale('es').format('DD/MMM/YYYY') + ': '+ '$'+formatNumber(equipamientos.anticipo)"></td>
-                                                <td v-else class="td2" v-text="'Sin anticipo'"></td>    
-                                            </template>
                                             <template>
                                                 <td v-if="equipamientos.fecha_colocacion" class="td2" v-text=" this.moment(equipamientos.fecha_colocacion).locale('es').format('DD/MMM/YYYY')"></td>
                                                 <td v-else class="td2" v-text="'Sin fecha'"></td>    
+                                            </template>
+                                            <template>
+                                                <td v-if="equipamientos.fin_instalacion" class="td2" v-text=" this.moment(equipamientos.fin_instalacion).locale('es').format('DD/MMM/YYYY')"></td>
+                                                <td v-else class="td2" v-text="'Sin fecha'"></td>    
+                                            </template>
+                                            <template>
+                                                <td v-if="equipamientos.status == '0'" class="td2">
+                                                    <span class="badge badge-warning">Rechazado</span>
+                                                </td>
+                                                <td v-if="equipamientos.status == '1'" class="td2">
+                                                    <span class="badge badge-primary">Pendiente</span>
+                                                </td>
+                                                <td v-if="equipamientos.status == '2'" class="td2">
+                                                    <span class="badge badge-primary">En proceso de colocación</span>
+                                                </td>
+                                                <td v-if="equipamientos.status == '3'" class="td2">
+                                                    <span class="badge badge-primary">En Revisión</span>
+                                                </td>
+                                                <td v-if="equipamientos.status == '4'" class="td2">
+                                                    <span class="badge badge-success">Aprobado</span>
+                                                </td>    
                                             </template>
                                             <td> 
                                                 <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
@@ -115,7 +132,7 @@
                             </ul>
                         </nav>
                     </div>
-                <!-------------------  Fin Div para Contratos que tienen paquete o promoción  --------------------->
+                <!-------------------  Fin Div historial equipamientos  --------------------->
 
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
