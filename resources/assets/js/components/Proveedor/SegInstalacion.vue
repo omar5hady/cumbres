@@ -58,8 +58,10 @@
                                         <th>Fecha de solicitud</th>
                                         <th>Equipamiento</th>
                                         <th>Anticipo</th>
-                                        <th>Fecha colocación</th>
+                                        <th>Fecha programada de instalación</th>
+                                        <th>Fecha fin de instalación</th>
                                         <th>Status</th>
+                                        <th>Liquidación</th>
                                         <th>Observaciones</th>
                                         
                                     </tr>
@@ -83,7 +85,10 @@
                                                 <td @click="abrirModal('colocacion', equipamientos)" v-if="equipamientos.fecha_colocacion" class="td2" v-text=" this.moment(equipamientos.fecha_colocacion).locale('es').format('DD/MMM/YYYY')"></td>
                                                 <td @click="abrirModal('colocacion', equipamientos)" v-else class="td2" v-text="'Sin fecha'"></td>    
                                             </template>
-
+                                            <template>
+                                                <td @click="abrirModal('fin_instalacion', equipamientos)" v-if="equipamientos.fin_instalacion" class="td2" v-text=" this.moment(equipamientos.fin_instalacion).locale('es').format('DD/MMM/YYYY')"></td>
+                                                <td @click="abrirModal('fin_instalacion', equipamientos)" v-else class="td2" v-text="'Sin fecha'"></td>    
+                                            </template>
                                             <template>
                                                 <td v-if="equipamientos.status == '0'" class="td2">
                                                     <span class="badge badge-warning">Rechazado</span>
@@ -92,7 +97,7 @@
                                                     <span class="badge badge-primary">Pendiente</span>
                                                 </td>
                                                 <td v-if="equipamientos.status == '2'" class="td2">
-                                                    <span class="badge badge-primary">En proceso de colocación</span>
+                                                    <span class="badge badge-primary">En proceso de instalación</span>
                                                 </td>
                                                 <td v-if="equipamientos.status == '3'" class="td2">
                                                     <span class="badge badge-primary">En Revisión</span>
@@ -101,7 +106,10 @@
                                                     <span class="badge badge-success">Aprobado</span>
                                                 </td>    
                                             </template>
-
+                                            <template>
+                                                <td v-if="equipamientos.fecha_liquidacion" class="td2" v-text="this.moment(equipamientos.fecha_liquidacion).locale('es').format('DD/MMM/YYYY')+ ': '+ '$'+formatNumber(equipamientos.liquidacion)"></td>
+                                                <td v-else class="td2" v-text="'Sin programar'"></td>    
+                                            </template>
                                             <td> 
                                                 <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
                                                     @click="abrirModal('observaciones', equipamientos),listarObservacion(1,equipamientos.id)">Ver observaciones
@@ -208,14 +216,21 @@
                             </div>
                             <div class="modal-body">
 
+                                <div class="form-group row" v-if="tipoAccion == 1">
+                                    <label class="col-md-2 form-control-label" for="text-input">Fecha de instalación</label>
+                                    <div class="col-md-3">
+                                        <input type="date" v-model="fin_instalacion" class="form-control">
+                                    </div>
+                                </div>
+
                                 <div class="form-group row" v-if="tipoAccion == 2">
-                                    <label class="col-md-2 form-control-label" for="text-input">Fecha de colocacion</label>
+                                    <label class="col-md-2 form-control-label" for="text-input">Fecha programada para instalación</label>
                                     <div class="col-md-3">
                                         <input type="date" v-model="fecha_colocacion" class="form-control">
                                     </div>
                                 </div>
 
-                                 <div class="form-group row" v-if="tipoAccion == 2">
+                                 <div class="form-group row">
                                     <label class="col-md-2 form-control-label" for="text-input">Observacion (*)</label>
                                     <div class="col-md-8">
                                         <textarea v-model="observacion" cols="50" rows="4"></textarea>
@@ -235,6 +250,7 @@
                             <!-- Botones del modal -->
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                                <button type="button" v-if="tipoAccion ==1" class="btn btn-success" @click="setInstalacion()">Guardar</button>
                                 <button type="button" v-if="tipoAccion == 2" class="btn btn-success" @click="actColocacion()">Guardar</button>
                             </div>
                         </div>
@@ -348,6 +364,7 @@
                 b_lote2: '',
                 tipoAccion:0,
                 fecha_colocacion:'',
+                fin_instalacion:'',
                 observacion:'',
 
                 errorColocacion : 0,
@@ -530,7 +547,7 @@
                 
             },
 
-             actColocacion(){
+            actColocacion(){
 
                 if(this.validarColocacion()) //Se verifica si hay un error (campo vacio)
                 {
@@ -540,6 +557,38 @@
                 //Con axios se llama el metodo update de LoteController
                 axios.put('/equipamiento/actColocacion',{
                     'fecha_colocacion':this.fecha_colocacion,
+                    'comentario' : this.observacion,
+                    'id':this.solicitud_id,
+                    
+                }).then(function (response){
+                    me.cerrarModal();
+                    me.listarHistorial(me.pagination2.current_page,me.buscar2,me.b_etapa2,me.b_manzana2,me.b_lote2,me.criterio2);
+                    //window.alert("Cambios guardados correctamente");
+                    const toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                        });
+                        toast({
+                        type: 'success',
+                        title: 'Datos guardados correctamente'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
+            setInstalacion(){
+
+                if(this.validarInstalacion()) //Se verifica si hay un error (campo vacio)
+                {
+                    return;
+                }
+                let me = this;
+                //Con axios se llama el metodo update de LoteController
+                axios.put('/equipamiento/set_instalacion',{
+                    'fin_instalacion':this.fin_instalacion,
                     'comentario' : this.observacion,
                     'id':this.solicitud_id,
                     
@@ -583,6 +632,24 @@
 
                 return this.errorColocacion;
             },
+
+            
+            validarInstalacion(){
+                this.errorColocacion=0;
+                this.errorMostrarMsjColocacion=[];
+
+                if(!this.observacion) //Si la variable Fraccionamiento esta vacia
+                    this.errorMostrarMsjColocacion.push("Debe ingresar una observación.");
+
+                if(!this.fin_instalacion) //Si la variable Fraccionamiento esta vacia
+                    this.errorMostrarMsjColocacion.push("Ingresar fecha de colocación.");
+
+
+                if(this.errorMostrarMsjColocacion.length)//Si el mensaje tiene almacenado algo en el array
+                    this.errorColocacion = 1;
+
+                return this.errorColocacion;
+            },
             cerrarModal(){
                 this.modal = 0;
                 this.tituloModal = '';
@@ -593,6 +660,9 @@
                 this.proveedor = '';
                 this.equipamiento = '';
                 this.equipamientos = '';
+                this.fin_instalacion = '';
+                this.errorMostrarMsjColocacion = [];
+                this.errorColocacion = 0;
             },
 
             abrirModal(accion,data =[]){
@@ -607,9 +677,19 @@
 
                         case 'colocacion':{
                             this.modal2 =2;
-                            this.tituloModal='Colocación';
+                            this.tituloModal='Programacion para instalación';
                             this.tipoAccion=2;
                             this.fecha_colocacion = data['fecha_colocacion'];
+                            this.solicitud_id = data['id'];
+                            this.observacion = '';
+                            break;
+                        }
+
+                        case 'fin_instalacion':{
+                            this.modal2 =2;
+                            this.tituloModal='Fecha de instalación';
+                            this.tipoAccion=1;
+                            this.fin_instalacion = data['fin_instalacion'];
                             this.solicitud_id = data['id'];
                             this.observacion = '';
                             break;

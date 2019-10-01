@@ -10,7 +10,8 @@ class Solic_equipamiento extends Model
     protected $primaryKey = 'id'; //Referenciar la llave primaria
     protected $fillable = ['lote_id','contrato_id','fecha_solicitud','costo','fecha_colocacion',
                             'anticipo','fecha_anticipo','equipamiento_id','status',
-                            'liquidacion', 'fecha_liquidacion', 'avance', 'num_factura'];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
+                            'liquidacion', 'fecha_liquidacion', 'avance', 'num_factura',
+                            'fin_instalacion'];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
 
     public function lote(){
         return $this->belongsTo('App\Lote');

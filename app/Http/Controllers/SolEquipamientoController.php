@@ -41,6 +41,7 @@ class SolEquipamientoController extends Controller
                         'solic_equipamientos.fecha_anticipo',
                         'solic_equipamientos.liquidacion',
                         'solic_equipamientos.fecha_liquidacion',
+                        'solic_equipamientos.fin_instalacion',
                         'solic_equipamientos.status',
                         'solic_equipamientos.num_factura',
                         'proveedores.proveedor',
@@ -80,6 +81,7 @@ class SolEquipamientoController extends Controller
                                     'solic_equipamientos.fecha_anticipo',
                                     'solic_equipamientos.liquidacion',
                                     'solic_equipamientos.fecha_liquidacion',
+                                    'solic_equipamientos.fin_instalacion',
                                     'solic_equipamientos.status',
                                     'solic_equipamientos.num_factura',
                                     'proveedores.proveedor',
@@ -118,6 +120,7 @@ class SolEquipamientoController extends Controller
                                     'solic_equipamientos.fecha_anticipo',
                                     'solic_equipamientos.liquidacion',
                                     'solic_equipamientos.fecha_liquidacion',
+                                    'solic_equipamientos.fin_instalacion',
                                     'solic_equipamientos.status',
                                     'solic_equipamientos.num_factura',
                                     'proveedores.proveedor',
@@ -156,6 +159,7 @@ class SolEquipamientoController extends Controller
                                     'solic_equipamientos.fecha_anticipo',
                                     'solic_equipamientos.liquidacion',
                                     'solic_equipamientos.fecha_liquidacion',
+                                    'solic_equipamientos.fin_instalacion',
                                     'solic_equipamientos.status',
                                     'solic_equipamientos.num_factura',
                                     'proveedores.proveedor',
@@ -195,6 +199,7 @@ class SolEquipamientoController extends Controller
                                         'solic_equipamientos.fecha_anticipo',
                                         'solic_equipamientos.liquidacion',
                                         'solic_equipamientos.fecha_liquidacion',
+                                        'solic_equipamientos.fin_instalacion',
                                         'solic_equipamientos.status',
                                         'solic_equipamientos.num_factura',
                                         'proveedores.proveedor',
@@ -232,6 +237,7 @@ class SolEquipamientoController extends Controller
                                         'solic_equipamientos.fecha_anticipo',
                                         'solic_equipamientos.liquidacion',
                                         'solic_equipamientos.fecha_liquidacion',
+                                        'solic_equipamientos.fin_instalacion',
                                         'solic_equipamientos.status',
                                         'solic_equipamientos.num_factura',
                                         'proveedores.proveedor',
@@ -271,6 +277,7 @@ class SolEquipamientoController extends Controller
                                         'solic_equipamientos.fecha_anticipo',
                                         'solic_equipamientos.liquidacion',
                                         'solic_equipamientos.fecha_liquidacion',
+                                        'solic_equipamientos.fin_instalacion',
                                         'solic_equipamientos.status',
                                         'solic_equipamientos.num_factura',
                                         'proveedores.proveedor',
@@ -311,6 +318,7 @@ class SolEquipamientoController extends Controller
                                         'solic_equipamientos.fecha_anticipo',
                                         'solic_equipamientos.liquidacion',
                                         'solic_equipamientos.fecha_liquidacion',
+                                        'solic_equipamientos.fin_instalacion',
                                         'solic_equipamientos.status',
                                         'solic_equipamientos.num_factura',
                                         'proveedores.proveedor',
@@ -352,6 +360,7 @@ class SolEquipamientoController extends Controller
                                         'solic_equipamientos.fecha_anticipo',
                                         'solic_equipamientos.liquidacion',
                                         'solic_equipamientos.fecha_liquidacion',
+                                        'solic_equipamientos.fin_instalacion',
                                         'solic_equipamientos.status',
                                         'solic_equipamientos.num_factura',
                                         'proveedores.proveedor',
@@ -391,6 +400,7 @@ class SolEquipamientoController extends Controller
                                         'solic_equipamientos.fecha_anticipo',
                                         'solic_equipamientos.liquidacion',
                                         'solic_equipamientos.fecha_liquidacion',
+                                        'solic_equipamientos.fin_instalacion',
                                         'solic_equipamientos.status',
                                         'solic_equipamientos.num_factura',
                                         'proveedores.proveedor',
@@ -430,6 +440,7 @@ class SolEquipamientoController extends Controller
                                         'solic_equipamientos.fecha_anticipo',
                                         'solic_equipamientos.liquidacion',
                                         'solic_equipamientos.fecha_liquidacion',
+                                        'solic_equipamientos.fin_instalacion',
                                         'solic_equipamientos.status',
                                         'solic_equipamientos.num_factura',
                                         'proveedores.proveedor',
@@ -468,6 +479,7 @@ class SolEquipamientoController extends Controller
                                         'solic_equipamientos.fecha_anticipo',
                                         'solic_equipamientos.liquidacion',
                                         'solic_equipamientos.fecha_liquidacion',
+                                        'solic_equipamientos.fin_instalacion',
                                         'solic_equipamientos.status',
                                         'solic_equipamientos.num_factura',
                                         'proveedores.proveedor',
@@ -528,7 +540,22 @@ class SolEquipamientoController extends Controller
 
         $observacion = new Obs_solic_equipamiento();
         $observacion->solic_id = $request->id;
-        $observacion->comentario ='Fecha de colocación: '.$request->comentario;
+        $observacion->comentario ='Fecha programada de instalación: '.$request->comentario;
+        $observacion->usuario = Auth::user()->usuario;
+        $observacion->save();
+    }
+
+    public function setInstalacion(Request $request){
+        if(!$request->ajax())return redirect('/'); 
+        
+        $solicitud = Solic_equipamiento::findOrFail($request->id);
+        $solicitud->fin_instalacion = $request->fin_instalacion;
+        $solicitud->status = 3;
+        $solicitud->save();
+
+        $observacion = new Obs_solic_equipamiento();
+        $observacion->solic_id = $request->id;
+        $observacion->comentario ='Fecha de instalación: '.$request->comentario;
         $observacion->usuario = Auth::user()->usuario;
         $observacion->save();
     }

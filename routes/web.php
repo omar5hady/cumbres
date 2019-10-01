@@ -515,6 +515,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/equipamiento/actCosto','SolEquipamientoController@actCosto');
         Route::put('/equipamiento/actAnticipo','SolEquipamientoController@actAnticipo');
         Route::put('/equipamiento/actColocacion','SolEquipamientoController@actColocacion');
+        Route::put('/equipamiento/set_instalacion','SolEquipamientoController@setInstalacion');
         Route::get('/equipamiento/indexHistorial','SolEquipamientoController@indexHistorial');
         
         Route::get('/equipamiento/indexObservacion','ObsservacionEquipamientoController@index');

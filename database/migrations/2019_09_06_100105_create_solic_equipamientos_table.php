@@ -26,6 +26,7 @@ class CreateSolicEquipamientosTable extends Migration
 
             $table->double('liquidacion')->nullable();
             $table->date('fecha_liquidacion')->nullable();
+            $table->date('fin_instalacion')->nullable();
             $table->string('num_factura', 8)->nullable();
 
             $table->boolean('status')->default(1);
