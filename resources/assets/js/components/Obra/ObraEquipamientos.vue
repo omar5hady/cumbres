@@ -12,6 +12,7 @@
                     </div>
 
                 <!-------------------  Div historial equipamientos  --------------------->
+                <template v-if="checklist == 0">
                     <div class="card-body">
                         <div class="form-group row">
                             <div class="col-md-10">
@@ -102,10 +103,26 @@
                                                 </td>    
                                             </template>
                                             <td> 
+                                                <button v-if="equipamientos.recepcion == 1 && equipamientos.status == 3" title="Realizar recepcion" type="button" 
+                                                @click="mostrarCheckList(equipamientos)" class="btn btn-dark pull-right">
+                                                    <i class="fa fa-check-square-o"></i> Realizar recepción
+                                                </button> 
+                                                <button v-else-if="equipamientos.recepcion == 0 && equipamientos.status == 3" title="Realizar recepcion" type="button" 
+                                                @click="mostrarCheckList(equipamientos)" class="btn btn-dark pull-right">
+                                                    <i class="fa fa-check-square-o"></i> Realizar recepción
+                                                </button>
+                                                <button v-else-if="equipamientos.recepcion == 1 && equipamientos.status == 4" title="Realizar recepcion" type="button" 
+                                                @click="mostrarCheckList(equipamientos)" class="btn btn-dark pull-right">
+                                                    <i class="fa fa-check-square-o"></i> Ver recepción
+                                                </button> 
+                                                <span v-else class="badge badge-primary"></span>
+                                            </td>
+                                            <td>
                                                 <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
                                                     @click="abrirModal('observaciones', equipamientos),listarObservacion(1,equipamientos.id)">Ver observaciones
                                                 </button> 
                                             </td>
+                                            
                                         </template>
                                     </tr>
                                 </tbody>
@@ -131,8 +148,849 @@
                                 </li>
                             </ul>
                         </nav>
-                    </div>
+                    </div>        
+                </template>
                 <!-------------------  Fin Div historial equipamientos  --------------------->
+
+                <!-------------------  Div checklist recepcion  --------------------->
+                <template v-if="checklist == 1">
+                    <div class="card-body" v-if="tipoRecepcion == 1"> 
+                        <h5 v-text="tituloRecepcion"></h5>
+                            <div class="form-group row border">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                  <center> <h5>Supervisión de acabados</h5> </center>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group row border">
+                                            <a class="nav-link nav-dropdown-toggle"><i class="fa fa-certificate fa-spin"></i> Cubierta </a>
+                                            <ul class="nav-dropdown-items">
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="cubierta_acab_uniones" type="checkbox" value="1"/> Uniones</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="cubierta_acab_silicon" type="checkbox" value="1"/> Uso silicón</a>
+                                                </li>
+                                                <li class="nav-item" >
+                                                    <a class="nav-link"> <input v-model="cubierta_acab_cortes" type="checkbox" value="1"/> Cortes</a>
+                                                </li>
+                                            </ul>                                       
+                                    </div>
+                                </div> 
+
+                                <div class="col-md-6">
+                                    <div class="form-group row border">
+                                            <a class="nav-link nav-dropdown-toggle"><i class="fa fa-certificate fa-spin"></i> Puertas </a>
+                                            <ul class="nav-dropdown-items">
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="puerta_acab_alineados" type="checkbox" value="1"/> Alineadas</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="puerta_acab_cantos" type="checkbox" value="1"/> Cantos</a>
+                                                </li>
+                                            </ul>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                  <center> <h5>Revisión de puertas, alacenas y cajones</h5> </center>
+                                    </div>
+                                </div> 
+
+                                <div class="col-md-4">
+                                    <div class="form-group row border">
+                                            <a class="nav-link nav-dropdown-toggle"><i class="fa fa-certificate fa-spin"></i> Puertas </a>
+                                            <ul class="nav-dropdown-items">
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="puerta_danos" type="checkbox" value="1"/> Daños</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="puerta_tornillos" type="checkbox" value="1"/> Tornillos aju</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="puerta_abatimiento" type="checkbox" value="1"/> Abatimiento</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="puerta_limpieza" type="checkbox" value="1"/> Limpieza</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="puerta_jaladera" type="checkbox" value="1"/> Jaladeras</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="puerta_gomas" type="checkbox" value="1"/> Gomas cierre</a>
+                                                </li>
+                                            </ul>
+                                        
+                                    </div>
+                                </div> 
+
+                                <div class="col-md-4">
+                                    <div class="form-group row border">
+                                            <a class="nav-link nav-dropdown-toggle"><i class="fa fa-certificate fa-spin"></i> Cajones </a>
+                                            <ul class="nav-dropdown-items">
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="cajones_uniones" type="checkbox" value="1"/> Uniones</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="cajones_silicon" type="checkbox" value="1"/> Silicón/Past</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="cajones_limpieza" type="checkbox" value="1"/> Limpieza</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="cajones_jaladeras" type="checkbox" value="1"/> Jaladeras</a>
+                                                </li>
+                                                <li class="nav-item" >
+                                                    <a class="nav-link"> <input v-model="cajones_cantos" type="checkbox" value="1"/> Cantos</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="cajones_rieles" type="checkbox" value="1"/> Rieles</a>
+                                                </li>
+                                                <li class="nav-item" >
+                                                    <a class="nav-link"> <input v-model="cajones_estantes" type="checkbox" value="1"/> Estantes</a>
+                                                </li>
+                                                <li class="nav-item" >
+                                                    <a class="nav-link"> <input v-model="cajones_pzas_comp" type="checkbox" value="1"/> Pzas completas</a>
+                                                </li>
+                                            </ul>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group row border">
+                                            <a class="nav-link nav-dropdown-toggle"><i class="fa fa-certificate fa-spin"></i> Alacenas </a>
+                                            <ul class="nav-dropdown-items">
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="alacena_entrepano" type="checkbox" value="1"/> Entrepaños</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="alacena_pistones" type="checkbox" value="1"/> Pistones</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="alacena_jaladeras" type="checkbox" value="1"/> Jaladeras</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="alacena_micro" type="checkbox" value="1"/> Hoyo micro</a>
+                                                </li>
+                                                <li class="nav-item" >
+                                                    <a class="nav-link"> <input v-model="alacena_cantos" type="checkbox" value="1"/> Cantos</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="alacena_limpieza" type="checkbox" value="1"/> Limpieza</a>
+                                                </li>
+                                                <li class="nav-item" >
+                                                    <a class="nav-link"> <input v-model="alacena_parches" type="checkbox" value="1"/> Parches tor.</a>
+                                                </li>
+                                            </ul>
+                                        
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                  <center> <h5>Otras revisiones</h5> </center>
+                                    </div>
+                                </div> 
+
+                                <div class="col-md-6">
+                                    <div class="form-group row border">
+                                            <a class="nav-link nav-dropdown-toggle"><i class="fa fa-certificate fa-spin"></i> Estufa </a>
+                                            <ul class="nav-dropdown-items">
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="estufa_instalacion" type="checkbox" value="1"/> Instalación</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="estufa_pzas_extra" type="checkbox" value="1"/> Piezas extra</a>
+                                                </li>
+                                                <li class="nav-item" >
+                                                    <a class="nav-link"> <input v-model="estufa_manuales" type="checkbox" value="1"/> Manuales</a>
+                                                </li>
+                                                <li class="nav-item" >
+                                                    <a class="nav-link"> <input v-model="estufa_danos" type="checkbox" value="1"/> Daños</a>
+                                                </li>
+                                            </ul>                                       
+                                    </div>
+                                </div> 
+
+                                <div class="col-md-6">
+                                    <div class="form-group row border">
+                                            <a class="nav-link nav-dropdown-toggle"><i class="fa fa-certificate fa-spin"></i> Tarja </a>
+                                            <ul class="nav-dropdown-items">
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="tarja_danos" type="checkbox" value="1"/> Daños</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="tarja_pzas_extra" type="checkbox" value="1"/> Piezas extra</a>
+                                                </li>
+                                            </ul>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="col-md-3 form-control-label" for="text-input">Observaciones:</label>
+                                        <textarea rows="3" cols="30" v-model="observacion" class="form-control" placeholder="Observaciones"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                </div> 
+
+                                
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-md-9">
+                                    <button type="button" class="btn btn-secondary" @click="cerrarRecepcion()"> Cerrar </button>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <button type="button" class="btn btn-success" @click="aprobar()"> Aprobar </button>
+                                    <button type="button" class="btn btn-danger" @click="rechazar()"> Rechazar </button>
+                                </div>
+                            </div>
+
+                 
+
+                    </div>
+
+                    <div class="card-body" v-if="tipoRecepcion == 2"> 
+                        <h5 v-text="tituloRecepcion"></h5>
+                            <div class="form-group row border">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                  <center> <h5>Supervisión de acabados</h5> </center>
+                                    </div>
+                                </div>
+                                <!-- listado para privilegios del menu Administracion -->
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <center> <h6>Recamara Derecha</h6> </center>
+                                    </div>
+                                    <div class="form-group row border">
+                                            <a class="nav-link nav-dropdown-toggle"><i class="fa fa-certificate fa-spin"></i> Puertas </a>
+                                            <ul class="nav-dropdown-items">
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="p_ali_der" type="checkbox" value="1"/> Alineados</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="p_limp_der" type="checkbox" value="1"/> Limpieza</a>
+                                                </li>
+                                                <li class="nav-item" >
+                                                    <a class="nav-link"> <input v-model="p_sil_der" type="checkbox" value="1"/> Uso silicón</a>
+                                                </li>
+                                            </ul>
+
+                                            <a class="nav-link nav-dropdown-toggle"><i class="fa fa-certificate fa-spin"></i> Cajones </a>
+                                            <ul class="nav-dropdown-items">
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="c_ali_der" type="checkbox" value="1"/> Alineados</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="c_cant_der" type="checkbox" value="1"/> Cantos</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="c_union_der" type="checkbox" value="1"/> Uniones</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="c_sil_der" type="checkbox" value="1"/> Silicón/Past</a>
+                                                </li>
+                                                <li class="nav-item" >
+                                                    <a class="nav-link"> <input v-model="c_limp_der" type="checkbox" value="1"/> Limpieza</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="c_torn_der" type="checkbox" value="1"/> Tornillos aju</a>
+                                                </li>
+                                                <li class="nav-item" >
+                                                    <a class="nav-link"> <input v-model="c_parch_der" type="checkbox" value="1"/> Parches tor</a>
+                                                </li>
+                                            </ul>
+                                        
+                                    </div>
+                                </div> 
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <center> <h6>Recamara Izquierda</h6> </center>
+                                    </div>
+                                    <div class="form-group row border">
+                                            <a class="nav-link nav-dropdown-toggle"><i class="fa fa-certificate fa-spin"></i> Puertas </a>
+                                            <ul class="nav-dropdown-items">
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="p_ali_izq" type="checkbox" value="1"/> Alineados</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="p_limp_izq" type="checkbox" value="1"/> Limpieza</a>
+                                                </li>
+                                                <li class="nav-item" >
+                                                    <a class="nav-link"> <input v-model="p_sil_izq" type="checkbox" value="1"/> Uso silicón</a>
+                                                </li>
+                                            </ul>
+
+                                            <a class="nav-link nav-dropdown-toggle"><i class="fa fa-certificate fa-spin"></i> Cajones </a>
+                                            <ul class="nav-dropdown-items">
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="c_ali_izq" type="checkbox" value="1"/> Alineados</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="c_cant_izq" type="checkbox" value="1"/> Cantos</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="c_union_izq" type="checkbox" value="1"/> Uniones</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="c_sil_izq" type="checkbox" value="1"/> Silicón/Past</a>
+                                                </li>
+                                                <li class="nav-item" >
+                                                    <a class="nav-link"> <input v-model="c_limp_izq" type="checkbox" value="1"/> Limpieza</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="c_torn_izq" type="checkbox" value="1"/> Tornillos aju</a>
+                                                </li>
+                                                <li class="nav-item" >
+                                                    <a class="nav-link"> <input v-model="c_parch_izq" type="checkbox" value="1"/> Parches tor</a>
+                                                </li>
+                                            </ul>
+                                        
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <center> <h6>Recamara Principal</h6> </center>
+                                    </div>
+                                    <div class="form-group row border">
+                                            <a class="nav-link nav-dropdown-toggle"><i class="fa fa-certificate fa-spin"></i> Puertas </a>
+                                            <ul class="nav-dropdown-items">
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="p_ali_princ" type="checkbox" value="1"/> Alineados</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="p_limp_princ" type="checkbox" value="1"/> Limpieza</a>
+                                                </li>
+                                                <li class="nav-item" >
+                                                    <a class="nav-link"> <input v-model="p_sil_princ" type="checkbox" value="1"/> Uso silicón</a>
+                                                </li>
+                                            </ul>
+
+                                            <a class="nav-link nav-dropdown-toggle"><i class="fa fa-certificate fa-spin"></i> Cajones </a>
+                                            <ul class="nav-dropdown-items">
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="c_ali_princ" type="checkbox" value="1"/> Alineados</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="c_cant_princ" type="checkbox" value="1"/> Cantos</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="c_union_princ" type="checkbox" value="1"/> Uniones</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="c_sil_princ" type="checkbox" value="1"/> Silicón/Past</a>
+                                                </li>
+                                                <li class="nav-item" >
+                                                    <a class="nav-link"> <input v-model="c_limp_princ" type="checkbox" value="1"/> Limpieza</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="c_torn_princ" type="checkbox" value="1"/> Tornillos aju</a>
+                                                </li>
+                                                <li class="nav-item" >
+                                                    <a class="nav-link"> <input v-model="c_parch_princ" type="checkbox" value="1"/> Parches tor</a>
+                                                </li>
+                                            </ul>
+                                        
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3" v-if="modelo == 'SAN FERNANDO'">
+                                    <div class="form-group">
+                                        <center> <h6>Recamara planta baja</h6> </center>
+                                    </div>
+                                    <div class="form-group row border">
+                                            <a class="nav-link nav-dropdown-toggle"><i class="fa fa-certificate fa-spin"></i> Puertas </a>
+                                            <ul class="nav-dropdown-items">
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="p_ali_baja" type="checkbox" value="1"/> Alineados</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="p_limp_baja" type="checkbox" value="1"/> Limpieza</a>
+                                                </li>
+                                                <li class="nav-item" >
+                                                    <a class="nav-link"> <input v-model="p_sil_baja" type="checkbox" value="1"/> Uso silicón</a>
+                                                </li>
+                                            </ul>
+
+                                            <a class="nav-link nav-dropdown-toggle"><i class="fa fa-certificate fa-spin"></i> Cajones </a>
+                                            <ul class="nav-dropdown-items">
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="c_ali_baja" type="checkbox" value="1"/> Alineados</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="c_cant_baja" type="checkbox" value="1"/> Cantos</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="c_union_baja" type="checkbox" value="1"/> Uniones</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="c_sil_baja" type="checkbox" value="1"/> Silicón/Past</a>
+                                                </li>
+                                                <li class="nav-item" >
+                                                    <a class="nav-link"> <input v-model="c_limp_baja" type="checkbox" value="1"/> Limpieza</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="c_torn_baja" type="checkbox" value="1"/> Tornillos aju</a>
+                                                </li>
+                                                <li class="nav-item" >
+                                                    <a class="nav-link"> <input v-model="c_parch_baja" type="checkbox" value="1"/> Parches tor</a>
+                                                </li>
+                                            </ul>
+                                        
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                  <center> <h5>Supervisión de interiores</h5> </center>
+                                    </div>
+                                </div> 
+
+                                <!-- listado para privilegios del menu Administracion -->
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <center> <h6>Recamara Derecha</h6> </center>
+                                    </div>
+                                    <div class="form-group row border">
+                                            <a class="nav-link nav-dropdown-toggle"><i class="fa fa-certificate fa-spin"></i> Puertas </a>
+                                            <ul class="nav-dropdown-items">
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="p_tira_der" type="checkbox" value="1"/> Tiradores</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="p_func_der" type="checkbox" value="1"/> Funcionamiento</a>
+                                                </li>
+                                            </ul>
+
+                                            <a class="nav-link nav-dropdown-toggle"><i class="fa fa-certificate fa-spin"></i> Cajones </a>
+                                            <ul class="nav-dropdown-items">
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="c_jalad_der" type="checkbox" value="1"/> Jaladeras</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="c_riel_der" type="checkbox" value="1"/> Rieles</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="c_estant_der" type="checkbox" value="1"/> Estantes</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="c_entr_der" type="checkbox" value="1"/> Entrepaños</a>
+                                                </li>
+                                                <li class="nav-item" >
+                                                    <a class="nav-link"> <input v-model="c_tubos_der" type="checkbox" value="1"/> Tubos colga</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="c_danos_der" type="checkbox" value="1"/> Daños</a>
+                                                </li>
+                                                <li class="nav-item" >
+                                                    <a class="nav-link"> <input v-model="c_correct_der" type="checkbox" value="1"/> Abre correctamente</a>
+                                                </li>
+                                                <li class="nav-item" >
+                                                    <a class="nav-link"> <input v-model="c_pzasc_der" type="checkbox" value="1"/> Pzas completas</a>
+                                                </li>
+                                                <li class="nav-item" >
+                                                    <a class="nav-link"> <input v-model="c_abatim_der" type="checkbox" value="1"/> Abatimiento</a>
+                                                </li>
+                                                <li class="nav-item" >
+                                                    <a class="nav-link"> <input v-model="c_visagras_der" type="checkbox" value="1"/> Visagras</a>
+                                                </li>
+                                            </ul>
+                                        
+                                    </div>
+                                </div> 
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <center> <h6>Recamara Izquierda</h6> </center>
+                                    </div>
+                                    <div class="form-group row border">
+                                            <a class="nav-link nav-dropdown-toggle"><i class="fa fa-certificate fa-spin"></i> Puertas </a>
+                                            <ul class="nav-dropdown-items">
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="p_tira_izq" type="checkbox" value="1"/> Tiradores</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="p_func_izq" type="checkbox" value="1"/> Funcionamiento</a>
+                                                </li>
+                                            </ul>
+
+                                            <a class="nav-link nav-dropdown-toggle"><i class="fa fa-certificate fa-spin"></i> Cajones </a>
+                                            <ul class="nav-dropdown-items">
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="c_jalad_izq" type="checkbox" value="1"/> Jaladeras</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="c_riel_izq" type="checkbox" value="1"/> Rieles</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="c_estant_izq" type="checkbox" value="1"/> Estantes</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="c_entr_izq" type="checkbox" value="1"/> Entrepaños</a>
+                                                </li>
+                                                <li class="nav-item" >
+                                                    <a class="nav-link"> <input v-model="c_tubos_izq" type="checkbox" value="1"/> Tubos colga</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="c_danos_izq" type="checkbox" value="1"/> Daños</a>
+                                                </li>
+                                                <li class="nav-item" >
+                                                    <a class="nav-link"> <input v-model="c_correct_izq" type="checkbox" value="1"/> Abre correctamente</a>
+                                                </li>
+                                                <li class="nav-item" >
+                                                    <a class="nav-link"> <input v-model="c_pzasc_izq" type="checkbox" value="1"/> Pzas completas</a>
+                                                </li>
+                                                <li class="nav-item" >
+                                                    <a class="nav-link"> <input v-model="c_abatim_izq" type="checkbox" value="1"/> Abatimiento</a>
+                                                </li>
+                                                <li class="nav-item" >
+                                                    <a class="nav-link"> <input v-model="c_visagras_izq" type="checkbox" value="1"/> Visagras</a>
+                                                </li>
+                                            </ul>
+                                        
+                                    </div>>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <center> <h6>Recamara Principal</h6> </center>
+                                    </div>
+                                    <div class="form-group row border">
+                                            <a class="nav-link nav-dropdown-toggle"><i class="fa fa-certificate fa-spin"></i> Puertas </a>
+                                            <ul class="nav-dropdown-items">
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="p_tira_princ" type="checkbox" value="1"/> Tiradores</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="p_func_princ" type="checkbox" value="1"/> Funcionamiento</a>
+                                                </li>
+                                            </ul>
+
+                                            <a class="nav-link nav-dropdown-toggle"><i class="fa fa-certificate fa-spin"></i> Cajones </a>
+                                            <ul class="nav-dropdown-items">
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="c_jalad_princ" type="checkbox" value="1"/> Jaladeras</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="c_riel_princ" type="checkbox" value="1"/> Rieles</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="c_estant_princ" type="checkbox" value="1"/> Estantes</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="c_entr_princ" type="checkbox" value="1"/> Entrepaños</a>
+                                                </li>
+                                                <li class="nav-item" >
+                                                    <a class="nav-link"> <input v-model="c_tubos_princ" type="checkbox" value="1"/> Tubos colga</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="c_danos_princ" type="checkbox" value="1"/> Daños</a>
+                                                </li>
+                                                <li class="nav-item" >
+                                                    <a class="nav-link"> <input v-model="c_correct_princ" type="checkbox" value="1"/> Abre correctamente</a>
+                                                </li>
+                                                <li class="nav-item" >
+                                                    <a class="nav-link"> <input v-model="c_pzasc_princ" type="checkbox" value="1"/> Pzas completas</a>
+                                                </li>
+                                                <li class="nav-item" >
+                                                    <a class="nav-link"> <input v-model="c_abatim_princ" type="checkbox" value="1"/> Abatimiento</a>
+                                                </li>
+                                                <li class="nav-item" >
+                                                    <a class="nav-link"> <input v-model="c_visagras_princ" type="checkbox" value="1"/> Visagras</a>
+                                                </li>
+                                            </ul>
+                                        
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3" v-if="modelo == 'SAN FERNANDO'">
+                                    <div class="form-group">
+                                        <center> <h6>Recamara planta baja</h6> </center>
+                                    </div>
+                                    <div class="form-group row border">
+                                            <a class="nav-link nav-dropdown-toggle"><i class="fa fa-certificate fa-spin"></i> Puertas </a>
+                                            <ul class="nav-dropdown-items">
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="p_tira_baja" type="checkbox" value="1"/> Tiradores</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="p_func_baja" type="checkbox" value="1"/> Funcionamiento</a>
+                                                </li>
+                                            </ul>
+
+                                            <a class="nav-link nav-dropdown-toggle"><i class="fa fa-certificate fa-spin"></i> Cajones </a>
+                                            <ul class="nav-dropdown-items">
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="c_jalad_baja" type="checkbox" value="1"/> Jaladeras</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="c_riel_baja" type="checkbox" value="1"/> Rieles</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="c_estant_baja" type="checkbox" value="1"/> Estantes</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="c_entr_baja" type="checkbox" value="1"/> Entrepaños</a>
+                                                </li>
+                                                <li class="nav-item" >
+                                                    <a class="nav-link"> <input v-model="c_tubos_baja" type="checkbox" value="1"/> Tubos colga</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="c_danos_baja" type="checkbox" value="1"/> Daños</a>
+                                                </li>
+                                                <li class="nav-item" >
+                                                    <a class="nav-link"> <input v-model="c_correct_baja" type="checkbox" value="1"/> Abre correctamente</a>
+                                                </li>
+                                                <li class="nav-item" >
+                                                    <a class="nav-link"> <input v-model="c_pzasc_baja" type="checkbox" value="1"/> Pzas completas</a>
+                                                </li>
+                                                <li class="nav-item" >
+                                                    <a class="nav-link"> <input v-model="c_abatim_baja" type="checkbox" value="1"/> Abatimiento</a>
+                                                </li>
+                                                <li class="nav-item" >
+                                                    <a class="nav-link"> <input v-model="c_visagras_baja" type="checkbox" value="1"/> Visagras</a>
+                                                </li>
+                                            </ul>
+                                        
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                  <center> <h5>Otras revisiones</h5> </center>
+                                    </div>
+                                </div> 
+
+                                <!-- listado para privilegios del menu Administracion -->
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <center> <h6>Recamara Derecha</h6> </center>
+                                    </div>
+                                    <div class="form-group row border">
+                                            <a class="nav-link nav-dropdown-toggle"><i class="fa fa-certificate fa-spin"></i> Paredes </a>
+                                            <ul class="nav-dropdown-items">
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="pared_dan_der" type="checkbox" value="1"/> Daños</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="pared_limp_der" type="checkbox" value="1"/> Limpieza</a>
+                                                </li>
+                                            </ul>
+
+                                            <a class="nav-link nav-dropdown-toggle"><i class="fa fa-certificate fa-spin"></i> Closet's </a>
+                                            <ul class="nav-dropdown-items">
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="clo_censup_der" type="checkbox" value="1"/> Cenefa sup</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="clo_ceninf_der" type="checkbox" value="1"/> Cenefas inf</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="clo_madera_der" type="checkbox" value="1"/> Color Mader</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="clo_alin_der" type="checkbox" value="1"/> Alinec jalad</a>
+                                                </li>
+                                                <li class="nav-item" >
+                                                    <a class="nav-link"> <input v-model="clo_pande_der" type="checkbox" value="1"/> Pondeadura</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="clo_soporte_der" type="checkbox" value="1"/> Soport ajust</a>
+                                                </li>
+                                            </ul>
+                                        
+                                    </div>
+                                </div> 
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <center> <h6>Recamara Izquierda</h6> </center>
+                                    </div>
+                                    <div class="form-group row border">
+                                            <a class="nav-link nav-dropdown-toggle"><i class="fa fa-certificate fa-spin"></i> Paredes </a>
+                                            <ul class="nav-dropdown-items">
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="pared_dan_izq" type="checkbox" value="1"/> Daños</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="pared_limp_izq" type="checkbox" value="1"/> Limpieza</a>
+                                                </li>
+                                            </ul>
+
+                                            <a class="nav-link nav-dropdown-toggle"><i class="fa fa-certificate fa-spin"></i> Closet's </a>
+                                            <ul class="nav-dropdown-items">
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="clo_censup_izq" type="checkbox" value="1"/> Cenefa sup</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="clo_ceninf_izq" type="checkbox" value="1"/> Cenefas inf</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="clo_madera_izq" type="checkbox" value="1"/> Color Mader</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="clo_alin_izq" type="checkbox" value="1"/> Alinec jalad</a>
+                                                </li>
+                                                <li class="nav-item" >
+                                                    <a class="nav-link"> <input v-model="clo_pande_izq" type="checkbox" value="1"/> Pondeadura</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="clo_soporte_izq" type="checkbox" value="1"/> Soport ajust</a>
+                                                </li>
+                                            </ul>
+                                        
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <center> <h6>Recamara Principal</h6> </center>
+                                    </div>
+                                    <div class="form-group row border">
+                                            <a class="nav-link nav-dropdown-toggle"><i class="fa fa-certificate fa-spin"></i> Paredes </a>
+                                            <ul class="nav-dropdown-items">
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="pared_dan_princ" type="checkbox" value="1"/> Daños</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="pared_limp_princ" type="checkbox" value="1"/> Limpieza</a>
+                                                </li>
+                                            </ul>
+
+                                            <a class="nav-link nav-dropdown-toggle"><i class="fa fa-certificate fa-spin"></i> Closet's </a>
+                                            <ul class="nav-dropdown-items">
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="clo_censup_princ" type="checkbox" value="1"/> Cenefa sup</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="clo_ceninf_princ" type="checkbox" value="1"/> Cenefas inf</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="clo_madera_princ" type="checkbox" value="1"/> Color Mader</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="clo_alin_princ" type="checkbox" value="1"/> Alinec jalad</a>
+                                                </li>
+                                                <li class="nav-item" >
+                                                    <a class="nav-link"> <input v-model="clo_pande_princ" type="checkbox" value="1"/> Pondeadura</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="clo_soporte_princ" type="checkbox" value="1"/> Soport ajust</a>
+                                                </li>
+                                            </ul>
+                                        
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3" v-if="modelo == 'SAN FERNANDO'">
+                                    <div class="form-group">
+                                        <center> <h6>Recamara planta baja</h6> </center>
+                                    </div>
+                                    <div class="form-group row border">
+                                            <a class="nav-link nav-dropdown-toggle"><i class="fa fa-certificate fa-spin"></i> Paredes </a>
+                                            <ul class="nav-dropdown-items">
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="pared_dan_baja" type="checkbox" value="1"/> Daños</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="pared_limp_baja" type="checkbox" value="1"/> Limpieza</a>
+                                                </li>
+                                            </ul>
+
+                                            <a class="nav-link nav-dropdown-toggle"><i class="fa fa-certificate fa-spin"></i> Closet's </a>
+                                            <ul class="nav-dropdown-items">
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="clo_censup_baja" type="checkbox" value="1"/> Cenefa sup</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="clo_ceninf_baja" type="checkbox" value="1"/> Cenefas inf</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="clo_madera_baja" type="checkbox" value="1"/> Color Mader</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="clo_alin_baja" type="checkbox" value="1"/> Alinec jalad</a>
+                                                </li>
+                                                <li class="nav-item" >
+                                                    <a class="nav-link"> <input v-model="clo_pande_baja" type="checkbox" value="1"/> Pondeadura</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link"> <input v-model="clo_soporte_baja" type="checkbox" value="1"/> Soport ajust</a>
+                                                </li>
+                                            </ul>
+                                        
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="col-md-3 form-control-label" for="text-input">Observaciones:</label>
+                                        <textarea rows="3" cols="30" v-model="observacion" class="form-control" placeholder="Observaciones"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                </div> 
+                                
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-md-9">
+                                    <button type="button" class="btn btn-secondary" @click="cerrarRecepcion()"> Cerrar </button>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <button type="button" class="btn btn-success" @click="aprobar()"> Aprobar </button>
+                                    <button type="button" class="btn btn-danger" @click="rechazar()"> Rechazar </button>
+                                </div>
+                            </div>
+
+                 
+
+                    </div>
+
+                    <div class="card-body" v-if="tipoRecepcion == 0"> 
+                        <h5 v-text="tituloRecepcion"></h5>
+                            <div class="form-group row border">
+
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="col-md-3 form-control-label" for="text-input">Observaciones:</label>
+                                        <textarea rows="3" cols="30" v-model="observacion" class="form-control" placeholder="Observaciones"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                </div> 
+                                
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-md-9">
+                                    <button type="button" class="btn btn-secondary" @click="cerrarRecepcion()"> Cerrar </button>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <button type="button" class="btn btn-success" @click="aprobar()"> Aprobar </button>
+                                    <button type="button" class="btn btn-danger" @click="rechazar()"> Rechazar </button>
+                                </div>
+                            </div>
+
+                 
+
+                    </div>
+                </template>
+
+                <!-------------------  Fin checklist recepcion  --------------------->
 
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
@@ -277,11 +1135,17 @@
                 modal3: 0,
                 tituloModal: '',
 
+                tituloRecepcion: '',
+                tipoRecepcion:0,
+                modelo:'',
+
                 //variables
                 lote_id: 0,
                 contrato_id: 0,
                 solicitud_id: 0,
                 offset : 3,
+
+                checklist : 0,
 
                 // Criterios para historial de equipamientos
                 pagination2 : {
@@ -299,8 +1163,113 @@
                 b_lote2: '',
                 tipoAccion:0,
                 observacion:'',
+            /// SUPERVISION ACABADOS CLOSETS    
+                //Puertas alineados
+                p_ali_der:1, p_ali_izq:1, p_ali_princ:1, p_ali_baja:1,
+                //Puertas limpieza
+                p_limp_der:1, p_limp_izq:1, p_limp_princ:1, p_limp_baja:1,
+                //Puertas silicon
+                p_sil_der:1, p_sil_izq:1, p_sil_princ:1, p_sil_baja:1,
+                //Cajones alineados
+                c_ali_der:1, c_ali_izq:1, c_ali_princ:1, c_ali_baja:1,
+                //Cajones cantos
+                c_cant_der:1, c_cant_izq:1, c_cant_princ:1, c_cant_baja:1,
+                //Cajones uniones
+                c_union_der:1, c_union_izq:1, c_union_princ:1, c_union_baja:1,
+                //Cajones silicon
+                c_sil_der:1, c_sil_izq:1, c_sil_princ:1, c_sil_baja:1,
+                //Cajones limpieza
+                c_limp_der:1, c_limp_izq:1, c_limp_princ:1, c_limp_baja:1,
+                //Cajones tornillos
+                c_torn_der:1, c_torn_izq:1, c_torn_princ:1, c_torn_baja:1,
+                //Cajones parches
+                c_parch_der:1, c_parch_izq:1, c_parch_princ:1, c_parch_baja:1,
+            /// SUPERVISION INTERIORES CLOSETS
+                p_tira_der:1, p_tira_izq:1, p_tira_princ:1, p_tira_baja:1,
+                //Puertas funcionamiento
+                p_func_der:1, p_func_izq:1, p_func_princ:1, p_func_baja:1,
+                //Cajones jaladeras
+                c_jalad_der:1, c_jalad_izq:1, c_jalad_princ:1, c_jalad_baja:1,
+                //Cajones rieles
+                c_riel_der:1, c_riel_izq:1, c_riel_princ:1, c_riel_baja:1,
+                //Cajones estantes
+                c_estant_der:1, c_estant_izq:1, c_estant_princ:1, c_estant_baja:1,
+                //Cajones entrepaños
+                c_entr_der:1, c_entr_izq:1, c_entr_princ:1, c_entr_baja:1,
+                //Cajones tubos colga
+                c_tubos_der:1, c_tubos_izq:1, c_tubos_princ:1, c_tubos_baja:1,
+                //Cajones daños
+                c_danos_der:1, c_danos_izq:1, c_danos_princ:1, c_danos_baja:1,
+                //Cajones abre correct
+                c_correct_der:1, c_correct_izq:1, c_correct_princ:1, c_correct_baja:1,
+                //Cajones pzas compl
+                c_pzasc_der:1,c_pzasc_izq:1,c_pzasc_princ:1, c_pzasc_baja:1,
+                //Cajones abatimiento
+                c_abatim_der:1, c_abatim_izq:1, c_abatim_princ:1, c_abatim_baja:1,
+                //Cajones visagras
+                c_visagras_der:1, c_visagras_izq:1, c_visagras_princ:1, c_visagras_baja:1,
 
+            /// OTRAS REVISIONES
+                pared_dan_der:1, pared_dan_izq:1, pared_dan_princ:1, pared_dan_baja:1,
+                //Paredes limpieza
+                pared_limp_der:1, pared_limp_izq:1, pared_limp_princ:1, pared_limp_baja:1,
+                //Closet Cenefa sup
+                clo_censup_der:1, clo_censup_izq:1, clo_censup_princ:1, clo_censup_baja:1,
+                //Closet Cenefa inf
+                clo_ceninf_der:1, clo_ceninf_izq:1, clo_ceninf_princ:1, clo_ceninf_baja:1,
+                //Closet color madera
+                clo_madera_der:1, clo_madera_izq:1, clo_madera_princ:1, clo_madera_baja:1,
+                //Closet Alinec jalad
+                clo_alin_der:1, clo_alin_izq:1, clo_alin_princ:1, clo_alin_baja:1,
+                //Closet pandeadura
+                clo_pande_der:1, clo_pande_izq:1, clo_pande_princ:1, clo_pande_baja:1,
+                //Closet soporte
+                clo_soporte_der:1, clo_soporte_izq:1, clo_soporte_princ:1, clo_soporte_baja:1,
 
+            /// SUPERVISION ACABADOS COCINA
+                // Cubierta
+                cubierta_acab_uniones:1,
+                cubierta_acab_silicon:1,
+                cubierta_acab_cortes:1,
+                // Puertas
+                puerta_acab_alineados:1,
+                puerta_acab_cantos:1,
+
+            /// SUPERVISION REVISION PUERTAS ALACENAS CAJONES
+                puerta_danos:1,
+                puerta_tornillos:1,
+                puerta_abatimiento:1,
+                puerta_limpieza:1,
+                puerta_jaladera:1,
+                puerta_gomas:1,
+                //Cajones
+                cajones_uniones:1,
+                cajones_silicon:1,
+                cajones_limpieza:1,
+                cajones_jaladeras:1,
+                cajones_cantos:1,
+                cajones_rieles:1,
+                cajones_estantes:1,
+                cajones_pzas_comp:1,
+                //Alacenas
+                alacena_entrepano:1,
+                alacena_pistones:1,
+                alacena_jaladeras:1,
+                alacena_micro:1,
+                alacena_cantos:1,
+                alacena_limpieza:1,
+                alacena_parches:1,
+            /// OTRAS REVISIONES COCINA
+                estufa_instalacion:1,
+                estufa_pzas_extra:1,
+                estufa_manuales:1,
+                estufa_danos:1,
+                //Tarja
+                tarja_danos:1,
+                tarja_pzas_extra:1,
+            
+
+            //////////////////////////
                 arrayHistorialEquipamientos : []
                
             }
@@ -462,6 +1431,29 @@
                 }).catch(function (error){
                     console.log(error);
                 });
+            },
+
+            mostrarCheckList(data = []){
+                this.checklist = 1;
+                
+                this.tipoRecepcion = data['tipoRecepcion'];
+                if(this.tipoRecepcion == 1)
+                    this.tituloRecepcion = 'Recepción de Cocina';
+                else if(this.tipoRecepcion == 2){
+                    this.tituloRecepcion = 'Recepción de Closets y/o vestidor';
+                }
+                else{
+                    this.tituloRecepcion = 'Recepción de Equipamiento';
+                }
+                this.modelo = data['modelo'];
+                this.observacion = '';
+            },
+
+            cerrarRecepcion(){
+                this.checklist = 0;
+                this.tipoRecepcion = 0;
+                this.tituloRecepcion = '';
+                this.modelo = '';
             },
 
             listarObservacion(page, buscar){

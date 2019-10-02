@@ -30,6 +30,7 @@ class CreateSolicEquipamientosTable extends Migration
             $table->string('num_factura', 8)->nullable();
 
             $table->boolean('status')->default(1);
+            $table->boolean('recepcion')->default(0);
 
             $table->timestamps();
 

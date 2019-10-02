@@ -3345,17 +3345,17 @@
                 me.errorContrato = 0;
                 me.errorMostrarMsjContrato = [];
 
-                me.criterio = 'personal.nombre'; 
-                me.buscar = '';
-                me.b_etapa= '';
-                me.b_manzana= '';
-                me.b_lote= '';
+                // me.criterio = 'personal.nombre'; 
+                // me.buscar = '';
+                // me.b_etapa= '';
+                // me.b_manzana= '';
+                // me.b_lote= '';
 
-                me.criterio2 = 'personal.nombre'; 
-                me.buscar2 = '';
-                me.b_etapa2= '';
-                me.b_manzana2= '';
-                me.b_lote2= '';
+                // me.criterio2 = 'personal.nombre'; 
+                // me.buscar2 = '';
+                // me.b_etapa2= '';
+                // me.b_manzana2= '';
+                // me.b_lote2= '';
 
             },
 

@@ -30,4 +30,10 @@ class Solic_equipamiento extends Model
         return $this->hasMany('App\Obs_solic_equipamiento');
     }
 
+    public function recep_equipamiento()
+    {
+        return $this->hasMany('App\Recep_equipamiento');
+    }
+    
+
 }

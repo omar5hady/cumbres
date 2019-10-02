@@ -1313,7 +1313,7 @@ class DepositoController extends Controller
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as c', 'clientes.id', '=', 'c.id')
                                 ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                
                                 
                                 ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
                                         'creditos.manzana','creditos.num_lote',
@@ -1412,7 +1412,7 @@ class DepositoController extends Controller
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as c', 'clientes.id', '=', 'c.id')
                                 ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                               
                                 
                                 ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
                                         'creditos.manzana','creditos.num_lote',
@@ -1427,6 +1427,14 @@ class DepositoController extends Controller
                                         'i.segundo_credito',
                                         'lotes.etapa_id',
                                         DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                        'c.f_nacimiento','c.rfc',
+                                        'c.homoclave','c.direccion','c.colonia','c.cp',
+                                        'c.telefono','c.email','creditos.num_dep_economicos',
+                                        'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
+                                        'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
+                                        'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
+                                        'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
+                                        'contratos.ext_empresa','contratos.colonia_empresa',
 
                                         DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
                                             WHERE pagos_contratos.contrato_id = contratos.id AND 
@@ -1506,7 +1514,7 @@ class DepositoController extends Controller
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as c', 'clientes.id', '=', 'c.id')
                                 ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                
                                 
                                 ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
                                         'creditos.manzana','creditos.num_lote',
@@ -1521,6 +1529,14 @@ class DepositoController extends Controller
                                         'i.segundo_credito',
                                         'lotes.etapa_id',
                                         DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                        'c.f_nacimiento','c.rfc',
+                                        'c.homoclave','c.direccion','c.colonia','c.cp',
+                                        'c.telefono','c.email','creditos.num_dep_economicos',
+                                        'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
+                                        'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
+                                        'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
+                                        'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
+                                        'contratos.ext_empresa','contratos.colonia_empresa',
 
                                         DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
                                             WHERE pagos_contratos.contrato_id = contratos.id AND 
@@ -1602,7 +1618,7 @@ class DepositoController extends Controller
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as c', 'clientes.id', '=', 'c.id')
                                 ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                
                                 
                                 ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
                                         'creditos.manzana','creditos.num_lote',
@@ -1617,6 +1633,14 @@ class DepositoController extends Controller
                                         'i.segundo_credito',
                                         'lotes.etapa_id',
                                         DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                        'c.f_nacimiento','c.rfc',
+                                        'c.homoclave','c.direccion','c.colonia','c.cp',
+                                        'c.telefono','c.email','creditos.num_dep_economicos',
+                                        'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
+                                        'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
+                                        'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
+                                        'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
+                                        'contratos.ext_empresa','contratos.colonia_empresa',
 
                                         DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
                                             WHERE pagos_contratos.contrato_id = contratos.id AND 
@@ -1700,7 +1724,7 @@ class DepositoController extends Controller
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as c', 'clientes.id', '=', 'c.id')
                                 ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                
                                 
                                 ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
                                         'creditos.manzana','creditos.num_lote',
@@ -1715,6 +1739,14 @@ class DepositoController extends Controller
                                         'i.segundo_credito',
                                         'lotes.etapa_id',
                                         DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                        'c.f_nacimiento','c.rfc',
+                                        'c.homoclave','c.direccion','c.colonia','c.cp',
+                                        'c.telefono','c.email','creditos.num_dep_economicos',
+                                        'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
+                                        'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
+                                        'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
+                                        'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
+                                        'contratos.ext_empresa','contratos.colonia_empresa',
 
                                         DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
                                             WHERE pagos_contratos.contrato_id = contratos.id AND 
@@ -1798,7 +1830,7 @@ class DepositoController extends Controller
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as c', 'clientes.id', '=', 'c.id')
                                 ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                               
                                 
                                 ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
                                         'creditos.manzana','creditos.num_lote',
@@ -1813,6 +1845,14 @@ class DepositoController extends Controller
                                         'i.segundo_credito',
                                         'lotes.etapa_id',
                                         DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                        'c.f_nacimiento','c.rfc',
+                                        'c.homoclave','c.direccion','c.colonia','c.cp',
+                                        'c.telefono','c.email','creditos.num_dep_economicos',
+                                        'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
+                                        'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
+                                        'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
+                                        'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
+                                        'contratos.ext_empresa','contratos.colonia_empresa',
 
                                         DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
                                             WHERE pagos_contratos.contrato_id = contratos.id AND 
@@ -1896,7 +1936,7 @@ class DepositoController extends Controller
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as c', 'clientes.id', '=', 'c.id')
                                 ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
-                                ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                            
                                 
                                 ->select('contratos.id as folio','creditos.fraccionamiento', 'creditos.etapa',
                                         'creditos.manzana','creditos.num_lote',
@@ -1911,6 +1951,14 @@ class DepositoController extends Controller
                                         'i.segundo_credito',
                                         'lotes.etapa_id',
                                         DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                        'c.f_nacimiento','c.rfc',
+                                        'c.homoclave','c.direccion','c.colonia','c.cp',
+                                        'c.telefono','c.email','creditos.num_dep_economicos',
+                                        'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
+                                        'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
+                                        'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
+                                        'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
+                                        'contratos.ext_empresa','contratos.colonia_empresa',
 
                                         DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
                                             WHERE pagos_contratos.contrato_id = contratos.id AND 
@@ -2511,6 +2559,14 @@ class DepositoController extends Controller
                                         'i.segundo_credito',
                                         'lotes.etapa_id',
                                         DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                        'c.f_nacimiento','c.rfc',
+                                        'c.homoclave','c.direccion','c.colonia','c.cp',
+                                        'c.telefono','c.email','creditos.num_dep_economicos',
+                                        'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
+                                        'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
+                                        'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
+                                        'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
+                                        'contratos.ext_empresa','contratos.colonia_empresa',
 
                                         DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
                                             WHERE pagos_contratos.contrato_id = contratos.id AND 
@@ -2607,6 +2663,14 @@ class DepositoController extends Controller
                                         'i.segundo_credito',
                                         'lotes.etapa_id',
                                         DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                        'c.f_nacimiento','c.rfc',
+                                        'c.homoclave','c.direccion','c.colonia','c.cp',
+                                        'c.telefono','c.email','creditos.num_dep_economicos',
+                                        'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
+                                        'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
+                                        'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
+                                        'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
+                                        'contratos.ext_empresa','contratos.colonia_empresa',
 
                                         DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
                                             WHERE pagos_contratos.contrato_id = contratos.id AND 
@@ -2705,6 +2769,14 @@ class DepositoController extends Controller
                                         'i.segundo_credito',
                                         'lotes.etapa_id',
                                         DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                        'c.f_nacimiento','c.rfc',
+                                        'c.homoclave','c.direccion','c.colonia','c.cp',
+                                        'c.telefono','c.email','creditos.num_dep_economicos',
+                                        'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
+                                        'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
+                                        'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
+                                        'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
+                                        'contratos.ext_empresa','contratos.colonia_empresa',
 
                                         DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
                                             WHERE pagos_contratos.contrato_id = contratos.id AND 
@@ -2805,6 +2877,14 @@ class DepositoController extends Controller
                                         'i.segundo_credito',
                                         'lotes.etapa_id',
                                         DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                        'c.f_nacimiento','c.rfc',
+                                        'c.homoclave','c.direccion','c.colonia','c.cp',
+                                        'c.telefono','c.email','creditos.num_dep_economicos',
+                                        'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
+                                        'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
+                                        'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
+                                        'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
+                                        'contratos.ext_empresa','contratos.colonia_empresa',
 
                                         DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
                                             WHERE pagos_contratos.contrato_id = contratos.id AND 
@@ -2904,6 +2984,14 @@ class DepositoController extends Controller
                                         'i.segundo_credito',
                                         'lotes.etapa_id',
                                         DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                        'c.f_nacimiento','c.rfc',
+                                        'c.homoclave','c.direccion','c.colonia','c.cp',
+                                        'c.telefono','c.email','creditos.num_dep_economicos',
+                                        'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
+                                        'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
+                                        'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
+                                        'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
+                                        'contratos.ext_empresa','contratos.colonia_empresa',
 
                                         DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
                                             WHERE pagos_contratos.contrato_id = contratos.id AND 
@@ -3004,6 +3092,14 @@ class DepositoController extends Controller
                                         'i.segundo_credito',
                                         'lotes.etapa_id',
                                         DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                        'c.f_nacimiento','c.rfc',
+                                        'c.homoclave','c.direccion','c.colonia','c.cp',
+                                        'c.telefono','c.email','creditos.num_dep_economicos',
+                                        'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
+                                        'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
+                                        'clientes.nacionalidad','clientes.sexo','c.celular','contratos.direccion_empresa',
+                                        'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
+                                        'contratos.ext_empresa','contratos.colonia_empresa',
 
                                         DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
                                             WHERE pagos_contratos.contrato_id = contratos.id AND 
