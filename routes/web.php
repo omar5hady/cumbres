@@ -520,6 +520,10 @@ Route::group(['middleware' => ['auth']],function(){
         
         Route::get('/equipamiento/indexObservacion','ObsservacionEquipamientoController@index');
         Route::post('/equipamiento/registrarObservacion','ObsservacionEquipamientoController@store');
+        Route::post('/equipamiento/storeRecepcion','RecepEquipamientoController@storeRecepcion');
+        Route::put('/equipamiento/updateRecepcion','RecepEquipamientoController@updateRecepcion');
+
+        Route::get('/equipamiento/getResultados','RecepEquipamientoController@getRecepcion');
     });
 
 

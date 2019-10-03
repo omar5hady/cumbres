@@ -61,7 +61,7 @@
                                         <th>Solicitud Ventas</th>
                                         <th>Valor Solicitado</th>
                                         <th>Fecha solicitud avaluo</th>
-                                        <th>Pago realizado</th>
+                                        <!-- <th>Pago realizado</th> -->
                                         <th>Fecha de visita</th>
                                         <th>Estatus</th>
                                         <th>Fecha concluido</th>
@@ -105,7 +105,7 @@
                                         </td>
 
 
-                                        <template v-if="avaluos.fecha_pago">
+                                        <!-- <template v-if="avaluos.fecha_pago">
                                             <td @click="abrirModal('fecha_pago',avaluos)" v-if="avaluos.fecha_pago!='0000-01-01'" class="td2" v-text="this.moment(avaluos.fecha_pago).locale('es').format('DD/MMM/YYYY')"></td>
                                             <td v-if="avaluos.fecha_pago=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
                                         </template>
@@ -118,7 +118,7 @@
                                                     <i class="fa fa-times-circle"></i>
                                                 </button>
                                             </td>
-                                        </template> 
+                                        </template>  -->
 
                                         <td class="td2" @click="abrirModal('visita_avaluo',avaluos)" v-text="this.moment(avaluos.visita_avaluo).locale('es').format('DD/MMM/YYYY')"></td>
                                         <td class="td2" @click="abrirModal('status',avaluos)" v-text="avaluos.status"></td>
@@ -223,7 +223,7 @@
                                         <th>Solicitud Ventas</th>
                                         <th>Valor Solicitado</th>
                                         <th>Fecha solicitud avaluo</th>
-                                        <th>Pago realizado</th>
+                                        <!-- <th>Pago realizado</th> -->
                                         <th>Fecha de visita</th>
                                         <th>Estatus</th>
                                         <th>Fecha concluido</th>
@@ -266,7 +266,7 @@
                                             </button>
                                         </td>
 
-
+                                    <!-- 
                                         <template v-if="avaluos.fecha_pago">
                                             <td @click="abrirModal('fecha_pago',avaluos)" v-if="avaluos.fecha_pago!='0000-01-01'" class="td2" v-text="this.moment(avaluos.fecha_pago).locale('es').format('DD/MMM/YYYY')"></td>
                                             <td v-if="avaluos.fecha_pago=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
@@ -280,7 +280,7 @@
                                                     <i class="fa fa-times-circle"></i>
                                                 </button>
                                             </td>
-                                        </template> 
+                                        </template>  -->
 
                                         <td class="td2" @click="abrirModal('visita_avaluo',avaluos)" v-text="this.moment(avaluos.visita_avaluo).locale('es').format('DD/MMM/YYYY')"></td>
                                         <td class="td2" @click="abrirModal('status',avaluos)" v-text="avaluos.status"></td>
