@@ -264,7 +264,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Numero de licencia</label>
                                     <div class="col-md-6">
-                                       <input type="number" v-model="num_licencia" class="form-control" >
+                                       <input type="text" maxlength="20" v-model="num_licencia" class="form-control" >
                                     </div>
                                 </div>
                                 <div class="form-group row">

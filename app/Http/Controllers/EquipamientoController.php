@@ -626,7 +626,7 @@ class EquipamientoController extends Controller
 
     public function terminarSolicitud (Request $request){
         if(!$request->ajax())return redirect('/');
-        $contrato = Contrato::findOrFail($request->contrato_id);
+        $contrato = Contrato::findOrFail($request->id);
         $contrato->equipamiento = 2;
         $contrato->save();
     }

@@ -856,7 +856,7 @@
             },
 
             terminarSolicitud(id){
-                this.contrato_id=data['id'];
+                this.contrato_id=id;
                 //console.log(this.departamento_id);
                 swal({
                 title: '¿Desea finalizar la solicitud de equipamientos para este contrato?',
