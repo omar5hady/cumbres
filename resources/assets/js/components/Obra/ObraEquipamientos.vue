@@ -1000,6 +1000,14 @@
                  
 
                     </div>
+
+                    <!-- Div para mostrar los errores que mande validerFraccionamiento -->
+                                <div v-show="errorRevision" class="form-group row div-error">
+                                    <div class="text-center text-error">
+                                        <div v-for="error in errorMostrarMsjRevision" :key="error" v-text="error">
+                                        </div>
+                                    </div>
+                                </div>
                 </template>
 
                 <!-------------------  Fin checklist recepcion  --------------------->
@@ -1175,7 +1183,8 @@
                 b_manzana2: '',
                 b_lote2: '',
                 tipoAccion:0,
-                observacion:'',
+                errorRevision:0,
+                errorMostrarMsjRevision:[],
             /// SUPERVISION ACABADOS CLOSETS    
                 //Puertas alineados
                 p_ali_der:1, p_ali_izq:1, p_ali_princ:1, p_ali_baja:1,
@@ -1648,6 +1657,10 @@
             },
 
             terminarRevision(resultado){
+                if(this.validarRevision()) //Se verifica si hay un error (campo vacio)
+                {
+                    return;
+                }
                 let me = this;
                 //Con axios se llama el metodo update de LoteController
                 axios.post('/equipamiento/storeRecepcion',{
@@ -1861,6 +1874,10 @@
             },
 
             actualizarRevision(resultado){
+                 if(this.validarRevision()) //Se verifica si hay un error (campo vacio)
+                {
+                    return;
+                }
                 let me = this;
                 //Con axios se llama el metodo update de LoteController
                 axios.put('/equipamiento/updateRecepcion',{
@@ -2099,6 +2116,9 @@
                 this.tituloRecepcion = '';
                 this.modelo = '';
 
+                this.errorRevision = 0;
+                this.errorMostrarMsjRevision = [];
+
                 this.cubierta_acab_uniones = 0;
                 this.cubierta_acab_silicon = 0;
                 this.cubierta_acab_cortes = 0;
@@ -2298,6 +2318,19 @@
                     console.log(error);
                 });
                 
+            },
+
+            validarRevision(){
+                this.errorRevision=0;
+                this.errorMostrarMsjRevision=[];
+
+                if(!this.observacion) //Si la variable Fraccionamiento esta vacia
+                    this.errorMostrarMsjRevision.push("Escribir una observación");
+
+                if(this.errorMostrarMsjRevision.length)//Si el mensaje tiene almacenado algo en el array
+                    this.errorRevision = 1;
+
+                return this.errorRevision;
             },
 
             formatNumber(value) {

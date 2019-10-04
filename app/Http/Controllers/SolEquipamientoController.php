@@ -567,6 +567,14 @@ class SolEquipamientoController extends Controller
         $solicitud->save();
     }
 
+    public function actLiquidacion(Request $request){
+        if(!$request->ajax())return redirect('/'); 
+        $solicitud = Solic_equipamiento::findOrFail($request->id);
+        $solicitud->fecha_liquidacion = $request->fecha_liquidacion;
+        $solicitud->liquidacion = $request->liquidacion;
+        $solicitud->save();
+    }
+
     public function actColocacion(Request $request){
         if(!$request->ajax())return redirect('/'); 
         $solicitud = Solic_equipamiento::findOrFail($request->id);

@@ -181,6 +181,9 @@
                                         <th>&nbsp; Costo del equipamiento &nbsp;</th>
                                         <th>Anticipo</th>
                                         <th>Fecha colocación</th>
+                                        <th>Fecha fin de instalación</th>
+                                        <th>Status</th>
+                                        <th>Liquidacion</th>
                                         <th>Observaciones</th>
                                         
                                     </tr>
@@ -207,6 +210,37 @@
                                             <template>
                                                 <td @click="abrirModal('colocacion', equipamientos)" v-if="equipamientos.fecha_colocacion" class="td2" v-text=" this.moment(equipamientos.fecha_colocacion).locale('es').format('DD/MMM/YYYY')"></td>
                                                 <td @click="abrirModal('colocacion', equipamientos)" v-else class="td2" v-text="'Sin fecha'"></td>    
+                                            </template>
+                                            <template>
+                                                <td v-if="equipamientos.fin_instalacion" class="td2" v-text=" this.moment(equipamientos.fin_instalacion).locale('es').format('DD/MMM/YYYY')"></td>
+                                                <td v-else class="td2" v-text="'Sin fecha'"></td>    
+                                            </template>
+                                            <template>
+                                                <td v-if="equipamientos.status == '0'" class="td2">
+                                                    <span class="badge badge-warning">Rechazado</span>
+                                                </td>
+                                                <td v-if="equipamientos.status == '1'" class="td2">
+                                                    <span class="badge badge-primary">Pendiente</span>
+                                                </td>
+                                                <td v-if="equipamientos.status == '2'" class="td2">
+                                                    <span class="badge badge-primary">En proceso de colocación</span>
+                                                </td>
+                                                <td v-if="equipamientos.status == '3'" class="td2">
+                                                    <span class="badge badge-primary">En Revisión</span>
+                                                </td>
+                                                <td v-if="equipamientos.status == '4'" class="td2">
+                                                    <span class="badge badge-success">Aprobado</span>
+                                                </td>    
+                                            </template>
+                                            <template>
+                                                <td v-if="equipamientos.fecha_liquidacion"  @click="abrirModal('liquidacion', equipamientos)" class="td2" v-text=" this.moment(equipamientos.fecha_liquidacion).locale('es').format('DD/MMM/YYYY') + ': '+ '$'+formatNumber(equipamientos.liquidacion)"></td>
+                                                <td v-else-if="equipamientos.status == 4">
+                                                    <button title="Realizar recepcion" type="button" 
+                                                        @click="abrirModal('liquidacion', equipamientos)" class="btn btn-success pull-right">
+                                                        <i class="fa fa-check-square-o"></i> Generar
+                                                    </button>
+                                                </td>    
+                                                <td v-else v-text="'Sin Liquidación'"></td>
                                             </template>
                                             <td> 
                                                 <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
@@ -379,6 +413,23 @@
                                     </div>
                                 </div>
 
+                                <div class="form-group row" v-if="tipoAccion == 3">
+                                    <label class="col-md-2 form-control-label" for="text-input">Fecha de liquidación</label>
+                                    <div class="col-md-3">
+                                        <input type="date" v-model="fecha_liquidacion" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row" v-if="tipoAccion == 3">
+                                    <label class="col-md-2 form-control-label" for="text-input">$ Liquidación</label>
+                                    <div class="col-md-4">
+                                        <input type="text" pattern="\d*" maxlength="10" v-on:keypress="isNumber($event)" v-model="liquidacion" class="form-control">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <h6 v-text="'$'+formatNumber(liquidacion)"></h6>
+                                    </div>
+                                </div>
+
                                 
                             </div>
                             <!-- Botones del modal -->
@@ -386,6 +437,7 @@
                                 <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
                                 <button type="button" v-if="tipoAccion == 1" class="btn btn-success" @click="actAnticipo()">Guardar</button>
                                 <button type="button" v-if="tipoAccion == 2" class="btn btn-success" @click="actColocacion()">Guardar</button>
+                                <button type="button" v-if="tipoAccion == 3" class="btn btn-success" @click="actLiquidacion()">Guardar</button>
                             </div>
                         </div>
                         <!-- /.modal-content -->
@@ -525,6 +577,8 @@
 
                 fecha_anticipo:'',
                 anticipo:0,
+                fecha_liquidacion:'',
+                liquidacion:0,
                 fecha_colocacion:'',
                 observacion:'',
 
@@ -886,6 +940,33 @@
                 });
             },
 
+            actLiquidacion(){
+                let me = this;
+                //Con axios se llama el metodo update de LoteController
+                axios.put('/equipamiento/actLiquidacion',{
+                    'fecha_liquidacion':this.fecha_liquidacion,
+                    'liquidacion' : this.liquidacion,
+                    'id':this.solicitud_id,
+                    
+                }).then(function (response){
+                    me.cerrarModal();
+                    me.listarHistorial(me.pagination2.current_page,me.buscar2,me.b_etapa2,me.b_manzana2,me.b_lote2,me.criterio2);
+                    //window.alert("Cambios guardados correctamente");
+                    const toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                        });
+                        toast({
+                        type: 'success',
+                        title: 'Datos guardados correctamente'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
             storeObservacion(){
                 let me = this;
                 //Con axios se llama el metodo update de LoteController
@@ -1000,6 +1081,16 @@
                             this.fecha_colocacion = data['fecha_colocacion'];
                             this.solicitud_id = data['id'];
                             this.observacion = '';
+                            break;
+                        }
+
+                        case 'liquidacion':{
+                            this.modal2 =1;
+                            this.tituloModal='Liquidación';
+                            this.tipoAccion=3;
+                            this.fecha_liquidacion = data['fecha_liquidacion'];
+                            this.liquidacion = data['liquidacion'];
+                            this.solicitud_id = data['id'];
                             break;
                         }
 
