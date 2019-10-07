@@ -73,6 +73,7 @@ class EquipamientoController extends Controller
                 ->join('personal as c', 'clientes.id', '=', 'c.id')
                 ->select(
                     'contratos.id as folio',
+                    'contratos.equipamiento',
                     DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
                     'creditos.fraccionamiento as proyecto',
                     'creditos.etapa',
@@ -94,11 +95,9 @@ class EquipamientoController extends Controller
                 )
                 ->where('contratos.status', '!=', 0)
                 ->where('contratos.status', '!=', 2)
-                ->where('contratos.equipamiento', '!=', 2)
                 ->whereNotNull('creditos.descripcion_paquete')
                 ->orWhere('contratos.status', '!=', 0)
                 ->where('contratos.status', '!=', 2)
-                ->where('contratos.equipamiento', '!=', 2)
                 ->whereNotNull('creditos.descripcion_promocion')
                 ->orderBy('licencias.avance','desc')
                 ->orderBy('licencias.visita_avaluo','asc')
@@ -115,6 +114,7 @@ class EquipamientoController extends Controller
                             ->join('personal as c', 'clientes.id', '=', 'c.id')
                             ->select(
                                 'contratos.id as folio',
+                                'contratos.equipamiento',
                                 DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
                                 'creditos.fraccionamiento as proyecto',
                                 'creditos.etapa',
@@ -136,12 +136,10 @@ class EquipamientoController extends Controller
                             )
                             ->where('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
-                            ->where('contratos.equipamiento', '!=', 2)
                             ->where($criterio, '=', $buscar)
                             ->whereNotNull('creditos.descripcion_paquete')
                             ->orWhere('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
-                            ->where('contratos.equipamiento', '!=', 2)
                             ->where($criterio, '=', $buscar)
                             ->whereNotNull('creditos.descripcion_promocion')
                             ->orderBy('licencias.avance','desc')
@@ -157,6 +155,7 @@ class EquipamientoController extends Controller
                             ->join('personal as c', 'clientes.id', '=', 'c.id')
                             ->select(
                                 'contratos.id as folio',
+                                'contratos.equipamiento',
                                 DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
                                 'creditos.fraccionamiento as proyecto',
                                 'creditos.etapa',
@@ -178,13 +177,11 @@ class EquipamientoController extends Controller
                             )
                             ->where('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
-                            ->where('contratos.equipamiento', '!=', 2)
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.etapa_id', '=', $b_etapa)
                             ->whereNotNull('creditos.descripcion_paquete')
                             ->orWhere('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
-                            ->where('contratos.equipamiento', '!=', 2)
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.etapa_id', '=', $b_etapa)
                             ->whereNotNull('creditos.descripcion_promocion')
@@ -201,6 +198,7 @@ class EquipamientoController extends Controller
                             ->join('personal as c', 'clientes.id', '=', 'c.id')
                             ->select(
                                 'contratos.id as folio',
+                                'contratos.equipamiento',
                                 DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
                                 'creditos.fraccionamiento as proyecto',
                                 'creditos.etapa',
@@ -222,14 +220,12 @@ class EquipamientoController extends Controller
                             )
                             ->where('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
-                            ->where('contratos.equipamiento', '!=', 2)
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.etapa_id', '=', $b_etapa)
                             ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
                             ->whereNotNull('creditos.descripcion_paquete')
                             ->orWhere('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
-                            ->where('contratos.equipamiento', '!=', 2)
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.etapa_id', '=', $b_etapa)
                             ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
@@ -247,6 +243,7 @@ class EquipamientoController extends Controller
                             ->join('personal as c', 'clientes.id', '=', 'c.id')
                             ->select(
                                 'contratos.id as folio',
+                                'contratos.equipamiento',
                                 DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
                                 'creditos.fraccionamiento as proyecto',
                                 'creditos.etapa',
@@ -268,7 +265,6 @@ class EquipamientoController extends Controller
                             )
                             ->where('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
-                            ->where('contratos.equipamiento', '!=', 2)
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.etapa_id', '=', $b_etapa)
                             ->where('lotes.num_lote', '=', $b_lote)
@@ -276,7 +272,6 @@ class EquipamientoController extends Controller
                             ->whereNotNull('creditos.descripcion_paquete')
                             ->orWhere('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
-                            ->where('contratos.equipamiento', '!=', 2)
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.etapa_id', '=', $b_etapa)
                             ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
@@ -295,6 +290,7 @@ class EquipamientoController extends Controller
                             ->join('personal as c', 'clientes.id', '=', 'c.id')
                             ->select(
                                 'contratos.id as folio',
+                                'contratos.equipamiento',
                                 DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
                                 'creditos.fraccionamiento as proyecto',
                                 'creditos.etapa',
@@ -316,14 +312,12 @@ class EquipamientoController extends Controller
                             )
                             ->where('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
-                            ->where('contratos.equipamiento', '!=', 2)
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.etapa_id', '=', $b_etapa)
                             ->where('lotes.num_lote', '=', $b_lote)
                             ->whereNotNull('creditos.descripcion_paquete')
                             ->orWhere('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
-                            ->where('contratos.equipamiento', '!=', 2)
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.etapa_id', '=', $b_etapa)
                             ->where('lotes.num_lote', '=', $b_lote)
@@ -342,6 +336,7 @@ class EquipamientoController extends Controller
                             ->join('personal as c', 'clientes.id', '=', 'c.id')
                             ->select(
                                 'contratos.id as folio',
+                                'contratos.equipamiento',
                                 DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
                                 'creditos.fraccionamiento as proyecto',
                                 'creditos.etapa',
@@ -363,14 +358,12 @@ class EquipamientoController extends Controller
                             )
                             ->where('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
-                            ->where('contratos.equipamiento', '!=', 2)
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.num_lote', '=', $b_lote)
                             ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
                             ->whereNotNull('creditos.descripcion_paquete')
                             ->orWhere('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
-                            ->where('contratos.equipamiento', '!=', 2)
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
                             ->where('lotes.num_lote', '=', $b_lote)
@@ -388,6 +381,7 @@ class EquipamientoController extends Controller
                             ->join('personal as c', 'clientes.id', '=', 'c.id')
                             ->select(
                                 'contratos.id as folio',
+                                'contratos.equipamiento',
                                 DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
                                 'creditos.fraccionamiento as proyecto',
                                 'creditos.etapa',
@@ -409,13 +403,11 @@ class EquipamientoController extends Controller
                             )
                             ->where('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
-                            ->where('contratos.equipamiento', '!=', 2)
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.num_lote', '=', $b_lote)
                             ->whereNotNull('creditos.descripcion_paquete')
                             ->orWhere('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
-                            ->where('contratos.equipamiento', '!=', 2)
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.num_lote', '=', $b_lote)
                             ->whereNotNull('creditos.descripcion_promocion')
@@ -432,6 +424,7 @@ class EquipamientoController extends Controller
                             ->join('personal as c', 'clientes.id', '=', 'c.id')
                             ->select(
                                 'contratos.id as folio',
+                                'contratos.equipamiento',
                                 DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
                                 'creditos.fraccionamiento as proyecto',
                                 'creditos.etapa',
@@ -453,13 +446,11 @@ class EquipamientoController extends Controller
                             )
                             ->where('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
-                            ->where('contratos.equipamiento', '!=', 2)
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
                             ->whereNotNull('creditos.descripcion_paquete')
                             ->orWhere('contratos.status', '!=', 0)
                             ->where('contratos.status', '!=', 2)
-                            ->where('contratos.equipamiento', '!=', 2)
                             ->where($criterio, '=', $buscar)
                             ->where('lotes.etapa_id', '=', $b_etapa)
                             ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
@@ -482,6 +473,7 @@ class EquipamientoController extends Controller
                     ->join('personal as c', 'clientes.id', '=', 'c.id')
                     ->select(
                         'contratos.id as folio',
+                        'contratos.equipamiento',
                         DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
                         'creditos.fraccionamiento as proyecto',
                         'creditos.etapa',
@@ -503,12 +495,10 @@ class EquipamientoController extends Controller
                     )
                     ->where('contratos.status', '!=', 0)
                     ->where('contratos.status', '!=', 2)
-                    ->where('contratos.equipamiento', '!=', 2)
                     ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $buscar . '%')
                     ->whereNotNull('creditos.descripcion_paquete')
                     ->orWhere('contratos.status', '!=', 0)
                     ->where('contratos.status', '!=', 2)
-                    ->where('contratos.equipamiento', '!=', 2)
                     ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $buscar . '%')
                     ->whereNotNull('creditos.descripcion_promocion')
                     ->orderBy('licencias.avance','desc')
@@ -525,6 +515,7 @@ class EquipamientoController extends Controller
                     ->join('personal as c', 'clientes.id', '=', 'c.id')
                     ->select(
                         'contratos.id as folio',
+                        'contratos.equipamiento',
                         DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
                         'creditos.fraccionamiento as proyecto',
                         'creditos.etapa',
@@ -546,12 +537,10 @@ class EquipamientoController extends Controller
                     )
                     ->where('contratos.status', '!=', 0)
                     ->where('contratos.status', '!=', 2)
-                    ->where('contratos.equipamiento', '!=', 2)
                     ->where($criterio, '=', $buscar)
                     ->whereNotNull('creditos.descripcion_paquete')
                     ->orWhere('contratos.status', '!=', 0)
                     ->where('contratos.status', '!=', 2)
-                    ->where('contratos.equipamiento', '!=', 2)
                     ->where($criterio, '=', $buscar)
                     ->whereNotNull('creditos.descripcion_promocion')
                     ->orderBy('licencias.avance','desc')

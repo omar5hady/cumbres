@@ -97,7 +97,7 @@
                                             <td class="td2" v-else v-text="'Sin fecha'"></td>
                                             <td class="td2">
                                                 <button type="button" @click="abrirModal('solicitar',contratos)" class="btn btn-default btn-sm"> Solicitar </button>
-                                                 <button type="button" @click="terminarSolicitud(contratos.folio)" class="btn btn-success btn-sm" title="Finalizar">
+                                                <button v-if="contratos.equipamiento != 2" type="button" @click="terminarSolicitud(contratos.folio)" class="btn btn-success btn-sm" title="Finalizar">
                                                     <i class="fa fa-check"></i>
                                                 </button>
                                             </td>
