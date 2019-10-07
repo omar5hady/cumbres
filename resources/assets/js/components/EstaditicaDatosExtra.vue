@@ -10,11 +10,15 @@
                 <div class="form-group row">
                     <div class="col-md-8">
                             <div class="input-group">
-                                <select class="form-control" v-model="buscar" >
+                                <select class="form-control" @click="selectEtapas(buscar)" v-model="buscar" >
                                     <option value="">Seleccione el proyecto</option>
                                     <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                 </select>
-                            <button type="submit" @click="mostrarGraficos()" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                <select class="form-control" v-if="buscar!=''" v-model="b_etapa" >
+                                    <option value="">Etapa</option>
+                                    <option v-for="etapa in arrayAllEtapas" :key="etapa.id" :value="etapa.id" v-text="etapa.num_etapa"></option>
+                                </select>
+                            <button type="button" @click="mostrarGraficos()" class="btn btn-primary btn-sm"><i class="fa fa-search"></i> Buscar</button>
                         </div>
                     </div>
                 </div>
@@ -119,14 +123,16 @@
                 charExtra:null,
 
                 arrayFraccionamientos:[],
+                arrayAllEtapas: [],
                 buscar:'',
+                b_etapa: '',
                 mostrar:0
             }
         },
         methods : {
             getDatos(){
                 let me=this;
-                var url= '/estadisticas/datos_extra?buscar=' + this.buscar;
+                var url= '/estadisticas/datos_extra?buscar=' + this.buscar + '&b_etapa=' + this.b_etapa;
                 axios.get(url).then(function (response) {
                     var respuesta= response.data;
                     me.edades = respuesta.edades;
@@ -154,6 +160,19 @@
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayFraccionamientos = respuesta.fraccionamientos;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+               //Select todas las etapas
+            selectEtapas(buscar){
+                let me = this;  
+                me.arrayAllEtapas=[];
+                var url = '/select_etapa_proyecto?buscar=' + buscar;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayAllEtapas = respuesta.etapas;
                 })
                 .catch(function (error) {
                     console.log(error);

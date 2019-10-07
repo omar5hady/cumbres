@@ -55,4 +55,8 @@ class Contrato extends Model
     public function devolucion(){
         return $this->hasMany('App/Devolucion');
     }
+
+    public function entrega(){
+        return $this->hasOne('App/Entrega');
+    }
 }

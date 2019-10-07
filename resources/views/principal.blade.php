@@ -29,12 +29,12 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <ul class="nav navbar-nav d-md-down-none">
-            <li class="nav-item px-3">
+            <!-- <li class="nav-item px-3">
                 <a class="nav-link" href="#">Escritorio</a>
             </li>
             <li class="nav-item px-3">
                 <a class="nav-link" href="#">Configuraciones</a>
-            </li>
+            </li> -->
         </ul>
         <ul class="nav navbar-nav ml-auto">
         <notification rol-id="{{Auth::user()->rol_id}}" :notifications="notifications"></notification>
