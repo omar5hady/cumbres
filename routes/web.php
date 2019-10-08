@@ -325,7 +325,10 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/observacion/select_ultima','ObservacionController@select_ultima'); 
         Route::get('/observacion','ObservacionController@index');
     /***************************************************************************** */
-    
+    ////////////////////        RUTAS ENTREGA    //////////////////////////////
+        Route::post('/entrega/registrar','EntregaController@store');
+
+
     /**********************************RUTAS AVANCE*************************** */
         Route::get('/avance','AvanceController@index');
         Route::get('/avanceProm','AvanceController@indexProm');

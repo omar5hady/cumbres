@@ -28,6 +28,7 @@ class AddGestorIdToExpedientes extends Migration
             $table->double('fovissste')->default(0)->nullable();
 
             $table->boolean('liquidado')->default(0)->nullable();
+            $table->boolean('postventa')->default(0)->nullable();
 
             $table->double('interes_ord')->default(0)->nullable();
 

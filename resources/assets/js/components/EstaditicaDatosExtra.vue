@@ -187,7 +187,8 @@
                 let me=this;
                 
                 me.varExtra=document.getElementById('extras').getContext('2d');
-
+                if(me.charExtra)
+                    me.charExtra.destroy();
                 me.charExtra = new Chart(me.varExtra, {
                     type: 'bar',
                     data: {
@@ -221,6 +222,8 @@
                 let me=this;
                 
                 me.varDiscapacidad=document.getElementById('discapacidad').getContext('2d');
+                if(me.charDiscapacidad)
+                    me.charDiscapacidad.destroy();
 
                 me.charDiscapacidad = new Chart(me.varDiscapacidad, {
                     type: 'bar',
@@ -253,6 +256,8 @@
                 let me=this;
                 
                 me.varEdades=document.getElementById('edades').getContext('2d');
+                if(me.charEdades)
+                    me.charEdades.destroy();
 
                 me.charEdades = new Chart(me.varEdades, {
                     type: 'bar',
@@ -285,6 +290,8 @@
                 let me=this;
                 
                 me.varMascotas=document.getElementById('mascotas').getContext('2d');
+                if(me.charMascotas)
+                    me.charMascotas.destroy();
 
                 me.charMascotas = new Chart(me.varMascotas, {
                     type: 'bar',

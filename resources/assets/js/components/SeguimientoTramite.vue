@@ -670,12 +670,13 @@
 
                                                 <td class="td2" v-if="programacion.fecha_firma_esc">
                                                     <button title="Programar Firma" type="button" class="btn btn-warning pull-right" 
-                                                        @click="abrirModal('firma_esc',programacion)">Solicitar
+                                                        @click="abrirModal('solic_entrega',programacion)">Solicitar
                                                     </button>
                                                 </td>
                                                 <td class="td2" v-else>Faltan Documentos
                                                 </td>
-                                                <td class="td2" v-text="'Saldo Pendiente ó sin solicitud'"></td>
+                                                <td class="td2" v-if="programacion.saldo != 0" v-text="'Saldo Pendiente ó sin solicitud'"></td>
+                                                <td class="td2" v-else v-text="'Concluido'"></td>
 
                                                 <td class="td2">
                                                     <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
@@ -691,8 +692,6 @@
                             </div>
 
                         </div>
-                        
-                        
                     </div>
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
@@ -1472,6 +1471,41 @@
             </div>
             <!--Fin del modal -->
 
+            <!--Inicio modal Solicitar Entrega -->
+            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal6}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" v-text="tituloModal"></h4>
+                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- form para captura de fecha recibido -->
+                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Observacion</label>
+                                    <div class="col-md-6">
+                                         <textarea rows="3" cols="30" v-model="observacion" class="form-control" placeholder="Observacion"></textarea>
+                                    </div>
+                                </div>                             
+                            </form>
+                            
+
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                            <button type="button" v-if="observacion != ''" class="btn btn-primary" @click="SolicitarEntrega()"> Solicitar </button>
+                        </div>
+                    </div>
+                      <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!--Fin del modal -->
+
             <!--Inicio del modal observaciones-->
             <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal3}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
                 <div class="modal-dialog modal-primary modal-lg" role="document">
@@ -1805,6 +1839,40 @@
                     me.arrayEtapas = respuesta.etapas;
                 })
                 .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
+            SolicitarEntrega(){
+                if(this.proceso==true){
+                    return;
+                }
+                this.proceso=true;
+                let me = this;
+                //Con axios se llama el metodo store de DepartamentoController
+                axios.post('/entrega/registrar',{
+                    'id': this.id,
+                    'comentario': this.observacion
+                }).then(function (response){
+                    me.proceso=false;
+                    me.cerrarModal();
+                    me.listarIngresoExp(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                    me.listarAutorizados(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                    me.listarLiquidacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                    me.listarProgramacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                    
+                    const toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+                    });
+
+                    toast({
+                    type: 'success',
+                    title: 'Solicitud enviada correctamente'
+                    })
+                }).catch(function (error){
                     console.log(error);
                 });
             },
@@ -2653,6 +2721,14 @@
                         this.avaluoId = data['avaluoId'];
                         break;
                     }
+
+                    case 'solic_entrega':{
+                        this.modal6 =1;
+                        this.id = data['folio'];
+                        this.tituloModal='Solicitar Entrega';
+                        this.observacion='';
+                        break;
+                    }
                 }
 
             },
@@ -2670,6 +2746,8 @@
                 this.errorMostrarMsjLiquidacion=[];
 
                 this.modal2 = 0;
+                this.modal6 = 0;
+                this.observacion = '';
                 
             },
 

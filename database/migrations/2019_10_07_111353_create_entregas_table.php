@@ -16,9 +16,10 @@ class CreateEntregasTable extends Migration
         Schema::create('entregas', function (Blueprint $table) {
             $table->unsignedInteger('id');
             $table->date('fecha_program')->nullable();
-            $table->time('hora_entrega_prog')>nullable();
+            $table->time('hora_entrega_prog')->nullable();
             $table->boolean('status')->default(0);
             $table->date('fecha_entrega_real')->nullable();
+            $table->time('hora_entrega_real')->nullable();
             $table->timestamps();
 
             $table->foreign('id')->references('id')->on('contratos');

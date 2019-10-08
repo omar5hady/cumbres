@@ -6036,6 +6036,7 @@ class ExpedienteController extends Controller
                     ->where('expedientes.valor_escrituras','!=',0)
                     ->where('expedientes.fecha_infonavit','!=',NULL)
                     ->where('expedientes.liquidado','=',1)
+                    ->where('expedientes.postventa','=',0)
                     ->orderBy('contratos.id','asc')
                     ->get();
             }
@@ -6112,6 +6113,7 @@ class ExpedienteController extends Controller
                             ->where('expedientes.valor_escrituras','!=',0)
                             ->where('expedientes.fecha_infonavit','!=',NULL)
                             ->where('expedientes.liquidado','=',1)
+                            ->where('expedientes.postventa','=',0)
                             ->where('c.nombre','like','%'. $buscar . '%')
     
                             ->orWhere('i.elegido', '=', 1)
@@ -6122,6 +6124,7 @@ class ExpedienteController extends Controller
                             ->where('expedientes.valor_escrituras','!=',0)
                             ->where('expedientes.fecha_infonavit','!=',NULL)
                             ->where('expedientes.liquidado','=',1)
+                            ->where('expedientes.postventa','=',0)
                             ->where('c.apellidos','like','%'. $buscar . '%')
                             ->orderBy('contratos.id','asc')
                             ->get();
@@ -6198,6 +6201,7 @@ class ExpedienteController extends Controller
                             ->where('expedientes.valor_escrituras','!=',0)
                             ->where('expedientes.fecha_infonavit','!=',NULL)
                             ->where('expedientes.liquidado','=',1)
+                            ->where('expedientes.postventa','=',0)
                             
                             ->where($criterio,'=',$buscar)
                             ->orderBy('contratos.id','asc')
@@ -6276,6 +6280,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.valor_escrituras','!=',0)
                                 ->where('expedientes.fecha_infonavit','!=',NULL)
                                 ->where('expedientes.liquidado','=',1)
+                                ->where('expedientes.postventa','=',0)
                                 
                                 ->where($criterio, '=', $buscar)
                                 ->orderBy('contratos.id','asc')
@@ -6351,6 +6356,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.valor_escrituras','!=',0)
                                 ->where('expedientes.fecha_infonavit','!=',NULL)
                                 ->where('expedientes.liquidado','=',1)
+                                ->where('expedientes.postventa','=',0)
                                 
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
@@ -6427,6 +6433,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.valor_escrituras','!=',0)
                                 ->where('expedientes.fecha_infonavit','!=',NULL)
                                 ->where('expedientes.liquidado','=',1)
+                                ->where('expedientes.postventa','=',0)
                                 
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
@@ -6504,6 +6511,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.valor_escrituras','!=',0)
                                 ->where('expedientes.fecha_infonavit','!=',NULL)
                                 ->where('expedientes.liquidado','=',1)
+                                ->where('expedientes.postventa','=',0)
                                 
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
@@ -6582,6 +6590,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.valor_escrituras','!=',0)
                                 ->where('expedientes.fecha_infonavit','!=',NULL)
                                 ->where('expedientes.liquidado','=',1)
+                                ->where('expedientes.postventa','=',0)
                                 
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
@@ -6659,6 +6668,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.valor_escrituras','!=',0)
                                 ->where('expedientes.fecha_infonavit','!=',NULL)
                                 ->where('expedientes.liquidado','=',1)
+                                ->where('expedientes.postventa','=',0)
                                 
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.manzana', '=', $b_manzana)
@@ -6735,6 +6745,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.valor_escrituras','!=',0)
                                 ->where('expedientes.fecha_infonavit','!=',NULL)
                                 ->where('expedientes.liquidado','=',1)
+                                ->where('expedientes.postventa','=',0)
                                 
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.num_lote', '=', $b_lote)
@@ -6811,6 +6822,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.valor_escrituras','!=',0)
                                 ->where('expedientes.fecha_infonavit','!=',NULL)
                                 ->where('expedientes.liquidado','=',1)
+                                ->where('expedientes.postventa','=',0)
                                 
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.num_lote', '=', $b_lote)
@@ -6899,6 +6911,7 @@ class ExpedienteController extends Controller
                     ->where('expedientes.valor_escrituras','!=',0)
                     ->where('expedientes.fecha_infonavit','!=',NULL)
                     ->where('expedientes.liquidado','=',1)
+                    ->where('expedientes.postventa','=',0)
                     ->where('expedientes.gestor_id','=',Auth::user()->id)
                     ->orderBy('contratos.id','asc')
                     ->get();
@@ -6976,6 +6989,7 @@ class ExpedienteController extends Controller
                             ->where('expedientes.valor_escrituras','!=',0)
                             ->where('expedientes.fecha_infonavit','!=',NULL)
                             ->where('expedientes.liquidado','=',1)
+                            ->where('expedientes.postventa','=',0)
                             ->where('c.nombre','like','%'. $buscar . '%')
                             ->where('expedientes.gestor_id','=',Auth::user()->id)
     
@@ -6987,6 +7001,7 @@ class ExpedienteController extends Controller
                             ->where('expedientes.valor_escrituras','!=',0)
                             ->where('expedientes.fecha_infonavit','!=',NULL)
                             ->where('expedientes.liquidado','=',1)
+                            ->where('expedientes.postventa','=',0)
                             ->where('c.apellidos','like','%'. $buscar . '%')
                             ->where('expedientes.gestor_id','=',Auth::user()->id)
                             ->orderBy('contratos.id','asc')
@@ -7064,6 +7079,7 @@ class ExpedienteController extends Controller
                             ->where('expedientes.valor_escrituras','!=',0)
                             ->where('expedientes.fecha_infonavit','!=',NULL)
                             ->where('expedientes.liquidado','=',1)
+                            ->where('expedientes.postventa','=',0)
                             ->where('expedientes.gestor_id','=',Auth::user()->id)
                             ->where($criterio,'=',$buscar)
                             ->orderBy('contratos.id','asc')
@@ -7142,6 +7158,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.valor_escrituras','!=',0)
                                 ->where('expedientes.fecha_infonavit','!=',NULL)
                                 ->where('expedientes.liquidado','=',1)
+                                ->where('expedientes.postventa','=',0)
                                 ->where('expedientes.gestor_id','=',Auth::user()->id)
                                 ->where($criterio, '=', $buscar)
                                 ->orderBy('contratos.id','asc')
@@ -7217,6 +7234,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.valor_escrituras','!=',0)
                                 ->where('expedientes.fecha_infonavit','!=',NULL)
                                 ->where('expedientes.liquidado','=',1)
+                                ->where('expedientes.postventa','=',0)
                                 ->where('expedientes.gestor_id','=',Auth::user()->id)
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
@@ -7293,6 +7311,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.valor_escrituras','!=',0)
                                 ->where('expedientes.fecha_infonavit','!=',NULL)
                                 ->where('expedientes.liquidado','=',1)
+                                ->where('expedientes.postventa','=',0)
                                 ->where('expedientes.gestor_id','=',Auth::user()->id)
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
@@ -7370,6 +7389,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.valor_escrituras','!=',0)
                                 ->where('expedientes.fecha_infonavit','!=',NULL)
                                 ->where('expedientes.liquidado','=',1)
+                                ->where('expedientes.postventa','=',0)
                                 ->where('expedientes.gestor_id','=',Auth::user()->id)
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
@@ -7448,6 +7468,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.valor_escrituras','!=',0)
                                 ->where('expedientes.fecha_infonavit','!=',NULL)
                                 ->where('expedientes.liquidado','=',1)
+                                ->where('expedientes.postventa','=',0)
                                 ->where('expedientes.gestor_id','=',Auth::user()->id)
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
@@ -7525,6 +7546,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.valor_escrituras','!=',0)
                                 ->where('expedientes.fecha_infonavit','!=',NULL)
                                 ->where('expedientes.liquidado','=',1)
+                                ->where('expedientes.postventa','=',0)
                                 ->where('expedientes.gestor_id','=',Auth::user()->id)
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.manzana', '=', $b_manzana)
@@ -7601,6 +7623,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.valor_escrituras','!=',0)
                                 ->where('expedientes.fecha_infonavit','!=',NULL)
                                 ->where('expedientes.liquidado','=',1)
+                                ->where('expedientes.postventa','=',0)
                                 ->where('expedientes.gestor_id','=',Auth::user()->id)
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.num_lote', '=', $b_lote)
@@ -7677,6 +7700,7 @@ class ExpedienteController extends Controller
                                 ->where('expedientes.valor_escrituras','!=',0)
                                 ->where('expedientes.fecha_infonavit','!=',NULL)
                                 ->where('expedientes.liquidado','=',1)
+                                ->where('expedientes.postventa','=',0)
                                 ->where('expedientes.gestor_id','=',Auth::user()->id)
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.num_lote', '=', $b_lote)
