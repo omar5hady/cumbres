@@ -453,11 +453,15 @@
                 });
             },
             registrarDeposito(){
+                if(this.proceso==true){
+                    return;
+                }
                 if(this.validarDeposito()) //Se verifica si hay un error (campo vacio)
                 {
                     return;
                 }
 
+                this.proceso=true;
                 this.restante = this.restante - this.cant_depo;
 
                 let me = this;
@@ -468,6 +472,7 @@
                     'banco':this.banco,
                     'fecha_deposito':this.fecha_deposito,
                 }).then(function (response){
+                    me.proceso=false;
                     me.cerrarModal(); //al guardar el registro se cierra el modal                    
                     me.listarDepositos(); //se enlistan nuevamente los registros
                     //Se muestra mensaje Success
