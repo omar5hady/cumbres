@@ -35,4 +35,56 @@ class EntregaController extends Controller
             DB::rollBack();
         }       
     }
+
+    public function indexPendientes(Request $request){
+        $criterio = $request->criterio;
+        $buscar = $request->buscar;
+        $b_etapa = $request->b_etapa;
+        $b_manzana = $request->b_manzana;
+        $b_lote = $request->b_lote;
+
+        if($buscar == ''){
+            $contratos = Entrega::join('contratos','entregas.id','contratos.id')
+                    ->join('expedientes','contratos.id','expedientes.id')
+                    ->join('creditos', 'contratos.id', '=', 'creditos.id')
+                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                    ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                    ->join('personal as c', 'clientes.id', '=', 'c.id')
+                    ->select('contratos.id as folio', 
+                        'contratos.equipamiento',
+                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                        'creditos.fraccionamiento as proyecto',
+                        'creditos.etapa',
+                        'creditos.manzana',
+                        'creditos.num_lote',
+                        'creditos.paquete',
+                        'creditos.promocion',
+                        'creditos.descripcion_paquete',
+                        'creditos.descripcion_promocion',
+                        'licencias.avance as avance_lote',
+                        'licencias.visita_avaluo',
+                        'contratos.fecha_status',
+                        'contratos.status',
+                        'contratos.equipamiento',
+                        'expedientes.fecha_firma_esc'
+                    )
+                    ->where('contratos.status', '!=', 0)
+                    ->where('contratos.status', '!=', 2)
+                    ->orderBy('licencias.avance','desc')
+                    ->paginate(8);
+
+                return [
+                    'pagination' => [
+                        'total'         => $contratos->total(),
+                        'current_page'  => $contratos->currentPage(),
+                        'per_page'      => $contratos->perPage(),
+                        'last_page'     => $contratos->lastPage(),
+                        'from'          => $contratos->firstItem(),
+                        'to'            => $contratos->lastItem(),
+                    ],'contratos' => $contratos,
+                ];
+        }
+            
+    }
 }

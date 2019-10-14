@@ -328,6 +328,9 @@ Route::group(['middleware' => ['auth']],function(){
     ////////////////////        RUTAS ENTREGA    //////////////////////////////
         Route::post('/entrega/registrar','EntregaController@store');
 
+    ///////////////////         RUTAS POSTVENTA     ///////////////////////////
+        Route::get('/postventa/index','EntregaController@indexPendientes');
+
 
     /**********************************RUTAS AVANCE*************************** */
         Route::get('/avance','AvanceController@index');

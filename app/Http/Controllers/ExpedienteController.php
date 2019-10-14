@@ -5857,6 +5857,7 @@ class ExpedienteController extends Controller
 
                 $creditoEle = inst_seleccionada::findOrFail($elegido[0]->id);
                 $creditoEle->segundo_credito = $request->fovissste;
+                $creditoEle->monto_credito = $request->monto_credito;
                 $creditoEle->save();
             }
             $expediente->save();
@@ -7839,7 +7840,7 @@ class ExpedienteController extends Controller
         else
             $cantRestante = 0;
              
-       $liquidacion[0]->totalRestante = $cantRestante;
+       $liquidacion[0]->totalRestante = $liquidacion[0]->saldo;
 
 
         $liquidacion[0]->valor_escrituras = number_format((float)$liquidacion[0]->valor_escrituras, 2, '.', ',');

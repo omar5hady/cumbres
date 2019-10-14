@@ -323,6 +323,9 @@
             <proveedor-seguimiento></proveedor-seguimiento>
         </template>
        
+        <template v-if="menu==215">
+            <postventa-entrega></postventa-entrega>
+        </template>
 
         
     @endif

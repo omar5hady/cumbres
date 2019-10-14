@@ -1322,8 +1322,8 @@ class CreditoController extends Controller
                     break;
                 }
 
+            }
         }
-    }
 
         
         return[

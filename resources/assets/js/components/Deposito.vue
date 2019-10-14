@@ -99,7 +99,8 @@
                                         <td v-text="pagare.manzana"></td>
                                         <td v-text="pagare.num_lote"></td>
                                         <td v-text="parseInt(pagare.num_pago)+1"></td>
-                                        <td v-text="'$'+formatNumber(pagare.restante)"></td>
+                                        <td v-if="pagare.restante < 0" v-text="'$'+formatNumber(0)"></td>
+                                        <td v-else v-text="'$'+formatNumber(pagare.restante)"></td>
                                         <td v-text="this.moment(pagare.fecha_pago).locale('es').format('DD/MMM/YYYY')"></td>
                                         <td >
                                             <span v-if="pagare.diferencia > 0 && pagare.pagado < 2" class="badge badge-danger">Vencido</span>

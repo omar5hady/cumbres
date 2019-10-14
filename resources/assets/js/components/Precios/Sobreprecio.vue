@@ -54,24 +54,11 @@
                                         </button>
                                     </td>
                                     <td v-text="sobrePrecioEtapa.sobreprecionom"></td>
-                                    <td v-text="'$ '+sobrePrecioEtapa.sobreprecio"></td>
+                                    <td v-text="'$ '+formatNumber(sobrePrecioEtapa.sobreprecio)"></td>
                                 </tr>                               
                             </tbody>
                         </table>
-                       <!-- <nav>
-                            Botones de paginacion -->
-                           <!-- <ul class="pagination">
-                                <li class="page-item" v-if="pagination.current_page > 1">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,etapa_id)">Ant</a>
-                                </li>
-                                <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,etapa_id)" v-text="page"></a>
-                                </li>
-                                <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,etapa_id)">Sig</a>
-                                </li>
-                            </ul>
-                        </nav>-->
+                       
                     </div>
                 </div>
 
@@ -131,10 +118,6 @@
                                         </div>
                                     </div>
 
-                                    <!-- <select class="form-control"  v-model="lote_id">
-                                            <option value="0">Seleccione</option>
-                                            <option v-for="lotes in arrayLotes" :key="lotes.id" :value="lotes.id" v-text="lotes.num_lote"></option>
-                                    </select> -->
 
                                         <br/>
                                    
@@ -546,6 +529,10 @@
                     console.log(error);
                 });
             },
+            formatNumber(value) {
+                let val = (value/1).toFixed(2)
+                return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+            },
             mostrarMasFiltros(){
                 let me = this;
 
@@ -822,6 +809,46 @@
                     }
                 }
                 this.selectFraccionamientos();
+                this.selectEtapa(this.fraccionamiento_id);
+                this.selectManzanas(this.fraccionamiento_id, this.etapa_id);
+                this.selectLotesManzana(this.fraccionamiento_id, this.etapa_id,this.manzana);
+                this.selectSobrepreciosEtapas(this.etapa_id);
+            }
+        },
+        mounted() {
+            this.selectFraccionamientos();
+            this.selectEtapa(this.fraccionamiento_id);
+            this.listarSobrePrecioEtapa(1,this.etapa_id);
+            this.listarSobrePrecioModelo(1,this.etapa_id,this.buscar2,this.buscar3);
+        }
+    }
+</script>
+<style>
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { 
+        -webkit-appearance: none; 
+        margin: 0; 
+    }
+    .modal-content{
+        width: 100% !important;
+        position: absolute !important;
+    }
+    .mostrar{
+        display: list-item !important;
+        opacity: 1 !important;
+        position: fixed !important;
+        background-color: #3c29297a !important;
+    }
+    .div-error{
+        display:flex;
+        justify-content: center;
+    }
+    .text-error{
+        color: red !important;
+        font-weight: bold;
+    }
+</style>
+selectFraccionamientos();
                 this.selectEtapa(this.fraccionamiento_id);
                 this.selectManzanas(this.fraccionamiento_id, this.etapa_id);
                 this.selectLotesManzana(this.fraccionamiento_id, this.etapa_id,this.manzana);

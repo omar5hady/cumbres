@@ -76,7 +76,7 @@
                                         <td class="td2" v-text="'$'+formatNumber(lote.precio_base)"></td>
 
                                         <td>
-                                        <input type="number" pattern="\d*" @keyup.enter="actualizarAjuste(lote.id,$event.target.value)" :id="lote.id" :value="lote.ajuste" step="1"  v-on:keypress="isNumber($event)" class="form-control" >     
+                                        <input type="text" pattern="\d*" @keyup.enter="actualizarAjuste(lote.id,$event.target.value)" :id="lote.id" :value="lote.ajuste|currency" step="1"  v-on:keypress="isNumber($event)" class="form-control" >     
                                         </td>
                                     </tr>
                                 </tbody>
@@ -255,8 +255,8 @@
             isNumber: function(evt) {
                 evt = (evt) ? evt : window.event;
                 var charCode = (evt.which) ? evt.which : evt.keyCode;
-                if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
-                    evt.preventDefault();;
+                if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 45) {
+                    evt.preventDefault();
                 } else {
                     return true;
                 }

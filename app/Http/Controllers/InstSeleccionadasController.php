@@ -41,6 +41,7 @@ class InstSeleccionadasController extends Controller
                     ->orWhere('inst_seleccionadas.tipo', '=', 1)
                     ->where('inst_seleccionadas.cobrado','=','0')
                     ->where('contratos.status', '=', 3)
+                    ->where('inst_seleccionadas.elegido', '=', 1)
                     ->orderBy('inst_seleccionadas.cobrado','asc')
                     ->orderBy('inst_seleccionadas.monto_credito','desc')
                     
@@ -57,6 +58,7 @@ class InstSeleccionadasController extends Controller
                         ->orWhere('inst_seleccionadas.tipo', '=', 1)
                         ->where('inst_seleccionadas.cobrado','=','0')
                         ->where('contratos.status', '=', 3)
+                        ->where('inst_seleccionadas.elegido', '=', 1)
                         ->orderBy('inst_seleccionadas.cobrado','asc')
                         ->orderBy('inst_seleccionadas.monto_credito','desc')
                         
@@ -84,6 +86,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('contratos.status', '=', 3)
                                 ->where($criterio, 'like', '%' . $buscar . '%')
                                 ->where('inst_seleccionadas.cobrado','=','0')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->orderBy('inst_seleccionadas.cobrado','asc')
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->paginate(10);
@@ -101,6 +104,7 @@ class InstSeleccionadasController extends Controller
                                     ->where('contratos.status', '=', 3)
                                     ->where($criterio, 'like', '%' . $buscar . '%')
                                     ->where('inst_seleccionadas.cobrado','=','0')
+                                    ->where('inst_seleccionadas.elegido', '=', 1)
                                     ->orderBy('inst_seleccionadas.cobrado','asc')
                                     ->orderBy('inst_seleccionadas.monto_credito','desc')
                                     ->count();
@@ -124,6 +128,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('contratos.status', '=', 3)
                                 ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
                                 ->where('inst_seleccionadas.cobrado','=','0')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->orderBy('inst_seleccionadas.cobrado','asc')
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->paginate(10);
@@ -141,6 +146,7 @@ class InstSeleccionadasController extends Controller
                                     ->where('contratos.status', '=', 3)
                                     ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
                                     ->where('inst_seleccionadas.cobrado','=','0')
+                                    ->where('inst_seleccionadas.elegido', '=', 1)
                                     ->orderBy('inst_seleccionadas.cobrado','asc')
                                     ->orderBy('inst_seleccionadas.monto_credito','desc')
                                     ->count();
@@ -167,6 +173,7 @@ class InstSeleccionadasController extends Controller
                                 ->where($criterio, 'like', '%' . $buscar . '%')
                                 ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
                                 ->where('inst_seleccionadas.cobrado','=','0')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->orderBy('inst_seleccionadas.cobrado','asc')
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->paginate(10);
@@ -187,6 +194,7 @@ class InstSeleccionadasController extends Controller
                                     ->where($criterio, 'like', '%' . $buscar . '%')
                                     ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
                                     ->where('inst_seleccionadas.cobrado','=','0')
+                                    ->where('inst_seleccionadas.elegido', '=', 1)
                                     ->orderBy('inst_seleccionadas.cobrado','asc')
                                     ->orderBy('inst_seleccionadas.monto_credito','desc')
                                     ->count();
@@ -214,6 +222,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('contratos.status', '=', 3)
                                 ->where($criterio, '=', $buscar)
                                 ->where('inst_seleccionadas.cobrado','=','0')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->orderBy('inst_seleccionadas.cobrado','asc')
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->paginate(10);
@@ -231,6 +240,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('contratos.status', '=', 3)
                                 ->where($criterio, '=', $buscar)
                                 ->where('inst_seleccionadas.cobrado','=','0')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->orderBy('inst_seleccionadas.cobrado','asc')
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->count();
@@ -256,6 +266,7 @@ class InstSeleccionadasController extends Controller
                                 ->where($criterio, '=', $buscar)
                                 ->where('creditos.etapa', '=', $buscar2)
                                 ->where('inst_seleccionadas.cobrado','=','0')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->orderBy('inst_seleccionadas.cobrado','asc')
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->paginate(10);
@@ -275,6 +286,7 @@ class InstSeleccionadasController extends Controller
                                 ->where($criterio, '=', $buscar)
                                 ->where('creditos.etapa', '=', $buscar2)
                                 ->where('inst_seleccionadas.cobrado','=','0')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->orderBy('inst_seleccionadas.cobrado','asc')
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->count();
@@ -302,6 +314,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('creditos.etapa', '=', $buscar2)
                                 ->where('creditos.manzana', '=', $buscar3)
                                 ->where('inst_seleccionadas.cobrado','=','0')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->orderBy('inst_seleccionadas.cobrado','asc')
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->paginate(10);
@@ -323,6 +336,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('creditos.etapa', '=', $buscar2)
                                 ->where('creditos.manzana', '=', $buscar3)
                                 ->where('inst_seleccionadas.cobrado','=','0')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->orderBy('inst_seleccionadas.cobrado','asc')
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->count();
@@ -353,6 +367,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('creditos.manzana', '=', $buscar3)
                                 ->where('creditos.num_lote', '=', $buscar4)
                                 ->where('inst_seleccionadas.cobrado','=','0')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->orderBy('inst_seleccionadas.cobrado','asc')
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->paginate(10);
@@ -377,6 +392,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('creditos.manzana', '=', $buscar3)
                                 ->where('creditos.num_lote', '=', $buscar4)
                                 ->where('inst_seleccionadas.cobrado','=','0')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->orderBy('inst_seleccionadas.cobrado','asc')
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->count();
@@ -402,6 +418,7 @@ class InstSeleccionadasController extends Controller
                                 ->where($criterio, '=', $buscar)
                                 ->where('creditos.num_lote', '=', $buscar4)
                                 ->where('inst_seleccionadas.cobrado','=','0')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->orderBy('inst_seleccionadas.cobrado','asc')
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->paginate(10);
@@ -421,6 +438,7 @@ class InstSeleccionadasController extends Controller
                                 ->where($criterio, '=', $buscar)
                                 ->where('creditos.num_lote', '=', $buscar4)
                                 ->where('inst_seleccionadas.cobrado','=','0')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->orderBy('inst_seleccionadas.cobrado','asc')
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->count();
@@ -448,6 +466,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('creditos.etapa', '=', $buscar2)
                                 ->where('creditos.num_lote', '=', $buscar4)
                                 ->where('inst_seleccionadas.cobrado','=','0')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->orderBy('inst_seleccionadas.cobrado','asc')
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->paginate(10);
@@ -469,6 +488,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('creditos.etapa', '=', $buscar2)
                                 ->where('creditos.num_lote', '=', $buscar4)
                                 ->where('inst_seleccionadas.cobrado','=','0')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->orderBy('inst_seleccionadas.cobrado','asc')
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->count();
@@ -495,6 +515,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('contratos.status', '=', 3)
                                 ->where($criterio, '=', $buscar)
                                 ->where('inst_seleccionadas.cobrado','=','0')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->orderBy('inst_seleccionadas.cobrado','asc')
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->paginate(10);
@@ -512,6 +533,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('contratos.status', '=', 3)
                                 ->where($criterio, '=', $buscar)
                                 ->where('inst_seleccionadas.cobrado','=','0')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->orderBy('inst_seleccionadas.cobrado','asc')
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->count();
@@ -538,6 +560,7 @@ class InstSeleccionadasController extends Controller
                     ->orWhere('inst_seleccionadas.tipo', '=', 1)
                     ->where('inst_seleccionadas.cobrado','!=','0')
                     ->where('contratos.status', '=', 3)
+                    ->where('inst_seleccionadas.elegido', '=', 1)
                     ->orderBy('inst_seleccionadas.cobrado','asc')
                     ->orderBy('inst_seleccionadas.monto_credito','desc')
                     
@@ -554,6 +577,7 @@ class InstSeleccionadasController extends Controller
                     ->orWhere('inst_seleccionadas.tipo', '=', 1)
                     ->where('inst_seleccionadas.cobrado','!=','0')
                     ->where('contratos.status', '=', 3)
+                    ->where('inst_seleccionadas.elegido', '=', 1)
                     ->orderBy('inst_seleccionadas.cobrado','asc')
                     ->orderBy('inst_seleccionadas.monto_credito','desc')
                     
@@ -581,6 +605,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('contratos.status', '=', 3)
                                 ->where($criterio, 'like', '%' . $buscar . '%')
                                 ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->orderBy('inst_seleccionadas.cobrado','asc')
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->paginate(10);
@@ -598,6 +623,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('contratos.status', '=', 3)
                                 ->where($criterio, 'like', '%' . $buscar . '%')
                                 ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->orderBy('inst_seleccionadas.cobrado','asc')
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->count();
@@ -621,6 +647,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('contratos.status', '=', 3)
                                 ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
                                 ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->orderBy('inst_seleccionadas.cobrado','asc')
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->paginate(10);
@@ -638,6 +665,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('contratos.status', '=', 3)
                                 ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
                                 ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->orderBy('inst_seleccionadas.cobrado','asc')
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->count();
@@ -664,6 +692,7 @@ class InstSeleccionadasController extends Controller
                                 ->where($criterio, 'like', '%' . $buscar . '%')
                                 ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
                                 ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->orderBy('inst_seleccionadas.cobrado','asc')
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->paginate(10);
@@ -684,6 +713,7 @@ class InstSeleccionadasController extends Controller
                                 ->where($criterio, 'like', '%' . $buscar . '%')
                                 ->where('personal.apellidos', 'like', '%' . $buscar2 . '%')
                                 ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->orderBy('inst_seleccionadas.cobrado','asc')
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->count();
@@ -711,6 +741,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('contratos.status', '=', 3)
                                 ->where($criterio, '=', $buscar)
                                 ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->orderBy('inst_seleccionadas.cobrado','asc')
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->paginate(10);
@@ -728,6 +759,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('contratos.status', '=', 3)
                                 ->where($criterio, '=', $buscar)
                                 ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->orderBy('inst_seleccionadas.cobrado','asc')
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->count();
@@ -753,6 +785,7 @@ class InstSeleccionadasController extends Controller
                                 ->where($criterio, '=', $buscar)
                                 ->where('creditos.etapa', '=', $buscar2)
                                 ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->orderBy('inst_seleccionadas.cobrado','asc')
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->paginate(10);
@@ -772,6 +805,7 @@ class InstSeleccionadasController extends Controller
                                 ->where($criterio, '=', $buscar)
                                 ->where('creditos.etapa', '=', $buscar2)
                                 ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->orderBy('inst_seleccionadas.cobrado','asc')
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->count();
@@ -799,6 +833,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('creditos.etapa', '=', $buscar2)
                                 ->where('creditos.manzana', '=', $buscar3)
                                 ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->orderBy('inst_seleccionadas.cobrado','asc')
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->paginate(10);
@@ -820,6 +855,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('creditos.etapa', '=', $buscar2)
                                 ->where('creditos.manzana', '=', $buscar3)
                                 ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->orderBy('inst_seleccionadas.cobrado','asc')
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->count();
@@ -850,6 +886,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('creditos.manzana', '=', $buscar3)
                                 ->where('creditos.num_lote', '=', $buscar4)
                                 ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->orderBy('inst_seleccionadas.cobrado','asc')
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->paginate(10);
@@ -874,6 +911,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('creditos.manzana', '=', $buscar3)
                                 ->where('creditos.num_lote', '=', $buscar4)
                                 ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->orderBy('inst_seleccionadas.cobrado','asc')
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->count();
@@ -899,6 +937,7 @@ class InstSeleccionadasController extends Controller
                                 ->where($criterio, '=', $buscar)
                                 ->where('creditos.num_lote', '=', $buscar4)
                                 ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->orderBy('inst_seleccionadas.cobrado','asc')
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->paginate(10);
@@ -918,6 +957,7 @@ class InstSeleccionadasController extends Controller
                                 ->where($criterio, '=', $buscar)
                                 ->where('creditos.num_lote', '=', $buscar4)
                                 ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->orderBy('inst_seleccionadas.cobrado','asc')
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->count();
@@ -945,6 +985,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('creditos.etapa', '=', $buscar2)
                                 ->where('creditos.num_lote', '=', $buscar4)
                                 ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->orderBy('inst_seleccionadas.cobrado','asc')
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->paginate(10);
@@ -966,6 +1007,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('creditos.etapa', '=', $buscar2)
                                 ->where('creditos.num_lote', '=', $buscar4)
                                 ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->orderBy('inst_seleccionadas.cobrado','asc')
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->count();
@@ -992,6 +1034,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('contratos.status', '=', 3)
                                 ->where($criterio, '=', $buscar)
                                 ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->orderBy('inst_seleccionadas.cobrado','asc')
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->paginate(10);
@@ -1009,6 +1052,7 @@ class InstSeleccionadasController extends Controller
                                 ->where('contratos.status', '=', 3)
                                 ->where($criterio, '=', $buscar)
                                 ->where('inst_seleccionadas.cobrado','!=','0')
+                                ->where('inst_seleccionadas.elegido', '=', 1)
                                 ->orderBy('inst_seleccionadas.cobrado','asc')
                                 ->orderBy('inst_seleccionadas.monto_credito','desc')
                                 ->count();

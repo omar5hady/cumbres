@@ -95,6 +95,9 @@ Vue.component('devolucion-credito', require('./components/CreditoDevolucion.vue'
 // Proveedores
 Vue.component('proveedor-seguimiento', require('./components/Proveedor/SegInstalacion.vue'));
 
+// PostVenta
+Vue.component('postventa-entrega', require('./components/Postventa/Entrega.vue'));
+
 
 Vue.component('notification', require('./components/Notification.vue'));
 Vue.component('perfil-user', require('./components/Perfil.vue'));

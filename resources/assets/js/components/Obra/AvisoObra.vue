@@ -251,13 +251,13 @@
                                                     <input v-model="detalle.costo_directo" type="text" class="form-control">
                                                 </td>
                                                 <td>
-                                                    {{ detalle.costo_indirecto=detalle.costo_directo*costo_indirecto_porcentaje/100 | currency}}
+                                                    {{ detalle.costo_indirecto=detalle.costo_directo*costo_indirecto_porcentaje/100}}
                                                 </td>
                                                 <td>
                                                     <input v-model="detalle.obra_extra" type="text" class="form-control">
                                                 </td>
                                                 <td>
-                                                    {{parseFloat(detalle.costo_directo) + parseFloat(detalle.costo_indirecto) | currency}}
+                                                    {{parseFloat(detalle.costo_directo) + parseFloat(detalle.costo_indirecto)}}
                                                   <!-- <input readonly v-model="detalle.importe" type="text" class="form-control">  -->
                                                 </td>
                                             </tr>
@@ -265,9 +265,9 @@
                                             <tr style="background-color: #CEECF5;">
                                                
                                                <td align="right" colspan="4"> <strong>{{ total_construccion=totalSuperficie}}</strong> </td>
-                                                <td align="right"> <strong>{{ total_costo_directo=totalCostoDirecto | currency}}</strong> </td>
-                                                <td align="right"> <strong>{{ total_costo_indirecto=totalCostoIndirecto | currency}}</strong> </td>
-                                                <td align="right" colspan="2"> <strong>{{ total_importe=totalImporte | currency}}</strong> </td>
+                                                <td align="right"> <strong>{{ total_costo_directo=totalCostoDirecto}}</strong> </td>
+                                                <td align="right"> <strong>{{ total_costo_indirecto=totalCostoIndirecto}}</strong> </td>
+                                                <td align="right" colspan="2"> <strong>{{ total_importe=totalImporte}}</strong> </td>
                                             </tr>
                                         </tbody>
 
@@ -499,7 +499,7 @@
                                                 <td align="right" colspan="4"> <strong>{{ total_construccion=totalConstruccion}}</strong> </td>
                                                 <td align="right" > <strong>{{ total_costo_directo=totalCostoDirecto | currency}}</strong> </td>
                                                 <td align="right"> <strong>{{ total_costo_indirecto=totalCostoIndirecto | currency}}</strong> </td>
-                                                <td align="right" colspan="2"> <strong>{{ total_importe=totalImporte | currency}}</strong> </td>
+                                                <td align="right" colspan="2"> <strong>{{'$'+formatNumber( total_importe=totalImporte)}}</strong> </td>
                                             </tr>
                                         </tbody>
 
@@ -1360,7 +1360,7 @@
             },
             formatNumber(value) {
                 let val = (value/1).toFixed(2)
-                return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+                return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             },
             mostrarDetalle(){
                 this.limpiarDatos();

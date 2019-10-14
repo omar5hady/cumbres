@@ -382,7 +382,7 @@
                     @endif
         <!----------     FIN SALDOS      --->
 
-             <!----------      GESTORIA      --->
+        <!----------      GESTORIA      --->
              @if(Auth::user()->gestoria == 1)
                         <li class="nav-item nav-dropdown">
                             <a class="nav-link nav-dropdown-toggle" href="#"><i class="fa fa-bank"></i> Gestoria</a>
@@ -412,6 +412,21 @@
                         </li>
                     @endif
         <!----------     FIN GESTORIA      --->
+
+        <!----------      Postventa      --->
+            @if(Auth::user()->rol_id == 1)
+                <li class="nav-item nav-dropdown">
+                    <a class="nav-link nav-dropdown-toggle" href="#"><i class="fa fa-handshake-o"></i> Post Venta</a>
+                    <ul class="nav-dropdown-items">
+                        @if(Auth::user()->rol_id == 1)
+                            <li @click="menu=215" class="nav-item">
+                                <a class="nav-link" href="#"><i class="fa fa-key"></i> Entregas de vivienda</a>
+                            </li>
+                        @endif
+                    </ul>
+                </li>
+            @endif
+        <!----------     FIN SALDOS      --->
 
                     @if(Auth::user()->acceso == 1)
                         <li class="nav-item nav-dropdown">

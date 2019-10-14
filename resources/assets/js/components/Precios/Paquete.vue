@@ -59,7 +59,7 @@
                                         <td v-text="paquete.etapa" ></td>
                                         <td v-text="paquete.nombre" ></td>
                                         <td v-text="paquete.descripcion" ></td>
-                                        <td v-text="paquete.costo" ></td>
+                                        <td v-text="'$'+formatNumber(paquete.costo)" ></td>
                                         <td v-text="paquete.v_ini" ></td>
                                         <td v-text="paquete.v_fin" ></td>
                                         <td v-if="paquete.is_active == '1'">
@@ -305,6 +305,10 @@
                 }).catch(function (error){
                     console.log(error);
                 });
+            },
+            formatNumber(value) {
+                let val = (value/1).toFixed(2)
+                return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
             },
             actualizarPaquetes(){
                 if(this.validarPaquetes() || this.proceso==true) //Se verifica si hay un error (campo vacio)

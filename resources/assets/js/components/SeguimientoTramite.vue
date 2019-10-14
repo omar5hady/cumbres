@@ -2171,7 +2171,8 @@
                     'descuento' : this.descuento,
                     'total_liquidar' : this.total_liquidar,
                     'infonavit' : this.infonavit,
-                    'fovissste': this.fovissste
+                    'fovissste': this.fovissste,
+                    'monto_credito' : this.monto_credito,
                     
                 }).then(function (response){
                    

@@ -53,7 +53,9 @@ class ContratoController extends Controller
                     ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                     ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                    ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                     ->select(
+                        'expedientes.liquidado',
                         'creditos.id',
                         'creditos.prospecto_id',
                         'creditos.num_dep_economicos',
@@ -179,6 +181,7 @@ class ContratoController extends Controller
                     ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                     ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                    ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                     ->select('contratos.id as contratoId')
                     ->where('inst_seleccionadas.elegido', '=', '1')
                     ->orderBy('id', 'desc')->count();
@@ -190,7 +193,9 @@ class ContratoController extends Controller
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                 ->select(
+                                    'expedientes.liquidado',
                                     'creditos.id',
                                     'creditos.prospecto_id',
                                     'creditos.num_dep_economicos',
@@ -320,6 +325,7 @@ class ContratoController extends Controller
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                 ->select('contratos.id as contratoId')
                                 ->where($criterio, 'like', '%' . $buscar . '%')
                                 ->where('inst_seleccionadas.elegido', '=', '1')
@@ -334,7 +340,9 @@ class ContratoController extends Controller
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                 ->select(
+                                    'expedientes.liquidado',
                                     'creditos.id',
                                     'creditos.prospecto_id',
                                     'creditos.num_dep_economicos',
@@ -464,6 +472,7 @@ class ContratoController extends Controller
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                 ->select('contratos.id as contratoId')
                                 ->where($criterio, 'like', '%' . $buscar . '%')
                                 ->where('inst_seleccionadas.elegido', '=', '1')
@@ -478,7 +487,9 @@ class ContratoController extends Controller
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                 ->select(
+                                    'expedientes.liquidado',
                                     'creditos.id',
                                     'creditos.prospecto_id',
                                     'creditos.num_dep_economicos',
@@ -605,6 +616,7 @@ class ContratoController extends Controller
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                 ->select('contratos.id as contratoId')
                                 ->where($criterio, 'like', '%' . $buscar . '%')
                                 ->where('inst_seleccionadas.elegido', '=', '1')
@@ -617,7 +629,9 @@ class ContratoController extends Controller
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                 ->select(
+                                    'expedientes.liquidado',
                                     'creditos.id',
                                     'creditos.prospecto_id',
                                     'creditos.num_dep_economicos',
@@ -745,6 +759,7 @@ class ContratoController extends Controller
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                 ->select('contratos.id as contratoId')
                                 ->where($criterio, 'like', '%' . $buscar . '%')
                                 ->where('inst_seleccionadas.elegido', '=', '1')
@@ -760,7 +775,9 @@ class ContratoController extends Controller
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                 ->select(
+                                    'expedientes.liquidado',
                                     'creditos.id',
                                     'creditos.prospecto_id',
                                     'creditos.num_dep_economicos',
@@ -889,6 +906,7 @@ class ContratoController extends Controller
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                 ->select('contratos.id as contratoId')
                                 ->where($criterio, '=', $buscar)
                                 ->where('inst_seleccionadas.elegido', '=', '1')
@@ -901,7 +919,9 @@ class ContratoController extends Controller
                                     ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                     ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                    ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                     ->select(
+                                        'expedientes.liquidado',
                                         'creditos.id',
                                         'creditos.prospecto_id',
                                         'creditos.num_dep_economicos',
@@ -1031,6 +1051,7 @@ class ContratoController extends Controller
                                     ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                     ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                    ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                     ->select('contratos.id as contratoId')
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.fraccionamiento_id','=',$buscar3)
@@ -1044,7 +1065,9 @@ class ContratoController extends Controller
                                         ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                         ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                        ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                         ->select(
+                                            'expedientes.liquidado',
                                             'creditos.id',
                                             'creditos.prospecto_id',
                                             'creditos.num_dep_economicos',
@@ -1175,6 +1198,7 @@ class ContratoController extends Controller
                                         ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                         ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                        ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                         ->select('contratos.id as contratoId')
                                         ->where($criterio, '=', $buscar)
                                         ->where('lotes.fraccionamiento_id','=',$buscar3)
@@ -1192,7 +1216,9 @@ class ContratoController extends Controller
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                 ->select(
+                                    'expedientes.liquidado',
                                     'creditos.id',
                                     'creditos.prospecto_id',
                                     'creditos.num_dep_economicos',
@@ -1322,6 +1348,7 @@ class ContratoController extends Controller
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                 ->select('contratos.id as contratoId')
                                 ->where($criterio, '=', $buscar)
                                 ->where('inst_seleccionadas.elegido', '=', '1')
@@ -1335,7 +1362,9 @@ class ContratoController extends Controller
                                     ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                     ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                    ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                     ->select(
+                                        'expedientes.liquidado',
                                         'creditos.id',
                                         'creditos.prospecto_id',
                                         'creditos.num_dep_economicos',
@@ -1466,6 +1495,7 @@ class ContratoController extends Controller
                                     ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                     ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                    ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                     ->select('contratos.id as contratoId')
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.fraccionamiento_id','=',$buscar3)
@@ -1480,7 +1510,9 @@ class ContratoController extends Controller
                                         ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                         ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                        ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                         ->select(
+                                            'expedientes.liquidado',
                                             'creditos.id',
                                             'creditos.prospecto_id',
                                             'creditos.num_dep_economicos',
@@ -1612,6 +1644,7 @@ class ContratoController extends Controller
                                         ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                         ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                        ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                         ->select('contratos.id as contratoId')
                                         ->where($criterio, '=', $buscar)
                                         ->where('lotes.fraccionamiento_id','=',$buscar3)
@@ -1632,7 +1665,9 @@ class ContratoController extends Controller
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                 ->select(
+                                    'expedientes.liquidado',
                                     'creditos.id',
                                     'creditos.prospecto_id',
                                     'creditos.num_dep_economicos',
@@ -1760,6 +1795,7 @@ class ContratoController extends Controller
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                 ->select('contratos.id as contratoId')
                                 ->whereBetween($criterio, [$buscar, $buscar3])
                                 ->where('inst_seleccionadas.elegido', '=', '1')
@@ -1772,7 +1808,9 @@ class ContratoController extends Controller
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                 ->select(
+                                    'expedientes.liquidado',
                                     'creditos.id',
                                     'creditos.prospecto_id',
                                     'creditos.num_dep_economicos',
@@ -1900,6 +1938,7 @@ class ContratoController extends Controller
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                 ->select('contratos.id as contratoId')
                                 ->whereBetween($criterio, [$buscar,  $buscar3])
                                 ->where('inst_seleccionadas.elegido', '=', '1')
@@ -1916,7 +1955,9 @@ class ContratoController extends Controller
                                     ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                     ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                    ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                     ->select(
+                                        'expedientes.liquidado',
                                         'creditos.id',
                                         'creditos.prospecto_id',
                                         'creditos.num_dep_economicos',
@@ -2047,6 +2088,7 @@ class ContratoController extends Controller
                                     ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                     ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                    ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                     ->select('contratos.id as contratoId')
                                     ->where('inst_seleccionadas.elegido', '=', '1')
                                     ->where('inst_seleccionadas.elegido', '=', '1')
@@ -2063,7 +2105,9 @@ class ContratoController extends Controller
                                         ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                         ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                        ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                         ->select(
+                                            'expedientes.liquidado',
                                             'creditos.id',
                                             'creditos.prospecto_id',
                                             'creditos.num_dep_economicos',
@@ -2193,6 +2237,7 @@ class ContratoController extends Controller
                                         ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                         ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                        ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                         ->select('contratos.id as contratoId')
                                         ->where('inst_seleccionadas.elegido', '=', '1')
                                         ->where('lotes.fraccionamiento_id', '=',  $buscar)
@@ -2207,7 +2252,9 @@ class ContratoController extends Controller
                                             ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                             ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                             ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                             ->select(
+                                                'expedientes.liquidado',
                                                 'creditos.id',
                                                 'creditos.prospecto_id',
                                                 'creditos.num_dep_economicos',
@@ -2336,6 +2383,7 @@ class ContratoController extends Controller
                                             ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                             ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                             ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                             ->select('contratos.id as contratoId')
                                             ->where('inst_seleccionadas.elegido', '=', '1')
                                             ->where('lotes.fraccionamiento_id', '=',  $buscar)
@@ -2349,7 +2397,9 @@ class ContratoController extends Controller
                                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                                ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                                 ->select(
+                                                    'expedientes.liquidado',
                                                     'creditos.id',
                                                     'creditos.prospecto_id',
                                                     'creditos.num_dep_economicos',
@@ -2478,6 +2528,7 @@ class ContratoController extends Controller
                                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                                ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                                 ->select('contratos.id as contratoId')
                                                 ->where('inst_seleccionadas.elegido', '=', '1')
                                                 ->where('lotes.fraccionamiento_id', '=',  $buscar)
@@ -2491,7 +2542,9 @@ class ContratoController extends Controller
                                                     ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                                     ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                                    ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                                     ->select(
+                                                        'expedientes.liquidado',
                                                         'creditos.id',
                                                         'creditos.prospecto_id',
                                                         'creditos.num_dep_economicos',
@@ -2620,6 +2673,7 @@ class ContratoController extends Controller
                                                     ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                                     ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                                    ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                                     ->select('contratos.id as contratoId')
                                                     ->where('inst_seleccionadas.elegido', '=', '1')
                                                     ->where('lotes.fraccionamiento', '=',  $buscar)
@@ -2632,7 +2686,9 @@ class ContratoController extends Controller
                                                     ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                                     ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                                    ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                                     ->select(
+                                                        'expedientes.liquidado',
                                                         'creditos.id',
                                                         'creditos.prospecto_id',
                                                         'creditos.num_dep_economicos',
@@ -2760,6 +2816,7 @@ class ContratoController extends Controller
                                                     ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                                     ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                                    ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                                     ->select('contratos.id as contratoId')
                                                     ->where('inst_seleccionadas.elegido', '=', '1')
                                                     ->where('lotes.fraccionamiento_id', '=',  $buscar)
@@ -2778,7 +2835,9 @@ class ContratoController extends Controller
                                     ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                     ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                    ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                     ->select(
+                                        'expedientes.liquidado',
                                         'creditos.id',
                                         'creditos.prospecto_id',
                                         'creditos.num_dep_economicos',
@@ -2910,6 +2969,7 @@ class ContratoController extends Controller
                                     ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                     ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                    ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                     ->select('contratos.id as contratoId')
                                     ->where('inst_seleccionadas.elegido', '=', '1')
                                     ->where('inst_seleccionadas.elegido', '=', '1')
@@ -2927,7 +2987,9 @@ class ContratoController extends Controller
                                         ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                         ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                        ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                         ->select(
+                                            'expedientes.liquidado',
                                             'creditos.id',
                                             'creditos.prospecto_id',
                                             'creditos.num_dep_economicos',
@@ -3058,6 +3120,7 @@ class ContratoController extends Controller
                                         ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                         ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                        ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                         ->select('contratos.id as contratoId')
                                         ->where('inst_seleccionadas.elegido', '=', '1')
                                         ->where('lotes.fraccionamiento_id', '=',  $buscar)
@@ -3073,7 +3136,9 @@ class ContratoController extends Controller
                                             ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                             ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                             ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                             ->select(
+                                                'expedientes.liquidado',
                                                 'creditos.id',
                                                 'creditos.prospecto_id',
                                                 'creditos.num_dep_economicos',
@@ -3203,6 +3268,7 @@ class ContratoController extends Controller
                                             ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                             ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                             ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                             ->select('contratos.id as contratoId')
                                             ->where('inst_seleccionadas.elegido', '=', '1')
                                             ->where('lotes.fraccionamiento_id', '=',  $buscar)
@@ -3217,7 +3283,9 @@ class ContratoController extends Controller
                                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                                ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                                 ->select(
+                                                    'expedientes.liquidado',
                                                     'creditos.id',
                                                     'creditos.prospecto_id',
                                                     'creditos.num_dep_economicos',
@@ -3347,6 +3415,7 @@ class ContratoController extends Controller
                                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                                ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                                 ->select('contratos.id as contratoId')
                                                 ->where('inst_seleccionadas.elegido', '=', '1')
                                                 ->where('lotes.fraccionamiento_id', '=',  $buscar)
@@ -3361,7 +3430,9 @@ class ContratoController extends Controller
                                                     ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                                     ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                                    ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                                     ->select(
+                                                        'expedientes.liquidado',
                                                         'creditos.id',
                                                         'creditos.prospecto_id',
                                                         'creditos.num_dep_economicos',
@@ -3491,6 +3562,7 @@ class ContratoController extends Controller
                                                     ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                                     ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                                    ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                                     ->select('contratos.id as contratoId')
                                                     ->where('inst_seleccionadas.elegido', '=', '1')
                                                     ->where('lotes.fraccionamiento', '=',  $buscar)
@@ -3504,7 +3576,9 @@ class ContratoController extends Controller
                                                     ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                                     ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                                    ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                                     ->select(
+                                                        'expedientes.liquidado',
                                                         'creditos.id',
                                                         'creditos.prospecto_id',
                                                         'creditos.num_dep_economicos',
@@ -3633,6 +3707,7 @@ class ContratoController extends Controller
                                                     ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                                     ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                                    ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                                     ->select('contratos.id as contratoId')
                                                     ->where('inst_seleccionadas.elegido', '=', '1')
                                                     ->where('lotes.fraccionamiento_id', '=',  $buscar)
@@ -3658,7 +3733,9 @@ class ContratoController extends Controller
                     ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                     ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                    ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                     ->select(
+                        'expedientes.liquidado',
                         'creditos.id',
                         'creditos.prospecto_id',
                         'creditos.num_dep_economicos',
@@ -3785,6 +3862,7 @@ class ContratoController extends Controller
                     ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                     ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                    ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                     ->select('contratos.id as contratoId')
                     ->where('inst_seleccionadas.elegido', '=', '1')
                     ->where('contratos.status','=',$b_status)
@@ -3797,7 +3875,9 @@ class ContratoController extends Controller
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                 ->select(
+                                    'expedientes.liquidado',
                                     'creditos.id',
                                     'creditos.prospecto_id',
                                     'creditos.num_dep_economicos',
@@ -3929,6 +4009,7 @@ class ContratoController extends Controller
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                 ->select('contratos.id as contratoId')
                                 ->where($criterio, 'like', '%' . $buscar . '%')
                                 ->where('inst_seleccionadas.elegido', '=', '1')
@@ -3945,7 +4026,9 @@ class ContratoController extends Controller
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                 ->select(
+                                    'expedientes.liquidado',
                                     'creditos.id',
                                     'creditos.prospecto_id',
                                     'creditos.num_dep_economicos',
@@ -4077,6 +4160,7 @@ class ContratoController extends Controller
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                 ->select('contratos.id as contratoId')
                                 ->where($criterio, 'like', '%' . $buscar . '%')
                                 ->where('inst_seleccionadas.elegido', '=', '1')
@@ -4093,7 +4177,9 @@ class ContratoController extends Controller
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                 ->select(
+                                    'expedientes.liquidado',
                                     'creditos.id',
                                     'creditos.prospecto_id',
                                     'creditos.num_dep_economicos',
@@ -4221,6 +4307,7 @@ class ContratoController extends Controller
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                 ->select('contratos.id as contratoId')
                                 ->where($criterio, 'like', '%' . $buscar . '%')
                                 ->where('inst_seleccionadas.elegido', '=', '1')
@@ -4234,7 +4321,9 @@ class ContratoController extends Controller
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                 ->select(
+                                    'expedientes.liquidado',
                                     'creditos.id',
                                     'creditos.prospecto_id',
                                     'creditos.num_dep_economicos',
@@ -4363,6 +4452,7 @@ class ContratoController extends Controller
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                 ->select('contratos.id as contratoId')
                                 ->where($criterio, 'like', '%' . $buscar . '%')
                                 ->where('inst_seleccionadas.elegido', '=', '1')
@@ -4379,7 +4469,9 @@ class ContratoController extends Controller
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                 ->select(
+                                    'expedientes.liquidado',
                                     'creditos.id',
                                     'creditos.prospecto_id',
                                     'creditos.num_dep_economicos',
@@ -4509,6 +4601,7 @@ class ContratoController extends Controller
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                 ->select('contratos.id as contratoId')
                                 ->where($criterio, '=', $buscar)
                                 ->where('contratos.status','=',$b_status)
@@ -4522,7 +4615,9 @@ class ContratoController extends Controller
                                     ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                     ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                    ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                     ->select(
+                                        'expedientes.liquidado',
                                         'creditos.id',
                                         'creditos.prospecto_id',
                                         'creditos.num_dep_economicos',
@@ -4653,6 +4748,7 @@ class ContratoController extends Controller
                                     ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                     ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                    ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                     ->select('contratos.id as contratoId')
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.fraccionamiento_id','=',$buscar3)
@@ -4667,7 +4763,9 @@ class ContratoController extends Controller
                                         ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                         ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                        ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                         ->select(
+                                            'expedientes.liquidado',
                                             'creditos.id',
                                             'creditos.prospecto_id',
                                             'creditos.num_dep_economicos',
@@ -4799,6 +4897,7 @@ class ContratoController extends Controller
                                         ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                         ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                        ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                         ->select('contratos.id as contratoId')
                                         ->where($criterio, '=', $buscar)
                                         ->where('lotes.fraccionamiento_id','=',$buscar3)
@@ -4818,7 +4917,9 @@ class ContratoController extends Controller
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                 ->select(
+                                    'expedientes.liquidado',
                                     'creditos.id',
                                     'creditos.prospecto_id',
                                     'creditos.num_dep_economicos',
@@ -4949,6 +5050,7 @@ class ContratoController extends Controller
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                 ->select('contratos.id as contratoId')
                                 ->where($criterio, '=', $buscar)
                                 ->where('contratos.status','=',$b_status)
@@ -4963,7 +5065,9 @@ class ContratoController extends Controller
                                     ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                     ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                    ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                     ->select(
+                                        'expedientes.liquidado',
                                         'creditos.id',
                                         'creditos.prospecto_id',
                                         'creditos.num_dep_economicos',
@@ -5095,6 +5199,7 @@ class ContratoController extends Controller
                                     ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                     ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                    ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                     ->select('contratos.id as contratoId')
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.fraccionamiento_id','=',$buscar3)
@@ -5110,7 +5215,9 @@ class ContratoController extends Controller
                                         ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                         ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                        ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                         ->select(
+                                            'expedientes.liquidado',
                                             'creditos.id',
                                             'creditos.prospecto_id',
                                             'creditos.num_dep_economicos',
@@ -5243,6 +5350,7 @@ class ContratoController extends Controller
                                         ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                         ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                        ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                         ->select('contratos.id as contratoId')
                                         ->where($criterio, '=', $buscar)
                                         ->where('lotes.fraccionamiento_id','=',$buscar3)
@@ -5266,7 +5374,9 @@ class ContratoController extends Controller
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                 ->select(
+                                    'expedientes.liquidado',
                                     'creditos.id',
                                     'creditos.prospecto_id',
                                     'creditos.num_dep_economicos',
@@ -5395,6 +5505,7 @@ class ContratoController extends Controller
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                 ->select('contratos.id as contratoId')
                                 ->whereBetween($criterio, [$buscar, $buscar3])
                                 ->where('inst_seleccionadas.elegido', '=', '1')
@@ -5409,7 +5520,9 @@ class ContratoController extends Controller
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                 ->select(
+                                    'expedientes.liquidado',
                                     'creditos.id',
                                     'creditos.prospecto_id',
                                     'creditos.num_dep_economicos',
@@ -5538,6 +5651,7 @@ class ContratoController extends Controller
                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                 ->select('contratos.id as contratoId')
                                 ->whereBetween($criterio, [$buscar,  $buscar3])
                                 ->where('contratos.status','=',$b_status)
@@ -5555,7 +5669,9 @@ class ContratoController extends Controller
                                         ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                         ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                        ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                         ->select(
+                                            'expedientes.liquidado',
                                             'creditos.id',
                                             'creditos.prospecto_id',
                                             'creditos.num_dep_economicos',
@@ -5687,6 +5803,7 @@ class ContratoController extends Controller
                                         ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                         ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                        ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                         ->select('contratos.id as contratoId')
                                         ->where('inst_seleccionadas.elegido', '=', '1')
                                         ->where('contratos.status','=',$b_status)
@@ -5703,7 +5820,9 @@ class ContratoController extends Controller
                                             ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                             ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                             ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                             ->select(
+                                                'expedientes.liquidado',
                                                 'creditos.id',
                                                 'creditos.prospecto_id',
                                                 'creditos.num_dep_economicos',
@@ -5834,6 +5953,7 @@ class ContratoController extends Controller
                                             ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                             ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                             ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                             ->select('contratos.id as contratoId')
                                             ->where('inst_seleccionadas.elegido', '=', '1')
                                             ->where('contratos.status','=',$b_status)
@@ -5849,7 +5969,9 @@ class ContratoController extends Controller
                                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                                ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                                 ->select(
+                                                    'expedientes.liquidado',
                                                     'creditos.id',
                                                     'creditos.prospecto_id',
                                                     'creditos.num_dep_economicos',
@@ -5979,6 +6101,7 @@ class ContratoController extends Controller
                                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                                ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                                 ->select('contratos.id as contratoId')
                                                 ->where('inst_seleccionadas.elegido', '=', '1')
                                                 ->where('contratos.status','=',$b_status)
@@ -5993,7 +6116,9 @@ class ContratoController extends Controller
                                                     ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                                     ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                                    ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                                     ->select(
+                                                        'expedientes.liquidado',
                                                         'creditos.id',
                                                         'creditos.prospecto_id',
                                                         'creditos.num_dep_economicos',
@@ -6123,6 +6248,7 @@ class ContratoController extends Controller
                                                     ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                                     ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                                    ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                                     ->select('contratos.id as contratoId')
                                                     ->where('inst_seleccionadas.elegido', '=', '1')
                                                     ->where('contratos.status','=',$b_status)
@@ -6137,7 +6263,9 @@ class ContratoController extends Controller
                                                         ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                                         ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                                        ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                                         ->select(
+                                                            'expedientes.liquidado',
                                                             'creditos.id',
                                                             'creditos.prospecto_id',
                                                             'creditos.num_dep_economicos',
@@ -6267,6 +6395,7 @@ class ContratoController extends Controller
                                                         ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                                         ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                                        ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                                         ->select('contratos.id as contratoId')
                                                         ->where('inst_seleccionadas.elegido', '=', '1')
                                                         ->where('contratos.status','=',$b_status)
@@ -6280,7 +6409,9 @@ class ContratoController extends Controller
                                                         ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                                         ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                                        ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                                         ->select(
+                                                            'expedientes.liquidado',
                                                             'creditos.id',
                                                             'creditos.prospecto_id',
                                                             'creditos.num_dep_economicos',
@@ -6409,6 +6540,7 @@ class ContratoController extends Controller
                                                         ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                                         ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                                        ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                                         ->select('contratos.id as contratoId')
                                                         ->where('inst_seleccionadas.elegido', '=', '1')
                                                         ->where('contratos.status','=',$b_status)
@@ -6428,7 +6560,9 @@ class ContratoController extends Controller
                                         ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                         ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                        ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                         ->select(
+                                            'expedientes.liquidado',
                                             'creditos.id',
                                             'creditos.prospecto_id',
                                             'creditos.num_dep_economicos',
@@ -6561,6 +6695,7 @@ class ContratoController extends Controller
                                         ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                         ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                        ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                         ->select('contratos.id as contratoId')
                                         ->where('inst_seleccionadas.elegido', '=', '1')
                                         ->where('contratos.status','=',$b_status)
@@ -6578,7 +6713,9 @@ class ContratoController extends Controller
                                             ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                             ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                             ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                             ->select(
+                                                'expedientes.liquidado',
                                                 'creditos.id',
                                                 'creditos.prospecto_id',
                                                 'creditos.num_dep_economicos',
@@ -6710,6 +6847,7 @@ class ContratoController extends Controller
                                             ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                             ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                             ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                             ->select('contratos.id as contratoId')
                                             ->where('inst_seleccionadas.elegido', '=', '1')
                                             ->where('contratos.status','=',$b_status)
@@ -6726,7 +6864,9 @@ class ContratoController extends Controller
                                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                                ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                                 ->select(
+                                                    'expedientes.liquidado',
                                                     'creditos.id',
                                                     'creditos.prospecto_id',
                                                     'creditos.num_dep_economicos',
@@ -6857,6 +6997,7 @@ class ContratoController extends Controller
                                                 ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                                 ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                                ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                                 ->select('contratos.id as contratoId')
                                                 ->where('inst_seleccionadas.elegido', '=', '1')
                                                 ->where('contratos.status','=',$b_status)
@@ -6872,7 +7013,9 @@ class ContratoController extends Controller
                                                     ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                                     ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                                    ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                                     ->select(
+                                                        'expedientes.liquidado',
                                                         'creditos.id',
                                                         'creditos.prospecto_id',
                                                         'creditos.num_dep_economicos',
@@ -7003,6 +7146,7 @@ class ContratoController extends Controller
                                                     ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                                     ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                                    ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                                     ->select('contratos.id as contratoId')
                                                     ->where('inst_seleccionadas.elegido', '=', '1')
                                                     ->where('contratos.status','=',$b_status)
@@ -7018,7 +7162,9 @@ class ContratoController extends Controller
                                                         ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                                         ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                                        ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                                         ->select(
+                                                            'expedientes.liquidado',
                                                             'creditos.id',
                                                             'creditos.prospecto_id',
                                                             'creditos.num_dep_economicos',
@@ -7149,6 +7295,7 @@ class ContratoController extends Controller
                                                         ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                                         ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                                        ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                                         ->select('contratos.id as contratoId')
                                                         ->where('inst_seleccionadas.elegido', '=', '1')
                                                         ->where('contratos.status','=',$b_status)
@@ -7163,7 +7310,9 @@ class ContratoController extends Controller
                                                         ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                                         ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                                        ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                                         ->select(
+                                                            'expedientes.liquidado',
                                                             'creditos.id',
                                                             'creditos.prospecto_id',
                                                             'creditos.num_dep_economicos',
@@ -7293,6 +7442,7 @@ class ContratoController extends Controller
                                                         ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
                                                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                                         ->join('personal as v', 'clientes.vendedor_id', 'v.id')
+                                                        ->leftjoin('expedientes','contratos.id','=','expedientes.id')
                                                         ->select('contratos.id as contratoId')
                                                         ->where('inst_seleccionadas.elegido', '=', '1')
                                                         ->where('contratos.status','=',$b_status)
@@ -8887,15 +9037,15 @@ class ContratoController extends Controller
     public function reasignarCliente(Request $request)
     {
         if(!$request->ajax())return redirect('/');
-        $loteNuevo_id = $request->sel_lote;
-
-        $lote_ant = Lote::findOrFail($request->lote_id);
-        $varContrato = $lote_ant->contrato;
-        $lote_ant->contrato = 0;
-        $lote_ant->paquete = '';
-        $lote_ant->save();
 
         try {
+            $loteNuevo_id = $request->sel_lote;
+
+            $lote_ant = Lote::findOrFail($request->lote_id);
+            $varContrato = $lote_ant->contrato;
+            $lote_ant->contrato = 0;
+            $lote_ant->paquete = '';
+            $lote_ant->save();
             DB::beginTransaction();
 
             $lote_new = Lote::findOrFail($loteNuevo_id);
@@ -8920,8 +9070,8 @@ class ContratoController extends Controller
                     $lote_new->excedente_terreno = 0;
                 }
             
-            $lote_new->precio_base = round(($precio_modelo[0]->precio_modelo + $lote_new->ajuste), 2);
-            $precio_venta = round(($sobreprecios[0]->sobreprecios + $lote_new->precio_base + $lote_new->excedente_terreno + $lote_new->obra_extra),2);
+            $lote_new->precio_base = round(($precio_modelo[0]->precio_modelo), 2);
+            $precio_venta = round(($sobreprecios[0]->sobreprecios + $lote_new->precio_base + $lote_new->excedente_terreno + $lote_new->obra_extra  + $lote_new->ajuste),2);
             $terreno_tam_excedente = round(($lote_new->terreno - $modelo[0]->terreno),2);
             $lote_new->contrato = $varContrato;
 

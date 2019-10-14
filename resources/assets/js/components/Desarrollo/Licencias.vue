@@ -111,8 +111,8 @@
                                         <td class="td2" v-text="licencias.proyecto"></td>
                                         <td class="td2" v-text="licencias.manzana"></td>
                                         <td class="td2" v-text="licencias.num_lote"></td>
-                                        <td class="td2" v-text="licencias.terreno"></td>
-                                        <td class="td2" v-text="licencias.construccion"></td>
+                                        <td class="td2" v-text="formatNumber(licencias.terreno)"></td>
+                                        <td class="td2" v-text="formatNumber(licencias.construccion)"></td>
                                         <!--Modelo-->
                                         <td class="td2">
                                             <span v-if = "licencias.modelo!='Por Asignar' && licencias.cambios==0" class="badge badge-success" v-text="licencias.modelo"></span>
@@ -666,8 +666,8 @@
                 calle: '',
                 numero: '',
                 interior: '',
-                terreno : 0,
-                construccion : 0,
+                terreno : 0.00,
+                construccion : 0.00,
                 allLic: [],
                 allSelected: false,
                 arrayLicencias : [],
@@ -797,8 +797,8 @@
 
             },
 
-//funciones para carga de las licencias
- onImageChange(e){
+        //funciones para carga de las licencias
+            onImageChange(e){
 
                 console.log(e.target.files[0]);
 
@@ -868,6 +868,11 @@
                     console.log(error);
                 });
                 
+            },
+
+            formatNumber(value) {
+                let val = (value/1).toFixed(2)
+                return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             },
 
              selectArquitectos(){

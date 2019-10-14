@@ -24,21 +24,21 @@
                             <i class="icon-pencil"></i>&nbsp;Ocultar vista actualizar
                         </button>
                     <!-- form para cambiar el status de los contratos -->
-                     <form action="" method="post" v-if="listado == 4 && status == 1 || status == 3">
-                                    <div style="text-align: right;">
-                                            <div>
-                                                <div>
-                                                    <label for="text-input"> <strong>Status</strong> </label>
-                                                    <select v-model="status" @change="selectStatus(status)">
-                                                        <option value="0">Cancelado</option>
-                                                        <option value="1">Pendiente</option>
-                                                        <option value="2">No firmado</option>
-                                                        <option value="3">Firmado</option>
-                                                    </select>
-                                                </div>
-                                            </div>       
-                                    </div>
-                                </form>
+                        <form action="" method="post" v-if="listado == 4 && status == 1 && liquidado != 1 || listado == 4 && status == 3 && liquidado != 1">
+                            <div style="text-align: right;">
+                                    <div>
+                                        <div>
+                                            <label for="text-input"> <strong>Status</strong> </label>
+                                            <select v-model="status" @change="selectStatus(status)">
+                                                <option value="0">Cancelado</option>
+                                                <option value="1">Pendiente</option>
+                                                <option value="2">No firmado</option>
+                                                <option value="3">Firmado</option>
+                                            </select>
+                                        </div>
+                                    </div>       
+                            </div>
+                        </form>
 
                     </div>
 
@@ -1961,6 +1961,7 @@
                 b_fecha_status: '',
                 b_fecha_status2: '',
                 listado:0,
+                liquidado:0,
                 modal: 0,
                 tituloModal: '',
                 tipoAccion: 0
@@ -2307,6 +2308,9 @@
                     me.lote_id = lote;
 
                     me.precioVenta = me.precioVenta - me.descuentoPromo;
+                    me.descripcion_paquete = "";
+                    me.costoPaquete = 0;
+                    me.paquete = "";
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -2515,6 +2519,7 @@
                 this.e_civil = data['edo_civil'];
                 this.dep_economicos = data['num_dep_economicos']
                 this.status = data['status'];
+                this.liquidado = data['liquidado'];
                 this.fecha_status = data['fecha_status'];
                 this.lote_id = data['lote_id'];
                 
@@ -2756,6 +2761,7 @@
                 this.e_civil = data['edo_civil'];
                 this.dep_economicos = data['num_dep_economicos'];
                 this.status = data['status'];
+                this.liquidado = data['liquidado'];
                 this.fecha_status = data['fecha_status'];
                 this.lote_id = data['lote_id'];
                 
