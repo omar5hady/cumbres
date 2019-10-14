@@ -77,6 +77,7 @@
                                         <th># Lote</th>
                                         <th># Pagare</th>
                                         <th>Saldo</th>
+                                        <th>Total depositado</th>
                                         <th>Fecha limite de Pago</th>
                                         <th>Status</th>
                                     </tr>
@@ -101,6 +102,7 @@
                                         <td v-text="parseInt(pagare.num_pago)+1"></td>
                                         <td v-if="pagare.restante < 0" v-text="'$'+formatNumber(0)"></td>
                                         <td v-else v-text="'$'+formatNumber(pagare.restante)"></td>
+                                        <td v-text="'$'+formatNumber(pagare.monto_pago - pagare.restante)"></td>
                                         <td v-text="this.moment(pagare.fecha_pago).locale('es').format('DD/MMM/YYYY')"></td>
                                         <td >
                                             <span v-if="pagare.diferencia > 0 && pagare.pagado < 2" class="badge badge-danger">Vencido</span>
