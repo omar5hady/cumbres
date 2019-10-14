@@ -20,7 +20,7 @@
                                         <option value="lotes.fraccionamiento_id">Proyecto</option>
                                         <option value="c.nombre">Cliente</option>
                                         <option value="v.nombre">Asesor</option>
-                                        <option value="contraos.id"># Folio</option>
+                                        <option value="contratos.id"># Folio</option>
                                     </select>
 
                                     

@@ -79,11 +79,7 @@
                                             <td class="td2">
                                                 <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{contratos.folio}}</a>
                                                 <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
-                                                    <a class="dropdown-item" @click="abrirPDF(contratos.folio)">Estado de cuenta</a>
                                                     <a class="dropdown-item" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+ contratos.folio">Contrato de compra venta</a>
-                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/cartaServicios/pdf/'+ contratos.folio">Carta de servicios</a>
-                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+ contratos.folio">Servicios de telecomunición</a>
-                                                    <a class="dropdown-item" v-bind:href="'/descargarReglamento/contrato/'+ contratos.folio">Reglamento de la etapa</a>
                                                     <a class="dropdown-item" @click="selectNombreArchivoModelo(contratos.folio)">Catalogo de especificaciones</a>
                                                 </div>
                                             </td>
@@ -101,7 +97,9 @@
                                                     <span v-text="this.moment(contratos.fecha_entrega_obra).locale('es').format('DD/MMM/YYYY')" class="badge badge-danger"></span>
                                                 </td>
                                                 <td class="td2" v-else>
-                                                    Sin fecha asignada
+                                                    <button title="Programar fecha" type="button" class="btn btn-info pull-right" 
+                                                        @click="abrirModal('fecha_entrega', contratos)">Programar fecha
+                                                    </button>
                                                 </td>
                                             </template>
                                             <template>
@@ -180,7 +178,7 @@
             </div>
          
             <!--Inicio del modal para diversos llenados de tabla en historial -->
-                <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
                     <div class="modal-dialog modal-primary modal-lg" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -190,20 +188,25 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <div class="form-group row" v-if="tipoAccion == 1">
-                                    <label class="col-md-2 form-control-label" for="text-input">Fecha de anticipo</label>
+                                <div class="form-group row">
+                                    <label class="col-md-2 form-control-label" for="text-input">Fecha de entrega</label>
                                     <div class="col-md-3">
-                                        <input type="date" class="form-control">
+                                        <input v-model="fecha_entrega_obra" type="date" class="form-control">
                                     </div>
                                 </div>
 
-                                <div class="form-group row" v-if="tipoAccion == 1">
-                                    <label class="col-md-2 form-control-label" for="text-input">$ Anticipo</label>
-                                    <div class="col-md-4">
-                                        <input type="text" pattern="\d*" maxlength="10" v-on:keypress="isNumber($event)" class="form-control">
+                                <div class="form-group row">
+                                    <label class="col-md-2 form-control-label" for="text-input">Observación</label>
+                                    <div class="col-md-9">
+                                        <input type="text" v-model="observacion" class="form-control">
                                     </div>
-                                    <div class="col-md-4">
-                                        <h6 v-text="'$'+formatNumber(anticipo)"></h6>
+                                </div>
+
+                                <!-- Div para mostrar los errores que mande validerDepartamento -->
+                                <div v-show="errorEntrega" class="form-group row div-error">
+                                    <div class="text-center text-error">
+                                        <div v-for="error in errorMostrarMsjEntrega" :key="error" v-text="error">
+                                        </div>
                                     </div>
                                 </div>
  
@@ -211,7 +214,7 @@
                             <!-- Botones del modal -->
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                                <button type="button" v-if="tipoAccion == 1" class="btn btn-success" @click="actAnticipo()">Guardar</button>
+                                <button type="button" class="btn btn-success" @click="setFechaEntrega()">Guardar</button>
                             </div>
                         </div>
                         <!-- /.modal-content -->
@@ -299,7 +302,7 @@
                 arrayAllLotes:[],
                 arrayContratos:[],
 
-                modal2: 0,
+                modal: 0,
                 modal3: 0,
                 tituloModal: '',
 
@@ -309,6 +312,7 @@
                 contrato_id: 0,
                 offset : 3,
                 nombre_archivo_modelo:'',
+                fecha_entrega_obra:'',
 
                 // Criterios para historial de contratos
                 pagination2 : {
@@ -327,8 +331,8 @@
                 tipoAccion:0,
                 observacion:'',
 
-                errorColocacion : 0,
-                errorMostrarMsjColocacion : [],
+                errorEntrega : 0,
+                errorMostrarMsjEntrega : [],
                
             }
         },
@@ -376,11 +380,6 @@
                 .catch(function (error) {
                     console.log(error);
                 });
-            },
-
-            abrirPDF(id){
-                const win = window.open('/estadoCuenta/estadoPDF/'+id, '_blank');
-                win.focus();
             },
 
             selectNombreArchivoModelo(id){
@@ -531,25 +530,54 @@
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             },
 
-            validarColocacion(){
-                this.errorColocacion=0;
-                this.errorMostrarMsjColocacion=[];
+            setFechaEntrega(){
+                if(this.validarFecha()) //Se verifica si hay un error (campo vacio)
+                {
+                    return;
+                }
+                let me = this;
+                //Con axios se llama el metodo update de LoteController
+                axios.put('/lotes/setFechaEntregaObra',{
+                    'lote_id':this.lote_id,
+                    'fecha_entrega_obra' : this.fecha_entrega_obra,
+                    'folio' : this.folio,
+                    'comentario': this.observacion,
+                    
+                }).then(function (response){
+                    me.cerrarModal();
+                    me.listarContratos(1,me.buscar2,me.b_etapa2,me.b_manzana2,me.b_lote2,me.criterio2);
+                    //window.alert("Cambios guardados correctamente");
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'fecha agregada correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
+            validarFecha(){
+                this.errorEntrega=0;
+                this.errorMostrarMsjEntrega=[];
 
                 if(!this.observacion) //Si la variable Fraccionamiento esta vacia
-                    this.errorMostrarMsjColocacion.push("Debe ingresar una observación.");
+                    this.errorMostrarMsjEntrega.push("Debe ingresar una observación.");
 
-                if(!this.fecha_colocacion) //Si la variable Fraccionamiento esta vacia
-                    this.errorMostrarMsjColocacion.push("Ingresar fecha de colocación.");
+                if(!this.fecha_entrega_obra) //Si la variable Fraccionamiento esta vacia
+                    this.errorMostrarMsjEntrega.push("Ingresar fecha de entrega.");
 
 
-                if(this.errorMostrarMsjColocacion.length)//Si el mensaje tiene almacenado algo en el array
-                    this.errorColocacion = 1;
+                if(this.errorMostrarMsjEntrega.length)//Si el mensaje tiene almacenado algo en el array
+                    this.errorEntrega = 1;
 
-                return this.errorColocacion;
+                return this.errorEntrega;
             },
             cerrarModal(){
                 this.tituloModal = '';
-                this.modal2 = 0;
+                this.modal = 0;
                 this.modal3 = 0;
                 this.observacion = '';
                 this.arrayObservacion = [];
@@ -563,6 +591,15 @@
                             this.tituloModal='Observaciones';
                             this.folio = data['folio'];
                             this.observacion = '';
+                        }
+
+                        case 'fecha_entrega':{
+                            this.modal = 1;
+                            this.tituloModal='Programar fecha de entrega';
+                            this.folio = data['folio'];
+                            this.observacion = '';
+                            this.fecha_entrega_obra = data['fecha_entrega_obra'];
+                            this.lote_id = data['loteId']
                         }
                     }
                 }

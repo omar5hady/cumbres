@@ -6000,8 +6000,6 @@ class LoteController extends Controller
             $credito->precio_venta = $credito->precio_venta + $request->ajuste - $cambio;
             $credito->precio_base = $credito->precio_base + $request->ajuste - $cambio;
             $credito->save();
-            
-
         }
     }
 

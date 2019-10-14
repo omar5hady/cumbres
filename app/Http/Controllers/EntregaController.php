@@ -8,6 +8,7 @@ use App\Obs_entrega;
 use DB;
 use Auth;
 use App\Expediente;
+use App\lote;
 
 class EntregaController extends Controller
 {
@@ -67,10 +68,14 @@ class EntregaController extends Controller
                         'contratos.fecha_status',
                         'contratos.status',
                         'contratos.equipamiento',
-                        'expedientes.fecha_firma_esc'
+                        'expedientes.fecha_firma_esc',
+                        'lotes.fecha_entrega_obra',
+                        'lotes.id as loteId',
+                        DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
                     )
                     ->where('contratos.status', '!=', 0)
                     ->where('contratos.status', '!=', 2)
+                    ->where('contratos.entregado', '=', 0)
                     ->orderBy('licencias.avance','desc')
                     ->paginate(8);
 
@@ -86,5 +91,53 @@ class EntregaController extends Controller
                 ];
         }
             
+    }
+
+    public function indexObservaciones(Request $request){
+        if(!$request->ajax())return redirect('/');
+        $buscar = $request->buscar;
+        $observacion = Obs_entrega::select('comentario','usuario','created_at')
+                    ->where('entrega_id','=', $buscar)->orderBy('created_at','desc')->paginate(20);
+
+        return [
+            'pagination' => [
+                'total'         => $observacion->total(),
+                'current_page'  => $observacion->currentPage(),
+                'per_page'      => $observacion->perPage(),
+                'last_page'     => $observacion->lastPage(),
+                'from'          => $observacion->firstItem(),
+                'to'            => $observacion->lastItem(),
+            ],
+            'observacion' => $observacion
+        ];
+    }
+
+    public function storeObservacion(Request $request)
+    {
+        if(!$request->ajax())return redirect('/');
+        $observacion = new Obs_entrega();
+        $observacion->entrega_id = $request->entrega_id;
+        $observacion->comentario = $request->comentario;
+        $observacion->usuario = Auth::user()->usuario;
+        $observacion->save();
+    }
+
+    public function setFechaObra(Request $request){
+        if(!$request->ajax())return redirect('/');
+        try{
+            DB::beginTransaction();
+            $lote = Lote::findOrFail($request->lote_id);
+            $lote->fecha_entrega_obra = $request->fecha_entrega_obra;
+            $lote->save();
+
+            $observacion = new Obs_entrega();
+            $observacion->entrega_id = $request->folio;
+            $observacion->comentario = $request->comentario;
+            $observacion->usuario = Auth::user()->usuario;
+            $observacion->save();
+            DB::commit();
+        } catch (Exception $e){
+            DB::rollBack();
+        }       
     }
 }

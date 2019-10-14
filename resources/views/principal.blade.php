@@ -287,6 +287,12 @@
                                         <a class="nav-link" href="#"><i class="fa fa-archive"></i> Solic. Equipamiento</a>
                                     </li>
                                 @endif
+
+                                @if(Auth::user()->rol_id == 1)
+                                    <li @click="menu=216" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="fa fa-home"></i> Viviendas por entregar</a>
+                                    </li>
+                                @endif
                             </ul>
                         </li>
                     @endif

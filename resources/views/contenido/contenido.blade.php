@@ -327,6 +327,10 @@
             <postventa-entrega></postventa-entrega>
         </template>
 
+        <template v-if="menu==216">
+            <obra-entrega></obra-entrega>
+        </template>
+
         
     @endif
 
