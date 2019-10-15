@@ -5818,6 +5818,19 @@ class ExpedienteController extends Controller
 
             if($request->total_liquidar <= 0){
                 $expediente->liquidado = 1;
+
+                $pagaresContrato = Pago_contrato::select('id','pagado','contrato_id')
+                                            ->where('contrato_id','=',$request->folio)
+                                            ->where('pagado','=',1)
+                                            ->orWhere('pagado','=',0)
+                                            ->where('contrato_id','=',$request->folio)
+                                            ->get();
+
+                foreach ($pagaresContrato as $pagaresAnteriores){
+                    $pagaresCambio = Pago_contrato::findOrFail($pagaresAnteriores->id);
+                    $pagaresCambio->pagado = 3;
+                    $pagaresCambio->save();
+                }
             }else{
                 $expediente->liquidado = 0;
             }

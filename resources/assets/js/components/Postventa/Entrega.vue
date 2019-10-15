@@ -60,15 +60,18 @@
                                 <thead>
                                     <tr> 
                                         <th># Ref</th>
-                                        <th>Cliente</th>
                                         <th>Proyecto</th>
                                         <th>Etapa</th>
                                         <th>Manzana</th>
                                         <th>Lote</th>
+                                        <th>Cliente</th>
+                                        <th>Contacto</th>
                                         <th>Fecha de firma</th>
                                         <th>Fecha entrega (Obra)</th>
                                         <th>Paquete y/o Promocioón</th>
                                         <th>Equipamiento</th>
+                                        <th>Fecha entrega programada</th>
+                                        <th>Hora entrega programada</th>
                                         <th>Observaciones</th>
                                         
                                     </tr>
@@ -87,11 +90,16 @@
                                                     <a class="dropdown-item" @click="selectNombreArchivoModelo(contratos.folio)">Catalogo de especificaciones</a>
                                                 </div>
                                             </td>
-                                            <td class="td2" v-text="contratos.nombre_cliente"></td>
                                             <td class="td2" v-text="contratos.proyecto"></td>
                                             <td class="td2" v-text="contratos.etapa"></td>
                                             <td class="td2" v-text="contratos.manzana"></td>
                                             <td class="td2" v-text="contratos.num_lote"></td>
+                                            <td class="td2" @click="abrirModal('ver_personal',contratos)" v-text="contratos.nombre_cliente"></td>
+                                            <td class="td2">
+                                                 <a title="Llamar" class="btn btn-dark" :href="'tel:'+contratos.celular"><i class="fa fa-phone fa-lg"></i></a>
+                                                 <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+contratos.celular+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>
+                                                 <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+contratos.email"> <i class="fa fa-envelope-o fa-lg"></i> </a>
+                                            </td>
                                             <td class="td2" v-text="this.moment(contratos.fecha_firma_esc).locale('es').format('DD/MMM/YYYY')"></td>
                                             <template>
                                                 <td class="td2" v-if="contratos.fecha_entrega_obra && contratos.diferencia_obra < 2">
@@ -142,6 +150,28 @@
                                                 </td>
                                                 <td class="td2" v-else v-text="'Sin equipamiento'" ></td> 
                                             </template>
+                                            <template>
+                                                <td class="td2" @click="abrirModal('programar_fecha', contratos)" v-if="contratos.fecha_program">
+                                                    <span v-text="this.moment(contratos.fecha_program).locale('es').format('DD/MMM/YYYY')" class="badge badge-success"></span>
+                                                </td>
+                                                <td class="td2" v-else>
+                                                    <button title="Programar fecha" type="button" class="btn btn-default pull-right" 
+                                                        @click="abrirModal('programar_fecha', contratos)">
+                                                        Programar fecha&nbsp;&nbsp;<i class="fa fa-calendar-plus-o fa-lg"></i>
+                                                    </button>
+                                                </td>
+                                            </template>
+                                            <template>
+                                                <td class="td2" @click="abrirModal('programar_hora', contratos)" v-if="contratos.hora_entrega_prog">
+                                                    <span v-text="contratos.hora_entrega_prog" class="badge badge-success"></span>
+                                                </td>
+                                                <td class="td2" v-else>
+                                                    <button title="Programar hora" type="button" class="btn btn-default pull-right" 
+                                                        @click="abrirModal('programar_hora', contratos)">
+                                                        Programar hora&nbsp;&nbsp;<i class="fa fa-clock-o fa-lg"></i>
+                                                    </button>
+                                                </td>
+                                            </template>
                                             <td> 
                                                 <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
                                                     @click="abrirModal('observaciones', contratos),listarObservacion(1,contratos.folio)">Ver observaciones
@@ -191,19 +221,24 @@
                             </div>
                             <div class="modal-body">
                                 <div class="form-group row" v-if="tipoAccion == 1">
-                                    <label class="col-md-2 form-control-label" for="text-input">Fecha de anticipo</label>
+                                    <label class="col-md-2 form-control-label" for="text-input">Fecha de entrega programada</label>
                                     <div class="col-md-3">
-                                        <input type="date" class="form-control">
+                                        <input v-model="fecha_program" type="date" class="form-control">
                                     </div>
                                 </div>
 
-                                <div class="form-group row" v-if="tipoAccion == 1">
-                                    <label class="col-md-2 form-control-label" for="text-input">$ Anticipo</label>
-                                    <div class="col-md-4">
-                                        <input type="text" pattern="\d*" maxlength="10" v-on:keypress="isNumber($event)" class="form-control">
+                                <div class="form-group row" v-if="tipoAccion == 2">  
+                                    <label class="col-md-3 form-control-label" for="text-input">Hora de entrega programada</label>
+                                    <div class="col-md-3">
+                                        <input type="time" v-model="hora_entrega_prog" class="form-control">
                                     </div>
-                                    <div class="col-md-4">
-                                        <h6 v-text="'$'+formatNumber(anticipo)"></h6>
+                                </div>
+
+                                <!-- Div para mostrar los errores que mande validerDepartamento -->
+                                <div v-show="errorEntrega" class="form-group row div-error">
+                                    <div class="text-center text-error">
+                                        <div v-for="error in errorMostrarMsjEntrega" :key="error" v-text="error">
+                                        </div>
                                     </div>
                                 </div>
  
@@ -211,7 +246,8 @@
                             <!-- Botones del modal -->
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                                <button type="button" v-if="tipoAccion == 1" class="btn btn-success" @click="actAnticipo()">Guardar</button>
+                                <button type="button" v-if="tipoAccion == 1" class="btn btn-success" @click="progFecha()">Programar fecha</button>
+                                <button type="button" v-if="tipoAccion == 2" class="btn btn-success" @click="progHora()">Programar hora</button>
                             </div>
                         </div>
                         <!-- /.modal-content -->
@@ -277,6 +313,203 @@
                     <!-- /.modal-dialog -->
                 </div>
             <!--Fin del modal-->
+
+            <!--Inicio del modal para mostrar los datos del cliente -->
+                <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal1}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                    <div class="modal-dialog modal-primary modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" v-text="tituloModal"></h5>
+                                <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Nombre</label>
+                                        <div class="col-md-9">
+                                            <input type="text" disabled v-model="nombre_cliente" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Sexo</label>
+                                        <div class="col-md-3">
+                                            <input type="text" v-model="sexo_cliente" disabled class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Telefono</label>
+                                        <div class="col-md-3">
+                                            <input type="text" disabled v-model="telefono_cliente" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Celular</label>
+                                        <div class="col-md-3">
+                                            <input type="text" v-model="celular_cliente" disabled class="form-control">
+                                        </div>
+                                        <a title="Llamar" class="btn btn-dark" :href="'tel:'+celular_cliente"><i class="fa fa-phone fa-lg"></i></a>
+                                        <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+celular_cliente+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>             
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Email</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="email_cliente" disabled class="form-control">
+                                        </div>
+                                        <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+email_cliente"> <i class="fa fa-envelope-o fa-lg"></i> </a>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Direccion</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="direccion_cliente" disabled class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">C.P</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="cp_cliente" disabled class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Colonia</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="colonia_cliente" disabled class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Estado</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="estado_cliente" disabled class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Ciudad</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="ciudad_cliente" disabled class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Fecha de nacimiento</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="fechanac_cliente" disabled class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">CURP</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="curp_cliente" disabled class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">RFC</label>
+                                        <div class="col-md-3">
+                                            <input type="text" v-model="rfc_cliente" disabled class="form-control">
+                                        </div>
+                                        <label class="col-md-3 form-control-label" for="text-input">Homoclave</label>
+                                        <div class="col-md-2">
+                                            <input type="text" v-model="homoclave_cliente" disabled class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">NSS</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="nss_cliente" disabled class="form-control">
+                                        </div>
+                                    </div>
+
+                                    <hr>
+                                    <h3 style="text-align:center;">LUGAR DE TRABAJO</h3>
+                                    <hr>
+                                    
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Tipo de economia</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="tipoeconomia_cliente" disabled class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Empresa</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="empresa_cliente" disabled class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Giro del negocio</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="gironegocio_cliente" disabled class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Domicilio Empresa</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="domicilio_empresa" disabled class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">C.P</label>
+                                        <div class="col-md-3">
+                                            <input type="text" v-model="cpempresa_cliente" disabled class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Colonia</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="coloniaempresa_cliente" disabled class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Estado</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="estadoempresa_cliente" disabled class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Ciudad</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="ciudadempresa_cliente" disabled class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Email institucional</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="emailinstitucional_cliente" disabled class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Telefono de la empresa</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="telefonoempresa_cliente" disabled class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">EXT</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="ext_cliente" disabled class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Estado civil</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="edocivil_cliente" disabled class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input"># Dependientes economicos</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="depeconomicos_cliente" disabled class="form-control">
+                                        </div>
+                                    </div>
+                            </div>
+                            <!-- Botones del modal -->
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+            <!--Fin del modal-->
             
          
      </main>
@@ -299,9 +532,11 @@
                 arrayAllLotes:[],
                 arrayContratos:[],
 
+                modal1:0,
                 modal2: 0,
                 modal3: 0,
                 tituloModal: '',
+                tipoAccion:0,
 
                 //variables
                 lote_id: 0,
@@ -309,6 +544,41 @@
                 contrato_id: 0,
                 offset : 3,
                 nombre_archivo_modelo:'',
+                fecha_program:'',
+                hora_entrega_prog:'',
+                fecha_entrega_real:'',
+                hora_entrega_real:'',
+                
+
+                //Datos clientes
+                nombre_cliente:'',
+                sexo_cliente:'',
+                telefono_cliente:'',
+                celular_cliente:'',
+                email_cliente:'',
+                direccion_cliente:'',
+                cp_cliente:'',
+                colonia_cliente:'',
+                estado_cliente:'',
+                ciudad_cliente:'',
+                fechanac_cliente:'',
+                curp_cliente:'',
+                rfc_cliente:'',
+                homoclave_cliente:'',
+                nss_cliente:'',
+                tipoeconomia_cliente:'',
+                empresa_cliente:'',
+                gironegocio_cliente:'',
+                domicilio_empresa:'',
+                cpempresa_cliente:'',
+                coloniaempresa_cliente:'',
+                estadoempresa_cliente:'',
+                ciudadempresa_cliente:'',
+                emailinstitucional_cliente:'',
+                telefonoempresa_cliente:'',
+                ext_cliente:'',
+                edocivil_cliente:'',
+                depeconomicos_cliente:'',
 
                 // Criterios para historial de contratos
                 pagination2 : {
@@ -327,8 +597,8 @@
                 tipoAccion:0,
                 observacion:'',
 
-                errorColocacion : 0,
-                errorMostrarMsjColocacion : [],
+                errorEntrega : 0,
+                errorMostrarMsjEntrega : [],
                
             }
         },
@@ -531,28 +801,123 @@
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             },
 
-            validarColocacion(){
-                this.errorColocacion=0;
-                this.errorMostrarMsjColocacion=[];
+            progFecha(){
+                if(this.validarFecha()) //Se verifica si hay un error (campo vacio)
+                {
+                    return;
+                }
+                let me = this;
+                //Con axios se llama el metodo update de LoteController
+                axios.put('/postventa/setFechaProg',{
+                    'fecha_program' : this.fecha_program,
+                    'folio' : this.folio,
+                    
+                }).then(function (response){
+                    me.cerrarModal();
+                    me.listarContratos(1,me.buscar2,me.b_etapa2,me.b_manzana2,me.b_lote2,me.criterio2);
+                    //window.alert("Cambios guardados correctamente");
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'fecha agregada correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
 
-                if(!this.observacion) //Si la variable Fraccionamiento esta vacia
-                    this.errorMostrarMsjColocacion.push("Debe ingresar una observación.");
+            progHora(){
+                if(this.validarHora()) //Se verifica si hay un error (campo vacio)
+                {
+                    return;
+                }
+                let me = this;
+                //Con axios se llama el metodo update de LoteController
+                axios.put('/postventa/setHoraProg',{
+                    'hora_entrega_prog' : this.hora_entrega_prog,
+                    'folio' : this.folio,
+                    
+                }).then(function (response){
+                    me.cerrarModal();
+                    me.listarContratos(1,me.buscar2,me.b_etapa2,me.b_manzana2,me.b_lote2,me.criterio2);
+                    //window.alert("Cambios guardados correctamente");
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'hora agregada correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
 
-                if(!this.fecha_colocacion) //Si la variable Fraccionamiento esta vacia
-                    this.errorMostrarMsjColocacion.push("Ingresar fecha de colocación.");
+            validarFecha(){
+                this.errorEntrega=0;
+                this.errorMostrarMsjEntrega=[];
+
+                if(!this.fecha_program) //Si la variable Fraccionamiento esta vacia
+                    this.errorMostrarMsjEntrega.push("Ingresar fecha de entrega.");
 
 
-                if(this.errorMostrarMsjColocacion.length)//Si el mensaje tiene almacenado algo en el array
-                    this.errorColocacion = 1;
+                if(this.errorMostrarMsjEntrega.length)//Si el mensaje tiene almacenado algo en el array
+                    this.errorEntrega = 1;
 
-                return this.errorColocacion;
+                return this.errorEntrega;
+            },
+            validarHora(){
+                this.errorEntrega=0;
+                this.errorMostrarMsjEntrega=[];
+
+                if(!this.hora_entrega_prog) //Si la variable Fraccionamiento esta vacia
+                    this.errorMostrarMsjEntrega.push("Ingresar hora de entrega.");
+
+
+                if(this.errorMostrarMsjEntrega.length)//Si el mensaje tiene almacenado algo en el array
+                    this.errorEntrega = 1;
+
+                return this.errorEntrega;
             },
             cerrarModal(){
                 this.tituloModal = '';
                 this.modal2 = 0;
                 this.modal3 = 0;
+                this.modal1= 0;
                 this.observacion = '';
                 this.arrayObservacion = [];
+                this.nombre_cliente="";
+                this.sexo_cliente="";
+                this.telefono_cliente="";
+                this.celular_cliente="";
+                this.email_cliente="";
+                this.direccion_cliente="";
+                this.cp_cliente="";
+                this.colonia_cliente="";
+                this.estado_cliente="";
+                this.ciudad_cliente="";
+                this.fechanac_cliente="";
+                this.curp_cliente="";
+                this.rfc_cliente="";
+                this.homoclave_cliente="";
+                this.nss_cliente="";
+                this.tipoeconomia_cliente="";
+                this.empresa_cliente="";
+                this.gironegocio_cliente="";
+                this.domicilio_empresa="";
+                this.cpempresa_cliente="";
+                this.coloniaempresa_cliente="";
+                this.estadoempresa_cliente="";
+                this.ciudadempresa_cliente="";
+                this.emailinstitucional_cliente="";
+                this.telefonoempresa_cliente="";
+                this.ext_cliente="";
+                this.edocivil_cliente="";
+                this.depeconomicos_cliente="";
+                this.errorEntrega = 0;
+                this.errorMostrarMsjEntrega = [];
             },
 
             abrirModal(accion,data =[]){
@@ -560,9 +925,100 @@
 
                         case 'observaciones':{
                             this.modal3 =1;
+                            this.modal1=0;
                             this.tituloModal='Observaciones';
                             this.folio = data['folio'];
                             this.observacion = '';
+                            break;
+                        }
+
+                        case 'ver_personal':
+                        {
+                            this.modal1 =1;
+                            this.tituloModal='Datos del prospecto';
+                            this.tipoAccion=3;
+                            this.nombre_cliente = data['nombre_cliente'];
+                            if(data['sexo'] == "M"){
+                                this.sexo_cliente= 'Masculino';
+                            }else{
+                                this.sexo_cliente= 'Femenino';
+                            }
+                            this.telefono_cliente = data['telefono'];
+                            this.celular_cliente = data['celular'];
+                            this.email_cliente = data['email'];
+                            this.direccion_cliente =data['direccion'];
+                            this.cp_cliente= data['cp'];
+                            this.colonia_cliente = data['colonia'];
+                            this.estado_cliente=data['estado'];
+                            this.ciudad_cliente=data['ciudad'];
+                            this.fechanac_cliente=data['f_nacimiento'];
+                            this.curp_cliente=data['curp'];
+                            this.rfc_cliente=data['rfc'];
+                            this.homoclave_cliente=data['homoclave'];
+                            this.nss_cliente=data['nss'];
+                            this.tipoeconomia_cliente=data['tipo_economia'];
+                            this.empresa_cliente=data['empresa'];
+                            this.gironegocio_cliente=data['puesto'];
+                            this.domicilio_empresa=data['direccion_empresa'];
+                            this.cpempresa_cliente=data['cp_empresa'];
+                            this.coloniaempresa_cliente=data['colonia_empresa'];
+                            this.estadoempresa_cliente=data['estado_empresa'];
+                            this.ciudadempresa_cliente=data['ciudad_empresa'];
+                            this.emailinstitucional_cliente=data['email_institucional'];
+                            this.telefonoempresa_cliente=data['telefono_empresa'];
+                            this.ext_cliente=data['ext_empresa'];
+
+                            switch(data['edo_civil']){
+                                case 1: {
+                                    this.edocivil_cliente = 'Casado - separacion de bienes';
+                                    break;
+                                }
+                                case 2:{
+                                    this.edocivil_cliente = 'Casado - sociedad conyugal';
+                                    break;
+                                }
+                                case 3:{
+                                    this.edocivil_cliente = 'Divorciado';
+                                    break;
+                                }
+                                case 4:{
+                                    this.edocivil_cliente = 'Soltero';
+                                    break;
+                                }
+                                case 5:{
+                                    this.edocivil_cliente = 'Union libre';
+                                    break;
+                                }
+                                case 6:{
+                                    this.edocivil_cliente = 'Viudo';
+                                    break;
+                                }
+                                default:{
+                                    this.edocivil_cliente = 'Otro';
+                                    break;
+                                }
+                            }
+                            
+                            this.depeconomicos_cliente=data['num_dep_economicos'];
+                            break;
+                        }
+
+                        case 'programar_fecha':{
+                            this.folio = data['folio'];
+                            this.modal2 = 1;
+                            this.tituloModal = "Programar Fecha";
+                            this.fecha_program = data['fecha_program'];
+                            this.tipoAccion = 1;
+                            break;
+                        }
+
+                        case 'programar_hora':{
+                            this.folio = data['folio'];
+                            this.modal2 = 1;
+                            this.tituloModal = "Programar Hora";
+                            this.hora_entrega_prog = data['hora_entrega_prog'];
+                            this.tipoAccion = 2;
+                            break;
                         }
                     }
                 }

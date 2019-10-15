@@ -152,201 +152,201 @@
             </div>
          
 
-                <!--Inicio del modal para mostrar los datos del cliente -->
-            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-                <div class="modal-dialog modal-primary modal-lg" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" v-text="tituloModal"></h5>
-                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                              <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Nombre</label>
-                                    <div class="col-md-9">
-                                        <input type="text" disabled v-model="nombre_cliente" class="form-control">
+            <!--Inicio del modal para mostrar los datos del cliente -->
+                <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                    <div class="modal-dialog modal-primary modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" v-text="tituloModal"></h5>
+                                <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Nombre</label>
+                                        <div class="col-md-9">
+                                            <input type="text" disabled v-model="nombre_cliente" class="form-control">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Sexo</label>
-                                    <div class="col-md-3">
-                                        <input type="text" v-model="sexo_cliente" disabled class="form-control">
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Sexo</label>
+                                        <div class="col-md-3">
+                                            <input type="text" v-model="sexo_cliente" disabled class="form-control">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Telefono</label>
-                                    <div class="col-md-3">
-                                        <input type="text" disabled v-model="telefono_cliente" class="form-control">
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Telefono</label>
+                                        <div class="col-md-3">
+                                            <input type="text" disabled v-model="telefono_cliente" class="form-control">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Celular</label>
-                                    <div class="col-md-3">
-                                        <input type="text" v-model="celular_cliente" disabled class="form-control">
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Celular</label>
+                                        <div class="col-md-3">
+                                            <input type="text" v-model="celular_cliente" disabled class="form-control">
+                                        </div>
+                                        <a title="Llamar" class="btn btn-dark" :href="'tel:'+celular_cliente"><i class="fa fa-phone fa-lg"></i></a>
+                                        <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+celular_cliente+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>             
                                     </div>
-                                    <a title="Llamar" class="btn btn-dark" :href="'tel:'+celular_cliente"><i class="fa fa-phone fa-lg"></i></a>
-                                    <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+celular_cliente+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>             
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Email</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="email_cliente" disabled class="form-control">
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Email</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="email_cliente" disabled class="form-control">
+                                        </div>
+                                        <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+email_cliente"> <i class="fa fa-envelope-o fa-lg"></i> </a>
                                     </div>
-                                    <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+email_cliente"> <i class="fa fa-envelope-o fa-lg"></i> </a>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Direccion</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="direccion_cliente" disabled class="form-control">
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Direccion</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="direccion_cliente" disabled class="form-control">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">C.P</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="cp_cliente" disabled class="form-control">
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">C.P</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="cp_cliente" disabled class="form-control">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Colonia</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="colonia_cliente" disabled class="form-control">
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Colonia</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="colonia_cliente" disabled class="form-control">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Estado</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="estado_cliente" disabled class="form-control">
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Estado</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="estado_cliente" disabled class="form-control">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Ciudad</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="ciudad_cliente" disabled class="form-control">
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Ciudad</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="ciudad_cliente" disabled class="form-control">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Fecha de nacimiento</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="fechanac_cliente" disabled class="form-control">
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Fecha de nacimiento</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="fechanac_cliente" disabled class="form-control">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">CURP</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="curp_cliente" disabled class="form-control">
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">CURP</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="curp_cliente" disabled class="form-control">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">RFC</label>
-                                    <div class="col-md-3">
-                                        <input type="text" v-model="rfc_cliente" disabled class="form-control">
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">RFC</label>
+                                        <div class="col-md-3">
+                                            <input type="text" v-model="rfc_cliente" disabled class="form-control">
+                                        </div>
+                                        <label class="col-md-3 form-control-label" for="text-input">Homoclave</label>
+                                        <div class="col-md-2">
+                                            <input type="text" v-model="homoclave_cliente" disabled class="form-control">
+                                        </div>
                                     </div>
-                                    <label class="col-md-3 form-control-label" for="text-input">Homoclave</label>
-                                    <div class="col-md-2">
-                                        <input type="text" v-model="homoclave_cliente" disabled class="form-control">
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">NSS</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="nss_cliente" disabled class="form-control">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">NSS</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="nss_cliente" disabled class="form-control">
-                                    </div>
-                                </div>
 
-                                <hr>
-                                <h3 style="text-align:center;">LUGAR DE TRABAJO</h3>
-                                <hr>
-                                
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Tipo de economia</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="tipoeconomia_cliente" disabled class="form-control">
+                                    <hr>
+                                    <h3 style="text-align:center;">LUGAR DE TRABAJO</h3>
+                                    <hr>
+                                    
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Tipo de economia</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="tipoeconomia_cliente" disabled class="form-control">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Empresa</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="empresa_cliente" disabled class="form-control">
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Empresa</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="empresa_cliente" disabled class="form-control">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Giro del negocio</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="gironegocio_cliente" disabled class="form-control">
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Giro del negocio</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="gironegocio_cliente" disabled class="form-control">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Domicilio Empresa</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="domicilio_empresa" disabled class="form-control">
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Domicilio Empresa</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="domicilio_empresa" disabled class="form-control">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">C.P</label>
-                                    <div class="col-md-3">
-                                        <input type="text" v-model="cpempresa_cliente" disabled class="form-control">
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">C.P</label>
+                                        <div class="col-md-3">
+                                            <input type="text" v-model="cpempresa_cliente" disabled class="form-control">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Colonia</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="coloniaempresa_cliente" disabled class="form-control">
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Colonia</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="coloniaempresa_cliente" disabled class="form-control">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Estado</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="estadoempresa_cliente" disabled class="form-control">
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Estado</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="estadoempresa_cliente" disabled class="form-control">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Ciudad</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="ciudadempresa_cliente" disabled class="form-control">
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Ciudad</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="ciudadempresa_cliente" disabled class="form-control">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Email institucional</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="emailinstitucional_cliente" disabled class="form-control">
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Email institucional</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="emailinstitucional_cliente" disabled class="form-control">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Telefono de la empresa</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="telefonoempresa_cliente" disabled class="form-control">
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Telefono de la empresa</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="telefonoempresa_cliente" disabled class="form-control">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">EXT</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="ext_cliente" disabled class="form-control">
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">EXT</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="ext_cliente" disabled class="form-control">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Estado civil</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="edocivil_cliente" disabled class="form-control">
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input">Estado civil</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="edocivil_cliente" disabled class="form-control">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input"># Dependientes economicos</label>
-                                    <div class="col-md-6">
-                                        <input type="text" v-model="depeconomicos_cliente" disabled class="form-control">
+                                    <div class="form-group row">
+                                        <label class="col-md-3 form-control-label" for="text-input"># Dependientes economicos</label>
+                                        <div class="col-md-6">
+                                            <input type="text" v-model="depeconomicos_cliente" disabled class="form-control">
+                                        </div>
                                     </div>
-                                </div>
+                            </div>
+                            <!-- Botones del modal -->
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                            </div>
                         </div>
-                        <!-- Botones del modal -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                        </div>
+                        <!-- /.modal-content -->
                     </div>
-                    <!-- /.modal-content -->
+                    <!-- /.modal-dialog -->
                 </div>
-                <!-- /.modal-dialog -->
-            </div>
             <!--Fin del modal-->
             
          
