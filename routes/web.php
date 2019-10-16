@@ -336,6 +336,7 @@ Route::group(['middleware' => ['auth']],function(){
 
         Route::put('/postventa/setFechaProg','EntregaController@setFechaProgramada');
         Route::put('/postventa/setHoraProg','EntregaController@setHoraProgramada');
+        Route::put('/postventa/finalizarEntrega','EntregaController@finalizarEntrega');
 
 
     /**********************************RUTAS AVANCE*************************** */

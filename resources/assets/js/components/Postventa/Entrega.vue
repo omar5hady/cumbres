@@ -20,6 +20,7 @@
                                     <select class="form-control col-md-5" v-model="criterio2" @click="selectFraccionamientos()">
                                         <option value="lotes.fraccionamiento_id">Proyecto</option>
                                         <option value="c.nombre">Cliente</option>
+                                        <option value="entregas.fecha_program">Fecha programada</option>
                                         <option value="contratos.id"># Folio</option>
                                     </select>
 
@@ -32,6 +33,9 @@
                                         <option value="">Etapa</option>
                                         <option v-for="etapa in arrayEtapas2" :key="etapa.num_etapa" :value="etapa.id" v-text="etapa.num_etapa"></option>
                                     </select>
+
+                                    <input v-if="criterio2 == 'entregas.fecha_program'" type="date"  v-model="buscar2" @keyup.enter="listarContratos(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="Texto a buscar">
+                                    <input v-if="criterio2 == 'entregas.fecha_program'" type="date"  v-model="b_etapa2" @keyup.enter="listarContratos(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="Texto a buscar">
 
                                     <input v-else type="text"  v-model="buscar2" @keyup.enter="listarContratos(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="Texto a buscar">
                                    
@@ -72,6 +76,7 @@
                                         <th>Equipamiento</th>
                                         <th>Fecha entrega programada</th>
                                         <th>Hora entrega programada</th>
+                                        <th>Finalizar Entrega</th>
                                         <th>Observaciones</th>
                                         
                                     </tr>
@@ -172,6 +177,12 @@
                                                     </button>
                                                 </td>
                                             </template>
+                                            <td class="td2">
+                                                <button title="Finalizar entrega" type="button" class="btn btn-dark pull-right" 
+                                                    @click="abrirModal('finalizar', contratos)">
+                                                    Finalizar&nbsp;&nbsp;<i class="fa fa-trophy fa-lg"></i>
+                                                </button>
+                                            </td>
                                             <td> 
                                                 <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
                                                     @click="abrirModal('observaciones', contratos),listarObservacion(1,contratos.folio)">Ver observaciones
@@ -221,7 +232,7 @@
                             </div>
                             <div class="modal-body">
                                 <div class="form-group row" v-if="tipoAccion == 1">
-                                    <label class="col-md-2 form-control-label" for="text-input">Fecha de entrega programada</label>
+                                    <label class="col-md-3 form-control-label" for="text-input">Fecha de entrega programada</label>
                                     <div class="col-md-3">
                                         <input v-model="fecha_program" type="date" class="form-control">
                                     </div>
@@ -231,6 +242,27 @@
                                     <label class="col-md-3 form-control-label" for="text-input">Hora de entrega programada</label>
                                     <div class="col-md-3">
                                         <input type="time" v-model="hora_entrega_prog" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row" v-if="tipoAccion == 3">
+                                    <label class="col-md-3 form-control-label" for="text-input">Fecha de entrega</label>
+                                    <div class="col-md-3">
+                                        <input v-model="fecha_entrega_real" type="date" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row" v-if="tipoAccion == 3">  
+                                    <label class="col-md-3 form-control-label" for="text-input">Hora de entrega</label>
+                                    <div class="col-md-3">
+                                        <input type="time" v-model="hora_entrega_real" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row" v-if="tipoAccion == 3">
+                                    <label class="col-md-3 form-control-label" for="text-input">Comentarios</label>
+                                    <div class="col-md-8">
+                                        <input type="text" v-model="observacion" class="form-control">
                                     </div>
                                 </div>
 
@@ -248,6 +280,7 @@
                                 <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
                                 <button type="button" v-if="tipoAccion == 1" class="btn btn-success" @click="progFecha()">Programar fecha</button>
                                 <button type="button" v-if="tipoAccion == 2" class="btn btn-success" @click="progHora()">Programar hora</button>
+                                <button type="button" v-if="tipoAccion == 3 && fecha_entrega_real != '' && hora_entrega_real != ''" class="btn btn-success" @click="finalizarEntrega()">Finalizar</button>
                             </div>
                         </div>
                         <!-- /.modal-content -->
@@ -589,7 +622,7 @@
                     'from' : 0,
                     'to' : 0,
                 },
-                criterio2 : 'lotes.fraccionamiento_id', 
+                criterio2 : 'entregas.fecha_program', 
                 buscar2 : '',
                 b_etapa2: '',
                 b_manzana2: '',
@@ -641,6 +674,8 @@
                     var respuesta = response.data;
                     me.arrayContratos = respuesta.contratos.data;
                     me.pagination2 = respuesta.pagination;
+                    me.hora_entrega_real = respuesta.hora;
+                    me.fecha_entrega_real = respuesta.hoy;
                     
                 })
                 .catch(function (error) {
@@ -855,6 +890,31 @@
                 });
             },
 
+            finalizarEntrega(){
+                let me = this;
+                //Con axios se llama el metodo update de LoteController
+                axios.put('/postventa/finalizarEntrega',{
+                    'hora_entrega_real' : this.hora_entrega_real,
+                    'fecha_entrega_real' : this.fecha_entrega_real,
+                    'comentario' : this.observacion,
+                    'id' : this.folio,
+                    
+                }).then(function (response){
+                    me.cerrarModal();
+                    me.listarContratos(1,me.buscar2,me.b_etapa2,me.b_manzana2,me.b_lote2,me.criterio2);
+                    //window.alert("Cambios guardados correctamente");
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Entrega finalizada correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
             validarFecha(){
                 this.errorEntrega=0;
                 this.errorMostrarMsjEntrega=[];
@@ -1018,6 +1078,14 @@
                             this.tituloModal = "Programar Hora";
                             this.hora_entrega_prog = data['hora_entrega_prog'];
                             this.tipoAccion = 2;
+                            break;
+                        }
+
+                        case 'finalizar':{
+                            this.folio = data['folio'];
+                            this.modal2 = 1;
+                            this.tituloModal = "Finalizar entrega";
+                            this.tipoAccion = 3;
                             break;
                         }
                     }

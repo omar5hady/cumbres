@@ -9,6 +9,8 @@ use DB;
 use Auth;
 use App\Expediente;
 use App\lote;
+use Carbon\Carbon;
+use App\Contrato;
 
 class EntregaController extends Controller
 {
@@ -43,6 +45,10 @@ class EntregaController extends Controller
         $b_etapa = $request->b_etapa;
         $b_manzana = $request->b_manzana;
         $b_lote = $request->b_lote;
+
+        $fecha = Carbon::now();
+        $mytime = $fecha->toTimeString();
+        $hoy =  $fecha->toDateString();
 
         if($buscar == ''){
             $contratos = Entrega::join('contratos','entregas.id','contratos.id')
@@ -149,6 +155,61 @@ class EntregaController extends Controller
 
                     break;
                 }
+
+                case 'entregas.fecha_program':{
+                    $contratos = Entrega::join('contratos','entregas.id','contratos.id')
+                    ->join('expedientes','contratos.id','expedientes.id')
+                    ->join('creditos', 'contratos.id', '=', 'creditos.id')
+                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                    ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                    ->join('personal as c', 'clientes.id', '=', 'c.id')
+                    ->select('contratos.id as folio', 
+                        'contratos.equipamiento',
+                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                        'c.celular', 
+                        'c.f_nacimiento','c.rfc',
+                        'c.homoclave','c.direccion','c.colonia','c.cp',
+                        'c.telefono','c.email','creditos.num_dep_economicos',
+                        'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
+                        'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
+                        'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
+                        'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
+                        'contratos.ext_empresa','contratos.colonia_empresa',
+
+                        'creditos.fraccionamiento as proyecto',
+                        'creditos.etapa',
+                        'creditos.manzana',
+                        'creditos.num_lote',
+                        'creditos.paquete',
+                        'creditos.promocion',
+                        'creditos.descripcion_paquete',
+                        'creditos.descripcion_promocion',
+                        'licencias.avance as avance_lote',
+                        'licencias.visita_avaluo',
+                        'contratos.fecha_status',
+                        'contratos.status',
+                        'contratos.equipamiento',
+                        'expedientes.fecha_firma_esc',
+                        'lotes.fecha_entrega_obra',
+                        'lotes.id as loteId',
+                        'entregas.fecha_program',
+                        'entregas.hora_entrega_prog',
+                        'entregas.fecha_entrega_real',
+                        'entregas.hora_entrega_real',
+                        DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
+                    )
+                    ->where('contratos.status', '!=', 0)
+                    ->where('contratos.status', '!=', 2)
+                    ->where('contratos.entregado', '=', 0)
+                    ->whereBetween($criterio, [$buscar, $b_etapa])
+                    ->orderBy('licencias.avance','desc')
+                    ->orderBy('lotes.fecha_entrega_obra','desc')
+                    ->paginate(8);
+
+                    break;
+                }
+
                 case 'contratos.id':{
                     $contratos = Entrega::join('contratos','entregas.id','contratos.id')
                     ->join('expedientes','contratos.id','expedientes.id')
@@ -642,7 +703,7 @@ class EntregaController extends Controller
                         'last_page'     => $contratos->lastPage(),
                         'from'          => $contratos->firstItem(),
                         'to'            => $contratos->lastItem(),
-                    ],'contratos' => $contratos,
+                    ],'contratos' => $contratos, 'hora' => $mytime, 'hoy' => $hoy,
                 ];
         
             
@@ -708,5 +769,34 @@ class EntregaController extends Controller
         $entrega = Entrega::findOrFail($request->folio);
         $entrega->hora_entrega_prog = $request->hora_entrega_prog;
         $entrega->save();       
+    }
+
+    public function finalizarEntrega(Request $request){
+        if(!$request->ajax())return redirect('/');
+
+        try{
+            DB::beginTransaction();
+            $entrega = Entrega::findOrFail($request->id);
+            $entrega->fecha_entrega_real = $request->fecha_entrega_real;
+            $entrega->hora_entrega_real = $request->hora_entrega_real;
+            $entrega->status = 1;
+            $entrega->save();
+
+            $contrato = Contrato::findOrFail($request->id);
+            $contrato->entregado = 1;
+            $contrato->save();
+
+            if($request->comentario != ''){
+                $observacion = new Obs_entrega();
+                $observacion->entrega_id = $request->id;
+                $observacion->comentario = $request->comentario;
+                $observacion->usuario = Auth::user()->usuario;
+                $observacion->save();
+            }
+
+            DB::commit();
+        } catch (Exception $e){
+            DB::rollBack();
+        }       
     }
 }
