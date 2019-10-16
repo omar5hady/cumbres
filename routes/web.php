@@ -330,6 +330,8 @@ Route::group(['middleware' => ['auth']],function(){
 
     ///////////////////         RUTAS POSTVENTA     ///////////////////////////
         Route::get('/postventa/index','EntregaController@indexPendientes');
+        Route::get('/postventa/indexEntregas','EntregaController@indexEntregas');
+        
         Route::get('/postventa/indexObservacion','EntregaController@indexObservaciones');
         Route::post('/postventa/registrarObservacion','EntregaController@storeObservacion');
         Route::put('/lotes/setFechaEntregaObra','EntregaController@setFechaObra');

@@ -9,10 +9,12 @@
                 <div class="card scroll-box">
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Entregas de vivienda
+                        &nbsp;&nbsp;<button type="submit" v-if="historial == 0" @click="historial = 1" class="btn btn-success"><i class="fa fa-check"></i> Historial de Entregas</button>
+                        &nbsp;&nbsp;<button type="submit" v-if="historial == 1" @click="historial = 0" class="btn btn-default"><i class="fa fa-mail-reply-all"></i> Regresar</button>
                     </div>
 
-                <!-------------------  Div historial contratos  --------------------->
-                    <div class="card-body">
+                <!-------------------  Div contratos pendientes por entregar --------------------->
+                    <div class="card-body" v-if="historial == 0">
                         <div class="form-group row">
                             <div class="col-md-8">
                                 <div class="input-group">
@@ -215,6 +217,183 @@
                         </nav>
                     </div>
                 <!-------------------  Fin Div para Contratos que tienen paquete o promoción  --------------------->
+
+
+                <!-------------------  Div contratos pendientes por entregar --------------------->
+                    <div class="card-body" v-if="historial == 1">
+                        <div class="form-group row">
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <!--Criterios para el listado de busqueda -->
+                                    <select class="form-control col-md-5" v-model="criterio" @click="selectFraccionamientos()">
+                                        <option value="lotes.fraccionamiento_id">Proyecto</option>
+                                        <option value="c.nombre">Cliente</option>
+                                        <option value="entregas.fecha_entrega_real">Fecha entrega</option>
+                                        <option value="contratos.id"># Folio</option>
+                                    </select>
+
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @click="selectEtapa(buscar)">
+                                        <option value="">Seleccione</option>
+                                        <option v-for="fraccionamiento in arrayFraccionamientos2" :key="fraccionamiento.nombre" :value="fraccionamiento.id" v-text="fraccionamiento.nombre"></option>
+                                    </select>
+
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" @click="selectManzanas(buscar,b_etapa)" v-model="b_etapa"> 
+                                        <option value="">Etapa</option>
+                                        <option v-for="etapa in arrayEtapas2" :key="etapa.num_etapa" :value="etapa.id" v-text="etapa.num_etapa"></option>
+                                    </select>
+
+                                    <input v-if="criterio == 'entregas.fecha_entrega_real'" type="date"  v-model="buscar" @keyup.enter="listarEntregas(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
+                                    <input v-if="criterio == 'entregas.fecha_entrega_real'" type="date"  v-model="b_etapa" @keyup.enter="listarEntregas(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
+
+                                    <input v-else type="text"  v-model="buscar" @keyup.enter="listarEntregas(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
+                                   
+                                </div>
+                            </div>
+                            <div class="col-md-6" v-if="criterio=='lotes.fraccionamiento_id'">
+                                <div class="input-group">
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" @click="selectLotesManzana(buscar,b_etapa,b_manzana)" @keyup.enter="listarEntregas(1,buscar,b_etapa,b_manzana,b_lote,criterio)" v-model="b_manzana" >
+                                        <option value="">Manzana</option>
+                                        <option v-for="manzana in arrayAllManzanas" :key="manzana.manzana" :value="manzana.manzana" v-text="manzana.manzana"></option>
+                                    </select>
+
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" @keyup.enter="listarEntregas(1,buscar,b_etapa,b_manzana,b_lote,criterio)" v-model="b_lote" >
+                                        <option value="">Lote</option>
+                                        <option v-for="lotes in arrayAllLotes" :key="lotes.id" :value="lotes.num_lote" v-text="lotes.num_lote"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <button type="submit" @click="listarEntregas(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                            </div>
+                        </div>
+                            
+                        <div class="table-responsive">
+                            <table class="table2 table-bordered table-striped table-sm">
+                                <thead>
+                                    <tr> 
+                                        <th># Ref</th>
+                                        <th>Proyecto</th>
+                                        <th>Etapa</th>
+                                        <th>Manzana</th>
+                                        <th>Lote</th>
+                                        <th>Cliente</th>
+                                        <th>Contacto</th>
+                                        <th>Fecha de firma</th>
+                                        <th>Fecha entrega (Obra)</th>
+                                        <th>Paquete y/o Promocioón</th>
+                                        <th>Equipamiento</th>
+                                        <th>Fecha de Entrega</th>
+                                        <th>Observaciones</th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="entregas in arrayEntregas" :key="entregas.id">
+                                        <template>
+                                            <td class="td2">
+                                                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{entregas.folio}}</a>
+                                                <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                    <a class="dropdown-item" @click="abrirPDF(entregas.folio)">Estado de cuenta</a>
+                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+ entregas.folio">Contrato de compra venta</a>
+                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/cartaServicios/pdf/'+ entregas.folio">Carta de servicios</a>
+                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+ entregas.folio">Servicios de telecomunición</a>
+                                                    <a class="dropdown-item" v-bind:href="'/descargarReglamento/contrato/'+ entregas.folio">Reglamento de la etapa</a>
+                                                    <a class="dropdown-item" @click="selectNombreArchivoModelo(entregas.folio)">Catalogo de especificaciones</a>
+                                                </div>
+                                            </td>
+                                            <td class="td2" v-text="entregas.proyecto"></td>
+                                            <td class="td2" v-text="entregas.etapa"></td>
+                                            <td class="td2" v-text="entregas.manzana"></td>
+                                            <td class="td2" v-text="entregas.num_lote"></td>
+                                            <td class="td2" @click="abrirModal('ver_personal',entregas)" v-text="entregas.nombre_cliente"></td>
+                                            <td class="td2">
+                                                 <a title="Llamar" class="btn btn-dark" :href="'tel:'+entregas.celular"><i class="fa fa-phone fa-lg"></i></a>
+                                                 <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+entregas.celular+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>
+                                                 <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+entregas.email"> <i class="fa fa-envelope-o fa-lg"></i> </a>
+                                            </td>
+                                            <td class="td2" v-text="this.moment(entregas.fecha_firma_esc).locale('es').format('DD/MMM/YYYY')"></td>
+                                            <template>
+                                                <td class="td2" v-if="entregas.fecha_entrega_obra && entregas.diferencia_obra < 2">
+                                                    <span v-text="this.moment(entregas.fecha_entrega_obra).locale('es').format('DD/MMM/YYYY')" class="badge badge-success"></span>
+                                                </td>
+                                                <td class="td2" v-els>
+                                                    <span v-text="this.moment(entregas.fecha_entrega_obra).locale('es').format('DD/MMM/YYYY')" class="badge badge-danger"></span>
+                                                </td>
+                                            </template>
+                                            <template>
+                                                <td class="td2" v-if="entregas.paquete && entregas.promocion" v-text="'Paquete: '+entregas.paquete +' Promoción: '+entregas.promocion"></td>
+                                                <td class="td2" v-else-if="entregas.paquete && !entregas.promocion" v-text="'Paquete: '+entregas.paquete" ></td>
+                                                <td class="td2" v-else-if="!entregas.paquete && entregas.promocion" v-text="'Promoción: '+entregas.promocion" ></td>
+                                                <td class="td2" v-else v-text="'Sin equipamiento'" ></td> 
+                                            </template>
+                                            <template>
+                                                <td class="td2" v-if="entregas.paquete && entregas.promocion && entregas.equipamiento == 0">
+                                                     <span class="badge badge-danger">Equipamiento sin solicitarse</span>
+                                                </td>
+                                                <td class="td2" v-else-if="entregas.paquete && !entregas.promocion && entregas.equipamiento == 0">
+                                                    <span class="badge badge-danger">Equipamiento sin solicitarse</span>
+                                                </td>
+                                                <td class="td2" v-else-if="!entregas.paquete && entregas.promocion && entregas.equipamiento == 0">
+                                                    <span class="badge badge-danger">Equipamiento sin solicitarse</span>
+                                                </td>
+
+                                                <td class="td2" v-else-if="entregas.paquete && entregas.promocion && entregas.equipamiento == 1">
+                                                    <span class="badge badge-warning">En proceso de instalación</span>
+                                                </td>
+                                                <td class="td2" v-else-if="entregas.paquete && !entregas.promocion && entregas.equipamiento == 1" >
+                                                    <span class="badge badge-warning">En proceso de instalación</span>
+                                                </td>
+                                                <td class="td2" v-else-if="!entregas.paquete && entregas.promocion && entregas.equipamiento == 1">
+                                                    <span class="badge badge-warning">En proceso de instalación</span>
+                                                </td>
+
+                                                <td class="td2" v-else-if="entregas.paquete && entregas.promocion && entregas.equipamiento == 2">
+                                                    <span class="badge badge-success">Equipamiento instalado</span>
+                                                </td>
+                                                <td class="td2" v-else-if="entregas.paquete && !entregas.promocion && entregas.equipamiento == 2">
+                                                    <span class="badge badge-success">Equipamiento instalado</span>
+                                                </td>
+                                                <td class="td2" v-else-if="!entregas.paquete && entregas.promocion && entregas.equipamiento == 2">
+                                                    <span class="badge badge-success">Equipamiento instalado</span>
+                                                </td>
+                                                <td class="td2" v-else v-text="'Sin equipamiento'" ></td> 
+                                            </template>
+                                            <td class="td2">
+                                                <span v-text="this.moment(entregas.fecha_entrega_real).locale('es').format('DD/MMM/YYYY')" class="badge badge-success"></span>
+                                            </td>
+                                            <td> 
+                                                <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
+                                                    @click="abrirModal('observaciones', entregas),listarObservacion(1,entregas.folio)">Ver observaciones
+                                                </button> 
+                                            </td>
+                                        </template>
+                                    </tr>
+                                </tbody>
+                            </table>  
+                        </div>
+                        <nav>
+                            <!--Botones de paginacion -->
+                            <ul class="pagination">
+                                <li class="page-item" v-if="pagination.last_page > 7 && pagination.current_page > 7">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(1,buscar,b_etapa,b_manzana,b_lote,criterio)">Inicio</a>
+                                </li>
+                                <li class="page-item" v-if="pagination.current_page > 1">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,b_etapa,b_manzana,b_lote,criterio)">Ant</a>
+                                </li>
+                                <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,b_etapa,b_manzana,b_lote,criterio)" v-text="page"></a>
+                                </li>
+                                <li class="page-item" v-if="pagination.current_page < pagination.last_page">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,b_etapa,b_manzana,b_lote,criterio)">Sig</a>
+                                </li>
+                                <li class="page-item" v-if="pagination.last_page > 7 && pagination.current_page<pagination.last_page">
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.last_page,buscar,b_etapa,b_manzana,b_lote,criterio)">Ultimo</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                <!-------------------  Fin Div para Contratos que tienen paquete o promoción  --------------------->
+
 
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
@@ -559,11 +738,29 @@
                 observacion:'',
                 arrayObservacion : [],
 
+                historial : 0,
+
                 arrayFraccionamientos2:[],
                 arrayEtapas2:[],
                 arrayAllManzanas:[],
                 arrayAllLotes:[],
                 arrayContratos:[],
+
+                arrayEntregas:[],
+                // Criterios para historial de contratos
+                pagination : {
+                    'total' : 0,         
+                    'current_page' : 0,
+                    'per_page' : 0,
+                    'last_page' : 0,
+                    'from' : 0,
+                    'to' : 0,
+                },
+                criterio : 'entregas.fecha_program', 
+                buscar : '',
+                b_etapa: '',
+                b_manzana: '',
+                b_lote: '',
 
                 modal1:0,
                 modal2: 0,
@@ -627,6 +824,13 @@
                 b_etapa2: '',
                 b_manzana2: '',
                 b_lote2: '',
+
+                criterio : 'entregas.fecha_entrega_real', 
+                buscar : '',
+                b_etapa: '',
+                b_manzana: '',
+                b_lote: '',
+
                 tipoAccion:0,
                 observacion:'',
 
@@ -663,6 +867,33 @@
                 return pagesArray;
             },
 
+            isActived: function(){
+                return this.pagination.current_page;
+            },
+            //Calcula los elementos de la paginación
+            pagesNumber:function(){
+                if(!this.pagination.to){
+                    return [];
+                }
+
+                var from = this.pagination.current_page - this.offset;
+                if(from < 1){
+                    from = 1;
+                }
+
+                var to = from + (this.offset * 2);
+                if(to >= this.pagination.last_page){
+                    to = this.pagination.last_page;
+                }
+
+                var pagesArray = [];
+                while(from <= to){
+                    pagesArray.push(from);
+                    from++;
+                }
+                return pagesArray;
+            },
+
         },
 
         
@@ -676,6 +907,20 @@
                     me.pagination2 = respuesta.pagination;
                     me.hora_entrega_real = respuesta.hora;
                     me.fecha_entrega_real = respuesta.hoy;
+                    
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
+            listarEntregas(page, buscar, b_etapa, b_manzana, b_lote, criterio){
+                let me = this;
+                var url = '/postventa/indexEntregas?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayEntregas = respuesta.contratos.data;
+                    me.pagination = respuesta.pagination;
                     
                 })
                 .catch(function (error) {
@@ -775,6 +1020,14 @@
                 me.pagination2.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
                 me.listarContratos(page,buscar,b_etapa,b_manzana,b_lote,criterio);
+            },
+
+            cambiarPagina(page,buscar,b_etapa,b_manzana,b_lote,criterio){
+                let me = this;
+                //Actualiza la pagina actual
+                me.pagination.current_page = page;
+                //Envia la petición para visualizar la data de esta pagina
+                me.listarEntregas(page,buscar,b_etapa,b_manzana,b_lote,criterio);
             },
 
             formatNumber(value) {
@@ -1095,6 +1348,7 @@
        
         mounted() {
             this.listarContratos(1,this.buscar2,this.b_etapa2,this.b_manzana2,this.b_lote2,this.criterio2);
+            this.listarEntregas(1,this.buscar,this.b_etapa,this.b_manzana,this.b_lote,this.criterio);
             this.selectFraccionamientos();
         }
     }
