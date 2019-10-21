@@ -34,18 +34,36 @@ class UserController extends Controller
             ->paginate(8);
         }
         else{
-            $personas = User::join('personal','users.id','=','personal.id')
-            ->join('roles','users.rol_id','=','roles.id')
-            ->select('personal.id','personal.nombre','personal.rfc','personal.f_nacimiento',
-            'personal.direccion','personal.telefono','personal.departamento_id',
-            'personal.colonia','personal.ext','personal.homoclave','personal.cp',
-            'personal.celular','personal.activo','personal.empresa_id','personal.apellidos',
-            'personal.email','users.usuario','users.password',
-            'users.condicion','users.rol_id','roles.nombre as rol')        
-            ->where($criterio, 'like', '%'. $buscar . '%')
-            ->orderBy('users.condicion', 'desc')
-            ->orderBy('personal.id', 'desc')
-           ->paginate(8);
+            if($criterio == 'personal.nombre'){
+                $personas = User::join('personal','users.id','=','personal.id')
+                ->join('roles','users.rol_id','=','roles.id')
+                ->select('personal.id','personal.nombre','personal.rfc','personal.f_nacimiento',
+                'personal.direccion','personal.telefono','personal.departamento_id',
+                'personal.colonia','personal.ext','personal.homoclave','personal.cp',
+                'personal.celular','personal.activo','personal.empresa_id','personal.apellidos',
+                'personal.email','users.usuario','users.password',
+                'users.condicion','users.rol_id','roles.nombre as rol')        
+                ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
+                ->orderBy('users.condicion', 'desc')
+                ->orderBy('personal.id', 'desc')
+                ->paginate(8);
+            }
+            else{
+                $personas = User::join('personal','users.id','=','personal.id')
+                ->join('roles','users.rol_id','=','roles.id')
+                ->select('personal.id','personal.nombre','personal.rfc','personal.f_nacimiento',
+                'personal.direccion','personal.telefono','personal.departamento_id',
+                'personal.colonia','personal.ext','personal.homoclave','personal.cp',
+                'personal.celular','personal.activo','personal.empresa_id','personal.apellidos',
+                'personal.email','users.usuario','users.password',
+                'users.condicion','users.rol_id','roles.nombre as rol')        
+                ->where($criterio, 'like', '%'. $buscar . '%')
+                ->orderBy('users.condicion', 'desc')
+                ->orderBy('personal.id', 'desc')
+                ->paginate(8);
+
+            }
+            
         }
          
  

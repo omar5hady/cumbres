@@ -28,12 +28,26 @@
                                     <div class="input-group">
                                         <!--Criterios para el listado de busqueda -->
                                         <select class="form-control col-md-5" @click="selectDepartamento(),limpiarBusqueda()"  v-model="criterio">
-                                        <option value="personal.nombre">Nombre</option>
-                                        <option value="users.usuario">Usuario</option>
+                                            <option value="personal.nombre">Nombre</option>
+                                            <option value="users.usuario">Usuario</option>
+                                            <option value="roles.nombre">Rol</option>
                                         </select>
                                         
-                                    
-                                        <input type="text" v-model="buscar" @keyup.enter="listarPersonal(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">                                     
+                                        
+                                        <select class="form-control" v-if="criterio == 'roles.nombre'" v-model="buscar">
+                                            <option value="">Seleccione</option>
+                                            <option value="Administrador">Administrador</option>
+                                            <option value="Asesor">Asesor</option>
+                                            <option value="Gerente Proyectos">Gerente Proyectos</option>
+                                            <option value="Gerente ventas">Gerente ventas</option>
+                                            <option value="Gerente obra">Gerente obra</option>
+                                            <option value="Admin Ventas">Admin Ventas</option>
+                                            <option value="Publicidad">Publicidad</option>
+                                            <option value="Gestor ventas">Gestor ventas</option>
+                                            <option value="Contabilidad">Contabilidad</option>
+                                            <option value="Proveedor">Proveedor</option>
+                                        </select>
+                                        <input type="text" v-else v-model="buscar" @keyup.enter="listarPersonal(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
                                         <button type="submit" @click="listarPersonal(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                     </div>
                                 </div>
@@ -377,8 +391,6 @@
                             <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
 
                                     <!--Criterios para el listado de busqueda -->
-
-
                                   <div class="form-group row" v-if="tipoAccion > 1 && tipoAccion < 4">
                                     <label class="col-md-3 form-control-label" for="text-input">Apellidos</label>
                                     <div class="col-md-9">

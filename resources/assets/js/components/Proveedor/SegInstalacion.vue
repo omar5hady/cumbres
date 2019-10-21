@@ -14,17 +14,15 @@
                 <!-------------------  Div historial equipamientos  --------------------->
                     <div class="card-body">
                         <div class="form-group row">
-                            <div class="col-md-10">
+                            <div class="col-md-8">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-5" v-model="criterio2" @click="selectFraccionamientos()">
+                                    <select class="form-control col-md-3" v-model="criterio2" @click="selectFraccionamientos()">
                                         <option value="lotes.fraccionamiento_id">Proyecto</option>
                                         <option value="c.nombre">Cliente</option>
                                         <option value="contratos.id"># Folio</option>
-                                        <option value="proveedores.proveedor">Proveedor</option>
                                     </select>
 
-                                    
                                     <select class="form-control" v-if="criterio2=='lotes.fraccionamiento_id'" v-model="buscar2" @click="selectEtapa(buscar2)">
                                         <option value="">Seleccione</option>
                                         <option v-for="fraccionamiento in arrayFraccionamientos2" :key="fraccionamiento.nombre" :value="fraccionamiento.id" v-text="fraccionamiento.nombre"></option>
@@ -35,7 +33,9 @@
                                         <option v-for="etapa in arrayEtapas2" :key="etapa.num_etapa" :value="etapa.id" v-text="etapa.num_etapa"></option>
                                     </select>
 
-                                    
+                                </div>
+                                <div class="input-group">
+
                                     <input type="text" v-if="criterio2=='lotes.fraccionamiento_id'" v-model="b_manzana2" class="form-control" placeholder="Manzana a buscar">
                                     <input type="text" v-if="criterio2=='lotes.fraccionamiento_id'" v-model="b_lote2" class="form-control" placeholder="Lote a buscar">
 

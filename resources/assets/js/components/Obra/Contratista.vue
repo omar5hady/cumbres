@@ -38,7 +38,7 @@
                             </div>
                         </div>
                         <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-sm">
+                            <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
                                     <tr>
                                         <th>Opciones</th>
@@ -54,7 +54,7 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="contratista in arrayContratista" :key="contratista.id">
-                                        <td>
+                                        <td class="td2">
                                             <button type="button" @click="abrirModal('contratista','actualizar',contratista)" class="btn btn-warning btn-sm">
                                             <i class="icon-pencil"></i>
                                             </button> &nbsp;
@@ -62,15 +62,15 @@
                                             <i class="icon-trash"></i>
                                             </button>
                                         </td>
-                                        <td v-text="contratista.nombre"></td>
-                                        <td v-if="contratista.tipo==1" v-text="'Persona Fisica'"></td>
-                                        <td v-if="contratista.tipo==0" v-text="'Persona Moral'"></td>
-                                        <td v-text="contratista.rfc"></td>
-                                        <td v-text="contratista.direccion"></td>
-                                        <td v-text="contratista.colonia"></td>
-                                        <td v-text="contratista.cp"></td>
-                                        <td v-text="contratista.estado"></td>
-                                        <td v-text="contratista.ciudad"></td>
+                                        <td class="td2" v-text="contratista.nombre"></td>
+                                        <td class="td2" v-if="contratista.tipo==1" v-text="'Persona Fisica'"></td>
+                                        <td class="td2" v-if="contratista.tipo==0" v-text="'Persona Moral'"></td>
+                                        <td class="td2" v-text="contratista.rfc"></td>
+                                        <td class="td2" v-text="contratista.direccion"></td>
+                                        <td class="td2" v-text="contratista.colonia"></td>
+                                        <td class="td2" v-text="contratista.cp"></td>
+                                        <td class="td2" v-text="contratista.estado"></td>
+                                        <td class="td2" v-text="contratista.ciudad"></td>
                                     </tr>                               
                                 </tbody>
                             </table>
@@ -588,4 +588,33 @@
         color: red !important;
         font-weight: bold;
     }
+
+    .table2 {
+    margin: auto;
+    border-collapse: collapse;
+    overflow-x: auto;
+    display: block;
+    width: fit-content;
+    max-width: 100%;
+    box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
+    }
+
+    .td2, .th2 {
+    border: solid rgb(200, 200, 200) 1px;
+    padding: .5rem;
+    }
+
+    .td2 {
+    white-space: nowrap;
+    border-bottom: none;
+    color: rgb(20, 20, 20);
+    }
+
+    .td2:first-of-type, th:first-of-type {
+    border-left: none;
+    }
+
+    .td2:last-of-type, th:last-of-type {
+    border-right: none;
+    } 
 </style>

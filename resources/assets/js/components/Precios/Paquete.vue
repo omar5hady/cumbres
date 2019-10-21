@@ -31,7 +31,7 @@
                             </div>
                         </div>
                         <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-sm">
+                            <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
                                     <tr>
                                         <th>Opciones</th>
@@ -47,7 +47,7 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="paquete in arrayPaquete" :key="paquete.id">
-                                        <td style="width:10%">
+                                        <td class="td2" style="width:10%">
                                             <button type="button" @click="abrirModal('paquete','actualizar',paquete)" class="btn btn-warning btn-sm">
                                             <i class="icon-pencil"></i>
                                             </button> &nbsp;
@@ -55,17 +55,17 @@
                                             <i class="icon-trash"></i>
                                             </button>
                                         </td>
-                                        <td v-text="paquete.fraccionamiento" ></td>
-                                        <td v-text="paquete.etapa" ></td>
+                                        <td class="td2" v-text="paquete.fraccionamiento" ></td>
+                                        <td class="td2" v-text="paquete.etapa" ></td>
                                         <td v-text="paquete.nombre" ></td>
                                         <td v-text="paquete.descripcion" ></td>
-                                        <td v-text="'$'+formatNumber(paquete.costo)" ></td>
-                                        <td v-text="paquete.v_ini" ></td>
-                                        <td v-text="paquete.v_fin" ></td>
-                                        <td v-if="paquete.is_active == '1'">
+                                        <td class="td2" v-text="'$'+formatNumber(paquete.costo)" ></td>
+                                        <td class="td2" v-text="paquete.v_ini" ></td>
+                                        <td class="td2" v-text="paquete.v_fin" ></td>
+                                        <td class="td2" v-if="paquete.is_active == '1'">
                                             <span class="badge badge-success">Activo</span>
                                         </td>
-                                        <td v-if="paquete.is_active == '0'">
+                                        <td class="td2" v-if="paquete.is_active == '0'">
                                             <span class="badge badge-danger">Desactivado</span>
                                         </td>
                                     </tr>                               
@@ -515,4 +515,33 @@
         color: red !important;
         font-weight: bold;
     }
+
+    .table2 {
+    margin: auto;
+    border-collapse: collapse;
+    overflow-x: auto;
+    display: block;
+    width: fit-content;
+    max-width: 100%;
+    box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
+    }
+
+    .td2, .th2 {
+    border: solid rgb(200, 200, 200) 1px;
+    padding: .5rem;
+    }
+
+    .td2 {
+    white-space: nowrap;
+    border-bottom: none;
+    color: rgb(20, 20, 20);
+    }
+
+    .td2:first-of-type, th:first-of-type {
+    border-left: none;
+    }
+
+    .td2:last-of-type, th:last-of-type {
+    border-right: none;
+    } 
 </style>

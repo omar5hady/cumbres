@@ -49,7 +49,7 @@
                             </div>
                         </div>
                         <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-sm">
+                            <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
                                     <tr>
                                         <th>Opciones</th>
@@ -68,7 +68,7 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="lote in arrayLote" :key="lote.id">
-                                        <td style="width:12%">
+                                        <td class="td2" style="width:12%">
                                             <button title="Editar" type="button" @click="abrirModal('lote','actualizar',lote)" class="btn btn-warning btn-sm">
                                             <i class="icon-pencil"></i>
                                             </button>
@@ -77,21 +77,21 @@
                                             </button>
                                         </td>
                                         
-                                        <td v-text="lote.proyecto"></td>
-                                        <td v-text="lote.manzana"></td>
-                                        <td v-if="!lote.sublote" v-text="lote.num_lote"></td>
-                                        <td v-else v-text="lote.num_lote + '-' + lote.sublote"></td>
-                                        <td v-text="lote.calle"></td>
-                                        <td v-if="!lote.interior" v-text="lote.numero"></td>
-                                        <td v-else v-text="lote.numero + '-' + lote.interior" ></td>
-                                        <td v-text="lote.terreno"></td>
-                                        <td v-text="lote.clv_catastral"></td>
-                                        <td>
+                                        <td class="td2" v-text="lote.proyecto"></td>
+                                        <td class="td2" v-text="lote.manzana"></td>
+                                        <td class="td2" v-if="!lote.sublote" v-text="lote.num_lote"></td>
+                                        <td class="td2" v-else v-text="lote.num_lote + '-' + lote.sublote"></td>
+                                        <td class="td2" v-text="lote.calle"></td>
+                                        <td class="td2" v-if="!lote.interior" v-text="lote.numero"></td>
+                                        <td class="td2" v-else v-text="lote.numero + '-' + lote.interior" ></td>
+                                        <td class="td2" v-text="lote.terreno"></td>
+                                        <td class="td2" v-text="lote.clv_catastral"></td>
+                                        <td class="td2">
                                             <span v-if = "lote.modelo!='Por Asignar'" class="badge badge-success" v-text="lote.modelo"></span>
                                             <span v-else class="badge badge-danger"> Por Asignar </span>
                                         </td> 
-                                        <td v-text="lote.construccion"></td>
-                                        <td style="width:8%" v-text="lote.etapa_servicios"></td>
+                                        <td class="td2" v-text="lote.construccion"></td>
+                                        <td class="td2" style="width:8%" v-text="lote.etapa_servicios"></td>
                                        
                                     </tr>                               
                                 </tbody>
@@ -923,4 +923,33 @@
         color: red !important;
         font-weight: bold;
     }
+
+    .table2 {
+    margin: auto;
+    border-collapse: collapse;
+    overflow-x: auto;
+    display: block;
+    width: fit-content;
+    max-width: 100%;
+    box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
+    }
+
+    .td2, .th2 {
+    border: solid rgb(200, 200, 200) 1px;
+    padding: .5rem;
+    }
+
+    .td2 {
+    white-space: nowrap;
+    border-bottom: none;
+    color: rgb(20, 20, 20);
+    }
+
+    .td2:first-of-type, th:first-of-type {
+    border-left: none;
+    }
+
+    .td2:last-of-type, th:last-of-type {
+    border-right: none;
+    } 
 </style>

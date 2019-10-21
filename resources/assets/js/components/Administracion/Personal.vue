@@ -22,7 +22,6 @@
                                     <!--Criterios para el listado de busqueda -->
                                     <select class="form-control col-md-5" @click="selectDepartamento(),limpiarBusqueda()"  v-model="criterio">
                                       <option value="personal.nombre">Nombre</option>
-                                      <option value="apellidos">Apellidos</option>
                                       <option value="rfc">RFC</option>
                                       <option value="id_departamento">Departamento</option>
                                     </select>

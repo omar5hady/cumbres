@@ -47,6 +47,18 @@ class PersonalController extends Controller
                     ->where($criterio, '=', $buscar )
                     ->where('personal.nombre','!=','Sin Asignar')->orderBy('id','desc')->paginate(8);
             }
+            elseif($criterio == 'personal.nombre'){
+                $Personales = Personal::join('departamento','personal.departamento_id','=','departamento.id_departamento')
+                ->join('empresas','personal.empresa_id','=','empresas.id')
+                ->select('personal.nombre','personal.apellidos',
+                    'personal.f_nacimiento','personal.rfc','personal.homoclave','personal.direccion','personal.colonia','personal.cp',
+                    'personal.telefono','personal.ext','personal.celular','personal.email','personal.activo',
+                    'personal.id','personal.departamento_id','departamento.departamento as departamento',
+                    'personal.empresa_id','empresas.nombre as empresa',
+                    'departamento.id_departamento')
+                    ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
+                    ->where('personal.nombre','!=','Sin Asignar')->orderBy('id','desc')->paginate(8);
+            }
             else{
                 $Personales = Personal::join('departamento','personal.departamento_id','=','departamento.id_departamento')
                 ->join('empresas','personal.empresa_id','=','empresas.id')

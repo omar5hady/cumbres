@@ -34,7 +34,7 @@
                                         <option value="1" >Externo</option>
                                     </select>
 
-                                    <select class="form-control" v-if="criterio=='personal.id'" v-model="buscar" >
+                                    <select class="form-control" v-else-if="criterio=='personal.id'" v-model="buscar" >
                                         <option value="">Seleccione</option>
                                         <option v-for="asesor in arrayAsesores" :key="asesor.id" :value="asesor.id" v-text="asesor.nombre + ' '+ asesor.apellidos"></option>
                                     </select>
@@ -128,7 +128,7 @@
                     <template v-if="listadoProspectos==1">
                         <div class="card-body">
                             <div class="form-group row">
-                                <div class="col-md-6">
+                                <div class="col-md-10">
                                     <div class="input-group">
                                         <!--Criterios para el listado de busqueda -->
                                         <select class="form-control col-md-5" @click="limpiarBusqueda()"  v-model="criterio2">
@@ -139,15 +139,9 @@
                                     
                                         <input type="text" v-model="buscar2" @keyup.enter="listarProspectos(1,buscar2,b_clasificacion,coacreditados,criterio2,id_vendedor)" class="form-control" placeholder="Texto a buscar">
 
-                                        <select v-if="coacreditados != 1" class="form-control" v-model="b_clasificacion" >
-                                            <option value="">Clasificación</option>
-                                            <option value="1">No viable</option>
-                                            <option value="2">Tipo A</option>
-                                            <option value="3">Tipo B</option>
-                                            <option value="4">Tipo C</option>
-                                            <option value="5">Ventas</option>
-                                            <option value="6">Cancelado</option>                               
-                                        </select>
+                                        
+                                    </div>
+                                    <div class="input-group">
 
                                         <button type="submit" @click="listarProspectos(1,buscar2,b_clasificacion,coacreditados,criterio2,id_vendedor)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                         <button type="submit" v-if="coacreditados == 0" @click="coacreditados = 1,listarProspectos(1,buscar2,b_clasificacion,coacreditados,criterio2,id_vendedor)" class="btn btn-warning"><i class="fa fa-search"></i>Mostrar coacreditados</button>

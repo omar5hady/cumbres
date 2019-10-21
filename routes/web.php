@@ -340,6 +340,9 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/postventa/setHoraProg','EntregaController@setHoraProgramada');
         Route::put('/postventa/finalizarEntrega','EntregaController@finalizarEntrega');
 
+        Route::get('/postventa/cartaMantenimiento','EntregaController@cartaCuotaMantenimiento');
+        Route::get('/postventa/polizaDeGarantia','EntregaController@polizaDeGarantia');
+
 
     /**********************************RUTAS AVANCE*************************** */
         Route::get('/avance','AvanceController@index');

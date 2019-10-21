@@ -316,7 +316,7 @@
                                                 <td class="td2" v-if="entregas.fecha_entrega_obra && entregas.diferencia_obra < 2">
                                                     <span v-text="this.moment(entregas.fecha_entrega_obra).locale('es').format('DD/MMM/YYYY')" class="badge badge-success"></span>
                                                 </td>
-                                                <td class="td2" v-els>
+                                                <td class="td2" v-else>
                                                     <span v-text="this.moment(entregas.fecha_entrega_obra).locale('es').format('DD/MMM/YYYY')" class="badge badge-danger"></span>
                                                 </td>
                                             </template>

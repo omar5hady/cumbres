@@ -30,7 +30,7 @@
                             </div>
                         </div>
                         <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-sm">
+                            <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
                                     <tr>
                                         <th>Opciones</th>
@@ -49,7 +49,7 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="etapa in arrayEtapa" :key="etapa.id">
-                                        <td style="width:10%">
+                                        <td class="td2" style="width:10%">
                                             <button type="button" @click="abrirModal('etapa','subirArchivo',etapa)" class="btn btn-info btn-sm">
                                             <i class="icon-cloud-upload"></i>
                                             </button> &nbsp;
@@ -57,19 +57,19 @@
                                             <i class="icon-pencil"></i>
                                             </button> &nbsp;
                                         </td>
-                                        <td v-text="etapa.num_etapa"></td>
-                                        <td v-text="etapa.fraccionamiento"></td>
-                                        <td v-text="etapa.f_ini"></td>
-                                        <td v-text="etapa.f_fin"></td>
-                                        <td style="width:7%" v-if = "etapa.archivo_reglamento"><a class="btn btn-success btn-sm" v-bind:href="'/downloadReglamento/'+etapa.archivo_reglamento"><i class="fa fa-download fa-spin"></i></a></td>
-                                        <td v-else></td>
-                                        <td  v-if = "etapa.plantilla_carta_servicios"><a class="btn btn-success btn-sm" v-bind:href="'/downloadPlantilla/cartaServicios/'+etapa.plantilla_carta_servicios"><i class="fa fa-download fa-spin"></i></a></td>
-                                        <td v-else></td>
-                                        <td v-text="'$' + etapa.costo_mantenimiento"></td>
-                                        <td v-text="etapa.empresas_telecom"></td>
-                                        <td v-text="etapa.empresas_telecom_satelital"></td>
-                                        <td v-if = "etapa.plantilla_telecom"><a class="btn btn-success btn-sm" v-bind:href="'/downloadPlantilla/ServiciosTelecom/'+etapa.plantilla_telecom"><i class="fa fa-download fa-spin"></i></a></td>
-                                        <td v-else></td>
+                                        <td class="td2" v-text="etapa.num_etapa"></td>
+                                        <td class="td2" v-text="etapa.fraccionamiento"></td>
+                                        <td class="td2" v-text="etapa.f_ini"></td>
+                                        <td class="td2" v-text="etapa.f_fin"></td>
+                                        <td class="td2" style="width:7%" v-if = "etapa.archivo_reglamento"><a class="btn btn-success btn-sm" v-bind:href="'/downloadReglamento/'+etapa.archivo_reglamento"><i class="fa fa-download fa-spin"></i></a></td>
+                                        <td class="td2" v-else></td>
+                                        <td class="td2"  v-if = "etapa.plantilla_carta_servicios"><a class="btn btn-success btn-sm" v-bind:href="'/downloadPlantilla/cartaServicios/'+etapa.plantilla_carta_servicios"><i class="fa fa-download fa-spin"></i></a></td>
+                                        <td class="td2" v-else></td>
+                                        <td class="td2" v-text="'$' + etapa.costo_mantenimiento"></td>
+                                        <td class="td2" v-text="etapa.empresas_telecom"></td>
+                                        <td class="td2" v-text="etapa.empresas_telecom_satelital"></td>
+                                        <td class="td2" v-if = "etapa.plantilla_telecom"><a class="btn btn-success btn-sm" v-bind:href="'/downloadPlantilla/ServiciosTelecom/'+etapa.plantilla_telecom"><i class="fa fa-download fa-spin"></i></a></td>
+                                        <td class="td2" v-else></td>
                                     </tr>                               
                                 </tbody>
                             </table>
@@ -489,4 +489,33 @@
         color: red !important;
         font-weight: bold;
     }
+
+    .table2 {
+    margin: auto;
+    border-collapse: collapse;
+    overflow-x: auto;
+    display: block;
+    width: fit-content;
+    max-width: 100%;
+    box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
+    }
+
+    .td2, .th2 {
+    border: solid rgb(200, 200, 200) 1px;
+    padding: .5rem;
+    }
+
+    .td2 {
+    white-space: nowrap;
+    border-bottom: none;
+    color: rgb(20, 20, 20);
+    }
+
+    .td2:first-of-type, th:first-of-type {
+    border-left: none;
+    }
+
+    .td2:last-of-type, th:last-of-type {
+    border-right: none;
+    } 
 </style>
