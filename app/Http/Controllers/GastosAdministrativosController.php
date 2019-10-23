@@ -7,6 +7,7 @@ use App\Gasto_admin;
 use App\Avaluo;
 use App\Contrato;
 use DB;
+use Auth;
 
 class GastosAdministrativosController extends Controller
 {
@@ -145,7 +146,7 @@ class GastosAdministrativosController extends Controller
     }
 
     public function storeAvaluo(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         try{
             DB::beginTransaction();
             $gasto = new Gasto_admin();
@@ -181,7 +182,7 @@ class GastosAdministrativosController extends Controller
     }
 
     public function updateAvaluo(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         try{
             DB::beginTransaction();
             $gasto = Gasto_admin::findOrFail($request->gasto_id);
@@ -330,7 +331,7 @@ class GastosAdministrativosController extends Controller
     }
 
     public function store(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         try{
             DB::beginTransaction();
             $gastos = new Gasto_admin();
@@ -351,7 +352,7 @@ class GastosAdministrativosController extends Controller
     }
 
     public function update(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         try{
             DB::beginTransaction();
             $gastos = Gasto_admin::findOrFail($request->id);
@@ -373,7 +374,7 @@ class GastosAdministrativosController extends Controller
     }
 
     public function delete(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         try{
             DB::beginTransaction();
             $gastos = Gasto_admin::findOrFail($request->id);

@@ -29,7 +29,7 @@ class ObservacionController extends Controller
 
     public function store(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $observacion = new Observacion();
         $observacion->lote_id = $request->lote_id;
         $observacion->comentario = $request->comentario;

@@ -10,6 +10,7 @@ use DB;
 use App\Credito;
 use Excel;
 use Carbon\Carbon;
+use Auth;
 
 class DevolucionController extends Controller
 {
@@ -621,6 +622,7 @@ class DevolucionController extends Controller
     }
 
     public function storeDevolucion(Request $request){
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         try{
             DB::beginTransaction();
         

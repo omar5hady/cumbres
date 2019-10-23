@@ -12,6 +12,7 @@ use NumerosEnLetras;
 use App\Gasto_admin;
 use App\Dep_credito;
 use Excel;
+use Auth;
 
 class DepositoController extends Controller
 {
@@ -747,7 +748,7 @@ class DepositoController extends Controller
     }
 
     public function store(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         try{
             DB::beginTransaction();
             $deposito = new Deposito();
@@ -796,7 +797,7 @@ class DepositoController extends Controller
     }
 
     public function update(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         try{
             DB::beginTransaction();
             $deposito = Deposito::findOrFail($request->id);
@@ -854,7 +855,7 @@ class DepositoController extends Controller
     }
 
     public function delete(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 
         try{
             DB::beginTransaction();

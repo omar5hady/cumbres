@@ -7,6 +7,7 @@ use App\Http\Controllers\PartidaController;
 use App\Modelo;
 use DB;
 use App\Contrato;
+use Auth;
 
 
 class ModeloController extends Controller
@@ -74,7 +75,7 @@ class ModeloController extends Controller
     //funcion para insertar en la tabla
     public function store(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $modelo = new Modelo();
         $modelo->nombre = $request->nombre;
         $modelo->tipo = $request->tipo;
@@ -298,7 +299,7 @@ class ModeloController extends Controller
     //funcion para actualizar los datos
     public function update(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         //FindOrFail se utiliza para buscar lo que recibe de argumento
         $modelo = Modelo::findOrFail($request->id);
         $modelo->nombre = $request->nombre;
@@ -318,7 +319,7 @@ class ModeloController extends Controller
      */
     public function destroy(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $modelo = Modelo::findOrFail($request->id);
         $modelo->delete();
     }
@@ -326,13 +327,13 @@ class ModeloController extends Controller
 
     public function formSubmit(Request $request, $id)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 
         $fileName = time().'.'.$request->archivo->getClientOriginalExtension();
         $moved =  $request->archivo->move(public_path('/files/modelos'), $fileName);
 
         if($moved){
-            if(!$request->ajax())return redirect('/');
+            if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
             $modelo = Modelo::findOrFail($request->id);
             $modelo->archivo = $fileName;
             $modelo->id = $id;

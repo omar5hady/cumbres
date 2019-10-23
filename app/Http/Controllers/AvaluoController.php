@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Avaluo;
 use App\Contrato;
 use App\Avaluo_status;
+use Auth;
 use App\Gasto_admin;
 use Carbon\Carbon;
 use App\User;
@@ -17,7 +18,7 @@ use File;
 class AvaluoController extends Controller
 {
     public function store(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $avaluo = new Avaluo();
         $avaluo->contrato_id = $request->folio;
         $avaluo->fecha_solicitud = $request->fecha_solicitud;
@@ -48,7 +49,7 @@ class AvaluoController extends Controller
     }
 
     public function noAplicaAvaluo(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $contrato = Contrato::findOrFail($request->folio);
         $contrato->avaluo_preventivo = "0000-01-01";
         $contrato->save();
@@ -548,7 +549,7 @@ class AvaluoController extends Controller
     }
 
     public function setFechaSolicitud(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $avaluo_id = $request->avaluoId;
 
         $avaluo=Avaluo::findOrFail($avaluo_id);
@@ -557,7 +558,7 @@ class AvaluoController extends Controller
     }
 
     public function setFechaPago(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $avaluo_id = $request->avaluoId;
 
         $avaluo=Avaluo::findOrFail($avaluo_id);
@@ -566,7 +567,7 @@ class AvaluoController extends Controller
     }
 
     public function setFechaConcluido(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $avaluo_id = $request->avaluoId;
 
         try{
@@ -597,7 +598,7 @@ class AvaluoController extends Controller
     }
 
     public function updateFechaConcluido(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 
         try{
             DB::beginTransaction();
@@ -627,7 +628,7 @@ class AvaluoController extends Controller
     }
 
     public function enviarVentas(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $avaluo_id = $request->id;
         setlocale(LC_TIME, 'es_MX.utf8');
         $hoy = Carbon::today()->toDateString();
@@ -639,7 +640,7 @@ class AvaluoController extends Controller
 
     public function formSubmitAvaluo(Request $request, $id)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $pdfAnterior = Avaluo::select('pdf', 'id')
             ->where('id', '=', $id)
             ->get();

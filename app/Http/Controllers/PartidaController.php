@@ -7,6 +7,7 @@ use App\Partida;
 use App\Avance;
 use App\Lote;
 use DB;
+use Auth;
 
 class PartidaController extends Controller
 {
@@ -78,7 +79,7 @@ class PartidaController extends Controller
 
     public function registrar(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $partida = new Partida();
         $partida->partida = $request->partida;
         $partida->modelo_id = $request->modelo_id;
@@ -90,7 +91,7 @@ class PartidaController extends Controller
 
     public function update(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $partida = Partida::findOrFail($request->id);
         $partida->costo = $request->costo;
         $partida->save();
@@ -123,7 +124,7 @@ class PartidaController extends Controller
 
     public function destroy(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $partida = Partida::findOrFail($request->id);
         $partida->delete();
 

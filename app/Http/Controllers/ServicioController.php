@@ -8,6 +8,7 @@ use App\Contrato;
 use Carbon\Carbon;
 use NumerosEnLetras;
 use App\Modelo;
+use Auth;
 
 class ServicioController extends Controller
 {
@@ -40,7 +41,7 @@ class ServicioController extends Controller
 
     public function store(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $servicios = new Servicio();
         $servicios->descripcion = $request->descripcion;
         $servicios->save();
@@ -48,7 +49,7 @@ class ServicioController extends Controller
 
     public function update(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $servicios = Servicio::findOrFail($request->id);
         $servicios->descripcion = $request->descripcion;
         $servicios->save();
@@ -56,7 +57,7 @@ class ServicioController extends Controller
 
     public function destroy(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $servicios = Servicio::findOrFail($request->id);
         $servicios->delete();
     }

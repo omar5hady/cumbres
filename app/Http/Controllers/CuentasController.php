@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Cuenta;
+use Auth;
 
 class CuentasController extends Controller
 {
@@ -37,7 +38,7 @@ class CuentasController extends Controller
 
     public function store(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $cuenta = new Cuenta();
         $cuenta->num_cuenta = $request->num_cuenta;
         $cuenta->sucursal = $request->sucursal;
@@ -47,7 +48,7 @@ class CuentasController extends Controller
 
     public function update(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $cuenta = Cuenta::findOrFail($request->id);
         $cuenta->num_cuenta = $request->num_cuenta;
         $cuenta->sucursal = $request->sucursal;
@@ -57,7 +58,7 @@ class CuentasController extends Controller
 
     public function destroy(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $cuenta = Cuenta::findOrFail($request->id);
         $cuenta->delete();
     }

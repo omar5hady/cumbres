@@ -28,7 +28,7 @@ class ObservacionInstSeleccionadaController extends Controller
 
     public function store(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $observacion = new Obs_inst_selec();
         $observacion->inst_selec_id = $request->institucion_seleccionada_id;
         $observacion->comentario = $request->comentario;

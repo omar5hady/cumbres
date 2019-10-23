@@ -116,7 +116,7 @@ class CreditoController extends Controller
     }
 
     public function updateDatosCliente(Request $request){
-            if (!$request->ajax()) return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 
            //datos del cliente que se guardan en la tabla personal
            $personal = Personal::findOrFail($request->id);
@@ -145,7 +145,7 @@ class CreditoController extends Controller
     public function store (Request $request)
     {
         $prospecto=$request->prospecto_id;
-        if (!$request->ajax()) return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         try{
             DB::beginTransaction();
 
@@ -267,7 +267,7 @@ class CreditoController extends Controller
     }
 
     public function storeCreditoSelect(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $inst_seleccionada = new inst_seleccionada();
         $inst_seleccionada->credito_id = $request->credito_id;
         $inst_seleccionada->tipo_credito = $request->tipo_credito;
@@ -282,7 +282,7 @@ class CreditoController extends Controller
     }
 
     public function updateDatosCredito(Request $request){
-        if (!$request->ajax()) return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         try{
             DB::beginTransaction();
         $inst_seleccionada = inst_seleccionada::findOrFail($request->id);
@@ -321,7 +321,7 @@ class CreditoController extends Controller
     }
 
     public function seleccionarCredito(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $inst_seleccionada = inst_seleccionada::findOrFail($request->id);
         $inst_seleccionada->elegido = 1;
         $inst_seleccionada->save();
@@ -345,7 +345,7 @@ class CreditoController extends Controller
     }
 
     public function rechazarSolicitud(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $simulacion = Credito::findOrFail($request->id);
         $simulacion->status=0;
         $simulacion->save();
@@ -369,7 +369,7 @@ class CreditoController extends Controller
     }
 
     public function aceptarSolicitud(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $simulacion = Credito::findOrFail($request->id);
         $simulacion->status=2;
         $simulacion->save();
@@ -1433,7 +1433,7 @@ class CreditoController extends Controller
     }
 
     public function cambiarTitularCredito(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $credito_id = $request->id;
         $titular_id = $request->cliente_id;
         $rfc_coa = $request->rfc_coa;
@@ -1543,7 +1543,7 @@ class CreditoController extends Controller
     }
 
     public function updateFechaVigencia (Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $inst = inst_seleccionada::select('id')
                 ->where('credito_id','=',$request->folio)
                 ->where('elegido','=',1)

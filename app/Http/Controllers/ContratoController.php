@@ -8041,7 +8041,7 @@ class ContratoController extends Controller
 
     public function updateDatosCredito(Request $request)
     {
-        if (!$request->ajax()) return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 
         //datos del cliente que se guardan en la tabla personal
         $personal = Personal::findOrFail($request->prospecto_id);
@@ -8115,7 +8115,7 @@ class ContratoController extends Controller
 
     public function store(Request $request)
     {
-        if (!$request->ajax()) return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 
         $id = $request->id;
         $lote = Licencia::select('avance')
@@ -8879,7 +8879,7 @@ class ContratoController extends Controller
 
     public function agregarPago(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $pago = new Pago_contrato();
         $pago->contrato_id = $request->contrato_id;
         $pago->num_pago = $request->num_pago;
@@ -8891,152 +8891,158 @@ class ContratoController extends Controller
 
     public function eliminarPago(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $pago = Pago_contrato::findOrFail($request->id);
         $pago->delete();
     }
 
     public function actualizarContrato(Request $request)
     {
-        if (!$request->ajax()) return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 
         //datos del cliente que se guardan en la tabla personal
-        $personal = Personal::findOrFail($request->prospecto_id);
-        $personal->apellidos = $request->apellidos;
-        $personal->nombre = $request->nombre;
-        $personal->f_nacimiento = $request->f_nacimiento;
-        $personal->rfc = $request->rfc;
-        $personal->homoclave = $request->homoclave;
-        $personal->direccion = $request->direccion;
-        $personal->cp = $request->cp;
-        $personal->colonia = $request->colonia;
-        $personal->telefono = $request->telefono;
-        $personal->celular = $request->celular;
-        $personal->email = $request->email;
+        try {
+            DB::beginTransaction();
+            $personal = Personal::findOrFail($request->prospecto_id);
+                $personal->apellidos = $request->apellidos;
+                $personal->nombre = $request->nombre;
+                $personal->f_nacimiento = $request->f_nacimiento;
+                $personal->rfc = $request->rfc;
+                $personal->homoclave = $request->homoclave;
+                $personal->direccion = $request->direccion;
+                $personal->cp = $request->cp;
+                $personal->colonia = $request->colonia;
+                $personal->telefono = $request->telefono;
+                $personal->celular = $request->celular;
+                $personal->email = $request->email;
 
-        $cliente = Cliente::findOrFail($request->prospecto_id);
-        $cliente->sexo = $request->sexo;
-        $cliente->email_institucional = $request->email_institucional;
-        $cliente->edo_civil = $request->edo_civil;
-        $cliente->nss = $request->nss;
-        $cliente->curp = $request->curp;
-        $cliente->empresa = $request->empresa;
-        $cliente->coacreditado = $request->coacreditado;
-        $cliente->ciudad = $request->ciudad;
-        $cliente->estado = $request->estado;
-        $cliente->nacionalidad = $request->nacionalidad;
-        $cliente->puesto = $request->puesto;
-        $cliente->sexo_coa = $request->sexo_coa;
-        $cliente->direccion_coa = $request->direccion_coa;
-        $cliente->email_institucional_coa = $request->email_institucional_coa;
-        $cliente->edo_civil_coa = $request->edo_civil_coa;
-        $cliente->nss_coa = $request->nss_coa;
-        $cliente->curp_coa = $request->curp_coa;
-        $cliente->nombre_coa = $request->nombre_coa;
-        $cliente->apellidos_coa = $request->apellidos_coa;
-        $cliente->f_nacimiento_coa = $request->f_nacimiento_coa;
-        $cliente->colonia_coa = $request->colonia_coa;
-        $cliente->cp_coa = $request->cp_coa;
-        $cliente->rfc_coa = $request->rfc_coa;
-        $cliente->homoclave_coa = $request->homoclave_coa;
-        $cliente->ciudad_coa = $request->ciudad_coa;
-        $cliente->estado_coa = $request->estado_coa;
-        $cliente->empresa_coa = $request->empresa_coa;
-        $cliente->nacionalidad_coa = $request->nacionalidad_coa;
-        $cliente->telefono_coa = $request->telefono_coa;
-        $cliente->celular_coa = $request->celular_coa;
-        $cliente->email_coa = $request->email_coa;
-        $cliente->parentesco_coa = $request->parentesco_coa;
+            $cliente = Cliente::findOrFail($request->prospecto_id);
+                $cliente->sexo = $request->sexo;
+                $cliente->email_institucional = $request->email_institucional;
+                $cliente->edo_civil = $request->edo_civil;
+                $cliente->nss = $request->nss;
+                $cliente->curp = $request->curp;
+                $cliente->empresa = $request->empresa;
+                $cliente->coacreditado = $request->coacreditado;
+                $cliente->ciudad = $request->ciudad;
+                $cliente->estado = $request->estado;
+                $cliente->nacionalidad = $request->nacionalidad;
+                $cliente->puesto = $request->puesto;
+                $cliente->sexo_coa = $request->sexo_coa;
+                $cliente->direccion_coa = $request->direccion_coa;
+                $cliente->email_institucional_coa = $request->email_institucional_coa;
+                $cliente->edo_civil_coa = $request->edo_civil_coa;
+                $cliente->nss_coa = $request->nss_coa;
+                $cliente->curp_coa = $request->curp_coa;
+                $cliente->nombre_coa = $request->nombre_coa;
+                $cliente->apellidos_coa = $request->apellidos_coa;
+                $cliente->f_nacimiento_coa = $request->f_nacimiento_coa;
+                $cliente->colonia_coa = $request->colonia_coa;
+                $cliente->cp_coa = $request->cp_coa;
+                $cliente->rfc_coa = $request->rfc_coa;
+                $cliente->homoclave_coa = $request->homoclave_coa;
+                $cliente->ciudad_coa = $request->ciudad_coa;
+                $cliente->estado_coa = $request->estado_coa;
+                $cliente->empresa_coa = $request->empresa_coa;
+                $cliente->nacionalidad_coa = $request->nacionalidad_coa;
+                $cliente->telefono_coa = $request->telefono_coa;
+                $cliente->celular_coa = $request->celular_coa;
+                $cliente->email_coa = $request->email_coa;
+                $cliente->parentesco_coa = $request->parentesco_coa;
 
-        $credito = Credito::findOrFail($request->contrato_id);
-        $credito->num_dep_economicos =  $request->num_dep_economicos;
-        $credito->nombre_primera_ref = $request->nombre_primera_ref;
-        $credito->telefono_primera_ref = $request->telefono_primera_ref;
-        $credito->celular_primera_ref = $request->celular_primera_ref;
-        $credito->nombre_segunda_ref = $request->nombre_segunda_ref;
-        $credito->telefono_segunda_ref = $request->telefono_segunda_ref;
-        $credito->celular_segunda_ref = $request->celular_segunda_ref;
-        $credito->paquete =  $request->paquete;
-        $credito->descripcion_paquete = $request->descripcion_paquete;
-        $credito->costo_paquete = $request->costo_paquete;
-        $credito->precio_venta = $request->precio_venta;
-        $credito->credito_solic = $request->credito_solic;
-        $credito->contrato = 1;
+            $credito = Credito::findOrFail($request->contrato_id);
+                $credito->num_dep_economicos =  $request->num_dep_economicos;
+                $credito->nombre_primera_ref = $request->nombre_primera_ref;
+                $credito->telefono_primera_ref = $request->telefono_primera_ref;
+                $credito->celular_primera_ref = $request->celular_primera_ref;
+                $credito->nombre_segunda_ref = $request->nombre_segunda_ref;
+                $credito->telefono_segunda_ref = $request->telefono_segunda_ref;
+                $credito->celular_segunda_ref = $request->celular_segunda_ref;
+                $credito->paquete =  $request->paquete;
+                $credito->descripcion_paquete = $request->descripcion_paquete;
+                $credito->costo_paquete = $request->costo_paquete;
+                $credito->precio_venta = $request->precio_venta;
+                $credito->credito_solic = $request->credito_solic;
+                $credito->contrato = 1;
 
-        $inst_sel = inst_seleccionada::select('id')
-        ->where('credito_id','=',$request->contrato_id)
-        ->where('elegido','=',1)->get();
+            $inst_sel = inst_seleccionada::select('id')
+                ->where('credito_id','=',$request->contrato_id)
+                ->where('elegido','=',1)->get();
 
-        $credito_sol = inst_seleccionada::findOrFail($inst_sel[0]->id);
-        $credito_sol->monto_credito = $request->credito_solic;
-        $credito_sol->tipo_credito = $request->tipo_credito;
-        $credito_sol->institucion = $request->institucion;
-        $credito_sol->save();
+            $credito_sol = inst_seleccionada::findOrFail($inst_sel[0]->id);
+                $credito_sol->monto_credito = $request->credito_solic;
+                $credito_sol->tipo_credito = $request->tipo_credito;
+                $credito_sol->institucion = $request->institucion;
+                $credito_sol->save();
 
-        $lote = Lote::findOrFail($request->lote_id);
-        $lote->contrato = 1;
+            $lote = Lote::findOrFail($request->lote_id);
+            $lote->contrato = 1;
 
-        $contrato = Contrato::findOrFail($request->contrato_id);
-        $contrato->infonavit = $request->infonavit;
-        $contrato->fovisste = $request->fovisste;
-        $contrato->comision_apertura = $request->comision_apertura;
-        $contrato->investigacion = $request->investigacion;
-        $contrato->avaluo = $request->avaluo;
-        $contrato->avaluo_cliente = $request->avaluo_cliente;
-        $contrato->prima_unica = $request->prima_unica;
-        $contrato->escrituras = $request->escrituras;
-        $contrato->credito_neto = $request->credito_neto;
-        $contrato->monto_total_credito = $request->monto_total_credito;
-        $contrato->total_pagar = $request->total_pagar;
-        $contrato->enganche_total = $request->enganche_total;
-        $contrato->fecha = $request->fecha;
-        $contrato->direccion_empresa = $request->direccion_empresa;
-        $contrato->cp_empresa = $request->cp_empresa;
-        $contrato->colonia_empresa = $request->colonia_empresa;
-        $contrato->estado_empresa = $request->estado_empresa;
-        $contrato->ciudad_empresa = $request->ciudad_empresa;
-        $contrato->telefono_empresa = $request->telefono_empresa;
-        $contrato->ext_empresa = $request->ext_empresa;
-        $contrato->direccion_empresa_coa = $request->direccion_empresa_coa;
-        $contrato->cp_empresa_coa = $request->cp_empresa_coa;
-        $contrato->colonia_empresa_coa = $request->colonia_empresa_coa;
-        $contrato->estado_empresa_coa = $request->estado_empresa_coa;
-        $contrato->ciudad_empresa_coa = $request->ciudad_empresa_coa;
-        $contrato->telefono_empresa_coa = $request->telefono_empresa_coa;
-        $contrato->ext_empresa_coa = $request->ext_empresa_coa;
-        $contrato->observacion = $request->observacion;
+            $contrato = Contrato::findOrFail($request->contrato_id);
+                $contrato->infonavit = $request->infonavit;
+                $contrato->fovisste = $request->fovisste;
+                $contrato->comision_apertura = $request->comision_apertura;
+                $contrato->investigacion = $request->investigacion;
+                $contrato->avaluo = $request->avaluo;
+                $contrato->avaluo_cliente = $request->avaluo_cliente;
+                $contrato->prima_unica = $request->prima_unica;
+                $contrato->escrituras = $request->escrituras;
+                $contrato->credito_neto = $request->credito_neto;
+                $contrato->monto_total_credito = $request->monto_total_credito;
+                $contrato->total_pagar = $request->total_pagar;
+                $contrato->enganche_total = $request->enganche_total;
+                $contrato->fecha = $request->fecha;
+                $contrato->direccion_empresa = $request->direccion_empresa;
+                $contrato->cp_empresa = $request->cp_empresa;
+                $contrato->colonia_empresa = $request->colonia_empresa;
+                $contrato->estado_empresa = $request->estado_empresa;
+                $contrato->ciudad_empresa = $request->ciudad_empresa;
+                $contrato->telefono_empresa = $request->telefono_empresa;
+                $contrato->ext_empresa = $request->ext_empresa;
+                $contrato->direccion_empresa_coa = $request->direccion_empresa_coa;
+                $contrato->cp_empresa_coa = $request->cp_empresa_coa;
+                $contrato->colonia_empresa_coa = $request->colonia_empresa_coa;
+                $contrato->estado_empresa_coa = $request->estado_empresa_coa;
+                $contrato->ciudad_empresa_coa = $request->ciudad_empresa_coa;
+                $contrato->telefono_empresa_coa = $request->telefono_empresa_coa;
+                $contrato->ext_empresa_coa = $request->ext_empresa_coa;
+                $contrato->observacion = $request->observacion;
 
-        $sumaIntereses = Expediente::select(DB::raw("SUM(interes_ord) as suma"))->where('id','=',$request->contrato_id)->get();
-        if($sumaIntereses[0]->suma == NULL){
-            $sumaIntereses[0]->suma = 0;
+            $sumaIntereses = Expediente::select(DB::raw("SUM(interes_ord) as suma"))->where('id','=',$request->contrato_id)->get();
+                if($sumaIntereses[0]->suma == NULL){
+                    $sumaIntereses[0]->suma = 0;
+                }
+
+            $sumaGastos = Gasto_admin::select(DB::raw("SUM(costo) as suma"))->where('contrato_id','=',$request->contrato_id)->get();
+                if($sumaGastos[0]->suma == NULL){
+                    $sumaGastos[0]->suma = 0;
+                }
+
+            $sumaDeposito = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
+                ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
+                ->select(DB::raw("SUM(depositos.cant_depo) as suma"))->where('contratos.id','=',$request->contrato_id)->get();
+                if($sumaDeposito[0]->suma == NULL){
+                    $sumaDeposito[0]->suma = 0;
+                }
+
+                $sumaTotal =  $sumaIntereses[0]->suma + $sumaGastos[0]->suma - $sumaDeposito[0]->suma;
+
+            $contrato->saldo = $credito->precio_venta + $sumaTotal;
+
+            $lote->save();
+            $credito->save();
+            $personal->save();
+            $cliente->save();
+            $contrato->save();
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
         }
-
-        $sumaGastos = Gasto_admin::select(DB::raw("SUM(costo) as suma"))->where('contrato_id','=',$request->contrato_id)->get();
-        if($sumaGastos[0]->suma == NULL){
-            $sumaGastos[0]->suma = 0;
-        }
-
-        $sumaDeposito = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
-        ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
-        ->select(DB::raw("SUM(depositos.cant_depo) as suma"))->where('contratos.id','=',$request->contrato_id)->get();
-        if($sumaDeposito[0]->suma == NULL){
-            $sumaDeposito[0]->suma = 0;
-        }
-
-        $sumaTotal =  $sumaIntereses[0]->suma + $sumaGastos[0]->suma - $sumaDeposito[0]->suma;
-
-        $contrato->saldo = $credito->precio_venta + $sumaTotal;
-
-        $lote->save();
-        $credito->save();
-        $personal->save();
-        $cliente->save();
-        $contrato->save();
     }
 
     public function reasignarCliente(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 
         try {
             $loteNuevo_id = $request->sel_lote;

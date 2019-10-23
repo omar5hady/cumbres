@@ -7,6 +7,7 @@ use App\Precio_etapa;
 use App\Precio_modelo;
 use App\Lote;
 use App\Modelo;
+use Auth;
 
 class PrecioEtapaController extends Controller
 {
@@ -68,7 +69,7 @@ class PrecioEtapaController extends Controller
     //funcion para insertar en la tabla
     public function store(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $precio_etapa = new Precio_etapa();
         $precio_etapa->fraccionamiento_id = $request->fraccionamiento_id;
         $precio_etapa->etapa_id = $request->etapa_id;
@@ -108,7 +109,7 @@ class PrecioEtapaController extends Controller
     //funcion para actualizar los datos
     public function update(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         //FindOrFail se utiliza para buscar lo que recibe de argumento
         $precio_etapa = Precio_etapa::findOrFail($request->id);
         $precio_etapa->fraccionamiento_id = $request->fraccionamiento_id;
@@ -145,7 +146,7 @@ class PrecioEtapaController extends Controller
      */
     public function destroy(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $precio_etapa = Precio_etapa::findOrFail($request->id);
         $precio_etapa->delete();
     }

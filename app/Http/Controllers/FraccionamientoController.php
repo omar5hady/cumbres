@@ -71,52 +71,59 @@ class FraccionamientoController extends Controller
     public function store(Request $request)
     {
 
-        if(!$request->ajax())return redirect('/');
-        $proyecto = $request->nombre;
-        $usuario_id = Auth::user()->id;
-        $fraccionamiento = new Fraccionamiento();
-        $fraccionamiento->nombre = $proyecto;
-        $fraccionamiento->tipo_proyecto = $request->tipo_proyecto;
-        $fraccionamiento->calle = $request->calle;
-        $fraccionamiento->colonia = $request->colonia;
-        $fraccionamiento->estado = $request->estado;
-        $fraccionamiento->ciudad = $request->ciudad;
-        $fraccionamiento->delegacion = $request->delegacion;
-        $fraccionamiento->cp = $request->cp;
-        $fraccionamiento->save();
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        try{
+            DB::beginTransaction();
+            $proyecto = $request->nombre;
+            $usuario_id = Auth::user()->id;
+            $fraccionamiento = new Fraccionamiento();
+            $fraccionamiento->nombre = $proyecto;
+            $fraccionamiento->tipo_proyecto = $request->tipo_proyecto;
+            $fraccionamiento->calle = $request->calle;
+            $fraccionamiento->colonia = $request->colonia;
+            $fraccionamiento->estado = $request->estado;
+            $fraccionamiento->ciudad = $request->ciudad;
+            $fraccionamiento->delegacion = $request->delegacion;
+            $fraccionamiento->cp = $request->cp;
+            $fraccionamiento->save();
 
-        
-        $etapa = new Etapa();
-        $etapa->fraccionamiento_id = $fraccionamiento->id;
-        $etapa->num_etapa = "Sin Asignar";
-        
-        $etapa->personal_id = 1;
-        $etapa->save();
+            
+            $etapa = new Etapa();
+            $etapa->fraccionamiento_id = $fraccionamiento->id;
+            $etapa->num_etapa = "Sin Asignar";
+            
+            $etapa->personal_id = 1;
+            $etapa->save();
 
-        $modelo = new Modelo();
-        $modelo->nombre = "Por Asignar";
-        $modelo->fraccionamiento_id = $fraccionamiento->id;
-        $modelo->tipo = $fraccionamiento->tipo_proyecto;
-        $modelo->terreno = 0;
-        $modelo->construccion = 0;
-        $modelo->save();
+            $modelo = new Modelo();
+            $modelo->nombre = "Por Asignar";
+            $modelo->fraccionamiento_id = $fraccionamiento->id;
+            $modelo->tipo = $fraccionamiento->tipo_proyecto;
+            $modelo->terreno = 0;
+            $modelo->construccion = 0;
+            $modelo->save();
 
-        $imagenUsuario = DB::table('users')->select('foto_user','usuario')->where('id','=',$usuario_id)->get();
-        $fecha = Carbon::now();
-        $arregloSimPendientes = [
-            'notificacion' => [
-                'usuario' => $imagenUsuario[0]->usuario,
-                'foto' => $imagenUsuario[0]->foto_user,
-                'fecha' => $fecha,
-                'msj' => 'Se ha agregado el proyecto '. $proyecto,
-                'titulo' => 'Nuevo Proyecto'
-            ]
-        ];
+            $imagenUsuario = DB::table('users')->select('foto_user','usuario')->where('id','=',$usuario_id)->get();
+            $fecha = Carbon::now();
+            $arregloSimPendientes = [
+                'notificacion' => [
+                    'usuario' => $imagenUsuario[0]->usuario,
+                    'foto' => $imagenUsuario[0]->foto_user,
+                    'fecha' => $fecha,
+                    'msj' => 'Se ha agregado el proyecto '. $proyecto,
+                    'titulo' => 'Nuevo Proyecto'
+                ]
+            ];
 
-        $users = User::select('id')->where('rol_id','=','3')->get();
+            $users = User::select('id')->where('rol_id','=','3')->get();
 
-        foreach($users as $notificar){
-            User::findOrFail($notificar->id)->notify(new NotifyAdmin($arregloSimPendientes));
+            foreach($users as $notificar){
+                User::findOrFail($notificar->id)->notify(new NotifyAdmin($arregloSimPendientes));
+            }
+            DB::commit();
+                
+        } catch (Exception $e){
+            DB::rollBack();
         }
 
     }
@@ -154,7 +161,7 @@ class FraccionamientoController extends Controller
     public function update(Request $request)
     {
 
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $proyecto = $request->nombre;
         $usuario_id = Auth::user()->id;
         //FindOrFail se utiliza para buscar lo que recibe de argumento
@@ -196,7 +203,7 @@ class FraccionamientoController extends Controller
      */
     public function destroy(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $fraccionamiento = Fraccionamiento::findOrFail($request->id);
 
         $contadorModelo=Modelo::where('fraccionamiento_id','=',$fraccionamiento->id)->get()->count();
@@ -273,13 +280,13 @@ class FraccionamientoController extends Controller
 
      public function formSubmitPlanos(Request $request, $id)
      {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
  
          $fileName = time().'.'.$request->archivo_planos->getClientOriginalExtension();
          $moved =  $request->archivo_planos->move(public_path('/files/fraccionamientos/planos'), $fileName);
  
          if($moved){
-             if(!$request->ajax())return redirect('/');
+             if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
              $planos = Fraccionamiento::findOrFail($request->id);
              $planos->archivo_planos = $fileName;
              $planos->id = $id;
@@ -319,13 +326,13 @@ class FraccionamientoController extends Controller
 
       public function formSubmitEscrituras(Request $request, $id)
       {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
   
         $fileName = time().'.'.$request->archivo_escrituras->getClientOriginalExtension();
         $moved =  $request->archivo_escrituras->move(public_path('/files/fraccionamientos/escrituras'), $fileName);
 
         if($moved){
-            if(!$request->ajax())return redirect('/');
+            if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
             $escrituras = Fraccionamiento::findOrFail($request->id);
             $escrituras->archivo_escrituras = $fileName;
             $escrituras->id = $id;

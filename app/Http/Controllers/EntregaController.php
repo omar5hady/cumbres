@@ -15,7 +15,7 @@ use App\Contrato;
 class EntregaController extends Controller
 {
     public function store(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 
         try{
             DB::beginTransaction();
@@ -728,7 +728,7 @@ class EntregaController extends Controller
 
     public function storeObservacion(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $observacion = new Obs_entrega();
         $observacion->entrega_id = $request->entrega_id;
         $observacion->comentario = $request->comentario;
@@ -737,7 +737,7 @@ class EntregaController extends Controller
     }
 
     public function setFechaObra(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         try{
             DB::beginTransaction();
             $lote = Lote::findOrFail($request->lote_id);
@@ -756,21 +756,21 @@ class EntregaController extends Controller
     }
 
     public function setFechaProgramada(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $entrega = Entrega::findOrFail($request->folio);
         $entrega->fecha_program = $request->fecha_program;
         $entrega->save();       
     }
 
     public function setHoraProgramada(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $entrega = Entrega::findOrFail($request->folio);
         $entrega->hora_entrega_prog = $request->hora_entrega_prog;
         $entrega->save();       
     }
 
     public function finalizarEntrega(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 
         try{
             DB::beginTransaction();

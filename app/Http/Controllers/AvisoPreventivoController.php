@@ -7,11 +7,12 @@ use App\Aviso_preventivo;
 use App\Contrato;
 use DB;
 use Carbon\Carbon;
+use Auth;
 
 class AvisoPreventivoController extends Controller
 {
     public function store(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $folio = $request->folio;
         
         $aviso = new Aviso_preventivo();
@@ -32,7 +33,7 @@ class AvisoPreventivoController extends Controller
     }
 
     public function registrarFechaRecibido(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $avisoid = Aviso_preventivo::select('id')->where('contrato_id','=',$request->folio)->get();
         $fecha = Aviso_preventivo::findOrFail($avisoid[0]->id);
         $fecha->fecha_recibido = $request->fecha_recibido ;

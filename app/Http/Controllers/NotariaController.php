@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Notaria;
 use Mockery\Matcher\Not;
+use Auth;
 
 class NotariaController extends Controller
 {
@@ -36,7 +37,7 @@ class NotariaController extends Controller
     }
 
     public function store(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 
         $notarias = new Notaria();
         $notarias->notaria = $request->notaria;
@@ -54,7 +55,7 @@ class NotariaController extends Controller
     }
 
     public function update(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $notarias =  Notaria::findOrFail($request->id);
         $notarias->notaria = $request->notaria;
         $notarias->titular = $request->titular;
@@ -71,7 +72,7 @@ class NotariaController extends Controller
     }
 
     public function destroy(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $notarias =  Notaria::findOrFail($request->id);
         $notarias->delete();
     }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Empresa; //Importar el modelo
+use Auth;
 
 class EmpresaController extends Controller
 {
@@ -38,7 +39,7 @@ class EmpresaController extends Controller
     //funcion para insertar en la tabla
     public function store(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $empresa = new Empresa();
         $empresa->nombre = $request->nombre;
         $empresa->direccion = $request->direccion;
@@ -54,7 +55,7 @@ class EmpresaController extends Controller
     //funcion para actualizar los datos
     public function update(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         //FindOrFail se utiliza para buscar lo que recibe de argumento
         $empresa = Empresa::findOrFail($request->id);
         $empresa->nombre = $request->nombre;
@@ -71,7 +72,7 @@ class EmpresaController extends Controller
 
     public function destroy(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $empresa = Empresa::findOrFail($request->id);
         $empresa->delete();
     }

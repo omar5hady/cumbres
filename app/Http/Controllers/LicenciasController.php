@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Excel;
 use File;
+use Auth;
 
 class LicenciasController extends Controller
 {
@@ -1012,7 +1013,7 @@ class LicenciasController extends Controller
     public function updateMasa(Request $request)
     {
 
-        if (!$request->ajax()) return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $licencia = Licencia::findOrFail($request->id);
         $licencia->f_planos_obra = $request->f_planos_obra;
         $licencia->perito_dro = $request->perito_dro;
@@ -1021,7 +1022,7 @@ class LicenciasController extends Controller
 
     public function update(Request $request)
     {
-        if (!$request->ajax()) return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         //FindOrFail se utiliza para buscar lo que recibe de argumento
         $licencia = Licencia::findOrFail($request->id);
         $numLicencia = $licencia->num_licencia;
@@ -1059,7 +1060,7 @@ class LicenciasController extends Controller
 
     public function AsigFechaVisita(Request $request)
     {
-        if (!$request->ajax()) return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         //FindOrFail se utiliza para buscar lo que recibe de argumento
         $licencia = Licencia::findOrFail($request->id);
         $licencia->visita_avaluo = $request->visita_avaluo;
@@ -1071,7 +1072,7 @@ class LicenciasController extends Controller
 
     public function updateActas(Request $request)
     {
-        if (!$request->ajax()) return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         //FindOrFail se utiliza para buscar lo que recibe de argumento
         $acta = Licencia::findOrFail($request->id);
 
@@ -1306,7 +1307,7 @@ class LicenciasController extends Controller
 
     public function formSubmit(Request $request, $id)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $licenciaAnterior = Licencia::select('foto_lic', 'id')
             ->where('id', '=', $id)
             ->get();
@@ -1355,7 +1356,7 @@ class LicenciasController extends Controller
 
     public function formSubmitActa(Request $request, $id)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $actaAnterior = Licencia::select('foto_acta', 'id')
             ->where('id', '=', $id)
             ->get();
@@ -1404,7 +1405,7 @@ class LicenciasController extends Controller
 
     public function formSubmitPredial(Request $request, $id)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $predialAnterior = Licencia::select('foto_predial', 'id')
             ->where('id', '=', $id)
             ->get();

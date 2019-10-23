@@ -11,6 +11,7 @@ use App\Dep_credito;
 use Excel;
 use App\Contrato;
 use App\Dev_credito;
+use Auth;
 
 class InstSeleccionadasController extends Controller
 {
@@ -1051,43 +1052,55 @@ class InstSeleccionadasController extends Controller
     }
 
     public function storeDepositoCredito(Request $request){
-        if(!$request->ajax())return redirect('/');
-        $deposito = new Dep_credito();
-        $deposito->inst_sel_id = $request->inst_sel_id;
-        $deposito->cant_depo = $request->cant_depo;
-        $deposito->banco = $request->banco;
-        $deposito->fecha_deposito = $request->fecha_deposito;
-        
-        $credito = inst_seleccionada::findOrFail($request->inst_sel_id);
-        $credito->cobrado = $credito->cobrado + $request->cant_depo;
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        try {
+            DB::beginTransaction();
+            $deposito = new Dep_credito();
+            $deposito->inst_sel_id = $request->inst_sel_id;
+            $deposito->cant_depo = $request->cant_depo;
+            $deposito->banco = $request->banco;
+            $deposito->fecha_deposito = $request->fecha_deposito;
+            
+            $credito = inst_seleccionada::findOrFail($request->inst_sel_id);
+            $credito->cobrado = $credito->cobrado + $request->cant_depo;
 
-        $contrato = Contrato::findOrFail($credito->credito_id);
-        $contrato->saldo = $contrato->saldo - $deposito->cant_depo;
-        $contrato->save();
+            $contrato = Contrato::findOrFail($credito->credito_id);
+            $contrato->saldo = $contrato->saldo - $deposito->cant_depo;
+            $contrato->save();
 
-        $credito->save();
+            $credito->save();
 
-        $deposito->save();
+            $deposito->save();
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+        }
     }
 
     public function updateDepositoCredito(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 
-        $deposito = Dep_credito::findOrFail($request->dep_id);
-        $credito = inst_seleccionada::findOrFail($request->inst_sel_id);
-        $credito->cobrado = $credito->cobrado - $deposito->cant_depo + $request->cant_depo;
+        try {
+            DB::beginTransaction();
+            $deposito = Dep_credito::findOrFail($request->dep_id);
+            $credito = inst_seleccionada::findOrFail($request->inst_sel_id);
+            $credito->cobrado = $credito->cobrado - $deposito->cant_depo + $request->cant_depo;
 
-        $contrato = Contrato::findOrFail($credito->credito_id);
-        $contrato->saldo = $contrato->saldo + $deposito->cant_depo - $request->cant_depo;
-        $contrato->save();
+            $contrato = Contrato::findOrFail($credito->credito_id);
+            $contrato->saldo = $contrato->saldo + $deposito->cant_depo - $request->cant_depo;
+            $contrato->save();
 
-        $credito->save();
-        $deposito->inst_sel_id = $request->inst_sel_id;
-        $deposito->cant_depo = $request->cant_depo;
-        $deposito->banco = $request->banco;
-        $deposito->fecha_deposito = $request->fecha_deposito;
+            $credito->save();
+            $deposito->inst_sel_id = $request->inst_sel_id;
+            $deposito->cant_depo = $request->cant_depo;
+            $deposito->banco = $request->banco;
+            $deposito->fecha_deposito = $request->fecha_deposito;
 
-        $deposito->save();
+            $deposito->save();
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+        }
     }
 
     public function excelCobroCredito (Request $request){
@@ -2010,6 +2023,7 @@ class InstSeleccionadasController extends Controller
     }
 
     public function storeDevolucion(Request $request){
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         try{
             DB::beginTransaction();
 

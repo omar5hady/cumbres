@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Medio_publicitario; //Importar el modelo
+use Auth;
 
 class MedioPublicitarioController extends Controller
 {
@@ -38,7 +39,7 @@ class MedioPublicitarioController extends Controller
      //funcion para insertar en la tabla
     public function store(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $medio_publicitario = new Medio_publicitario();
         $medio_publicitario->nombre = $request->nombre;
         $medio_publicitario->save();
@@ -46,7 +47,7 @@ class MedioPublicitarioController extends Controller
 
     public function update(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         //FindOrFail se utiliza para buscar lo que recibe de argumento
         $medio_publicitario = Medio_publicitario::findOrFail($request->id);
         $medio_publicitario->nombre = $request->nombre;
@@ -55,7 +56,7 @@ class MedioPublicitarioController extends Controller
 
     public function destroy(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $medio_publicitario = Medio_publicitario::findOrFail($request->id);
         $medio_publicitario->delete();
     }

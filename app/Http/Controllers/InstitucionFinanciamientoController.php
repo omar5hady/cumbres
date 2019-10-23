@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\InstitucionFinanciamiento;
+use Auth;
 
 class InstitucionFinanciamientoController extends Controller
 {
@@ -38,7 +39,7 @@ class InstitucionFinanciamientoController extends Controller
      //funcion para insertar en la tabla
     public function store(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $InstitucionFinanciamiento = new InstitucionFinanciamiento();
         $InstitucionFinanciamiento->nombre = $request->nombre;
         $InstitucionFinanciamiento->save();
@@ -47,7 +48,7 @@ class InstitucionFinanciamientoController extends Controller
     //funcion para actualizar los datos
     public function update(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         //FindOrFail se utiliza para buscar lo que recibe de argumento
         $InstitucionFinanciamiento = InstitucionFinanciamiento::findOrFail($request->id);
         $InstitucionFinanciamiento->nombre = $request->nombre;
@@ -56,7 +57,7 @@ class InstitucionFinanciamientoController extends Controller
 
     public function destroy(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $InstitucionFinanciamiento = InstitucionFinanciamiento::findOrFail($request->id);
         $InstitucionFinanciamiento->delete();
     }

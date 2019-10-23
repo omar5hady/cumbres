@@ -135,17 +135,32 @@
                                             <option value="personal.nombre">Nombre</option>
                                             <option value="personal.rfc">RFC</option>
                                             <option value="personal.id"># Identificador</option>
+                                            <option value="clientes.proyecto_interes_id">Proyecto de interes</option>
+                                            <option value="clientes.created_at">Fecha de alta</option>
                                         </select>
-                                    
-                                        <input type="text" v-model="buscar2" @keyup.enter="listarProspectos(1,buscar2,b_clasificacion,coacreditados,criterio2,id_vendedor)" class="form-control" placeholder="Texto a buscar">
-
+                                        <select class="form-control" v-if="criterio2=='clientes.proyecto_interes_id'" v-model="buscar2" >
+                                            <option value="">Fraccionamiento</option>
+                                            <option v-for="proyecto in arrayProyectos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
+                                        </select>
+                                        <input v-if="criterio2=='clientes.created_at'" type="date" v-model="buscar2" class="form-control">
+                                        <input v-if="criterio2=='clientes.created_at'" type="date" v-model="buscar3" class="form-control">
+                                        <input type="text" v-else-if="criterio2=='personal.id' || criterio2=='personal.nombre' || criterio2=='personal.rfc'" v-model="buscar2" @keyup.enter="listarProspectos(1,buscar2,buscar3,b_clasificacion,coacreditados,criterio2,id_vendedor)" class="form-control" placeholder="Texto a buscar">
+                                        <select class="form-control" v-model="b_clasificacion" >
+                                            <option value="">Clasificación</option>
+                                            <option value="1">No viable</option>
+                                            <option value="2">Tipo A</option>
+                                            <option value="3">Tipo B</option>
+                                            <option value="4">Tipo C</option>
+                                            <option value="5">Ventas</option>
+                                            <option value="6">Cancelado</option>                               
+                                            <option value="7">Coacreditado</option>  
+                                        </select>
                                         
                                     </div>
                                     <div class="input-group">
-
-                                        <button type="submit" @click="listarProspectos(1,buscar2,b_clasificacion,coacreditados,criterio2,id_vendedor)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                        <button type="submit" v-if="coacreditados == 0" @click="coacreditados = 1,listarProspectos(1,buscar2,b_clasificacion,coacreditados,criterio2,id_vendedor)" class="btn btn-warning"><i class="fa fa-search"></i>Mostrar coacreditados</button>
-                                        <button type="submit" v-if="coacreditados == 1" @click="coacreditados = 0,listarProspectos(1,buscar2,b_clasificacion,coacreditados,criterio2,id_vendedor)" class="btn btn-info"><i class="fa fa-search"></i>Mostrar todos</button>
+                                        <button type="submit" @click="listarProspectos(1,buscar2,buscar3,b_clasificacion,coacreditados,criterio2,id_vendedor)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                        <button type="submit" v-if="coacreditados == 0" @click="coacreditados = 1,listarProspectos(1,buscar2,buscar3,b_clasificacion,coacreditados,criterio2,id_vendedor)" class="btn btn-warning"><i class="fa fa-search"></i>Mostrar coacreditados</button>
+                                        <button type="submit" v-if="coacreditados == 1" @click="coacreditados = 0,listarProspectos(1,buscar2,buscar3,b_clasificacion,coacreditados,criterio2,id_vendedor)" class="btn btn-info"><i class="fa fa-search"></i>Mostrar todos</button>
                                         <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Total: '+ contador"> </span>
                                     </div>
                                 </div>
@@ -742,6 +757,7 @@
                 criterio : 'personal.id', 
                 buscar : '',
                 buscar2 : '',
+                buscar3: '',
                 b_clasificacion:'',
                 coacreditados: 0,
                 criterio2 : 'personal.nombre',
@@ -818,9 +834,9 @@
                     console.log(error);
                 });
             },
-            listarProspectos(page, buscar, b_clasificacion, coacreditados, criterio,vendedor){
+            listarProspectos(page, buscar,buscar2, b_clasificacion, coacreditados, criterio,vendedor){
                 let me = this;
-                var url = '/asesores/clientes?page=' + page + '&buscar=' + buscar + '&b_clasificacion=' + b_clasificacion + '&coacreditados=' + coacreditados +'&criterio=' + criterio + '&vendedor=' + vendedor;
+                var url = '/asesores/clientes?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2 + '&b_clasificacion=' + b_clasificacion + '&coacreditados=' + coacreditados +'&criterio=' + criterio + '&vendedor=' + vendedor;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayProspectos = respuesta.personas.data;
@@ -868,7 +884,7 @@
                     console.log(error);
                 });
             },
-             selectFraccionamientos(){
+            selectFraccionamientos(){
                 let me = this;
                 me.arrayProyectos=[];
                 var url = '/select_fraccionamiento';
@@ -896,6 +912,7 @@
             limpiarBusqueda(){
                 let me=this;
                 me.buscar= "";
+                me.buscar3="";
             },
             selectEmpresa(){
                 let me = this;
@@ -917,16 +934,16 @@
                 //Envia la petición para visualizar la data de esta pagina
                 me.listarPersonal(page,buscar,criterio);
             },
-             cambiarPagina2(page, buscar, b_clasificacion, criterio,id_vendedor){
+             cambiarPagina2(page, buscar,buscar2, b_clasificacion, criterio,id_vendedor){
                 let me = this;
                 //Actualiza la pagina actual
                 me.pagination2.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
-                me.listarProspectos(page,buscar,b_clasificacion,coacreditados,criterio,id_vendedor);
+                me.listarProspectos(page,buscar,buscar2,b_clasificacion,coacreditados,criterio,id_vendedor);
             },
             mostrarProspectos(nombre,id){
                 this.id_vendedor = id;
-                this.listarProspectos(1,this.buscar2,this.b_clasificacion,this.coacreditados,this.criterio2,id)
+                this.listarProspectos(1,this.buscar2,this.buscar3,this.b_clasificacion,this.coacreditados,this.criterio2,id)
                 this.listadoProspectos=1;
                 this.asesor = nombre;
             },
@@ -1098,7 +1115,7 @@
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal4();
-                    me.listarProspectos(1,me.buscar2,me.b_clasificacion,me.coacreditados,me.criterio2,me.id_vendedor);
+                    me.listarProspectos(1,me.buscar2,me.buscar3,me.b_clasificacion,me.coacreditados,me.criterio2,me.id_vendedor);
                     
                     //Se muestra mensaje Success
                     swal({
@@ -1172,7 +1189,7 @@
                         'id': prospecto,
                         'asesor_id':asesor
                     }).then(function (response) {
-                        me.listarProspectos(1,me.buscar2,me.b_clasificacion,me.coacreditados,me.criterio2,me.id_vendedor);
+                        me.listarProspectos(1,me.buscar2,me.buscar3,me.b_clasificacion,me.coacreditados,me.criterio2,me.id_vendedor);
                         me.cerrarModal();
                         swal(
                         'Hecho!',
@@ -1521,6 +1538,7 @@
         mounted() {
             this.listarPersonal(1,this.buscar,this.criterio);
             this.selectAsesores();
+            this.selectFraccionamientos();
         }
     }
 </script>

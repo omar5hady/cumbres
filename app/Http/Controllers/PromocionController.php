@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Promocion;
 use Carbon\Carbon;
 use DB;
+use Auth;
 
 class PromocionController extends Controller
 {
@@ -92,7 +93,7 @@ class PromocionController extends Controller
     //funcion para insertar en la tabla
     public function store(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $promocion = new Promocion();
         $promocion->fraccionamiento_id = $request->fraccionamiento_id;
         $promocion->etapa_id = $request->etapa_id;
@@ -137,7 +138,7 @@ class PromocionController extends Controller
     //funcion para actualizar los datos
     public function update(Request $request)
     {
-       if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         //FindOrFail se utiliza para buscar lo que recibe de argumento
         $promocion = Promocion::findOrFail($request->id);
         $promocion->fraccionamiento_id = $request->fraccionamiento_id;
@@ -159,7 +160,7 @@ class PromocionController extends Controller
      */
     public function destroy(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $promocion = Promocion::findOrFail($request->id);
         $promocion->delete();
     }

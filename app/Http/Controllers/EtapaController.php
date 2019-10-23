@@ -11,6 +11,7 @@ use File;
 use App\Contrato;
 use App\Sobreprecio;
 use App\Modelo;
+use Auth;
 
 class EtapaController extends Controller
 {
@@ -106,7 +107,7 @@ class EtapaController extends Controller
     //funcion para insertar en la tabla
     public function store(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $etapa = new Etapa();
         $etapa->fraccionamiento_id = $request->fraccionamiento_id;
         $etapa->num_etapa = $request->num_etapa;
@@ -164,7 +165,7 @@ class EtapaController extends Controller
     //funcion para actualizar los datos
     public function update(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         //FindOrFail se utiliza para buscar lo que recibe de argumento
         $etapa = Etapa::findOrFail($request->id);
         $etapa->fraccionamiento_id = $request->fraccionamiento_id;
@@ -183,7 +184,7 @@ class EtapaController extends Controller
      */
     public function destroy(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $etapa = Etapa::findOrFail($request->id);
         $etapa->delete();
     }
@@ -224,7 +225,7 @@ class EtapaController extends Controller
     }
 
     public function uploadReglamento (Request $request, $id){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $ultimoReglamento = Etapa::select('archivo_reglamento','id')
                                  ->where('id','=',$id)
                                  ->get();
@@ -234,7 +235,7 @@ class EtapaController extends Controller
             $moved =  $request->archivo_reglamento->move(public_path('/files/etapas/reglamentos/'), $fileName);
     
             if($moved){
-                if(!$request->ajax())return redirect('/');
+                if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
                 $reglamentoEtapa = Etapa::findOrFail($request->id);
                 $reglamentoEtapa->archivo_reglamento = $fileName;
                 $reglamentoEtapa->id = $id;
@@ -249,7 +250,7 @@ class EtapaController extends Controller
                 $moved =  $request->archivo_reglamento->move(public_path('/files/etapas/reglamentos/'), $fileName);
         
                 if($moved){
-                    if(!$request->ajax())return redirect('/');
+                    if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
                     $reglamentoEtapa = Etapa::findOrFail($request->id);
                     $reglamentoEtapa->archivo_reglamento = $fileName;
                     $reglamentoEtapa->id = $id;
@@ -261,7 +262,7 @@ class EtapaController extends Controller
     }
 
     public function uploadPlantillaCartaServicios (Request $request, $id){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $ultimaPlantilla = Etapa::select('plantilla_carta_servicios','id')
                                  ->where('id','=',$id)
                                  ->get();
@@ -271,7 +272,7 @@ class EtapaController extends Controller
             $moved =  $request->plantilla_carta_servicios->move(public_path('/files/etapas/plantillasCartaServicios/'), $fileName);
     
             if($moved){
-                if(!$request->ajax())return redirect('/');
+                if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
                 $plantillaCartaServicios = Etapa::findOrFail($request->id);
                 $plantillaCartaServicios->plantilla_carta_servicios = $fileName;
                 $plantillaCartaServicios->id = $id;
@@ -287,7 +288,7 @@ class EtapaController extends Controller
                 $moved =  $request->plantilla_carta_servicios->move(public_path('/files/etapas/plantillasCartaServicios/'), $fileName);
     
             if($moved){
-                if(!$request->ajax())return redirect('/');
+                if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
                 $plantillaCartaServicios = Etapa::findOrFail($request->id);
                 $plantillaCartaServicios->plantilla_carta_servicios = $fileName;
                 $plantillaCartaServicios->id = $id;
@@ -322,7 +323,7 @@ class EtapaController extends Controller
 
     
     public function registrarCostoMantenimiento(Request $request, $id){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $costoAnterior = Etapa::select('costo_mantenimiento','empresas_telecom','empresas_telecom_satelital')
                                              ->where('id','=',$id)
                                              ->get();
@@ -343,7 +344,7 @@ class EtapaController extends Controller
     }
 
     public function uploadPlantillaTelecom (Request $request, $id){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $plantillaAnterior = Etapa::select('plantilla_telecom','id')
                                             ->where('id','=',$id)
                                             ->get();
@@ -353,7 +354,7 @@ class EtapaController extends Controller
                 $moved =  $request->plantilla_telecom->move(public_path('/files/etapas/plantillasTelecom/'), $fileName);
 
                 if($moved){
-                    if(!$request->ajax())return redirect('/');
+                    if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
                     $plantillaTelecom = Etapa::findOrFail($request->id);
                     $plantillaTelecom->plantilla_telecom = $fileName;
                     $plantillaTelecom->id = $id;
@@ -370,7 +371,7 @@ class EtapaController extends Controller
                 $moved =  $request->plantilla_telecom->move(public_path('/files/etapas/plantillasTelecom/'), $fileName);
 
                 if($moved){
-                    if(!$request->ajax())return redirect('/');
+                    if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
                     $plantillaTelecom = Etapa::findOrFail($request->id);
                     $plantillaTelecom->plantilla_telecom = $fileName;
                     $plantillaTelecom->id = $id;

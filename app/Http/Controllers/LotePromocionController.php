@@ -61,7 +61,7 @@ class LotePromocionController extends Controller
     //funcion para insertar en la tabla
     public function store(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $id = $request->lote_id;
         $lote_promocion = new Lote_promocion();
         $lote_promocion->lote_id = $request->lote_id;
@@ -134,7 +134,7 @@ class LotePromocionController extends Controller
     //funcion para actualizar los datos
     public function update(Request $request)
     {
-       if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         //FindOrFail se utiliza para buscar lo que recibe de argumento
         $lote_promocion = Lote_promocion::findOrFail($request->id);
         $lote_promocion->lote_id = $request->lote_id;
@@ -151,7 +151,7 @@ class LotePromocionController extends Controller
      */
     public function destroy(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $lote_promocion = Lote_promocion::findOrFail($request->id);
         $lote_promocion->delete();
     }

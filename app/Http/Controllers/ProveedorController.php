@@ -8,6 +8,7 @@ use App\Proveedor;
 use App\Personal;
 use App\User;
 use Illuminate\Support\Facades\DB;
+use Auth;
 
 class ProveedorController extends Controller
 {
@@ -44,7 +45,7 @@ class ProveedorController extends Controller
     }
 
     public function store(Request $request){
-
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         try{
             DB::beginTransaction();
         
@@ -91,7 +92,7 @@ class ProveedorController extends Controller
     }
 
     public function update(Request $request){
-
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $proveedor = Proveedor::findOrFail($request->id);
         $proveedor->proveedor =$request->proveedor;
         $proveedor->contacto =$request->contacto;

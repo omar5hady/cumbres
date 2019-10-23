@@ -589,7 +589,7 @@ class ExpedienteController extends Controller
 
     public function storeObservacion(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $observacion = new Obs_expediente();
         $observacion->contrato_id = $request->folio;
         $observacion->observacion = $request->observacion;
@@ -1135,7 +1135,7 @@ class ExpedienteController extends Controller
     }
 
     public function store(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         setlocale(LC_TIME, 'es_MX.utf8');
         $hoy = Carbon::today()->toDateString();
 
@@ -1535,7 +1535,7 @@ class ExpedienteController extends Controller
     }
 
     public function asignarGestor(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $asignar = Expediente::findOrFail($request->folio);
         $asignar->gestor_id =  $request->gestor_id;
         $asignar->save();
@@ -2782,7 +2782,7 @@ class ExpedienteController extends Controller
     }
 
     public function ingresarExp(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $asignar = Expediente::findOrFail($request->folio);
         $asignar->fecha_ingreso =  $request->fecha_ingreso;
         $asignar->valor_escrituras =  $request->valor_escrituras;
@@ -2790,7 +2790,7 @@ class ExpedienteController extends Controller
     }
 
     public function inscribirInfonavit(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $expediente = Expediente::findOrFail($request->folio);
         $expediente->fecha_infonavit =  $request->fecha_infonavit;
         $expediente->save();
@@ -4230,7 +4230,7 @@ class ExpedienteController extends Controller
     }
 
     public function noAplicaInfonavit(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $expediente = Expediente::findOrFail($request->folio);
         $expediente->fecha_infonavit = "0000-01-01";
         $expediente->save();
@@ -5784,7 +5784,7 @@ class ExpedienteController extends Controller
 
     public function pagaresExpediente(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $totalDeposito = 0;
         $folio = $request->folio;
         $pagares = Pago_contrato::select('contrato_id','num_pago','fecha_pago','monto_pago','restante','pagado')
@@ -5804,7 +5804,7 @@ class ExpedienteController extends Controller
     }
 
     public function setLiquidacion(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         try{
             DB::beginTransaction();
             $expediente = Expediente::findOrFail($request->folio);
@@ -5882,7 +5882,7 @@ class ExpedienteController extends Controller
     }
 
     public function generarPagares(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         try{
             DB::beginTransaction();
             $intereses = 0;
@@ -7880,19 +7880,27 @@ class ExpedienteController extends Controller
     }
 
     public function updateMontoCredito(Request $request){
-        $credito = Credito::findOrFail($request->id);
-        $credito->credito_solic = $request->monto_credito;
-        $credito->save();
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        try{
+            DB::beginTransaction();
+            $credito = Credito::findOrFail($request->id);
+            $credito->credito_solic = $request->monto_credito;
+            $credito->save();
 
-        $inst_selec_id = inst_seleccionada::select('id')->where('credito_id','=',$request->id)->where('elegido','=',1)->where('status','=',2)->get();
+            $inst_selec_id = inst_seleccionada::select('id')->where('credito_id','=',$request->id)->where('elegido','=',1)->where('status','=',2)->get();
 
-        $inst_seleccionada = inst_seleccionada::findOrFail($inst_selec_id[0]->id);
-        $inst_seleccionada->monto_credito = $request->monto_credito;
-        $inst_seleccionada->save();
+            $inst_seleccionada = inst_seleccionada::findOrFail($inst_selec_id[0]->id);
+            $inst_seleccionada->monto_credito = $request->monto_credito;
+            $inst_seleccionada->save();
+            DB::commit();
+                
+        } catch (Exception $e){
+            DB::rollBack();
+        }  
     }
 
     public function generarInstruccionNot(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $asignar = Expediente::findOrFail($request->folio);
         $asignar->fecha_firma_esc =  $request->fecha_firma_esc;
         $asignar->notaria_id =  $request->notaria_id;

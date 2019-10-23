@@ -176,7 +176,7 @@ class UserController extends Controller
  
     public function store(Request $request)
     {
-        if (!$request->ajax()) return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 
         $rol = $request->rol_id;
          
@@ -407,6 +407,43 @@ class UserController extends Controller
                     $user->gastos_admn=1;
                     break;
                 }
+                case 11: // Administrador
+                {
+                    $user->desarrollo=1;
+                    $user->precios=1;
+                    $user->obra=1;
+                    $user->ventas=1;
+                    $user->acceso=1;
+                    $user->reportes=1;
+                    
+                    //Desarrollo
+                    $user->fraccionamiento=1;
+                    $user->etapas=1;
+                    $user->modelos=1;
+                    $user->lotes=1;
+                    $user->licencias=1;
+                    $user->acta_terminacion=1;
+                   
+                    //Precios
+                    $user->precios_etapas=1;
+                    $user->sobreprecios=1;
+                    $user->paquetes=1;
+                    $user->promociones=1;
+                    //Obra
+                    $user->contratistas=1;
+                    $user->aviso_obra=1;
+                    $user->partidas=1;
+                    $user->avance=1;
+                    //Ventas
+                    $user->lotes_disp=1;
+                    $user->mis_prospectos=0;
+                    $user->simulacion_credito=1;
+                    $user->contratos=1;
+                    $user->docs=1;
+                    //Reportes
+                    $user->mejora=1;
+                    break;
+                }
                 
             }
  
@@ -433,7 +470,7 @@ class UserController extends Controller
  
     public function update(Request $request)
     {
-        if (!$request->ajax()) return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 
         $rol= $request->rol_id;
          
@@ -685,7 +722,7 @@ class UserController extends Controller
     }
 
     public function asignar(Request $request){
-        if (!$request->ajax()) return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $rol = $request->rol_id;
         $user = new User();
         $user->id = $request->id_persona;
@@ -908,7 +945,7 @@ class UserController extends Controller
  
     public function desactivar(Request $request)
     {
-        if (!$request->ajax()) return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $user = User::findOrFail($request->id);
         $user->condicion = '0';
         $user->save();
@@ -916,7 +953,7 @@ class UserController extends Controller
  
     public function activar(Request $request)
     {
-        if (!$request->ajax()) return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $user = User::findOrFail($request->id);
         $user->condicion = '1';
         $user->save();
@@ -998,7 +1035,7 @@ class UserController extends Controller
     }
 
     public function updatePrivilegios(Request $request){
-        if (!$request->ajax()) return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $user = User::findOrFail($request->id);
         $user->administracion = $request->administracion;
         $user->desarrollo = $request->desarrollo;
@@ -1074,7 +1111,7 @@ class UserController extends Controller
     }
 
     public function updateProfile(Request $request, $id){
-        if (!$request->ajax()) return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 
         $imgAnterior = User::select('foto_user','id')
                             ->where('foto_user','!=','default-image.gif')
@@ -1125,7 +1162,7 @@ class UserController extends Controller
 
     public function updatePassword(Request $request){
 
-        if (!$request->ajax()) return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         
         if($request->password != ''){
             $user = User::findOrFail($request->id);
@@ -1155,7 +1192,7 @@ class UserController extends Controller
     }
 
     public function asignarGerentes (Request $request){
-        if (!$request->ajax()) return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $asignar = Vendedor::findOrFail($request->id);
         $asignar->supervisor_id = $request->supervisor_id;
         $asignar->save();

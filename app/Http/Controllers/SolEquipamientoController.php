@@ -1089,14 +1089,14 @@ class SolEquipamientoController extends Controller
     }
 
     public function actCosto(Request $request){
-        if(!$request->ajax())return redirect('/'); 
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $solicitud = Solic_equipamiento::findOrFail($request->id);
         $solicitud->costo = $request->costo;
         $solicitud->save();
     }
 
     public function actAnticipo(Request $request){
-        if(!$request->ajax())return redirect('/'); 
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $solicitud = Solic_equipamiento::findOrFail($request->id);
         $solicitud->fecha_anticipo = $request->fecha_anticipo;
         $solicitud->anticipo = $request->anticipo;
@@ -1104,7 +1104,7 @@ class SolEquipamientoController extends Controller
     }
 
     public function actLiquidacion(Request $request){
-        if(!$request->ajax())return redirect('/'); 
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $solicitud = Solic_equipamiento::findOrFail($request->id);
         $solicitud->fecha_liquidacion = $request->fecha_liquidacion;
         $solicitud->liquidacion = $request->liquidacion;
@@ -1112,7 +1112,7 @@ class SolEquipamientoController extends Controller
     }
 
     public function actColocacion(Request $request){
-        if(!$request->ajax())return redirect('/'); 
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $solicitud = Solic_equipamiento::findOrFail($request->id);
         $solicitud->fecha_colocacion = $request->fecha_colocacion;
         $solicitud->status = 2;
@@ -1126,7 +1126,7 @@ class SolEquipamientoController extends Controller
     }
 
     public function setInstalacion(Request $request){
-        if(!$request->ajax())return redirect('/'); 
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         
         $solicitud = Solic_equipamiento::findOrFail($request->id);
         $solicitud->fin_instalacion = $request->fin_instalacion;

@@ -9,10 +9,12 @@ use App\Licencia;
 use App\Lote;
 use DB;
 use Excel;
+use Auth;
 
 class AvanceController extends Controller
 {
     public function store($lote_id, $partida_id){
+        if(Auth::user()->rol_id == 11)return redirect('/');
         $avance = new Avance();
         $avance->lote_id = $lote_id;
         $avance->partida_id = $partida_id;
@@ -216,7 +218,7 @@ class AvanceController extends Controller
 
     public function update(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $avance = Avance::findOrFail($request->id);
         if($avance->avance > $request->avance)
             $avance->cambio_avance = 1;

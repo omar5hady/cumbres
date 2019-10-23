@@ -7,12 +7,12 @@ use App\Apartado;
 use App\Lote;
 use App\Personal;
 use DB;
+use Auth;
 
 class ApartadoController extends Controller
-
 {
     public function store(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $apartado = new Apartado();
         $apartado->lote_id = $request->lote_id;
         $apartado->vendedor_id = $request->vendedor_id;
@@ -30,7 +30,7 @@ class ApartadoController extends Controller
     }
 
     public function update(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $apartado = Apartado::findOrFail($request->id);
         $apartado->lote_id = $request->lote_id;
         $apartado->vendedor_id = $request->vendedor_id;
@@ -45,7 +45,7 @@ class ApartadoController extends Controller
 
     public function destroy(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 
         $apartado = Apartado::findOrFail($request->id);
         $apartado->delete();

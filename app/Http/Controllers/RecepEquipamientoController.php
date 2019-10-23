@@ -20,6 +20,7 @@ use App\Closet_otro;
 class RecepEquipamientoController extends Controller
 {
     public function storeRecepcion (Request $request){
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $tipoRecepcion = $request->tipoRecepcion;
         setlocale(LC_TIME, 'es_MX.utf8');
         $hoy = Carbon::today()->toDateString();
@@ -269,6 +270,7 @@ class RecepEquipamientoController extends Controller
     }
 
     public function updateRecepcion (Request $request){
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $tipoRecepcion = $request->tipoRecepcion;
         setlocale(LC_TIME, 'es_MX.utf8');
         $hoy = Carbon::today()->toDateString();

@@ -9,6 +9,7 @@ use App\Sobreprecio_modelo;
 use App\Lote;
 use App\Credito;
 use App\Sobreprecio;
+use Auth;
 
 
 class SobreprecioEtapaController extends Controller
@@ -60,7 +61,7 @@ class SobreprecioEtapaController extends Controller
     //funcion para insertar en la tabla
     public function store(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $sobreprecio_etapa = new Sobreprecio_etapa();
         $sobreprecio_etapa->etapa_id = $request->etapa_id;
         $sobreprecio_etapa->sobreprecio_id = $request->sobreprecio_id;
@@ -100,7 +101,7 @@ class SobreprecioEtapaController extends Controller
     //funcion para actualizar los datos
     public function update(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         //FindOrFail se utiliza para buscar lo que recibe de argumento
         $sobreprecio_etapa = Sobreprecio_etapa::findOrFail($request->id);
         $sobreprecio_etapa->etapa_id = $request->etapa_id;
@@ -147,7 +148,7 @@ class SobreprecioEtapaController extends Controller
      */
     public function destroy(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $sobreprecio_etapa = Sobreprecio_etapa::findOrFail($request->id);
         $sobreprecio_etapa->delete();
     }
@@ -191,7 +192,7 @@ class SobreprecioEtapaController extends Controller
     }
 
     public function registrarSobreprecio(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $sobreprecio = new Sobreprecio();
         $sobreprecio->nombre = $request->sobreprecio;
         $sobreprecio->save();
@@ -208,7 +209,7 @@ class SobreprecioEtapaController extends Controller
     }
 
     public function actualizarSobreprecio(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $sobreprecio = Sobreprecio::findOrFail($request->id);
         $sobreprecio->nombre = $request->sobreprecio;
         $sobreprecio->save();

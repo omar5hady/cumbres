@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Contratista;
+use Auth;
 
 class ContratistaController extends Controller
 {
@@ -67,7 +68,7 @@ class ContratistaController extends Controller
     //funcion para insertar en la tabla
     public function store(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $contratistas = new Contratista();
         $contratistas->nombre = $request->nombre;
         $contratistas->tipo = $request->tipo;
@@ -115,7 +116,7 @@ class ContratistaController extends Controller
     //funcion para actualizar los datos
     public function update(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         //FindOrFail se utiliza para buscar lo que recibe de argumento
         $contratistas = Contratista::findOrFail($request->id);
         $contratistas->nombre = $request->nombre;
@@ -140,7 +141,7 @@ class ContratistaController extends Controller
      */
     public function destroy(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $contratistas = Contratista::findOrFail($request->id);
         $contratistas->delete();
     }

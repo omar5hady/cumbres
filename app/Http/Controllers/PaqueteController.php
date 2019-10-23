@@ -7,6 +7,7 @@ use App\Paquete;
 use DB;
 use Carbon\Carbon;
 use App\Etapa;
+use Auth;
 
 class PaqueteController extends Controller
 {
@@ -83,7 +84,7 @@ class PaqueteController extends Controller
     //funcion para insertar en la tabla
     public function store(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $paquetes = new Paquete();
         $paquetes->fraccionamiento_id = $request->fraccionamiento_id;
         $paquetes->etapa_id = $request->etapa_id;
@@ -127,7 +128,7 @@ class PaqueteController extends Controller
     //funcion para actualizar los datos
     public function update(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         //FindOrFail se utiliza para buscar lo que recibe de argumento
         $paquetes = Paquete::findOrFail($request->id);
         $paquetes->fraccionamiento_id = $request->fraccionamiento_id;
@@ -149,7 +150,7 @@ class PaqueteController extends Controller
      */
     public function destroy(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $paquetes = Paquete::findOrFail($request->id);
         $paquetes->delete();
     }

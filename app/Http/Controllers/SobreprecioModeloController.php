@@ -7,6 +7,7 @@ use App\Sobreprecio_modelo;
 use DB;
 use App\Lote;
 use App\Credito;
+use Auth;
 
 class SobreprecioModeloController extends Controller
 {
@@ -132,7 +133,7 @@ class SobreprecioModeloController extends Controller
     //funcion para insertar en la tabla
     public function store(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $sobreprecio_modelo = new Sobreprecio_modelo();
         $sobreprecio_modelo->lote_id = $request->lote_id;
         $sobreprecio_modelo->sobreprecio_etapa_id = $request->sobreprecio_etapa_id;
@@ -197,7 +198,7 @@ class SobreprecioModeloController extends Controller
     //funcion para actualizar los datos
     public function update(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         //FindOrFail se utiliza para buscar lo que recibe de argumento
         $sobreprecio_modelo = Sobreprecio_modelo::findOrFail($request->id);
         $sobreprecio_modelo->lote_id = $request->lote_id;
@@ -227,7 +228,7 @@ class SobreprecioModeloController extends Controller
      */
     public function destroy(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $sobreprecio_modelo = Sobreprecio_modelo::findOrFail($request->id);
         $lote_id = $sobreprecio_modelo->lote_id;
         $sobreprecio_modelo->delete();

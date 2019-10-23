@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Personal;
 use DB;
 use App\Cliente;
+use Auth;
 
 class PersonalController extends Controller
 {
@@ -105,7 +106,7 @@ class PersonalController extends Controller
     //funcion para insertar en la tabla
     public function store(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $Personal = new Personal();
         $Personal->departamento_id = $request->departamento_id;
         $Personal->nombre = $request->nombre;
@@ -157,7 +158,7 @@ class PersonalController extends Controller
     //funcion para actualizar los datos
     public function update(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         //FindOrFail se utiliza para buscar lo que recibe de argumento
         $Personal = Personal::findOrFail($request->id);
         $Personal->departamento_id = $request->departamento_id;
@@ -180,7 +181,7 @@ class PersonalController extends Controller
 
     public function desactivar(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         //FindOrFail se utiliza para buscar lo que recibe de argumento
         $Personal = Personal::findOrFail($request->id);
         $Personal->activo = '0';
@@ -189,7 +190,7 @@ class PersonalController extends Controller
 
     public function activar(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         //FindOrFail se utiliza para buscar lo que recibe de argumento
         $Personal = Personal::findOrFail($request->id);
         $Personal->activo = '1';
@@ -204,7 +205,7 @@ class PersonalController extends Controller
      */
     public function destroy(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $Personal = Personal::findOrFail($request->id);
         $Personal->delete();
     }

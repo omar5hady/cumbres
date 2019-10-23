@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Serv_etapa;
+use Auth;
 
 class ServEtapaController extends Controller
 {
@@ -18,7 +19,7 @@ class ServEtapaController extends Controller
     }
 
     public function store(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $etapa_id = $request->etapa_id;
         $servicio = new Serv_etapa();
         $servicio->etapa_id = $request->etapa_id;
@@ -28,7 +29,7 @@ class ServEtapaController extends Controller
 
     public function destroy(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $servicio = Serv_etapa::findOrFail($request->id);
         $servicio->delete();
     }

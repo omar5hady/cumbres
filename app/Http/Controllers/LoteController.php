@@ -640,7 +640,7 @@ class LoteController extends Controller
     //funcion para insertar en la tabla
     public function store(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 
         $etapa= Etapa::select('id')
                 ->where('num_etapa','=', 'Sin Asignar')
@@ -697,7 +697,7 @@ class LoteController extends Controller
     //funcion para actualizar los datos
     public function update(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         //FindOrFail se utiliza para buscar lo que recibe de argumento
         $lote = Lote::findOrFail($request->id);
         $lote->fraccionamiento_id = $request->fraccionamiento_id;
@@ -722,7 +722,7 @@ class LoteController extends Controller
     {
         $siembra = '';
         $terrenoExcedente = 0;
-       if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 
        $etapa= Etapa::select('num_etapa')
        ->where('id','=', $request->etapa_id)
@@ -809,89 +809,98 @@ class LoteController extends Controller
     public function asignarMod(Request $request) // EN MASA
     {
         $siembra = '';
-       if(!$request->ajax())return redirect('/');
-       $aviso = $request->aviso;
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        $aviso = $request->aviso;
 
-       $etapa= Etapa::select('num_etapa')
-       ->where('id','=', $request->etapa_id)
-       ->get();
+        $etapa= Etapa::select('num_etapa')
+        ->where('id','=', $request->etapa_id)
+        ->get();
 
-       $modeloOld = Lote::select('modelo_id','num_lote')
-       ->where('id','=',$request->id)
-       ->get();
+        $modeloOld = Lote::select('modelo_id','num_lote')
+        ->where('id','=',$request->id)
+        ->get();
 
-       $fraccionamientos = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-       ->select('fraccionamientos.nombre')
-       ->where('lotes.id','=',$request->id)
-       ->get();
+        $fraccionamientos = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+        ->select('fraccionamientos.nombre')
+        ->where('lotes.id','=',$request->id)
+        ->get();
 
-       $nombreModelo = Modelo::select('nombre')
-       ->where('id','=',$modeloOld[0]->modelo_id)
-       ->get();
+        $nombreModelo = Modelo::select('nombre')
+        ->where('id','=',$modeloOld[0]->modelo_id)
+        ->get();
 
-       $modelo= Modelo::select('construccion','nombre')
-       ->where('id','=', $request->modelo_id)
-       ->get();
-       
-        //FindOrFail se utiliza para buscar lo que recibe de argumento
-        $lote = Lote::findOrFail($request->id);
-        $lote->etapa_id = $request->etapa_id;
-        $lote->modelo_id = $request->modelo_id;
+        $modelo= Modelo::select('construccion','nombre')
+        ->where('id','=', $request->modelo_id)
+        ->get();
 
-        if($request->modelo_id != $modeloOld[0]->modelo_id){
-            $siembra = Carbon::today()->format('ymd');
-            $lote->siembra=$siembra;
+        try {
+            DB::beginTransaction();
+        
+            //FindOrFail se utiliza para buscar lo que recibe de argumento
+            $lote = Lote::findOrFail($request->id);
+            $lote->etapa_id = $request->etapa_id;
+            $lote->modelo_id = $request->modelo_id;
 
-            $licencia = Licencia::findOrFail($request->id);
-            $licencia->cambios = 1;
-            if($nombreModelo[0]->nombre != "Por Asignar")
-                $licencia->modelo_ant = $nombreModelo[0]->nombre;
-            $licencia->save();
-        }
-        $lote->construccion = $modelo[0]->construccion;
-        $lote->excedente_terreno = 0;
-        $lote->sobreprecio=0;
-        $lote->precio_base=0;
-        $lote->habilitado=0;
-        $lote->save();
-         
-        if($aviso != '0'){
+            if($request->modelo_id != $modeloOld[0]->modelo_id){
+                $siembra = Carbon::today()->format('ymd');
+                $lote->siembra=$siembra;
 
-            if($nombreModelo[0]->nombre != "Por Asignar"){
-                $imagenUsuario = DB::table('users')->select('foto_user','usuario')->where('id','=',Auth::user()->id)->get();
-                $fecha = Carbon::now();
-                
-                $arregloSimPendientes = [
-                    'notificacion' => [
-                        'usuario' => $imagenUsuario[0]->usuario,
-                        'foto' => $imagenUsuario[0]->foto_user,
-                        'fecha' => $fecha,
-                        'msj' => 'Asigno el modelo: '.$modelo[0]->nombre.' a la etapa: '.$etapa[0]->num_etapa.' a '.$aviso.' lotes, del fraccionamiento '.$fraccionamientos[0]->nombre,
-                        'titulo' => 'Nuevos modelos asignados'
-                    ]
-                ];
-
-                $users = User::select('id')->where('rol_id','=','1')
-                    ->orWhere('rol_id','=','6')
-                    ->orWhere('rol_id','=','4')->get();
-
-                foreach($users as $notificar){
-                    User::findOrFail($notificar->id)->notify(new NotifyAdmin($arregloSimPendientes));
-                }
+                $licencia = Licencia::findOrFail($request->id);
+                $licencia->cambios = 1;
+                if($nombreModelo[0]->nombre != "Por Asignar")
+                    $licencia->modelo_ant = $nombreModelo[0]->nombre;
+                $licencia->save();
             }
+            $lote->construccion = $modelo[0]->construccion;
+            $lote->excedente_terreno = 0;
+            $lote->sobreprecio=0;
+            $lote->precio_base=0;
+            $lote->habilitado=0;
+            $lote->save();
             
-        }
-        
-        
+            if($aviso != '0'){
 
-        
+                if($nombreModelo[0]->nombre != "Por Asignar"){
+                    $imagenUsuario = DB::table('users')->select('foto_user','usuario')->where('id','=',Auth::user()->id)->get();
+                    $fecha = Carbon::now();
+                    
+                    $arregloSimPendientes = [
+                        'notificacion' => [
+                            'usuario' => $imagenUsuario[0]->usuario,
+                            'foto' => $imagenUsuario[0]->foto_user,
+                            'fecha' => $fecha,
+                            'msj' => 'Asigno el modelo: '.$modelo[0]->nombre.' a la etapa: '.$etapa[0]->num_etapa.' a '.$aviso.' lotes, del fraccionamiento '.$fraccionamientos[0]->nombre,
+                            'titulo' => 'Nuevos modelos asignados'
+                        ]
+                    ];
+
+                    $users = User::select('id')->where('rol_id','=','1')
+                        ->orWhere('rol_id','=','6')
+                        ->orWhere('rol_id','=','4')->get();
+
+                    foreach($users as $notificar){
+                        User::findOrFail($notificar->id)->notify(new NotifyAdmin($arregloSimPendientes));
+                    }
+                }
+                
+                
+                
+            }
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+        }
+
     }
 
     public function enviarAviso(Request $request)
     {
-       if(!$request->ajax())return redirect('/');
-       $aviso = $request->aviso;
-       $id = $request->id;
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        $aviso = $request->aviso;
+        $id = $request->id;
+       
+        try {
+        DB::beginTransaction();
         //FindOrFail se utiliza para buscar lo que recibe de argumento
         $lote = Lote::findOrFail($request->id);
         $lote->fecha_ini = $request ->fecha_ini;
@@ -943,18 +952,22 @@ class LoteController extends Controller
                 $n_avance = new AvanceController();
                 $n_avance->store($lote->id, $partida->id);
             }
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+        }
 
     }
 
     public function destroy(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $lote = Lote::findOrFail($request->id);
         $lote->delete();
     }
 
     public function import(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         //validate the xls file
         $this->validate($request, array(
             'file'      => 'required'
@@ -5987,7 +6000,7 @@ class LoteController extends Controller
 
 
     public function updateAjuste(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $ajuste = Lote::findOrFail($request->id);
         $cambio = $ajuste->ajuste;
         $ajuste->ajuste = $request->ajuste;

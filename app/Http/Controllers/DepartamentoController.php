@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 //use Illuminate\Support\Facades\DB;
 use App\Departamento; //Importar el modelo
+use Auth;
 
 class DepartamentoController extends Controller
 {
@@ -64,7 +65,7 @@ class DepartamentoController extends Controller
      //funcion para insertar en la tabla
     public function store(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $departamento = new Departamento();
         $departamento->departamento = $request->departamento;
         $departamento->user_alta = $request->user_alta;
@@ -103,7 +104,7 @@ class DepartamentoController extends Controller
     //funcion para actualizar los datos
     public function update(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         //FindOrFail se utiliza para buscar lo que recibe de argumento
         $departamento = Departamento::findOrFail($request->id_departamento);
         $departamento->departamento = $request->departamento;
@@ -119,7 +120,7 @@ class DepartamentoController extends Controller
      */
     public function destroy(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $departamento = Departamento::findOrFail($request->id_departamento);
         $departamento->delete();
     }

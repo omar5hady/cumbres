@@ -8,6 +8,7 @@ use App\Contrato;
 use DB;
 use Carbon\Carbon;
 use App\Solic_equipamiento;
+use Auth;
 
 class EquipamientoController extends Controller
 {
@@ -35,6 +36,7 @@ class EquipamientoController extends Controller
 
     public function store(Request $request){
 
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $equipamiento = new Equipamiento();
         $equipamiento->proveedor_id = $request->proveedor_id;
         $equipamiento->equipamiento = $request->equipamiento;
@@ -42,14 +44,14 @@ class EquipamientoController extends Controller
     }
 
     public function destroy(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $equipamiento = Equipamiento::findOrFail($request->id);
         $equipamiento->activo = 0;
         $equipamiento->save();
     }
 
     public function activar(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $equipamiento = Equipamiento::findOrFail($request->id);
         $equipamiento->activo = 1;
         $equipamiento->save();
@@ -573,7 +575,7 @@ class EquipamientoController extends Controller
     }
 
     public function solicitud_equipamiento(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $fecha_hoy = Carbon::today()->toDateString();
         $solicitud = new Solic_equipamiento();
         $solicitud->lote_id = $request->lote_id;
@@ -589,7 +591,7 @@ class EquipamientoController extends Controller
     }
 
     public function eliminarSolicitud_lote(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $equipamientoLote = Solic_equipamiento::findOrFail($request->id);
         $equipamientoLote->delete();
         $sinEquipamiento = Solic_equipamiento::select('id')->where('contrato_id','=',$request->contrato_id)->count();
@@ -614,7 +616,7 @@ class EquipamientoController extends Controller
     }
 
     public function terminarSolicitud (Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $contrato = Contrato::findOrFail($request->id);
         $contrato->equipamiento = 2;
         $contrato->save();

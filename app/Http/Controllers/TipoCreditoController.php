@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Tipo_credito;
+use Auth;
 
 class TipoCreditoController extends Controller
 {
@@ -38,7 +39,7 @@ class TipoCreditoController extends Controller
      //funcion para insertar en la tabla
     public function store(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $Tipo_credito = new Tipo_credito();
         $Tipo_credito->nombre = $request->nombre;
         $Tipo_credito->institucion_fin = $request->institucion_fin;
@@ -48,7 +49,7 @@ class TipoCreditoController extends Controller
     //funcion para actualizar los datos
     public function update(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         //FindOrFail se utiliza para buscar lo que recibe de argumento
         $Tipo_credito = Tipo_credito::findOrFail($request->id);
         $Tipo_credito->nombre = $request->nombre;
@@ -58,7 +59,7 @@ class TipoCreditoController extends Controller
 
     public function destroy(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $Tipo_credito = Tipo_credito::findOrFail($request->id);
         $Tipo_credito->delete();
     }

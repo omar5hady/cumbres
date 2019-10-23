@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Rol;
+use Auth;
 
 class RolController extends Controller
 {
@@ -36,7 +37,7 @@ class RolController extends Controller
 
 
     public function store(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $rol = new Rol();
         $rol->nombre = $request->nombre;
         $rol->descripcion = $request->descripcion;
@@ -46,7 +47,7 @@ class RolController extends Controller
     }
 
     public function update(Request $request){
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $rol = Rol::findOrFail($request->id);
         $rol->nombre = $request->nombre;
         $rol->descripcion = $request->descripcion;
@@ -56,7 +57,7 @@ class RolController extends Controller
 
     public function destroy(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $rol = Rol::findOrFail($request->id);
         $rol->delete();
     }
