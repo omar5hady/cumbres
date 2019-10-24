@@ -2107,7 +2107,7 @@
                 this.solicitud_id = data['id'];
                 this.recibido = data['recepcion'];
                 if(this.recibido == 1)  
-                    this.getResultados(this.recibido);
+                    this.getResultados(this.solicitud_id);
             },
 
             cerrarRecepcion(){

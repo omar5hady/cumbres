@@ -56,6 +56,7 @@
                                         <th>Avance</th>
                                         <th>Paquete</th>
                                         <th>Fecha de visita</th>
+                                        <th>Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -80,6 +81,17 @@
                                         <td class="td2" v-text="lotes.avance+'%'"></td>
                                         <td class="td2" v-text="lotes.paquete"></td>
                                         <td @click="abrirModal('fecha',lotes)" class="td2" v-text="lotes.visita_avaluo"></td>
+                                        <template>
+                                            <td v-if="lotes.contrato == 0" class="td2">
+                                                <span class="badge badge-success"> Disponible </span>
+                                            </td>
+                                            <td v-else-if="lotes.contrato == 1 && !lotes.fecha_firma_esc" class="td2">
+                                                <span class="badge badge-warning"> Vendida </span>
+                                            </td>
+                                            <td v-else class="td2">
+                                                <span class="badge badge-danger"> Individualizada </span>
+                                            </td>
+                                        </template>
                                        
                                     </tr>                               
                                 </tbody>

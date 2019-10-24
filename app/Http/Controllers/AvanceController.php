@@ -164,6 +164,11 @@ class AvanceController extends Controller
             ->addSelect('fraccionamientos.nombre as proyecto')
             ->join('modelos','lotes.modelo_id','=','modelos.id')
             ->addSelect('modelos.nombre as modelos')
+
+            ->leftJoin('creditos','lotes.id','=','creditos.lote_id')
+            ->leftJoin('contratos','creditos.id','=','contratos.id')
+            ->leftJoin('expedientes','contratos.id','=','expedientes.id')
+            ->addSelect('lotes.contrato','expedientes.fecha_firma_esc')
                 ->where('lotes.aviso', '!=', '0')
                 ->orderBy('avances.id','ASC')->paginate(49);
         }
@@ -179,6 +184,10 @@ class AvanceController extends Controller
             ->addSelect('fraccionamientos.nombre as proyecto')
             ->join('modelos','lotes.modelo_id','=','modelos.id')
             ->addSelect('modelos.nombre as modelos')
+            ->leftJoin('creditos','lotes.id','=','creditos.lote_id')
+            ->leftJoin('contratos','creditos.id','=','contratos.id')
+            ->leftJoin('expedientes','contratos.id','=','expedientes.id')
+            ->addSelect('lotes.contrato','expedientes.fecha_firma_esc')
             
                 ->where($criterio, '=', $buscar)
                 ->where('lotes.aviso', '!=', '0')
@@ -195,6 +204,10 @@ class AvanceController extends Controller
             ->addSelect('fraccionamientos.nombre as proyecto')
             ->join('modelos','lotes.modelo_id','=','modelos.id')
             ->addSelect('modelos.nombre as modelos')
+            ->leftJoin('creditos','lotes.id','=','creditos.lote_id')
+            ->leftJoin('contratos','creditos.id','=','contratos.id')
+            ->leftJoin('expedientes','contratos.id','=','expedientes.id')
+            ->addSelect('lotes.contrato','expedientes.fecha_firma_esc')
             
                 ->where($criterio, 'like', '%'. $buscar . '%')
                 ->where('lotes.aviso', '!=', '0')

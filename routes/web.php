@@ -543,6 +543,10 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/equipamiento/updateRecepcion','RecepEquipamientoController@updateRecepcion');
 
         Route::get('/equipamiento/getResultados','RecepEquipamientoController@getRecepcion');
+
+        Route::get('/equipamiento/recepcionClosets','RecepEquipamientoController@recepcionClosetsPDF');
+        Route::get('/equipamiento/recepcionCocina','RecepEquipamientoController@recepcionCocinaPDF');
+        Route::get('/equipamiento/recepcionGeneral','RecepEquipamientoController@recepcionGeneralPDF');
     });
 
 

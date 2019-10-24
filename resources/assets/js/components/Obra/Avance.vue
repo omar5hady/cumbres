@@ -34,6 +34,13 @@
                                 <button class="btn2 btn-primary form-control" @click="asignarFecha()">Guardar fecha</button>
                             </div>
                         </div>
+
+                        <div class="form-group row">
+                            
+                            <div class="col-md-3">
+                                <h6 v-text="'Lote: '+status"></h6>
+                            </div>
+                        </div>
                         <!---->
                     </div>
                     <div class="card-body" v-if="resumen==0">
@@ -368,7 +375,8 @@
                 buscar : '',
                 buscar1: '',
                 buscar2: '',
-                buscar3: ''
+                buscar3: '',
+                status: '',
             }
         },
         computed:{
@@ -435,6 +443,15 @@
                     me.arrayAvance = respuesta.avance.data;
                     me.pagination = respuesta.pagination;
                     me.visita_avaluo = me.arrayAvance[0].visita_avaluo;
+                    if(me.arrayAvance[0].contrato == 0){
+                        me.status = 'Disponible';
+                    }
+                    else if(me.arrayAvance[0].contrato == 1 && !me.arrayAvance[0].fecha_firma_esc){
+                        me.status = 'Vendido';
+                    }
+                    else{
+                        me.status = 'Individualizada';
+                    }
                 })
                 .catch(function (error) {
                     console.log(error);

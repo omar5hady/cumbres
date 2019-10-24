@@ -581,4 +581,211 @@ class RecepEquipamientoController extends Controller
             'resultados' => $resultados,
         ];
     }
+
+    public function recepcionClosetsPDF(Request $request){
+        $resultados = Recep_equipamiento::leftJoin('cocina_acabados','recep_equipamientos.id','=','cocina_acabados.id')
+        ->leftJoin('cocina_puertas','recep_equipamientos.id','=','cocina_puertas.id')
+        ->leftJoin('cocina_otras','recep_equipamientos.id','=','cocina_otras.id')
+        ->leftJoin('closet_acabados','recep_equipamientos.id','=','closet_acabados.id')
+        ->leftJoin('closet_interiores','recep_equipamientos.id','=','closet_interiores.id')
+        ->leftJoin('closet_otros','recep_equipamientos.id','=','closet_otros.id')
+
+        ->select('recep_equipamientos.id as solicitud_id',
+            'cocina_acabados.cubierta_acab_uniones','cocina_acabados.cubierta_acab_silicon','cocina_acabados.cubierta_acab_cortes',
+            'cocina_acabados.puerta_acab_alineados','cocina_acabados.puerta_acab_cantos',
+            
+            'cocina_otras.estufa_instalacion','cocina_otras.estufa_pzas_extra','cocina_otras.estufa_manuales','cocina_otras.estufa_danos',
+            'cocina_otras.tarja_danos','cocina_otras.tarja_pzas_extra',
+            
+            'cocina_puertas.puerta_danos','cocina_puertas.puerta_tornillos','cocina_puertas.puerta_abatimiento','cocina_puertas.puerta_limpieza',
+            'cocina_puertas.puerta_jaladera','cocina_puertas.puerta_gomas','cocina_puertas.cajones_uniones',
+            'cocina_puertas.cajones_silicon','cocina_puertas.cajones_limpieza','cocina_puertas.cajones_jaladeras',
+            'cocina_puertas.cajones_cantos', 'cocina_puertas.cajones_rieles','cocina_puertas.cajones_estantes','cocina_puertas.cajones_pzas_comp',
+            'cocina_puertas.alacena_entrepano','cocina_puertas.alacena_pistones','cocina_puertas.alacena_jaladeras',
+            'cocina_puertas.alacena_micro','cocina_puertas.alacena_cantos','cocina_puertas.alacena_limpieza','cocina_puertas.alacena_parches',
+
+            'closet_acabados.p_ali_der','closet_acabados.p_ali_izq','closet_acabados.p_ali_princ','closet_acabados.p_ali_baja',
+            'closet_acabados.p_limp_der','closet_acabados.p_limp_izq','closet_acabados.p_limp_princ','closet_acabados.p_limp_baja',
+            'closet_acabados.p_sil_der','closet_acabados.p_sil_izq','closet_acabados.p_sil_princ','closet_acabados.p_sil_baja',
+            'closet_acabados.c_ali_der','closet_acabados.c_ali_izq','closet_acabados.c_ali_princ','closet_acabados.c_ali_baja',
+            'closet_acabados.c_cant_der','closet_acabados.c_cant_izq','closet_acabados.c_cant_princ','closet_acabados.c_cant_baja',
+            'closet_acabados.c_union_der','closet_acabados.c_union_izq','closet_acabados.c_union_princ','closet_acabados.c_union_baja',
+            'closet_acabados.c_sil_der','closet_acabados.c_sil_izq','closet_acabados.c_sil_princ','closet_acabados.c_sil_baja',
+            'closet_acabados.c_limp_der','closet_acabados.c_limp_izq','closet_acabados.c_limp_princ','closet_acabados.c_limp_baja',
+            'closet_acabados.c_torn_der','closet_acabados.c_torn_izq','closet_acabados.c_torn_princ','closet_acabados.c_torn_baja',
+            'closet_acabados.c_parch_der','closet_acabados.c_parch_izq','closet_acabados.c_parch_princ','closet_acabados.c_parch_baja',
+
+            'closet_interiores.p_tira_der','closet_interiores.p_tira_izq','closet_interiores.p_tira_princ','closet_interiores.p_tira_baja',
+            'closet_interiores.p_func_der','closet_interiores.p_func_izq','closet_interiores.p_func_princ','closet_interiores.p_func_baja',
+            'closet_interiores.c_jalad_der','closet_interiores.c_jalad_izq','closet_interiores.c_jalad_princ','closet_interiores.c_jalad_baja',
+            'closet_interiores.c_riel_der','closet_interiores.c_riel_izq','closet_interiores.c_riel_princ','closet_interiores.c_riel_baja',
+            'closet_interiores.c_estant_der','closet_interiores.c_estant_izq','closet_interiores.c_estant_princ','closet_interiores.c_estant_baja',
+            'closet_interiores.c_entr_der','closet_interiores.c_entr_izq','closet_interiores.c_entr_princ','closet_interiores.c_entr_baja',
+            'closet_interiores.c_tubos_der','closet_interiores.c_tubos_izq','closet_interiores.c_tubos_princ',
+            'closet_interiores.c_tubos_baja','closet_interiores.c_danos_der','closet_interiores.c_danos_izq',
+            'closet_interiores.c_danos_princ','closet_interiores.c_danos_baja','closet_interiores.c_correct_der',
+            'closet_interiores.c_correct_izq','closet_interiores.c_correct_princ','closet_interiores.c_correct_baja',
+            'closet_interiores.c_pzasc_der','closet_interiores.c_pzasc_izq','closet_interiores.c_pzasc_princ',
+            'closet_interiores.c_pzasc_baja','closet_interiores.c_abatim_der','closet_interiores.c_abatim_izq',
+            'closet_interiores.c_abatim_princ','closet_interiores.c_abatim_baja','closet_interiores.c_visagras_der',
+            'closet_interiores.c_visagras_izq','closet_interiores.c_visagras_princ','closet_interiores.c_visagras_baja',
+
+            'closet_otros.pared_dan_der','closet_otros.pared_dan_izq','closet_otros.pared_dan_princ',
+            'closet_otros.pared_dan_baja','closet_otros.pared_limp_der','closet_otros.pared_limp_izq',
+            'closet_otros.pared_limp_princ','closet_otros.pared_limp_baja','closet_otros.clo_censup_der',
+            'closet_otros.clo_censup_izq','closet_otros.clo_censup_princ','closet_otros.clo_censup_baja',
+            'closet_otros.clo_ceninf_der','closet_otros.clo_ceninf_izq','closet_otros.clo_ceninf_princ',
+            'closet_otros.clo_ceninf_baja','closet_otros.clo_madera_der','closet_otros.clo_madera_izq',
+            'closet_otros.clo_madera_princ','closet_otros.clo_madera_baja','closet_otros.clo_alin_der',
+            'closet_otros.clo_alin_izq','closet_otros.clo_alin_princ','closet_otros.clo_alin_baja',
+            'closet_otros.clo_pande_der','closet_otros.clo_pande_izq','closet_otros.clo_pande_princ',
+            'closet_otros.clo_pande_baja','closet_otros.clo_soporte_der','closet_otros.clo_soporte_izq',
+            'closet_otros.clo_soporte_princ','closet_otros.clo_soporte_baja'
+            
+        )
+        ->where('recep_equipamientos.id','=',$request->id)
+        ->get();
+
+        $pdf = \PDF::loadview('pdf.DocsPostVenta.RecepcionClosets', ['resultados' => $resultados]);
+        //$pdf->setPaper('A4','landscape');
+        return $pdf->stream('recepcion_de_closets.pdf');
+    }
+
+    public function recepcionCocinaPDF(Request $request){
+        $resultados = Recep_equipamiento::leftJoin('cocina_acabados','recep_equipamientos.id','=','cocina_acabados.id')
+        ->leftJoin('cocina_puertas','recep_equipamientos.id','=','cocina_puertas.id')
+        ->leftJoin('cocina_otras','recep_equipamientos.id','=','cocina_otras.id')
+        ->leftJoin('closet_acabados','recep_equipamientos.id','=','closet_acabados.id')
+        ->leftJoin('closet_interiores','recep_equipamientos.id','=','closet_interiores.id')
+        ->leftJoin('closet_otros','recep_equipamientos.id','=','closet_otros.id')
+
+        ->select('recep_equipamientos.id as solicitud_id',
+            'cocina_acabados.cubierta_acab_uniones','cocina_acabados.cubierta_acab_silicon','cocina_acabados.cubierta_acab_cortes',
+            'cocina_acabados.puerta_acab_alineados','cocina_acabados.puerta_acab_cantos',
+            
+            'cocina_otras.estufa_instalacion','cocina_otras.estufa_pzas_extra','cocina_otras.estufa_manuales','cocina_otras.estufa_danos',
+            'cocina_otras.tarja_danos','cocina_otras.tarja_pzas_extra',
+            
+            'cocina_puertas.puerta_danos','cocina_puertas.puerta_tornillos','cocina_puertas.puerta_abatimiento','cocina_puertas.puerta_limpieza',
+            'cocina_puertas.puerta_jaladera','cocina_puertas.puerta_gomas','cocina_puertas.cajones_uniones',
+            'cocina_puertas.cajones_silicon','cocina_puertas.cajones_limpieza','cocina_puertas.cajones_jaladeras',
+            'cocina_puertas.cajones_cantos', 'cocina_puertas.cajones_rieles','cocina_puertas.cajones_estantes','cocina_puertas.cajones_pzas_comp',
+            'cocina_puertas.alacena_entrepano','cocina_puertas.alacena_pistones','cocina_puertas.alacena_jaladeras',
+            'cocina_puertas.alacena_micro','cocina_puertas.alacena_cantos','cocina_puertas.alacena_limpieza','cocina_puertas.alacena_parches',
+
+            'closet_acabados.p_ali_der','closet_acabados.p_ali_izq','closet_acabados.p_ali_princ','closet_acabados.p_ali_baja',
+            'closet_acabados.p_limp_der','closet_acabados.p_limp_izq','closet_acabados.p_limp_princ','closet_acabados.p_limp_baja',
+            'closet_acabados.p_sil_der','closet_acabados.p_sil_izq','closet_acabados.p_sil_princ','closet_acabados.p_sil_baja',
+            'closet_acabados.c_ali_der','closet_acabados.c_ali_izq','closet_acabados.c_ali_princ','closet_acabados.c_ali_baja',
+            'closet_acabados.c_cant_der','closet_acabados.c_cant_izq','closet_acabados.c_cant_princ','closet_acabados.c_cant_baja',
+            'closet_acabados.c_union_der','closet_acabados.c_union_izq','closet_acabados.c_union_princ','closet_acabados.c_union_baja',
+            'closet_acabados.c_sil_der','closet_acabados.c_sil_izq','closet_acabados.c_sil_princ','closet_acabados.c_sil_baja',
+            'closet_acabados.c_limp_der','closet_acabados.c_limp_izq','closet_acabados.c_limp_princ','closet_acabados.c_limp_baja',
+            'closet_acabados.c_torn_der','closet_acabados.c_torn_izq','closet_acabados.c_torn_princ','closet_acabados.c_torn_baja',
+            'closet_acabados.c_parch_der','closet_acabados.c_parch_izq','closet_acabados.c_parch_princ','closet_acabados.c_parch_baja',
+
+            'closet_interiores.p_tira_der','closet_interiores.p_tira_izq','closet_interiores.p_tira_princ','closet_interiores.p_tira_baja',
+            'closet_interiores.p_func_der','closet_interiores.p_func_izq','closet_interiores.p_func_princ','closet_interiores.p_func_baja',
+            'closet_interiores.c_jalad_der','closet_interiores.c_jalad_izq','closet_interiores.c_jalad_princ','closet_interiores.c_jalad_baja',
+            'closet_interiores.c_riel_der','closet_interiores.c_riel_izq','closet_interiores.c_riel_princ','closet_interiores.c_riel_baja',
+            'closet_interiores.c_estant_der','closet_interiores.c_estant_izq','closet_interiores.c_estant_princ','closet_interiores.c_estant_baja',
+            'closet_interiores.c_entr_der','closet_interiores.c_entr_izq','closet_interiores.c_entr_princ','closet_interiores.c_entr_baja',
+            'closet_interiores.c_tubos_der','closet_interiores.c_tubos_izq','closet_interiores.c_tubos_princ',
+            'closet_interiores.c_tubos_baja','closet_interiores.c_danos_der','closet_interiores.c_danos_izq',
+            'closet_interiores.c_danos_princ','closet_interiores.c_danos_baja','closet_interiores.c_correct_der',
+            'closet_interiores.c_correct_izq','closet_interiores.c_correct_princ','closet_interiores.c_correct_baja',
+            'closet_interiores.c_pzasc_der','closet_interiores.c_pzasc_izq','closet_interiores.c_pzasc_princ',
+            'closet_interiores.c_pzasc_baja','closet_interiores.c_abatim_der','closet_interiores.c_abatim_izq',
+            'closet_interiores.c_abatim_princ','closet_interiores.c_abatim_baja','closet_interiores.c_visagras_der',
+            'closet_interiores.c_visagras_izq','closet_interiores.c_visagras_princ','closet_interiores.c_visagras_baja',
+
+            'closet_otros.pared_dan_der','closet_otros.pared_dan_izq','closet_otros.pared_dan_princ',
+            'closet_otros.pared_dan_baja','closet_otros.pared_limp_der','closet_otros.pared_limp_izq',
+            'closet_otros.pared_limp_princ','closet_otros.pared_limp_baja','closet_otros.clo_censup_der',
+            'closet_otros.clo_censup_izq','closet_otros.clo_censup_princ','closet_otros.clo_censup_baja',
+            'closet_otros.clo_ceninf_der','closet_otros.clo_ceninf_izq','closet_otros.clo_ceninf_princ',
+            'closet_otros.clo_ceninf_baja','closet_otros.clo_madera_der','closet_otros.clo_madera_izq',
+            'closet_otros.clo_madera_princ','closet_otros.clo_madera_baja','closet_otros.clo_alin_der',
+            'closet_otros.clo_alin_izq','closet_otros.clo_alin_princ','closet_otros.clo_alin_baja',
+            'closet_otros.clo_pande_der','closet_otros.clo_pande_izq','closet_otros.clo_pande_princ',
+            'closet_otros.clo_pande_baja','closet_otros.clo_soporte_der','closet_otros.clo_soporte_izq',
+            'closet_otros.clo_soporte_princ','closet_otros.clo_soporte_baja'
+            
+        )
+        ->where('recep_equipamientos.id','=',$request->id)
+        ->get();
+
+        $pdf = \PDF::loadview('pdf.DocsPostVenta.RecepcionCocina', ['resultados' => $resultados]);
+        //$pdf->setPaper('A4','landscape');
+        return $pdf->stream('recepcion_de_closets.pdf');
+    }
+
+    public function recepcionGeneralPDF(Request $request){
+        $resultados = Recep_equipamiento::leftJoin('cocina_acabados','recep_equipamientos.id','=','cocina_acabados.id')
+        ->leftJoin('cocina_puertas','recep_equipamientos.id','=','cocina_puertas.id')
+        ->leftJoin('cocina_otras','recep_equipamientos.id','=','cocina_otras.id')
+        ->leftJoin('closet_acabados','recep_equipamientos.id','=','closet_acabados.id')
+        ->leftJoin('closet_interiores','recep_equipamientos.id','=','closet_interiores.id')
+        ->leftJoin('closet_otros','recep_equipamientos.id','=','closet_otros.id')
+
+        ->select('recep_equipamientos.id as solicitud_id',
+            'cocina_acabados.cubierta_acab_uniones','cocina_acabados.cubierta_acab_silicon','cocina_acabados.cubierta_acab_cortes',
+            'cocina_acabados.puerta_acab_alineados','cocina_acabados.puerta_acab_cantos',
+            
+            'cocina_otras.estufa_instalacion','cocina_otras.estufa_pzas_extra','cocina_otras.estufa_manuales','cocina_otras.estufa_danos',
+            'cocina_otras.tarja_danos','cocina_otras.tarja_pzas_extra',
+            
+            'cocina_puertas.puerta_danos','cocina_puertas.puerta_tornillos','cocina_puertas.puerta_abatimiento','cocina_puertas.puerta_limpieza',
+            'cocina_puertas.puerta_jaladera','cocina_puertas.puerta_gomas','cocina_puertas.cajones_uniones',
+            'cocina_puertas.cajones_silicon','cocina_puertas.cajones_limpieza','cocina_puertas.cajones_jaladeras',
+            'cocina_puertas.cajones_cantos', 'cocina_puertas.cajones_rieles','cocina_puertas.cajones_estantes','cocina_puertas.cajones_pzas_comp',
+            'cocina_puertas.alacena_entrepano','cocina_puertas.alacena_pistones','cocina_puertas.alacena_jaladeras',
+            'cocina_puertas.alacena_micro','cocina_puertas.alacena_cantos','cocina_puertas.alacena_limpieza','cocina_puertas.alacena_parches',
+
+            'closet_acabados.p_ali_der','closet_acabados.p_ali_izq','closet_acabados.p_ali_princ','closet_acabados.p_ali_baja',
+            'closet_acabados.p_limp_der','closet_acabados.p_limp_izq','closet_acabados.p_limp_princ','closet_acabados.p_limp_baja',
+            'closet_acabados.p_sil_der','closet_acabados.p_sil_izq','closet_acabados.p_sil_princ','closet_acabados.p_sil_baja',
+            'closet_acabados.c_ali_der','closet_acabados.c_ali_izq','closet_acabados.c_ali_princ','closet_acabados.c_ali_baja',
+            'closet_acabados.c_cant_der','closet_acabados.c_cant_izq','closet_acabados.c_cant_princ','closet_acabados.c_cant_baja',
+            'closet_acabados.c_union_der','closet_acabados.c_union_izq','closet_acabados.c_union_princ','closet_acabados.c_union_baja',
+            'closet_acabados.c_sil_der','closet_acabados.c_sil_izq','closet_acabados.c_sil_princ','closet_acabados.c_sil_baja',
+            'closet_acabados.c_limp_der','closet_acabados.c_limp_izq','closet_acabados.c_limp_princ','closet_acabados.c_limp_baja',
+            'closet_acabados.c_torn_der','closet_acabados.c_torn_izq','closet_acabados.c_torn_princ','closet_acabados.c_torn_baja',
+            'closet_acabados.c_parch_der','closet_acabados.c_parch_izq','closet_acabados.c_parch_princ','closet_acabados.c_parch_baja',
+
+            'closet_interiores.p_tira_der','closet_interiores.p_tira_izq','closet_interiores.p_tira_princ','closet_interiores.p_tira_baja',
+            'closet_interiores.p_func_der','closet_interiores.p_func_izq','closet_interiores.p_func_princ','closet_interiores.p_func_baja',
+            'closet_interiores.c_jalad_der','closet_interiores.c_jalad_izq','closet_interiores.c_jalad_princ','closet_interiores.c_jalad_baja',
+            'closet_interiores.c_riel_der','closet_interiores.c_riel_izq','closet_interiores.c_riel_princ','closet_interiores.c_riel_baja',
+            'closet_interiores.c_estant_der','closet_interiores.c_estant_izq','closet_interiores.c_estant_princ','closet_interiores.c_estant_baja',
+            'closet_interiores.c_entr_der','closet_interiores.c_entr_izq','closet_interiores.c_entr_princ','closet_interiores.c_entr_baja',
+            'closet_interiores.c_tubos_der','closet_interiores.c_tubos_izq','closet_interiores.c_tubos_princ',
+            'closet_interiores.c_tubos_baja','closet_interiores.c_danos_der','closet_interiores.c_danos_izq',
+            'closet_interiores.c_danos_princ','closet_interiores.c_danos_baja','closet_interiores.c_correct_der',
+            'closet_interiores.c_correct_izq','closet_interiores.c_correct_princ','closet_interiores.c_correct_baja',
+            'closet_interiores.c_pzasc_der','closet_interiores.c_pzasc_izq','closet_interiores.c_pzasc_princ',
+            'closet_interiores.c_pzasc_baja','closet_interiores.c_abatim_der','closet_interiores.c_abatim_izq',
+            'closet_interiores.c_abatim_princ','closet_interiores.c_abatim_baja','closet_interiores.c_visagras_der',
+            'closet_interiores.c_visagras_izq','closet_interiores.c_visagras_princ','closet_interiores.c_visagras_baja',
+
+            'closet_otros.pared_dan_der','closet_otros.pared_dan_izq','closet_otros.pared_dan_princ',
+            'closet_otros.pared_dan_baja','closet_otros.pared_limp_der','closet_otros.pared_limp_izq',
+            'closet_otros.pared_limp_princ','closet_otros.pared_limp_baja','closet_otros.clo_censup_der',
+            'closet_otros.clo_censup_izq','closet_otros.clo_censup_princ','closet_otros.clo_censup_baja',
+            'closet_otros.clo_ceninf_der','closet_otros.clo_ceninf_izq','closet_otros.clo_ceninf_princ',
+            'closet_otros.clo_ceninf_baja','closet_otros.clo_madera_der','closet_otros.clo_madera_izq',
+            'closet_otros.clo_madera_princ','closet_otros.clo_madera_baja','closet_otros.clo_alin_der',
+            'closet_otros.clo_alin_izq','closet_otros.clo_alin_princ','closet_otros.clo_alin_baja',
+            'closet_otros.clo_pande_der','closet_otros.clo_pande_izq','closet_otros.clo_pande_princ',
+            'closet_otros.clo_pande_baja','closet_otros.clo_soporte_der','closet_otros.clo_soporte_izq',
+            'closet_otros.clo_soporte_princ','closet_otros.clo_soporte_baja'
+            
+        )
+        ->where('recep_equipamientos.id','=',$request->id)
+        ->get();
+
+        $pdf = \PDF::loadview('pdf.DocsPostVenta.RecepcionGeneral', ['resultados' => $resultados]);
+        //$pdf->setPaper('A4','landscape');
+        return $pdf->stream('recepcion_de_trabajos.pdf');
+    }
 }
