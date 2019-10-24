@@ -38,21 +38,25 @@ body {
 
         <div class="table" style="margin-top:60px; border: ridge #0B173B 1px; color:black;">
             <div class="table-row">
-                <div colspan="2" class="table-cell"><b>Fraccionamiento: ____________________</b></div>
-                <div class="table-cell"><b> Fecha de revision: ____</b></div>
+                <div colspan="2" class="table-cell"><b>Fraccionamiento: <u>{{$resultados[0]->proyecto}}</u></b></div>
+                <div class="table-cell"><b> Fecha de revision: <u>{{$resultados[0]->fecha_revision}}</u></b></div>
             </div>
             <div class="table-row">
-                <div class="table-cell"><b>Manzana: _________</b></div>
-                <div class="table-cell"><b>Lote: </b></div>
-                <div class="table-cell"><b>Prototipo: </b></div>
+                <div class="table-cell"><b>Manzana: <u>{{$resultados[0]->manzana}}</u></b></div>
+                <div class="table-cell"><b>Lote: <u>{{$resultados[0]->num_lote}}</u></b></div>
+                <div class="table-cell"><b>Prototipo: <u>{{$resultados[0]->modelo}}</u></b></div>
             </div>
             <div class="table-row">
-                <div colspan="2" class="table-cell"><b>Proveedor: ________________________</b></div>
-                <div class="table-cell"><b>Folio Factura: </b></div>
+                <div colspan="2" class="table-cell"><b>Proveedor: <u>{{$resultados[0]->proveedor}}</u></b></div>
+                <div class="table-cell"><b>Folio Factura: __________</b></div>
             </div>
             <div class="table-row">
-                <div class="table-cell"><b>Casa Muestra: ____</b></div>
-                <div  colspan="2" class="table-cell"><b>Cliente: ___________________________ </b></div>
+            @if($resultados[0]->casa_muestra == 1)
+                <div class="table-cell"><b>Casa Muestra: <u>Si</u></b></div>
+            @else
+                <div class="table-cell"><b>Casa Muestra: <u>No</u></b></div>
+            @endif
+                <div  colspan="2" class="table-cell"><b>Cliente: <u>{{$resultados[0]->nombre_cliente}}</u></b></div>
             </div>
         </div>
        
@@ -68,17 +72,29 @@ body {
             </div>
             <div class="table-row">
                 <div class="table-cell2">&nbsp;-Uniones:</div>
+                @if($resultados[0]->cubierta_acab_uniones == 1)
+                <div colspan="4" class="table-cell2" style="text-align:center; font-family:DejaVu Sans;">&#10004;</div>
+                @else
                 <div colspan="4" class="table-cell2"></div>
+                @endif
                
             </div>
             <div class="table-row">
                 <div class="table-cell2">&nbsp;-Uso silicón:</div>
+                @if($resultados[0]->cubierta_acab_silicon == 1)
+                <div colspan="4" class="table-cell2" style="text-align:center; font-family:DejaVu Sans;">&#10004;</div>
+                @else
                 <div colspan="4" class="table-cell2"></div>
+                @endif
               
             </div>
             <div class="table-row">
                 <div class="table-cell2">&nbsp;-Cortes:</div>
+                @if($resultados[0]->cubierta_acab_cortes == 1)
+                <div colspan="4" class="table-cell2" style="text-align:center; font-family:DejaVu Sans;">&#10004;</div>
+                @else
                 <div colspan="4" class="table-cell2"></div>
+                @endif
           
             </div>
             <div class="table-row">
@@ -88,12 +104,20 @@ body {
             </div>
             <div class="table-row">
                 <div class="table-cell2">&nbsp;-Alineadas:</div>
+                @if($resultados[0]->puerta_acab_alineados == 1)
+                <div colspan="4" class="table-cell2" style="text-align:center; font-family:DejaVu Sans;">&#10004;</div>
+                @else
                 <div colspan="4" class="table-cell2"></div>
+                @endif
 
             </div>
             <div class="table-row">
                 <div class="table-cell2">&nbsp;-Cantos:</div>
+                @if($resultados[0]->puerta_acab_cantos == 1)
+                <div colspan="4" class="table-cell2" style="text-align:center; font-family:DejaVu Sans;">&#10004;</div>
+                @else
                 <div colspan="4" class="table-cell2"></div>
+                @endif
             
             </div>
             
@@ -111,32 +135,56 @@ body {
             </div>
             <div class="table-row">
                 <div class="table-cell2">&nbsp;-Daños:</div>
+                @if($resultados[0]->puerta_danos == 1)
+                <div colspan="4" class="table-cell2" style="text-align:center; font-family:DejaVu Sans;">&#10004;</div>
+                @else
                 <div colspan="4" class="table-cell2"></div>
+                @endif
                
             </div>
             <div class="table-row">
                 <div class="table-cell2">&nbsp;-Tornillos aju:</div>
+                @if($resultados[0]->puerta_tornillos == 1)
+                <div colspan="4" class="table-cell2" style="text-align:center; font-family:DejaVu Sans;">&#10004;</div>
+                @else
                 <div colspan="4" class="table-cell2"></div>
+                @endif
                
             </div>
             <div class="table-row">
                 <div class="table-cell2">&nbsp;-Abatimiento:</div>
+                @if($resultados[0]->puerta_abatimiento == 1)
+                <div colspan="4" class="table-cell2" style="text-align:center; font-family:DejaVu Sans;">&#10004;</div>
+                @else
                 <div colspan="4" class="table-cell2"></div>
+                @endif
                
             </div>
             <div class="table-row">
                 <div class="table-cell2">&nbsp;-Limpieza:</div>
+                @if($resultados[0]->puerta_limpieza == 1)
+                <div colspan="4" class="table-cell2" style="text-align:center; font-family:DejaVu Sans;">&#10004;</div>
+                @else
                 <div colspan="4" class="table-cell2"></div>
+                @endif
                
             </div>
             <div class="table-row">
                 <div class="table-cell2">&nbsp;-Jaladeras:</div>
+                @if($resultados[0]->puerta_jaladera == 1)
+                <div colspan="4" class="table-cell2" style="text-align:center; font-family:DejaVu Sans;">&#10004;</div>
+                @else
                 <div colspan="4" class="table-cell2"></div>
+                @endif
                
             </div>
             <div class="table-row">
                 <div class="table-cell2">&nbsp;-Gomas cierr:</div>
+                @if($resultados[0]->puerta_gomas == 1)
+                <div colspan="4" class="table-cell2" style="text-align:center; font-family:DejaVu Sans;">&#10004;</div>
+                @else
                 <div colspan="4" class="table-cell2"></div>
+                @endif
                
             </div>
             <div class="table-row">
@@ -146,42 +194,74 @@ body {
             </div>
             <div class="table-row">
                 <div class="table-cell2">&nbsp;-Uniones:</div>
+                @if($resultados[0]->cajones_uniones == 1)
+                <div colspan="4" class="table-cell2" style="text-align:center; font-family:DejaVu Sans;">&#10004;</div>
+                @else
                 <div colspan="4" class="table-cell2"></div>
+                @endif
                
             </div>
             <div class="table-row">
                 <div class="table-cell2">&nbsp;-Silicón/Past:</div>
+                @if($resultados[0]->cajones_silicon == 1)
+                <div colspan="4" class="table-cell2" style="text-align:center; font-family:DejaVu Sans;">&#10004;</div>
+                @else
                 <div colspan="4" class="table-cell2"></div>
+                @endif
               
             </div>
             <div class="table-row">
                 <div class="table-cell2">&nbsp;-Limpieza:</div>
+                @if($resultados[0]->cajones_limpieza == 1)
+                <div colspan="4" class="table-cell2" style="text-align:center; font-family:DejaVu Sans;">&#10004;</div>
+                @else
                 <div colspan="4" class="table-cell2"></div>
+                @endif
              
             </div>
             <div class="table-row">
                 <div class="table-cell2">&nbsp;-Jaladeras:</div>
+                @if($resultados[0]->cajones_jaladeras == 1)
+                <div colspan="4" class="table-cell2" style="text-align:center; font-family:DejaVu Sans;">&#10004;</div>
+                @else
                 <div colspan="4" class="table-cell2"></div>
+                @endif
                 
             </div>
             <div class="table-row">
                 <div class="table-cell2">&nbsp;-Cantos:</div>
+                @if($resultados[0]->cajones_cantos == 1)
+                <div colspan="4" class="table-cell2" style="text-align:center; font-family:DejaVu Sans;">&#10004;</div>
+                @else
                 <div colspan="4" class="table-cell2"></div>
+                @endif
               
             </div>
             <div class="table-row">
                 <div class="table-cell2">&nbsp;-Rieles:</div>
+                @if($resultados[0]->cajones_rieles == 1)
+                <div colspan="4" class="table-cell2" style="text-align:center; font-family:DejaVu Sans;">&#10004;</div>
+                @else
                 <div colspan="4" class="table-cell2"></div>
+                @endif
              
             </div>
             <div class="table-row">
                 <div class="table-cell2">&nbsp;-Estantes:</div>
+                @if($resultados[0]->cajones_estantes == 1)
+                <div colspan="4" class="table-cell2" style="text-align:center; font-family:DejaVu Sans;">&#10004;</div>
+                @else
                 <div colspan="4" class="table-cell2"></div>
+                @endif
               
             </div>
             <div class="table-row">
                 <div class="table-cell2">&nbsp;-Pzas compl:</div>
+                @if($resultados[0]->cajones_pzas_comp == 1)
+                <div colspan="4" class="table-cell2" style="text-align:center; font-family:DejaVu Sans;">&#10004;</div>
+                @else
                 <div colspan="4" class="table-cell2"></div>
+                @endif
                
             </div>
             <div class="table-row">
@@ -191,37 +271,65 @@ body {
             </div>
             <div class="table-row">
                 <div class="table-cell2">&nbsp;-Entrepaños:</div>
+                @if($resultados[0]->alacena_entrepano == 1)
+                <div colspan="4" class="table-cell2" style="text-align:center; font-family:DejaVu Sans;">&#10004;</div>
+                @else
                 <div colspan="4" class="table-cell2"></div>
+                @endif
                
             </div>
             <div class="table-row">
                 <div class="table-cell2">&nbsp;-Pistones:</div>
+                @if($resultados[0]->alacena_pistones == 1)
+                <div colspan="4" class="table-cell2" style="text-align:center; font-family:DejaVu Sans;">&#10004;</div>
+                @else
                 <div colspan="4" class="table-cell2"></div>
+                @endif
                
             </div>
             <div class="table-row">
                 <div class="table-cell2">&nbsp;-Jaladeras:</div>
+                @if($resultados[0]->alacena_jaladeras == 1)
+                <div colspan="4" class="table-cell2" style="text-align:center; font-family:DejaVu Sans;">&#10004;</div>
+                @else
                 <div colspan="4" class="table-cell2"></div>
+                @endif
                
             </div>
             <div class="table-row">
                 <div class="table-cell2">&nbsp;-Hoyo micro:</div>
+                @if($resultados[0]->alacena_micro == 1)
+                <div colspan="4" class="table-cell2" style="text-align:center; font-family:DejaVu Sans;">&#10004;</div>
+                @else
                 <div colspan="4" class="table-cell2"></div>
+                @endif
                
             </div>
             <div class="table-row">
                 <div class="table-cell2">&nbsp;-Cantos:</div>
+                @if($resultados[0]->alacena_cantos == 1)
+                <div colspan="4" class="table-cell2" style="text-align:center; font-family:DejaVu Sans;">&#10004;</div>
+                @else
                 <div colspan="4" class="table-cell2"></div>
+                @endif
                
             </div>
             <div class="table-row">
                 <div class="table-cell2">&nbsp;-Limpieza:</div>
+                @if($resultados[0]->alacena_limpieza == 1)
+                <div colspan="4" class="table-cell2" style="text-align:center; font-family:DejaVu Sans;">&#10004;</div>
+                @else
                 <div colspan="4" class="table-cell2"></div>
+                @endif
                
             </div>
             <div class="table-row">
                 <div class="table-cell2">&nbsp;-Parches tor:</div>
+                @if($resultados[0]->alacena_parches == 1)
+                <div colspan="4" class="table-cell2" style="text-align:center; font-family:DejaVu Sans;">&#10004;</div>
+                @else
                 <div colspan="4" class="table-cell2"></div>
+                @endif
                
             </div>
         
@@ -240,22 +348,38 @@ body {
             </div>
             <div class="table-row">
                 <div class="table-cell2">&nbsp;-Instalacion:</div>
+                @if($resultados[0]->estufa_instalacion == 1)
+                <div colspan="4" class="table-cell2" style="text-align:center; font-family:DejaVu Sans;">&#10004;</div>
+                @else
                 <div colspan="4" class="table-cell2"></div>
+                @endif
                 
             </div>
             <div class="table-row">
                 <div class="table-cell2">&nbsp;-Pzas extra:</div>
+                @if($resultados[0]->estufa_pzas_extra == 1)
+                <div colspan="4" class="table-cell2" style="text-align:center; font-family:DejaVu Sans;">&#10004;</div>
+                @else
                 <div colspan="4" class="table-cell2"></div>
+                @endif
                
             </div>
             <div class="table-row">
                 <div class="table-cell2">&nbsp;-Manuales:</div>
+                @if($resultados[0]->estufa_manuales == 1)
+                <div colspan="4" class="table-cell2" style="text-align:center; font-family:DejaVu Sans;">&#10004;</div>
+                @else
                 <div colspan="4" class="table-cell2"></div>
+                @endif
                
             </div>
             <div class="table-row">
                 <div class="table-cell2">&nbsp;-Daños:</div>
+                @if($resultados[0]->estufa_danos == 1)
+                <div colspan="4" class="table-cell2" style="text-align:center; font-family:DejaVu Sans;">&#10004;</div>
+                @else
                 <div colspan="4" class="table-cell2"></div>
+                @endif
                
             </div>
             <div class="table-row">
@@ -265,22 +389,30 @@ body {
             </div>
             <div class="table-row">
                 <div class="table-cell2">&nbsp;-Daños:</div>
+                @if($resultados[0]->tarja_danos == 1)
+                <div colspan="4" class="table-cell2" style="text-align:center; font-family:DejaVu Sans;">&#10004;</div>
+                @else
                 <div colspan="4" class="table-cell2"></div>
+                @endif
              
             </div>
             <div class="table-row">
                 <div class="table-cell2">&nbsp;-Pzas extra:</div>
+                @if($resultados[0]->tarja_pzas_extra == 1)
+                <div colspan="4" class="table-cell2" style="text-align:center; font-family:DejaVu Sans;">&#10004;</div>
+                @else
                 <div colspan="4" class="table-cell2"></div>
+                @endif
                
             </div>
            
             
         </div>
-       <p><b>Observaciones: </b>oso pardo oso pardo</p>
+       <p><b>Observaciones: </b>{{$resultados[0]->observacion}}</p>
 
        <div class="table" style="border: ridge #0B173B 1px; color:black;">
             <div class="table-row">
-                <div colspan="2" class="table-cell"><b>Supervisor:</b></div>
+                <div colspan="2" class="table-cell"><b>Supervisor: {{$resultados[0]->supervisor}}</b></div>
                 <div class="table-cell"><b>Firma:</b></div>
             </div>
         </div>

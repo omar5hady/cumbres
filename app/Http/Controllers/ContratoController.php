@@ -14,6 +14,8 @@ use App\Precio_etapa;
 use App\Precio_modelo;
 use App\Sobreprecio_modelo;
 
+use App\Solic_equipamiento;
+
 use Carbon\Carbon;
 use App\inst_seleccionada;
 use App\Cliente;
@@ -8743,6 +8745,17 @@ class ContratoController extends Controller
 
         $id_lote = $request->lote_id;
 
+        $equipamientos = Solic_equipamiento::join('lotes','solic_equipamientos.lote_id','=','lotes.id')
+            ->select(DB::raw("SUM(solic_equipamientos.costo) as sumCosto"))
+            ->where('lotes.id','=',$id_lote)
+            ->where('solic_equipamientos.fin_instalacion','!=',NULL)
+            ->where('solic_equipamientos.contrato_id','=',$request->id)->get();
+
+        if($equipamientos[0]->sumCosto != NULL)
+            $ajuste = $equipamientos[0]->sumCosto;
+        else
+            $ajuste = 0;
+
         if ($request->fecha_status == '') {
             $fecha = Carbon::now();
             $status = Contrato::findOrFail($request->id);
@@ -8759,7 +8772,9 @@ class ContratoController extends Controller
                 $contrato = Lote::findOrFail($id_lote);
                 $contrato->contrato = 0;
                 $contrato->apartado = 0;
-                $contrato->ajuste = 0;
+                $contrato->ajuste += $ajuste;
+                if($ajuste != 0)
+                    $contrato->comentarios ='Lote con equipamiento. '.$contrato->comentarios;
 
                 $apartado = Apartado::select('id')->where('lote_id','=',$id_lote)->get();
                 foreach($apartado as $ap){
@@ -8801,7 +8816,9 @@ class ContratoController extends Controller
                 $contrato = Lote::findOrFail($id_lote);
                 $contrato->contrato = 0;
                 $contrato->apartado = 0;
-                $contrato->ajuste = 0;
+                $contrato->ajuste += $ajuste;
+                if($ajuste != 0)
+                    $contrato->comentarios ='Lote con equipamiento. '.$contrato->comentarios;
 
                 $apartado = Apartado::select('id')->where('lote_id','=',$id_lote)->get();
                 foreach($apartado as $ap){

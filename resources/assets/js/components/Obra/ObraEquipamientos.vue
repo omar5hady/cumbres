@@ -115,7 +115,8 @@
                                                 @click="mostrarCheckList(equipamientos)" class="btn btn-dark pull-right">
                                                     <i class="fa fa-check-square-o"></i> Ver recepción
                                                 </button> 
-                                                <span v-else class="badge badge-primary"></span>
+                                                <span v-else-if="equipamientos.recepcion == 1 && equipamientos.status == 0" class="badge badge-danger">Corrigiendo detalles</span>
+                                                <span v-else class="badge badge-primary">Equipamiento sin instalarse</span>
                                             </td>
                                             <td>
                                                 <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 

@@ -18,13 +18,13 @@ class CreateSolicEquipamientosTable extends Migration
             $table->unsignedInteger('lote_id');
             $table->unsignedInteger('contrato_id');
             $table->date('fecha_solicitud')->nullable();
-            $table->double('costo')->nullable();
+            $table->double('costo')->nullable()->default(0);
             $table->date('fecha_colocacion')->nullable();
-            $table->double('anticipo')->nullable();
+            $table->double('anticipo')->nullable()->default(0);
             $table->date('fecha_anticipo')->nullable();
             $table->unsignedInteger('equipamiento_id');
 
-            $table->double('liquidacion')->nullable();
+            $table->double('liquidacion')->nullable()->default(0);
             $table->date('fecha_liquidacion')->nullable();
             $table->date('fin_instalacion')->nullable();
             $table->string('num_factura', 8)->nullable();

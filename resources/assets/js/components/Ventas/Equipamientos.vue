@@ -65,6 +65,8 @@
                                         <th>Lote</th>
                                         <th>Equipamiento</th>
                                         <th>Avance</th>
+                                        <th>Tipo de crédito</th>
+                                        <th>Fecha firma de escritura</th>
                                         <th>Fecha avaluo</th>
                                         <th>Status</th>
                                         <th>Fecha entrega (obra)</th>
@@ -83,6 +85,8 @@
                                             <td class="td2" v-text="contratos.num_lote"></td>
                                             <td class="td2" v-text="'Paquete: '+contratos.paquete + ', Promoción: ' + contratos.promocion"></td>
                                             <td class="td2" v-text="contratos.avance_lote + '%'"></td>
+                                            <td class="td2" v-text="contratos.tipo_credito"></td>
+                                            <td class="td2" v-text="this.moment(contratos.fecha_firma_esc).locale('es').format('DD/MMM/YYYY')"></td>
                                             <td class="td2" v-if="contratos.visita_avaluo" v-text="this.moment(contratos.visita_avaluo).locale('es').format('DD/MMM/YYYY')"></td>
                                             <td class="td2" v-else v-text="'Sin fecha'"></td>
                                             <template>
@@ -180,10 +184,11 @@
                                         <th>Equipamiento</th>
                                         <th>&nbsp; Costo del equipamiento &nbsp;</th>
                                         <th>Anticipo</th>
-                                        <th>Fecha colocación</th>
+                                        <th>Fecha programada</th>
                                         <th>Fecha fin de instalación</th>
                                         <th>Status</th>
                                         <th>Liquidacion</th>
+                                        <th>Imprimir Recepción</th>
                                         <th>Observaciones</th>
                                         
                                     </tr>
@@ -241,6 +246,17 @@
                                                     </button>
                                                 </td>    
                                                 <td v-else v-text="'Sin Liquidación'"></td>
+                                            </template>
+                                            <template>
+                                                <td v-if="equipamientos.tipoRecepcion == 1 && equipamientos.recepcion == 1">
+                                                    <a class="btn btn-warning btn-sm"  target="_blank" v-bind:href="'/equipamiento/recepcionCocina/'+equipamientos.id">Ver Recepción</a>
+                                                </td>
+                                                <td v-if="equipamientos.tipoRecepcion == 2 && equipamientos.recepcion == 1">
+                                                    <a class="btn btn-warning btn-sm"  target="_blank" v-bind:href="'/equipamiento/recepcionClosets/'+equipamientos.id">Ver Recepción</a>
+                                                </td>
+                                                <td v-if="equipamientos.tipoRecepcion == 0 && equipamientos.recepcion == 1">
+                                                    <a class="btn btn-warning btn-sm"  target="_blank" v-bind:href="'/equipamiento/recepcionGeneral/'+equipamientos.id">Ver Recepción</a>
+                                                </td>
                                             </template>
                                             <td> 
                                                 <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 

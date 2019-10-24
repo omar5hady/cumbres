@@ -18,7 +18,7 @@ class CreateRecepEquipamientosTable extends Migration
             $table->date('fecha_revision')->nullable();
             $table->boolean('resultado')->default(1)->nullable();
             $table->string('supervisor');
-
+            $table->text('observacion');
             $table->timestamps();
 
             $table->foreign('id')->references('id')->on('solic_equipamientos');

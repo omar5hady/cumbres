@@ -9,7 +9,7 @@ class Recep_equipamiento extends Model
     protected $table = 'recep_equipamientos'; // se referencia a que tabla pertenece el modelo
     
     protected $fillable = ['id','fecha_revision', 
-                            'resultado', 'supervisor'
+                            'resultado', 'supervisor', 'observacion'
                             ];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
 
     public function solic_equipamiento(){

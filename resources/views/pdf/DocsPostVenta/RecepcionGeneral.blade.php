@@ -38,32 +38,38 @@ body {
 
         <div class="table" style="margin-top:60px; border: ridge #0B173B 1px; color:black;">
             <div class="table-row">
-                <div colspan="2" class="table-cell"><b>Fraccionamiento: ____________________</b></div>
-                <div class="table-cell"><b> Fecha de revision: ____</b></div>
+                <div colspan="2" class="table-cell"><b>Fraccionamiento: <u>{{$resultados[0]->proyecto}}</u></b></div>
+                <div class="table-cell"><b> Fecha de revision: <u>{{$resultados[0]->fecha_revision}}</u></b></div>
             </div>
             <div class="table-row">
-                <div class="table-cell"><b>Manzana: _________</b></div>
-                <div class="table-cell"><b>Lote: </b></div>
-                <div class="table-cell"><b>Prototipo: </b></div>
+                <div class="table-cell"><b>Manzana: <u>{{$resultados[0]->manzana}}</u></b></div>
+                <div class="table-cell"><b>Lote: <u>{{$resultados[0]->num_lote}}</u></b></div>
+                <div class="table-cell"><b>Prototipo: <u>{{$resultados[0]->modelo}}</u></b></div>
             </div>
             <div class="table-row">
-                <div colspan="2" class="table-cell"><b>Proveedor: ________________________</b></div>
-                <div class="table-cell"><b>Folio Factura: </b></div>
+                <div colspan="2" class="table-cell"><b>Proveedor: <u>{{$resultados[0]->proveedor}}</u></b></div>
+                <div class="table-cell"><b>Folio Factura: ___________</b></div>
             </div>
             <div class="table-row">
-                <div class="table-cell"><b>Casa Muestra: ____</b></div>
-                <div  colspan="2" class="table-cell"><b>Cliente: ___________________________ </b></div>
+            @if($resultados[0]->casa_muestra == 1)
+                <div class="table-cell"><b>Casa Muestra: <u>Si</u></b></div>
+            @else
+                <div class="table-cell"><b>Casa Muestra: <u>No</u></b></div>
+            @endif
+                <div  colspan="2" class="table-cell"><b>Cliente: <u>{{$resultados[0]->nombre_cliente}}</u></b></div>
             </div>
         </div>
        
        <h3 style="text-align:center;">Concepto</h3>
 
-       
-       <p><b>Observaciones: </b>oso pardo oso pardo</p>
+        <h5 style="text-align:center;"><u>{{$resultados[0]->equipamiento}}</u></h5>
+        <h5 style="text-align:center;">Proveedor: <u>{{$resultados[0]->proveedor}}</u></h5>
+
+       <p><b>Observaciones: </b>{{$resultados[0]->observacion}}</p>
 
        <div class="table" style="border: ridge #0B173B 1px; color:black;">
             <div class="table-row">
-                <div colspan="2" class="table-cell"><b>Supervisor:</b></div>
+                <div colspan="2" class="table-cell"><b>Supervisor: {{$resultados[0]->supervisor}}</b></div>
                 <div class="table-cell"><b>Firma:</b></div>
             </div>
         </div>

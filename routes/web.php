@@ -544,9 +544,9 @@ Route::group(['middleware' => ['auth']],function(){
 
         Route::get('/equipamiento/getResultados','RecepEquipamientoController@getRecepcion');
 
-        Route::get('/equipamiento/recepcionClosets','RecepEquipamientoController@recepcionClosetsPDF');
-        Route::get('/equipamiento/recepcionCocina','RecepEquipamientoController@recepcionCocinaPDF');
-        Route::get('/equipamiento/recepcionGeneral','RecepEquipamientoController@recepcionGeneralPDF');
+        Route::get('/equipamiento/recepcionClosets/{id}','RecepEquipamientoController@recepcionClosetsPDF');
+        Route::get('/equipamiento/recepcionCocina/{id}','RecepEquipamientoController@recepcionCocinaPDF');
+        Route::get('/equipamiento/recepcionGeneral/{id}','RecepEquipamientoController@recepcionGeneralPDF');
     });
 
 

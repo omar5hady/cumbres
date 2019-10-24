@@ -62,6 +62,8 @@
                                         <th>Fecha fin de instalación</th>
                                         <th>Status</th>
                                         <th>Liquidación</th>
+                                        <th>Total pagado</th>
+                                        <th>Pendiente</th>
                                         <th>Observaciones</th>
                                         
                                     </tr>
@@ -110,6 +112,8 @@
                                                 <td v-if="equipamientos.fecha_liquidacion" class="td2" v-text="this.moment(equipamientos.fecha_liquidacion).locale('es').format('DD/MMM/YYYY')+ ': '+ '$'+formatNumber(equipamientos.liquidacion)"></td>
                                                 <td v-else class="td2" v-text="'Sin programar'"></td>    
                                             </template>
+                                            <td class="td2" v-text="'$'+formatNumber(equipamientos.anticipo + equipamientos.liquidacion)"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(equipamientos.costo - equipamientos.anticipo - equipamientos.liquidacion)"></td>
                                             <td> 
                                                 <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
                                                     @click="abrirModal('observaciones', equipamientos),listarObservacion(1,equipamientos.id)">Ver observaciones
