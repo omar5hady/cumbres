@@ -9062,6 +9062,7 @@ class ContratoController extends Controller
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 
         try {
+            DB::beginTransaction();
             $loteNuevo_id = $request->sel_lote;
 
             $lote_ant = Lote::findOrFail($request->lote_id);
@@ -9069,7 +9070,7 @@ class ContratoController extends Controller
             $lote_ant->contrato = 0;
             $lote_ant->paquete = '';
             $lote_ant->save();
-            DB::beginTransaction();
+            
 
             $lote_new = Lote::findOrFail($loteNuevo_id);
 

@@ -58,7 +58,9 @@ class SolEquipamientoController extends Controller
                         'creditos.fraccionamiento as proyecto',
                         'creditos.etapa',
                         'creditos.manzana',
-                        'creditos.num_lote','licencias.avance')
+                        'creditos.num_lote','licencias.avance',
+                        DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
+                        DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
                     ->orderBy('contratos.id','desc')
                     ->orderBy('proveedores.proveedor','asc')
                     ->orderBy('solic_equipamientos.fecha_colocacion','asc')
@@ -101,7 +103,9 @@ class SolEquipamientoController extends Controller
                                     'creditos.fraccionamiento as proyecto',
                                     'creditos.etapa',
                                     'creditos.manzana',
-                                    'creditos.num_lote','licencias.avance')
+                                    'creditos.num_lote','licencias.avance',
+                                    DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
+                                    DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
                             ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $buscar . '%')
                             ->orderBy('contratos.id','desc')
                             ->orderBy('proveedores.proveedor','asc')
@@ -143,7 +147,9 @@ class SolEquipamientoController extends Controller
                                     'creditos.fraccionamiento as proyecto',
                                     'creditos.etapa',
                                     'creditos.manzana',
-                                    'creditos.num_lote','licencias.avance')
+                                    'creditos.num_lote','licencias.avance',
+                                    DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
+                                    DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
                             ->where($criterio, '=', $buscar)
                             ->orderBy('contratos.id','desc')
                             ->orderBy('proveedores.proveedor','asc')
@@ -185,7 +191,9 @@ class SolEquipamientoController extends Controller
                                     'creditos.fraccionamiento as proyecto',
                                     'creditos.etapa',
                                     'creditos.manzana',
-                                    'creditos.num_lote','licencias.avance')
+                                    'creditos.num_lote','licencias.avance',
+                                    DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
+                                    DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
                             ->where($criterio, 'like', '%'. $buscar . '%')
                             ->orderBy('contratos.id','desc')
                             ->orderBy('proveedores.proveedor','asc')
@@ -228,7 +236,9 @@ class SolEquipamientoController extends Controller
                                         'creditos.fraccionamiento as proyecto',
                                         'creditos.etapa',
                                         'creditos.manzana',
-                                        'creditos.num_lote','licencias.avance')
+                                        'creditos.num_lote','licencias.avance',
+                                        DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
+                                        DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
                                 ->where($criterio, '=', $buscar)
                                 ->orderBy('contratos.id','desc')
                                 ->orderBy('proveedores.proveedor','asc')
@@ -269,7 +279,9 @@ class SolEquipamientoController extends Controller
                                         'creditos.fraccionamiento as proyecto',
                                         'creditos.etapa',
                                         'creditos.manzana',
-                                        'creditos.num_lote','licencias.avance')
+                                        'creditos.num_lote','licencias.avance',
+                                        DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
+                                        DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
                                 ->orderBy('contratos.id','desc')
@@ -312,7 +324,9 @@ class SolEquipamientoController extends Controller
                                         'creditos.fraccionamiento as proyecto',
                                         'creditos.etapa',
                                         'creditos.manzana',
-                                        'creditos.num_lote','licencias.avance')
+                                        'creditos.num_lote','licencias.avance',
+                                        DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
+                                        DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
                                 ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
@@ -356,7 +370,9 @@ class SolEquipamientoController extends Controller
                                         'creditos.fraccionamiento as proyecto',
                                         'creditos.etapa',
                                         'creditos.manzana',
-                                        'creditos.num_lote','licencias.avance')
+                                        'creditos.num_lote','licencias.avance',
+                                        DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
+                                        DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
                                 ->where('lotes.num_lote', '=', $b_lote)
@@ -401,7 +417,9 @@ class SolEquipamientoController extends Controller
                                         'creditos.fraccionamiento as proyecto',
                                         'creditos.etapa',
                                         'creditos.manzana',
-                                        'creditos.num_lote','licencias.avance')
+                                        'creditos.num_lote','licencias.avance',
+                                        DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
+                                        DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
                                 ->where('lotes.num_lote', '=', $b_lote)
@@ -444,7 +462,9 @@ class SolEquipamientoController extends Controller
                                         'creditos.fraccionamiento as proyecto',
                                         'creditos.etapa',
                                         'creditos.manzana',
-                                        'creditos.num_lote','licencias.avance')
+                                        'creditos.num_lote','licencias.avance',
+                                        DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
+                                        DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.num_lote', '=', $b_lote)
                                 ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
@@ -487,7 +507,9 @@ class SolEquipamientoController extends Controller
                                         'creditos.fraccionamiento as proyecto',
                                         'creditos.etapa',
                                         'creditos.manzana',
-                                        'creditos.num_lote','licencias.avance')
+                                        'creditos.num_lote','licencias.avance',
+                                        DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
+                                        DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.num_lote', '=', $b_lote)
                                 ->orderBy('contratos.id','desc')
@@ -529,7 +551,9 @@ class SolEquipamientoController extends Controller
                                         'creditos.fraccionamiento as proyecto',
                                         'creditos.etapa',
                                         'creditos.manzana',
-                                        'creditos.num_lote','licencias.avance')
+                                        'creditos.num_lote','licencias.avance',
+                                        DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
+                                        DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
                                 ->orderBy('contratos.id','desc')
@@ -576,7 +600,9 @@ class SolEquipamientoController extends Controller
                         'creditos.fraccionamiento as proyecto',
                         'creditos.etapa',
                         'creditos.manzana',
-                        'creditos.num_lote','licencias.avance')
+                        'creditos.num_lote','licencias.avance',
+                        DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
+                        DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
                     ->where('proveedores.id','=',$userID)
                     ->orderBy('contratos.id','desc')
                     ->orderBy('proveedores.proveedor','asc')
@@ -620,7 +646,9 @@ class SolEquipamientoController extends Controller
                                     'creditos.fraccionamiento as proyecto',
                                     'creditos.etapa',
                                     'creditos.manzana',
-                                    'creditos.num_lote','licencias.avance')
+                                    'creditos.num_lote','licencias.avance',
+                                    DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
+                                    DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
                             ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $buscar . '%')
                             ->where('proveedores.id','=',$userID)
                             ->orderBy('contratos.id','desc')
@@ -663,7 +691,9 @@ class SolEquipamientoController extends Controller
                                     'creditos.fraccionamiento as proyecto',
                                     'creditos.etapa',
                                     'creditos.manzana',
-                                    'creditos.num_lote','licencias.avance')
+                                    'creditos.num_lote','licencias.avance',
+                                    DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
+                                    DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
                             ->where($criterio, '=', $buscar)
                             ->where('proveedores.id','=',$userID)
                             ->orderBy('contratos.id','desc')
@@ -706,7 +736,9 @@ class SolEquipamientoController extends Controller
                                     'creditos.fraccionamiento as proyecto',
                                     'creditos.etapa',
                                     'creditos.manzana',
-                                    'creditos.num_lote','licencias.avance')
+                                    'creditos.num_lote','licencias.avance',
+                                    DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
+                                    DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
                             ->where($criterio, 'like', '%'. $buscar . '%')
                             ->where('proveedores.id','=',$userID)
                             ->orderBy('contratos.id','desc')
@@ -750,7 +782,9 @@ class SolEquipamientoController extends Controller
                                         'creditos.fraccionamiento as proyecto',
                                         'creditos.etapa',
                                         'creditos.manzana',
-                                        'creditos.num_lote','licencias.avance')
+                                        'creditos.num_lote','licencias.avance',
+                                        DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
+                                        DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
                                 ->where($criterio, '=', $buscar)
                                 ->where('proveedores.id','=',$userID)
                                 ->orderBy('contratos.id','desc')
@@ -792,7 +826,9 @@ class SolEquipamientoController extends Controller
                                         'creditos.fraccionamiento as proyecto',
                                         'creditos.etapa',
                                         'creditos.manzana',
-                                        'creditos.num_lote','licencias.avance')
+                                        'creditos.num_lote','licencias.avance',
+                                        DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
+                                        DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
                                 ->where('proveedores.id','=',$userID)
@@ -836,7 +872,9 @@ class SolEquipamientoController extends Controller
                                         'creditos.fraccionamiento as proyecto',
                                         'creditos.etapa',
                                         'creditos.manzana',
-                                        'creditos.num_lote','licencias.avance')
+                                        'creditos.num_lote','licencias.avance',
+                                        DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
+                                        DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
                                 ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
@@ -881,7 +919,9 @@ class SolEquipamientoController extends Controller
                                         'creditos.fraccionamiento as proyecto',
                                         'creditos.etapa',
                                         'creditos.manzana',
-                                        'creditos.num_lote','licencias.avance')
+                                        'creditos.num_lote','licencias.avance',
+                                        DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
+                                        DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
                                 ->where('lotes.num_lote', '=', $b_lote)
@@ -927,7 +967,9 @@ class SolEquipamientoController extends Controller
                                         'creditos.fraccionamiento as proyecto',
                                         'creditos.etapa',
                                         'creditos.manzana',
-                                        'creditos.num_lote','licencias.avance')
+                                        'creditos.num_lote','licencias.avance',
+                                        DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
+                                        DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.etapa_id', '=', $b_etapa)
                                 ->where('lotes.num_lote', '=', $b_lote)
@@ -971,7 +1013,9 @@ class SolEquipamientoController extends Controller
                                         'creditos.fraccionamiento as proyecto',
                                         'creditos.etapa',
                                         'creditos.manzana',
-                                        'creditos.num_lote','licencias.avance')
+                                        'creditos.num_lote','licencias.avance',
+                                        DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
+                                        DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.num_lote', '=', $b_lote)
                                 ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
@@ -1015,7 +1059,9 @@ class SolEquipamientoController extends Controller
                                         'creditos.fraccionamiento as proyecto',
                                         'creditos.etapa',
                                         'creditos.manzana',
-                                        'creditos.num_lote','licencias.avance')
+                                        'creditos.num_lote','licencias.avance',
+                                        DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
+                                        DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.num_lote', '=', $b_lote)
                                 ->where('proveedores.id','=',$userID)
@@ -1058,7 +1104,9 @@ class SolEquipamientoController extends Controller
                                         'creditos.fraccionamiento as proyecto',
                                         'creditos.etapa',
                                         'creditos.manzana',
-                                        'creditos.num_lote','licencias.avance')
+                                        'creditos.num_lote','licencias.avance',
+                                        DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
+                                        DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
                                 ->where($criterio, '=', $buscar)
                                 ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
                                 ->where('proveedores.id','=',$userID)

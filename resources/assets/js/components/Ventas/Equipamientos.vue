@@ -187,6 +187,9 @@
                                         <th>Fecha programada</th>
                                         <th>Fecha fin de instalación</th>
                                         <th>Status</th>
+                                        <th># Dias de inst.</th>
+                                        <th>Total pagado</th>
+                                        <th>Pendiente</th>
                                         <th>Liquidacion</th>
                                         <th>Imprimir Recepción</th>
                                         <th>Observaciones</th>
@@ -237,6 +240,17 @@
                                                     <span class="badge badge-success">Aprobado</span>
                                                 </td>    
                                             </template>
+                                            <td v-if="!equipamientos.fin_instalacion && equipamientos.fecha_anticipo || equipamientos.fin_instalacion && equipamientos.fecha_anticipo && equipamientos.status != '4'">
+                                                <span class="badge badge-warning" v-text="equipamientos.diferenciaIni"></span>
+                                            </td>
+                                            <td v-else-if="equipamientos.fin_instalacion && equipamientos.fecha_anticipo && equipamientos.status == '4'">
+                                                <span class="badge badge-success" v-text="equipamientos.diferenciaFin"></span>
+                                            </td>
+                                            <td v-else>
+                                                Sin anticipo
+                                            </td>
+                                            <td class="td2" v-text="'$'+formatNumber(equipamientos.anticipo + equipamientos.liquidacion)"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(equipamientos.costo - equipamientos.anticipo - equipamientos.liquidacion)"></td>
                                             <template>
                                                 <td v-if="equipamientos.fecha_liquidacion"  @click="abrirModal('liquidacion', equipamientos)" class="td2" v-text=" this.moment(equipamientos.fecha_liquidacion).locale('es').format('DD/MMM/YYYY') + ': '+ '$'+formatNumber(equipamientos.liquidacion)"></td>
                                                 <td v-else-if="equipamientos.status == 4">
@@ -251,11 +265,14 @@
                                                 <td v-if="equipamientos.tipoRecepcion == 1 && equipamientos.recepcion == 1">
                                                     <a class="btn btn-warning btn-sm"  target="_blank" v-bind:href="'/equipamiento/recepcionCocina/'+equipamientos.id">Ver Recepción</a>
                                                 </td>
-                                                <td v-if="equipamientos.tipoRecepcion == 2 && equipamientos.recepcion == 1">
+                                                <td v-else-if="equipamientos.tipoRecepcion == 2 && equipamientos.recepcion == 1">
                                                     <a class="btn btn-warning btn-sm"  target="_blank" v-bind:href="'/equipamiento/recepcionClosets/'+equipamientos.id">Ver Recepción</a>
                                                 </td>
-                                                <td v-if="equipamientos.tipoRecepcion == 0 && equipamientos.recepcion == 1">
+                                                <td v-else-if="equipamientos.tipoRecepcion == 0 && equipamientos.recepcion == 1">
                                                     <a class="btn btn-warning btn-sm"  target="_blank" v-bind:href="'/equipamiento/recepcionGeneral/'+equipamientos.id">Ver Recepción</a>
+                                                </td>
+                                                <td v-else>
+                                                    
                                                 </td>
                                             </template>
                                             <td> 

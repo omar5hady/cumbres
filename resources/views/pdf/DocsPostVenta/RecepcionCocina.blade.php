@@ -22,7 +22,7 @@ body {
 .table-row { display: table-row; }
 
 .table2 { display: table; width:100%; border-collapse: collapse; table-layout: fixed; border: ridge #0B173B 1px; color:black; }
-.table-cell2 { display: table-cell; padding: 0.1em; font-size: 7.5pt; border: ridge #0B173B 1px; color:black; }
+.table-cell2 { display: table-cell; padding: 0em; font-size: 7.5pt; border: ridge #0B173B 1px; color:black; }
 .table-row { display: table-row; }
 </style>
 <body>

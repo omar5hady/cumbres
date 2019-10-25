@@ -162,22 +162,6 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <div class="form-group row" v-if="tipoAccion == 1">
-                                    <label class="col-md-2 form-control-label" for="text-input">Fecha de anticipo</label>
-                                    <div class="col-md-3">
-                                        <input type="date" v-model="fecha_anticipo" class="form-control">
-                                    </div>
-                                </div>
-
-                                <div class="form-group row" v-if="tipoAccion == 1">
-                                    <label class="col-md-2 form-control-label" for="text-input">$ Anticipo</label>
-                                    <div class="col-md-4">
-                                        <input type="text" pattern="\d*" maxlength="10" v-on:keypress="isNumber($event)" v-model="anticipo" class="form-control">
-                                    </div>
-                                    <div class="col-md-4">
-                                        <h6 v-text="'$'+formatNumber(anticipo)"></h6>
-                                    </div>
-                                </div>
 
                                 <div class="form-group row" v-if="tipoAccion == 2">
                                     <label class="col-md-2 form-control-label" for="text-input">Fecha de colocacion</label>
@@ -198,7 +182,6 @@
                             <!-- Botones del modal -->
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                                <button type="button" v-if="tipoAccion == 1" class="btn btn-success" @click="actAnticipo()">Guardar</button>
                                 <button type="button" v-if="tipoAccion == 2" class="btn btn-success" @click="actColocacion()">Guardar</button>
                             </div>
                         </div>
