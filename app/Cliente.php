@@ -12,7 +12,7 @@ class Cliente extends Model
         'sexo_coa','tipo_casa_coa','email_institucional_coa','empresa_coa','edo_civil_coa','nss_coa',
         'curp_coa','nombre_coa','apellidos_coa','f_nacimiento_coa','rfc_coa','homoclave_coa','direccion_coa',
         'colonia_coa','cp_coa','telefono_coa','ext_coa','celular_coa','email_coa','parentesco_coa',
-        'nacionalidad','nacionalidad_coa','puesto','lugar_nacimiento'
+        'nacionalidad','nacionalidad_coa','puesto','lugar_nacimiento','precio_rango','ingreso'
     ];
  
     public function persona(){

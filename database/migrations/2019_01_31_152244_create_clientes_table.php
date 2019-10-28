@@ -26,6 +26,8 @@ class CreateClientesTable extends Migration
             $table->string('curp',18)->nullable();
             $table->unsignedInteger('vendedor_id')->nullable();////////////////
             $table->string('empresa')->nullable();
+            $table->boolean('precio_rango')->default(0);
+            $table->double('ingreso')->nullable();
             $table->boolean('coacreditado')->default(0); //TinyInt
             $table->boolean('clasificacion')->default(1);
             $table->string('lugar_nacimiento',80)->nullable();

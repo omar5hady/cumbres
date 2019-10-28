@@ -49,6 +49,7 @@
                             <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
                                     <tr> 
+                                        <th></th>
                                         <th># Ref</th>
                                         <th>Cliente</th>
                                         <th>Proyecto</th>
@@ -71,6 +72,15 @@
                                 <tbody>
                                     <tr v-for="equipamientos in arrayHistorialEquipamientos" :key="equipamientos.id">
                                         <template>
+                                            <td v-if="equipamientos.control == 0">
+                                                <i class="btn btn-success btn-sm fa fa-check"></i>
+                                            </td>
+                                            <td class="td2" v-else-if="equipamientos.control == 1">
+                                                <i class="btn btn-primary btn-sm fa fa-exchange"></i> A reasignar
+                                            </td>
+                                            <td  class="td2" v-else>
+                                                <i title="Cancelado" class="btn btn-danger btn-sm fa fa-exclamation-triangle"></i> Cancelado
+                                            </td>
                                             <td class="td2" v-text="equipamientos.folio"></td>
                                             <td class="td2" v-text="equipamientos.nombre_cliente"></td>
                                             <td class="td2" v-text="equipamientos.proyecto"></td>

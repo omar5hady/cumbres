@@ -233,7 +233,7 @@
                                 </div>
 
                                 <!-- listado para privilegios del menu Saldos -->
-                                <div class="col-md-4" v-if="rol_id==1 || rol_id==6 || rol_id==9 || rol_id==8" >
+                                <div class="col-md-4" v-if="rol_id==1 || rol_id==4 || rol_id==6 || rol_id==9 || rol_id==8" >
                                     <div class="form-group row border">
                                             <a class="nav-link nav-dropdown-toggle"><i class="fa fa-calculator"></i> <input @click="limpiarSaldo()" v-model="saldo" type="checkbox" value="1"/> Modulo Saldos</a>
                                                 <ul class="nav-dropdown-items" v-if="saldo==1">

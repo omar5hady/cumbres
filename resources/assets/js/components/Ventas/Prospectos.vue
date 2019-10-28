@@ -259,6 +259,17 @@
                                 </div>
                                  </div>
 
+                                <div class="col-md-2">
+                                     <div class="form-group">
+                                    <label for="">Ingresos</label>
+                                    <div class="input-group">
+                                    <div class="input-group-addon">
+                                        $
+                                    </div>
+                                    <input type="text" pattern="\d*" maxlength="20" class="form-control" v-on:keypress="isNumber($event)" v-model="ingreso" placeholder="ingreso">
+                                    </div>
+                                </div>
+                                 </div>
 
                                   <div class="col-md-2">
                                     <div class="form-group">
@@ -357,7 +368,23 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-12">
+
+                                <div class="col-md-3">
+                                     <div class="form-group">
+                                  <label for="">Precio de interes para vivienda</label>
+                                    <select class="form-control" v-model="precio_rango" >
+                                            <option value="0">Seleccione</option>
+                                            <option value="1">$600,000.00 - $800,000.00</option>
+                                            <option value="2">$800,000.00 - $1,000,000.00</option>   
+                                            <option value="3">$1,200,000.00 - $1,400,000.00</option> 
+                                            <option value="4">$1,400,000.00 - $1,600,000.00</option>     
+                                            <option value="5">$1,600,000.00 - $1,800,000.00</option> 
+                                            <option value="6">$1,800,000.00 - $2,000,000.00</option>
+                                            <option value="7">$2,000,000.00 - $2,200,000.00</option> 
+                                            <option value="8">$2,200,000.00 - $2,400,000.00</option> 
+                                            <option value="9">$2,400,000.00 - $2,600,000.00</option> 
+                                    </select>
+                                </div>
                                 </div>
 
                                  <div class="col-md-3">
@@ -516,14 +543,14 @@
                                 </div>
                                 </div>
 
-                                  <div class="col-md-4">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                     <label for="">Telefono </label>
                                     <input type="text" maxlength="10" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="telefono" placeholder="Telefono">
                                 </div>
                                 </div>
 
-                                  <div class="col-md-4">
+                                <div class="col-md-4">
                                      <div class="form-group">
                                     <label for="">Celular <span style="color:red;" v-show="celular==''">(*)</span></label>
                                     <input type="text" pattern="\d*" maxlength="10" class="form-control" v-on:keypress="isNumber($event)" v-model="celular" placeholder="Celular">
@@ -557,6 +584,18 @@
                                      <div class="form-group">
                                     <label for="">Email institucional </label>
                                     <input type="text" class="form-control" v-model="email_inst" placeholder="E-mail">
+                                </div>
+                                 </div>
+
+                                 <div class="col-md-2">
+                                     <div class="form-group">
+                                    <label for="">Ingresos</label>
+                                    <div class="input-group">
+                                    <div class="input-group-addon">
+                                        $
+                                    </div>
+                                    <input type="text" pattern="\d*" maxlength="20" class="form-control" v-on:keypress="isNumber($event)" v-model="ingreso" placeholder="ingreso">
+                                    </div>
                                 </div>
                                  </div>
 
@@ -658,6 +697,24 @@
                                     </div>
                                 </div>
 
+                                <div class="col-md-3">
+                                     <div class="form-group">
+                                  <label for="">Precio de interes para vivienda</label>
+                                    <select class="form-control" v-model="precio_rango" >
+                                            <option value="0">Seleccione</option>
+                                            <option value="1">$600,000.00 - $800,000.00</option>
+                                            <option value="2">$800,000.00 - $1,000,000.00</option>   
+                                            <option value="3">$1,200,000.00 - $1,400,000.00</option> 
+                                            <option value="4">$1,400,000.00 - $1,600,000.00</option>     
+                                            <option value="5">$1,600,000.00 - $1,800,000.00</option> 
+                                            <option value="6">$1,800,000.00 - $2,000,000.00</option>
+                                            <option value="7">$2,000,000.00 - $2,200,000.00</option> 
+                                            <option value="8">$2,200,000.00 - $2,400,000.00</option> 
+                                            <option value="9">$2,400,000.00 - $2,600,000.00</option> 
+                                    </select>
+                                </div>
+                                </div>
+
                                  <div class="col-md-3">
                                      <div class="form-group">
                                   <label for="">Medio donde se entero de nosotros <span style="color:red;" v-show="publicidad_id==0">(*)</span></label>
@@ -750,8 +807,10 @@
                                         <label for="">Observaciones <span style="color:red;" v-show="observacion==''">(*)</span></label>
                                         <textarea rows="3" cols="30" v-model="observacion" class="form-control" placeholder="Observaciones"></textarea>
                                     </div>
+                                    <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" @click="abrirModal3('prospecto','ver_todo', id),listarObservacion(1,id)">Ver todos</button>
                                 </div>
-                                 
+
+                                
                                  <div class="col-md-12">
                                     <!-- Div para mostrar los errores que mande validerFraccionamiento -->
                                     <div v-show="errorProspecto" class="form-group row div-error">
@@ -1123,7 +1182,8 @@
                 e_civil_coa: 0,
                 lugar_nacimiento_coa:'',
                 tipo_casa_coa:0,
-
+                precio_rango: 0,
+                ingreso:0,
 
                 arrayEmpresa: [],
                 arrayMediosPublicidad:[],
@@ -1435,6 +1495,8 @@
                     'celular':this.celular ,
                     'email':this.email,
                     'email_institucional':this.email_inst,
+                    'ingreso': this.ingreso,
+                    'precio_rango': this.precio_rango,
                     'nss':this.nss,
                     'sexo':this.sexo,
                     'f_nacimiento':this.fecha_nac,
@@ -1552,6 +1614,8 @@
                     'celular':this.celular ,
                     'email':this.email,
                     'email_institucional':this.email_inst,
+                    'ingreso': this.ingreso,
+                    'precio_rango': this.precio_rango,
                     'nss':this.nss,
                     'sexo':this.sexo,
                     'f_nacimiento':this.fecha_nac,
@@ -1643,6 +1707,10 @@
                     
                 }
                 }) 
+            },
+            formatNumber(value) {
+                let val = (value/1).toFixed(2)
+                return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             },
             activarProspecto(id){
                swal({
@@ -1764,6 +1832,8 @@
                 this.celular = '';
                 this.email='';
                 this.email_inst='';
+                this.ingreso='';
+                this.precio_rango='';
                 this.nss='';
                 this.sexo='';
                 this.fecha_nac= '';
@@ -1900,6 +1970,8 @@
                     me.email_inst= me.arrayDatosProspecto[0]['email_institucional'];
                     me.email = me.arrayDatosProspecto[0]['email'];
                     me.empresa=me.arrayDatosProspecto[0]['empresa'];
+                    me.precio_rango=me.arrayDatosProspecto[0]['precio_rango'];
+                    me.ingreso=me.arrayDatosProspecto[0]['ingreso'];
                     me.fecha_nac=me.arrayDatosProspecto[0]['f_nacimiento'];
                     me.lugar_nacimiento =me.arrayDatosProspecto[0]['lugar_nacimiento'];
                     me.curp=me.arrayDatosProspecto[0]['curp'];

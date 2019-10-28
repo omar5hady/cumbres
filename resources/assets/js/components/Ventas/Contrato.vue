@@ -691,7 +691,23 @@
                                         </div>  
                                     <!-- Fin Lugar de trabajo-->
                                     <!--------------------------------------------  Apartado  de datos vive en casa , edo civil -------------------------------->
-                                                    <div class="form-group row border border-primary" style="margin-right:0px; margin-left:0px;" >    
+                                                    <div class="form-group row border border-primary" style="margin-right:0px; margin-left:0px;" >   
+                                                                    <div class="col-md-3">
+                                                                            <div class="form-group">
+                                                                        <label for="">Medio donde se entero de nosotros </label>
+                                                                        <select disabled class="form-control" v-model="publicidad_id" >
+                                                                                <option value="0">Seleccione</option>
+                                                                                <option v-for="medios in arrayMediosPublicidad" :key="medios.id" :value="medios.id" v-text="medios.nombre"></option>    
+                                                                        </select>
+                                                                    </div>
+                                                                    </div>
+
+                                                                    <div class="col-md-4" v-if="publicidad_id == 1">
+                                                                            <div class="form-group">
+                                                                        <label for="">Nombre de la persona que te recomendo </label>
+                                                                            <input disabled type="text" class="form-control" v-model="nombre_recomendado" placeholder="Nombre">
+                                                                    </div>
+                                                                    </div> 
 
                                                             <div class="col-md-3">
                                                             <div class="form-group">
@@ -1902,6 +1918,8 @@
                         fovissste:'0',
                         monto_total_credito:0,
                         observacion:'',
+                        publicidad_id:0,
+                        nombre_recomendado: '',
              
                 prospecto_id:0,
                 restante:0,
@@ -1919,6 +1937,7 @@
                 arrayAsesores: [],
                 arrayCreditos: [],
                 arrayInstituciones: [],
+                arrayMediosPublicidad:[],
                 btn_actualizar: 0,
 
                 loteEnContrato: 0,
@@ -2116,10 +2135,22 @@
                     var respuesta = response.data;
                     me.arrayDatosSimulacion = respuesta.creditos;
                     me.mostrarDetalle(me.arrayDatosSimulacion[0]);
+                   
                 })
                 .catch(function (error) {
                     console.log(error);
                 })
+            },
+            selectMedioPublicidad(){
+                let me = this;
+                var url = '/select_medio_publicidad';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayMediosPublicidad = respuesta.medios_publicitarios;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
             },
             formatNumber(value) {
                 let val = (value/1).toFixed(2)
@@ -2493,6 +2524,8 @@
             },
 
             mostrarDetalle(data = []){
+                this.publicidad_id = data['publicidadId'];
+                this.nombre_recomendado = data['nombre_recomendado'];
                 this.prospecto_id = data['prospecto_id'];
                 this.id= data['id'];
                 this.nombre = data['nombre'];
@@ -2728,6 +2761,8 @@
             },
 
             verContrato(data = []){
+                this.publicidad_id = data['publicidadId'];
+                this.nombre_recomendado = data['nombre_recomendado'];
                 this.prospecto_id = data['prospecto_id'];
                 this.id= data['id'];
                 this.nombre = data['nombre'];
@@ -3447,7 +3482,7 @@
             this.selectFraccionamientos();
             this.selectAsesores();
             this.selectCreditos();
-            
+            this.selectMedioPublicidad();
         }
     }
 </script>

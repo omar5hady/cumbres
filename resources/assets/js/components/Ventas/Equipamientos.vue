@@ -173,6 +173,7 @@
                             <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
                                     <tr> 
+                                        <th></th>
                                         <th># Ref</th>
                                         <th>Cliente</th>
                                         <th>Proyecto</th>
@@ -199,6 +200,17 @@
                                 <tbody>
                                     <tr v-for="equipamientos in arrayHistorialEquipamientos" :key="equipamientos.id">
                                         <template>
+                                            <td v-if="equipamientos.control == 0">
+                                                <i class="btn btn-success btn-sm fa fa-check"></i>
+                                            </td>
+                                            <td v-else-if="equipamientos.control == 1">
+                                                <button title="Reasignar" type="button" @click="abrirModal('reasignar',equipamientos)" class="btn btn-primary btn-sm">
+                                                    <i class="fa fa-exchange"></i>
+                                                </button>
+                                            </td>
+                                            <td v-else>
+                                                <i title="Cancelado" class="btn btn-danger btn-sm fa fa-exclamation-triangle"></i>
+                                            </td>
                                             <td class="td2" v-text="equipamientos.folio"></td>
                                             <td class="td2" v-text="equipamientos.nombre_cliente"></td>
                                             <td class="td2" v-text="equipamientos.proyecto"></td>
@@ -536,6 +548,87 @@
                     <!-- /.modal-dialog -->
                 </div>
             <!--Fin del modal-->
+
+            <!--Inicio del modal para reubicar -->
+                <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal4}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                    <div class="modal-dialog modal-primary modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" v-text="tituloModal"></h5>
+                                <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group row">
+                                    <label class="col-md-2 form-control-label" for="text-input">Proyecto</label>
+                                    <div class="col-md-4">
+                                        <select class="form-control" v-model="contProy" @click="selectEtapa2(contProy)">
+                                            <option value="">Proyecto</option>
+                                            <option v-for="fraccionamiento in arrayFraccionamientos2" :key="fraccionamiento.nombre" :value="fraccionamiento.id" v-text="fraccionamiento.nombre"></option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <select class="form-control" v-model="contEtapa"> 
+                                            <option value="">Etapa</option>
+                                            <option v-for="etapa in arrayEtapas3" :key="etapa.num_etapa" :value="etapa.id" v-text="etapa.num_etapa"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-2 form-control-label" for="text-input"></label>
+                                    <div class="col-md-4">
+                                        <input type="text" v-model="contManzana" class="form-control" placeholder="Manzana" >
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="submit" @click="listarContRea(contProy,contEtapa,contManzana)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    </div>
+                                </div>
+
+                                <table class="table2 table-bordered table-striped table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Seleccionar</th>
+                                                <th># Ref</th>
+                                                <th>Proyecto</th>
+                                                <th>Etapa</th>
+                                                <th>Manzana</th>
+                                                <th>Lote</th>
+                                                <th>Paquete</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="contReasig in arrayReasignar" :key="contReasig.id">
+                                                <td class="td2">
+                                                    <button v-if="contReasig.id != id_reasig" title="Reasignar" type="button" @click="id_reasig = contReasig.id, lote_reasignar = contReasig.lote_id" class="btn btn-primary btn-sm">
+                                                        <i class="fa fa-exchange"></i>
+                                                    </button>
+                                                     <i v-else class="btn btn-success btn-sm fa fa-check"></i>
+                                                </td>
+                                                <td class="td2" v-text="contReasig.id" ></td>
+                                                <td class="td2" v-text="contReasig.proyecto" ></td>
+                                                <td class="td2" v-text="contReasig.etapa"></td>
+                                                <td class="td2" v-text="contReasig.manzana"></td>
+                                                <td class="td2" v-text="contReasig.num_lote"></td>
+                                                <td class="td2" v-text="'Paquete: ' + contReasig.paquete + ' Promo: '+ contReasig.promocion"></td>
+                                            </tr>                               
+                                        </tbody>
+                                    </table>
+
+                                
+                            </div>
+                            <!-- Botones del modal -->
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                                <button type="button" class="btn btn-success" @click="reubicar()">Reasignar</button>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+            <!--Fin del modal-->
             
          
      </main>
@@ -566,6 +659,7 @@
                 modal: 0,
                 modal2: 0,
                 modal3: 0,
+                modal4: 0,
                 tituloModal: '',
 
                 //variables
@@ -591,6 +685,15 @@
                 b_etapa: '',
                 b_manzana: '',
                 b_lote: '',
+
+                contProy:'',
+                contEtapa:'',
+                contManzana:'',
+                id_reasig:'',
+                lote_reasignar:'',
+                arrayReasignar:[],
+
+                arrayEtapas3:[],
 
                 // Criterios para historial de equipamientos
                 pagination2 : {
@@ -723,6 +826,18 @@
                 });
             },
 
+            listarContRea(proyecto, etapa, manzana){
+                let me = this;
+                var url = '/equipamiento/contRea?proyecto=' + proyecto + '&etapa=' + etapa + '&manzana=' + manzana;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayReasignar = respuesta.contratos;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
             listarEquipamientosLote(){
                 let me = this;
                 var url = '/index/equipamiento/lote?lote_id=' + this.lote_id + '&contrato_id=' + this.contrato_id;
@@ -735,7 +850,6 @@
                 });
                 
             },
-
             
             selectFraccionamientos(){
                 let me = this;
@@ -765,6 +879,20 @@
                     var respuesta = response.data;
                     me.arrayEtapas = respuesta.etapas;
                     me.arrayEtapas2 = respuesta.etapas;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
+            selectEtapa2(buscar){
+                let me = this;
+                
+                me.arrayEtapas3=[];
+                var url = '/select_etapa_proyecto?buscar=' + buscar;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayEtapas3 = respuesta.etapas;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -973,6 +1101,33 @@
                 });
             },
 
+            reubicar(){
+                let me = this;
+                //Con axios se llama el metodo update de LoteController
+                axios.put('/equipamiento/reubicar',{
+                    'id':this.solicitud_id,
+                    'contrato_id' : this.id_reasig,
+                    'lote_id':this.lote_reasignar,
+                    
+                }).then(function (response){
+                    me.cerrarModal();
+                    me.listarHistorial(me.pagination2.current_page,me.buscar2,me.b_etapa2,me.b_manzana2,me.b_lote2,me.criterio2);
+                    //window.alert("Cambios guardados correctamente");
+                    const toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                        });
+                        toast({
+                        type: 'success',
+                        title: 'Equipamiento reasignado'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
             actLiquidacion(){
                 let me = this;
                 //Con axios se llama el metodo update de LoteController
@@ -1075,10 +1230,14 @@
                 this.tituloModal = '';
                 this.modal2 = 0;
                 this.modal3 = 0;
+                this.modal4 = 0;
                 this.fecha_anticipo = '';
                 this.anticipo = '';
                 this.proveedor = '';
                 this.equipamiento = '';
+                this.arrayReasignar = [];
+                this.id_reasig = '';
+                this.lote_reasignar = '';
             },
 
             abrirModal(accion,data =[]){
@@ -1132,6 +1291,16 @@
                             this.tituloModal='Observaciones';
                             this.solicitud_id = data['id'];
                             this.observacion = '';
+                            break;
+                        }
+
+                        case 'reasignar':{
+                            this.modal4 =1;
+                            this.tituloModal='Reasignar equipamiento';
+                            this.solicitud_id = data['id'];
+                            this.lote_reasignar = '';
+                            this.id_reasig = '';
+                            break;
                         }
                     }
                 }

@@ -90,6 +90,8 @@ class ContratoController extends Controller
                         'creditos.precio_obra_extra',
                         'creditos.fraccionamiento as proyecto',
                         'creditos.lote_id',
+                        'clientes.publicidad_id as publicidadId',
+                                    'clientes.nombre_recomendado',
 
                         'inst_seleccionadas.institucion',
                         'personal.nombre',
@@ -230,6 +232,8 @@ class ContratoController extends Controller
                                     'creditos.precio_obra_extra',
                                     'creditos.fraccionamiento as proyecto',
                                     'creditos.lote_id',
+                                    'clientes.publicidad_id as publicidadId',
+                                    'clientes.nombre_recomendado',
 
                                     'inst_seleccionadas.institucion',
                                     'personal.nombre',
@@ -377,6 +381,8 @@ class ContratoController extends Controller
                                     'creditos.precio_obra_extra',
                                     'creditos.fraccionamiento as proyecto',
                                     'creditos.lote_id',
+                                    'clientes.publicidad_id as publicidadId',
+                                    'clientes.nombre_recomendado',
 
                                     'inst_seleccionadas.institucion',
                                     'personal.nombre',
@@ -524,6 +530,9 @@ class ContratoController extends Controller
                                     'creditos.precio_obra_extra',
                                     'creditos.fraccionamiento as proyecto',
                                     'creditos.lote_id',
+                                    'clientes.publicidad_id as publicidadId',
+                                    'clientes.nombre_recomendado',
+                                    
 
                                     'inst_seleccionadas.institucion',
                                     'personal.nombre',
@@ -666,6 +675,8 @@ class ContratoController extends Controller
                                     'creditos.precio_obra_extra',
                                     'creditos.fraccionamiento as proyecto',
                                     'creditos.lote_id',
+                                    'clientes.publicidad_id as publicidadId',
+                                                            'clientes.nombre_recomendado',
 
                                     'inst_seleccionadas.institucion',
                                     'personal.nombre',
@@ -812,6 +823,8 @@ class ContratoController extends Controller
                                     'creditos.precio_obra_extra',
                                     'creditos.fraccionamiento as proyecto',
                                     'creditos.lote_id',
+                                    'clientes.publicidad_id as publicidadId',
+                                                            'clientes.nombre_recomendado',
         
                                     'inst_seleccionadas.institucion',
                                     'personal.nombre',
@@ -956,6 +969,8 @@ class ContratoController extends Controller
                                         'creditos.precio_obra_extra',
                                         'creditos.fraccionamiento as proyecto',
                                         'creditos.lote_id',
+                                        'clientes.publicidad_id as publicidadId',
+                                                            'clientes.nombre_recomendado',
             
                                         'inst_seleccionadas.institucion',
                                         'personal.nombre',
@@ -1102,6 +1117,8 @@ class ContratoController extends Controller
                                             'creditos.precio_obra_extra',
                                             'creditos.fraccionamiento as proyecto',
                                             'creditos.lote_id',
+                                            'clientes.publicidad_id as publicidadId',
+                                                            'clientes.nombre_recomendado',
                 
                                             'inst_seleccionadas.institucion',
                                             'personal.nombre',
@@ -1253,6 +1270,8 @@ class ContratoController extends Controller
                                     'creditos.precio_obra_extra',
                                     'creditos.fraccionamiento as proyecto',
                                     'creditos.lote_id',
+                                    'clientes.publicidad_id as publicidadId',
+                                                            'clientes.nombre_recomendado',
         
                                     'inst_seleccionadas.institucion',
                                     'personal.nombre',
@@ -1399,6 +1418,8 @@ class ContratoController extends Controller
                                         'creditos.precio_obra_extra',
                                         'creditos.fraccionamiento as proyecto',
                                         'creditos.lote_id',
+                                        'clientes.publicidad_id as publicidadId',
+                                                            'clientes.nombre_recomendado',
             
                                         'inst_seleccionadas.institucion',
                                         'personal.nombre',
@@ -1547,6 +1568,8 @@ class ContratoController extends Controller
                                             'creditos.precio_obra_extra',
                                             'creditos.fraccionamiento as proyecto',
                                             'creditos.lote_id',
+                                            'clientes.publicidad_id as publicidadId',
+                                                            'clientes.nombre_recomendado',
                 
                                             'inst_seleccionadas.institucion',
                                             'personal.nombre',
@@ -1702,6 +1725,8 @@ class ContratoController extends Controller
                                     'creditos.precio_obra_extra',
                                     'creditos.fraccionamiento as proyecto',
                                     'creditos.lote_id',
+                                    'clientes.publicidad_id as publicidadId',
+                                                            'clientes.nombre_recomendado',
 
                                     'inst_seleccionadas.institucion',
                                     'personal.nombre',
@@ -1845,6 +1870,8 @@ class ContratoController extends Controller
                                     'creditos.precio_obra_extra',
                                     'creditos.fraccionamiento as proyecto',
                                     'creditos.lote_id',
+                                    'clientes.publicidad_id as publicidadId',
+                                                            'clientes.nombre_recomendado',
 
                                     'inst_seleccionadas.institucion',
                                     'personal.nombre',
@@ -1992,6 +2019,8 @@ class ContratoController extends Controller
                                         'creditos.precio_obra_extra',
                                         'creditos.fraccionamiento as proyecto',
                                         'creditos.lote_id',
+                                        'clientes.publicidad_id as publicidadId',
+                                                            'clientes.nombre_recomendado',
 
                                         'inst_seleccionadas.institucion',
                                         'personal.nombre',
@@ -2142,6 +2171,8 @@ class ContratoController extends Controller
                                             'creditos.precio_obra_extra',
                                             'creditos.fraccionamiento as proyecto',
                                             'creditos.lote_id',
+                                            'clientes.publicidad_id as publicidadId',
+                                                            'clientes.nombre_recomendado',
 
                                             'inst_seleccionadas.institucion',
                                             'personal.nombre',
@@ -2289,6 +2320,8 @@ class ContratoController extends Controller
                                                 'creditos.precio_obra_extra',
                                                 'creditos.fraccionamiento as proyecto',
                                                 'creditos.lote_id',
+                                                'clientes.publicidad_id as publicidadId',
+                                                            'clientes.nombre_recomendado',
 
                                                 'inst_seleccionadas.institucion',
                                                 'personal.nombre',
@@ -2434,6 +2467,8 @@ class ContratoController extends Controller
                                                     'creditos.precio_obra_extra',
                                                     'creditos.fraccionamiento as proyecto',
                                                     'creditos.lote_id',
+                                                    'clientes.publicidad_id as publicidadId',
+                                                            'clientes.nombre_recomendado',
 
                                                     'inst_seleccionadas.institucion',
                                                     'personal.nombre',
@@ -2579,6 +2614,8 @@ class ContratoController extends Controller
                                                         'creditos.precio_obra_extra',
                                                         'creditos.fraccionamiento as proyecto',
                                                         'creditos.lote_id',
+                                                        'clientes.publicidad_id as publicidadId',
+                                                            'clientes.nombre_recomendado',
 
                                                         'inst_seleccionadas.institucion',
                                                         'personal.nombre',
@@ -2723,6 +2760,8 @@ class ContratoController extends Controller
                                                         'creditos.precio_obra_extra',
                                                         'creditos.fraccionamiento as proyecto',
                                                         'creditos.lote_id',
+                                                        'clientes.publicidad_id as publicidadId',
+                                                            'clientes.nombre_recomendado',
 
                                                         'inst_seleccionadas.institucion',
                                                         'personal.nombre',
@@ -2872,6 +2911,8 @@ class ContratoController extends Controller
                                         'creditos.precio_obra_extra',
                                         'creditos.fraccionamiento as proyecto',
                                         'creditos.lote_id',
+                                        'clientes.publicidad_id as publicidadId',
+                                                            'clientes.nombre_recomendado',
 
                                         'inst_seleccionadas.institucion',
                                         'personal.nombre',
@@ -3024,6 +3065,8 @@ class ContratoController extends Controller
                                             'creditos.precio_obra_extra',
                                             'creditos.fraccionamiento as proyecto',
                                             'creditos.lote_id',
+                                            'clientes.publicidad_id as publicidadId',
+                                                            'clientes.nombre_recomendado',
 
                                             'inst_seleccionadas.institucion',
                                             'personal.nombre',
@@ -3173,6 +3216,8 @@ class ContratoController extends Controller
                                                 'creditos.precio_obra_extra',
                                                 'creditos.fraccionamiento as proyecto',
                                                 'creditos.lote_id',
+                                                'clientes.publicidad_id as publicidadId',
+                                                            'clientes.nombre_recomendado',
 
                                                 'inst_seleccionadas.institucion',
                                                 'personal.nombre',
@@ -3320,6 +3365,8 @@ class ContratoController extends Controller
                                                     'creditos.precio_obra_extra',
                                                     'creditos.fraccionamiento as proyecto',
                                                     'creditos.lote_id',
+                                                    'clientes.publicidad_id as publicidadId',
+                                                            'clientes.nombre_recomendado',
 
                                                     'inst_seleccionadas.institucion',
                                                     'personal.nombre',
@@ -3467,6 +3514,8 @@ class ContratoController extends Controller
                                                         'creditos.precio_obra_extra',
                                                         'creditos.fraccionamiento as proyecto',
                                                         'creditos.lote_id',
+                                                        'clientes.publicidad_id as publicidadId',
+                                                            'clientes.nombre_recomendado',
 
                                                         'inst_seleccionadas.institucion',
                                                         'personal.nombre',
@@ -3613,6 +3662,8 @@ class ContratoController extends Controller
                                                         'creditos.precio_obra_extra',
                                                         'creditos.fraccionamiento as proyecto',
                                                         'creditos.lote_id',
+                                                        'clientes.publicidad_id as publicidadId',
+                                                            'clientes.nombre_recomendado',
 
                                                         'inst_seleccionadas.institucion',
                                                         'personal.nombre',
@@ -3770,6 +3821,8 @@ class ContratoController extends Controller
                         'creditos.precio_obra_extra',
                         'creditos.fraccionamiento as proyecto',
                         'creditos.lote_id',
+                        'clientes.publicidad_id as publicidadId',
+                                                            'clientes.nombre_recomendado',
 
                         'inst_seleccionadas.institucion',
                         'personal.nombre',
@@ -3912,6 +3965,8 @@ class ContratoController extends Controller
                                     'creditos.precio_obra_extra',
                                     'creditos.fraccionamiento as proyecto',
                                     'creditos.lote_id',
+                                    'clientes.publicidad_id as publicidadId',
+                                                            'clientes.nombre_recomendado',
 
                                     'inst_seleccionadas.institucion',
                                     'personal.nombre',
@@ -4063,6 +4118,8 @@ class ContratoController extends Controller
                                     'creditos.precio_obra_extra',
                                     'creditos.fraccionamiento as proyecto',
                                     'creditos.lote_id',
+                                    'clientes.publicidad_id as publicidadId',
+                                                            'clientes.nombre_recomendado',
 
                                     'inst_seleccionadas.institucion',
                                     'personal.nombre',
@@ -4214,6 +4271,8 @@ class ContratoController extends Controller
                                     'creditos.precio_obra_extra',
                                     'creditos.fraccionamiento as proyecto',
                                     'creditos.lote_id',
+                                    'clientes.publicidad_id as publicidadId',
+                                                            'clientes.nombre_recomendado',
 
                                     'inst_seleccionadas.institucion',
                                     'personal.nombre',
@@ -4358,6 +4417,8 @@ class ContratoController extends Controller
                                     'creditos.precio_obra_extra',
                                     'creditos.fraccionamiento as proyecto',
                                     'creditos.lote_id',
+                                    'clientes.publicidad_id as publicidadId',
+                                                            'clientes.nombre_recomendado',
 
                                     'inst_seleccionadas.institucion',
                                     'personal.nombre',
@@ -4506,6 +4567,8 @@ class ContratoController extends Controller
                                     'creditos.precio_obra_extra',
                                     'creditos.fraccionamiento as proyecto',
                                     'creditos.lote_id',
+                                    'clientes.publicidad_id as publicidadId',
+                                                            'clientes.nombre_recomendado',
         
                                     'inst_seleccionadas.institucion',
                                     'personal.nombre',
@@ -4652,6 +4715,8 @@ class ContratoController extends Controller
                                         'creditos.precio_obra_extra',
                                         'creditos.fraccionamiento as proyecto',
                                         'creditos.lote_id',
+                                        'clientes.publicidad_id as publicidadId',
+                                                            'clientes.nombre_recomendado',
             
                                         'inst_seleccionadas.institucion',
                                         'personal.nombre',
@@ -4800,6 +4865,8 @@ class ContratoController extends Controller
                                             'creditos.precio_obra_extra',
                                             'creditos.fraccionamiento as proyecto',
                                             'creditos.lote_id',
+                                            'clientes.publicidad_id as publicidadId',
+                                                            'clientes.nombre_recomendado',
                 
                                             'inst_seleccionadas.institucion',
                                             'personal.nombre',
@@ -4954,6 +5021,8 @@ class ContratoController extends Controller
                                     'creditos.precio_obra_extra',
                                     'creditos.fraccionamiento as proyecto',
                                     'creditos.lote_id',
+                                    'clientes.publicidad_id as publicidadId',
+                                                            'clientes.nombre_recomendado',
         
                                     'inst_seleccionadas.institucion',
                                     'personal.nombre',
@@ -5102,6 +5171,8 @@ class ContratoController extends Controller
                                         'creditos.precio_obra_extra',
                                         'creditos.fraccionamiento as proyecto',
                                         'creditos.lote_id',
+                                        'clientes.publicidad_id as publicidadId',
+                                                            'clientes.nombre_recomendado',
             
                                         'inst_seleccionadas.institucion',
                                         'personal.nombre',
@@ -5252,6 +5323,8 @@ class ContratoController extends Controller
                                             'creditos.precio_obra_extra',
                                             'creditos.fraccionamiento as proyecto',
                                             'creditos.lote_id',
+                                            'clientes.publicidad_id as publicidadId',
+                                                            'clientes.nombre_recomendado',
                 
                                             'inst_seleccionadas.institucion',
                                             'personal.nombre',
@@ -5411,6 +5484,8 @@ class ContratoController extends Controller
                                     'creditos.precio_obra_extra',
                                     'creditos.fraccionamiento as proyecto',
                                     'creditos.lote_id',
+                                    'clientes.publicidad_id as publicidadId',
+                                                            'clientes.nombre_recomendado',
 
                                     'inst_seleccionadas.institucion',
                                     'personal.nombre',
@@ -5557,6 +5632,8 @@ class ContratoController extends Controller
                                     'creditos.precio_obra_extra',
                                     'creditos.fraccionamiento as proyecto',
                                     'creditos.lote_id',
+                                    'clientes.publicidad_id as publicidadId',
+                                                            'clientes.nombre_recomendado',
 
                                     'inst_seleccionadas.institucion',
                                     'personal.nombre',
@@ -5706,6 +5783,8 @@ class ContratoController extends Controller
                                             'creditos.precio_obra_extra',
                                             'creditos.fraccionamiento as proyecto',
                                             'creditos.lote_id',
+                                            'clientes.publicidad_id as publicidadId',
+                                                            'clientes.nombre_recomendado',
     
                                             'inst_seleccionadas.institucion',
                                             'personal.nombre',
@@ -5857,6 +5936,8 @@ class ContratoController extends Controller
                                                 'creditos.precio_obra_extra',
                                                 'creditos.fraccionamiento as proyecto',
                                                 'creditos.lote_id',
+                                                'clientes.publicidad_id as publicidadId',
+                                                            'clientes.nombre_recomendado',
     
                                                 'inst_seleccionadas.institucion',
                                                 'personal.nombre',
@@ -6006,6 +6087,8 @@ class ContratoController extends Controller
                                                     'creditos.precio_obra_extra',
                                                     'creditos.fraccionamiento as proyecto',
                                                     'creditos.lote_id',
+                                                    'clientes.publicidad_id as publicidadId',
+                                                            'clientes.nombre_recomendado',
     
                                                     'inst_seleccionadas.institucion',
                                                     'personal.nombre',
@@ -6153,6 +6236,8 @@ class ContratoController extends Controller
                                                         'creditos.precio_obra_extra',
                                                         'creditos.fraccionamiento as proyecto',
                                                         'creditos.lote_id',
+                                                        'clientes.publicidad_id as publicidadId',
+                                                            'clientes.nombre_recomendado',
     
                                                         'inst_seleccionadas.institucion',
                                                         'personal.nombre',
@@ -6300,6 +6385,8 @@ class ContratoController extends Controller
                                                             'creditos.precio_obra_extra',
                                                             'creditos.fraccionamiento as proyecto',
                                                             'creditos.lote_id',
+                                                            'clientes.publicidad_id as publicidadId',
+                                                            'clientes.nombre_recomendado',
     
                                                             'inst_seleccionadas.institucion',
                                                             'personal.nombre',
@@ -6446,6 +6533,8 @@ class ContratoController extends Controller
                                                             'creditos.precio_obra_extra',
                                                             'creditos.fraccionamiento as proyecto',
                                                             'creditos.lote_id',
+                                                            'clientes.publicidad_id as publicidadId',
+                                                            'clientes.nombre_recomendado',
     
                                                             'inst_seleccionadas.institucion',
                                                             'personal.nombre',
@@ -6597,6 +6686,8 @@ class ContratoController extends Controller
                                             'creditos.precio_obra_extra',
                                             'creditos.fraccionamiento as proyecto',
                                             'creditos.lote_id',
+                                            'clientes.publicidad_id as publicidadId',
+                                                            'clientes.nombre_recomendado',
     
                                             'inst_seleccionadas.institucion',
                                             'personal.nombre',
@@ -6750,6 +6841,8 @@ class ContratoController extends Controller
                                                 'creditos.precio_obra_extra',
                                                 'creditos.fraccionamiento as proyecto',
                                                 'creditos.lote_id',
+                                                'clientes.publicidad_id as publicidadId',
+                                                            'clientes.nombre_recomendado',
     
                                                 'inst_seleccionadas.institucion',
                                                 'personal.nombre',
@@ -6901,6 +6994,8 @@ class ContratoController extends Controller
                                                     'creditos.precio_obra_extra',
                                                     'creditos.fraccionamiento as proyecto',
                                                     'creditos.lote_id',
+                                                    'clientes.publicidad_id as publicidadId',
+                                                            'clientes.nombre_recomendado',
     
                                                     'inst_seleccionadas.institucion',
                                                     'personal.nombre',
@@ -7050,6 +7145,8 @@ class ContratoController extends Controller
                                                         'creditos.precio_obra_extra',
                                                         'creditos.fraccionamiento as proyecto',
                                                         'creditos.lote_id',
+                                                        'clientes.publicidad_id as publicidadId',
+                                                            'clientes.nombre_recomendado',
     
                                                         'inst_seleccionadas.institucion',
                                                         'personal.nombre',
@@ -7199,6 +7296,8 @@ class ContratoController extends Controller
                                                             'creditos.precio_obra_extra',
                                                             'creditos.fraccionamiento as proyecto',
                                                             'creditos.lote_id',
+                                                            'clientes.publicidad_id as publicidadId',
+                                                            'clientes.nombre_recomendado',
     
                                                             'inst_seleccionadas.institucion',
                                                             'personal.nombre',
@@ -7347,6 +7446,8 @@ class ContratoController extends Controller
                                                             'creditos.precio_obra_extra',
                                                             'creditos.fraccionamiento as proyecto',
                                                             'creditos.lote_id',
+                                                            'clientes.publicidad_id as publicidadId',
+                                                            'clientes.nombre_recomendado',
     
                                                             'inst_seleccionadas.institucion',
                                                             'personal.nombre',
@@ -7942,6 +8043,8 @@ class ContratoController extends Controller
                     'personal.nombre',
                     'personal.apellidos',
                     'clientes.sexo',
+                    'clientes.nombre_recomendado',
+                    'clientes.publicidad_id',
                     'personal.telefono',
                     'personal.celular',
                     'personal.email',
@@ -8030,10 +8133,11 @@ class ContratoController extends Controller
                 $credito->email_coa = $prospecto[0]->email_coa;
                 $credito->email_institucional_coa = $prospecto[0]->email_institucional_coa;
                 $credito->empresa_coa = $prospecto[0]->empresa_coa;
-
+                $credito->nombre_recomendado = $prospecto[0]->nombre_recomendado;
                 $credito->tipo_credito = $institucion[0]->tipo_credito;
                 $credito->institucion = $institucion[0]->institucion;
                 $credito->elegido = $institucion[0]->elegido;
+                $credito->publicidadId = $prospecto[0]->publicidad_id;
             }
         }
 
@@ -8743,155 +8847,188 @@ class ContratoController extends Controller
     {
         if(!$request->ajax())return redirect('/');
 
-        $id_lote = $request->lote_id;
+        // try{
+        //     DB::beginTransaction();
+            $id_lote = $request->lote_id;
 
-        $equipamientos = Solic_equipamiento::join('lotes','solic_equipamientos.lote_id','=','lotes.id')
-            ->select(DB::raw("SUM(solic_equipamientos.costo) as sumCosto"))
-            ->where('lotes.id','=',$id_lote)
-            ->where('solic_equipamientos.fin_instalacion','!=',NULL)
-            ->where('solic_equipamientos.contrato_id','=',$request->id)->get();
+            $equipamientosCost = Solic_equipamiento::join('lotes','solic_equipamientos.lote_id','=','lotes.id')
+                ->select(DB::raw("SUM(solic_equipamientos.costo) as sumCosto"))
+                ->where('lotes.id','=',$id_lote)
+                ->where('solic_equipamientos.fin_instalacion','!=',NULL)
+                ->where('solic_equipamientos.contrato_id','=',$request->id)->get();
 
-        if($equipamientos[0]->sumCosto != NULL)
-            $ajuste = $equipamientos[0]->sumCosto;
-        else
-            $ajuste = 0;
+            $equipamientosAntc = Solic_equipamiento::select('id')
+                ->where('solic_equipamientos.lote_id','=',$id_lote)
+                ->where('solic_equipamientos.fin_instalacion','=',NULL)
+                ->where('solic_equipamientos.fecha_anticipo','!=',NULL)
+                ->where('solic_equipamientos.contrato_id','=',$request->id)->get();
+            
+            $equipamientosCancel = Solic_equipamiento::select('id')
+                ->where('solic_equipamientos.lote_id','=',$id_lote)
+                ->where('solic_equipamientos.fin_instalacion','=',NULL)
+                ->where('solic_equipamientos.fecha_anticipo','=',NULL)
+                ->where('solic_equipamientos.contrato_id','=',$request->id)->get();
 
-        if ($request->fecha_status == '') {
-            $fecha = Carbon::now();
-            $status = Contrato::findOrFail($request->id);
-            $status->status = $request->status;
-            $status->fecha_status = $fecha;
-            $status->motivo_cancel = $request->motivo_cancel;
-            $status->save();
-            if ($request->status == 1) {
-                $contrato = Lote::findOrFail($id_lote);
-                $contrato->contrato = 1;
-                $contrato->save();
+            if(sizeof($equipamientosAntc) != 0){
+                foreach ($equipamientosAntc as $antc){
+                    $antc_equip = Solic_equipamiento::findOrFail($antc->id);
+                    $antc_equip->control = 1;
+                    $antc_equip->save();
+                }
             }
-            if ($request->status == 0 || $request->status == 2) {
-                $contrato = Lote::findOrFail($id_lote);
-                $contrato->contrato = 0;
-                $contrato->apartado = 0;
-                $contrato->ajuste += $ajuste;
-                if($ajuste != 0)
-                    $contrato->comentarios ='Lote con equipamiento. '.$contrato->comentarios;
 
-                $apartado = Apartado::select('id')->where('lote_id','=',$id_lote)->get();
-                foreach($apartado as $ap){
-                    $borrarApartado = Apartado::findOrFail($ap->id);
-                    $borrarApartado->delete();
+            if(sizeof($equipamientosCancel) != 0){
+                foreach ($equipamientosCancel as $canc){
+                    $cancel_equip = Solic_equipamiento::findOrFail($canc->id);
+                    $cancel_equip->control = 2;
+                    $cancel_equip->save();
                 }
-
-                $precio_etapa = Precio_etapa::select('id','precio_excedente')
-                ->where('fraccionamiento_id','=',$contrato->fraccionamiento_id)
-                ->where('etapa_id','=',$contrato->etapa_id)->get();
-
-                $precio_modelo = Precio_modelo::select('precio_modelo')->where('precio_etapa_id','=',$precio_etapa[0]->id)
-                                ->where('modelo_id','=',$contrato->modelo_id)->get();
-
-                $sobreprecios = Sobreprecio_modelo::join('sobreprecios_etapas','sobreprecios_modelos.sobreprecio_etapa_id','=','sobreprecios_etapas.id')
-                ->select(DB::raw("SUM(sobreprecios_etapas.sobreprecio) as sobreprecios"))
-                ->where('sobreprecios_modelos.lote_id','=',$id_lote)->get();
-
-                $modelo = Modelo::select('terreno')->where('id','=',$contrato->modelo_id)->get();
-                $terrenoExcedente = round(($contrato->terreno - $modelo[0]->terreno),2);
-                if((double)$terrenoExcedente > 0)
-                    $contrato->excedente_terreno = round(($terrenoExcedente * $precio_etapa[0]->precio_excedente), 2);
-                else {
-                    $contrato->excedente_terreno = 0;
-                }
-
-                $contrato->precio_base = round(($precio_modelo[0]->precio_modelo), 2);
-                $precio_venta = round(($sobreprecios[0]->sobreprecios + $contrato->precio_base + $contrato->excedente_terreno + $contrato->obra_extra),2);
-                $terreno_tam_excedente = round(($contrato->terreno - $modelo[0]->terreno),2);
-                $contrato->save();
             }
-        } else {
-            $status = Contrato::findOrFail($request->id);
-            $status->status = $request->status;
-            $status->fecha_status = $request->fecha_status;
-            $status->motivo_cancel = $request->motivo_cancel;
-            $status->save();
-            if ($request->status == 0 || $request->status == 2) {
-                $contrato = Lote::findOrFail($id_lote);
-                $contrato->contrato = 0;
-                $contrato->apartado = 0;
-                $contrato->ajuste += $ajuste;
-                if($ajuste != 0)
-                    $contrato->comentarios ='Lote con equipamiento. '.$contrato->comentarios;
 
-                $apartado = Apartado::select('id')->where('lote_id','=',$id_lote)->get();
-                foreach($apartado as $ap){
-                    $borrarApartado = Apartado::findOrFail($ap->id);
-                    $borrarApartado->delete();
-                }
+            if($equipamientosCost[0]->sumCosto != 0)
+                $ajuste = $equipamientosCost[0]->sumCosto;
+            else
+                $ajuste = 0;
 
-                $precio_etapa = Precio_etapa::select('id','precio_excedente')
-                ->where('fraccionamiento_id','=',$contrato->fraccionamiento_id)
-                ->where('etapa_id','=',$contrato->etapa_id)->get();
-
-                $precio_modelo = Precio_modelo::select('precio_modelo')->where('precio_etapa_id','=',$precio_etapa[0]->id)
-                                ->where('modelo_id','=',$contrato->modelo_id)->get();
-
-                $sobreprecios = Sobreprecio_modelo::join('sobreprecios_etapas','sobreprecios_modelos.sobreprecio_etapa_id','=','sobreprecios_etapas.id')
-                ->select(DB::raw("SUM(sobreprecios_etapas.sobreprecio) as sobreprecios"))
-                ->where('sobreprecios_modelos.lote_id','=',$id_lote)->get();
-
-                $modelo = Modelo::select('terreno')->where('id','=',$contrato->modelo_id)->get();
-                $terrenoExcedente = round(($contrato->terreno - $modelo[0]->terreno),2);
-                if((double)$terrenoExcedente > 0)
-                    $contrato->excedente_terreno = round(($terrenoExcedente * $precio_etapa[0]->precio_excedente), 2);
-                else {
-                    $contrato->excedente_terreno = 0;
-                }
-
-                $contrato->precio_base = round(($precio_modelo[0]->precio_modelo), 2);
-                $precio_venta = round(($sobreprecios[0]->sobreprecios + $contrato->precio_base + $contrato->excedente_terreno + $contrato->obra_extra),2);
-                $terreno_tam_excedente = round(($contrato->terreno - $modelo[0]->terreno),2);
-                $contrato->save();
-
-                $credito = Credito::select('prospecto_id')
-                    ->where('id', '=', $request->id)
-                    ->get();
-                $cliente = Cliente::findOrFail($credito[0]->prospecto_id);
-                $cliente->clasificacion = 6;
-                $cliente->save();
-            }
-            if ($request->status == 3) {
-                $credito = Credito::select('prospecto_id', 'descripcion_paquete', 'num_lote', 'fraccionamiento', 'etapa')
-                    ->where('id', '=', $request->id)
-                    ->get();
-                $paquete = Lote::findOrFail($id_lote);
-                $paquete->paquete = $credito[0]->descripcion_paquete;
-                $paquete->contrato = 1;
-                $paquete->save();
-                $cliente = Cliente::findOrFail($credito[0]->prospecto_id);
-                $cliente->clasificacion = 5;
-                $vendedorid = $cliente->vendedor_id;
-                $cliente->save();
-
-                $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=', $vendedorid)->get();
+            if ($request->fecha_status == '') {
                 $fecha = Carbon::now();
-                $msj = "Se ha vendido el lote " . $credito[0]->num_lote . " del proyecto " . $credito[0]->fraccionamiento . " etapa " . $credito[0]->etapa;
-                $arregloAceptado = [
-                    'notificacion' => [
-                        'usuario' => $imagenUsuario[0]->usuario,
-                        'foto' => $imagenUsuario[0]->foto_user,
-                        'fecha' => $fecha,
-                        'msj' => $msj,
-                        'titulo' => 'Venta :)'
-                    ]
-                ];
+                $status = Contrato::findOrFail($request->id);
+                $status->status = $request->status;
+                $status->fecha_status = $fecha;
+                $status->motivo_cancel = $request->motivo_cancel;
+                $status->save();
+                if ($request->status == 1) {
+                    $contrato = Lote::findOrFail($id_lote);
+                    $contrato->contrato = 1;
+                    $contrato->save();
+                }
+                if ($request->status == 0 || $request->status == 2) {
+                    $contrato = Lote::findOrFail($id_lote);
+                    $contrato->contrato = 0;
+                    $contrato->apartado = 0;
+                    $contrato->ajuste += $ajuste;
+                    if($ajuste != 0)
+                        $contrato->comentarios ='Lote con equipamiento. '.$contrato->comentarios;
 
-                $personal = Personal::join('users', 'personal.id', '=', 'users.id')->select('personal.email', 'personal.id')->where('users.id', '=', $vendedorid)->get();
+                    $apartado = Apartado::select('id')->where('lote_id','=',$id_lote)->get();
+                    foreach($apartado as $ap){
+                        $borrarApartado = Apartado::findOrFail($ap->id);
+                        $borrarApartado->delete();
+                    }
 
-                foreach ($personal as $personas) {
-                    //$correo = $personas->email;
-                    //Mail::to($correo)->send(new NotificationReceived($msj));
-                    User::findOrFail($personas->id)->notify(new NotifyAdmin($arregloAceptado));
+                    $precio_etapa = Precio_etapa::select('id','precio_excedente')
+                    ->where('fraccionamiento_id','=',$contrato->fraccionamiento_id)
+                    ->where('etapa_id','=',$contrato->etapa_id)->get();
+
+                    $precio_modelo = Precio_modelo::select('precio_modelo')->where('precio_etapa_id','=',$precio_etapa[0]->id)
+                                    ->where('modelo_id','=',$contrato->modelo_id)->get();
+
+                    $sobreprecios = Sobreprecio_modelo::join('sobreprecios_etapas','sobreprecios_modelos.sobreprecio_etapa_id','=','sobreprecios_etapas.id')
+                    ->select(DB::raw("SUM(sobreprecios_etapas.sobreprecio) as sobreprecios"))
+                    ->where('sobreprecios_modelos.lote_id','=',$id_lote)->get();
+
+                    $modelo = Modelo::select('terreno')->where('id','=',$contrato->modelo_id)->get();
+                    $terrenoExcedente = round(($contrato->terreno - $modelo[0]->terreno),2);
+                    if((double)$terrenoExcedente > 0)
+                        $contrato->excedente_terreno = round(($terrenoExcedente * $precio_etapa[0]->precio_excedente), 2);
+                    else {
+                        $contrato->excedente_terreno = 0;
+                    }
+
+                    $contrato->precio_base = round(($precio_modelo[0]->precio_modelo), 2);
+                    $precio_venta = round(($sobreprecios[0]->sobreprecios + $contrato->precio_base + $contrato->excedente_terreno + $contrato->obra_extra),2);
+                    $terreno_tam_excedente = round(($contrato->terreno - $modelo[0]->terreno),2);
+                    $contrato->save();
+                }
+            } else {
+                $status = Contrato::findOrFail($request->id);
+                $status->status = $request->status;
+                $status->fecha_status = $request->fecha_status;
+                $status->motivo_cancel = $request->motivo_cancel;
+                $status->save();
+                if ($request->status == 0 || $request->status == 2) {
+                    $contrato = Lote::findOrFail($id_lote);
+                    $contrato->contrato = 0;
+                    $contrato->apartado = 0;
+                    $contrato->ajuste += $ajuste;
+                    if($ajuste != 0)
+                        $contrato->comentarios ='Lote con equipamiento. '.$contrato->comentarios;
+
+                    $apartado = Apartado::select('id')->where('lote_id','=',$id_lote)->get();
+                    foreach($apartado as $ap){
+                        $borrarApartado = Apartado::findOrFail($ap->id);
+                        $borrarApartado->delete();
+                    }
+
+                    $precio_etapa = Precio_etapa::select('id','precio_excedente')
+                    ->where('fraccionamiento_id','=',$contrato->fraccionamiento_id)
+                    ->where('etapa_id','=',$contrato->etapa_id)->get();
+
+                    $precio_modelo = Precio_modelo::select('precio_modelo')->where('precio_etapa_id','=',$precio_etapa[0]->id)
+                                    ->where('modelo_id','=',$contrato->modelo_id)->get();
+
+                    $sobreprecios = Sobreprecio_modelo::join('sobreprecios_etapas','sobreprecios_modelos.sobreprecio_etapa_id','=','sobreprecios_etapas.id')
+                    ->select(DB::raw("SUM(sobreprecios_etapas.sobreprecio) as sobreprecios"))
+                    ->where('sobreprecios_modelos.lote_id','=',$id_lote)->get();
+
+                    $modelo = Modelo::select('terreno')->where('id','=',$contrato->modelo_id)->get();
+                    $terrenoExcedente = round(($contrato->terreno - $modelo[0]->terreno),2);
+                    if((double)$terrenoExcedente > 0)
+                        $contrato->excedente_terreno = round(($terrenoExcedente * $precio_etapa[0]->precio_excedente), 2);
+                    else {
+                        $contrato->excedente_terreno = 0;
+                    }
+
+                    $contrato->precio_base = round(($precio_modelo[0]->precio_modelo), 2);
+                    $precio_venta = round(($sobreprecios[0]->sobreprecios + $contrato->precio_base + $contrato->excedente_terreno + $contrato->obra_extra),2);
+                    $terreno_tam_excedente = round(($contrato->terreno - $modelo[0]->terreno),2);
+                    $contrato->save();
+
+                    $credito = Credito::select('prospecto_id')
+                        ->where('id', '=', $request->id)
+                        ->get();
+                    $cliente = Cliente::findOrFail($credito[0]->prospecto_id);
+                    $cliente->clasificacion = 6;
+                    $cliente->save();
+                }
+                if ($request->status == 3) {
+                    $credito = Credito::select('prospecto_id', 'descripcion_paquete', 'num_lote', 'fraccionamiento', 'etapa')
+                        ->where('id', '=', $request->id)
+                        ->get();
+                    $paquete = Lote::findOrFail($id_lote);
+                    $paquete->paquete = $credito[0]->descripcion_paquete;
+                    $paquete->contrato = 1;
+                    $paquete->save();
+                    $cliente = Cliente::findOrFail($credito[0]->prospecto_id);
+                    $cliente->clasificacion = 5;
+                    $vendedorid = $cliente->vendedor_id;
+                    $cliente->save();
+
+                    $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=', $vendedorid)->get();
+                    $fecha = Carbon::now();
+                    $msj = "Se ha vendido el lote " . $credito[0]->num_lote . " del proyecto " . $credito[0]->fraccionamiento . " etapa " . $credito[0]->etapa;
+                    $arregloAceptado = [
+                        'notificacion' => [
+                            'usuario' => $imagenUsuario[0]->usuario,
+                            'foto' => $imagenUsuario[0]->foto_user,
+                            'fecha' => $fecha,
+                            'msj' => $msj,
+                            'titulo' => 'Venta :)'
+                        ]
+                    ];
+
+                    $personal = Personal::join('users', 'personal.id', '=', 'users.id')->select('personal.email', 'personal.id')->where('users.id', '=', $vendedorid)->get();
+
+                    foreach ($personal as $personas) {
+                        //$correo = $personas->email;
+                        //Mail::to($correo)->send(new NotificationReceived($msj));
+                        User::findOrFail($personas->id)->notify(new NotifyAdmin($arregloAceptado));
+                    }
                 }
             }
-        }
+        // } catch (Exception $e){
+        //     DB::rollBack();
+        // }
     }
 
     public function agregarPago(Request $request)
@@ -9062,7 +9199,6 @@ class ContratoController extends Controller
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 
         try {
-            DB::beginTransaction();
             $loteNuevo_id = $request->sel_lote;
 
             $lote_ant = Lote::findOrFail($request->lote_id);
@@ -9070,7 +9206,7 @@ class ContratoController extends Controller
             $lote_ant->contrato = 0;
             $lote_ant->paquete = '';
             $lote_ant->save();
-            
+            DB::beginTransaction();
 
             $lote_new = Lote::findOrFail($loteNuevo_id);
 

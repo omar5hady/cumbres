@@ -97,7 +97,6 @@ class ExpedienteController extends Controller
                         'licencias.foto_lic',
                         'licencias.foto_acta',
                         'licencias.visita_avaluo',
-                        'contratos.avance_lote',
                         'contratos.fecha_status',
                         'i.tipo_credito',
                         'i.institucion',
@@ -144,7 +143,6 @@ class ExpedienteController extends Controller
                             'licencias.foto_lic',
                             'licencias.foto_acta',
                             'licencias.visita_avaluo',
-                            'contratos.avance_lote',
                             'contratos.fecha_status',
                             'i.tipo_credito',
                             'i.institucion',
@@ -190,7 +188,6 @@ class ExpedienteController extends Controller
                                 'licencias.foto_lic',
                                 'licencias.foto_acta',
                                 'licencias.visita_avaluo',
-                                'contratos.avance_lote',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
@@ -237,7 +234,6 @@ class ExpedienteController extends Controller
                                     'licencias.foto_lic',
                                     'licencias.foto_acta',
                                     'licencias.visita_avaluo',
-                                    'contratos.avance_lote',
                                     'contratos.fecha_status',
                                     'i.tipo_credito',
                                     'i.institucion',
@@ -284,7 +280,6 @@ class ExpedienteController extends Controller
                                         'licencias.foto_lic',
                                         'licencias.foto_acta',
                                         'licencias.visita_avaluo',
-                                        'contratos.avance_lote',
                                         'contratos.fecha_status',
                                         'i.tipo_credito',
                                         'i.institucion',
@@ -331,7 +326,6 @@ class ExpedienteController extends Controller
                                             'licencias.foto_lic',
                                             'licencias.foto_acta',
                                             'licencias.visita_avaluo',
-                                            'contratos.avance_lote',
                                             'contratos.fecha_status',
                                             'i.tipo_credito',
                                             'i.institucion',
@@ -379,7 +373,6 @@ class ExpedienteController extends Controller
                                                 'licencias.foto_lic',
                                                 'licencias.foto_acta',
                                                 'licencias.visita_avaluo',
-                                                'contratos.avance_lote',
                                                 'contratos.fecha_status',
                                                 'i.tipo_credito',
                                                 'i.institucion',
@@ -428,7 +421,6 @@ class ExpedienteController extends Controller
                                                     'licencias.foto_lic',
                                                     'licencias.foto_acta',
                                                     'licencias.visita_avaluo',
-                                                    'contratos.avance_lote',
                                                     'contratos.fecha_status',
                                                     'i.tipo_credito',
                                                     'i.institucion',
@@ -476,7 +468,6 @@ class ExpedienteController extends Controller
                                                         'licencias.foto_lic',
                                                         'licencias.foto_acta',
                                                         'licencias.visita_avaluo',
-                                                        'contratos.avance_lote',
                                                         'contratos.fecha_status',
                                                         'i.tipo_credito',
                                                         'i.institucion',
@@ -527,7 +518,6 @@ class ExpedienteController extends Controller
                                                             'licencias.foto_lic',
                                                             'licencias.foto_acta',
                                                             'licencias.visita_avaluo',
-                                                            'contratos.avance_lote',
                                                             'contratos.fecha_status',
                                                             'i.tipo_credito',
                                                             'i.institucion',
@@ -610,6 +600,7 @@ class ExpedienteController extends Controller
         if ($buscar == '') {
             $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                 ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                ->join('licencias', 'lotes.id', '=', 'licencias.id')
                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                 ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
                 ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -623,7 +614,6 @@ class ExpedienteController extends Controller
                     'creditos.etapa',
                     'creditos.manzana',
                     'creditos.num_lote',
-                    'contratos.avance_lote',
                     'contratos.fecha_status',
                     'i.tipo_credito',
                     'i.institucion',
@@ -631,6 +621,8 @@ class ExpedienteController extends Controller
                     'contratos.aviso_prev',
                     'contratos.aviso_prev_venc',
                     'lotes.regimen_condom',
+                    'licencias.avance as avance_lote',
+                    'licencias.visita_avaluo',
                     DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
                     DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
                     'clientes.coacreditado',
@@ -646,6 +638,7 @@ class ExpedienteController extends Controller
             if ($criterio != 'lotes.fraccionamiento_id' && $criterio != 'c.nombre' && $criterio != 'v.nombre') {
                 $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                     ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                    ->join('licencias', 'lotes.id', '=', 'licencias.id')
                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                     ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
                     ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -659,7 +652,6 @@ class ExpedienteController extends Controller
                         'creditos.etapa',
                         'creditos.manzana',
                         'creditos.num_lote',
-                        'contratos.avance_lote',
                         'contratos.fecha_status',
                         'i.tipo_credito',
                         'i.institucion',
@@ -667,6 +659,8 @@ class ExpedienteController extends Controller
                         'contratos.aviso_prev',
                         'contratos.aviso_prev_venc',
                         'lotes.regimen_condom',
+                        'licencias.avance as avance_lote',
+                        'licencias.visita_avaluo',
                         DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
                         DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
                         'clientes.coacreditado',
@@ -684,6 +678,7 @@ class ExpedienteController extends Controller
                 if ($criterio == 'lotes.fraccionamiento_id' && $b_etapa == ''  && $b_manzana == '' && $b_lote == '') {
                     $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                         ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                        ->join('licencias', 'lotes.id', '=', 'licencias.id')
                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                         ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
                         ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -697,7 +692,6 @@ class ExpedienteController extends Controller
                             'creditos.etapa',
                             'creditos.manzana',
                             'creditos.num_lote',
-                            'contratos.avance_lote',
                             'contratos.fecha_status',
                             'i.tipo_credito',
                             'i.institucion',
@@ -705,6 +699,8 @@ class ExpedienteController extends Controller
                             'contratos.aviso_prev',
                             'contratos.aviso_prev_venc',
                             'lotes.regimen_condom',
+                            'licencias.avance as avance_lote',
+                            'licencias.visita_avaluo',
                             DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
                             DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
                             'clientes.coacreditado',
@@ -721,6 +717,7 @@ class ExpedienteController extends Controller
                     if ($criterio == 'lotes.fraccionamiento_id' && $b_etapa != ''  && $b_manzana == '' && $b_lote == '') {
                         $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                             ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
                             ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                             ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
                             ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -734,7 +731,6 @@ class ExpedienteController extends Controller
                                 'creditos.etapa',
                                 'creditos.manzana',
                                 'creditos.num_lote',
-                                'contratos.avance_lote',
                                 'contratos.fecha_status',
                                 'i.tipo_credito',
                                 'i.institucion',
@@ -742,6 +738,8 @@ class ExpedienteController extends Controller
                                 'contratos.aviso_prev',
                                 'contratos.aviso_prev_venc',
                                 'lotes.regimen_condom',
+                                'licencias.avance as avance_lote',
+                                'licencias.visita_avaluo',
                                 DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
                                 DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
                                 'clientes.coacreditado',
@@ -759,6 +757,7 @@ class ExpedienteController extends Controller
                         if ($criterio == 'lotes.fraccionamiento_id' && $b_etapa == ''  && $b_manzana != '' && $b_lote == '') {
                             $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                 ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                ->join('licencias', 'lotes.id', '=', 'licencias.id')
                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                 ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
                                 ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -772,7 +771,6 @@ class ExpedienteController extends Controller
                                     'creditos.etapa',
                                     'creditos.manzana',
                                     'creditos.num_lote',
-                                    'contratos.avance_lote',
                                     'contratos.fecha_status',
                                     'i.tipo_credito',
                                     'i.institucion',
@@ -780,6 +778,8 @@ class ExpedienteController extends Controller
                                     'contratos.aviso_prev',
                                     'contratos.aviso_prev_venc',
                                     'lotes.regimen_condom',
+                                    'licencias.avance as avance_lote',
+                                    'licencias.visita_avaluo',
                                     DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
                                     DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
                                     'clientes.coacreditado',
@@ -797,6 +797,7 @@ class ExpedienteController extends Controller
                             if ($criterio == 'lotes.fraccionamiento_id' && $b_etapa == ''  && $b_manzana == '' && $b_lote != '') {
                                 $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                     ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                    ->join('licencias', 'lotes.id', '=', 'licencias.id')
                                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                     ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
                                     ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -810,7 +811,6 @@ class ExpedienteController extends Controller
                                         'creditos.etapa',
                                         'creditos.manzana',
                                         'creditos.num_lote',
-                                        'contratos.avance_lote',
                                         'contratos.fecha_status',
                                         'i.tipo_credito',
                                         'i.institucion',
@@ -818,6 +818,8 @@ class ExpedienteController extends Controller
                                         'contratos.aviso_prev',
                                         'contratos.aviso_prev_venc',
                                         'lotes.regimen_condom',
+                                        'licencias.avance as avance_lote',
+                                        'licencias.visita_avaluo',
                                         DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
                                         DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
                                         'clientes.coacreditado',
@@ -835,6 +837,7 @@ class ExpedienteController extends Controller
                                 if ($criterio == 'lotes.fraccionamiento_id' && $b_etapa != ''  && $b_manzana != '' && $b_lote == '') {
                                     $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                         ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                        ->join('licencias', 'lotes.id', '=', 'licencias.id')
                                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                         ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
                                         ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -848,7 +851,6 @@ class ExpedienteController extends Controller
                                             'creditos.etapa',
                                             'creditos.manzana',
                                             'creditos.num_lote',
-                                            'contratos.avance_lote',
                                             'contratos.fecha_status',
                                             'i.tipo_credito',
                                             'i.institucion',
@@ -856,6 +858,8 @@ class ExpedienteController extends Controller
                                             'contratos.aviso_prev',
                                             'contratos.aviso_prev_venc',
                                             'lotes.regimen_condom',
+                                            'licencias.avance as avance_lote',
+                                            'licencias.visita_avaluo',
                                             DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
                                             DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
                                             'clientes.coacreditado',
@@ -874,6 +878,7 @@ class ExpedienteController extends Controller
                                     if ($criterio == 'lotes.fraccionamiento_id' && $b_etapa != ''  && $b_manzana != '' && $b_lote != '') {
                                         $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                             ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
                                             ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                             ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
                                             ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -887,7 +892,6 @@ class ExpedienteController extends Controller
                                                 'creditos.etapa',
                                                 'creditos.manzana',
                                                 'creditos.num_lote',
-                                                'contratos.avance_lote',
                                                 'contratos.fecha_status',
                                                 'i.tipo_credito',
                                                 'i.institucion',
@@ -895,6 +899,8 @@ class ExpedienteController extends Controller
                                                 'contratos.aviso_prev',
                                                 'contratos.aviso_prev_venc',
                                                 'lotes.regimen_condom',
+                                                'licencias.avance as avance_lote',
+                                                'licencias.visita_avaluo',
                                                 DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
                                                 DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
                                                 'clientes.coacreditado',
@@ -914,6 +920,7 @@ class ExpedienteController extends Controller
                                         if ($criterio == 'lotes.fraccionamiento_id' && $b_etapa != ''  && $b_manzana == '' && $b_lote != '') {
                                             $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                                 ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                                ->join('licencias', 'lotes.id', '=', 'licencias.id')
                                                 ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                                 ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
                                                 ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -927,7 +934,6 @@ class ExpedienteController extends Controller
                                                     'creditos.etapa',
                                                     'creditos.manzana',
                                                     'creditos.num_lote',
-                                                    'contratos.avance_lote',
                                                     'contratos.fecha_status',
                                                     'i.tipo_credito',
                                                     'i.institucion',
@@ -935,6 +941,8 @@ class ExpedienteController extends Controller
                                                     'contratos.aviso_prev',
                                                     'contratos.aviso_prev_venc',
                                                     'lotes.regimen_condom',
+                                                    'licencias.avance as avance_lote',
+                                                    'licencias.visita_avaluo',
                                                     DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
                                                     DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
                                                     'clientes.coacreditado',
@@ -953,6 +961,7 @@ class ExpedienteController extends Controller
                                             if ($criterio == 'c.nombre' && $buscar != '') {
                                                 $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                                     ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                                    ->join('licencias', 'lotes.id', '=', 'licencias.id')
                                                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                                     ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
                                                     ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -966,7 +975,6 @@ class ExpedienteController extends Controller
                                                         'creditos.etapa',
                                                         'creditos.manzana',
                                                         'creditos.num_lote',
-                                                        'contratos.avance_lote',
                                                         'contratos.fecha_status',
                                                         'i.tipo_credito',
                                                         'i.institucion',
@@ -974,6 +982,8 @@ class ExpedienteController extends Controller
                                                         'contratos.aviso_prev',
                                                         'contratos.aviso_prev_venc',
                                                         'lotes.regimen_condom',
+                                                        'licencias.avance as avance_lote',
+                                                        'licencias.visita_avaluo',
                                                         DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
                                                         DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
                                                         'clientes.coacreditado',
@@ -995,6 +1005,7 @@ class ExpedienteController extends Controller
                                                 if ($criterio == 'v.nombre' && $buscar != '') {
                                                     $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                                                         ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                                                        ->join('licencias', 'lotes.id', '=', 'licencias.id')
                                                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                                                         ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
                                                         ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -1008,7 +1019,6 @@ class ExpedienteController extends Controller
                                                             'creditos.etapa',
                                                             'creditos.manzana',
                                                             'creditos.num_lote',
-                                                            'contratos.avance_lote',
                                                             'contratos.fecha_status',
                                                             'i.tipo_credito',
                                                             'i.institucion',
@@ -1016,6 +1026,8 @@ class ExpedienteController extends Controller
                                                             'contratos.aviso_prev',
                                                             'contratos.aviso_prev_venc',
                                                             'lotes.regimen_condom',
+                                                            'licencias.avance as avance_lote',
+                                                            'licencias.visita_avaluo',
                                                             DB::raw("CONCAT(clientes.nombre_coa,' ',clientes.apellidos_coa) AS nombre_conyuge"),
                                                             DB::raw('DATEDIFF(current_date,contratos.aviso_prev_venc) as diferencia'),
                                                             'clientes.coacreditado',
@@ -1052,7 +1064,7 @@ class ExpedienteController extends Controller
                 
                 $sheet->row(1, [
                     '# Folio', 'Cliente' ,'Asesor', 'Proyecto', 'Etapa', 'Manzana', 'Lote',
-                    '% Avance', 'Firma', 'Tipo de credito','Institucion Financiera','Solicitud de avaluo','Aviso preventivo',
+                    '% Avance','Visita de avaluo' ,'Firma', 'Tipo de credito','Institucion Financiera','Solicitud de avaluo','Aviso preventivo',
                     'Regimen en condominio','Conyuge'
                 ]);
 
@@ -1114,6 +1126,7 @@ class ExpedienteController extends Controller
                         $contrato->manzana,
                         $contrato->num_lote,
                         $contrato->avance_lote.'%',
+                        $contrato->visita_avaluo,
                         $contrato->fecha_status,
                         $contrato->tipo_credito,
                         $contrato->institucion,
