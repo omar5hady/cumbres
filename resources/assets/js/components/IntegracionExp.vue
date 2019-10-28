@@ -64,6 +64,7 @@
                                         <th>Tipo de credito</th>
                                         <th>Institucion de Fin.</th>
                                         <th>Solicitud de avaluo</th>
+                                        <th>Depositado</th>
                                         <th>Aviso preventivo</th>
                                         <th>Crédito puente</th>
                                         <th>Conyuge</th>
@@ -122,6 +123,7 @@
                                                 </button>
                                             </td>
                                         </template> 
+                                        <td v-text="'$'+formatNumber(contratos.totPagare - contratos.totRest)"></td>
                                          <template v-if="contratos.aviso_prev">
                                             <td @dblclick="abrirModal('fecha_recibido',contratos)" v-if="contratos.aviso_prev!='0000-01-01' && !contratos.aviso_prev_venc" class="td2" v-text="'Fecha solicitud: ' 
                                                 + this.moment(contratos.aviso_prev).locale('es').format('DD/MMM/YYYY')"></td>

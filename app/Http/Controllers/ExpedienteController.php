@@ -65,7 +65,15 @@ class ExpedienteController extends Controller
                     'lotes.credito_puente',
                     'contratos.integracion',
                     'lotes.fraccionamiento_id',
-                    'avaluos.pdf'
+                    'avaluos.pdf',
+                    DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
+                                WHERE pagos_contratos.tipo_pagare = 0
+                                and pagos_contratos.contrato_id = contratos.id
+                                and pagos_contratos.pagado != 3) as totPagare"),
+                    DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
+                                WHERE pagos_contratos.tipo_pagare = 0
+                                and pagos_contratos.contrato_id = contratos.id
+                                and pagos_contratos.pagado != 3) as totRest")
                 )
                 ->where('i.elegido', '=', 1)
                 ->where('contratos.integracion', '=', 0)
@@ -7835,11 +7843,13 @@ class ExpedienteController extends Controller
              $liquidacion[0]->sumaDepositos = $suma;
         }
 
+        $sumGastos = 0;
         $gastos=Gasto_admin::select('concepto','costo','id')
         ->where('contrato_id','=',$id)
         ->get();
 
         for($i = 0; $i < count($gastos); $i++){
+            $sumGastos += $gastos[$i]->costo;
             $gastos[$i]->costo = number_format((float)$gastos[$i]->costo, 2, '.', ',');
         }
 
@@ -7866,8 +7876,11 @@ class ExpedienteController extends Controller
         else
             $cantRestante = 0;
              
-       $liquidacion[0]->totalRestante = $liquidacion[0]->saldo;
+       //$liquidacion[0]->totalRestante = $liquidacion[0]->saldo;
 
+       $liquidacion[0]->totalRestante = 
+            $liquidacion[0]->precio_venta + $liquidacion[0]->interes_ord - $liquidacion[0]->credito_solic -
+            $liquidacion[0]->fovissste - $liquidacion[0]->infonavit - $liquidacion[0]->sumaDepositos - $liquidacion[0]->descuento + $sumGastos;
 
         $liquidacion[0]->valor_escrituras = number_format((float)$liquidacion[0]->valor_escrituras, 2, '.', ',');
         $liquidacion[0]->precio_venta = number_format((float)$liquidacion[0]->precio_venta, 2, '.', ',');

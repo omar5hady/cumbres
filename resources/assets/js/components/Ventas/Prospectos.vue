@@ -1833,7 +1833,7 @@
                 this.email='';
                 this.email_inst='';
                 this.ingreso='';
-                this.precio_rango='';
+                this.precio_rango='0';
                 this.nss='';
                 this.sexo='';
                 this.fecha_nac= '';
