@@ -56,8 +56,8 @@
                                             <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_manzana" class="form-control" placeholder="Manzana a buscar">
                                             <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
 
-                                            <input v-else type="text"  v-model="buscar" @keyup.enter="listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
-                                            <button type="submit" @click="listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                            <input v-else type="text"  v-model="buscar" @keyup.enter="listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
+                                            <button type="submit" @click="listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                         
                                         </div>
                                     </div>
@@ -170,29 +170,29 @@
                                     <div class="col-md-10">
                                         <div class="input-group">
                                             <!--Criterios para el listado de busqueda -->
-                                            <select class="form-control col-md-5" v-model="criterio_preauto" @click="selectFraccionamientos()">
+                                            <select class="form-control col-md-5" v-model="criterio" @click="selectFraccionamientos()">
                                                 <option value="lotes.fraccionamiento_id">Proyecto</option>
                                                 <option value="c.nombre">Cliente</option>
                                                 <option value="contratos.id"># Folio</option>
                                             </select>
 
                                             
-                                            <select class="form-control" v-if="criterio_preauto=='lotes.fraccionamiento_id'" v-model="buscar_preauto" @click="selectEtapa(buscar_preauto)">
+                                            <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @click="selectEtapa(buscar)">
                                                 <option value="">Seleccione</option>
                                                 <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                             </select>
 
-                                            <select class="form-control" v-if="criterio_preauto=='lotes.fraccionamiento_id'" v-model="b_etapa_preauto"> 
+                                            <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_etapa"> 
                                                 <option value="">Etapa</option>
                                                 <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                             </select>
 
                                             
-                                            <input type="text" v-if="criterio_preauto=='lotes.fraccionamiento_id'" v-model="b_manzana_preauto" class="form-control" placeholder="Manzana a buscar">
-                                            <input type="text" v-if="criterio_preauto=='lotes.fraccionamiento_id'" v-model="b_lote_preauto" class="form-control" placeholder="Lote a buscar">
+                                            <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_manzana" class="form-control" placeholder="Manzana a buscar">
+                                            <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
 
-                                            <input v-else type="text"  v-model="buscar_preauto" @keyup.enter="listarAutorizados(1,buscar_preauto,b_etapa_preauto,b_manzana_preauto,b_lote_preauto,criterio_preauto)" class="form-control" placeholder="Texto a buscar">
-                                            <button type="submit" @click="listarAutorizados(1,buscar_preauto,b_etapa_preauto,b_manzana_preauto,b_lote_preauto,criterio_preauto)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                            <input v-else type="text"  v-model="buscar" @keyup.enter="listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
+                                            <button type="submit" @click="listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                         
                                         </div>
                                     </div>
@@ -359,8 +359,8 @@
                                             <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_manzana" class="form-control" placeholder="Manzana a buscar">
                                             <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
 
-                                            <input v-else type="text"  v-model="buscar" @keyup.enter="listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
-                                            <button type="submit" @click="listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                            <input v-else type="text"  v-model="buscar" @keyup.enter="listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
+                                            <button type="submit" @click="listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                         
                                         </div>
                                     </div>
@@ -530,8 +530,8 @@
                                             <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_manzana" class="form-control" placeholder="Manzana a buscar">
                                             <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
 
-                                            <input v-else type="text"  v-model="buscar" @keyup.enter="listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
-                                            <button type="submit" @click="listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                            <input v-else type="text"  v-model="buscar" @keyup.enter="listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
+                                            <button type="submit" @click="listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                         
                                         </div>
                                     </div>
@@ -1613,11 +1613,11 @@
                 b_lote:'',
 
                 //variables para filtros de Preautorizados
-                criterio_preauto:'lotes.fraccionamiento_id',
-                buscar_preauto:'',
-                b_etapa_preauto:'',
-                b_manzana_preauto:'',
-                b_lote_preauto:'',
+                criterio:'lotes.fraccionamiento_id',
+                buscar:'',
+                b_etapa:'',
+                b_manzana:'',
+                b_lote:'',
 
                 //variables para filtros de Rechazados
                 criterio_rechazados:'lotes.fraccionamiento_id',
@@ -2790,9 +2790,9 @@
         mounted() {
             this.selectFraccionamientos();
             this.listarIngresoExp(1, this.buscar, this.b_etapa, this.b_manzana, this.b_lote, this.criterio);
-            this.listarAutorizados(1, this.buscar_preauto, this.b_etapa_preauto, this.b_manzana_preauto, this.b_lote_preauto, this.criterio_preauto);
-            this.listarLiquidacion(1, this.buscar_preauto, this.b_etapa_preauto, this.b_manzana_preauto, this.b_lote_preauto, this.criterio_preauto);
-            this.listarProgramacion(1, this.buscar_preauto, this.b_etapa_preauto, this.b_manzana_preauto, this.b_lote_preauto, this.criterio_preauto);
+            this.listarAutorizados(1, this.buscar, this.b_etapa, this.b_manzana, this.b_lote, this.criterio);
+            this.listarLiquidacion(1, this.buscar, this.b_etapa, this.b_manzana, this.b_lote, this.criterio);
+            this.listarProgramacion(1, this.buscar, this.b_etapa, this.b_manzana, this.b_lote, this.criterio);
             
         }
     }
