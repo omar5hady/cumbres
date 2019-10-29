@@ -21,200 +21,688 @@ class SolEquipamientoController extends Controller
         $criterio = $request->criterio;
         $userID = Auth::user()->id;
         $rolID = Auth::user()->rol_id;
+        $status = $request->status;
 
 
         if($rolID != 10){
-            if($buscar == ''){
-                $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
-                        ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
-                        ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
-                        ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
-                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                        ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                        ->join('creditos','contratos.id','=','creditos.id')
-                        ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                        ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
-                        ->join('personal as c', 'clientes.id', '=', 'c.id')
+            if($status==''){
+                if($buscar == ''){
+                    $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
+                            ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
+                            ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
+                            ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
+                            ->join('etapas','lotes.etapa_id','=','etapas.id')
+                            ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                            ->join('creditos','contratos.id','=','creditos.id')
+                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                            ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                            ->join('personal as c', 'clientes.id', '=', 'c.id')
 
-                    ->select('solic_equipamientos.fecha_solicitud',
-                            'solic_equipamientos.id',
-                            'solic_equipamientos.lote_id',
-                            'solic_equipamientos.costo',
-                            'solic_equipamientos.fecha_solicitud',
-                            'solic_equipamientos.fecha_colocacion',
-                            'solic_equipamientos.anticipo',
-                            'solic_equipamientos.fecha_anticipo',
-                            'solic_equipamientos.liquidacion',
-                            'solic_equipamientos.fecha_liquidacion',
-                            'solic_equipamientos.fin_instalacion',
-                            'solic_equipamientos.status',
-                            'solic_equipamientos.recepcion',
-                            'solic_equipamientos.num_factura',
-                            'solic_equipamientos.control',
-                            'proveedores.proveedor',
-                            'equipamientos.equipamiento',
-                            'equipamientos.tipoRecepcion',
-                            'contratos.id as folio',
-                            'creditos.modelo',
-                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                            'fraccionamientos.nombre as proyecto',
-                            'etapas.num_etapa as etapa',
-                            'lotes.manzana',
-                            'lotes.num_lote','licencias.avance',
-                            DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
-                            DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
-                        ->orderBy('contratos.id','desc')
-                        ->orderBy('proveedores.proveedor','asc')
-                        ->orderBy('solic_equipamientos.fecha_colocacion','asc')
-                    ->paginate(8);
+                        ->select('solic_equipamientos.fecha_solicitud',
+                                'solic_equipamientos.id',
+                                'solic_equipamientos.lote_id',
+                                'solic_equipamientos.costo',
+                                'solic_equipamientos.fecha_solicitud',
+                                'solic_equipamientos.fecha_colocacion',
+                                'solic_equipamientos.anticipo',
+                                'solic_equipamientos.fecha_anticipo',
+                                'solic_equipamientos.liquidacion',
+                                'solic_equipamientos.fecha_liquidacion',
+                                'solic_equipamientos.fin_instalacion',
+                                'solic_equipamientos.status',
+                                'solic_equipamientos.recepcion',
+                                'solic_equipamientos.num_factura',
+                                'solic_equipamientos.control',
+                                'proveedores.proveedor',
+                                'equipamientos.equipamiento',
+                                'equipamientos.tipoRecepcion',
+                                'contratos.id as folio',
+                                'creditos.modelo',
+                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                'fraccionamientos.nombre as proyecto',
+                                'etapas.num_etapa as etapa',
+                                'lotes.manzana',
+                                'lotes.num_lote','licencias.avance',
+                                DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
+                                DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
+                            ->orderBy('contratos.id','desc')
+                            ->orderBy('proveedores.proveedor','asc')
+                            ->orderBy('solic_equipamientos.fecha_colocacion','asc')
+                        ->paginate(8);
 
+                }
+                else{
+                    switch($criterio){
+                        case 'c.nombre':{
+                            $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
+                                    ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
+                                        ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
+                                        ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
+                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                        ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                        ->join('creditos','contratos.id','=','creditos.id')
+                                        ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                        ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                                        ->join('personal as c', 'clientes.id', '=', 'c.id')
+
+                                    ->select('solic_equipamientos.fecha_solicitud',
+                                            'solic_equipamientos.id',
+                                            'solic_equipamientos.lote_id',
+                                            'solic_equipamientos.costo',
+                                            'solic_equipamientos.fecha_solicitud',
+                                            'solic_equipamientos.fecha_colocacion',
+                                            'solic_equipamientos.anticipo',
+                                            'solic_equipamientos.fecha_anticipo',
+                                            'solic_equipamientos.liquidacion',
+                                            'solic_equipamientos.fecha_liquidacion',
+                                            'solic_equipamientos.fin_instalacion',
+                                            'solic_equipamientos.status',
+                                            'solic_equipamientos.recepcion',
+                                            'solic_equipamientos.num_factura',
+                                            'solic_equipamientos.control',
+                                            'proveedores.proveedor',
+                                            'equipamientos.equipamiento',
+                                            'equipamientos.tipoRecepcion',
+                                            'contratos.id as folio',
+                                            'creditos.modelo',
+                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                            'fraccionamientos.nombre as proyecto',
+                                            'etapas.num_etapa as etapa',
+                                            'lotes.manzana',
+                                            'lotes.num_lote','licencias.avance',
+                                            DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
+                                            DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
+                                    ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $buscar . '%')
+                                    ->orderBy('contratos.id','desc')
+                                    ->orderBy('proveedores.proveedor','asc')
+                                    ->orderBy('solic_equipamientos.fecha_colocacion','asc')
+                                ->paginate(8);
+                            break;
+                        }
+                        case 'contratos.id':{
+                            $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
+                                    ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
+                                        ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
+                                        ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
+                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                        ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                        ->join('creditos','contratos.id','=','creditos.id')
+                                        ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                        ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                                        ->join('personal as c', 'clientes.id', '=', 'c.id')
+
+                                    ->select('solic_equipamientos.fecha_solicitud',
+                                            'solic_equipamientos.id',
+                                            'solic_equipamientos.lote_id',
+                                            'solic_equipamientos.costo',
+                                            'solic_equipamientos.fecha_solicitud',
+                                            'solic_equipamientos.fecha_colocacion',
+                                            'solic_equipamientos.anticipo',
+                                            'solic_equipamientos.fecha_anticipo',
+                                            'solic_equipamientos.liquidacion',
+                                            'solic_equipamientos.fecha_liquidacion',
+                                            'solic_equipamientos.fin_instalacion',
+                                            'solic_equipamientos.status',
+                                            'solic_equipamientos.recepcion',
+                                            'solic_equipamientos.num_factura',
+                                            'solic_equipamientos.control',
+                                            'proveedores.proveedor',
+                                            'equipamientos.equipamiento',
+                                            'equipamientos.tipoRecepcion',
+                                            'contratos.id as folio',
+                                            'creditos.modelo',
+                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                            'fraccionamientos.nombre as proyecto',
+                                            'etapas.num_etapa as etapa',
+                                            'lotes.manzana',
+                                            'lotes.num_lote','licencias.avance',
+                                            DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
+                                            DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
+                                    ->where($criterio, '=', $buscar)
+                                    ->orderBy('contratos.id','desc')
+                                    ->orderBy('proveedores.proveedor','asc')
+                                    ->orderBy('solic_equipamientos.fecha_colocacion','asc')
+                                ->paginate(8);
+                            break;
+                        }
+                        case 'proveedores.proveedor':{
+                            $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
+                                    ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
+                                        ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
+                                        ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
+                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                        ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                        ->join('creditos','contratos.id','=','creditos.id')
+                                        ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                        ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                                        ->join('personal as c', 'clientes.id', '=', 'c.id')
+
+                                    ->select('solic_equipamientos.fecha_solicitud',
+                                            'solic_equipamientos.id',
+                                            'solic_equipamientos.lote_id',
+                                            'solic_equipamientos.costo',
+                                            'solic_equipamientos.fecha_solicitud',
+                                            'solic_equipamientos.fecha_colocacion',
+                                            'solic_equipamientos.anticipo',
+                                            'solic_equipamientos.fecha_anticipo',
+                                            'solic_equipamientos.liquidacion',
+                                            'solic_equipamientos.fecha_liquidacion',
+                                            'solic_equipamientos.fin_instalacion',
+                                            'solic_equipamientos.status',
+                                            'solic_equipamientos.recepcion',
+                                            'solic_equipamientos.num_factura',
+                                            'solic_equipamientos.control',
+                                            'proveedores.proveedor',
+                                            'equipamientos.equipamiento',
+                                            'equipamientos.tipoRecepcion',
+                                            'contratos.id as folio',
+                                            'creditos.modelo',
+                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                            'fraccionamientos.nombre as proyecto',
+                                            'etapas.num_etapa as etapa',
+                                            'lotes.manzana',
+                                            'lotes.num_lote','licencias.avance',
+                                            DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
+                                            DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
+                                    ->where($criterio, 'like', '%'. $buscar . '%')
+                                    ->orderBy('contratos.id','desc')
+                                    ->orderBy('proveedores.proveedor','asc')
+                                    ->orderBy('solic_equipamientos.fecha_colocacion','asc')
+                                ->paginate(8);
+                            break;
+                        }
+                        case 'lotes.fraccionamiento_id':{
+                            if($b_etapa == '' && $b_manzana == '' && $b_lote == ''){
+                                $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
+                                        ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
+                                            ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
+                                            ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
+                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                            ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                            ->join('creditos','contratos.id','=','creditos.id')
+                                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                            ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                                            ->join('personal as c', 'clientes.id', '=', 'c.id')
+
+                                        ->select('solic_equipamientos.fecha_solicitud',
+                                                'solic_equipamientos.id',
+                                                'solic_equipamientos.lote_id',
+                                                'solic_equipamientos.costo',
+                                                'solic_equipamientos.fecha_solicitud',
+                                                'solic_equipamientos.fecha_colocacion',
+                                                'solic_equipamientos.anticipo',
+                                                'solic_equipamientos.fecha_anticipo',
+                                                'solic_equipamientos.liquidacion',
+                                                'solic_equipamientos.fecha_liquidacion',
+                                                'solic_equipamientos.fin_instalacion',
+                                                'solic_equipamientos.status',
+                                                'solic_equipamientos.recepcion',
+                                                'solic_equipamientos.num_factura',
+                                                'solic_equipamientos.control',
+                                                'proveedores.proveedor',
+                                                'equipamientos.equipamiento',
+                                                'equipamientos.tipoRecepcion',
+                                                'contratos.id as folio',
+                                                'creditos.modelo',
+                                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                                'fraccionamientos.nombre as proyecto',
+                                                'etapas.num_etapa as etapa',
+                                                'lotes.manzana',
+                                                'lotes.num_lote','licencias.avance',
+                                                DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
+                                                DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
+                                        ->where($criterio, '=', $buscar)
+                                        ->orderBy('contratos.id','desc')
+                                        ->orderBy('proveedores.proveedor','asc')
+                                        ->orderBy('solic_equipamientos.fecha_colocacion','asc')
+                                    ->paginate(8);
+                            }
+                            elseif($b_etapa != '' && $b_manzana == '' && $b_lote == ''){
+                                $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
+                                        ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
+                                            ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
+                                            ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
+                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                            ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                            ->join('creditos','contratos.id','=','creditos.id')
+                                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                            ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                                            ->join('personal as c', 'clientes.id', '=', 'c.id')
+
+                                        ->select('solic_equipamientos.fecha_solicitud',
+                                                'solic_equipamientos.id',
+                                                'solic_equipamientos.lote_id',
+                                                'solic_equipamientos.costo',
+                                                'solic_equipamientos.fecha_solicitud',
+                                                'solic_equipamientos.fecha_colocacion',
+                                                'solic_equipamientos.anticipo',
+                                                'solic_equipamientos.fecha_anticipo',
+                                                'solic_equipamientos.liquidacion',
+                                                'solic_equipamientos.fecha_liquidacion',
+                                                'solic_equipamientos.fin_instalacion',
+                                                'solic_equipamientos.status',
+                                                'solic_equipamientos.recepcion',
+                                                'solic_equipamientos.num_factura',
+                                                'solic_equipamientos.control',
+                                                'proveedores.proveedor',
+                                                'equipamientos.equipamiento',
+                                                'equipamientos.tipoRecepcion',
+                                                'contratos.id as folio',
+                                                'creditos.modelo',
+                                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                                'fraccionamientos.nombre as proyecto',
+                                                'etapas.num_etapa as etapa',
+                                                'lotes.manzana',
+                                                'lotes.num_lote','licencias.avance',
+                                                DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
+                                                DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
+                                        ->where($criterio, '=', $buscar)
+                                        ->where('lotes.etapa_id', '=', $b_etapa)
+                                        ->orderBy('contratos.id','desc')
+                                        ->orderBy('proveedores.proveedor','asc')
+                                        ->orderBy('solic_equipamientos.fecha_colocacion','asc')
+                                    ->paginate(8);
+                                
+                            }
+                            elseif($b_etapa != '' && $b_manzana != '' && $b_lote == ''){
+                                $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
+                                        ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
+                                            ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
+                                            ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
+                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                            ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                            ->join('creditos','contratos.id','=','creditos.id')
+                                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                            ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                                            ->join('personal as c', 'clientes.id', '=', 'c.id')
+
+                                        ->select('solic_equipamientos.fecha_solicitud',
+                                                'solic_equipamientos.id',
+                                                'solic_equipamientos.lote_id',
+                                                'solic_equipamientos.costo',
+                                                'solic_equipamientos.fecha_solicitud',
+                                                'solic_equipamientos.fecha_colocacion',
+                                                'solic_equipamientos.anticipo',
+                                                'solic_equipamientos.fecha_anticipo',
+                                                'solic_equipamientos.liquidacion',
+                                                'solic_equipamientos.fecha_liquidacion',
+                                                'solic_equipamientos.fin_instalacion',
+                                                'solic_equipamientos.status',
+                                                'solic_equipamientos.recepcion',
+                                                'solic_equipamientos.num_factura',
+                                                'solic_equipamientos.control',
+                                                'proveedores.proveedor',
+                                                'equipamientos.equipamiento',
+                                                'equipamientos.tipoRecepcion',
+                                                'contratos.id as folio',
+                                                'creditos.modelo',
+                                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                                'fraccionamientos.nombre as proyecto',
+                                                'etapas.num_etapa as etapa',
+                                                'lotes.manzana',
+                                                'lotes.num_lote','licencias.avance',
+                                                DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
+                                                DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
+                                        ->where($criterio, '=', $buscar)
+                                        ->where('lotes.etapa_id', '=', $b_etapa)
+                                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
+                                        ->orderBy('contratos.id','desc')
+                                        ->orderBy('proveedores.proveedor','asc')
+                                        ->orderBy('solic_equipamientos.fecha_colocacion','asc')
+                                    ->paginate(8);
+                                
+                            }
+                            elseif($b_etapa != '' && $b_manzana != '' && $b_lote != ''){
+                                $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
+                                        ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
+                                            ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
+                                            ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
+                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                            ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                            ->join('creditos','contratos.id','=','creditos.id')
+                                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                            ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                                            ->join('personal as c', 'clientes.id', '=', 'c.id')
+
+                                        ->select('solic_equipamientos.fecha_solicitud',
+                                                'solic_equipamientos.id',
+                                                'solic_equipamientos.lote_id',
+                                                'solic_equipamientos.costo',
+                                                'solic_equipamientos.fecha_solicitud',
+                                                'solic_equipamientos.fecha_colocacion',
+                                                'solic_equipamientos.anticipo',
+                                                'solic_equipamientos.fecha_anticipo',
+                                                'solic_equipamientos.liquidacion',
+                                                'solic_equipamientos.fecha_liquidacion',
+                                                'solic_equipamientos.fin_instalacion',
+                                                'solic_equipamientos.status',
+                                                'solic_equipamientos.recepcion',
+                                                'solic_equipamientos.num_factura',
+                                                'solic_equipamientos.control',
+                                                'proveedores.proveedor',
+                                                'equipamientos.equipamiento',
+                                                'equipamientos.tipoRecepcion',
+                                                'contratos.id as folio',
+                                                'creditos.modelo',
+                                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                                'fraccionamientos.nombre as proyecto',
+                                                'etapas.num_etapa as etapa',
+                                                'lotes.manzana',
+                                                'lotes.num_lote','licencias.avance',
+                                                DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
+                                                DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
+                                        ->where($criterio, '=', $buscar)
+                                        ->where('lotes.etapa_id', '=', $b_etapa)
+                                        ->where('lotes.num_lote', '=', $b_lote)
+                                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
+                                        ->orderBy('contratos.id','desc')
+                                        ->orderBy('proveedores.proveedor','asc')
+                                        ->orderBy('solic_equipamientos.fecha_colocacion','asc')
+                                    ->paginate(8);
+                                
+                            }
+                            elseif($b_etapa != '' && $b_manzana == '' && $b_lote != ''){
+                                $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
+                                        ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
+                                            ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
+                                            ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
+                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                            ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                            ->join('creditos','contratos.id','=','creditos.id')
+                                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                            ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                                            ->join('personal as c', 'clientes.id', '=', 'c.id')
+
+                                        ->select('solic_equipamientos.fecha_solicitud',
+                                                'solic_equipamientos.id',
+                                                'solic_equipamientos.lote_id',
+                                                'solic_equipamientos.costo',
+                                                'solic_equipamientos.fecha_solicitud',
+                                                'solic_equipamientos.fecha_colocacion',
+                                                'solic_equipamientos.anticipo',
+                                                'solic_equipamientos.fecha_anticipo',
+                                                'solic_equipamientos.liquidacion',
+                                                'solic_equipamientos.fecha_liquidacion',
+                                                'solic_equipamientos.fin_instalacion',
+                                                'solic_equipamientos.status',
+                                                'solic_equipamientos.recepcion',
+                                                'solic_equipamientos.num_factura',
+                                                'solic_equipamientos.control',
+                                                'proveedores.proveedor',
+                                                'equipamientos.equipamiento',
+                                                'equipamientos.tipoRecepcion',
+                                                'contratos.id as folio',
+                                                'creditos.modelo',
+                                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                                'fraccionamientos.nombre as proyecto',
+                                                'etapas.num_etapa as etapa',
+                                                'lotes.manzana',
+                                                'lotes.num_lote','licencias.avance',
+                                                DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
+                                                DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
+                                        ->where($criterio, '=', $buscar)
+                                        ->where('lotes.etapa_id', '=', $b_etapa)
+                                        ->where('lotes.num_lote', '=', $b_lote)
+                                        ->orderBy('contratos.id','desc')
+                                        ->orderBy('proveedores.proveedor','asc')
+                                        ->orderBy('solic_equipamientos.fecha_colocacion','asc')
+                                    ->paginate(8);
+                            }
+                            elseif($b_etapa == '' && $b_manzana != '' && $b_lote != ''){
+                                $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
+                                        ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
+                                            ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
+                                            ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
+                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                            ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                            ->join('creditos','contratos.id','=','creditos.id')
+                                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                            ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                                            ->join('personal as c', 'clientes.id', '=', 'c.id')
+
+                                        ->select('solic_equipamientos.fecha_solicitud',
+                                                'solic_equipamientos.id',
+                                                'solic_equipamientos.lote_id',
+                                                'solic_equipamientos.costo',
+                                                'solic_equipamientos.fecha_solicitud',
+                                                'solic_equipamientos.fecha_colocacion',
+                                                'solic_equipamientos.anticipo',
+                                                'solic_equipamientos.fecha_anticipo',
+                                                'solic_equipamientos.liquidacion',
+                                                'solic_equipamientos.fecha_liquidacion',
+                                                'solic_equipamientos.fin_instalacion',
+                                                'solic_equipamientos.status',
+                                                'solic_equipamientos.recepcion',
+                                                'solic_equipamientos.num_factura',
+                                                'solic_equipamientos.control',
+                                                'proveedores.proveedor',
+                                                'equipamientos.equipamiento',
+                                                'equipamientos.tipoRecepcion',
+                                                'contratos.id as folio',
+                                                'creditos.modelo',
+                                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                                'fraccionamientos.nombre as proyecto',
+                                                'etapas.num_etapa as etapa',
+                                                'lotes.manzana',
+                                                'lotes.num_lote','licencias.avance',
+                                                DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
+                                                DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
+                                        ->where($criterio, '=', $buscar)
+                                        ->where('lotes.num_lote', '=', $b_lote)
+                                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
+                                        ->orderBy('contratos.id','desc')
+                                        ->orderBy('proveedores.proveedor','asc')
+                                        ->orderBy('solic_equipamientos.fecha_colocacion','asc')
+                                    ->paginate(8);
+                            }
+                            elseif($b_etapa == '' && $b_manzana == '' && $b_lote != ''){
+                                $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
+                                        ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
+                                            ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
+                                            ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
+                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                            ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                            ->join('creditos','contratos.id','=','creditos.id')
+                                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                            ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                                            ->join('personal as c', 'clientes.id', '=', 'c.id')
+
+                                        ->select('solic_equipamientos.fecha_solicitud',
+                                                'solic_equipamientos.id',
+                                                'solic_equipamientos.lote_id',
+                                                'solic_equipamientos.costo',
+                                                'solic_equipamientos.fecha_solicitud',
+                                                'solic_equipamientos.fecha_colocacion',
+                                                'solic_equipamientos.anticipo',
+                                                'solic_equipamientos.fecha_anticipo',
+                                                'solic_equipamientos.liquidacion',
+                                                'solic_equipamientos.fecha_liquidacion',
+                                                'solic_equipamientos.fin_instalacion',
+                                                'solic_equipamientos.status',
+                                                'solic_equipamientos.recepcion',
+                                                'solic_equipamientos.num_factura',
+                                                'solic_equipamientos.control',
+                                                'proveedores.proveedor',
+                                                'equipamientos.equipamiento',
+                                                'equipamientos.tipoRecepcion',
+                                                'contratos.id as folio',
+                                                'creditos.modelo',
+                                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                                'fraccionamientos.nombre as proyecto',
+                                                'etapas.num_etapa as etapa',
+                                                'lotes.manzana',
+                                                'lotes.num_lote','licencias.avance',
+                                                DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
+                                                DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
+                                        ->where($criterio, '=', $buscar)
+                                        ->where('lotes.num_lote', '=', $b_lote)
+                                        ->orderBy('contratos.id','desc')
+                                        ->orderBy('proveedores.proveedor','asc')
+                                        ->orderBy('solic_equipamientos.fecha_colocacion','asc')
+                                    ->paginate(8);
+                            }
+                            elseif($b_etapa == '' && $b_manzana != '' && $b_lote == ''){
+                                $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
+                                        ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
+                                            ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
+                                            ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
+                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                            ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                            ->join('creditos','contratos.id','=','creditos.id')
+                                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                            ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                                            ->join('personal as c', 'clientes.id', '=', 'c.id')
+
+                                        ->select('solic_equipamientos.fecha_solicitud',
+                                                'solic_equipamientos.id',
+                                                'solic_equipamientos.lote_id',
+                                                'solic_equipamientos.costo',
+                                                'solic_equipamientos.fecha_solicitud',
+                                                'solic_equipamientos.fecha_colocacion',
+                                                'solic_equipamientos.anticipo',
+                                                'solic_equipamientos.fecha_anticipo',
+                                                'solic_equipamientos.liquidacion',
+                                                'solic_equipamientos.fecha_liquidacion',
+                                                'solic_equipamientos.fin_instalacion',
+                                                'solic_equipamientos.status',
+                                                'solic_equipamientos.recepcion',
+                                                'solic_equipamientos.num_factura',
+                                                'solic_equipamientos.control',
+                                                'proveedores.proveedor',
+                                                'equipamientos.equipamiento',
+                                                'equipamientos.tipoRecepcion',
+                                                'contratos.id as folio',
+                                                'creditos.modelo',
+                                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                                'fraccionamientos.nombre as proyecto',
+                                                'etapas.num_etapa as etapa',
+                                                'lotes.manzana',
+                                                'lotes.num_lote','licencias.avance',
+                                                DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
+                                                DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
+                                        ->where($criterio, '=', $buscar)
+                                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
+                                        ->orderBy('contratos.id','desc')
+                                        ->orderBy('proveedores.proveedor','asc')
+                                        ->orderBy('solic_equipamientos.fecha_colocacion','asc')
+                                    ->paginate(8);
+                            }
+                            break;
+                        }
+                    }
+                }
             }
             else{
-                switch($criterio){
-                    case 'c.nombre':{
-                        $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
-                                ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
-                                    ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
-                                    ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
-                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                    ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                    ->join('creditos','contratos.id','=','creditos.id')
-                                    ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
+                if($buscar == ''){
+                    $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
+                            ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
+                            ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
+                            ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
+                            ->join('etapas','lotes.etapa_id','=','etapas.id')
+                            ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                            ->join('creditos','contratos.id','=','creditos.id')
+                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                            ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                            ->join('personal as c', 'clientes.id', '=', 'c.id')
 
-                                ->select('solic_equipamientos.fecha_solicitud',
-                                        'solic_equipamientos.id',
-                                        'solic_equipamientos.lote_id',
-                                        'solic_equipamientos.costo',
-                                        'solic_equipamientos.fecha_solicitud',
-                                        'solic_equipamientos.fecha_colocacion',
-                                        'solic_equipamientos.anticipo',
-                                        'solic_equipamientos.fecha_anticipo',
-                                        'solic_equipamientos.liquidacion',
-                                        'solic_equipamientos.fecha_liquidacion',
-                                        'solic_equipamientos.fin_instalacion',
-                                        'solic_equipamientos.status',
-                                        'solic_equipamientos.recepcion',
-                                        'solic_equipamientos.num_factura',
-                                        'solic_equipamientos.control',
-                                        'proveedores.proveedor',
-                                        'equipamientos.equipamiento',
-                                        'equipamientos.tipoRecepcion',
-                                        'contratos.id as folio',
-                                        'creditos.modelo',
-                                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                        'fraccionamientos.nombre as proyecto',
-                                        'etapas.num_etapa as etapa',
-                                        'lotes.manzana',
-                                        'lotes.num_lote','licencias.avance',
-                                        DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
-                                        DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
-                                ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $buscar . '%')
-                                ->orderBy('contratos.id','desc')
-                                ->orderBy('proveedores.proveedor','asc')
-                                ->orderBy('solic_equipamientos.fecha_colocacion','asc')
-                            ->paginate(8);
-                        break;
-                    }
-                    case 'contratos.id':{
-                        $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
-                                ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
-                                    ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
-                                    ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
-                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                    ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                    ->join('creditos','contratos.id','=','creditos.id')
-                                    ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
+                        ->select('solic_equipamientos.fecha_solicitud',
+                                'solic_equipamientos.id',
+                                'solic_equipamientos.lote_id',
+                                'solic_equipamientos.costo',
+                                'solic_equipamientos.fecha_solicitud',
+                                'solic_equipamientos.fecha_colocacion',
+                                'solic_equipamientos.anticipo',
+                                'solic_equipamientos.fecha_anticipo',
+                                'solic_equipamientos.liquidacion',
+                                'solic_equipamientos.fecha_liquidacion',
+                                'solic_equipamientos.fin_instalacion',
+                                'solic_equipamientos.status',
+                                'solic_equipamientos.recepcion',
+                                'solic_equipamientos.num_factura',
+                                'solic_equipamientos.control',
+                                'proveedores.proveedor',
+                                'equipamientos.equipamiento',
+                                'equipamientos.tipoRecepcion',
+                                'contratos.id as folio',
+                                'creditos.modelo',
+                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                'fraccionamientos.nombre as proyecto',
+                                'etapas.num_etapa as etapa',
+                                'lotes.manzana',
+                                'lotes.num_lote','licencias.avance',
+                                DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
+                                DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
+                            ->where('solic_equipamientos.status','=',$status)
+                            ->orderBy('contratos.id','desc')
+                            ->orderBy('proveedores.proveedor','asc')
+                            ->orderBy('solic_equipamientos.fecha_colocacion','asc')
+                        ->paginate(8);
 
-                                ->select('solic_equipamientos.fecha_solicitud',
-                                        'solic_equipamientos.id',
-                                        'solic_equipamientos.lote_id',
-                                        'solic_equipamientos.costo',
-                                        'solic_equipamientos.fecha_solicitud',
-                                        'solic_equipamientos.fecha_colocacion',
-                                        'solic_equipamientos.anticipo',
-                                        'solic_equipamientos.fecha_anticipo',
-                                        'solic_equipamientos.liquidacion',
-                                        'solic_equipamientos.fecha_liquidacion',
-                                        'solic_equipamientos.fin_instalacion',
-                                        'solic_equipamientos.status',
-                                        'solic_equipamientos.recepcion',
-                                        'solic_equipamientos.num_factura',
-                                        'solic_equipamientos.control',
-                                        'proveedores.proveedor',
-                                        'equipamientos.equipamiento',
-                                        'equipamientos.tipoRecepcion',
-                                        'contratos.id as folio',
-                                        'creditos.modelo',
-                                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                        'fraccionamientos.nombre as proyecto',
-                                        'etapas.num_etapa as etapa',
-                                        'lotes.manzana',
-                                        'lotes.num_lote','licencias.avance',
-                                        DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
-                                        DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
-                                ->where($criterio, '=', $buscar)
-                                ->orderBy('contratos.id','desc')
-                                ->orderBy('proveedores.proveedor','asc')
-                                ->orderBy('solic_equipamientos.fecha_colocacion','asc')
-                            ->paginate(8);
-                        break;
-                    }
-                    case 'proveedores.proveedor':{
-                        $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
-                                ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
-                                    ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
-                                    ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
-                                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                    ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                    ->join('creditos','contratos.id','=','creditos.id')
-                                    ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                    ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
-                                    ->join('personal as c', 'clientes.id', '=', 'c.id')
+                }
+                else{
+                    switch($criterio){
+                        case 'c.nombre':{
+                            $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
+                                    ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
+                                        ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
+                                        ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
+                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                        ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                        ->join('creditos','contratos.id','=','creditos.id')
+                                        ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                        ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                                        ->join('personal as c', 'clientes.id', '=', 'c.id')
 
-                                ->select('solic_equipamientos.fecha_solicitud',
-                                        'solic_equipamientos.id',
-                                        'solic_equipamientos.lote_id',
-                                        'solic_equipamientos.costo',
-                                        'solic_equipamientos.fecha_solicitud',
-                                        'solic_equipamientos.fecha_colocacion',
-                                        'solic_equipamientos.anticipo',
-                                        'solic_equipamientos.fecha_anticipo',
-                                        'solic_equipamientos.liquidacion',
-                                        'solic_equipamientos.fecha_liquidacion',
-                                        'solic_equipamientos.fin_instalacion',
-                                        'solic_equipamientos.status',
-                                        'solic_equipamientos.recepcion',
-                                        'solic_equipamientos.num_factura',
-                                        'solic_equipamientos.control',
-                                        'proveedores.proveedor',
-                                        'equipamientos.equipamiento',
-                                        'equipamientos.tipoRecepcion',
-                                        'contratos.id as folio',
-                                        'creditos.modelo',
-                                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                        'fraccionamientos.nombre as proyecto',
-                                        'etapas.num_etapa as etapa',
-                                        'lotes.manzana',
-                                        'lotes.num_lote','licencias.avance',
-                                        DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
-                                        DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
-                                ->where($criterio, 'like', '%'. $buscar . '%')
-                                ->orderBy('contratos.id','desc')
-                                ->orderBy('proveedores.proveedor','asc')
-                                ->orderBy('solic_equipamientos.fecha_colocacion','asc')
-                            ->paginate(8);
-                        break;
-                    }
-                    case 'lotes.fraccionamiento_id':{
-                        if($b_etapa == '' && $b_manzana == '' && $b_lote == ''){
+                                    ->select('solic_equipamientos.fecha_solicitud',
+                                            'solic_equipamientos.id',
+                                            'solic_equipamientos.lote_id',
+                                            'solic_equipamientos.costo',
+                                            'solic_equipamientos.fecha_solicitud',
+                                            'solic_equipamientos.fecha_colocacion',
+                                            'solic_equipamientos.anticipo',
+                                            'solic_equipamientos.fecha_anticipo',
+                                            'solic_equipamientos.liquidacion',
+                                            'solic_equipamientos.fecha_liquidacion',
+                                            'solic_equipamientos.fin_instalacion',
+                                            'solic_equipamientos.status',
+                                            'solic_equipamientos.recepcion',
+                                            'solic_equipamientos.num_factura',
+                                            'solic_equipamientos.control',
+                                            'proveedores.proveedor',
+                                            'equipamientos.equipamiento',
+                                            'equipamientos.tipoRecepcion',
+                                            'contratos.id as folio',
+                                            'creditos.modelo',
+                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                            'fraccionamientos.nombre as proyecto',
+                                            'etapas.num_etapa as etapa',
+                                            'lotes.manzana',
+                                            'lotes.num_lote','licencias.avance',
+                                            DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
+                                            DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
+                                    ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $buscar . '%')
+                                    ->where('solic_equipamientos.status','=',$status)
+                                    ->orderBy('contratos.id','desc')
+                                    ->orderBy('proveedores.proveedor','asc')
+                                    ->orderBy('solic_equipamientos.fecha_colocacion','asc')
+                                ->paginate(8);
+                            break;
+                        }
+                        case 'contratos.id':{
                             $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
                                     ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
                                         ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
@@ -255,12 +743,14 @@ class SolEquipamientoController extends Controller
                                             DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
                                             DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
                                     ->where($criterio, '=', $buscar)
+                                    ->where('solic_equipamientos.status','=',$status)
                                     ->orderBy('contratos.id','desc')
                                     ->orderBy('proveedores.proveedor','asc')
                                     ->orderBy('solic_equipamientos.fecha_colocacion','asc')
                                 ->paginate(8);
+                            break;
                         }
-                        elseif($b_etapa != '' && $b_manzana == '' && $b_lote == ''){
+                        case 'proveedores.proveedor':{
                             $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
                                     ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
                                         ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
@@ -300,304 +790,408 @@ class SolEquipamientoController extends Controller
                                             'lotes.num_lote','licencias.avance',
                                             DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
                                             DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $b_etapa)
+                                    ->where($criterio, 'like', '%'. $buscar . '%')
+                                    ->where('solic_equipamientos.status','=',$status)
                                     ->orderBy('contratos.id','desc')
                                     ->orderBy('proveedores.proveedor','asc')
                                     ->orderBy('solic_equipamientos.fecha_colocacion','asc')
                                 ->paginate(8);
-                            
+                            break;
                         }
-                        elseif($b_etapa != '' && $b_manzana != '' && $b_lote == ''){
-                            $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
-                                    ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
-                                        ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
-                                        ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
-                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                        ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                        ->join('creditos','contratos.id','=','creditos.id')
-                                        ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                        ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
-                                        ->join('personal as c', 'clientes.id', '=', 'c.id')
+                        case 'lotes.fraccionamiento_id':{
+                            if($b_etapa == '' && $b_manzana == '' && $b_lote == ''){
+                                $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
+                                        ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
+                                            ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
+                                            ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
+                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                            ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                            ->join('creditos','contratos.id','=','creditos.id')
+                                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                            ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                                            ->join('personal as c', 'clientes.id', '=', 'c.id')
 
-                                    ->select('solic_equipamientos.fecha_solicitud',
-                                            'solic_equipamientos.id',
-                                            'solic_equipamientos.lote_id',
-                                            'solic_equipamientos.costo',
-                                            'solic_equipamientos.fecha_solicitud',
-                                            'solic_equipamientos.fecha_colocacion',
-                                            'solic_equipamientos.anticipo',
-                                            'solic_equipamientos.fecha_anticipo',
-                                            'solic_equipamientos.liquidacion',
-                                            'solic_equipamientos.fecha_liquidacion',
-                                            'solic_equipamientos.fin_instalacion',
-                                            'solic_equipamientos.status',
-                                            'solic_equipamientos.recepcion',
-                                            'solic_equipamientos.num_factura',
-                                            'solic_equipamientos.control',
-                                            'proveedores.proveedor',
-                                            'equipamientos.equipamiento',
-                                            'equipamientos.tipoRecepcion',
-                                            'contratos.id as folio',
-                                            'creditos.modelo',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                            'fraccionamientos.nombre as proyecto',
-                                            'etapas.num_etapa as etapa',
-                                            'lotes.manzana',
-                                            'lotes.num_lote','licencias.avance',
-                                            DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
-                                            DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $b_etapa)
-                                    ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                                    ->orderBy('contratos.id','desc')
-                                    ->orderBy('proveedores.proveedor','asc')
-                                    ->orderBy('solic_equipamientos.fecha_colocacion','asc')
-                                ->paginate(8);
-                            
-                        }
-                        elseif($b_etapa != '' && $b_manzana != '' && $b_lote != ''){
-                            $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
-                                    ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
-                                        ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
-                                        ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
-                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                        ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                        ->join('creditos','contratos.id','=','creditos.id')
-                                        ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                        ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
-                                        ->join('personal as c', 'clientes.id', '=', 'c.id')
+                                        ->select('solic_equipamientos.fecha_solicitud',
+                                                'solic_equipamientos.id',
+                                                'solic_equipamientos.lote_id',
+                                                'solic_equipamientos.costo',
+                                                'solic_equipamientos.fecha_solicitud',
+                                                'solic_equipamientos.fecha_colocacion',
+                                                'solic_equipamientos.anticipo',
+                                                'solic_equipamientos.fecha_anticipo',
+                                                'solic_equipamientos.liquidacion',
+                                                'solic_equipamientos.fecha_liquidacion',
+                                                'solic_equipamientos.fin_instalacion',
+                                                'solic_equipamientos.status',
+                                                'solic_equipamientos.recepcion',
+                                                'solic_equipamientos.num_factura',
+                                                'solic_equipamientos.control',
+                                                'proveedores.proveedor',
+                                                'equipamientos.equipamiento',
+                                                'equipamientos.tipoRecepcion',
+                                                'contratos.id as folio',
+                                                'creditos.modelo',
+                                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                                'fraccionamientos.nombre as proyecto',
+                                                'etapas.num_etapa as etapa',
+                                                'lotes.manzana',
+                                                'lotes.num_lote','licencias.avance',
+                                                DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
+                                                DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
+                                        ->where($criterio, '=', $buscar)
+                                        ->where('solic_equipamientos.status','=',$status)
+                                        ->orderBy('contratos.id','desc')
+                                        ->orderBy('proveedores.proveedor','asc')
+                                        ->orderBy('solic_equipamientos.fecha_colocacion','asc')
+                                    ->paginate(8);
+                            }
+                            elseif($b_etapa != '' && $b_manzana == '' && $b_lote == ''){
+                                $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
+                                        ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
+                                            ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
+                                            ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
+                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                            ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                            ->join('creditos','contratos.id','=','creditos.id')
+                                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                            ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                                            ->join('personal as c', 'clientes.id', '=', 'c.id')
 
-                                    ->select('solic_equipamientos.fecha_solicitud',
-                                            'solic_equipamientos.id',
-                                            'solic_equipamientos.lote_id',
-                                            'solic_equipamientos.costo',
-                                            'solic_equipamientos.fecha_solicitud',
-                                            'solic_equipamientos.fecha_colocacion',
-                                            'solic_equipamientos.anticipo',
-                                            'solic_equipamientos.fecha_anticipo',
-                                            'solic_equipamientos.liquidacion',
-                                            'solic_equipamientos.fecha_liquidacion',
-                                            'solic_equipamientos.fin_instalacion',
-                                            'solic_equipamientos.status',
-                                            'solic_equipamientos.recepcion',
-                                            'solic_equipamientos.num_factura',
-                                            'solic_equipamientos.control',
-                                            'proveedores.proveedor',
-                                            'equipamientos.equipamiento',
-                                            'equipamientos.tipoRecepcion',
-                                            'contratos.id as folio',
-                                            'creditos.modelo',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                            'fraccionamientos.nombre as proyecto',
-                                            'etapas.num_etapa as etapa',
-                                            'lotes.manzana',
-                                            'lotes.num_lote','licencias.avance',
-                                            DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
-                                            DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $b_etapa)
-                                    ->where('lotes.num_lote', '=', $b_lote)
-                                    ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                                    ->orderBy('contratos.id','desc')
-                                    ->orderBy('proveedores.proveedor','asc')
-                                    ->orderBy('solic_equipamientos.fecha_colocacion','asc')
-                                ->paginate(8);
-                            
-                        }
-                        elseif($b_etapa != '' && $b_manzana == '' && $b_lote != ''){
-                            $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
-                                    ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
-                                        ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
-                                        ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
-                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                        ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                        ->join('creditos','contratos.id','=','creditos.id')
-                                        ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                        ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
-                                        ->join('personal as c', 'clientes.id', '=', 'c.id')
+                                        ->select('solic_equipamientos.fecha_solicitud',
+                                                'solic_equipamientos.id',
+                                                'solic_equipamientos.lote_id',
+                                                'solic_equipamientos.costo',
+                                                'solic_equipamientos.fecha_solicitud',
+                                                'solic_equipamientos.fecha_colocacion',
+                                                'solic_equipamientos.anticipo',
+                                                'solic_equipamientos.fecha_anticipo',
+                                                'solic_equipamientos.liquidacion',
+                                                'solic_equipamientos.fecha_liquidacion',
+                                                'solic_equipamientos.fin_instalacion',
+                                                'solic_equipamientos.status',
+                                                'solic_equipamientos.recepcion',
+                                                'solic_equipamientos.num_factura',
+                                                'solic_equipamientos.control',
+                                                'proveedores.proveedor',
+                                                'equipamientos.equipamiento',
+                                                'equipamientos.tipoRecepcion',
+                                                'contratos.id as folio',
+                                                'creditos.modelo',
+                                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                                'fraccionamientos.nombre as proyecto',
+                                                'etapas.num_etapa as etapa',
+                                                'lotes.manzana',
+                                                'lotes.num_lote','licencias.avance',
+                                                DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
+                                                DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
+                                        ->where($criterio, '=', $buscar)
+                                        ->where('lotes.etapa_id', '=', $b_etapa)
+                                        ->where('solic_equipamientos.status','=',$status)
+                                        ->orderBy('contratos.id','desc')
+                                        ->orderBy('proveedores.proveedor','asc')
+                                        ->orderBy('solic_equipamientos.fecha_colocacion','asc')
+                                    ->paginate(8);
+                                
+                            }
+                            elseif($b_etapa != '' && $b_manzana != '' && $b_lote == ''){
+                                $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
+                                        ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
+                                            ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
+                                            ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
+                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                            ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                            ->join('creditos','contratos.id','=','creditos.id')
+                                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                            ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                                            ->join('personal as c', 'clientes.id', '=', 'c.id')
 
-                                    ->select('solic_equipamientos.fecha_solicitud',
-                                            'solic_equipamientos.id',
-                                            'solic_equipamientos.lote_id',
-                                            'solic_equipamientos.costo',
-                                            'solic_equipamientos.fecha_solicitud',
-                                            'solic_equipamientos.fecha_colocacion',
-                                            'solic_equipamientos.anticipo',
-                                            'solic_equipamientos.fecha_anticipo',
-                                            'solic_equipamientos.liquidacion',
-                                            'solic_equipamientos.fecha_liquidacion',
-                                            'solic_equipamientos.fin_instalacion',
-                                            'solic_equipamientos.status',
-                                            'solic_equipamientos.recepcion',
-                                            'solic_equipamientos.num_factura',
-                                            'solic_equipamientos.control',
-                                            'proveedores.proveedor',
-                                            'equipamientos.equipamiento',
-                                            'equipamientos.tipoRecepcion',
-                                            'contratos.id as folio',
-                                            'creditos.modelo',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                            'fraccionamientos.nombre as proyecto',
-                                            'etapas.num_etapa as etapa',
-                                            'lotes.manzana',
-                                            'lotes.num_lote','licencias.avance',
-                                            DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
-                                            DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.etapa_id', '=', $b_etapa)
-                                    ->where('lotes.num_lote', '=', $b_lote)
-                                    ->orderBy('contratos.id','desc')
-                                    ->orderBy('proveedores.proveedor','asc')
-                                    ->orderBy('solic_equipamientos.fecha_colocacion','asc')
-                                ->paginate(8);
-                        }
-                        elseif($b_etapa == '' && $b_manzana != '' && $b_lote != ''){
-                            $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
-                                    ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
-                                        ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
-                                        ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
-                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                        ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                        ->join('creditos','contratos.id','=','creditos.id')
-                                        ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                        ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
-                                        ->join('personal as c', 'clientes.id', '=', 'c.id')
+                                        ->select('solic_equipamientos.fecha_solicitud',
+                                                'solic_equipamientos.id',
+                                                'solic_equipamientos.lote_id',
+                                                'solic_equipamientos.costo',
+                                                'solic_equipamientos.fecha_solicitud',
+                                                'solic_equipamientos.fecha_colocacion',
+                                                'solic_equipamientos.anticipo',
+                                                'solic_equipamientos.fecha_anticipo',
+                                                'solic_equipamientos.liquidacion',
+                                                'solic_equipamientos.fecha_liquidacion',
+                                                'solic_equipamientos.fin_instalacion',
+                                                'solic_equipamientos.status',
+                                                'solic_equipamientos.recepcion',
+                                                'solic_equipamientos.num_factura',
+                                                'solic_equipamientos.control',
+                                                'proveedores.proveedor',
+                                                'equipamientos.equipamiento',
+                                                'equipamientos.tipoRecepcion',
+                                                'contratos.id as folio',
+                                                'creditos.modelo',
+                                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                                'fraccionamientos.nombre as proyecto',
+                                                'etapas.num_etapa as etapa',
+                                                'lotes.manzana',
+                                                'lotes.num_lote','licencias.avance',
+                                                DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
+                                                DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
+                                        ->where($criterio, '=', $buscar)
+                                        ->where('lotes.etapa_id', '=', $b_etapa)
+                                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
+                                        ->where('solic_equipamientos.status','=',$status)
+                                        ->orderBy('contratos.id','desc')
+                                        ->orderBy('proveedores.proveedor','asc')
+                                        ->orderBy('solic_equipamientos.fecha_colocacion','asc')
+                                    ->paginate(8);
+                                
+                            }
+                            elseif($b_etapa != '' && $b_manzana != '' && $b_lote != ''){
+                                $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
+                                        ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
+                                            ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
+                                            ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
+                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                            ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                            ->join('creditos','contratos.id','=','creditos.id')
+                                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                            ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                                            ->join('personal as c', 'clientes.id', '=', 'c.id')
 
-                                    ->select('solic_equipamientos.fecha_solicitud',
-                                            'solic_equipamientos.id',
-                                            'solic_equipamientos.lote_id',
-                                            'solic_equipamientos.costo',
-                                            'solic_equipamientos.fecha_solicitud',
-                                            'solic_equipamientos.fecha_colocacion',
-                                            'solic_equipamientos.anticipo',
-                                            'solic_equipamientos.fecha_anticipo',
-                                            'solic_equipamientos.liquidacion',
-                                            'solic_equipamientos.fecha_liquidacion',
-                                            'solic_equipamientos.fin_instalacion',
-                                            'solic_equipamientos.status',
-                                            'solic_equipamientos.recepcion',
-                                            'solic_equipamientos.num_factura',
-                                            'solic_equipamientos.control',
-                                            'proveedores.proveedor',
-                                            'equipamientos.equipamiento',
-                                            'equipamientos.tipoRecepcion',
-                                            'contratos.id as folio',
-                                            'creditos.modelo',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                            'fraccionamientos.nombre as proyecto',
-                                            'etapas.num_etapa as etapa',
-                                            'lotes.manzana',
-                                            'lotes.num_lote','licencias.avance',
-                                            DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
-                                            DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.num_lote', '=', $b_lote)
-                                    ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                                    ->orderBy('contratos.id','desc')
-                                    ->orderBy('proveedores.proveedor','asc')
-                                    ->orderBy('solic_equipamientos.fecha_colocacion','asc')
-                                ->paginate(8);
-                        }
-                        elseif($b_etapa == '' && $b_manzana == '' && $b_lote != ''){
-                            $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
-                                    ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
-                                        ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
-                                        ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
-                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                        ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                        ->join('creditos','contratos.id','=','creditos.id')
-                                        ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                        ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
-                                        ->join('personal as c', 'clientes.id', '=', 'c.id')
+                                        ->select('solic_equipamientos.fecha_solicitud',
+                                                'solic_equipamientos.id',
+                                                'solic_equipamientos.lote_id',
+                                                'solic_equipamientos.costo',
+                                                'solic_equipamientos.fecha_solicitud',
+                                                'solic_equipamientos.fecha_colocacion',
+                                                'solic_equipamientos.anticipo',
+                                                'solic_equipamientos.fecha_anticipo',
+                                                'solic_equipamientos.liquidacion',
+                                                'solic_equipamientos.fecha_liquidacion',
+                                                'solic_equipamientos.fin_instalacion',
+                                                'solic_equipamientos.status',
+                                                'solic_equipamientos.recepcion',
+                                                'solic_equipamientos.num_factura',
+                                                'solic_equipamientos.control',
+                                                'proveedores.proveedor',
+                                                'equipamientos.equipamiento',
+                                                'equipamientos.tipoRecepcion',
+                                                'contratos.id as folio',
+                                                'creditos.modelo',
+                                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                                'fraccionamientos.nombre as proyecto',
+                                                'etapas.num_etapa as etapa',
+                                                'lotes.manzana',
+                                                'lotes.num_lote','licencias.avance',
+                                                DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
+                                                DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
+                                        ->where($criterio, '=', $buscar)
+                                        ->where('lotes.etapa_id', '=', $b_etapa)
+                                        ->where('lotes.num_lote', '=', $b_lote)
+                                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
+                                        ->where('solic_equipamientos.status','=',$status)
+                                        ->orderBy('contratos.id','desc')
+                                        ->orderBy('proveedores.proveedor','asc')
+                                        ->orderBy('solic_equipamientos.fecha_colocacion','asc')
+                                    ->paginate(8);
+                                
+                            }
+                            elseif($b_etapa != '' && $b_manzana == '' && $b_lote != ''){
+                                $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
+                                        ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
+                                            ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
+                                            ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
+                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                            ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                            ->join('creditos','contratos.id','=','creditos.id')
+                                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                            ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                                            ->join('personal as c', 'clientes.id', '=', 'c.id')
 
-                                    ->select('solic_equipamientos.fecha_solicitud',
-                                            'solic_equipamientos.id',
-                                            'solic_equipamientos.lote_id',
-                                            'solic_equipamientos.costo',
-                                            'solic_equipamientos.fecha_solicitud',
-                                            'solic_equipamientos.fecha_colocacion',
-                                            'solic_equipamientos.anticipo',
-                                            'solic_equipamientos.fecha_anticipo',
-                                            'solic_equipamientos.liquidacion',
-                                            'solic_equipamientos.fecha_liquidacion',
-                                            'solic_equipamientos.fin_instalacion',
-                                            'solic_equipamientos.status',
-                                            'solic_equipamientos.recepcion',
-                                            'solic_equipamientos.num_factura',
-                                            'solic_equipamientos.control',
-                                            'proveedores.proveedor',
-                                            'equipamientos.equipamiento',
-                                            'equipamientos.tipoRecepcion',
-                                            'contratos.id as folio',
-                                            'creditos.modelo',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                            'fraccionamientos.nombre as proyecto',
-                                            'etapas.num_etapa as etapa',
-                                            'lotes.manzana',
-                                            'lotes.num_lote','licencias.avance',
-                                            DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
-                                            DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.num_lote', '=', $b_lote)
-                                    ->orderBy('contratos.id','desc')
-                                    ->orderBy('proveedores.proveedor','asc')
-                                    ->orderBy('solic_equipamientos.fecha_colocacion','asc')
-                                ->paginate(8);
-                        }
-                        elseif($b_etapa == '' && $b_manzana != '' && $b_lote == ''){
-                            $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
-                                    ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
-                                        ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
-                                        ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
-                                        ->join('etapas','lotes.etapa_id','=','etapas.id')
-                                        ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                                        ->join('creditos','contratos.id','=','creditos.id')
-                                        ->join('licencias', 'lotes.id', '=', 'licencias.id')
-                                        ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-                                        ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
-                                        ->join('personal as c', 'clientes.id', '=', 'c.id')
+                                        ->select('solic_equipamientos.fecha_solicitud',
+                                                'solic_equipamientos.id',
+                                                'solic_equipamientos.lote_id',
+                                                'solic_equipamientos.costo',
+                                                'solic_equipamientos.fecha_solicitud',
+                                                'solic_equipamientos.fecha_colocacion',
+                                                'solic_equipamientos.anticipo',
+                                                'solic_equipamientos.fecha_anticipo',
+                                                'solic_equipamientos.liquidacion',
+                                                'solic_equipamientos.fecha_liquidacion',
+                                                'solic_equipamientos.fin_instalacion',
+                                                'solic_equipamientos.status',
+                                                'solic_equipamientos.recepcion',
+                                                'solic_equipamientos.num_factura',
+                                                'solic_equipamientos.control',
+                                                'proveedores.proveedor',
+                                                'equipamientos.equipamiento',
+                                                'equipamientos.tipoRecepcion',
+                                                'contratos.id as folio',
+                                                'creditos.modelo',
+                                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                                'fraccionamientos.nombre as proyecto',
+                                                'etapas.num_etapa as etapa',
+                                                'lotes.manzana',
+                                                'lotes.num_lote','licencias.avance',
+                                                DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
+                                                DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
+                                        ->where($criterio, '=', $buscar)
+                                        ->where('lotes.etapa_id', '=', $b_etapa)
+                                        ->where('lotes.num_lote', '=', $b_lote)
+                                        ->where('solic_equipamientos.status','=',$status)
+                                        ->orderBy('contratos.id','desc')
+                                        ->orderBy('proveedores.proveedor','asc')
+                                        ->orderBy('solic_equipamientos.fecha_colocacion','asc')
+                                    ->paginate(8);
+                            }
+                            elseif($b_etapa == '' && $b_manzana != '' && $b_lote != ''){
+                                $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
+                                        ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
+                                            ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
+                                            ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
+                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                            ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                            ->join('creditos','contratos.id','=','creditos.id')
+                                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                            ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                                            ->join('personal as c', 'clientes.id', '=', 'c.id')
 
-                                    ->select('solic_equipamientos.fecha_solicitud',
-                                            'solic_equipamientos.id',
-                                            'solic_equipamientos.lote_id',
-                                            'solic_equipamientos.costo',
-                                            'solic_equipamientos.fecha_solicitud',
-                                            'solic_equipamientos.fecha_colocacion',
-                                            'solic_equipamientos.anticipo',
-                                            'solic_equipamientos.fecha_anticipo',
-                                            'solic_equipamientos.liquidacion',
-                                            'solic_equipamientos.fecha_liquidacion',
-                                            'solic_equipamientos.fin_instalacion',
-                                            'solic_equipamientos.status',
-                                            'solic_equipamientos.recepcion',
-                                            'solic_equipamientos.num_factura',
-                                            'solic_equipamientos.control',
-                                            'proveedores.proveedor',
-                                            'equipamientos.equipamiento',
-                                            'equipamientos.tipoRecepcion',
-                                            'contratos.id as folio',
-                                            'creditos.modelo',
-                                            DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
-                                            'fraccionamientos.nombre as proyecto',
-                                            'etapas.num_etapa as etapa',
-                                            'lotes.manzana',
-                                            'lotes.num_lote','licencias.avance',
-                                            DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
-                                            DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
-                                    ->where($criterio, '=', $buscar)
-                                    ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
-                                    ->orderBy('contratos.id','desc')
-                                    ->orderBy('proveedores.proveedor','asc')
-                                    ->orderBy('solic_equipamientos.fecha_colocacion','asc')
-                                ->paginate(8);
+                                        ->select('solic_equipamientos.fecha_solicitud',
+                                                'solic_equipamientos.id',
+                                                'solic_equipamientos.lote_id',
+                                                'solic_equipamientos.costo',
+                                                'solic_equipamientos.fecha_solicitud',
+                                                'solic_equipamientos.fecha_colocacion',
+                                                'solic_equipamientos.anticipo',
+                                                'solic_equipamientos.fecha_anticipo',
+                                                'solic_equipamientos.liquidacion',
+                                                'solic_equipamientos.fecha_liquidacion',
+                                                'solic_equipamientos.fin_instalacion',
+                                                'solic_equipamientos.status',
+                                                'solic_equipamientos.recepcion',
+                                                'solic_equipamientos.num_factura',
+                                                'solic_equipamientos.control',
+                                                'proveedores.proveedor',
+                                                'equipamientos.equipamiento',
+                                                'equipamientos.tipoRecepcion',
+                                                'contratos.id as folio',
+                                                'creditos.modelo',
+                                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                                'fraccionamientos.nombre as proyecto',
+                                                'etapas.num_etapa as etapa',
+                                                'lotes.manzana',
+                                                'lotes.num_lote','licencias.avance',
+                                                DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
+                                                DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
+                                        ->where($criterio, '=', $buscar)
+                                        ->where('lotes.num_lote', '=', $b_lote)
+                                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
+                                        ->where('solic_equipamientos.status','=',$status)
+                                        ->orderBy('contratos.id','desc')
+                                        ->orderBy('proveedores.proveedor','asc')
+                                        ->orderBy('solic_equipamientos.fecha_colocacion','asc')
+                                    ->paginate(8);
+                            }
+                            elseif($b_etapa == '' && $b_manzana == '' && $b_lote != ''){
+                                $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
+                                        ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
+                                            ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
+                                            ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
+                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                            ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                            ->join('creditos','contratos.id','=','creditos.id')
+                                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                            ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                                            ->join('personal as c', 'clientes.id', '=', 'c.id')
+
+                                        ->select('solic_equipamientos.fecha_solicitud',
+                                                'solic_equipamientos.id',
+                                                'solic_equipamientos.lote_id',
+                                                'solic_equipamientos.costo',
+                                                'solic_equipamientos.fecha_solicitud',
+                                                'solic_equipamientos.fecha_colocacion',
+                                                'solic_equipamientos.anticipo',
+                                                'solic_equipamientos.fecha_anticipo',
+                                                'solic_equipamientos.liquidacion',
+                                                'solic_equipamientos.fecha_liquidacion',
+                                                'solic_equipamientos.fin_instalacion',
+                                                'solic_equipamientos.status',
+                                                'solic_equipamientos.recepcion',
+                                                'solic_equipamientos.num_factura',
+                                                'solic_equipamientos.control',
+                                                'proveedores.proveedor',
+                                                'equipamientos.equipamiento',
+                                                'equipamientos.tipoRecepcion',
+                                                'contratos.id as folio',
+                                                'creditos.modelo',
+                                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                                'fraccionamientos.nombre as proyecto',
+                                                'etapas.num_etapa as etapa',
+                                                'lotes.manzana',
+                                                'lotes.num_lote','licencias.avance',
+                                                DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
+                                                DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
+                                        ->where($criterio, '=', $buscar)
+                                        ->where('lotes.num_lote', '=', $b_lote)
+                                        ->where('solic_equipamientos.status','=',$status)
+                                        ->orderBy('contratos.id','desc')
+                                        ->orderBy('proveedores.proveedor','asc')
+                                        ->orderBy('solic_equipamientos.fecha_colocacion','asc')
+                                    ->paginate(8);
+                            }
+                            elseif($b_etapa == '' && $b_manzana != '' && $b_lote == ''){
+                                $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
+                                        ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
+                                            ->join('contratos','solic_equipamientos.contrato_id','=','contratos.id')
+                                            ->join('lotes','solic_equipamientos.lote_id','=','lotes.id')
+                                            ->join('etapas','lotes.etapa_id','=','etapas.id')
+                                            ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                                            ->join('creditos','contratos.id','=','creditos.id')
+                                            ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                                            ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                            ->join('vendedores', 'clientes.vendedor_id', '=', 'vendedores.id')
+                                            ->join('personal as c', 'clientes.id', '=', 'c.id')
+
+                                        ->select('solic_equipamientos.fecha_solicitud',
+                                                'solic_equipamientos.id',
+                                                'solic_equipamientos.lote_id',
+                                                'solic_equipamientos.costo',
+                                                'solic_equipamientos.fecha_solicitud',
+                                                'solic_equipamientos.fecha_colocacion',
+                                                'solic_equipamientos.anticipo',
+                                                'solic_equipamientos.fecha_anticipo',
+                                                'solic_equipamientos.liquidacion',
+                                                'solic_equipamientos.fecha_liquidacion',
+                                                'solic_equipamientos.fin_instalacion',
+                                                'solic_equipamientos.status',
+                                                'solic_equipamientos.recepcion',
+                                                'solic_equipamientos.num_factura',
+                                                'solic_equipamientos.control',
+                                                'proveedores.proveedor',
+                                                'equipamientos.equipamiento',
+                                                'equipamientos.tipoRecepcion',
+                                                'contratos.id as folio',
+                                                'creditos.modelo',
+                                                DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                                'fraccionamientos.nombre as proyecto',
+                                                'etapas.num_etapa as etapa',
+                                                'lotes.manzana',
+                                                'lotes.num_lote','licencias.avance',
+                                                DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
+                                                DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
+                                        ->where($criterio, '=', $buscar)
+                                        ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
+                                        ->where('solic_equipamientos.status','=',$status)
+                                        ->orderBy('contratos.id','desc')
+                                        ->orderBy('proveedores.proveedor','asc')
+                                        ->orderBy('solic_equipamientos.fecha_colocacion','asc')
+                                    ->paginate(8);
+                            }
+                            break;
                         }
-                        break;
                     }
                 }
             }
@@ -643,6 +1237,7 @@ class SolEquipamientoController extends Controller
                             DB::raw('DATEDIFF(current_date,solic_equipamientos.fecha_anticipo) as diferenciaIni'),
                             DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
                         ->where('proveedores.id','=',$userID)
+                        ->where('contratos.entregado','=',0)
                         ->orderBy('contratos.id','desc')
                         ->orderBy('proveedores.proveedor','asc')
                         ->orderBy('solic_equipamientos.fecha_colocacion','asc')
@@ -693,6 +1288,7 @@ class SolEquipamientoController extends Controller
                                         DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
                                 ->where(DB::raw("CONCAT(c.nombre,' ',c.apellidos)"), 'like', '%'. $buscar . '%')
                                 ->where('proveedores.id','=',$userID)
+                                ->where('contratos.entregado','=',0)
                                 ->orderBy('contratos.id','desc')
                                 ->orderBy('proveedores.proveedor','asc')
                                 ->orderBy('solic_equipamientos.fecha_colocacion','asc')
@@ -741,6 +1337,7 @@ class SolEquipamientoController extends Controller
                                         DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
                                 ->where($criterio, '=', $buscar)
                                 ->where('proveedores.id','=',$userID)
+                                ->where('contratos.entregado','=',0)
                                 ->orderBy('contratos.id','desc')
                                 ->orderBy('proveedores.proveedor','asc')
                                 ->orderBy('solic_equipamientos.fecha_colocacion','asc')
@@ -789,6 +1386,7 @@ class SolEquipamientoController extends Controller
                                         DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
                                 ->where($criterio, 'like', '%'. $buscar . '%')
                                 ->where('proveedores.id','=',$userID)
+                                ->where('contratos.entregado','=',0)
                                 ->orderBy('contratos.id','desc')
                                 ->orderBy('proveedores.proveedor','asc')
                                 ->orderBy('solic_equipamientos.fecha_colocacion','asc')
@@ -838,6 +1436,7 @@ class SolEquipamientoController extends Controller
                                             DB::raw('DATEDIFF(solic_equipamientos.fin_instalacion,solic_equipamientos.fecha_anticipo) as diferenciaFin'))
                                     ->where($criterio, '=', $buscar)
                                     ->where('proveedores.id','=',$userID)
+                                    ->where('contratos.entregado','=',0)
                                     ->orderBy('contratos.id','desc')
                                     ->orderBy('proveedores.proveedor','asc')
                                     ->orderBy('solic_equipamientos.fecha_colocacion','asc')
@@ -886,6 +1485,7 @@ class SolEquipamientoController extends Controller
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.etapa_id', '=', $b_etapa)
                                     ->where('proveedores.id','=',$userID)
+                                    ->where('contratos.entregado','=',0)
                                     ->orderBy('contratos.id','desc')
                                     ->orderBy('proveedores.proveedor','asc')
                                     ->orderBy('solic_equipamientos.fecha_colocacion','asc')
@@ -936,6 +1536,7 @@ class SolEquipamientoController extends Controller
                                     ->where('lotes.etapa_id', '=', $b_etapa)
                                     ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
                                     ->where('proveedores.id','=',$userID)
+                                    ->where('contratos.entregado','=',0)
                                     ->orderBy('contratos.id','desc')
                                     ->orderBy('proveedores.proveedor','asc')
                                     ->orderBy('solic_equipamientos.fecha_colocacion','asc')
@@ -987,6 +1588,7 @@ class SolEquipamientoController extends Controller
                                     ->where('lotes.num_lote', '=', $b_lote)
                                     ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
                                     ->where('proveedores.id','=',$userID)
+                                    ->where('contratos.entregado','=',0)
                                     ->orderBy('contratos.id','desc')
                                     ->orderBy('proveedores.proveedor','asc')
                                     ->orderBy('solic_equipamientos.fecha_colocacion','asc')
@@ -1037,6 +1639,7 @@ class SolEquipamientoController extends Controller
                                     ->where('lotes.etapa_id', '=', $b_etapa)
                                     ->where('lotes.num_lote', '=', $b_lote)
                                     ->where('proveedores.id','=',$userID)
+                                    ->where('contratos.entregado','=',0)
                                     ->orderBy('contratos.id','desc')
                                     ->orderBy('proveedores.proveedor','asc')
                                     ->orderBy('solic_equipamientos.fecha_colocacion','asc')
@@ -1086,6 +1689,7 @@ class SolEquipamientoController extends Controller
                                     ->where('lotes.num_lote', '=', $b_lote)
                                     ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
                                     ->where('proveedores.id','=',$userID)
+                                    ->where('contratos.entregado','=',0)
                                     ->orderBy('contratos.id','desc')
                                     ->orderBy('proveedores.proveedor','asc')
                                     ->orderBy('solic_equipamientos.fecha_colocacion','asc')
@@ -1134,6 +1738,7 @@ class SolEquipamientoController extends Controller
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.num_lote', '=', $b_lote)
                                     ->where('proveedores.id','=',$userID)
+                                    ->where('contratos.entregado','=',0)
                                     ->orderBy('contratos.id','desc')
                                     ->orderBy('proveedores.proveedor','asc')
                                     ->orderBy('solic_equipamientos.fecha_colocacion','asc')
@@ -1182,6 +1787,7 @@ class SolEquipamientoController extends Controller
                                     ->where($criterio, '=', $buscar)
                                     ->where('lotes.manzana', 'like', '%'. $b_manzana . '%')
                                     ->where('proveedores.id','=',$userID)
+                                    ->where('contratos.entregado','=',0)
                                     ->orderBy('contratos.id','desc')
                                     ->orderBy('proveedores.proveedor','asc')
                                     ->orderBy('solic_equipamientos.fecha_colocacion','asc')

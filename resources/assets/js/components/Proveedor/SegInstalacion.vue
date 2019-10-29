@@ -117,6 +117,9 @@
                                                 <td v-if="equipamientos.status == '4'" class="td2">
                                                     <span class="badge badge-success">Aprobado</span>
                                                 </td>    
+                                                <td v-if="equipamientos.status == '5'" class="td2">
+                                                    <span class="badge badge-danger">Cancelado</span>
+                                                </td>  
                                             </template>
                                             <template>
                                                 <td v-if="equipamientos.fecha_liquidacion" class="td2" v-text="this.moment(equipamientos.fecha_liquidacion).locale('es').format('DD/MMM/YYYY')+ ': '+ '$'+formatNumber(equipamientos.liquidacion)"></td>

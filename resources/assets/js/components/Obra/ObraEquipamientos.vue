@@ -41,8 +41,19 @@
                                     <input type="text" v-if="criterio2=='lotes.fraccionamiento_id'" v-model="b_lote2" class="form-control" placeholder="Lote a buscar">
 
                                     <input v-else type="text"  v-model="buscar2" @keyup.enter="listarHistorial(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="Texto a buscar">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <select class="form-control col-md-4" v-model="status">
+                                        <option value="">Todos</option>
+                                        <option value="1">Pendiente</option>
+                                        <option value="2">En proceso</option>
+                                        <option value="3">Revisión</option>
+                                        <option value="4">Aprobados</option>
+                                        <option value="0">Rechazados</option>
+                                    </select>
                                     <button type="submit" @click="listarHistorial(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                   
                                 </div>
                             </div>
                         </div>
@@ -110,7 +121,10 @@
                                                 </td>
                                                 <td v-if="equipamientos.status == '4'" class="td2">
                                                     <span class="badge badge-success">Aprobado</span>
-                                                </td>    
+                                                </td>  
+                                                <td v-if="equipamientos.status == '5'" class="td2">
+                                                    <span class="badge badge-danger">Cancelado</span>
+                                                </td>   
                                             </template>
                                             <td> 
                                                 <button v-if="equipamientos.recepcion == 1 && equipamientos.status == 3" title="Realizar recepcion" type="button" 
@@ -1193,6 +1207,7 @@
                 b_etapa2: '',
                 b_manzana2: '',
                 b_lote2: '',
+                status:'',
                 tipoAccion:0,
                 errorRevision:0,
                 errorMostrarMsjRevision:[],
@@ -1373,7 +1388,7 @@
 
             listarHistorial(page, buscar, b_etapa, b_manzana, b_lote, criterio){
                 let me = this;
-                var url = '/equipamiento/indexHistorial?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio;
+                var url = '/equipamiento/indexHistorial?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio+  '&status=' + me.status;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayHistorialEquipamientos = respuesta.equipamientos.data;

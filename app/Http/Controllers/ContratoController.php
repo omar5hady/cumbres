@@ -8881,6 +8881,7 @@ class ContratoController extends Controller
                 foreach ($equipamientosCancel as $canc){
                     $cancel_equip = Solic_equipamiento::findOrFail($canc->id);
                     $cancel_equip->control = 2;
+                    $cancel_equip->status = 5;
                     $cancel_equip->save();
                 }
             }
