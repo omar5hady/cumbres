@@ -38,7 +38,7 @@ class AvaluoController extends Controller
                         'foto' => $imagenUsuario[0]->foto_user,
                         'fecha' => $fecha,
                         'msj' => $msj,
-                        'titulo' => 'Venta :)'
+                        'titulo' => 'Avaluo'
                     ]
                 ];
 

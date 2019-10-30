@@ -953,7 +953,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="form-group row" v-if="credito=='Alia2' || credito=='Respalda2'">
+                                    <div class="form-group row" v-if="credito=='Alia2' || credito=='Respalda2' || credito=='INFONAVIT-FOVISSSTE'">
                                         <label  class="col-md-2 form-control-label" for="text-input">Fovissste</label>
                                         <div class="col-md-2">
                                             <input type="text" pattern="\d*" v-model="fovissste" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
@@ -1120,14 +1120,7 @@
                                         <div class="col-md-3">
                                             <input @change="mostrarRestante()" type="date" v-model="fecha_pago" class="form-control" >
                                         </div>
-                                        <!-- <div class="col-md-3">
-                                            <h6 style="color:#2271b3;" ><strong> Dias </strong></h6>
-                                            <h6><strong>{{ dias = dias}}</strong></h6>
-                                        </div>
-                                         <div class="col-md-3">
-                                            <h6 style="color:#2271b3;" ><strong> Intereses </strong></h6>
-                                            <h6><strong>${{ formatNumber(interes= interes)}}</strong></h6>
-                                        </div> -->
+                                        
                                 </div>
 
                                 <div class="form-group row" v-if="fecha_pago!=''">
@@ -1634,6 +1627,7 @@
                 valor_venta:'',
                 totalGastos:0,
                 totalIntOrd:0,
+                rest_real: 0,
 
                 fecha_infonavit:'',
                 fecha_liquidacion:'',
@@ -1927,6 +1921,9 @@
                     var b = this.arrayPagos[this.arrayPagos.length-1].fecha_pago;
                     var a = moment(this.fecha_pago);
                     this.dias = a.diff(b, 'days'); //[days, years, months, seconds, ...]
+                    if(this.dias == 0){
+                        this.restante_pago = this.rest_real;
+                    }
                     var Restante =this.restante_pago;
                     var intereses = (this.int_oridinario / 100) * (this.dias/30) * (Restante);
                     this.interes = Math.round(intereses*100)/100;
@@ -1949,6 +1946,7 @@
                 
                 Restante += this.interes;
                 Restante = Math.round(Restante*100)/100;
+                this.rest_real = Restante;
                 // this.restante_pago = Restante;
                 return Restante;
 
@@ -1959,6 +1957,7 @@
                     var Restante =this.restante_pago;
                     
                     Restante = Math.round(Restante*100)/100;
+                    this.rest_real = Restante;
                     return Restante;
 
                 }

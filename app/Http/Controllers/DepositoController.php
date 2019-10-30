@@ -783,6 +783,16 @@ class DepositoController extends Controller
                 $gasto->save();
             }
 
+            if($request->interes_mor != 0){
+                $gasto = new Gasto_admin();
+                $gasto->contrato_id = $pago_contrato->contrato_id;
+                $gasto->concepto = 'Interes Moratorio';
+                $gasto->costo = $request->interes_mor;
+                $gasto->fecha = $request->fecha_pago;
+                $gasto->observacion = '';
+                $gasto->save();
+            }
+
             $contrato = Contrato::findOrFail($pago_contrato->contrato_id);
             $contrato->saldo = $contrato->saldo - $pago;
             $contrato->save(); 
@@ -802,6 +812,7 @@ class DepositoController extends Controller
             DB::beginTransaction();
             $deposito = Deposito::findOrFail($request->id);
             $pago_contrato = Pago_contrato::findOrFail($request->pago_id);
+            $diferencia = 0;
 
             if($deposito->cant_depo != $request->cant_depo){
                 $diferencia = $deposito->cant_depo - $request->cant_depo;
@@ -810,16 +821,68 @@ class DepositoController extends Controller
             $pagoAnt = $deposito->cant_depo - $deposito->interes_mor - $deposito->interes_ord;
             $pago = $request->cant_depo - $request->interes_mor - $request->interes_ord;
             
-            if($request->interes_ord != $deposito->interes_ord){
+            if($request->interes_ord != $deposito->interes_ord  && $request->interes_ord>0){
                 $b_gasto = Gasto_admin::select('id')
                             ->where('concepto','=','Interes Ordinario')
                             ->where('costo','=',$deposito->interes_ord)
                             ->where('contrato_id','=',$pago_contrato->contrato_id)
                             ->get();
+                if(sizeof($b_gasto) != 0){
+                    $gasto = Gasto_admin::findOrFail($b_gasto[0]->id);
+                    $gasto->costo = $request->interes_ord;
+                    $gasto->save();
+                }
+                else{
+                    $gasto = new Gasto_admin();
+                    $gasto->contrato_id = $pago_contrato->contrato_id;
+                    $gasto->concepto = 'Interes Ordinario';
+                    $gasto->costo = $request->interes_ord;
+                    $gasto->fecha = $request->fecha_pago;
+                    $gasto->observacion = '';
+                    $gasto->save();
+                }              
+            }
+            elseif($request->interes_ord != $deposito->interes_ord  && $request->interes_ord==0){
+                $b_gasto = Gasto_admin::select('id')
+                            ->where('concepto','=','Interes Ordinario')
+                            ->where('costo','=',$deposito->interes_ord)
+                            ->where('contrato_id','=',$pago_contrato->contrato_id)
+                            ->get();
+                
+                    $gasto = Gasto_admin::findOrFail($b_gasto[0]->id);
+                    $gasto->delete();
+            }
 
-                $gasto = Gasto_admin::findOrFail($b_gasto[0]->id);
-                $gasto->costo = $request->interes_ord;
-                $gasto->save();
+            if($request->interes_mor != $deposito->interes_mor  && $request->interes_mor>0){
+                $b_gasto = Gasto_admin::select('id')
+                            ->where('concepto','=','Interes Moratorio')
+                            ->where('costo','=',$deposito->interes_mor)
+                            ->where('contrato_id','=',$pago_contrato->contrato_id)
+                            ->get();
+                if(sizeof($b_gasto) != 0){
+                    $gasto = Gasto_admin::findOrFail($b_gasto[0]->id);
+                    $gasto->costo = $request->interes_mor;
+                    $gasto->save();
+                }
+                else{
+                    $gasto = new Gasto_admin();
+                    $gasto->contrato_id = $pago_contrato->contrato_id;
+                    $gasto->concepto = 'Interes Moratorio';
+                    $gasto->costo = $request->interes_mor;
+                    $gasto->fecha = $request->fecha_pago;
+                    $gasto->observacion = '';
+                    $gasto->save();
+                }              
+            }
+            elseif($request->interes_mor != $deposito->interes_mor  && $request->interes_mor==0){
+                $b_gasto = Gasto_admin::select('id')
+                            ->where('concepto','=','Interes Moratorio')
+                            ->where('costo','=',$deposito->interes_mor)
+                            ->where('contrato_id','=',$pago_contrato->contrato_id)
+                            ->get();
+                
+                    $gasto = Gasto_admin::findOrFail($b_gasto[0]->id);
+                    $gasto->delete();
             }
 
             $deposito->cant_depo = $request->cant_depo;
@@ -4654,21 +4717,22 @@ class DepositoController extends Controller
 
         $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
                              ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
-                             ->select('depositos.cant_depo','depositos.num_recibo','depositos.fecha_pago','depositos.banco')
+                             ->select('depositos.cant_depo','depositos.interes_mor','depositos.num_recibo','depositos.fecha_pago','depositos.banco')
                              ->where('contratos.id','=',$id)
                              ->get();
 
         for ($i = 0; $i < count($depositos); $i++) {
-        $depositos[$i]->cant_depo = number_format((float)$depositos[$i]->cant_depo, 2, '.', ',');
+            $depositos[$i]->cant_depo = $depositos[$i]->cant_depo - $depositos[$i]->interes_mor;
+            $depositos[$i]->cant_depo = number_format((float)$depositos[$i]->cant_depo, 2, '.', ',');
         }
 
         $totalDepositos =  Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
         ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
-        ->select(DB::raw("SUM(depositos.cant_depo) as sumDeposito"))
+        ->select(DB::raw("SUM(depositos.cant_depo) as sumDeposito"),DB::raw("SUM(depositos.interes_mor) as sumMor"))
         ->where('contratos.id','=',$id)
         ->get();
 
-        $contratos[0]->sumDeposito = $totalDepositos[0]->sumDeposito;
+        $contratos[0]->sumDeposito = $totalDepositos[0]->sumDeposito - $totalDepositos[0]->sumMor;
 
         $contratos[0]->gastos = number_format((float)$contratos[0]->gastos, 2, '.', ',');
         $contratos[0]->precio_venta = number_format((float)$contratos[0]->precio_venta, 2, '.', ',');
