@@ -5866,6 +5866,7 @@ class ExpedienteController extends Controller
                 $inst_seleccionada->institucion = "INFONAVIT";
                 $inst_seleccionada->monto_credito = $request->infonavit;
                 $inst_seleccionada->tipo = 1;
+                $inst_seleccionada->status = 2;
                 $inst_seleccionada->save();
 
                 $elegido = inst_seleccionada::select('id')
@@ -5883,6 +5884,7 @@ class ExpedienteController extends Controller
                 $inst_seleccionada->institucion = "FOVISSSTE";
                 $inst_seleccionada->monto_credito = $request->fovissste;
                 $inst_seleccionada->tipo = 1;
+                $inst_seleccionada->status = 2;
                 $inst_seleccionada->save();
 
                 $elegido = inst_seleccionada::select('id')

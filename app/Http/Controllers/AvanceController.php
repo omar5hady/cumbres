@@ -260,24 +260,25 @@ class AvanceController extends Controller
     public function excelLotesPartidas(Request $request, $contrato)
     {
 
+            $partidas= Partida::select('partida')->distinct()->get();
+
             $avances = Avance::join('lotes','avances.lote_id','=','lotes.id')
-            ->join('partidas','avances.partida_id','=','partidas.id')
             ->select('lotes.num_lote as lote','avances.avance', 'avances.avance_porcentaje', 'lotes.id',
             'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id','avances.id',
-            'partidas.partida','avances.partida_id','avances.cambio_avance','lotes.aviso')
+            'avances.partida_id','avances.cambio_avance','lotes.aviso')
             ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
             ->addSelect('fraccionamientos.nombre as proyecto')
-            ->join('modelos','lotes.modelo_id','=','modelos.id')
-            ->addSelect('modelos.nombre as modelos')
                 ->where('lotes.aviso', '=', $contrato)
+                ->orderBy('lotes.num_lote','ASC')
                 ->orderBy('avances.id','ASC')
                 ->orderBy('lotes.id','ASC')->get();
 
             $totalPartidas = Avance::join('lotes','avances.lote_id','=','lotes.id')
-                ->join('partidas','avances.partida_id','=','partidas.id')
                 ->select('lotes.num_lote as lote','avances.avance', 'avances.avance_porcentaje', 'lotes.id',
                 'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id','avances.id',
-                'partidas.partida','avances.partida_id','avances.cambio_avance','lotes.aviso')
+                'avances.partida_id','avances.cambio_avance','lotes.aviso')
+                ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                ->addSelect('fraccionamientos.nombre as proyecto')
                 ->where('lotes.aviso', '=', $contrato)->get()->count();
 
        $numRep = $totalPartidas/49;
@@ -288,8 +289,8 @@ class AvanceController extends Controller
         //     'rep' => $numRep
         // ];
 
-        return Excel::create('Avance_partidas', function($excel) use ($avances, $numRep){
-            $excel->sheet('avances', function($sheet) use ($avances, $numRep){
+        return Excel::create('Avance_partidas', function($excel) use ($avances, $numRep, $partidas){
+            $excel->sheet('avances', function($sheet) use ($avances, $numRep, $partidas){
 
                 $sheet->row(1, [
                     'Proyecto: ', $avances[0]->proyecto, 'Contrato: ',$avances[0]->aviso
@@ -326,7 +327,7 @@ class AvanceController extends Controller
                 for($i = 0; $i<49; $i++) {
                     $cont++;
                     $sheet->row($i+4, [
-                        $avances[$i]->partida,
+                        $partidas[$i]->partida,
                     ]);	
                 }
 
