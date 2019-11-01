@@ -181,6 +181,16 @@ class GastosAdministrativosController extends Controller
         return ['gasto' => $gasto];
     }
 
+    public function getAvaluos(Request $request){
+        if(!$request->ajax())return redirect('/');
+        $gasto = Gasto_admin::select('id','fecha','costo')
+                ->where('contrato_id','=',$request->folio)
+                ->where('concepto','=','Avaluo')
+                ->get();
+            
+        return ['gasto' => $gasto];
+    }
+
     public function updateAvaluo(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         try{

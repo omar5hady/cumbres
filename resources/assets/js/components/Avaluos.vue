@@ -403,6 +403,13 @@
                                         <h6 v-text="'$'+formatNumber(costo)"></h6>
                                     </div>
                                 </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Observación</label>
+                                    <div class="col-md-9">
+                                        <textarea rows="1" cols="30" class="form-control" v-model="observacion" placeholder="Observaciones"></textarea>
+                                    </div>
+                                </div>
                             </form>
                             <!-- fin del form solicitud de avaluo -->
 
@@ -423,6 +430,27 @@
                                     <div class="col-md-3">
                                         <h6 v-text="'$'+formatNumber(costo)"></h6>
                                     </div>
+                                    <button v-if="tipoAccion==5" type="button" class="btn btn-success" @click="registrarGasto()"><i class="fa fa-plus"></i>  Nuevo Gasto</button>
+                                </div>
+
+                                <div class="form-group row">
+                                    <table class="table table-bordered table-striped table-sm" >
+                                        <thead>
+                                            <tr>
+                                                <th>Fecha</th>
+                                                <th>Gasto</th>
+                                                <th>Costo</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="gasto in arrayGastos" :key="gasto.id">
+                                                
+                                                <td v-text="gasto.fecha" ></td>
+                                                <td v-text="'Avaluo'" ></td>
+                                                <td v-text="'$'+formatNumber(gasto.costo)"></td>
+                                            </tr>                               
+                                        </tbody>
+                                    </table>
                                 </div>
                             </form>
                             <!-- fin del form solicitud de avaluo -->
@@ -437,7 +465,7 @@
                             <button v-if="tipoAccion==3" type="button" class="btn btn-primary" @click="setFechaConcluido()">Guardar</button>
                             <button v-if="tipoAccion==6" type="button" class="btn btn-primary" @click="updateFechaConcluido()">Guardar Cambios</button>
                             <button v-if="tipoAccion==4" type="button" class="btn btn-primary" @click="registrarGasto()">Guardar</button>
-                            <button v-if="tipoAccion==5" type="button" class="btn btn-primary" @click="updateGasto()">Guardar Cambios</button>
+                            <button v-if="tipoAccion==5" type="button" class="btn btn-primary" @click="updateGasto()">Actualizar Costo</button>
                         </div>
                     </div>
                       <!-- /.modal-content -->
@@ -624,6 +652,7 @@
                 arrayFraccionamientos:[],
                 arrayEtapas:[],
                 arrayGastoAdmin:[],
+                arrayGastos:[],
 
                 arrayStatus:[],
                 arrayVisitas:[],
@@ -875,6 +904,20 @@
                 });
             },
 
+            listraGastos(contrato){
+                let me = this;
+                
+                me.arrayGastos=[];
+                var url = '/getAvaluos?folio=' + contrato;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayGastos = respuesta.gasto;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
             cambiarPagina(page,buscar,b_etapa,b_manzana,b_lote,criterio){
                 let me = this;
                 //Actualiza la pagina actual
@@ -1081,6 +1124,7 @@
                     'resultado' : this.resultado,
                     'costo' : this.costo,
                     'id':this.id,
+                    'observacion': this.observacion,
                     
                 }).then(function (response){
                     me.cerrarModal();
@@ -1112,6 +1156,7 @@
                     'avaluoId':this.avaluoId,
                     'gasto_id':this.id_gasto,
                     'costo' : this.costo,
+                    'observacion': this.observacion,
                     
                 }).then(function (response){
                     me.cerrarModal();
@@ -1289,6 +1334,7 @@
                         this.id = data['folio'];
                         this.avaluoId = data['avaluoId'];
                         this.getDatosCosto(this.id,this.costo);
+                        this.listraGastos(this.id);
                         break;
                     }
 

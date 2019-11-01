@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use App\User;
 use DB;
 use App\Notifications\NotifyAdmin;
+use App\Obs_expediente;
 use File;
 
 
@@ -44,6 +45,7 @@ class AvaluoController extends Controller
 
 
                 User::findOrFail(3)->notify(new NotifyAdmin($arregloAceptado));
+                //User::findOrFail(23680)->notify(new NotifyAdmin($arregloAceptado));
 
 
     }
@@ -591,6 +593,14 @@ class AvaluoController extends Controller
             $contrato = Contrato::findOrFail($request->id);
             $contrato->saldo = $contrato->saldo + $request->costo;
             $contrato->save(); 
+
+            if($request->observacion != ''){
+                $observacion = new Obs_expediente();
+                $observacion->contrato_id = $request->id;
+                $observacion->observacion = $request->observacion;
+                $observacion->usuario = Auth::user()->usuario;
+                $observacion->save();
+            }
             DB::commit();
         } catch (Exception $e){
             DB::rollBack();
@@ -602,25 +612,45 @@ class AvaluoController extends Controller
 
         try{
             DB::beginTransaction();
-            if($request->costo > 0){
-                $gasto = Gasto_admin::findOrFail($request->gasto_id);
-                $costo_ant = $gasto->costo;
-                $contrato_id = $gasto->contrato_id;
-                $gasto->costo = $request->costo;
-                $gasto->fecha = $request->fecha_concluido;
-                $gasto->save();
-            }
-            
 
+            $costo_ant = 0;
             $avaluo = Avaluo::findOrFail($request->avaluoId);
+            $costo_ant = $avaluo->costo;
+            $contrato_id = $avaluo->contrato_id;
             $avaluo->costo = $request->costo;
             $avaluo->fecha_concluido = $request->fecha_concluido;
             $avaluo->resultado = $request->resultado;
             $avaluo->save();
 
+            if($request->costo > 0 && $costo_ant != 0){
+                $gasto = Gasto_admin::findOrFail($request->gasto_id);
+                $costo_ant = $gasto->costo;
+                $gasto->costo = $request->costo;
+                $gasto->fecha = $request->fecha_concluido;
+                $gasto->save();
+            }
+            elseif($request->costo > 0 && $costo_ant == 0){
+                $gasto = new Gasto_admin();
+                $gasto->contrato_id = $contrato_id;
+                $gasto->concepto = 'Avaluo';
+                $gasto->costo = $request->costo;
+                $gasto->fecha = $request->fecha_concluido;
+                $gasto->observacion = '';
+                $gasto->save();
+            }
+
             $contrato = Contrato::findOrFail($contrato_id);
             $contrato->saldo = $contrato->saldo - $costo_ant + $request->costo;
             $contrato->save(); 
+
+            if($request->observacion != ''){
+                $observacion = new Obs_expediente();
+                $observacion->contrato_id = $contrato_id;
+                $observacion->observacion = $request->observacion;
+                $observacion->usuario = Auth::user()->usuario;
+                $observacion->save();
+            }
+            
             DB::commit();
         } catch (Exception $e){
             DB::rollBack();
@@ -635,7 +665,29 @@ class AvaluoController extends Controller
 
         $avaluo=Avaluo::findOrFail($avaluo_id);
         $avaluo->fecha_recibido = $hoy;
+        $numContrato = $avaluo->contrato_id;
         $avaluo->save();
+
+        $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=', Auth::user()->id)->get();
+                $fecha = Carbon::now();
+                $msj = "Avaluo finalizado para el contrato #" . $numContrato;
+                $arregloAceptado = [
+                    'notificacion' => [
+                        'usuario' => $imagenUsuario[0]->usuario,
+                        'foto' => $imagenUsuario[0]->foto_user,
+                        'fecha' => $fecha,
+                        'msj' => $msj,
+                        'titulo' => 'Avaluo Finalizado'
+                    ]
+                ];
+
+                $users = User::select('id')->where('rol_id','=','1')
+                    ->orWhere('rol_id','=','6')
+                    ->orWhere('rol_id','=','8')->get();
+
+                foreach($users as $notificar){
+                    User::findOrFail($notificar->id)->notify(new NotifyAdmin($arregloAceptado));
+                }
     }
 
     public function formSubmitAvaluo(Request $request, $id)

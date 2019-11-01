@@ -450,6 +450,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/avaluos/enviarVentas','AvaluoController@enviarVentas');
         Route::get('/avaluos/historialVisita','HistVisitasController@index');
         Route::get('/getGastoAvaluo','GastosAdministrativosController@getDatosAvaluo');
+        Route::get('/getAvaluos','GastosAdministrativosController@getAvaluos');
         Route::post('/avaluos/storeVisita','HistVisitasController@store');
         Route::post('/avaluos/storeStatus','HistVisitasController@storeStatus');
         Route::get('/avaluos/historialStatus','HistVisitasController@indexStatus');
