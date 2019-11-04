@@ -179,13 +179,13 @@ class EstadisticasController extends Controller
         $totalPersonas = $mascotas[0]->sin_mascotas + $mascotas[0]->sumMascota;
         $sinDiscap =$totalPersonas - $discapacitados;
         if($totalPersonas > 0){
-        $mascotas[0]->promedioPerros = $mascotas[0]->perros/$totalPersonas;
-        $promedioAutos = $mascotas[0]->totalAutos/$totalPersonas;
-        $promedioAmasCasa = $mascotas[0]->totalAmaCasa/$totalPersonas;
+                $mascotas[0]->promedioPerros = $mascotas[0]->perros/$totalPersonas;
+                $promedioAutos = $mascotas[0]->totalAutos/$totalPersonas;
+                $promedioAmasCasa = $mascotas[0]->totalAmaCasa/$totalPersonas;
         }else{
-        $mascotas[0]->promedioPerros =0;
-        $promedioAutos = 0;
-        $promedioAmasCasa = 0;
+                $mascotas[0]->promedioPerros =0;
+                $promedioAutos = 0;
+                $promedioAmasCasa = 0;
         }
  
 

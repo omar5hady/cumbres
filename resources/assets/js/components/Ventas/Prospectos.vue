@@ -95,7 +95,7 @@
                                 </div>
                             </div>
                             <div class="table-responsive">
-                                <table class="table table-bordered table-striped table-sm">
+                                <table class="table2 table-bordered table-striped table-sm">
                                     <thead>
                                         <tr>
                                             <th>Opciones</th>
@@ -114,7 +114,7 @@
                                     </thead>
                                     <tbody>
                                         <tr v-for="prospecto in arrayProspectos" :key="prospecto.id">
-                                            <td>
+                                            <td class="td2">
                                             
                                             <template v-if="prospecto.activo">
                                                 <button title="Desactivar cliente" type="button" @click="desactivarProspecto(prospecto.id)" class="btn btn-danger btn-sm">
@@ -133,32 +133,32 @@
                                                     <i class="fa fa-exchange"></i>
                                                 </button>
                                             </td>
-                                            <td v-text="prospecto.nombre + ' ' + prospecto.apellidos "></td>
-                                            <td >
+                                            <td class="td2" v-text="prospecto.nombre + ' ' + prospecto.apellidos "></td>
+                                            <td class="td2" >
                                                  <a title="Llamar" class="btn btn-dark" :href="'tel:'+prospecto.celular"><i class="fa fa-phone fa-lg"></i></a>
                                                  <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+prospecto.celular+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>
                                                  
                                             </td>
-                                            <td v-if="prospecto.email_institucional == null"> 
+                                            <td class="td2" v-if="prospecto.email_institucional == null"> 
                                                 <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+prospecto.email"> <i class="fa fa-envelope-o fa-lg"></i> </a>
                                             </td>
-                                              <td v-else> 
+                                              <td class="td2" v-else> 
                                                 <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+prospecto.email+ ';'+prospecto.email_institucional"> <i class="fa fa-envelope-o fa-lg"></i> </a>
                                             </td>
-                                            <td v-text="prospecto.rfc"></td>
-                                            <td v-text="prospecto.nss"></td>
-                                            <td v-text="prospecto.curp"></td>
-                                            <td v-text="prospecto.proyecto"></td>
-                                            <td v-if="prospecto.clasificacion==1">No viable</td>
-                                            <td v-if="prospecto.clasificacion==2">Tipo A</td>
-                                            <td v-if="prospecto.clasificacion==3">Tipo B</td>
-                                            <td v-if="prospecto.clasificacion==4">Tipo C</td>
-                                            <td v-if="prospecto.clasificacion==5">Ventas</td>
-                                            <td v-if="prospecto.clasificacion==6">Cancelado</td>
-                                            <td v-if="prospecto.clasificacion==7">Coacreditado</td>
-                                            <td> <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" @click="abrirModal3('prospecto','ver_todo', prospecto.id),listarObservacion(1,prospecto.id)">Ver todos</button> </td>
-                                            <td v-if="rolId != 2" v-text="prospecto.v_completo"></td>
-                                            <td v-if="rolId != 2" v-text="prospecto.publicidad"></td>
+                                            <td class="td2" v-text="prospecto.rfc"></td>
+                                            <td class="td2" v-text="prospecto.nss"></td>
+                                            <td class="td2" v-text="prospecto.curp"></td>
+                                            <td class="td2" v-text="prospecto.proyecto"></td>
+                                            <td class="td2" v-if="prospecto.clasificacion==1">No viable</td>
+                                            <td class="td2" v-if="prospecto.clasificacion==2">Tipo A</td>
+                                            <td class="td2" v-if="prospecto.clasificacion==3">Tipo B</td>
+                                            <td class="td2" v-if="prospecto.clasificacion==4">Tipo C</td>
+                                            <td class="td2" v-if="prospecto.clasificacion==5">Ventas</td>
+                                            <td class="td2" v-if="prospecto.clasificacion==6">Cancelado</td>
+                                            <td class="td2" v-if="prospecto.clasificacion==7">Coacreditado</td>
+                                            <td class="td2"> <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" @click="abrirModal3('prospecto','ver_todo', prospecto.id),listarObservacion(1,prospecto.id)">Ver todos</button> </td>
+                                            <td class="td2" v-if="rolId != 2" v-text="prospecto.v_completo"></td>
+                                            <td class="td2" v-if="rolId != 2" v-text="prospecto.publicidad"></td>
                                         </tr>                               
                                     </tbody>
                                 </table>
@@ -2128,6 +2128,20 @@
         opacity: 1 !important;
         position: fixed !important;
         background-color: #3c29297a !important;
+    }
+    .table2 {
+    margin: auto;
+    border-collapse: collapse;
+    overflow-x: auto;
+    display: block;
+    width: fit-content;
+    max-width: 100%;
+    box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
+    }
+
+    .td2, .th2 {
+    border: solid rgb(200, 200, 200) 1px;
+    padding: .5rem;
     }
     .div-error{
         display:flex;

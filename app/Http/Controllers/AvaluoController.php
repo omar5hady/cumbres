@@ -85,7 +85,7 @@ class AvaluoController extends Controller
                     ->where('inst_seleccionadas.elegido','=','1')
                     ->where('avaluos.fecha_recibido','=',NULL)
                     ->orderBy('avaluos.fecha_recibido','asc')
-                    ->paginate(25);
+                    ->paginate(12);
 
         }
         else{
@@ -112,7 +112,7 @@ class AvaluoController extends Controller
                         ->where('lotes.fraccionamiento_id','=',$buscar)
                         ->where('avaluos.fecha_recibido','=',NULL)
                         ->orderBy('avaluos.fecha_recibido','asc')
-                        ->paginate(25);
+                        ->paginate(12);
 
                     }
                     elseif($b_etapa != '' && $b_manzana =='' && $b_lote == ''){
@@ -136,7 +136,7 @@ class AvaluoController extends Controller
                         ->where('lotes.fraccionamiento_id','=',$buscar)
                         ->where('lotes.etapa_id','=',$b_etapa)
                         ->orderBy('avaluos.fecha_recibido','asc')
-                        ->paginate(25);
+                        ->paginate(12);
 
                     }
                     elseif($b_etapa != '' && $b_manzana !='' && $b_lote == ''){
@@ -161,7 +161,7 @@ class AvaluoController extends Controller
                         ->where('lotes.etapa_id','=',$b_etapa)
                         ->where('lotes.manzana','=',$b_manzana)
                         ->orderBy('avaluos.fecha_recibido','asc')
-                        ->paginate(25);
+                        ->paginate(12);
 
                     }
                     elseif($b_etapa != '' && $b_manzana !='' && $b_lote != ''){
@@ -187,7 +187,7 @@ class AvaluoController extends Controller
                         ->where('lotes.manzana','=',$b_manzana)
                         ->where('lotes.num_lote','=',$b_lote)
                         ->orderBy('avaluos.fecha_recibido','asc')
-                        ->paginate(25);
+                        ->paginate(12);
 
                     }
                     elseif($b_etapa != '' && $b_manzana =='' && $b_lote != ''){
@@ -212,7 +212,7 @@ class AvaluoController extends Controller
                         ->where('lotes.etapa_id','=',$b_etapa)
                         ->where('lotes.num_lote','=',$b_lote)
                         ->orderBy('avaluos.fecha_recibido','asc')
-                        ->paginate(25);
+                        ->paginate(12);
 
                     }
                     elseif($b_etapa == '' && $b_manzana =='' && $b_lote != ''){
@@ -236,7 +236,7 @@ class AvaluoController extends Controller
                         ->where('lotes.fraccionamiento_id','=',$buscar)
                         ->where('lotes.num_lote','=',$b_lote)
                         ->orderBy('avaluos.fecha_recibido','asc')
-                        ->paginate(25);
+                        ->paginate(12);
 
                     }
                     elseif($b_etapa == '' && $b_manzana !='' && $b_lote != ''){
@@ -261,7 +261,7 @@ class AvaluoController extends Controller
                         ->where('lotes.manzana','=',$b_manzana)
                         ->where('lotes.num_lote','=',$b_lote)
                         ->orderBy('avaluos.fecha_recibido','asc')
-                        ->paginate(25);
+                        ->paginate(12);
 
                     }
                     break;
@@ -287,7 +287,7 @@ class AvaluoController extends Controller
                     ->where('licencias.visita_avaluo','=',$buscar)
                     ->where('avaluos.fecha_recibido','=',NULL)
                     ->orderBy('avaluos.fecha_recibido','asc')
-                    ->paginate(25);
+                    ->paginate(12);
                     break;
                 }
             }
