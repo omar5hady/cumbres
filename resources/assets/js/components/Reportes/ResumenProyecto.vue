@@ -104,7 +104,7 @@
                                     <td class="td2" v-text="contrato.manzana"></td>
                                     <td class="td2" v-text="contrato.num_lote"></td>
                                     <td class="td2" v-text="contrato.modelo"></td>
-                                    <td class="td2" v-text="contrato.calle + 'Num. '+ contrato.numero"></td>
+                                    <td class="td2" v-text="contrato.calle + ' Num. '+ contrato.numero"></td>
                                     <td class="td2" v-text="contrato.fecha_status"></td>
                                     <td class="td2" v-text="contrato.nombre_cliente"></td>
                                     <td class="td2" v-text="contrato.institucion"></td>

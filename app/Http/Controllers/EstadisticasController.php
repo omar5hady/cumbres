@@ -218,7 +218,6 @@ class EstadisticasController extends Controller
                                 ->where('lotes.fraccionamiento_id','=',$proyecto)
                                 ->where('lotes.etapa_id','=',$etapa)
                                 ->where('contratos.status','=',3)
-                                ->where('contratos.integracion','=',0)
                                 ->count();
 
                 $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
@@ -232,12 +231,28 @@ class EstadisticasController extends Controller
                 
                 $individualizadas = Expediente::join('contratos','expedientes.id','=','contratos.id')
                                 ->join('creditos','contratos.id','=','creditos.id')
+                                ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
                                 ->join('lotes','creditos.lote_id','=','lotes.id')
                                 ->where('lotes.fraccionamiento_id','=',$proyecto)
                                 ->where('lotes.etapa_id','=',$etapa)
                                 ->where('contratos.status','=',3)
                                 ->where('contratos.integracion','=',1)
                                 ->where('expedientes.fecha_firma_esc','!=',NULL)
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.tipo_credito', '!=', 'Crédito Directo')
+                                ->count();
+
+                $indiviDirecto = Expediente::join('contratos','expedientes.id','=','contratos.id')
+                                ->join('creditos','contratos.id','=','creditos.id')
+                                ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                                ->join('lotes','creditos.lote_id','=','lotes.id')
+                                ->where('lotes.fraccionamiento_id','=',$proyecto)
+                                ->where('lotes.etapa_id','=',$etapa)
+                                ->where('contratos.status','=',3)
+                                ->where('contratos.integracion','=',1)
+                                ->where('contratos.saldo','=',0)
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.tipo_credito', '=', 'Crédito Directo')
                                 ->count();
 
                 $sumas = Contrato::join('creditos','contratos.id','=','creditos.id')
@@ -284,6 +299,8 @@ class EstadisticasController extends Controller
                                 ->where('i.elegido', '=', 1)->paginate(15);
 
                 $disponibles  = $disponibles + $contratos;
+                $vendidas = $vendidas - $individualizadas - $indiviDirecto;
+                $individualizadas = $individualizadas + $indiviDirecto;
         }
         else{
                 $lotes = Lote::where('fraccionamiento_id','=',$proyecto)
@@ -296,7 +313,6 @@ class EstadisticasController extends Controller
                                 ->join('lotes','creditos.lote_id','=','lotes.id')
                                 ->where('lotes.fraccionamiento_id','=',$proyecto)
                                 ->where('contratos.status','=',3)
-                                ->where('contratos.integracion','=',0)
                                 ->count();
 
                 $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
@@ -309,11 +325,26 @@ class EstadisticasController extends Controller
                 
                 $individualizadas = Expediente::join('contratos','expedientes.id','=','contratos.id')
                                 ->join('creditos','contratos.id','=','creditos.id')
+                                ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
                                 ->join('lotes','creditos.lote_id','=','lotes.id')
                                 ->where('lotes.fraccionamiento_id','=',$proyecto)
                                 ->where('contratos.status','=',3)
                                 ->where('contratos.integracion','=',1)
                                 ->where('expedientes.fecha_firma_esc','!=',NULL)
+                                ->where('i.tipo_credito', '!=', 'Crédito Directo')
+                                ->count();
+                
+                $indiviDirecto = Expediente::join('contratos','expedientes.id','=','contratos.id')
+                                ->join('creditos','contratos.id','=','creditos.id')
+                                ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                                ->join('lotes','creditos.lote_id','=','lotes.id')
+                                ->where('lotes.fraccionamiento_id','=',$proyecto)
+                                ->where('lotes.etapa_id','=',$etapa)
+                                ->where('contratos.status','=',3)
+                                ->where('contratos.integracion','=',1)
+                                ->where('contratos.saldo','=',0)
+                                ->where('i.elegido', '=', 1)
+                                ->where('i.tipo_credito', '=', 'Crédito Directo')
                                 ->count();
 
                 $sumas = Contrato::join('creditos','contratos.id','=','creditos.id')
@@ -358,6 +389,8 @@ class EstadisticasController extends Controller
                                 ->where('i.elegido', '=', 1)->paginate(15);
 
                 $disponibles  = $disponibles + $contratos;
+                $vendidas = $vendidas - $individualizadas - $indiviDirecto;
+                $individualizadas = $individualizadas + $indiviDirecto;
         }
 
         
@@ -375,8 +408,8 @@ class EstadisticasController extends Controller
                         'last_page'     => $resContratos->lastPage(),
                         'from'          => $resContratos->firstItem(),
                         'to'            => $resContratos->lastItem(),
-                    ],
-                ];
+                ],
+        ];
 
 
     }
