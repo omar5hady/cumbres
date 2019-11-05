@@ -118,7 +118,15 @@ class ExpedienteController extends Controller
                         'lotes.credito_puente',
                         'contratos.integracion',
                         'lotes.fraccionamiento_id',
-                        'avaluos.pdf'
+                        'avaluos.pdf',
+                    DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
+                                WHERE pagos_contratos.tipo_pagare = 0
+                                and pagos_contratos.contrato_id = contratos.id
+                                and pagos_contratos.pagado != 3) as totPagare"),
+                    DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
+                                WHERE pagos_contratos.tipo_pagare = 0
+                                and pagos_contratos.contrato_id = contratos.id
+                                and pagos_contratos.pagado != 3) as totRest")
                     )
                     ->where('i.elegido', '=', 1)
                     ->where('contratos.integracion', '=', 0)
@@ -164,7 +172,15 @@ class ExpedienteController extends Controller
                             'lotes.credito_puente',
                             'contratos.integracion',
                             'lotes.fraccionamiento_id',
-                            'avaluos.pdf'
+                            'avaluos.pdf',
+                    DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
+                                WHERE pagos_contratos.tipo_pagare = 0
+                                and pagos_contratos.contrato_id = contratos.id
+                                and pagos_contratos.pagado != 3) as totPagare"),
+                    DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
+                                WHERE pagos_contratos.tipo_pagare = 0
+                                and pagos_contratos.contrato_id = contratos.id
+                                and pagos_contratos.pagado != 3) as totRest")
                         )
                         ->where('i.elegido', '=', 1)
                         ->where('contratos.integracion', '=', 0)
@@ -209,7 +225,15 @@ class ExpedienteController extends Controller
                                 'lotes.credito_puente',
                                 'contratos.integracion',
                                 'lotes.fraccionamiento_id',
-                                'avaluos.pdf'
+                                'avaluos.pdf',
+                    DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
+                                WHERE pagos_contratos.tipo_pagare = 0
+                                and pagos_contratos.contrato_id = contratos.id
+                                and pagos_contratos.pagado != 3) as totPagare"),
+                    DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
+                                WHERE pagos_contratos.tipo_pagare = 0
+                                and pagos_contratos.contrato_id = contratos.id
+                                and pagos_contratos.pagado != 3) as totRest")
                             )
                             ->where('i.elegido', '=', 1)
                             ->where('contratos.integracion', '=', 0)
@@ -255,7 +279,15 @@ class ExpedienteController extends Controller
                                     'lotes.credito_puente',
                                     'contratos.integracion',
                                     'lotes.fraccionamiento_id',
-                                    'avaluos.pdf'
+                                    'avaluos.pdf',
+                    DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
+                                WHERE pagos_contratos.tipo_pagare = 0
+                                and pagos_contratos.contrato_id = contratos.id
+                                and pagos_contratos.pagado != 3) as totPagare"),
+                    DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
+                                WHERE pagos_contratos.tipo_pagare = 0
+                                and pagos_contratos.contrato_id = contratos.id
+                                and pagos_contratos.pagado != 3) as totRest")
                                 )
                                 ->where('i.elegido', '=', 1)
                                 ->where('contratos.integracion', '=', 0)
@@ -301,7 +333,15 @@ class ExpedienteController extends Controller
                                         'lotes.credito_puente',
                                         'contratos.integracion',
                                         'lotes.fraccionamiento_id',
-                                        'avaluos.pdf'
+                                        'avaluos.pdf',
+                    DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
+                                WHERE pagos_contratos.tipo_pagare = 0
+                                and pagos_contratos.contrato_id = contratos.id
+                                and pagos_contratos.pagado != 3) as totPagare"),
+                    DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
+                                WHERE pagos_contratos.tipo_pagare = 0
+                                and pagos_contratos.contrato_id = contratos.id
+                                and pagos_contratos.pagado != 3) as totRest")
                                     )
                                     ->where('i.elegido', '=', 1)
                                     ->where('contratos.integracion', '=', 0)
@@ -347,7 +387,15 @@ class ExpedienteController extends Controller
                                             'lotes.credito_puente',
                                             'contratos.integracion',
                                             'lotes.fraccionamiento_id',
-                                            'avaluos.pdf'
+                                            'avaluos.pdf',
+                    DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
+                                WHERE pagos_contratos.tipo_pagare = 0
+                                and pagos_contratos.contrato_id = contratos.id
+                                and pagos_contratos.pagado != 3) as totPagare"),
+                    DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
+                                WHERE pagos_contratos.tipo_pagare = 0
+                                and pagos_contratos.contrato_id = contratos.id
+                                and pagos_contratos.pagado != 3) as totRest")
                                         )
                                         ->where('i.elegido', '=', 1)
                                         ->where('contratos.integracion', '=', 0)
@@ -394,7 +442,15 @@ class ExpedienteController extends Controller
                                                 'lotes.credito_puente',
                                                 'contratos.integracion',
                                                 'lotes.fraccionamiento_id',
-                                                'avaluos.pdf'
+                                                'avaluos.pdf',
+                    DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
+                                WHERE pagos_contratos.tipo_pagare = 0
+                                and pagos_contratos.contrato_id = contratos.id
+                                and pagos_contratos.pagado != 3) as totPagare"),
+                    DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
+                                WHERE pagos_contratos.tipo_pagare = 0
+                                and pagos_contratos.contrato_id = contratos.id
+                                and pagos_contratos.pagado != 3) as totRest")
                                             )
                                             ->where('i.elegido', '=', 1)
                                             ->where('contratos.integracion', '=', 0)
@@ -442,7 +498,15 @@ class ExpedienteController extends Controller
                                                     'lotes.credito_puente',
                                                     'contratos.integracion',
                                                     'lotes.fraccionamiento_id',
-                                                    'avaluos.pdf'
+                                                    'avaluos.pdf',
+                    DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
+                                WHERE pagos_contratos.tipo_pagare = 0
+                                and pagos_contratos.contrato_id = contratos.id
+                                and pagos_contratos.pagado != 3) as totPagare"),
+                    DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
+                                WHERE pagos_contratos.tipo_pagare = 0
+                                and pagos_contratos.contrato_id = contratos.id
+                                and pagos_contratos.pagado != 3) as totRest")
                                                 )
                                                 ->where('i.elegido', '=', 1)
                                                 ->where('contratos.integracion', '=', 0)
@@ -489,7 +553,15 @@ class ExpedienteController extends Controller
                                                         'lotes.credito_puente',
                                                         'contratos.integracion',
                                                         'lotes.fraccionamiento_id',
-                                                        'avaluos.pdf'
+                                                        'avaluos.pdf',
+                                                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
+                                                                    WHERE pagos_contratos.tipo_pagare = 0
+                                                                    and pagos_contratos.contrato_id = contratos.id
+                                                                    and pagos_contratos.pagado != 3) as totPagare"),
+                                                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
+                                                                    WHERE pagos_contratos.tipo_pagare = 0
+                                                                    and pagos_contratos.contrato_id = contratos.id
+                                                                    and pagos_contratos.pagado != 3) as totRest")
                                                     )
                                                     ->where('i.elegido', '=', 1)
                                                     ->where('contratos.integracion', '=', 0)
@@ -539,7 +611,15 @@ class ExpedienteController extends Controller
                                                             'lotes.credito_puente',
                                                             'contratos.integracion',
                                                             'lotes.fraccionamiento_id',
-                                                            'avaluos.pdf'
+                                                            'avaluos.pdf',
+                    DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
+                                WHERE pagos_contratos.tipo_pagare = 0
+                                and pagos_contratos.contrato_id = contratos.id
+                                and pagos_contratos.pagado != 3) as totPagare"),
+                    DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
+                                WHERE pagos_contratos.tipo_pagare = 0
+                                and pagos_contratos.contrato_id = contratos.id
+                                and pagos_contratos.pagado != 3) as totRest")
                                                         )
                                                         ->where('i.elegido', '=', 1)
                                                         ->where('contratos.integracion', '=', 0)

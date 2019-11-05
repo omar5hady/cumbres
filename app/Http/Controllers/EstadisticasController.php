@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use DB;
 use App\Dato_extra;
 use App\Credito;
+use App\Contrato;
+use App\Expediente;
+use App\Lote;
 
 class EstadisticasController extends Controller
 {
@@ -195,5 +198,186 @@ class EstadisticasController extends Controller
                 'silla_ruedas'=>$silla_ruedas,
                 'promedioAutos'=>$promedioAutos,
                 'promedioAmasCasa'=>$promedioAmasCasa];      
+    }
+
+    public function resumenProyecto(Request $request){
+        if(!$request->ajax())return redirect('/');
+        $proyecto = $request->proyecto;
+        $etapa = $request->etapa;
+
+        if($etapa!=''){
+                $lotes = Lote::where('fraccionamiento_id','=',$proyecto)
+                                ->where('etapa_id','=',$etapa)->count();
+
+                $disponibles = Lote::where('fraccionamiento_id','=',$proyecto)
+                                ->where('etapa_id','=',$etapa)
+                                ->where('contrato','=',0)->count();
+
+                $vendidas = Contrato::join('creditos','contratos.id','=','creditos.id')
+                                ->join('lotes','creditos.lote_id','=','lotes.id')
+                                ->where('lotes.fraccionamiento_id','=',$proyecto)
+                                ->where('lotes.etapa_id','=',$etapa)
+                                ->where('contratos.status','=',3)
+                                ->where('contratos.integracion','=',0)
+                                ->count();
+
+                $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
+                                ->join('lotes','creditos.lote_id','=','lotes.id')
+                                ->select('lotes.id')
+                                ->where('lotes.fraccionamiento_id','=',$proyecto)
+                                ->where('lotes.etapa_id','=',$etapa)
+                                ->where('contratos.status','=',1)
+                                ->where('contratos.integracion','=',0)->distinct()
+                                ->count();
+                
+                $individualizadas = Expediente::join('contratos','expedientes.id','=','contratos.id')
+                                ->join('creditos','contratos.id','=','creditos.id')
+                                ->join('lotes','creditos.lote_id','=','lotes.id')
+                                ->where('lotes.fraccionamiento_id','=',$proyecto)
+                                ->where('lotes.etapa_id','=',$etapa)
+                                ->where('contratos.status','=',3)
+                                ->where('contratos.integracion','=',1)
+                                ->where('expedientes.fecha_firma_esc','!=',NULL)
+                                ->count();
+
+                $sumas = Contrato::join('creditos','contratos.id','=','creditos.id')
+                                ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                ->join('lotes','creditos.lote_id','=','lotes.id')
+                                ->select(       DB::raw("SUM(creditos.precio_venta) as precio"),
+                                                DB::raw("SUM(creditos.descuento_promocion) as descuento"),
+                                                DB::raw("SUM(creditos.costo_paquete) as paquete"),
+                                                DB::raw("SUM(contratos.total_pagar) as enganche"),
+                                                DB::raw("SUM(contratos.monto_total_credito) as credito_netoSum"),
+                                                DB::raw("SUM(contratos.saldo) as totSaldo")
+                                        )
+                                ->where('lotes.fraccionamiento_id','=',$proyecto)
+                                ->where('lotes.etapa_id','=',$etapa)
+                                ->where('contratos.status','=',3)
+                                ->where('inst_seleccionadas.elegido', '=', 1)->get();
+
+                $resContratos = Contrato::join('creditos','contratos.id','=','creditos.id')
+                                ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                                ->join('lotes','creditos.lote_id','=','lotes.id')
+                                ->join('modelos','lotes.modelo_id','=','modelos.id')
+                                ->join('personal as c', 'creditos.prospecto_id', '=', 'c.id')
+                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                ->select(       DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                                'creditos.fraccionamiento as proyecto',
+                                                'creditos.etapa',
+                                                'creditos.manzana',
+                                                'creditos.num_lote',
+                                                'contratos.fecha_status',
+                                                'i.tipo_credito',
+                                                'i.institucion', 
+                                                'creditos.precio_venta',
+                                                'creditos.descuento_promocion',
+                                                'creditos.costo_paquete',
+                                                'contratos.total_pagar',
+                                                'contratos.saldo',
+                                                'contratos.monto_total_credito',
+                                                'lotes.calle','lotes.numero',
+                                                'modelos.nombre as modelo'
+                                        )
+                                ->where('lotes.fraccionamiento_id','=',$proyecto)
+                                ->where('lotes.etapa_id','=',$etapa)
+                                ->where('contratos.status','=',3)
+                                ->where('i.elegido', '=', 1)->paginate(15);
+
+                $disponibles  = $disponibles + $contratos;
+        }
+        else{
+                $lotes = Lote::where('fraccionamiento_id','=',$proyecto)
+                                ->count();
+
+                $disponibles = Lote::where('fraccionamiento_id','=',$proyecto)
+                                ->where('contrato','=',0)->count();
+
+                $vendidas = Contrato::join('creditos','contratos.id','=','creditos.id')
+                                ->join('lotes','creditos.lote_id','=','lotes.id')
+                                ->where('lotes.fraccionamiento_id','=',$proyecto)
+                                ->where('contratos.status','=',3)
+                                ->where('contratos.integracion','=',0)
+                                ->count();
+
+                $contratos = Contrato::join('creditos','contratos.id','=','creditos.id')
+                                ->join('lotes','creditos.lote_id','=','lotes.id')
+                                ->select('lotes.id')
+                                ->where('lotes.fraccionamiento_id','=',$proyecto)
+                                ->where('contratos.status','=',1)
+                                ->where('contratos.integracion','=',0)->distinct()
+                                ->count();
+                
+                $individualizadas = Expediente::join('contratos','expedientes.id','=','contratos.id')
+                                ->join('creditos','contratos.id','=','creditos.id')
+                                ->join('lotes','creditos.lote_id','=','lotes.id')
+                                ->where('lotes.fraccionamiento_id','=',$proyecto)
+                                ->where('contratos.status','=',3)
+                                ->where('contratos.integracion','=',1)
+                                ->where('expedientes.fecha_firma_esc','!=',NULL)
+                                ->count();
+
+                $sumas = Contrato::join('creditos','contratos.id','=','creditos.id')
+                                ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')
+                                ->join('lotes','creditos.lote_id','=','lotes.id')
+                                ->select(       DB::raw("SUM(creditos.precio_venta) as precio"),
+                                                DB::raw("SUM(creditos.descuento_promocion) as descuento"),
+                                                DB::raw("SUM(creditos.costo_paquete) as paquete"),
+                                                DB::raw("SUM(contratos.total_pagar) as enganche"),
+                                                DB::raw("SUM(contratos.monto_total_credito) as credito_netoSum"),
+                                                DB::raw("SUM(contratos.saldo) as totSaldo")
+                                        )
+                                ->where('lotes.fraccionamiento_id','=',$proyecto)
+                                ->where('contratos.status','=',3)
+                                ->where('inst_seleccionadas.elegido', '=', 1)->get();
+
+                $resContratos = Contrato::join('creditos','contratos.id','=','creditos.id')
+                                ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
+                                ->join('lotes','creditos.lote_id','=','lotes.id')
+                                ->join('modelos','lotes.modelo_id','=','modelos.id')
+                                ->join('personal as c', 'creditos.prospecto_id', '=', 'c.id')
+                                ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                                ->select(       DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                                'creditos.fraccionamiento as proyecto',
+                                                'creditos.etapa',
+                                                'creditos.manzana',
+                                                'creditos.num_lote',
+                                                'contratos.fecha_status',
+                                                'i.tipo_credito',
+                                                'i.institucion', 
+                                                'creditos.precio_venta',
+                                                'creditos.descuento_promocion',
+                                                'creditos.costo_paquete',
+                                                'contratos.total_pagar',
+                                                'contratos.saldo',
+                                                'contratos.monto_total_credito',
+                                                'lotes.calle','lotes.numero',
+                                                'modelos.nombre as modelo'
+                                        )
+                                ->where('lotes.fraccionamiento_id','=',$proyecto)
+                                ->where('contratos.status','=',3)
+                                ->where('i.elegido', '=', 1)->paginate(15);
+
+                $disponibles  = $disponibles + $contratos;
+        }
+
+        
+
+        return[ 'lotes'=>$lotes, 
+                'disponibles'=>$disponibles,
+                'vendidas'=>$vendidas,
+                'individualizadas'=>$individualizadas,
+                'sumas'=>$sumas,
+                'resContratos'=>$resContratos,
+                'pagination' => [
+                        'total'         => $resContratos->total(),
+                        'current_page'  => $resContratos->currentPage(),
+                        'per_page'      => $resContratos->perPage(),
+                        'last_page'     => $resContratos->lastPage(),
+                        'from'          => $resContratos->firstItem(),
+                        'to'            => $resContratos->lastItem(),
+                    ],
+                ];
+
+
     }
 }

@@ -460,9 +460,11 @@
                                         <a class="nav-link" href="#"><i class="icon-chart"></i> Estadisticas Mejora</a>
                                     </li>
                                 @endif
-                                    <li @click="menu=10" class="nav-item">
-                                        <a class="nav-link" href="#"><i class="icon-chart"></i> Reporte Ventas</a>
+                                @if(Auth::user()->rol_id == 1)
+                                    <li @click="menu=91" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="icon-chart"></i> Resumen por proyecto</a>
                                     </li>
+                                @endif
                             </ul>
                         </li>
                     @endif
@@ -470,13 +472,13 @@
                     <!-- Manual para el administrador -->
                 @if(Auth::user()->rol_id == 1)
                     <li @click="menu=31" class="nav-item">
-                        <a class="nav-link" onclick="window.open('/pdf/manualUsuarioAdm.pdf','_blank')"><i class="icon-book-open"></i> Ayuda <span class="badge badge-danger">PDF</span></a>
+                        <a class="nav-link" onclick="window.open('/pdf/manualUsuarioAdm.pdf','_blank')"><i class="icon-book-open"></i> Manual de usuario <span class="badge badge-danger">PDF</span></a>
                     </li>
                 @endif
                 <!-- Manual para los asesores -->
                 @if(Auth::user()->rol_id == 2)
                     <li @click="menu=31" class="nav-item">
-                        <a class="nav-link" onclick="window.open('/pdf/manualUsuarioAsesor.pdf','_blank')"><i class="icon-book-open"></i> Ayuda <span class="badge badge-danger">PDF</span></a>
+                        <a class="nav-link" onclick="window.open('/pdf/manualUsuarioAsesor.pdf','_blank')"><i class="icon-book-open"></i> Manual de usuario <span class="badge badge-danger">PDF</span></a>
                     </li>
                 @endif
                     <li @click="menu=32" class="nav-item">

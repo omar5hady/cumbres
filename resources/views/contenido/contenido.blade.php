@@ -23,6 +23,9 @@
         <template v-if="menu==90">
             <datos-extra></datos-extra>
         </template>
+        <template v-if="menu==91">
+            <res-proyecto></res-proyecto>
+        </template>
 
         @if(Auth::user()->fraccionamiento == 1)
             <template v-if="menu==1">
