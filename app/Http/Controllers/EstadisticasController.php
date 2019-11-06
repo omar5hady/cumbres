@@ -332,6 +332,7 @@ class EstadisticasController extends Controller
                                 ->where('contratos.integracion','=',1)
                                 ->where('expedientes.fecha_firma_esc','!=',NULL)
                                 ->where('i.tipo_credito', '!=', 'Crédito Directo')
+                                ->where('i.elegido', '=', 1)
                                 ->count();
                 
                 $indiviDirecto = Expediente::join('contratos','expedientes.id','=','contratos.id')
@@ -339,7 +340,6 @@ class EstadisticasController extends Controller
                                 ->join('inst_seleccionadas as i', 'creditos.id', '=', 'i.credito_id')
                                 ->join('lotes','creditos.lote_id','=','lotes.id')
                                 ->where('lotes.fraccionamiento_id','=',$proyecto)
-                                ->where('lotes.etapa_id','=',$etapa)
                                 ->where('contratos.status','=',3)
                                 ->where('contratos.integracion','=',1)
                                 ->where('contratos.saldo','=',0)
@@ -413,4 +413,10 @@ class EstadisticasController extends Controller
 
 
     }
+
+    /*public function afluencia(Request $request){
+        $mes = $request->mes;
+        $ano = $request->ano;
+    }*/
+
 }
