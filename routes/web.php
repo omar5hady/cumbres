@@ -340,8 +340,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/postventa/setHoraProg','EntregaController@setHoraProgramada');
         Route::put('/postventa/finalizarEntrega','EntregaController@finalizarEntrega');
 
-        Route::get('/postventa/cartaMantenimiento','EntregaController@cartaCuotaMantenimiento');
-        Route::get('/postventa/polizaDeGarantia','EntregaController@polizaDeGarantia');
+        Route::get('/postventa/cartaMantenimiento/{id}','EntregaController@cartaCuotaMantenimiento');
+        Route::get('/postventa/polizaDeGarantia/{id}','EntregaController@polizaDeGarantia');
 
 
     /**********************************RUTAS AVANCE*************************** */
@@ -612,6 +612,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/select_gestores','PersonalController@select_gestores');
 
         Route::get('/select_datos_notaria','NotariaController@getDatosNotaria'); 
+        Route::get('/select_ultima_fecha_instalacion','EntregaController@select_ultimaFecha_instalacion');
     
     
 });

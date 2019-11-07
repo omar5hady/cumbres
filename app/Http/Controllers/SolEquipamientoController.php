@@ -1981,6 +1981,15 @@ class SolEquipamientoController extends Controller
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         
         $solicitud = Solic_equipamiento::findOrFail($request->id);
+
+        $datosAnt = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
+                    ->select('creditos.id','creditos.etapa',
+                                'creditos.manzana',
+                                'creditos.num_lote',
+                                'creditos.modelo',
+                                'creditos.fraccionamiento as proyecto')
+                    ->where('creditos.id','=',$solicitud->contrato_id)->get();
+
         $solicitud->lote_id = $request->lote_id;
         $solicitud->contrato_id = $request->contrato_id;
         $solicitud->control = 0;
@@ -1988,7 +1997,7 @@ class SolEquipamientoController extends Controller
 
         $observacion = new Obs_solic_equipamiento();
         $observacion->solic_id = $request->id;
-        $observacion->comentario ='Equipamiento reubicado';
+        $observacion->comentario ='Equipamiento reubicado del lote: '.$datosAnt[0]->num_lote.' manzana: '.$datosAnt[0]->manzana.' proyecto: '.$datosAnt[0]->proyecto;
         $observacion->usuario = Auth::user()->usuario;
         $observacion->save();
     }

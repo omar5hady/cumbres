@@ -8850,9 +8850,17 @@ class ContratoController extends Controller
         // try{
         //     DB::beginTransaction();
             $id_lote = $request->lote_id;
+            $equipo='';
 
             $equipamientosCost = Solic_equipamiento::join('lotes','solic_equipamientos.lote_id','=','lotes.id')
                 ->select(DB::raw("SUM(solic_equipamientos.costo) as sumCosto"))
+                ->where('lotes.id','=',$id_lote)
+                ->where('solic_equipamientos.fin_instalacion','!=',NULL)
+                ->where('solic_equipamientos.contrato_id','=',$request->id)->get();
+            
+            $equipamientosInst = Solic_equipamiento::join('lotes','solic_equipamientos.lote_id','=','lotes.id')
+                ->join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
+                ->select('equipamientos.equipamiento','solic_equipamientos.id')
                 ->where('lotes.id','=',$id_lote)
                 ->where('solic_equipamientos.fin_instalacion','!=',NULL)
                 ->where('solic_equipamientos.contrato_id','=',$request->id)->get();
@@ -8874,6 +8882,15 @@ class ContratoController extends Controller
                     $antc_equip = Solic_equipamiento::findOrFail($antc->id);
                     $antc_equip->control = 1;
                     $antc_equip->save();
+                }
+            }
+
+            if(sizeof($equipamientosInst) != 0){
+                foreach ($equipamientosInst as $inst){
+                    $equipo = $inst->equipamiento.', '.$equipo;
+                    $cancel_equip = Solic_equipamiento::findOrFail($inst->id);
+                    $cancel_equip->control = 3;
+                    $cancel_equip->save();
                 }
             }
 
@@ -8909,7 +8926,7 @@ class ContratoController extends Controller
                     $contrato->apartado = 0;
                     $contrato->ajuste += $ajuste;
                     if($ajuste != 0)
-                        $contrato->comentarios ='Lote con equipamiento. '.$contrato->comentarios;
+                        $contrato->comentarios ='Lote con equipamiento: '.$equipo.'. '.$contrato->comentarios;
 
                     $apartado = Apartado::select('id')->where('lote_id','=',$id_lote)->get();
                     foreach($apartado as $ap){
@@ -8953,7 +8970,7 @@ class ContratoController extends Controller
                     $contrato->apartado = 0;
                     $contrato->ajuste += $ajuste;
                     if($ajuste != 0)
-                        $contrato->comentarios ='Lote con equipamiento. '.$contrato->comentarios;
+                        $contrato->comentarios ='Lote con equipamiento: '.$equipo.'. '.$contrato->comentarios;
 
                     $apartado = Apartado::select('id')->where('lote_id','=',$id_lote)->get();
                     foreach($apartado as $ap){
@@ -9279,7 +9296,7 @@ class ContratoController extends Controller
         $f_ini = $request->f_ini;
         $f_fin = $request->f_fin;
 
-        if($b_status == ""){
+        if($b_status == ''){
             if ($buscar == '') {
                 $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
                     ->join('inst_seleccionadas', 'creditos.id', '=', 'inst_seleccionadas.credito_id')

@@ -68,6 +68,7 @@
                                         <th>Tipo de crédito</th>
                                         <th>Fecha firma de escritura</th>
                                         <th>Fecha avaluo</th>
+                                        <th>Depositado</th>
                                         <th>Status</th>
                                         <th>Fecha entrega (obra)</th>
                                         <th>Solicitar</th>
@@ -89,12 +90,16 @@
                                             <td class="td2" v-text="this.moment(contratos.fecha_firma_esc).locale('es').format('DD/MMM/YYYY')"></td>
                                             <td class="td2" v-if="contratos.visita_avaluo" v-text="this.moment(contratos.visita_avaluo).locale('es').format('DD/MMM/YYYY')"></td>
                                             <td class="td2" v-else v-text="'Sin fecha'"></td>
+                                            <td v-text="'$'+formatNumber(contratos.totPagare - contratos.totRest)"></td>
                                             <template>
                                                 <td class="td2" v-if="contratos.status == '1'">
                                                     <span class="badge badge-warning">Pendiente</span>
                                                 </td>
-                                                <td class="td2" v-if="contratos.status == '3'">
+                                                <td class="td2" v-else-if="contratos.status == '3' && !contratos.fecha_firma_esc">
                                                     <span class="badge badge-success">Firmado</span>
+                                                </td>
+                                                <td class="td2" v-else-if="contratos.status == '3' && contratos.fecha_firma_esc">
+                                                    <span class="badge badge-success"> Individualizada </span>
                                                 </td>
                                             </template>
                                             <td class="td2" v-if="contratos.fecha_entrega" v-text="this.moment(contratos.fecha_entrega).locale('es').format('DD/MMM/YYYY')"></td>
@@ -219,6 +224,9 @@
                                                 <button title="Reasignar" type="button" @click="abrirModal('reasignar',equipamientos)" class="btn btn-primary btn-sm">
                                                     <i class="fa fa-exchange"></i>
                                                 </button>
+                                            </td>
+                                            <td v-else-if="equipamientos.control == 3">
+                                                <i class="btn btn-warning btn-sm fa fa-exclamation-triangle"></i>
                                             </td>
                                             <td v-else>
                                                 <i title="Cancelado" class="btn btn-danger btn-sm fa fa-exclamation-triangle"></i>

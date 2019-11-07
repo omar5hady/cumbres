@@ -95,6 +95,8 @@
                                                     <a class="dropdown-item" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+ contratos.folio">Servicios de telecomunición</a>
                                                     <a class="dropdown-item" v-bind:href="'/descargarReglamento/contrato/'+ contratos.folio">Reglamento de la etapa</a>
                                                     <a class="dropdown-item" @click="selectNombreArchivoModelo(contratos.folio)">Catalogo de especificaciones</a>
+                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/cartaMantenimiento/'+ contratos.folio">Carta de mantenimiento</a>
+                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/polizaDeGarantia/'+ contratos.folio">Poliza de garantia</a>
                                                 </div>
                                             </td>
                                             <td class="td2" v-text="contratos.proyecto"></td>
@@ -127,33 +129,62 @@
                                             </template>
                                             <template>
                                                 <td class="td2" v-if="contratos.paquete && contratos.promocion && contratos.equipamiento == 0">
-                                                     <span class="badge badge-danger">Equipamiento sin solicitarse</span>
+                                                    <button title="Programar fecha" type="button" class="btn btn-danger pull-right" 
+                                                        @click="ultimaFecha(contratos.folio)">
+                                                        Equipamiento sin solicitarse
+                                                    </button>
                                                 </td>
                                                 <td class="td2" v-else-if="contratos.paquete && !contratos.promocion && contratos.equipamiento == 0">
-                                                    <span class="badge badge-danger">Equipamiento sin solicitarse</span>
+                                                     <button title="Programar fecha" type="button" class="btn btn-danger pull-right" 
+                                                        @click="ultimaFecha(contratos.folio)">
+                                                        Equipamiento sin solicitarse
+                                                    </button>
                                                 </td>
                                                 <td class="td2" v-else-if="!contratos.paquete && contratos.promocion && contratos.equipamiento == 0">
-                                                    <span class="badge badge-danger">Equipamiento sin solicitarse</span>
+                                                     <button title="Programar fecha" type="button" class="btn btn-danger pull-right" 
+                                                        @click="ultimaFecha(contratos.folio)">
+                                                        Equipamiento sin solicitarse
+                                                    </button>
                                                 </td>
 
                                                 <td class="td2" v-else-if="contratos.paquete && contratos.promocion && contratos.equipamiento == 1">
-                                                    <span class="badge badge-warning">En proceso de instalación</span>
+                                                    <button title="Programar fecha" type="button" class="btn btn-warning pull-right" 
+                                                        @click="ultimaFecha(contratos.folio)">
+                                                        En proceso de instalación
+                                                    </button>
+                                                    
                                                 </td>
                                                 <td class="td2" v-else-if="contratos.paquete && !contratos.promocion && contratos.equipamiento == 1" >
-                                                    <span class="badge badge-warning">En proceso de instalación</span>
+                                                    <button title="Programar fecha" type="button" class="btn btn-warning pull-right" 
+                                                        @click="ultimaFecha(contratos.folio)">
+                                                        En proceso de instalación
+                                                    </button>
                                                 </td>
                                                 <td class="td2" v-else-if="!contratos.paquete && contratos.promocion && contratos.equipamiento == 1">
-                                                    <span class="badge badge-warning">En proceso de instalación</span>
+                                                    <button title="Programar fecha" type="button" class="btn btn-warning pull-right" 
+                                                        @click="ultimaFecha(contratos.folio)">
+                                                        En proceso de instalación
+                                                    </button>
                                                 </td>
 
                                                 <td class="td2" v-else-if="contratos.paquete && contratos.promocion && contratos.equipamiento == 2">
-                                                    <span class="badge badge-success">Equipamiento instalado</span>
+                                                    <button title="Programar fecha" type="button" class="btn btn-success pull-right" 
+                                                        @click="ultimaFecha(contratos.folio)">
+                                                        Equipamiento instalado
+                                                    </button>
+                                                   
                                                 </td>
                                                 <td class="td2" v-else-if="contratos.paquete && !contratos.promocion && contratos.equipamiento == 2">
-                                                    <span class="badge badge-success">Equipamiento instalado</span>
+                                                    <button title="Programar fecha" type="button" class="btn btn-success pull-right" 
+                                                        @click="ultimaFecha(contratos.folio)">
+                                                        Equipamiento instalado
+                                                    </button>
                                                 </td>
                                                 <td class="td2" v-else-if="!contratos.paquete && contratos.promocion && contratos.equipamiento == 2">
-                                                    <span class="badge badge-success">Equipamiento instalado</span>
+                                                    <button title="Programar fecha" type="button" class="btn btn-success pull-right" 
+                                                        @click="ultimaFecha(contratos.folio)">
+                                                        Equipamiento instalado
+                                                    </button>
                                                 </td>
                                                 <td class="td2" v-else v-text="'Sin equipamiento'" ></td> 
                                             </template>
@@ -299,6 +330,8 @@
                                                     <a class="dropdown-item" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+ entregas.folio">Servicios de telecomunición</a>
                                                     <a class="dropdown-item" v-bind:href="'/descargarReglamento/contrato/'+ entregas.folio">Reglamento de la etapa</a>
                                                     <a class="dropdown-item" @click="selectNombreArchivoModelo(entregas.folio)">Catalogo de especificaciones</a>
+                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/cartaMantenimiento/'+ entregas.folio">Carta de mantenimiento</a>
+                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/polizaDeGarantia/'+ entregas.folio">Poliza de garantia</a>
                                                 </div>
                                             </td>
                                             <td class="td2" v-text="entregas.proyecto"></td>
@@ -745,6 +778,7 @@
                 arrayAllManzanas:[],
                 arrayAllLotes:[],
                 arrayContratos:[],
+                arrayUltimaFecha: [],
 
                 arrayEntregas:[],
                 // Criterios para historial de contratos
@@ -1141,6 +1175,34 @@
                 }).catch(function (error){
                     console.log(error);
                 });
+            },
+            ultimaFecha(id){
+
+                let me = this;
+                var url = '/select_ultima_fecha_instalacion?id=' + id;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayUltimaFecha = respuesta.fecha_ultima;
+                    console.log(url);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+
+                var fecha;
+                if(me.arrayUltimaFecha[0].fin_instalacion  == 'NULL'){
+                     fecha = 'Sin fecha';
+                    }
+                else{
+                    fecha = me.arrayUltimaFecha[0].fin_instalacion;
+                   
+                }
+                
+                 Swal({
+                    title: ''+fecha,
+                    animation: false,
+                    customClass: 'animated tada'
+                    })
             },
 
             finalizarEntrega(){

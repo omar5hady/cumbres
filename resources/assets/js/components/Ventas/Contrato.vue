@@ -257,6 +257,8 @@
                                             <th>Manzana</th>
                                             <th># Lote</th>
                                             <th>Modelo</th>
+                                            <th>Tipo de credito</th>
+                                            <th>Institución</th>
                                             <th>Precio de venta</th>
                                             <th>Fecha del contrato</th>
                                             <th>Status</th>
@@ -272,6 +274,8 @@
                                             <td class="td2" v-text="contrato.manzana"></td>
                                             <td class="td2" v-text="contrato.num_lote"></td>
                                             <td class="td2" v-text="contrato.modelo"></td>
+                                            <td class="td2" v-text="contrato.tipo_credito"></td>
+                                            <td class="td2" v-text="contrato.institucion"></td>
                                             <td class="td2" v-text="'$'+formatNumber(contrato.precio_venta)"></td>
                                             <td class="td2" v-text="this.moment(contrato.fecha).locale('es').format('DD/MMM/YYYY')"></td>
                                             <td class="td2" v-if="contrato.status == '0'">

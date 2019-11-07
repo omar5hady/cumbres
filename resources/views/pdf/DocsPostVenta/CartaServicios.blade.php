@@ -12,7 +12,7 @@ div {
   page-break-inside: avoid;
 }
 body {
-    font-size: 10pt;
+    font-size: 11pt;
     font-family: sans-serif;
 }
 </style>
@@ -22,7 +22,7 @@ body {
     <hr>
     <h3 style="text-align: center;">¡BIENVENIDO!</h3> <br>
     <p>Después de saludarles, les damos la más cordial bienvenida a su Condominio y nos ponemos a sus órdenes como administradores de 
-        CATARA - PRIVADA MODENA. Nos encargaremos de llevar el mantenimiento en general de las áreas comunes del condominio, que incluyen:
+        {{mb_strtoupper($contratos[0]->proyecto)}} - {{mb_strtoupper($contratos[0]->etapa)}}. Nos encargaremos de llevar el mantenimiento en general de las áreas comunes del condominio, que incluyen:
     </p>
 
     <ul>
@@ -61,7 +61,7 @@ body {
 
     <p>Banco: Banco Santander (Mexico), S.A.</p>
     <P>Sucursal: 0392 Suc. Carranza</P>
-    <p>Titular: ADMINISTRACION DE FRACCIONAMIENTO CATARA A.C.</p>
+    <p>Titular: ADMINISTRACION DE FRACCIONAMIENTO {{mb_strtoupper($contratos[0]->proyecto)}} A.C.</p>
     <p>CLABE: 014700220006342320</p>
 
     <p>En caso de hacer el pago vía transferencia electrónica es MUY IMPORTANTE que al hacerlo ponga su número de referencia en el concepto,
@@ -76,7 +76,7 @@ body {
 
     <p>Atentamente</p>
 
-    <p>ADMINISTRACION DE FRACCIONAMIENTO CATARA A.C.</p> <br>
+    <p>ADMINISTRACION DE FRACCIONAMIENTO {{mb_strtoupper($contratos[0]->proyecto)}} A.C.</p> <br>
 
     <p style="text-align: right; margin: -1px -1px -1px -1px;"> <b> Av. Parque Chapultepec 404 - A</b></p>
     <p style="text-align: right; margin: -1px -1px -1px -1px;"> <b> Fracc. Colinas del Parque, C.P. 78294</b></p>

@@ -1462,7 +1462,7 @@ class EntregaController extends Controller
                 ];   
     }
 
-    public function cartaCuotaMantenimiento(Request $request){
+    public function cartaCuotaMantenimiento($id){
         $contratos = Entrega::join('contratos','entregas.id','contratos.id')
                     ->join('expedientes','contratos.id','expedientes.id')
                     ->join('creditos', 'contratos.id', '=', 'creditos.id')
@@ -1508,6 +1508,7 @@ class EntregaController extends Controller
                     ->where('contratos.status', '!=', 0)
                     ->where('contratos.status', '!=', 2)
                     ->where('contratos.entregado', '=', 1)
+                    ->where('contratos.id','=',$id)
                     ->orderBy('licencias.avance','desc')
                     ->orderBy('lotes.fecha_entrega_obra','desc')
                     ->get();
@@ -1516,11 +1517,12 @@ class EntregaController extends Controller
             return $pdf->stream('carta_cuota_mantenimiento.pdf');
     }
 
-    public function polizaDeGarantia(Request $request){
+    public function polizaDeGarantia($id){
         $contratos = Entrega::join('contratos','entregas.id','contratos.id')
         ->join('expedientes','contratos.id','expedientes.id')
         ->join('creditos', 'contratos.id', '=', 'creditos.id')
         ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+        ->join('fraccionamientos', 'lotes.fraccionamiento_id', '=', 'fraccionamientos.id')
         ->join('licencias', 'lotes.id', '=', 'licencias.id')
         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
         ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -1553,6 +1555,9 @@ class EntregaController extends Controller
             'expedientes.fecha_firma_esc',
             'lotes.fecha_entrega_obra',
             'lotes.id as loteId',
+            'lotes.calle',
+            'lotes.numero',
+            'fraccionamientos.ciudad as ciudadFraccionamiento',
             'entregas.fecha_program',
             'entregas.hora_entrega_prog',
             'entregas.fecha_entrega_real',
@@ -1562,6 +1567,7 @@ class EntregaController extends Controller
         ->where('contratos.status', '!=', 0)
         ->where('contratos.status', '!=', 2)
         ->where('contratos.entregado', '=', 1)
+        ->where('contratos.id','=',$id)
         ->orderBy('licencias.avance','desc')
         ->orderBy('lotes.fecha_entrega_obra','desc')
         ->get();
@@ -1569,4 +1575,18 @@ class EntregaController extends Controller
         $pdf = \PDF::loadview('pdf.DocsPostVenta.PolizaDeGarantia', ['contratos' => $contratos]);
         return $pdf->stream('poliza_de_garantia.pdf');
     }
+
+    public function select_ultimaFecha_instalacion(Request $request){
+        $contrato = $request->id;
+
+        $fecha_ultima = Entrega::join('contratos','entregas.id','contratos.id')
+        ->leftjoin('solic_equipamientos','contratos.id','=','solic_equipamientos.contrato_id')
+        ->join('expedientes','contratos.id','expedientes.id')
+        ->join('creditos', 'contratos.id', '=', 'creditos.id')
+        ->select('solic_equipamientos.fin_instalacion')
+        ->orderBy('solic_equipamientos.fin_instalacion','DESC')
+        ->where('solic_equipamientos.contrato_id','=',$contrato)->get();
+        return ['fecha_ultima' => $fecha_ultima];
+    }
+
 }

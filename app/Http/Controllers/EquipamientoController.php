@@ -81,6 +81,15 @@ class EquipamientoController extends Controller
                     'contratos.id as folio',
                     'contratos.equipamiento',
                     DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                    DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
+                                WHERE pagos_contratos.tipo_pagare = 0
+                                and pagos_contratos.contrato_id = contratos.id
+                                and pagos_contratos.pagado != 3) as totPagare"),
+                    DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
+                                WHERE pagos_contratos.tipo_pagare = 0
+                                and pagos_contratos.contrato_id = contratos.id
+                                and pagos_contratos.pagado != 3) as totRest"),
+                    'expedientes.fecha_firma_esc',
                     'creditos.fraccionamiento as proyecto',
                     'creditos.etapa',
                     'creditos.manzana',
@@ -132,6 +141,15 @@ class EquipamientoController extends Controller
                                 'contratos.id as folio',
                                 'contratos.equipamiento',
                                 DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
+                                            WHERE pagos_contratos.tipo_pagare = 0
+                                            and pagos_contratos.contrato_id = contratos.id
+                                            and pagos_contratos.pagado != 3) as totPagare"),
+                                DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
+                                            WHERE pagos_contratos.tipo_pagare = 0
+                                            and pagos_contratos.contrato_id = contratos.id
+                                            and pagos_contratos.pagado != 3) as totRest"),
+                                'expedientes.fecha_firma_esc',
                                 'creditos.fraccionamiento as proyecto',
                                 'creditos.etapa',
                                 'creditos.manzana',
@@ -183,6 +201,15 @@ class EquipamientoController extends Controller
                                 'contratos.id as folio',
                                 'contratos.equipamiento',
                                 DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
+                                            WHERE pagos_contratos.tipo_pagare = 0
+                                            and pagos_contratos.contrato_id = contratos.id
+                                            and pagos_contratos.pagado != 3) as totPagare"),
+                                DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
+                                            WHERE pagos_contratos.tipo_pagare = 0
+                                            and pagos_contratos.contrato_id = contratos.id
+                                            and pagos_contratos.pagado != 3) as totRest"),
+                                'expedientes.fecha_firma_esc',
                                 'creditos.fraccionamiento as proyecto',
                                 'creditos.etapa',
                                 'creditos.manzana',
@@ -236,6 +263,15 @@ class EquipamientoController extends Controller
                                 'contratos.id as folio',
                                 'contratos.equipamiento',
                                 DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
+                                            WHERE pagos_contratos.tipo_pagare = 0
+                                            and pagos_contratos.contrato_id = contratos.id
+                                            and pagos_contratos.pagado != 3) as totPagare"),
+                                DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
+                                            WHERE pagos_contratos.tipo_pagare = 0
+                                            and pagos_contratos.contrato_id = contratos.id
+                                            and pagos_contratos.pagado != 3) as totRest"),
+                                'expedientes.fecha_firma_esc',
                                 'creditos.fraccionamiento as proyecto',
                                 'creditos.etapa',
                                 'creditos.manzana',
@@ -291,6 +327,15 @@ class EquipamientoController extends Controller
                                 'contratos.id as folio',
                                 'contratos.equipamiento',
                                 DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
+                                            WHERE pagos_contratos.tipo_pagare = 0
+                                            and pagos_contratos.contrato_id = contratos.id
+                                            and pagos_contratos.pagado != 3) as totPagare"),
+                                DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
+                                            WHERE pagos_contratos.tipo_pagare = 0
+                                            and pagos_contratos.contrato_id = contratos.id
+                                            and pagos_contratos.pagado != 3) as totRest"),
+                                'expedientes.fecha_firma_esc',
                                 'creditos.fraccionamiento as proyecto',
                                 'creditos.etapa',
                                 'creditos.manzana',
@@ -348,6 +393,15 @@ class EquipamientoController extends Controller
                                 'contratos.id as folio',
                                 'contratos.equipamiento',
                                 DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
+                                            WHERE pagos_contratos.tipo_pagare = 0
+                                            and pagos_contratos.contrato_id = contratos.id
+                                            and pagos_contratos.pagado != 3) as totPagare"),
+                                DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
+                                            WHERE pagos_contratos.tipo_pagare = 0
+                                            and pagos_contratos.contrato_id = contratos.id
+                                            and pagos_contratos.pagado != 3) as totRest"),
+                                'expedientes.fecha_firma_esc',
                                 'creditos.fraccionamiento as proyecto',
                                 'creditos.etapa',
                                 'creditos.manzana',
@@ -404,6 +458,15 @@ class EquipamientoController extends Controller
                                 'contratos.id as folio',
                                 'contratos.equipamiento',
                                 DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
+                                            WHERE pagos_contratos.tipo_pagare = 0
+                                            and pagos_contratos.contrato_id = contratos.id
+                                            and pagos_contratos.pagado != 3) as totPagare"),
+                                DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
+                                            WHERE pagos_contratos.tipo_pagare = 0
+                                            and pagos_contratos.contrato_id = contratos.id
+                                            and pagos_contratos.pagado != 3) as totRest"),
+                                'expedientes.fecha_firma_esc',
                                 'creditos.fraccionamiento as proyecto',
                                 'creditos.etapa',
                                 'creditos.manzana',
@@ -459,6 +522,15 @@ class EquipamientoController extends Controller
                                 'contratos.id as folio',
                                 'contratos.equipamiento',
                                 DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
+                                            WHERE pagos_contratos.tipo_pagare = 0
+                                            and pagos_contratos.contrato_id = contratos.id
+                                            and pagos_contratos.pagado != 3) as totPagare"),
+                                DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
+                                            WHERE pagos_contratos.tipo_pagare = 0
+                                            and pagos_contratos.contrato_id = contratos.id
+                                            and pagos_contratos.pagado != 3) as totRest"),
+                                            'expedientes.fecha_firma_esc',
                                 'creditos.fraccionamiento as proyecto',
                                 'creditos.etapa',
                                 'creditos.manzana',
@@ -512,6 +584,15 @@ class EquipamientoController extends Controller
                                 'contratos.id as folio',
                                 'contratos.equipamiento',
                                 DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                                DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
+                                            WHERE pagos_contratos.tipo_pagare = 0
+                                            and pagos_contratos.contrato_id = contratos.id
+                                            and pagos_contratos.pagado != 3) as totPagare"),
+                                DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
+                                            WHERE pagos_contratos.tipo_pagare = 0
+                                            and pagos_contratos.contrato_id = contratos.id
+                                            and pagos_contratos.pagado != 3) as totRest"),
+                                'expedientes.fecha_firma_esc',
                                 'creditos.fraccionamiento as proyecto',
                                 'creditos.etapa',
                                 'creditos.manzana',
@@ -571,6 +652,15 @@ class EquipamientoController extends Controller
                         'contratos.id as folio',
                         'contratos.equipamiento',
                         DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
+                                    WHERE pagos_contratos.tipo_pagare = 0
+                                    and pagos_contratos.contrato_id = contratos.id
+                                    and pagos_contratos.pagado != 3) as totPagare"),
+                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
+                                    WHERE pagos_contratos.tipo_pagare = 0
+                                    and pagos_contratos.contrato_id = contratos.id
+                                    and pagos_contratos.pagado != 3) as totRest"),
+                        'expedientes.fecha_firma_esc',
                         'creditos.fraccionamiento as proyecto',
                         'creditos.etapa',
                         'creditos.manzana',
@@ -623,6 +713,15 @@ class EquipamientoController extends Controller
                         'contratos.id as folio',
                         'contratos.equipamiento',
                         DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                        DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
+                                    WHERE pagos_contratos.tipo_pagare = 0
+                                    and pagos_contratos.contrato_id = contratos.id
+                                    and pagos_contratos.pagado != 3) as totPagare"),
+                        DB::raw("(SELECT SUM(pagos_contratos.restante) FROM pagos_contratos
+                                    WHERE pagos_contratos.tipo_pagare = 0
+                                    and pagos_contratos.contrato_id = contratos.id
+                                    and pagos_contratos.pagado != 3) as totRest"),
+                        'expedientes.fecha_firma_esc',
                         'creditos.fraccionamiento as proyecto',
                         'creditos.etapa',
                         'creditos.manzana',

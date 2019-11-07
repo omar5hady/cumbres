@@ -5957,7 +5957,7 @@ class ExpedienteController extends Controller
                 $creditoEle->segundo_credito = $request->infonavit;
                 $creditoEle->save();
             }
-            else{
+            elseif($expediente->infonavit == 0 && $expediente->fovissste != 0){
                 $inst_seleccionada = new inst_seleccionada();
                 $inst_seleccionada->credito_id = $request->folio;
                 $inst_seleccionada->tipo_credito = "FOVISSSTE";

@@ -39,9 +39,9 @@ width: 710px;
 
     <p>GARANTÍA QUE OTORGA <b>GRUPO CONSTRUCTOR CUMBRES S.A. DE C.V.,</b> EN LO SUCESIVO <i>"LA CONSTRUCTORA"</i>, REPRESENTADA
         POR <b>SU APODERADO LEGAL EL C.P. MARTÍN HERRERA SÁNCHEZ,</b> CON DOMICILIO <b>MANUEL GUTIERREZ NAJERA NO.190</b> COL.
-        <b>TEQUISQUIAPAN</b> DE LA CIUDAD DE <b>SAN LUIS POTOSI, S.L.P.</b> CON TELÉFONO <b>833-46-83</b>, A FAVOR DEL <b>C.XXXXXXXX,</b>
-        EN LO SUCESIVO <i>"EL ACREDITADO",</i> RESPECTO A LA VIVIENDA UBICADA EN EL LOTE <b>XX</b> DE LA MANZANA <b>XX</b> DE LA CALLE
-        <b>XXXXX NO. XXXX</b> DEL CONJUNTO HABITACIONAL <b>"CATARA"</b> LOCALIZADO EN LA DELEGACION DE <b>VILLA DE POZOS</b>.
+        <b>TEQUISQUIAPAN</b> DE LA CIUDAD DE <b>SAN LUIS POTOSI, S.L.P.</b> CON TELÉFONO <b>833-46-83</b>, A FAVOR DEL <b>C.{{mb_strtoupper($contratos[0]->nombre_cliente)}},</b>
+        EN LO SUCESIVO <i>"EL ACREDITADO",</i> RESPECTO A LA VIVIENDA UBICADA EN EL LOTE <b>{{$contratos[0]->num_lote}}</b> DE LA MANZANA <b>{{$contratos[0]->manzana}}</b> DE LA CALLE
+        <b>{{mb_strtoupper($contratos[0]->calle)}} NO. {{$contratos[0]->numero}}</b> DEL CONJUNTO HABITACIONAL <b>"{{mb_strtoupper($contratos[0]->proyecto)}}"</b> LOCALIZADO EN LA DELEGACION DE <b>{{$contratos[0]->ciudadFraccionamiento}}</b>.
     </p>
 
     <p>LA PRESENTE PÓLIZA SE EXPIDE EN CUMPLIMIENTO A LO DISPUESTO EN EL CONTRATO DE COMPRAVENTA DEL INMUEBLE ARRIBA CITADO, <i>LA CONSTRUCTORA</i>,
@@ -73,11 +73,11 @@ width: 710px;
         </div>
         <div class="table-row">
             <div class="table-cell" style="text-align:center;"></div>
-            <div class="table-cell" style="text-align:center;"><br> xxxxxxxxxxx</div>
+            <div class="table-cell" style="text-align:center;"><br> {{mb_strtoupper($contratos[0]->nombre_cliente)}}</div>
         </div>
     </div><br><br>
 
-    <p style="text-align:center;"><b>DIRECCION DE LA VIVIENDA:</b> XXXXX NO. XXXX, FRACC. "CATARA", VILLA DE POZOS.</p>
+    <p style="text-align:center;"><b>DIRECCION DE LA VIVIENDA:</b> {{mb_strtoupper($contratos[0]->calle)}} NO. {{$contratos[0]->numero}}, FRACC. "{{mb_strtoupper($contratos[0]->proyecto)}}", {{$contratos[0]->ciudadFraccionamiento}}.</p>
 </div>
 
 <br><br>
@@ -122,13 +122,13 @@ width: 710px;
         </div>
         <div class="table-row">
             <div class="table-cell" style="text-align:center;"></div>
-            <div class="table-cell" style="text-align:center;"><br> xxxxxxxxxxx</div>
+            <div class="table-cell" style="text-align:center;"><br> {{mb_strtoupper($contratos[0]->nombre_cliente)}}</div>
         </div>
     </div>
     
     <br><br><br><br>
 
-    <p style="text-align:center;"><b>DIRECCION DE LA VIVIENDA:</b> XXXXX NO. XXXX, FRACC. "CATARA", VILLA DE POZOS.</p>
+    <p style="text-align:center;"><b>DIRECCION DE LA VIVIENDA:</b> {{mb_strtoupper($contratos[0]->calle)}} NO. {{$contratos[0]->numero}}, FRACC. "{{mb_strtoupper($contratos[0]->proyecto)}}", {{$contratos[0]->ciudadFraccionamiento}}.</p>
 
 </div>
 
@@ -353,13 +353,13 @@ width: 710px;
         </div>
         <div class="table-row">
             <div class="table-cell" style="text-align:center;"></div>
-            <div class="table-cell" style="text-align:center;"><br> xxxxxxxxxxx</div>
+            <div class="table-cell" style="text-align:center;"><br> {{mb_strtoupper($contratos[0]->nombre_cliente)}}</div>
         </div>
     </div>
     
     <br><br><br>
 
-    <p style="text-align:center;"><b>DIRECCION DE LA VIVIENDA:</b> XXXXX NO. XXXX, FRACC. "CATARA", VILLA DE POZOS.</p>
+    <p style="text-align:center;"><b>DIRECCION DE LA VIVIENDA:</b> {{mb_strtoupper($contratos[0]->calle)}} NO. {{$contratos[0]->numero}}, FRACC. "{{mb_strtoupper($contratos[0]->proyecto)}}", {{$contratos[0]->ciudadFraccionamiento}}.</p>
 </div>
 
 </div>
@@ -399,13 +399,13 @@ width: 710px;
         </div>
         <div class="table-row">
             <div class="table-cell" style="text-align:center;"></div>
-            <div class="table-cell" style="text-align:center;"><br> xxxxxxxxxxx</div>
+            <div class="table-cell" style="text-align:center;"><br> {{mb_strtoupper($contratos[0]->nombre_cliente)}}</div>
         </div>
     </div>
     
     <br><br><br><br>
 
-    <p style="text-align:center;"><b>DIRECCION DE LA VIVIENDA:</b> XXXXX NO. XXXX, FRACC. "CATARA", VILLA DE POZOS.</p>
+    <p style="text-align:center;"><b>DIRECCION DE LA VIVIENDA:</b> {{mb_strtoupper($contratos[0]->calle)}} NO. {{$contratos[0]->numero}}, FRACC. "{{mb_strtoupper($contratos[0]->proyecto)}}", {{$contratos[0]->ciudadFraccionamiento}}.</p>
 
 </div>
 
@@ -459,14 +459,14 @@ width: 710px;
         </div>
         <div class="table-row">
             <div class="table-cell" style="text-align:center;"></div>
-            <div class="table-cell" style="text-align:center;"><br> xxxxxxxxxxx</div>
+            <div class="table-cell" style="text-align:center;"><br> {{mb_strtoupper($contratos[0]->nombre_cliente)}}</div>
         </div>
     </div>
     
     <br><br><br><br><br>
     <br><br><br><br><br>
 
-    <p style="text-align:center;"><b>DIRECCION DE LA VIVIENDA:</b> XXXXX NO. XXXX, FRACC. "CATARA", VILLA DE POZOS.</p>
+    <p style="text-align:center;"><b>DIRECCION DE LA VIVIENDA:</b> {{mb_strtoupper($contratos[0]->calle)}} NO. {{$contratos[0]->numero}}, FRACC. "{{mb_strtoupper($contratos[0]->proyecto)}}", {{$contratos[0]->ciudadFraccionamiento}}.</p>
 </div>
 
 </body>
