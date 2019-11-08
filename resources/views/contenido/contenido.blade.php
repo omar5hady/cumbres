@@ -264,6 +264,12 @@
             </template>
         @endif
 
+        @if(Auth::user()->p_fraccionamiento == 1)
+            <template v-if="menu==112">
+                <publicidad-fraccionamiento></publicidad-fraccionamiento>
+            </template>
+        @endif
+
         @if(Auth::user()->precios_viviendas == 1)
             <template v-if="menu==25">
                 <precios-vivienda></precios-vivienda>
@@ -328,6 +334,10 @@
        
         <template v-if="menu==215">
             <postventa-entrega></postventa-entrega>
+        </template>
+
+        <template v-if="menu==218">
+            <postventa-etapa></postventa-etapa>
         </template>
 
         <template v-if="menu==216">

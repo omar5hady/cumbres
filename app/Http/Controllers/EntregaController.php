@@ -11,6 +11,9 @@ use App\Expediente;
 use App\lote;
 use Carbon\Carbon;
 use App\Contrato;
+use App\Etapa;
+use App\Fraccionamiento;
+use NumerosEnLetras;
 
 class EntregaController extends Controller
 {
@@ -1467,6 +1470,8 @@ class EntregaController extends Controller
                     ->join('expedientes','contratos.id','expedientes.id')
                     ->join('creditos', 'contratos.id', '=', 'creditos.id')
                     ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                    ->join('etapas','lotes.etapa_id','=','etapas.id')
+                    ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
                     ->join('licencias', 'lotes.id', '=', 'licencias.id')
                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                     ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -1479,25 +1484,20 @@ class EntregaController extends Controller
                         'c.telefono','c.email','creditos.num_dep_economicos',
                         'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
                         'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
-                        'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
-                        'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                        'contratos.ext_empresa','contratos.colonia_empresa',
-
+                        'clientes.nacionalidad','clientes.sexo',
                         'creditos.fraccionamiento as proyecto',
                         'creditos.etapa',
                         'creditos.manzana',
                         'creditos.num_lote',
-                        'creditos.paquete',
-                        'creditos.promocion',
-                        'creditos.descripcion_paquete',
-                        'creditos.descripcion_promocion',
-                        'licencias.avance as avance_lote',
-                        'licencias.visita_avaluo',
-                        'contratos.fecha_status',
-                        'contratos.status',
-                        'contratos.equipamiento',
-                        'expedientes.fecha_firma_esc',
-                        'lotes.fecha_entrega_obra',
+                        'etapas.num_cuenta_admin',
+                        'etapas.clabe_admin',
+                        'etapas.sucursal_admin',
+                        'etapas.titular_admin',
+                        'etapas.banco_admin',
+                        'etapas.costo_mantenimiento',
+                        'fraccionamientos.email_administracion',
+                        'fraccionamientos.logo_fracc',
+                       
                         'lotes.id as loteId',
                         'entregas.fecha_program',
                         'entregas.hora_entrega_prog',
@@ -1507,11 +1507,13 @@ class EntregaController extends Controller
                     )
                     ->where('contratos.status', '!=', 0)
                     ->where('contratos.status', '!=', 2)
-                    ->where('contratos.entregado', '=', 1)
+                    // ->where('contratos.entregado', '=', 1)
                     ->where('contratos.id','=',$id)
                     ->orderBy('licencias.avance','desc')
                     ->orderBy('lotes.fecha_entrega_obra','desc')
                     ->get();
+
+            $contratos[0]->costo_mantenimiento_letra = NumerosEnLetras::convertir($contratos[0]->costo_mantenimiento, 'Pesos', true, 'Centavos');
 
             $pdf = \PDF::loadview('pdf.DocsPostVenta.CartaServicios', ['contratos' => $contratos]);
             return $pdf->stream('carta_cuota_mantenimiento.pdf');
@@ -1587,6 +1589,22 @@ class EntregaController extends Controller
         ->orderBy('solic_equipamientos.fin_instalacion','DESC')
         ->where('solic_equipamientos.contrato_id','=',$contrato)->get();
         return ['fecha_ultima' => $fecha_ultima];
+    }
+
+    public function setDatosCuenta (Request $request){
+        $datoCuentas = Etapa::findOrFail($request->id);
+        $datoCuentas->num_cuenta_admin = $request->cuenta;
+        $datoCuentas->clabe_admin = $request->clabe;
+        $datoCuentas->sucursal_admin = $request->sucursal;
+        $datoCuentas->titular_admin = $request->titular;
+        $datoCuentas->banco_admin = $request->banco;
+        $datoCuentas->save();
+    }
+
+    public function actualizarCorreoAdmin(Request $request){
+        $correo = Fraccionamiento::findOrFail($request->id);
+        $correo->email_administracion = $request->correo;
+        $correo->save();
     }
 
 }

@@ -368,7 +368,30 @@ class FraccionamientoController extends Controller
       }
 
       
+     //funciones para carga y descarga de los logos de los fraccionamientos
 
+     public function formSubmitLogoFraccionamiento(Request $request, $id)
+     {
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+ 
+         $fileName = time().'.'.$request->archivo_logo->getClientOriginalExtension();
+         $moved =  $request->archivo_logo->move(public_path('/img/logosFraccionamientos/'), $fileName);
+ 
+         if($moved){
+             if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+             $logo = Fraccionamiento::findOrFail($request->id);
+             $logo->logo_fracc = $fileName;
+             $logo->id = $id;
+             $logo->save(); //Insert
+     
+             }
+     }
+ 
+     public function downloadFileLogoFraccionamiento($fileName){
+         
+         $pathtoFile = public_path().'/img/logosFraccionamientos/'.$fileName;
+         return response()->download($pathtoFile);
+     }
    
 
 

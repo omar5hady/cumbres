@@ -407,7 +407,7 @@ class UserController extends Controller
                     $user->gastos_admn=1;
                     break;
                 }
-                case 11: // Administrador
+                case 11: // Direccin
                 {
                     $user->desarrollo=1;
                     $user->precios=1;
@@ -442,6 +442,12 @@ class UserController extends Controller
                     $user->docs=1;
                     //Reportes
                     $user->mejora=1;
+                    break;
+                }
+                case 12: // Postventa
+                {
+                    $user->postventa=1;
+                    $user->entregas=1;
                     break;
                 }
                 
@@ -706,6 +712,61 @@ class UserController extends Controller
                     $user->hist_creditos=1;
                     $user->contratos=1;
                     $user->docs=1;
+                    break;
+                }
+                case 9: // Contabilidad
+                {
+                    $user->administracion=1;
+                    $user->saldo=1;
+                    //Administracion
+                    $user->cuenta=1;
+                    //Saldos
+                    $user->edo_cuenta=1;
+                    $user->depositos=1;
+                    $user->gastos_admn=1;
+                    break;
+                }
+                case 11: // Direccin
+                {
+                    $user->desarrollo=1;
+                    $user->precios=1;
+                    $user->obra=1;
+                    $user->ventas=1;
+                    $user->acceso=1;
+                    $user->reportes=1;
+                    
+                    //Desarrollo
+                    $user->fraccionamiento=1;
+                    $user->etapas=1;
+                    $user->modelos=1;
+                    $user->lotes=1;
+                    $user->licencias=1;
+                    $user->acta_terminacion=1;
+                   
+                    //Precios
+                    $user->precios_etapas=1;
+                    $user->sobreprecios=1;
+                    $user->paquetes=1;
+                    $user->promociones=1;
+                    //Obra
+                    $user->contratistas=1;
+                    $user->aviso_obra=1;
+                    $user->partidas=1;
+                    $user->avance=1;
+                    //Ventas
+                    $user->lotes_disp=1;
+                    $user->mis_prospectos=0;
+                    $user->simulacion_credito=1;
+                    $user->contratos=1;
+                    $user->docs=1;
+                    //Reportes
+                    $user->mejora=1;
+                    break;
+                }
+                case 12: // Postventa
+                {
+                    $user->postventa=1;
+                    $user->entregas=1;
                     break;
                 }
                 
@@ -1005,9 +1066,11 @@ class UserController extends Controller
         $privilegios=User::join('roles','users.rol_id','=','roles.id')
                         ->select( 'users.administracion','users.desarrollo','users.precios','users.obra','users.ventas',
                                 'users.acceso','users.reportes','users.rol_id','users.saldo','users.gestoria',
+                                'users.postventa',
                                 //Administracion
                                 'users.departamentos','users.personas','users.empresas','users.medios_public','users.lugares_contacto','users.servicios',
                                 'users.inst_financiamiento','users.tipos_credito','users.asig_servicios','users.mis_asesores','users.cuenta','users.notaria',
+                                'users.proveedores',
                                 //Desarrollo
                                 'users.fraccionamiento','users.etapas','users.modelos','users.lotes','users.asign_modelos','users.licencias',
                                 'users.acta_terminacion','users.p_etapa',
@@ -1018,12 +1081,14 @@ class UserController extends Controller
                                 'users.contratistas','users.ini_obra','users.aviso_obra','users.partidas','users.avance',
                                 //Ventas
                                 'users.lotes_disp','users.mis_prospectos','users.simulacion_credito','users.hist_simulaciones',
-                                'users.hist_creditos','users.contratos','users.docs',
+                                'users.hist_creditos','users.contratos','users.docs','users.equipamientos',
                                 //Saldo
                                 'users.edo_cuenta','users.depositos','users.gastos_admn','users.cobro_credito',
                                 'users.dev_exc','users.dev_cancel',
                                 //Gestoria
                                 'users.expediente','users.asig_gestor','users.seg_tramite','users.avaluos',
+                                //Postventa
+                                'users.entregas',
                                 //Acceso
                                 'users.usuarios','users.roles',
                                 //Reportes
@@ -1046,6 +1111,7 @@ class UserController extends Controller
         $user->reportes = $request->reportes;
         $user->saldo = $request->saldo;
         $user->gestoria = $request->gestoria;
+        $user->postventa = $request->postventa;
         //Administracion
         $user->departamentos = $request->departamentos;
         $user->personas = $request->personas;
@@ -1058,6 +1124,7 @@ class UserController extends Controller
         $user->asig_servicios = $request->asig_servicios;
         $user->mis_asesores = $request->mis_asesores;
         $user->cuenta = $request->cuenta;
+        $user->proveedores = $request->proveedores;
         //Desarrollo
         $user->fraccionamiento = $request->fraccionamiento;
         $user->etapas = $request->etapas;
@@ -1089,6 +1156,7 @@ class UserController extends Controller
         $user->hist_creditos = $request->hist_creditos;
         $user->contratos = $request->contratos;
         $user->docs = $request->docs;
+        $user->equipamientos = $request->equipamientos;
         //Saldos
         $user->edo_cuenta = $request->edo_cuenta;
         $user->depositos = $request->depositos;
@@ -1101,6 +1169,8 @@ class UserController extends Controller
         $user->asig_gestor = $request->asig_gestor;
         $user->seg_tramite = $request->seg_tramite;
         $user->avaluos = $request->avaluos;
+        //Postventa
+        $user->entregas = $request->entregas;
         //Acceso
         $user->usuarios = $request->usuarios;
         $user->roles = $request->roles;

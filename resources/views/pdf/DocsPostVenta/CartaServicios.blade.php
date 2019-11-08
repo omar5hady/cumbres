@@ -17,8 +17,10 @@ body {
 }
 </style>
 <body>
-
-<div style="margin: 70px;"> 
+<div style="display: inline-block; float: left;" >
+    <IMG SRC="img/logosFraccionamientos/{{ $contratos[0]->logo_fracc }}" width="100" height="100">
+</div>
+<div style="margin: 70px; margin-top: 120px;"> 
     <hr>
     <h3 style="text-align: center;">¡BIENVENIDO!</h3> <br>
     <p>Después de saludarles, les damos la más cordial bienvenida a su Condominio y nos ponemos a sus órdenes como administradores de 
@@ -38,11 +40,11 @@ body {
 
     <p>Nuestras oficinas están en Av. Parque Chapultepec 404 - A, Fracc. Colinas del Parque de esta ciudad en horario corrido de 9:30 a 17:30 hrs.
         de lunes a viernes, los sábados de 10:00 a 13:00 hrs. y/o en el telefono 8 41 79 35. También nos pueden contactar a través del 
-        correo electrónico: catara@decondominios.com.mx
+        correo electrónico: {{$contratos[0]->email_administracion}}
     </p>
 
     <p>Ahora que le ha sido enntregada su casa, es necesario comenzar a realizar el pago de la cuota mensual de mantenimiento.
-     Esta cuota es de <b>$800.00 (ochocientos pesos 00)</b> por casa y se deberá pagar antes de los días 10 de cada mes para no generar recargos.
+     Esta cuota es de <b>${{$contratos[0]->costo_mantenimiento_letra}}</b> por casa y se deberá pagar antes de los días 10 de cada mes para no generar recargos.
      Estos recargos son del 5% mensual (art. 67 del reglamento del condominio).
     </p>
 </div>
@@ -59,11 +61,15 @@ body {
 
     <p><b>Transferencia Electrónica:</b> Los pagos pueden hacerse de cualquier banco a la cuenta:</p>
 
-    <p>Banco: Banco Santander (Mexico), S.A.</p>
-    <P>Sucursal: 0392 Suc. Carranza</P>
-    <p>Titular: ADMINISTRACION DE FRACCIONAMIENTO {{mb_strtoupper($contratos[0]->proyecto)}} A.C.</p>
-    <p>CLABE: 014700220006342320</p>
-
+    <p>Banco: {{$contratos[0]->banco_admin}}</p>
+    <P>Sucursal: {{$contratos[0]->sucursal_admin}}</P>
+    <p>Titular: {{$contratos[0]->titular_admin}}</p>
+    @if($contratos[0]->clabe_admin != '')
+    <p>CLABE: {{$contratos[0]->clabe_admin}}</p>
+    @endif
+    @if ($contratos[0]->num_cuenta_admin != '')
+    <p>Cuenta: {{$contratos[0]->num_cuenta_admin}}</p>
+    @endif
     <p>En caso de hacer el pago vía transferencia electrónica es MUY IMPORTANTE que al hacerlo ponga su número de referencia en el concepto,
         ya que de haber depósitos sin referencia no se tendría a quien acreditarlo.
     </p>

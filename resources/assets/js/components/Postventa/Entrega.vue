@@ -864,6 +864,7 @@
                 b_etapa: '',
                 b_manzana: '',
                 b_lote: '',
+                fecha: '',
 
                 tipoAccion:0,
                 observacion:'',
@@ -1179,30 +1180,32 @@
             ultimaFecha(id){
 
                 let me = this;
+                me.arrayUltimaFecha = [];
                 var url = '/select_ultima_fecha_instalacion?id=' + id;
+                
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayUltimaFecha = respuesta.fecha_ultima;
+                        if(me.arrayUltimaFecha[0].fin_instalacion == null){
+                            me.fecha = "Sin fecha";
+                            }
+                        else{
+                            me.fecha = me.arrayUltimaFecha[0].fin_instalacion;
+                            }
+                    Swal({
+                    title: me.fecha,
+                    animation: false,
+                    customClass: 'animated fadeInUp'
+                    })
                     console.log(url);
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
 
-                var fecha;
-                if(me.arrayUltimaFecha[0].fin_instalacion  == 'NULL'){
-                     fecha = 'Sin fecha';
-                    }
-                else{
-                    fecha = me.arrayUltimaFecha[0].fin_instalacion;
-                   
-                }
+              
                 
-                 Swal({
-                    title: ''+fecha,
-                    animation: false,
-                    customClass: 'animated tada'
-                    })
+                 
             },
 
             finalizarEntrega(){

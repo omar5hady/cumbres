@@ -52,6 +52,7 @@ Vue.component('asignar-modelo', require('./components/Desarrollo/AsignarModelo.v
 Vue.component('licencias', require('./components/Desarrollo/Licencias.vue'));
 Vue.component('actadeterminacion', require('./components/Desarrollo/ActaDeTerminacion.vue'));
 Vue.component('publicidad-etapa', require('./components/Desarrollo/PublicidadEtapa.vue'));
+Vue.component('publicidad-fraccionamiento', require('./components/Desarrollo/PublicidadFraccionamiento.vue'));
 
 //Componentes Precios
 Vue.component('precios-vivienda', require('./components/Precios/PreciosVivienda.vue'));
@@ -98,7 +99,7 @@ Vue.component('proveedor-seguimiento', require('./components/Proveedor/SegInstal
 
 // PostVenta
 Vue.component('postventa-entrega', require('./components/Postventa/Entrega.vue'));
-
+Vue.component('postventa-etapa', require('./components/Postventa/PostventaEtapa.vue'));
 
 Vue.component('notification', require('./components/Notification.vue'));
 Vue.component('perfil-user', require('./components/Perfil.vue'));

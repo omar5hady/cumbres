@@ -25,6 +25,8 @@ class CreateFraccionamientosTable extends Migration
             $table->string('archivo_escrituras')->nullable();
             $table->string('delegacion')->nullable();
             $table->integer('cp')->nullable();
+            $table->string('email_administracion',40)->nullable();
+            $table->string('logo_fracc',100)->nullable();
 
             $table->timestamps();
         });

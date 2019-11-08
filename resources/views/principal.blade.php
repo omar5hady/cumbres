@@ -140,7 +140,7 @@
                                     </li>
                                 @endif
 
-                                @if(Auth::user()->rol_id == 1)
+                                @if(Auth::user()->proveedores == 1)
                                     <li @click="menu=211" class="nav-item">
                                         <a class="nav-link" href="#"><i class="fa fa-industry"></i>Proveedores</a>
                                     </li>
@@ -174,6 +174,11 @@
                                 @if(Auth::user()->etapas == 1)
                                     <li @click="menu=2" class="nav-item">
                                         <a class="nav-link" href="#"><i class="icon-bag"></i> Etapas</a>
+                                    </li>
+                                @endif
+                                @if(Auth::user()->p_fraccionamiento == 1)
+                                    <li @click="menu=112" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="icon-bag"></i> Fraccionamiento</a>
                                     </li>
                                 @endif
                               
@@ -282,13 +287,13 @@
                                         <a class="nav-link" href="#"><i class="fa fa-star-half-o"></i> Visita para avaluo</a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->rol_id == 1)
+                                @if(Auth::user()->equipamientos == 1)
                                     <li @click="menu=213" class="nav-item">
                                         <a class="nav-link" href="#"><i class="fa fa-archive"></i> Solic. Equipamiento</a>
                                     </li>
                                 @endif
 
-                                @if(Auth::user()->rol_id == 1)
+                                @if(Auth::user()->entregas == 1)
                                     <li @click="menu=216" class="nav-item">
                                         <a class="nav-link" href="#"><i class="fa fa-home"></i> Viviendas por entregar</a>
                                     </li>
@@ -330,7 +335,7 @@
                                         <a class="nav-link" href="#"><i class="fa fa-archive"></i> Realizar contrato</a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->rol_id == 1)
+                                @if(Auth::user()->equipamientos == 1)
                                     <li @click="menu=212" class="nav-item">
                                         <a class="nav-link" href="#"><i class="fa fa-archive"></i> Solic. Equipamiento</a>
                                     </li>
@@ -420,11 +425,14 @@
         <!----------     FIN GESTORIA      --->
 
         <!----------      Postventa      --->
-            @if(Auth::user()->rol_id == 1)
+            @if(Auth::user()->postventa == 1)
                 <li class="nav-item nav-dropdown">
                     <a class="nav-link nav-dropdown-toggle" href="#"><i class="fa fa-handshake-o"></i> Post Venta</a>
                     <ul class="nav-dropdown-items">
-                        @if(Auth::user()->rol_id == 1)
+                            <li @click="menu=218" class="nav-item">
+                                <a class="nav-link" href="#"><i class="fa fa-key"></i> Admin. etapa</a>
+                            </li>
+                        @if(Auth::user()->entregas == 1)
                             <li @click="menu=215" class="nav-item">
                                 <a class="nav-link" href="#"><i class="fa fa-key"></i> Entregas de vivienda</a>
                             </li>
@@ -514,9 +522,9 @@
 
     <footer class="app-footer">
         
-        <span><a href="http://www.casascumbres.mx/" target="_blank">Grupo constructor cumbres</a> &copy; 2019</span>
+        <span><a href="http://www.casascumbres.mx/" target="_blank">Grupo Constructor Cumbres</a> &copy; 2019</span>
         
-        <span class="ml-auto">Desarrollado por <a href="http://www.casascumbres.mx/" target="_blank">Casas Cumbres</a></span>
+        <span class="ml-auto">Desarrollado por <a href="http://www.casascumbres.mx/" target="_blank">Grupo Cumbres</a></span>
     </footer>
 
     <!-- Bootstrap and necessary plugins -->

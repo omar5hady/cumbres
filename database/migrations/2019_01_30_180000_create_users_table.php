@@ -32,6 +32,7 @@ class CreateUsersTable extends Migration
             $table->boolean('ventas')->default(0);
             $table->boolean('acceso')->default(0);
             $table->boolean('reportes')->default(0);
+            $table->boolean('postventa')->default(0);
             
             $table->boolean('saldo')->default(0);
             $table->boolean('gestoria')->default(0);
@@ -50,6 +51,7 @@ class CreateUsersTable extends Migration
             $table->boolean('mis_asesores')->default(0);
             $table->boolean('notaria')->default(0);
             $table->boolean('cuenta')->default(0);
+            $table->boolean('proveedores')->default(0);
 
 
             //Desarrollo
@@ -86,6 +88,7 @@ class CreateUsersTable extends Migration
             $table->boolean('hist_creditos')->default(0);
             $table->boolean('contratos')->default(0);
             $table->boolean('docs')->default(0);
+            $table->boolean('equipamientos')->default(0);
 
             //Saldos
             $table->boolean('edo_cuenta')->default(0);
@@ -100,6 +103,9 @@ class CreateUsersTable extends Migration
             $table->boolean('asig_gestor')->default(0);
             $table->boolean('seg_tramite')->default(0);
             $table->boolean('avaluos')->default(0);
+
+            //Postventa
+            $table->boolean('entregas')->default(0);
             
 
 

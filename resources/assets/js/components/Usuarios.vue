@@ -164,6 +164,9 @@
                                                 <li class="nav-item" v-if="rol_id == 1 || rol_id == 7">
                                                     <a class="nav-link"><i class="fa fa-credit-card"></i> <input v-model="notaria" type="checkbox" value="1"/> Notarias</a>
                                                 </li>
+                                                <li class="nav-item" v-if="rol_id == 1 || rol_id == 4 || rol_id == 5 || rol_id == 6 || rol_id == 8">
+                                                    <a class="nav-link"><i class="fa fa-industry"></i> <input v-model="proveedores" type="checkbox" value="1"/> Proveedores</a>
+                                                </li>
                                             </ul>
                                         
                                     </div>
@@ -227,6 +230,9 @@
                                                     </li>
                                                     <li class="nav-item">
                                                         <a class="nav-link"><i class="fa fa-archive"></i> <input v-model="docs" type="checkbox" value="1"/> Docs</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="fa fa-archive"></i> <input v-model="equipamientos" type="checkbox" value="1"/> Equipamientos</a>
                                                     </li>
                                                 </ul>
                                     </div>
@@ -300,6 +306,12 @@
                                                     <li class="nav-item">
                                                         <a class="nav-link" ><i class="fa fa-star-half-o"></i> <input v-model="avance" type="checkbox" value="1"/> Avance</a>
                                                     </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="fa fa-archive"></i> <input v-model="equipamientos" type="checkbox" value="1"/> Equipamientos</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="fa fa-home"></i> <input v-model="entregas" type="checkbox" value="1"/> Viviendas por entregar</a>
+                                                    </li>
                                                 </ul>
                                     </div>
                                 </div> 
@@ -343,7 +355,19 @@
                                     </div>
                                 </div> 
 
-                                 <!-- listado para privilegios del menu Acceso -->
+                                <!-- listado para privilegios del menu Postventa -->
+                                <div class="col-md-4" v-if="rol_id==1 || rol_id==6 || rol_id==12">
+                                    <div class="form-group row border">
+                                            <a class="nav-link nav-dropdown-toggle"><i class="fa fa-handshake-o"></i> <input @click="limpiarPostventa()" v-model="postventa" type="checkbox" value="1"/> Modulo Postventa</a>
+                                                <ul class="nav-dropdown-items" v-if="postventa==1">
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="fa fa-key"></i> <input v-model="entregas" type="checkbox" value="1"/> Entregas de vivienda</a>
+                                                    </li>
+                                                </ul>
+                                    </div>
+                                </div>
+
+                                <!-- listado para privilegios del menu Acceso -->
                                 <div class="col-md-4" v-if="rol_id==1 || rol_id==6">
                                     <div class="form-group row border">
                                             <a class="nav-link nav-dropdown-toggle"><i class="icon-people"></i> <input @click="limpiarAcceso()" v-model="acceso" type="checkbox" value="1"/> Modulo Acceso</a>
@@ -638,6 +662,7 @@
                 reportes:0,
                 saldo:0,
                 gestoria:0,
+                postventa:0,
 
                     //Administracion
                     departamentos:0,
@@ -652,6 +677,7 @@
                     mis_asesores:0,
                     cuenta:0,
                     notaria: 0,
+                    proveedores : 0,
 
 
                     //Desarrollo
@@ -688,6 +714,7 @@
                     hist_creditos:0,
                     contratos:0,
                     docs: 0,
+                    equipamientos : 0,
 
                     //Saldos
                     edo_cuenta:0,
@@ -702,6 +729,9 @@
                     asig_gestor:0,
                     seg_tramite:0,
                     avaluos:0,
+
+                    //Postventa
+                    entregas:0,
 
                     //Acceso
                     usuarios:0,
@@ -805,7 +835,7 @@
               
             },
             
-             selectGerentes(){
+            selectGerentes(){
                 let me = this;
                 me.arrayGerentes=[];
                 var url = '/select_gerentes';
@@ -831,6 +861,7 @@
                 this.mis_asesores=0;
                 this.cuenta = 0;
                 this.notaria=0;
+                this.proveedores = 0;
             },
             limpiarDesarrollo(){
                 //Desarrollo
@@ -860,6 +891,8 @@
                 this.aviso_obra=0;
                 this.partidas=0;
                 this.avance=0;
+                this.equipamientos=0;
+                this.entregas=0;
             },
             limpiarVentas(){
                  //Ventas
@@ -870,6 +903,7 @@
                 this.hist_creditos=0;
                 this.contratos=0;
                 this.docs=0;
+                this.equipamientos=0;
             },
 
             limpiarGestoria(){
@@ -878,6 +912,10 @@
                 this.asig_gestor=0;
                 this.seg_tramite=0;
                 this.avaluos=0;
+            },
+            limpiarPostventa(){
+                //Gestoria
+                this.entregas=0;
             },
 
             limpiarSaldo(){
@@ -931,6 +969,7 @@
                     me.reportes=usuarios[0].reportes;
                     me.saldo = usuarios[0].saldo;
                     me.gestoria = usuarios[0].gestoria;
+                    me.postventa = usuarios[0].postventa;
 
                     //Administracion
                     me.departamentos=usuarios[0].departamentos;
@@ -945,6 +984,7 @@
                     me.mis_asesores=usuarios[0].mis_asesores;
                     me.cuenta = usuarios[0].cuenta;
                     me.notaria = usuarios[0].notaria;
+                    me.proveedores = usuarios[0].proveedores;
 
                     //Desarrollo
                     me.fraccionamiento=usuarios[0].fraccionamiento;
@@ -979,6 +1019,7 @@
                     me.hist_creditos=usuarios[0].hist_creditos;
                     me.contratos=usuarios[0].contratos;
                     me.docs=usuarios[0].docs;
+                    me.equipamientos = usuarios[0].equipamientos;
 
                     //Saldos
                     me.edo_cuenta = usuarios[0].edo_cuenta;
@@ -993,6 +1034,9 @@
                     me.asig_gestor = usuarios[0].asig_gestor;
                     me.seg_tramite = usuarios[0].seg_tramite;
                     me.avaluos = usuarios[0].avaluos;
+
+                    //Postventa
+                    me.entregas = usuarios[0].entregas;
 
                     //Acceso
                     me.usuarios=usuarios[0].usuarios;
@@ -1205,6 +1249,7 @@
                     'reportes':this.reportes,
                     'saldo':this.saldo,
                     'gestoria':this.gestoria,
+                    'postventa':this.postventa,
                         //Administracion
                     'departamentos':this.departamentos,
                     'personas':this.personas,
@@ -1218,6 +1263,7 @@
                     'mis_asesores':this.mis_asesores,
                     'cuenta':this.cuenta,
                     'notaria':this.notaria,
+                    'proveedores':this.proveedores,
                         //Desarrollo
                     'fraccionamiento':this.fraccionamiento,
                     'etapas':this.etapas,
@@ -1249,6 +1295,7 @@
                     'hist_creditos':this.hist_creditos,
                     'contratos':this.contratos,
                     'docs':this.docs,
+                    'equipamientos':this.equipamientos,
                         //Saldo
                     'edo_cuenta':this.edo_cuenta,
                     'depositos':this.depositos,
@@ -1261,6 +1308,8 @@
                     'asig_gestor':this.asig_gestor,
                     'seg_tramite':this.seg_tramite,
                     'avaluos':this.avaluos,
+                        //Postventa
+                    'entregas':this.entregas,
                         //Acceso
                     'usuarios':this.usuarios,
                     'roles':this.roles,
@@ -1496,6 +1545,7 @@
                 me.mis_asesores=0;
                 me.cuenta = 0;
                 me.notaria = 0;
+                me.proveedores = 0;
 
 
                     //Desarrollo
@@ -1532,6 +1582,7 @@
                 me.hist_creditos=0;
                 me.contratos=0;
                 me.docs=0;
+                me.equipamientos = 0;
 
                     //Acceso
                 me.usuarios=0;

@@ -26,6 +26,7 @@ class User extends Authenticatable
        'reportes',
        'saldo',
        'gestoria',
+       'postventa',
 
         //Administracion
         'departamentos',
@@ -39,6 +40,7 @@ class User extends Authenticatable
         'asig_servicios',
         'mis_asesores',
         'cuenta',
+        'proveedores',
 
         //Desarrollo
         'fraccionamiento',
@@ -73,6 +75,7 @@ class User extends Authenticatable
         'hist_creditos',
         'contratos',
         'docs',
+        'equipamientos',
 
         //Saldos
         'edo_cuenta',
@@ -87,6 +90,9 @@ class User extends Authenticatable
         'asig_gestor',
         'seg_tramite',
         'avaluos',
+
+        //Postventa
+        'entregas',
 
         //Acceso
         'usuarios',

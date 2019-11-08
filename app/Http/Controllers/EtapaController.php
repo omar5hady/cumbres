@@ -37,7 +37,8 @@ class EtapaController extends Controller
                     DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS name"),
                     'etapas.fraccionamiento_id','fraccionamientos.nombre as fraccionamiento','etapas.archivo_reglamento',
                     'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento','etapas.plantilla_telecom','etapas.empresas_telecom',
-                    'etapas.empresas_telecom_satelital')
+                    'etapas.empresas_telecom_satelital','etapas.num_cuenta_admin','etapas.clabe_admin','etapas.sucursal_admin',
+                    'etapas.titular_admin','etapas.banco_admin')
                     ->where('etapas.num_etapa','!=','Sin Asignar')
                     ->orderBy('fraccionamientos.nombre','asc')
                     ->orderBy('etapas.num_etapa','asc')->paginate(8);
@@ -52,7 +53,8 @@ class EtapaController extends Controller
                         DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS name"),
                         'etapas.fraccionamiento_id','fraccionamientos.nombre as fraccionamiento','etapas.archivo_reglamento',
                         'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento','etapas.plantilla_telecom','etapas.empresas_telecom',
-                        'etapas.empresas_telecom_satelital')
+                        'etapas.empresas_telecom_satelital','etapas.num_cuenta_admin','etapas.clabe_admin','etapas.sucursal_admin',
+                        'etapas.titular_admin','etapas.banco_admin')
                         ->whereBetween($criterio, [$buscar,$buscar2])
                         ->where('etapas.num_etapa','!=','Sin Asignar')
                         ->orderBy('fraccionamientos.nombre','asc')
@@ -66,7 +68,8 @@ class EtapaController extends Controller
                         DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS name"),
                         'etapas.fraccionamiento_id','fraccionamientos.nombre as fraccionamiento','etapas.archivo_reglamento',
                         'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento','etapas.plantilla_telecom','etapas.empresas_telecom',
-                        'etapas.empresas_telecom_satelital')
+                        'etapas.empresas_telecom_satelital','etapas.num_cuenta_admin','etapas.clabe_admin','etapas.sucursal_admin',
+                        'etapas.titular_admin','etapas.banco_admin')
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->where('etapas.num_etapa','!=','Sin Asignar')
                         ->orderBy('fraccionamientos.nombre','asc')
