@@ -15,6 +15,7 @@ use App\Liquidacion;
 use App\inst_seleccionada;
 use App\Gasto_admin;
 use NumerosEnLetras;
+use App\Lote;
 use App\Credito;
 
 class ExpedienteController extends Controller
@@ -8016,6 +8017,12 @@ class ExpedienteController extends Controller
         $asignar->notaria =  $request->notaria;
         $asignar->hora_firma =  $request->hora_firma;
         $asignar->direccion_firma =  $request->direccion_firma;
+
+        $credito = Credito::findOrFail($request->folio);
+        $lote = $credito->lote_id;
+        $firmado = Lote::findOrFail($lote);
+        $firmado->firmado = 1;
+        $firmado->save();
         $asignar->save();
     }
 

@@ -701,9 +701,6 @@ class LicenciasController extends Controller
                 ->join('licencias', 'lotes.id', '=', 'licencias.id')
                 ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
                 ->join('modelos', 'lotes.modelo_id', '=', 'modelos.id')
-                ->leftJoin('creditos','lotes.id','=','creditos.lote_id')
-                ->leftJoin('contratos','creditos.id','=','contratos.id')
-                ->leftJoin('expedientes','contratos.id','=','expedientes.id')
                 ->select(
                     'fraccionamientos.nombre as proyecto',
                     'etapas.num_etapa',
@@ -718,8 +715,8 @@ class LicenciasController extends Controller
                     'lotes.paquete',
                     'licencias.avance',
                     'licencias.visita_avaluo',
-                    'expedientes.fecha_firma_esc',
-                    'lotes.contrato'
+                    'lotes.contrato',
+                    'lotes.firmado'
                 )
                 ->where('lotes.aviso','!=','0')
                 ->orderBy('fraccionamientos.nombre', 'ASC')
@@ -735,9 +732,6 @@ class LicenciasController extends Controller
                         ->join('licencias', 'lotes.id', '=', 'licencias.id')
                         ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
                         ->join('modelos', 'lotes.modelo_id', '=', 'modelos.id')
-                        ->leftJoin('creditos','lotes.id','=','creditos.lote_id')
-                ->leftJoin('contratos','creditos.id','=','contratos.id')
-                ->leftJoin('expedientes','contratos.id','=','expedientes.id')
                         ->select(
                             'fraccionamientos.nombre as proyecto',
                             'etapas.num_etapa',
@@ -752,8 +746,9 @@ class LicenciasController extends Controller
                             'lotes.paquete',
                             'licencias.avance',
                             'licencias.visita_avaluo',
-                            'expedientes.fecha_firma_esc',
-                            'lotes.contrato'
+                            
+                            'lotes.contrato',
+                            'lotes.firmado'
                         )
                         ->where('lotes.aviso','!=','0')
                         ->where('lotes.fraccionamiento_id','=',$buscar)
@@ -767,9 +762,6 @@ class LicenciasController extends Controller
                         ->join('licencias', 'lotes.id', '=', 'licencias.id')
                         ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
                         ->join('modelos', 'lotes.modelo_id', '=', 'modelos.id')
-                        ->leftJoin('creditos','lotes.id','=','creditos.lote_id')
-                ->leftJoin('contratos','creditos.id','=','contratos.id')
-                ->leftJoin('expedientes','contratos.id','=','expedientes.id')
                         ->select(
                             'fraccionamientos.nombre as proyecto',
                             'etapas.num_etapa',
@@ -785,8 +777,9 @@ class LicenciasController extends Controller
                             'lotes.paquete',
                             'licencias.avance',
                             'licencias.visita_avaluo',
-                            'expedientes.fecha_firma_esc',
-                            'lotes.contrato'
+                            
+                            'lotes.contrato',
+                            'lotes.firmado'
                         )
                         ->where('lotes.aviso','!=','0')
                         ->where('lotes.fraccionamiento_id','=',$buscar)
@@ -801,9 +794,6 @@ class LicenciasController extends Controller
                         ->join('licencias', 'lotes.id', '=', 'licencias.id')
                         ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
                         ->join('modelos', 'lotes.modelo_id', '=', 'modelos.id')
-                        ->leftJoin('creditos','lotes.id','=','creditos.lote_id')
-                ->leftJoin('contratos','creditos.id','=','contratos.id')
-                ->leftJoin('expedientes','contratos.id','=','expedientes.id')
                         ->select(
                             'fraccionamientos.nombre as proyecto',
                             'etapas.num_etapa',
@@ -819,8 +809,9 @@ class LicenciasController extends Controller
                             'lotes.paquete',
                             'licencias.avance',
                             'licencias.visita_avaluo',
-                            'expedientes.fecha_firma_esc',
-                            'lotes.contrato'
+                            
+                            'lotes.contrato',
+                            'lotes.firmado'
                         )
                         ->where('lotes.aviso','!=','0')
                         ->where('lotes.fraccionamiento_id','=',$buscar)
@@ -836,9 +827,6 @@ class LicenciasController extends Controller
                         ->join('licencias', 'lotes.id', '=', 'licencias.id')
                         ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
                         ->join('modelos', 'lotes.modelo_id', '=', 'modelos.id')
-                        ->leftJoin('creditos','lotes.id','=','creditos.lote_id')
-                ->leftJoin('contratos','creditos.id','=','contratos.id')
-                ->leftJoin('expedientes','contratos.id','=','expedientes.id')
                         ->select(
                             'fraccionamientos.nombre as proyecto',
                             'etapas.num_etapa',
@@ -854,8 +842,9 @@ class LicenciasController extends Controller
                             'lotes.paquete',
                             'licencias.avance',
                             'licencias.visita_avaluo',
-                            'expedientes.fecha_firma_esc',
-                            'lotes.contrato'
+                            
+                            'lotes.contrato',
+                            'lotes.firmado'
                         )
                         ->where('lotes.aviso','!=','0')
                         ->where('lotes.fraccionamiento_id','=',$buscar)
@@ -872,9 +861,6 @@ class LicenciasController extends Controller
                         ->join('licencias', 'lotes.id', '=', 'licencias.id')
                         ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
                         ->join('modelos', 'lotes.modelo_id', '=', 'modelos.id')
-                        ->leftJoin('creditos','lotes.id','=','creditos.lote_id')
-                ->leftJoin('contratos','creditos.id','=','contratos.id')
-                ->leftJoin('expedientes','contratos.id','=','expedientes.id')
                         ->select(
                             'fraccionamientos.nombre as proyecto',
                             'etapas.num_etapa',
@@ -890,8 +876,9 @@ class LicenciasController extends Controller
                             'lotes.paquete',
                             'licencias.avance',
                             'licencias.visita_avaluo',
-                            'expedientes.fecha_firma_esc',
-                            'lotes.contrato'
+                            
+                            'lotes.contrato',
+                            'lotes.firmado'
                         )
                         ->where('lotes.aviso','!=','0')
                         ->where('lotes.fraccionamiento_id','=',$buscar)
@@ -906,9 +893,6 @@ class LicenciasController extends Controller
                         ->join('licencias', 'lotes.id', '=', 'licencias.id')
                         ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
                         ->join('modelos', 'lotes.modelo_id', '=', 'modelos.id')
-                        ->leftJoin('creditos','lotes.id','=','creditos.lote_id')
-                ->leftJoin('contratos','creditos.id','=','contratos.id')
-                ->leftJoin('expedientes','contratos.id','=','expedientes.id')
                         ->select(
                             'fraccionamientos.nombre as proyecto',
                             'etapas.num_etapa',
@@ -924,8 +908,9 @@ class LicenciasController extends Controller
                             'lotes.paquete',
                             'licencias.avance',
                             'licencias.visita_avaluo',
-                            'expedientes.fecha_firma_esc',
-                            'lotes.contrato'
+                            
+                            'lotes.contrato',
+                            'lotes.firmado'
                         )
                         ->where('lotes.aviso','!=','0')
                         ->where('lotes.fraccionamiento_id','=',$buscar)
@@ -941,9 +926,6 @@ class LicenciasController extends Controller
                         ->join('licencias', 'lotes.id', '=', 'licencias.id')
                         ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
                         ->join('modelos', 'lotes.modelo_id', '=', 'modelos.id')
-                        ->leftJoin('creditos','lotes.id','=','creditos.lote_id')
-                ->leftJoin('contratos','creditos.id','=','contratos.id')
-                ->leftJoin('expedientes','contratos.id','=','expedientes.id')
                         ->select(
                             'fraccionamientos.nombre as proyecto',
                             'etapas.num_etapa',
@@ -959,8 +941,9 @@ class LicenciasController extends Controller
                             'lotes.paquete',
                             'licencias.avance',
                             'licencias.visita_avaluo',
-                            'expedientes.fecha_firma_esc',
-                            'lotes.contrato'
+                            
+                            'lotes.contrato',
+                            'lotes.firmado'
                         )
                         ->where('lotes.aviso','!=','0')
                         ->where('lotes.fraccionamiento_id','=',$buscar)
@@ -975,9 +958,6 @@ class LicenciasController extends Controller
                         ->join('licencias', 'lotes.id', '=', 'licencias.id')
                         ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
                         ->join('modelos', 'lotes.modelo_id', '=', 'modelos.id')
-                        ->leftJoin('creditos','lotes.id','=','creditos.lote_id')
-                ->leftJoin('contratos','creditos.id','=','contratos.id')
-                ->leftJoin('expedientes','contratos.id','=','expedientes.id')
                         ->select(
                             'fraccionamientos.nombre as proyecto',
                             'etapas.num_etapa',
@@ -993,8 +973,9 @@ class LicenciasController extends Controller
                             'lotes.paquete',
                             'licencias.avance',
                             'licencias.visita_avaluo',
-                            'expedientes.fecha_firma_esc',
-                            'lotes.contrato'
+                            
+                            'lotes.contrato',
+                            'lotes.firmado'
                         )
                         ->where('lotes.aviso','!=','0')
                         ->where('lotes.fraccionamiento_id','=',$buscar)
@@ -1013,9 +994,6 @@ class LicenciasController extends Controller
                     ->join('licencias', 'lotes.id', '=', 'licencias.id')
                     ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
                     ->join('modelos', 'lotes.modelo_id', '=', 'modelos.id')
-                    ->leftJoin('creditos','lotes.id','=','creditos.lote_id')
-                ->leftJoin('contratos','creditos.id','=','contratos.id')
-                ->leftJoin('expedientes','contratos.id','=','expedientes.id')
                     ->select(
                         'fraccionamientos.nombre as proyecto',
                         'etapas.num_etapa',
@@ -1029,7 +1007,9 @@ class LicenciasController extends Controller
                         'lotes.id',
                         'lotes.paquete',
                         'licencias.avance',
-                        'licencias.visita_avaluo'
+                        'licencias.visita_avaluo',
+                        'lotes.contrato',
+                        'lotes.firmado'
                     )
                     ->where('lotes.aviso','!=','0')
                     ->where($criterio,'=',$buscar)

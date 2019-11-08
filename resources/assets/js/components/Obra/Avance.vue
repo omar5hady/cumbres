@@ -446,7 +446,7 @@
                     if(me.arrayAvance[0].contrato == 0){
                         me.status = 'Disponible';
                     }
-                    else if(me.arrayAvance[0].contrato == 1 && !me.arrayAvance[0].fecha_firma_esc){
+                    else if(me.arrayAvance[0].contrato == 1 && me.arrayAvance[0].firmado == 0){
                         me.status = 'Vendido';
                     }
                     else{

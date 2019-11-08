@@ -165,12 +165,10 @@ class AvanceController extends Controller
             ->join('modelos','lotes.modelo_id','=','modelos.id')
             ->addSelect('modelos.nombre as modelos')
 
-            ->leftJoin('creditos','lotes.id','=','creditos.lote_id')
-            ->leftJoin('contratos','creditos.id','=','contratos.id')
-            ->leftJoin('expedientes','contratos.id','=','expedientes.id')
-            ->addSelect('lotes.contrato','expedientes.fecha_firma_esc')
+            
+            ->addSelect('lotes.contrato','lotes.firmado')
                 ->where('lotes.aviso', '!=', '0')
-                ->orderBy('avances.id','ASC')->paginate(49);
+                ->orderBy('avances.id','ASC')->distinct()->paginate(49);
         }
        else{
            if($criterio == 'avances.lote_id' || $criterio == 'lotes.id'){
@@ -184,14 +182,12 @@ class AvanceController extends Controller
             ->addSelect('fraccionamientos.nombre as proyecto')
             ->join('modelos','lotes.modelo_id','=','modelos.id')
             ->addSelect('modelos.nombre as modelos')
-            ->leftJoin('creditos','lotes.id','=','creditos.lote_id')
-            ->leftJoin('contratos','creditos.id','=','contratos.id')
-            ->leftJoin('expedientes','contratos.id','=','expedientes.id')
-            ->addSelect('lotes.contrato','expedientes.fecha_firma_esc')
+            
+            ->addSelect('lotes.contrato','lotes.firmado')
             
                 ->where($criterio, '=', $buscar)
                 ->where('lotes.aviso', '!=', '0')
-                ->orderBy('avances.id','ASC')->paginate(49);
+                ->orderBy('avances.id','ASC')->distinct()->paginate(49);
            }
            else{
             $avance = Avance::join('lotes','avances.lote_id','=','lotes.id')
@@ -204,14 +200,12 @@ class AvanceController extends Controller
             ->addSelect('fraccionamientos.nombre as proyecto')
             ->join('modelos','lotes.modelo_id','=','modelos.id')
             ->addSelect('modelos.nombre as modelos')
-            ->leftJoin('creditos','lotes.id','=','creditos.lote_id')
-            ->leftJoin('contratos','creditos.id','=','contratos.id')
-            ->leftJoin('expedientes','contratos.id','=','expedientes.id')
-            ->addSelect('lotes.contrato','expedientes.fecha_firma_esc')
+            
+            ->addSelect('lotes.contrato','lotes.firmado')
             
                 ->where($criterio, 'like', '%'. $buscar . '%')
                 ->where('lotes.aviso', '!=', '0')
-                ->orderBy('avances.id','ASC')->paginate(49);
+                ->orderBy('avances.id','ASC')->distinct()->paginate(49);
            }
             
        }

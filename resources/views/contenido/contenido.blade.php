@@ -197,7 +197,7 @@
             </template>
         @endif
 
-        @if(Auth::user()->aviso_obra == 1)
+        @if(Auth::user()->avance == 1)
             <template v-if="menu==55">
                 <visita-avaluo></visita-avaluo>
             </template>
