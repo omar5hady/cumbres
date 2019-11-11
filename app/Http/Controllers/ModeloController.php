@@ -28,7 +28,7 @@ class ModeloController extends Controller
         if($buscar==''){
             $modelos = Modelo::join('fraccionamientos','modelos.fraccionamiento_id','=','fraccionamientos.id')
             ->select('modelos.nombre','modelos.tipo','modelos.fraccionamiento_id',
-            'fraccionamientos.nombre as fraccionamiento','modelos.terreno','modelos.construccion','modelos.archivo','modelos.id')
+            'fraccionamientos.nombre as fraccionamiento','modelos.terreno','modelos.construccion','modelos.archivo','modelos.id','espec_obra')
             ->where('modelos.nombre', '!=','Por Asignar')
                 ->orderBy('fraccionamientos.nombre','asc')
                 ->orderBy('modelos.nombre','asc')->paginate(8);
@@ -36,7 +36,7 @@ class ModeloController extends Controller
         else{
             $modelos = Modelo::join('fraccionamientos','modelos.fraccionamiento_id','=','fraccionamientos.id')
             ->select('modelos.nombre','modelos.tipo','modelos.fraccionamiento_id',
-            'fraccionamientos.nombre as fraccionamiento','modelos.terreno','modelos.construccion','modelos.archivo','modelos.id')
+            'fraccionamientos.nombre as fraccionamiento','modelos.terreno','modelos.construccion','modelos.archivo','modelos.id','espec_obra')
                 ->where($criterio, 'like', '%'. $buscar . '%')
                 ->where('modelos.nombre', '!=','Por Asignar')
                 ->orderBy('fraccionamientos.nombre','asc')
@@ -347,9 +347,9 @@ class ModeloController extends Controller
     public function downloadFile($fileName){
         $pathtoFile = public_path().'/files/modelos/'.$fileName;
         return response()->download($pathtoFile);
-      }
+    }
 
-      public function selectModelo_proyecto(Request $request){
+    public function selectModelo_proyecto(Request $request){
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
         if(!$request->ajax())return redirect('/');
 
@@ -485,5 +485,28 @@ class ModeloController extends Controller
         $pathtoFile = public_path().'/files/modelos/'.$archivos[0]->archivo;
         return response()->download($pathtoFile);
     }
+    
+    public function formSubmitEspecObra(Request $request, $id)
+    {
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 
+        $fileName = time().'.'.$request->archivoObra->getClientOriginalExtension();
+        $moved =  $request->archivoObra->move(public_path('/files/modelos'), $fileName);
+
+        if($moved){
+            if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+            $modelo = Modelo::findOrFail($request->id);
+            $modelo->espec_obra = $fileName;
+            $modelo->id = $id;
+            $modelo->save(); //Insert
+    
+            }
+        
+    	return response()->json(['success'=>'You have successfully upload file.']);
+    }
+
+    public function downloadFileEspecObra($fileName){
+        $pathtoFile = public_path().'/files/modelos/'.$fileName;
+        return response()->download($pathtoFile);
+    }
 }

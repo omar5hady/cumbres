@@ -184,6 +184,9 @@ Route::group(['middleware' => ['auth']],function(){
         Route::delete('/modelo/eliminar','ModeloController@destroy');
         Route::post('/formSubmitModelo/{id}','ModeloController@formSubmit');
         Route::get('/downloadModelo/{fileName}' , 'ModeloController@downloadFile');
+        Route::post('/formSubmitModelo/especificaciones/obra/{id}','ModeloController@formSubmitEspecObra');
+        Route::get('/downloadModelo/obra/{fileName}' , 'ModeloController@downloadFileEspecObra');
+        
     
     ////////////////////        RUTAS LOTES    /////////////////////////////////
         Route::get('/lote','LoteController@index'); 

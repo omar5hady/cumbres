@@ -172,8 +172,10 @@
                                         <td class="td2" v-text="avancepro.fecha_fin"></td>
                                         <td class="td2" v-text="formatNumber(avancepro.porcentajeTotal) + '%'"></td>
                                         <td class="td2"> <button v-if="avancepro.paquete != NULL && avancepro.paquete != ''" title="Ver paquete" type="button" class="btn btn-info pull-right" @click="mostrarPaquete(avancepro.paquete)">Ver paquete</button> </td>
-                                        <td class="td2" style="width:7%" v-if = "avancepro.archivo"><a class="btn btn-default btn-sm" v-bind:href="'/downloadModelo/'+avancepro.archivo"><i class="icon-cloud-download"></i></a></td>
-                                        <td class="td2" v-else></td>
+                                       <td style="width:7%">
+                                            <a v-if="avancepro.archivo" class="btn btn-primary btn-sm" v-bind:href="'/downloadModelo/'+avancepro.archivo"><i class="icon-cloud-download"></i></a>
+                                            <a v-if="avancepro.espec_obra" class="btn btn-warning btn-sm" title="Especificaciones de obra" v-bind:href="'/downloadModelo/obra/'+avancepro.espec_obra"><i class="icon-cloud-download"></i></a>
+                                        </td>
                                     
                                         
                                     </tr>                               

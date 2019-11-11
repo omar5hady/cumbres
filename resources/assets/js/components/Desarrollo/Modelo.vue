@@ -70,8 +70,10 @@
                                         <td v-text="modelo.nombre"></td>
                                         <td v-text="modelo.terreno"></td>
                                         <td v-text="modelo.construccion"></td>
-                                        <td style="width:7%" v-if = "modelo.archivo"><a class="btn btn-default btn-sm" v-bind:href="'/downloadModelo/'+modelo.archivo"><i class="icon-cloud-download"></i></a></td>
-                                        <td v-else></td>
+                                        <td style="width:7%">
+                                            <a v-if="modelo.archivo" class="btn btn-primary btn-sm" v-bind:href="'/downloadModelo/'+modelo.archivo"><i class="icon-cloud-download"></i></a>
+                                            <a v-if="modelo.espec_obra" class="btn btn-warning btn-sm" title="Especificaciones de obra" v-bind:href="'/downloadModelo/obra/'+modelo.espec_obra"><i class="icon-cloud-download"></i></a>
+                                        </td>
                                     </tr>                               
                                 </tbody>
                             </table>  
@@ -168,7 +170,7 @@
             </div>
             <!--Fin del modal-->
 
-                    <!-- modal para la carga de archivos -->
+            <!-- modal para la carga de archivos -->
             <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
                 <div class="modal-dialog modal-primary modal-lg" role="document">
                     <div class="modal-content">
@@ -186,13 +188,28 @@
                         </div>
                             <form  method="post" @submit="formSubmit" enctype="multipart/form-data">
 
-                                    <strong>Name:</strong>
+                                    <strong>Modelo:</strong>
 
                                     <input type="text" class="form-control" v-model="nombre" >
 
                                     <strong>Archivo:</strong>
 
                                     <input type="file" class="form-control" v-on:change="onImageChange">
+
+
+
+                                    <button type="submit" class="btn btn-success">Cargar</button>
+                            </form>
+                            <br>
+                            <form  v-if="rolId != '7'" method="post" @submit="formSubmitEspeObra" enctype="multipart/form-data">
+
+                                    <strong>Modelo:</strong>
+
+                                    <input type="text" class="form-control" v-model="nombre" >
+
+                                    <strong>Archivo especificaciones obra:</strong>
+
+                                    <input type="file" class="form-control" v-on:change="onImageChangeEspeObra">
 
 
 
@@ -239,6 +256,7 @@
                 construccion : 0.0,
              
                 archivo: '',
+                archivoEspeObra: '',
                 success: '',
                 arrayModelo : [],
                 modal : 0,
@@ -337,6 +355,53 @@
                 });
 
             },
+
+            // Metodos para los archivos de las especificaciones de obra
+            onImageChangeEspeObra(e){
+
+                console.log(e.target.files[0]);
+
+                this.archivoEspeObra = e.target.files[0];
+
+            },
+
+            formSubmitEspeObra(e) {
+
+                e.preventDefault();
+
+                let currentObj = this;
+                // const config = {
+
+                //     headers: { 'content-type': 'multipart/form-data' }
+
+                // }
+                let formData2 = new FormData();
+               // formData.append('id', this.id);
+                formData2.append('archivoObra', this.archivoEspeObra);
+                let me = this;
+                axios.post('/formSubmitModelo/especificaciones/obra/'+this.id, formData2)
+                .then(function (response) {
+                    currentObj.success = response.data.success;
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Archivo cargado correctamente',
+                        showConfirmButton: false,
+                        timer: 2000
+                        })
+                    me.cerrarModal2();
+                    me.listarModelo(1,'','modelo');
+
+                })
+
+                .catch(function (error) {
+
+                    currentObj.output = error;
+
+                });
+
+            },
+
 
             /**Metodo para mostrar los registros */
             listarModelo(page, buscar, criterio){
