@@ -1687,216 +1687,234 @@
                 {
                     return;
                 }
-                let me = this;
+
+                swal({
+                title: '¿Desea terminar la revision?',
+                text: "Verificar que todo fue revisado",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Si, finalizar!'
+                }).then((result) => {
+                if (result.value) {
+                    let me = this;
+
                 //Con axios se llama el metodo update de LoteController
-                axios.post('/equipamiento/storeRecepcion',{
-                    'comentario' : this.observacion,
-                    'id': this.solicitud_id,
-                    'tipoRecepcion' : this.tipoRecepcion,
-                    'resultado' : resultado,
-                    'cubierta_acab_uniones': this.cubierta_acab_uniones,
-                    'cubierta_acab_silicon': this.cubierta_acab_silicon,
-                    'cubierta_acab_cortes': this.cubierta_acab_cortes,
-                    'puerta_acab_alineados': this.puerta_acab_alineados,
-                    'puerta_acab_cantos': this.puerta_acab_cantos,
+                    axios.post('/equipamiento/storeRecepcion',{
+                        'comentario' : this.observacion,
+                        'id': this.solicitud_id,
+                        'tipoRecepcion' : this.tipoRecepcion,
+                        'resultado' : resultado,
+                        'cubierta_acab_uniones': this.cubierta_acab_uniones,
+                        'cubierta_acab_silicon': this.cubierta_acab_silicon,
+                        'cubierta_acab_cortes': this.cubierta_acab_cortes,
+                        'puerta_acab_alineados': this.puerta_acab_alineados,
+                        'puerta_acab_cantos': this.puerta_acab_cantos,
 
-                    'estufa_instalacion': this.estufa_instalacion,
-                    'estufa_pzas_extra': this.estufa_pzas_extra,
-                    'estufa_manuales': this.estufa_manuales,
-                    'estufa_danos': this.estufa_danos,
-                    'tarja_danos': this.tarja_danos,
-                    'tarja_pzas_extra': this.tarja_pzas_extra,
+                        'estufa_instalacion': this.estufa_instalacion,
+                        'estufa_pzas_extra': this.estufa_pzas_extra,
+                        'estufa_manuales': this.estufa_manuales,
+                        'estufa_danos': this.estufa_danos,
+                        'tarja_danos': this.tarja_danos,
+                        'tarja_pzas_extra': this.tarja_pzas_extra,
 
-                    'puerta_danos': this.puerta_danos,
-                    'puerta_tornillos': this.puerta_tornillos,
-                    'puerta_abatimiento': this.puerta_abatimiento,
-                    'puerta_limpieza': this.puerta_limpieza,
-                    'puerta_jaladera': this.puerta_jaladera,
-                    'puerta_gomas': this.puerta_gomas,
-                    'cajones_uniones': this.cajones_uniones,
-                    'cajones_silicon': this.cajones_silicon,
-                    'cajones_limpieza': this.cajones_limpieza,
-                    'cajones_jaladeras': this.cajones_jaladeras,
-                    'cajones_cantos': this.cajones_cantos,
-                    'cajones_rieles': this.cajones_rieles,
-                    'cajones_estantes': this.cajones_estantes,
-                    'cajones_pzas_comp': this.cajones_pzas_comp,
-                    'alacena_entrepano': this.alacena_entrepano,
-                    'alacena_pistones': this.alacena_pistones,
-                    'alacena_jaladeras': this.alacena_jaladeras,
-                    'alacena_micro': this.alacena_micro,
-                    'alacena_cantos': this.alacena_cantos,
-                    'alacena_limpieza': this.alacena_limpieza,
-                    'alacena_parches': this.alacena_parches,
+                        'puerta_danos': this.puerta_danos,
+                        'puerta_tornillos': this.puerta_tornillos,
+                        'puerta_abatimiento': this.puerta_abatimiento,
+                        'puerta_limpieza': this.puerta_limpieza,
+                        'puerta_jaladera': this.puerta_jaladera,
+                        'puerta_gomas': this.puerta_gomas,
+                        'cajones_uniones': this.cajones_uniones,
+                        'cajones_silicon': this.cajones_silicon,
+                        'cajones_limpieza': this.cajones_limpieza,
+                        'cajones_jaladeras': this.cajones_jaladeras,
+                        'cajones_cantos': this.cajones_cantos,
+                        'cajones_rieles': this.cajones_rieles,
+                        'cajones_estantes': this.cajones_estantes,
+                        'cajones_pzas_comp': this.cajones_pzas_comp,
+                        'alacena_entrepano': this.alacena_entrepano,
+                        'alacena_pistones': this.alacena_pistones,
+                        'alacena_jaladeras': this.alacena_jaladeras,
+                        'alacena_micro': this.alacena_micro,
+                        'alacena_cantos': this.alacena_cantos,
+                        'alacena_limpieza': this.alacena_limpieza,
+                        'alacena_parches': this.alacena_parches,
 
-                    'p_ali_der': this.p_ali_der,
-                    'p_ali_izq': this.p_ali_izq,
-                    'p_ali_princ': this.p_ali_princ,
-                    'p_ali_baja': this.p_ali_baja,
-                    //Puertas limpieza
-                    'p_limp_der': this.p_limp_der,
-                    'p_limp_izq': this.p_limp_izq,
-                    'p_limp_princ': this.p_limp_princ,
-                    'p_limp_baja': this.p_limp_baja,
-                    //Puertas silicon
-                    'p_sil_der': this.p_sil_der,
-                    'p_sil_izq': this.p_sil_izq,
-                    'p_sil_princ': this.p_sil_princ,
-                    'p_sil_baja': this.p_sil_baja,
-                    //Cajones alineados
-                    'c_ali_der': this.c_ali_der,
-                    'c_ali_izq': this.c_ali_izq,
-                    'c_ali_princ': this.c_ali_princ,
-                    'c_ali_baja': this.c_ali_baja,
-                    //Cajones cantos
-                    'c_cant_der': this.c_cant_der,
-                    'c_cant_izq': this.c_cant_izq,
-                    'c_cant_princ': this.c_cant_princ,
-                    'c_cant_baja': this.c_cant_baja,
-                    //Cajones uniones
-                    'c_union_der': this.c_union_der,
-                    'c_union_izq': this.c_union_izq,
-                    'c_union_princ': this.c_union_princ,
-                    'c_union_baja': this.c_union_baja,
-                    //Cajones silicon
-                    'c_sil_der': this.c_sil_der,
-                    'c_sil_izq': this.c_sil_izq,
-                    'c_sil_princ': this.c_sil_princ,
-                    'c_sil_baja': this.c_sil_baja,
-                    //Cajones limpieza
-                    'c_limp_der': this.c_limp_der,
-                    'c_limp_izq': this.c_limp_izq,
-                    'c_limp_princ': this.c_limp_princ,
-                    'c_limp_baja': this.c_limp_baja,
-                    //Cajones tornillos
-                    'c_torn_der': this.c_torn_der,
-                    'c_torn_izq': this.c_torn_izq,
-                    'c_torn_princ': this.c_torn_princ,
-                    'c_torn_baja': this.c_torn_baja,
-                    //Cajones parches
-                    'c_parch_der': this.c_parch_der,
-                    'c_parch_izq': this.c_parch_izq,
-                    'c_parch_princ': this.c_parch_princ,
-                    'c_parch_baja': this.c_parch_baja,
+                        'p_ali_der': this.p_ali_der,
+                        'p_ali_izq': this.p_ali_izq,
+                        'p_ali_princ': this.p_ali_princ,
+                        'p_ali_baja': this.p_ali_baja,
+                        //Puertas limpieza
+                        'p_limp_der': this.p_limp_der,
+                        'p_limp_izq': this.p_limp_izq,
+                        'p_limp_princ': this.p_limp_princ,
+                        'p_limp_baja': this.p_limp_baja,
+                        //Puertas silicon
+                        'p_sil_der': this.p_sil_der,
+                        'p_sil_izq': this.p_sil_izq,
+                        'p_sil_princ': this.p_sil_princ,
+                        'p_sil_baja': this.p_sil_baja,
+                        //Cajones alineados
+                        'c_ali_der': this.c_ali_der,
+                        'c_ali_izq': this.c_ali_izq,
+                        'c_ali_princ': this.c_ali_princ,
+                        'c_ali_baja': this.c_ali_baja,
+                        //Cajones cantos
+                        'c_cant_der': this.c_cant_der,
+                        'c_cant_izq': this.c_cant_izq,
+                        'c_cant_princ': this.c_cant_princ,
+                        'c_cant_baja': this.c_cant_baja,
+                        //Cajones uniones
+                        'c_union_der': this.c_union_der,
+                        'c_union_izq': this.c_union_izq,
+                        'c_union_princ': this.c_union_princ,
+                        'c_union_baja': this.c_union_baja,
+                        //Cajones silicon
+                        'c_sil_der': this.c_sil_der,
+                        'c_sil_izq': this.c_sil_izq,
+                        'c_sil_princ': this.c_sil_princ,
+                        'c_sil_baja': this.c_sil_baja,
+                        //Cajones limpieza
+                        'c_limp_der': this.c_limp_der,
+                        'c_limp_izq': this.c_limp_izq,
+                        'c_limp_princ': this.c_limp_princ,
+                        'c_limp_baja': this.c_limp_baja,
+                        //Cajones tornillos
+                        'c_torn_der': this.c_torn_der,
+                        'c_torn_izq': this.c_torn_izq,
+                        'c_torn_princ': this.c_torn_princ,
+                        'c_torn_baja': this.c_torn_baja,
+                        //Cajones parches
+                        'c_parch_der': this.c_parch_der,
+                        'c_parch_izq': this.c_parch_izq,
+                        'c_parch_princ': this.c_parch_princ,
+                        'c_parch_baja': this.c_parch_baja,
 
-                    //Puertas tiradores
-                    'p_tira_der': this.p_tira_der,
-                    'p_tira_izq': this.p_tira_izq,
-                    'p_tira_princ': this.p_tira_princ,
-                    'p_tira_baja': this.p_tira_baja,
-                        //Puertas funcionamiento
-                    'p_func_der': this.p_func_der,
-                    'p_func_izq': this.p_func_izq,
-                    'p_func_princ': this.p_func_princ,
-                    'p_func_baja': this.p_func_baja,
-                        //Cajones jaladeras
-                    'c_jalad_der': this.c_jalad_der,
-                    'c_jalad_izq': this.c_jalad_izq,
-                    'c_jalad_princ': this.c_jalad_princ,
-                    'c_jalad_baja': this.c_jalad_baja,
-                        //Cajones rieles
-                    'c_riel_der': this.c_riel_der,
-                    'c_riel_izq': this.c_riel_izq,
-                    'c_riel_princ': this.c_riel_princ,
-                    'c_riel_baja': this.c_riel_baja,
-                        //Cajones estantes
-                    'c_estant_der': this.c_estant_der,
-                    'c_estant_izq': this.c_estant_izq,
-                    'c_estant_princ': this.c_estant_princ,
-                    'c_estant_baja': this.c_estant_baja,
-                        //Cajones entrepaños
-                    'c_entr_der': this.c_entr_der,
-                    'c_entr_izq': this.c_entr_izq,
-                    'c_entr_princ': this.c_entr_princ,
-                    'c_entr_baja': this.c_entr_baja,
-                        //Cajones tubos colga
-                    'c_tubos_der': this.c_tubos_der,
-                    'c_tubos_izq': this.c_tubos_izq,
-                    'c_tubos_princ': this.c_tubos_princ,
-                    'c_tubos_baja': this.c_tubos_baja,
-                        //Cajones daños
-                    'c_danos_der': this.c_danos_der,
-                    'c_danos_izq': this.c_danos_izq,
-                    'c_danos_princ': this.c_danos_princ,
-                    'c_danos_baja': this.c_danos_baja,
-                        //Cajones abre correct
-                    'c_correct_der': this.c_correct_der,
-                    'c_correct_izq': this.c_correct_izq,
-                    'c_correct_princ': this.c_correct_princ,
-                    'c_correct_baja': this.c_correct_baja,
-                        //Cajones pzas compl
-                    'c_pzasc_der': this.c_pzasc_der,
-                    'c_pzasc_izq': this.c_pzasc_izq,
-                    'c_pzasc_princ': this.c_pzasc_princ,
-                    'c_pzasc_baja': this.c_pzasc_baja,
-                        //Cajones abatimiento
-                    'c_abatim_der': this.c_abatim_der,
-                    'c_abatim_izq': this.c_abatim_izq,
-                    'c_abatim_princ': this.c_abatim_princ,
-                    'c_abatim_baja': this.c_abatim_baja,
-                        //Cajones visagras
-                    'c_visagras_der': this.c_visagras_der,
-                    'c_visagras_izq': this.c_visagras_izq,
-                    'c_visagras_princ': this.c_visagras_princ,
-                    'c_visagras_baja': this.c_visagras_baja,
+                        //Puertas tiradores
+                        'p_tira_der': this.p_tira_der,
+                        'p_tira_izq': this.p_tira_izq,
+                        'p_tira_princ': this.p_tira_princ,
+                        'p_tira_baja': this.p_tira_baja,
+                            //Puertas funcionamiento
+                        'p_func_der': this.p_func_der,
+                        'p_func_izq': this.p_func_izq,
+                        'p_func_princ': this.p_func_princ,
+                        'p_func_baja': this.p_func_baja,
+                            //Cajones jaladeras
+                        'c_jalad_der': this.c_jalad_der,
+                        'c_jalad_izq': this.c_jalad_izq,
+                        'c_jalad_princ': this.c_jalad_princ,
+                        'c_jalad_baja': this.c_jalad_baja,
+                            //Cajones rieles
+                        'c_riel_der': this.c_riel_der,
+                        'c_riel_izq': this.c_riel_izq,
+                        'c_riel_princ': this.c_riel_princ,
+                        'c_riel_baja': this.c_riel_baja,
+                            //Cajones estantes
+                        'c_estant_der': this.c_estant_der,
+                        'c_estant_izq': this.c_estant_izq,
+                        'c_estant_princ': this.c_estant_princ,
+                        'c_estant_baja': this.c_estant_baja,
+                            //Cajones entrepaños
+                        'c_entr_der': this.c_entr_der,
+                        'c_entr_izq': this.c_entr_izq,
+                        'c_entr_princ': this.c_entr_princ,
+                        'c_entr_baja': this.c_entr_baja,
+                            //Cajones tubos colga
+                        'c_tubos_der': this.c_tubos_der,
+                        'c_tubos_izq': this.c_tubos_izq,
+                        'c_tubos_princ': this.c_tubos_princ,
+                        'c_tubos_baja': this.c_tubos_baja,
+                            //Cajones daños
+                        'c_danos_der': this.c_danos_der,
+                        'c_danos_izq': this.c_danos_izq,
+                        'c_danos_princ': this.c_danos_princ,
+                        'c_danos_baja': this.c_danos_baja,
+                            //Cajones abre correct
+                        'c_correct_der': this.c_correct_der,
+                        'c_correct_izq': this.c_correct_izq,
+                        'c_correct_princ': this.c_correct_princ,
+                        'c_correct_baja': this.c_correct_baja,
+                            //Cajones pzas compl
+                        'c_pzasc_der': this.c_pzasc_der,
+                        'c_pzasc_izq': this.c_pzasc_izq,
+                        'c_pzasc_princ': this.c_pzasc_princ,
+                        'c_pzasc_baja': this.c_pzasc_baja,
+                            //Cajones abatimiento
+                        'c_abatim_der': this.c_abatim_der,
+                        'c_abatim_izq': this.c_abatim_izq,
+                        'c_abatim_princ': this.c_abatim_princ,
+                        'c_abatim_baja': this.c_abatim_baja,
+                            //Cajones visagras
+                        'c_visagras_der': this.c_visagras_der,
+                        'c_visagras_izq': this.c_visagras_izq,
+                        'c_visagras_princ': this.c_visagras_princ,
+                        'c_visagras_baja': this.c_visagras_baja,
 
-                    'pared_dan_der': this.pared_dan_der,
-                    'pared_dan_izq': this.pared_dan_izq,
-                    'pared_dan_princ': this.pared_dan_princ,
-                    'pared_dan_baja': this.pared_dan_baja,
-                    //Paredes limpieza
-                    'pared_limp_der': this.pared_limp_der,
-                    'pared_limp_izq': this.pared_limp_izq,
-                    'pared_limp_princ': this.pared_limp_princ,
-                    'pared_limp_baja': this.pared_limp_baja,
-                    //Closet Cenefa sup
-                    'clo_censup_der': this.clo_censup_der,
-                    'clo_censup_izq': this.clo_censup_izq,
-                    'clo_censup_princ': this.clo_censup_princ,
-                    'clo_censup_baja': this.clo_censup_baja,
-                    //Closet Cenefa inf
-                    'clo_ceninf_der': this.clo_ceninf_der,
-                    'clo_ceninf_izq': this.clo_ceninf_izq,
-                    'clo_ceninf_princ': this.clo_ceninf_princ,
-                    'clo_ceninf_baja': this.clo_ceninf_baja,
-                    //Closet color madera
-                    'clo_madera_der': this.clo_madera_der,
-                    'clo_madera_izq': this.clo_madera_izq,
-                    'clo_madera_princ': this.clo_madera_princ,
-                    'clo_madera_baja': this.clo_madera_baja,
-                    //Closet Alinec jalad
-                    'clo_alin_der': this.clo_alin_der,
-                    'clo_alin_izq': this.clo_alin_izq,
-                    'clo_alin_princ': this.clo_alin_princ,
-                    'clo_alin_baja': this.clo_alin_baja,
-                    //Closet pandeadura
-                    'clo_pande_der': this.clo_pande_der,
-                    'clo_pande_izq': this.clo_pande_izq,
-                    'clo_pande_princ': this.clo_pande_princ,
-                    'clo_pande_baja': this.clo_pande_baja,
-                    //Closet soporte
-                    'clo_soporte_der': this.clo_soporte_der,
-                    'clo_soporte_izq': this.clo_soporte_izq,
-                    'clo_soporte_princ': this.clo_soporte_princ,
-                    'clo_soporte_baja': this.clo_soporte_baja,
-                    
-                }).then(function (response){
-                    me.cerrarRecepcion();
-                    me.listarHistorial(me.pagination2.current_page,me.buscar2,me.b_etapa2,me.b_manzana2,me.b_lote2,me.criterio2)
-                    //window.alert("Cambios guardados correctamente");
-                    const toast = Swal.mixin({
-                        toast: true,
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 3000
-                        });
-                        toast({
-                        type: 'success',
-                        title: 'Recepcion guardada correctamente'
-                    })
-                }).catch(function (error){
-                    console.log(error);
-                });
+                        'pared_dan_der': this.pared_dan_der,
+                        'pared_dan_izq': this.pared_dan_izq,
+                        'pared_dan_princ': this.pared_dan_princ,
+                        'pared_dan_baja': this.pared_dan_baja,
+                        //Paredes limpieza
+                        'pared_limp_der': this.pared_limp_der,
+                        'pared_limp_izq': this.pared_limp_izq,
+                        'pared_limp_princ': this.pared_limp_princ,
+                        'pared_limp_baja': this.pared_limp_baja,
+                        //Closet Cenefa sup
+                        'clo_censup_der': this.clo_censup_der,
+                        'clo_censup_izq': this.clo_censup_izq,
+                        'clo_censup_princ': this.clo_censup_princ,
+                        'clo_censup_baja': this.clo_censup_baja,
+                        //Closet Cenefa inf
+                        'clo_ceninf_der': this.clo_ceninf_der,
+                        'clo_ceninf_izq': this.clo_ceninf_izq,
+                        'clo_ceninf_princ': this.clo_ceninf_princ,
+                        'clo_ceninf_baja': this.clo_ceninf_baja,
+                        //Closet color madera
+                        'clo_madera_der': this.clo_madera_der,
+                        'clo_madera_izq': this.clo_madera_izq,
+                        'clo_madera_princ': this.clo_madera_princ,
+                        'clo_madera_baja': this.clo_madera_baja,
+                        //Closet Alinec jalad
+                        'clo_alin_der': this.clo_alin_der,
+                        'clo_alin_izq': this.clo_alin_izq,
+                        'clo_alin_princ': this.clo_alin_princ,
+                        'clo_alin_baja': this.clo_alin_baja,
+                        //Closet pandeadura
+                        'clo_pande_der': this.clo_pande_der,
+                        'clo_pande_izq': this.clo_pande_izq,
+                        'clo_pande_princ': this.clo_pande_princ,
+                        'clo_pande_baja': this.clo_pande_baja,
+                        //Closet soporte
+                        'clo_soporte_der': this.clo_soporte_der,
+                        'clo_soporte_izq': this.clo_soporte_izq,
+                        'clo_soporte_princ': this.clo_soporte_princ,
+                        'clo_soporte_baja': this.clo_soporte_baja,
+                        
+                    }).then(function (response){
+                        me.cerrarRecepcion();
+                        me.listarHistorial(me.pagination2.current_page,me.buscar2,me.b_etapa2,me.b_manzana2,me.b_lote2,me.criterio2)
+                        //window.alert("Cambios guardados correctamente");
+                        const toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                            });
+                            toast({
+                            type: 'success',
+                            title: 'Recepcion guardada correctamente'
+                        })
+                    }).catch(function (error){
+                        console.log(error);
+                    });
+                }
+                })
+
+
+                
             },
 
             actualizarRevision(resultado){
@@ -1904,9 +1922,22 @@
                 {
                     return;
                 }
-                let me = this;
+
+                swal({
+                title: '¿Desea terminar la revision?',
+                text: "Verificar que todo fue revisado",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Si, finalizar!'
+                }).then((result) => {
+                if (result.value) {
+                    let me = this;
+
                 //Con axios se llama el metodo update de LoteController
-                axios.put('/equipamiento/updateRecepcion',{
+                    axios.put('/equipamiento/updateRecepcion',{
                     'comentario' : this.observacion,
                     'id': this.solicitud_id,
                     'tipoRecepcion' : this.tipoRecepcion,
@@ -2113,7 +2144,9 @@
                     })
                 }).catch(function (error){
                     console.log(error);
-                });
+                });;
+                }
+                })
             },
 
             mostrarCheckList(data = []){

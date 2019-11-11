@@ -10,6 +10,9 @@ use Carbon\Carbon;
 use Auth;
 use App\Solic_equipamiento;
 use App\Obs_solic_equipamiento;
+use App\User;
+use App\Notifications\NotifyAdmin;
+use App\Credito;
 
 class SolEquipamientoController extends Controller
 {
@@ -1863,7 +1866,33 @@ class SolEquipamientoController extends Controller
         $observacion->solic_id = $request->id;
         $observacion->comentario ='Fecha de instalación: '.$request->comentario;
         $observacion->usuario = Auth::user()->usuario;
+
+        $equipamiento = Equipamiento::findOrFail($solicitud->equipamiento_id);
+        $credito = Credito::findOrFail( $solicitud->contrato_id);
+
         $observacion->save();
+
+        $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=', Auth::user()->id)->get();
+                $fecha = Carbon::now();
+                $msj = $equipamiento->equipamiento. "para el lote ".$credito->num_lote. " del proyecto ".$credito->fraccionamiento." etapa ".$credito->etapa. " instalado";
+                $arregloAceptado = [
+                    'notificacion' => [
+                        'usuario' => $imagenUsuario[0]->usuario,
+                        'foto' => $imagenUsuario[0]->foto_user,
+                        'fecha' => $fecha,
+                        'msj' => $msj,
+                        'titulo' => 'Equipamiento listo para revisión'
+                    ]
+                ];
+
+                $users = User::select('id')->where('rol_id','!=','10')
+                    ->where('equipamientos','=','1')->get();
+
+                foreach($users as $notificar){
+                    User::findOrFail($notificar->id)->notify(new NotifyAdmin($arregloAceptado));
+                }
+
+        
     }
 
     public function indexRea(Request $request){

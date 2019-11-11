@@ -12,6 +12,11 @@ use App\Recep_equipamiento;
 use App\Cocina_acabado;
 use App\Cocina_otra;
 use App\Cocina_puerta;
+use App\User;
+use App\Notifications\NotifyAdmin;
+
+use App\Equipamiento;
+use App\Credito;
 
 use App\Closet_acabado;
 use App\Closet_interior;
@@ -42,14 +47,39 @@ class RecepEquipamientoController extends Controller
                     $observacion->save();
 
                     $solicitud = Solic_equipamiento::findOrFail($request->id);
-                    if($recepcion->resultado == 2)
+
+                    $equipamiento = Equipamiento::findOrFail($solicitud->equipamiento_id);
+                    $proveedor = $equipamiento->proveedor_id;
+                    $credito = Credito::findOrFail( $solicitud->contrato_id);
+                    if($recepcion->resultado == 2){
                         $solicitud->status = 4;
+                        $msj= "Equipamiento aprobado: ".$equipamiento->equipamiento. "para el lote ".$credito->num_lote. " del proyecto ".$credito->fraccionamiento." etapa ".$credito->etapa;
+                    }
                     else{
                         $solicitud->status = 0;
+                        $msj= "Equipamiento rechazado: ".$equipamiento->equipamiento. "para el lote ".$credito->num_lote. " del proyecto ".$credito->fraccionamiento." etapa ".$credito->etapa;
                     }
                     $solicitud->recepcion = 1;
                     $solicitud->save();
                     $recepcion->save();
+                    
+                    //////////////NOTIFICACION PARA EL PROVEEDOR
+                    $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=', Auth::user()->id)->get();
+                    $fecha = Carbon::now();
+                    
+                    $arregloAceptado = [
+                        'notificacion' => [
+                            'usuario' => $imagenUsuario[0]->usuario,
+                            'foto' => $imagenUsuario[0]->foto_user,
+                            'fecha' => $fecha,
+                            'msj' => $msj,
+                            'titulo' => 'Recepcion de equipamiento'
+                        ]
+                    ];
+                    //////////////NOTIFICACION PARA EL PROVEEDOR
+
+                    User::findOrFail($proveedor)->notify(new NotifyAdmin($arregloAceptado));
+                
             switch($tipoRecepcion){
                 case 1:{
                         $cocina_acabado = new Cocina_acabado();
@@ -292,14 +322,39 @@ class RecepEquipamientoController extends Controller
                         $observacion->save();
 
                     $solicitud = Solic_equipamiento::findOrFail($request->id);
-                        if($recepcion->resultado == 2)
+
+                    $equipamiento = Equipamiento::findOrFail($solicitud->equipamiento_id);
+                    $proveedor = $equipamiento->proveedor_id;
+                    $credito = Credito::findOrFail( $solicitud->contrato_id);
+
+                        if($recepcion->resultado == 2){
                             $solicitud->status = 4;
+                            $msj= "Equipamiento aprobado: ".$equipamiento->equipamiento. "para el lote ".$credito->num_lote. " del proyecto ".$credito->fraccionamiento." etapa ".$credito->etapa;
+                        }
                         else{
                             $solicitud->status = 0;
+                            $msj= "Equipamiento rechazado: ".$equipamiento->equipamiento. "para el lote ".$credito->num_lote. " del proyecto ".$credito->fraccionamiento." etapa ".$credito->etapa;
                         }
                         $solicitud->recepcion = 1;
                         $solicitud->save();
                         $recepcion->save();
+                        
+                        //////////////NOTIFICACION PARA EL PROVEEDOR
+                        $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=', Auth::user()->id)->get();
+                        $fecha = Carbon::now();
+                        
+                        $arregloAceptado = [
+                            'notificacion' => [
+                                'usuario' => $imagenUsuario[0]->usuario,
+                                'foto' => $imagenUsuario[0]->foto_user,
+                                'fecha' => $fecha,
+                                'msj' => $msj,
+                                'titulo' => 'Recepcion de equipamiento'
+                            ]
+                        ];
+                        //////////////NOTIFICACION PARA EL PROVEEDOR
+
+                        User::findOrFail($proveedor)->notify(new NotifyAdmin($arregloAceptado));
             switch($tipoRecepcion){
                 case 1:{
                     $cocina_acabado = Cocina_acabado::findOrFail($request->id);

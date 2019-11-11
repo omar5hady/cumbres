@@ -131,6 +131,7 @@
                                         <th>Manzana</th>
                                         <th>Lote</th>
                                         <th>Etapa de servicio</th>
+                                        <th>Planos obra</th>
                                         <th>Inicio</th>
                                         <th>Termino</th>
                                         <th>Porcentaje de avance</th>
@@ -163,6 +164,10 @@
                                             <span v-if = "avancepro.contrato==1" class="badge badge-success" v-text="avancepro.lote"></span>
                                         </td>
                                         <td class="td2" v-text="avancepro.etapa_servicios"></td>
+                                         <template>
+                                            <td class="td2" v-if="avancepro.f_planos_obra" v-text="this.moment(avancepro.f_planos_obra).locale('es').format('DD/MMM/YYYY')"></td>
+                                            <td class="td2" v-else v-text="'Sin planos'"></td>
+                                        </template>
                                         <td class="td2" v-text="avancepro.fecha_ini"></td>
                                         <td class="td2" v-text="avancepro.fecha_fin"></td>
                                         <td class="td2" v-text="formatNumber(avancepro.porcentajeTotal) + '%'"></td>

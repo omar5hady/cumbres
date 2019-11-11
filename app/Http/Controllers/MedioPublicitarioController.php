@@ -64,7 +64,7 @@ class MedioPublicitarioController extends Controller
     public function selectMedioPublicitario(Request $request){
              //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
              if(!$request->ajax())return redirect('/');
-             $medios_publicitarios = Medio_publicitario::select('nombre','id')->get();
+             $medios_publicitarios = Medio_publicitario::select('nombre','id')->orderBy('nombre','asc')->get();
              return['medios_publicitarios' => $medios_publicitarios];
 
     }

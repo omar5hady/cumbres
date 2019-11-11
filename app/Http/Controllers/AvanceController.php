@@ -29,7 +29,8 @@ class AvanceController extends Controller
         $criterio = $request->criterio;
         if($buscar=='' && $buscar1=='' && $buscar2==''){
         $avance = Avance::join('lotes','avances.lote_id','=','lotes.id')
-            ->select('lotes.num_lote as lote', 
+            ->join('licencias','lotes.id','=','licencias.id')
+            ->select('lotes.num_lote as lote', 'licencias.f_planos_obra',
                 DB::raw("SUM(avances.avance_porcentaje) as porcentajeTotal"), 
                 'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id','lotes.aviso',
                 'lotes.etapa_servicios','lotes.fecha_ini','lotes.fecha_fin','lotes.paquete', 'lotes.contrato')
@@ -45,7 +46,8 @@ class AvanceController extends Controller
         {
             if($criterio!='lotes.fraccionamiento_id'){
                 $avance = Avance::join('lotes','avances.lote_id','=','lotes.id')
-                ->select('lotes.num_lote as lote', 
+                    ->join('licencias','lotes.id','=','licencias.id')
+                ->select('lotes.num_lote as lote', 'licencias.f_planos_obra',
                     DB::raw("SUM(avances.avance_porcentaje) as porcentajeTotal"), 
                     'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id','lotes.aviso',
                     'lotes.etapa_servicios','lotes.fecha_ini','lotes.fecha_fin','lotes.paquete', 'lotes.contrato')
@@ -61,7 +63,8 @@ class AvanceController extends Controller
             else{
                 if($buscar1=='' && $buscar2 == ''){
                     $avance = Avance::join('lotes','avances.lote_id','=','lotes.id')
-                        ->select('lotes.num_lote as lote', 
+                        ->join('licencias','lotes.id','=','licencias.id')
+                        ->select('lotes.num_lote as lote', 'licencias.f_planos_obra',
                             DB::raw("SUM(avances.avance_porcentaje) as porcentajeTotal"), 
                             'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id','lotes.aviso',
                             'lotes.etapa_servicios','lotes.fecha_ini','lotes.fecha_fin','lotes.paquete', 'lotes.contrato')
@@ -77,7 +80,8 @@ class AvanceController extends Controller
                     else{
                         if($buscar1==''){
                             $avance = Avance::join('lotes','avances.lote_id','=','lotes.id')
-                                ->select('lotes.num_lote as lote', 
+                                ->join('licencias','lotes.id','=','licencias.id')
+                                ->select('lotes.num_lote as lote', 'licencias.f_planos_obra',
                                     DB::raw("SUM(avances.avance_porcentaje) as porcentajeTotal"), 
                                     'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id','lotes.aviso',
                                     'lotes.etapa_servicios','lotes.fecha_ini','lotes.fecha_fin','lotes.paquete', 'lotes.contrato')
@@ -94,7 +98,8 @@ class AvanceController extends Controller
                         else{
                             if($buscar2==''){
                                 $avance = Avance::join('lotes','avances.lote_id','=','lotes.id')
-                                    ->select('lotes.num_lote as lote', 
+                                    ->join('licencias','lotes.id','=','licencias.id')
+                                    ->select('lotes.num_lote as lote', 'licencias.f_planos_obra',
                                         DB::raw("SUM(avances.avance_porcentaje) as porcentajeTotal"), 
                                         'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id','lotes.aviso',
                                         'lotes.etapa_servicios','lotes.fecha_ini','lotes.fecha_fin','lotes.paquete', 'lotes.contrato')
@@ -110,7 +115,8 @@ class AvanceController extends Controller
                             }
                             else{
                                 $avance = Avance::join('lotes','avances.lote_id','=','lotes.id')
-                                    ->select('lotes.num_lote as lote', 
+                                    ->join('licencias','lotes.id','=','licencias.id')
+                                    ->select('lotes.num_lote as lote', 'licencias.f_planos_obra',
                                         DB::raw("SUM(avances.avance_porcentaje) as porcentajeTotal"), 
                                         'lotes.fraccionamiento_id','lotes.manzana','lotes.modelo_id','avances.lote_id','lotes.aviso',
                                         'lotes.etapa_servicios','lotes.fecha_ini','lotes.fecha_fin','lotes.paquete', 'lotes.contrato')

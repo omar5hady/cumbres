@@ -715,8 +715,10 @@ class LicenciasController extends Controller
                     'lotes.paquete',
                     'licencias.avance',
                     'licencias.visita_avaluo',
+                    'licencias.f_planos_obra',
                     'lotes.contrato',
-                    'lotes.firmado'
+                    'lotes.firmado',
+                    'lotes.fecha_fin'
                 )
                 ->where('lotes.aviso','!=','0')
                 ->orderBy('fraccionamientos.nombre', 'ASC')
@@ -746,6 +748,8 @@ class LicenciasController extends Controller
                             'lotes.paquete',
                             'licencias.avance',
                             'licencias.visita_avaluo',
+                            'licencias.f_planos_obra',
+                            'lotes.fecha_fin',
                             
                             'lotes.contrato',
                             'lotes.firmado'
@@ -777,6 +781,8 @@ class LicenciasController extends Controller
                             'lotes.paquete',
                             'licencias.avance',
                             'licencias.visita_avaluo',
+                            'licencias.f_planos_obra',
+                            'lotes.fecha_fin',
                             
                             'lotes.contrato',
                             'lotes.firmado'
@@ -809,6 +815,8 @@ class LicenciasController extends Controller
                             'lotes.paquete',
                             'licencias.avance',
                             'licencias.visita_avaluo',
+                            'licencias.f_planos_obra',
+                            'lotes.fecha_fin',
                             
                             'lotes.contrato',
                             'lotes.firmado'
@@ -842,6 +850,8 @@ class LicenciasController extends Controller
                             'lotes.paquete',
                             'licencias.avance',
                             'licencias.visita_avaluo',
+                            'licencias.f_planos_obra',
+                            'lotes.fecha_fin',
                             
                             'lotes.contrato',
                             'lotes.firmado'
@@ -876,6 +886,8 @@ class LicenciasController extends Controller
                             'lotes.paquete',
                             'licencias.avance',
                             'licencias.visita_avaluo',
+                            'licencias.f_planos_obra',
+                            'lotes.fecha_fin',
                             
                             'lotes.contrato',
                             'lotes.firmado'
@@ -908,6 +920,8 @@ class LicenciasController extends Controller
                             'lotes.paquete',
                             'licencias.avance',
                             'licencias.visita_avaluo',
+                            'licencias.f_planos_obra',
+                            'lotes.fecha_fin',
                             
                             'lotes.contrato',
                             'lotes.firmado'
@@ -941,6 +955,8 @@ class LicenciasController extends Controller
                             'lotes.paquete',
                             'licencias.avance',
                             'licencias.visita_avaluo',
+                            'licencias.f_planos_obra',
+                            'lotes.fecha_fin',
                             
                             'lotes.contrato',
                             'lotes.firmado'
@@ -973,6 +989,8 @@ class LicenciasController extends Controller
                             'lotes.paquete',
                             'licencias.avance',
                             'licencias.visita_avaluo',
+                            'licencias.f_planos_obra',
+                            'lotes.fecha_fin',
                             
                             'lotes.contrato',
                             'lotes.firmado'
@@ -1008,6 +1026,8 @@ class LicenciasController extends Controller
                         'lotes.paquete',
                         'licencias.avance',
                         'licencias.visita_avaluo',
+                        'licencias.f_planos_obra',
+                        'lotes.fecha_fin',
                         'lotes.contrato',
                         'lotes.firmado'
                     )

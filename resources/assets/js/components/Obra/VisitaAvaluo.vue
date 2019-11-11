@@ -53,7 +53,9 @@
                                         <th>Lote</th>
                                         <th>Dirección</th>
                                         <th># Oficial</th>
+                                        <th>Planos obra</th>
                                         <th>Avance</th>
+                                        <th>Fecha termino</th>
                                         <th>Paquete</th>
                                         <th>Fecha de visita</th>
                                         <th>Status</th>
@@ -78,7 +80,12 @@
                                         <template v-else>
                                             <td class="td2" v-text="lotes.numero"></td>
                                         </template>
+                                        <template>
+                                            <td class="td2" v-if="lotes.f_planos_obra" v-text="this.moment(lotes.f_planos_obra).locale('es').format('DD/MMM/YYYY')"></td>
+                                            <td class="td2" v-else v-text="'Sin planos'"></td>
+                                        </template>
                                         <td class="td2" v-text="lotes.avance+'%'"></td>
+                                        <td class="td2" v-text="this.moment(lotes.fecha_fin).locale('es').format('MMMM YYYY')"></td>
                                         <td class="td2" v-text="lotes.paquete"></td>
                                         <td @click="abrirModal('fecha',lotes)" class="td2" v-text="lotes.visita_avaluo"></td>
                                         <template>
