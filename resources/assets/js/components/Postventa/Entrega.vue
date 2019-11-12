@@ -96,6 +96,7 @@
                                                     <a class="dropdown-item" v-bind:href="'/descargarReglamento/contrato/'+ contratos.folio">Reglamento de la etapa</a>
                                                     <a class="dropdown-item" @click="selectNombreArchivoModelo(contratos.folio)">Catalogo de especificaciones</a>
                                                     <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/cartaMantenimiento/'+ contratos.folio">Carta de mantenimiento</a>
+                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/cartaRecepcion/'+ contratos.folio">Carta de recepción</a>
                                                     <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/polizaDeGarantia/'+ contratos.folio">Poliza de garantia</a>
                                                     <a v-if="contratos.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+ contratos.foto_predial">Predial</a>
                                                     <a v-if="contratos.num_licencia" class="dropdown-item"  v-text="'Licencia: '+contratos.num_licencia" v-bind:href="'/downloadLicencias/'+contratos.foto_lic"></a>
@@ -333,6 +334,7 @@
                                                     <a class="dropdown-item" v-bind:href="'/descargarReglamento/contrato/'+ entregas.folio">Reglamento de la etapa</a>
                                                     <a class="dropdown-item" @click="selectNombreArchivoModelo(entregas.folio)">Catalogo de especificaciones</a>
                                                     <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/cartaMantenimiento/'+ entregas.folio">Carta de mantenimiento</a>
+                                                    <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/cartaRecepcion/'+ entregas.folio">Carta de recepción</a>
                                                     <a class="dropdown-item" target="_blank" v-bind:href="'/postventa/polizaDeGarantia/'+ entregas.folio">Poliza de garantia</a>
                                                     <a v-if="entregas.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+ entregas.foto_predial">Predial</a>
                                                     <a v-if="entregas.num_licencia" class="dropdown-item"  v-text="'Licencia: '+entregas.num_licencia" v-bind:href="'/downloadLicencias/'+entregas.foto_lic"></a>
@@ -451,6 +453,13 @@
                                     <label class="col-md-3 form-control-label" for="text-input">Fecha de entrega programada</label>
                                     <div class="col-md-3">
                                         <input v-model="fecha_program" type="date" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row" v-if="tipoAccion == 1">
+                                    <label class="col-md-3 form-control-label" for="text-input">Observaciones</label>
+                                    <div class="col-md-8">
+                                        <input v-model="observacion" type="text" class="form-control">
                                     </div>
                                 </div>
 
@@ -1138,6 +1147,7 @@
                 axios.put('/postventa/setFechaProg',{
                     'fecha_program' : this.fecha_program,
                     'folio' : this.folio,
+                    'observacion' : this.observacion,
                     
                 }).then(function (response){
                     me.cerrarModal();

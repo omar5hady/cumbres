@@ -799,7 +799,15 @@ class EntregaController extends Controller
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $entrega = Entrega::findOrFail($request->folio);
         $entrega->fecha_program = $request->fecha_program;
-        $entrega->save();       
+        $entrega->save();      
+        
+        if($request->observacion != ''){
+            $observacion = new Obs_entrega();
+            $observacion->entrega_id = $request->folio;
+            $observacion->comentario = 'Programada: '.$request->observacion;
+            $observacion->usuario = Auth::user()->usuario;
+            $observacion->save();
+        }
     }
 
     public function setHoraProgramada(Request $request){
@@ -1592,6 +1600,42 @@ class EntregaController extends Controller
             return $pdf->stream('carta_cuota_mantenimiento.pdf');
     }
 
+    public function cartaRecepcion($id){
+        $contratos = Entrega::join('contratos','entregas.id','contratos.id')
+                    ->join('creditos', 'contratos.id', '=', 'creditos.id')
+                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                    ->join('etapas','lotes.etapa_id','=','etapas.id')
+                    ->join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                    ->join('personal as c', 'clientes.id', '=', 'c.id')
+                    ->select('contratos.id as folio', 
+                        'contratos.equipamiento',
+                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                        'creditos.fraccionamiento as proyecto',
+                        'creditos.etapa',
+                        'creditos.manzana',
+                        'creditos.num_lote',
+                        'fraccionamientos.logo_fracc',
+                        'fraccionamientos.delegacion',
+                       
+                        'lotes.id as loteId',
+                        'lotes.calle',
+                        'lotes.numero'
+                    )
+                    // ->where('contratos.entregado', '=', 1)
+                    ->where('contratos.id','=',$id)
+                    ->get();
+
+                    setlocale(LC_TIME, 'es_MX.utf8');
+                    $now= Carbon::now();
+                    $contratos[0]->fecha_hoy = $now->formatLocalized('%d de %B de %Y');
+
+            $contratos[0]->costo_mantenimiento_letra = NumerosEnLetras::convertir($contratos[0]->costo_mantenimiento, 'Pesos', true, 'Centavos');
+
+            $pdf = \PDF::loadview('pdf.DocsPostVenta.CartaRecepcion', ['contratos' => $contratos]);
+            return $pdf->stream('carta_cuota_mantenimiento.pdf');
+    }
+
     public function polizaDeGarantia($id){
         $contratos = Entrega::join('contratos','entregas.id','contratos.id')
         ->join('expedientes','contratos.id','expedientes.id')
@@ -1641,7 +1685,7 @@ class EntregaController extends Controller
         )
         ->where('contratos.status', '!=', 0)
         ->where('contratos.status', '!=', 2)
-        ->where('contratos.entregado', '=', 1)
+        //->where('contratos.entregado', '=', 1)
         ->where('contratos.id','=',$id)
         ->orderBy('licencias.avance','desc')
         ->orderBy('lotes.fecha_entrega_obra','desc')

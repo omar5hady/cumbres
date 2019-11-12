@@ -100,6 +100,8 @@
                                                         <a class="dropdown-item" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+ ingresar.folio">Servicios de telecomunición</a>
                                                         <a class="dropdown-item" v-bind:href="'/descargarReglamento/contrato/'+ ingresar.folio">Reglamento de la etapa</a>
                                                         <a class="dropdown-item" @click="selectNombreArchivoModelo(ingresar.folio)">Catalogo de especificaciones</a>
+                                                        <a v-if="ingresar.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+ ingresar.foto_predial">Predial</a>
+                                                        <a v-if="ingresar.num_licencia" class="dropdown-item"  v-text="'Licencia: '+ingresar.num_licencia" v-bind:href="'/downloadLicencias/'+ingresar.foto_lic"></a>
                                                     </div>
                                                 </td>
                                                 <td class="td2" v-text="ingresar.nombre_cliente"></td>
@@ -238,6 +240,8 @@
                                                         <a class="dropdown-item" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+ preautorizados.folio">Servicios de telecomunición</a>
                                                         <a class="dropdown-item" v-bind:href="'/descargarReglamento/contrato/'+ preautorizados.folio">Reglamento de la etapa</a>
                                                         <a class="dropdown-item" @click="selectNombreArchivoModelo(preautorizados.folio)">Catalogo de especificaciones</a>
+                                                        <a v-if="preautorizados.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+ preautorizados.foto_predial">Predial</a>
+                                                        <a v-if="preautorizados.num_licencia" class="dropdown-item"  v-text="'Licencia: '+preautorizados.num_licencia" v-bind:href="'/downloadLicencias/'+preautorizados.foto_lic"></a>
                                                     </div>
                                                 </td>
                                                 <td class="td2" v-text="preautorizados.nombre_cliente"></td>
@@ -408,6 +412,8 @@
                                                         <a class="dropdown-item" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+ liquidacion.folio">Servicios de telecomunición</a>
                                                         <a class="dropdown-item" v-bind:href="'/descargarReglamento/contrato/'+ liquidacion.folio">Reglamento de la etapa</a>
                                                         <a class="dropdown-item" @click="selectNombreArchivoModelo(liquidacion.folio)">Catalogo de especificaciones</a>
+                                                        <a v-if="liquidacion.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+ liquidacion.foto_predial">Predial</a>
+                                                        <a v-if="liquidacion.num_licencia" class="dropdown-item"  v-text="'Licencia: '+liquidacion.num_licencia" v-bind:href="'/downloadLicencias/'+liquidacion.foto_lic"></a>
                                                     </div>
                                                 </td>
                                                 <td class="td2" v-text="liquidacion.nombre_cliente"></td>
@@ -582,6 +588,8 @@
                                                         <a class="dropdown-item" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+ programacion.folio">Servicios de telecomunición</a>
                                                         <a class="dropdown-item" v-bind:href="'/descargarReglamento/contrato/'+ programacion.folio">Reglamento de la etapa</a>
                                                         <a class="dropdown-item" @click="selectNombreArchivoModelo(programacion.folio)">Catalogo de especificaciones</a>
+                                                        <a v-if="programacion.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+ programacion.foto_predial">Predial</a>
+                                                        <a v-if="programacion.num_licencia" class="dropdown-item"  v-text="'Licencia: '+programacion.num_licencia" v-bind:href="'/downloadLicencias/'+programacion.foto_lic"></a>
                                                     </div>
                                                 </td>
                                                 <td class="td2" v-text="programacion.nombre_cliente"></td>

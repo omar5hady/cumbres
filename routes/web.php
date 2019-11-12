@@ -347,6 +347,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/postventa/cartaMantenimiento/{id}','EntregaController@cartaCuotaMantenimiento');
         Route::get('/postventa/polizaDeGarantia/{id}','EntregaController@polizaDeGarantia');
 
+        Route::get('/postventa/cartaRecepcion/{id}','EntregaController@cartaRecepcion');
+
         Route::put('/postventa/datosDeposito/registrar/','EntregaController@setDatosCuenta');
         Route::put('/postventa/actualizarCorreoAdmin','EntregaController@actualizarCorreoAdmin');
 
