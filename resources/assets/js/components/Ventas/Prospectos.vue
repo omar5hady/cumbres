@@ -28,17 +28,24 @@
                                             <option value="clientes.curp">CURP</option>
                                             <option value="clientes.nss">NSS</option>
                                             <option value="fraccionamientos.nombre">Proyecto</option>
-                                            <option value="clientes.created_at">Fecha de alta</option>
+                                            <option v-if="rolId != 2" value="clientes.created_at">Fecha de alta</option>
                                             <option v-if="rolId != 2" value="clientes.vendedor_id">Asesor</option>
                                         </select>
                                         <template v-if="criterio=='clientes.created_at'">
                                             <input v-if="criterio=='clientes.created_at'" type="text" placeholder="Desde" onfocus="(this.type='date')" onblur="(this.type='text')" v-model="buscar" class="form-control">
                                             <input v-if="criterio=='clientes.created_at' && rolId != 2" type="text" placeholder="Hasta" onfocus="(this.type='date')" onblur="(this.type='text')" v-model="buscar2" class="form-control">
-                                            <select class="form-control" v-if="criterio=='clientes.created_at' && rolId != 2" v-model="buscar3" >
-                                                <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
-                                            </select>
                                         </template>
                                         
+                                    </div>
+                                    <div class="input-group" v-if="criterio=='clientes.created_at'">
+                                        <select class="form-control" v-if="criterio=='clientes.created_at' && rolId != 2" v-model="buscar3" >
+                                            <option value="">Seleccione</option>
+                                            <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
+                                        </select>
+                                        <select class="form-control" v-model="b_publicidad">
+                                            <option value="">Seleccione</option>
+                                            <option v-for="medios in arrayMediosPublicidad" :key="medios.id" :value="medios.id" v-text="medios.nombre"></option>    
+                                        </select>
                                     </div>
                                     <div class="input-group">
                                         <select class="form-control" v-model="b_clasificacion" >
@@ -90,7 +97,7 @@
                                     </div>
                                     <button type="submit" @click="listarProspectos(1,buscar,buscar2,buscar3,b_clasificacion,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                         <a v-if="rolId == 2" :href="'/prospectos/excel?buscar=' + buscar+ '&b_clasificacion=' + b_clasificacion + '&criterio=' + criterio "  class="btn btn-success"><i class="fa fa-file-text"></i>Excel</a>
-                                        <a v-if="rolId != 2" :href="'/prospectos/excel/gerente?buscar=' + buscar+ '&buscar2='+ buscar2 + '&buscar3=' + buscar3 + '&b_clasificacion=' + b_clasificacion + '&criterio=' + criterio "  class="btn btn-success"><i class="fa fa-file-text"></i>Excel</a>
+                                        <a v-if="rolId != 2" :href="'/prospectos/excel/gerente?buscar=' + buscar+ '&buscar2='+ buscar2 + '&buscar3=' + buscar3 + '&b_clasificacion=' + b_clasificacion + '&b_publicidad=' + b_publicidad + '&criterio=' + criterio "  class="btn btn-success"><i class="fa fa-file-text"></i>Excel</a>
                                         <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Clientes en total: '+ contador"> </span>
                                 </div>
                             </div>
@@ -145,9 +152,9 @@
                                               <td class="td2" v-else> 
                                                 <a title="Enviar correo" class="btn btn-secondary" :href="'mailto:'+prospecto.email+ ';'+prospecto.email_institucional"> <i class="fa fa-envelope-o fa-lg"></i> </a>
                                             </td>
-                                            <td class="td2" v-text="prospecto.rfc"></td>
+                                            <td class="td2" style="text-transform:uppercase" v-text="prospecto.rfc"></td>
                                             <td class="td2" v-text="prospecto.nss"></td>
-                                            <td class="td2" v-text="prospecto.curp"></td>
+                                            <td class="td2" style="text-transform:uppercase" v-text="prospecto.curp"></td>
                                             <td class="td2" v-text="prospecto.proyecto"></td>
                                             <td class="td2" v-if="prospecto.clasificacion==1">No viable</td>
                                             <td class="td2" v-if="prospecto.clasificacion==2">Tipo A</td>
@@ -1164,7 +1171,7 @@
                 lugar_nacimiento:'',
                 conyugeNom: '',
                 contador: 0,
-
+                b_publicidad:'',
 
                 nombre_coa:'',
                 parentesco_coa:'',
@@ -1266,7 +1273,7 @@
             /**Metodo para mostrar los registros */
             listarProspectos(page, buscar, buscar2, buscar3, b_clasificacion, criterio){
                 let me = this;
-                var url = '/clientes?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3 + '&b_clasificacion=' + b_clasificacion + '&criterio=' + criterio;
+                var url = '/clientes?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3 + '&b_clasificacion=' + b_clasificacion + '&b_publicidad=' + me.b_publicidad + '&criterio=' + criterio;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayProspectos = respuesta.personas.data;
