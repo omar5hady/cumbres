@@ -568,7 +568,7 @@
             MostrarPromedio(){
                 let me = this;
                 me.resumen=1;
-                me.listarAvancePromedio(1,'','','','lotes.num_lote');
+                me.listarAvancePromedio(paginationResume.current_page,me.buscar,me.buscar1,me.buscar2,me.criterio);
             },
             actualizarAvance(){
                 if(this.validarAvance()) //Se verifica si hay un error (campo vacio)
