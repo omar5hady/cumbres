@@ -38,7 +38,7 @@ class EtapaController extends Controller
                     'etapas.fraccionamiento_id','fraccionamientos.nombre as fraccionamiento','etapas.archivo_reglamento',
                     'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento','etapas.plantilla_telecom','etapas.empresas_telecom',
                     'etapas.empresas_telecom_satelital','etapas.num_cuenta_admin','etapas.clabe_admin','etapas.sucursal_admin',
-                    'etapas.titular_admin','etapas.banco_admin')
+                    'etapas.titular_admin','etapas.banco_admin','etapas.carta_bienvenida')
                     ->where('etapas.num_etapa','!=','Sin Asignar')
                     ->orderBy('fraccionamientos.nombre','asc')
                     ->orderBy('etapas.num_etapa','asc')->paginate(8);
@@ -54,7 +54,7 @@ class EtapaController extends Controller
                         'etapas.fraccionamiento_id','fraccionamientos.nombre as fraccionamiento','etapas.archivo_reglamento',
                         'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento','etapas.plantilla_telecom','etapas.empresas_telecom',
                         'etapas.empresas_telecom_satelital','etapas.num_cuenta_admin','etapas.clabe_admin','etapas.sucursal_admin',
-                        'etapas.titular_admin','etapas.banco_admin')
+                        'etapas.titular_admin','etapas.banco_admin','etapas.carta_bienvenida')
                         ->whereBetween($criterio, [$buscar,$buscar2])
                         ->where('etapas.num_etapa','!=','Sin Asignar')
                         ->orderBy('fraccionamientos.nombre','asc')
@@ -69,7 +69,7 @@ class EtapaController extends Controller
                         'etapas.fraccionamiento_id','fraccionamientos.nombre as fraccionamiento','etapas.archivo_reglamento',
                         'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento','etapas.plantilla_telecom','etapas.empresas_telecom',
                         'etapas.empresas_telecom_satelital','etapas.num_cuenta_admin','etapas.clabe_admin','etapas.sucursal_admin',
-                        'etapas.titular_admin','etapas.banco_admin')
+                        'etapas.titular_admin','etapas.banco_admin','etapas.carta_bienvenida')
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->where('etapas.num_etapa','!=','Sin Asignar')
                         ->orderBy('fraccionamientos.nombre','asc')
@@ -401,6 +401,48 @@ class EtapaController extends Controller
                           ->get();
 
         $pathtoFile = public_path().'/files/etapas/reglamentos/'.$archivos[0]->archivo_reglamento;
+        return response()->download($pathtoFile);
+    }
+
+    public function uploadCartaBienvenida (Request $request, $id){
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        $ultimaCartaB = Etapa::select('carta_bienvenida','id')
+                                 ->where('id','=',$id)
+                                 ->get();
+
+        if($ultimaCartaB->isEmpty()==1){
+            $fileName = uniqid().'.'.$request->carta_bienvenida->getClientOriginalExtension();
+            $moved =  $request->carta_bienvenida->move(public_path('/files/etapas/cartasBienvenida/'), $fileName);
+    
+            if($moved){
+                if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+                $reglamentoEtapa = Etapa::findOrFail($request->id);
+                $reglamentoEtapa->carta_bienvenida = $fileName;
+                $reglamentoEtapa->id = $id;
+                $reglamentoEtapa->save(); //Insert
+        
+                }
+            return back();
+            }else{
+                $pathAnterior = public_path().'/files/etapas/cartasBienvenida/'.$ultimaCartaB[0]->carta_bienvenida;
+                File::delete($pathAnterior);
+                $fileName = uniqid().'.'.$request->carta_bienvenida->getClientOriginalExtension();
+                $moved =  $request->carta_bienvenida->move(public_path('/files/etapas/cartasBienvenida/'), $fileName);
+        
+                if($moved){
+                    if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+                    $reglamentoEtapa = Etapa::findOrFail($request->id);
+                    $reglamentoEtapa->carta_bienvenida = $fileName;
+                    $reglamentoEtapa->id = $id;
+                    $reglamentoEtapa->save(); //Insert
+            
+                    }
+                return back();
+            }
+    }
+
+    public function downloadCartaBienvenida ($fileName){
+        $pathtoFile = public_path().'/files/etapas/cartasBienvenida/'.$fileName;
         return response()->download($pathtoFile);
     }
 }

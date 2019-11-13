@@ -430,7 +430,7 @@
                     <a class="nav-link nav-dropdown-toggle" href="#"><i class="fa fa-handshake-o"></i> Post Venta</a>
                     <ul class="nav-dropdown-items">
                             <li @click="menu=218" class="nav-item">
-                                <a class="nav-link" href="#"><i class="fa fa-key"></i> Admin. etapa</a>
+                                <a class="nav-link" href="#"><i class="fa fa-key"></i> Cartas de bienvenida</a>
                             </li>
                         @if(Auth::user()->entregas == 1)
                             <li @click="menu=215" class="nav-item">

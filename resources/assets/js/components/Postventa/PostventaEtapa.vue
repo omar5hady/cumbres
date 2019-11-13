@@ -4,71 +4,11 @@
             <ol class="breadcrumb">
               <li class="breadcrumb-item"><strong><a style="color:#FFFFFF;" href="/">Home</a></strong></li>
             </ol>
-
             <div class="container-fluid">
                 <!-- Ejemplo de tabla Listado -->
                 <div class="card scroll-box">
                     <div class="card-header">
-                        <i class="fa fa-align-justify"></i> Fraccionamientos
-                    </div>
-                    <div class="card-body">
-                        <div class="form-group row">
-                            <div class="col-md-8">
-                                <div class="input-group">
-                                    <!--Criterios para el listado de busqueda -->
-                                    <select class="form-control col-md-4" v-model="criterioFracc" @click="limpiarBusqueda()">
-                                        <option value="nombre">Fraccionamiento</option>
-                                    </select>
-                                    <input type="text" v-if="criterioFracc=='nombre'"  v-model="buscarFracc" @keyup.enter="listarFraccionamiento(1,buscarFracc,criterioFracc)" class="form-control" placeholder="Texto a buscar">
-                                    <button type="submit" @click="listarFraccionamiento(1,buscarFracc,criterioFracc)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="table-responsive">
-                            <table class="table2 table-bordered table-striped table-sm">
-                                <thead>
-                                    <tr>
-                                       
-                                        <th>Fraccionamiento</th>
-                                        <th>Correo de la administración</th>
-                                    
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="fraccionamiento in arrayFraccionamiento" :key="fraccionamiento.id">
-                                        <td v-text="fraccionamiento.nombre"></td>
-                                        <td>
-                                        <input type="text" @keyup.enter="actualizarCorreo(fraccionamiento.id,$event.target.value)" :id="fraccionamiento.id" :value="fraccionamiento.email_administracion"  class="form-control" >
-                                        </td>
-                                    </tr>                               
-                                </tbody>
-                            </table>
-                        </div>
-                     <nav>
-                            <!--Botones de paginacion -->
-                            <ul class="pagination">
-                                <li class="page-item" v-if="paginationFracc.current_page > 1">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPaginaFraccionamiento(paginationFracc.current_page - 1,buscarFracc,criterioFracc)">Ant</a>
-                                </li>
-                                <li class="page-item" v-for="page in pagesNumberFracc" :key="page" :class="[page == isActived ? 'active' : '']">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPaginaFraccionamiento(pageFracc,buscarFracc,criterioFracc)" v-text="page"></a>
-                                </li>
-                                <li class="page-item" v-if="paginationFracc.current_page < paginationFracc.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPaginaFraccionamiento(paginationFracc.current_page + 1,buscarFracc,criterioFracc)">Sig</a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
-                </div>
-                <!-- Fin ejemplo de tabla Listado -->
-            </div>
-
-            <!-- Datos correspondientes a las etapas -->
-            <div class="container-fluid">
-                <!-- Ejemplo de tabla Listado -->
-                <div class="card scroll-box">
-                    <div class="card-header">
-                        <i class="fa fa-align-justify"></i> Etapas
+                        <i class="fa fa-align-justify"></i> Carga de carta de bienvenida
                     </div>
                     <div class="card-body">
                         <div class="form-group row">
@@ -77,13 +17,7 @@
                                     <!--Criterios para el listado de busqueda -->
                                     <select class="form-control col-md-4" v-model="criterio" @click="limpiarBusqueda()">
                                         <option value="fraccionamientos.nombre">Fraccionamiento</option>
-                                        <option value="f_ini">Fecha de inicio</option>
-                                        <option value="f_fin">Fecha de termino</option>
                                     </select>
-                                    <input type="date" v-if="criterio=='f_ini'" v-model="buscar" @keyup.enter="listarEtapa(1,buscar,buscar2,criterio)" class="form-control col-md-6" placeholder="fecha inicio" >
-                                    <input type="date" v-if="criterio=='f_ini'" v-model="buscar2"  @keyup.enter="listarEtapa(1,buscar,buscar2,criterio)" class="form-control col-md-6" placeholder="fecha fin" >
-                                    <input type="date" v-if="criterio=='f_fin'" v-model="buscar" @keyup.enter="listarEtapa(1,buscar,buscar2,criterio)" class="form-control" placeholder="fecha inicio" >
-                                    <input type="date" v-if="criterio=='f_fin'" v-model="buscar2"  @keyup.enter="listarEtapa(1,buscar,buscar2,criterio)" class="form-control" placeholder="fecha fin" >
                                     <input type="text" v-if="criterio=='fraccionamientos.nombre'"  v-model="buscar" @keyup.enter="listarEtapa(1,buscar,buscar2,criterio)" class="form-control" placeholder="Texto a buscar">
                                     <button type="submit" @click="listarEtapa(1,buscar,buscar2,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
@@ -96,32 +30,20 @@
                                         <th>Opciones</th>
                                         <th>Etapa</th>
                                         <th>Fraccionamiento</th>
-                                        <th>Fecha de inicio </th>
-                                        <th>Fecha de termino</th>
-                                        <th>Cuenta</th>
-                                        <th>CLABE</th>
-                                        <th>Banco</th>
-                                        <th>Sucursal</th>
-                                        <th>Titular</th>
+                                        <th>Carta de bienvenida</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr v-for="etapa in arrayEtapa" :key="etapa.id">
                                         <td class="td2" style="width:10%">
-                                            <button title="Asignar datos de transferencia" type="button" @click="abrirModal('etapa','costo',etapa)" class="btn btn-warning btn-sm">
-                                            <i class="icon-pencil"></i>
+                                            <button type="button" @click="abrirModal('etapa','subirArchivo',etapa)" class="btn btn-info btn-sm">
+                                            <i class="icon-cloud-upload"></i>
                                             </button> &nbsp;
                                         </td>
                                         <td class="td2" v-text="etapa.num_etapa"></td>
                                         <td class="td2" v-text="etapa.fraccionamiento"></td>
-                                        <td class="td2" v-text="etapa.f_ini"></td>
-                                        <td class="td2" v-text="etapa.f_fin"></td>
-                                        <td class="td2" v-text="etapa.num_cuenta_admin"></td>
-                                        <td class="td2" v-text="etapa.clabe_admin"></td>
-                                        <td class="td2" v-text="etapa.banco_admin"></td>
-                                        <td class="td2" v-text="etapa.sucursal_admin"></td>
-                                        <td class="td2" v-text="etapa.titular_admin"></td>  
-
+                                        <td class="td2" style="width:7%" v-if = "etapa.carta_bienvenida"><a class="btn btn-success btn-sm" v-bind:href="'/downloadCartaBienvenida/'+etapa.carta_bienvenida"><i class="fa fa-download fa-spin"></i></a></td>
+                                        <td class="td2" v-else></td>
                                     </tr>                               
                                 </tbody>
                             </table>
@@ -154,45 +76,31 @@
                               <span aria-hidden="true">×</span>
                             </button>
                         </div>
-                      
+                        <div v-if="tipoAccion != 2" class="modal-body">
+
+                        <div class="form-group row">
+                            <label class="col-md-3 form-control-label" for="text-input">Numero de etapa</label>
+                            <div class="col-md-4">
+                                <input type="text" readonly v-model="num_etapa" class="form-control" placeholder="# de etapa">
+                            </div>
+                        </div>
+
+                                
+                        <div v-if="tipoAccion != 2">
+                             <form  method="post" @submit="formSubmit" enctype="multipart/form-data">
+
+                                    <strong>Sube aqui la carta de bienvenida para esta etapa (PDF)</strong>
+
+                                    <input type="file" class="form-control" v-on:change="onImageChange">
+                                    <br/>
+                                    <button type="submit" class="btn btn-success">Cargar</button>
+                            </form>
+                        </div>
+                        </div>       
                     
-                        <div class="modal-body">
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Banco</label>
-                                    <div class="col-md-9">
-                                        <select class="form-control" v-model="banco">
-                                            <option value="">Seleccione</option>
-                                            <option v-for="banco in arrayBancos" :key="banco.banco" :value="banco.banco" v-text="banco.banco"></option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Cuenta</label>
-                                    <div class="col-md-4">
-                                        <input type="text" v-on:keypress="isNumber($event)" v-model="cuenta" class="form-control" placeholder="No. Cuenta">
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">CLABE</label>
-                                    <div class="col-md-4">
-                                        <input type="text" v-on:keypress="isNumber($event)" v-model="clabe" class="form-control" placeholder="No. CLABE">
-                                    </div>
-                                </div>
- 
-                                <div class="form-group row">
-                                    <label class="col-md-3 form-control-label" for="text-input">Titular</label>
-                                    <div class="col-md-9">
-                                        <input type="text" v-model="titular" class="form-control" placeholder="Titular">
-                                    </div>
-                                </div>
-
-                      
-                          </div>
                         <!-- Botones del modal -->
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <button type="button" class="btn btn-info" v-if="tipoAccion==2" @click="registrarDatosCuenta()">Guardar</button>
                         </div>
                     </div>
                     <!-- /.modal-content -->
@@ -217,12 +125,7 @@
                 proceso : false,
                 id:0,
                 num_etapa : 0,
-                banco: '',
-                titular: '',
-                sucursal: '',
-                clabe: '',
-                cuenta: '',
-                arrayBancos: [],
+                carta_bienvenida: '',
                 arrayEtapa : [],
                 modal : 0,
                 tituloModal : '',
@@ -235,21 +138,11 @@
                     'from' : 0,
                     'to' : 0,
                 },
-                paginationFracc : {
-                    'total' : 0,         
-                    'current_page' : 0,
-                    'per_page' : 0,
-                    'last_page' : 0,
-                    'from' : 0,
-                    'to' : 0,
-                },
                 offset : 3,
                 criterio : 'fraccionamientos.nombre', 
                 buscar : '',
-                criterioFracc : 'nombre', 
-                buscarFracc : '',
                 buscar2: '',
-                arrayFraccionamiento : [],
+                arrayFraccionamientos : [],
 
             }
         },
@@ -279,77 +172,38 @@
                     from++;
                 }
                 return pagesArray;
-            },
-            pagesNumberFracc:function(){
-                if(!this.paginationFracc.to){
-                    return [];
-                }
-
-                var from = this.paginationFracc.current_page - this.offset;
-                if(from < 1){
-                    from = 1;
-                }
-
-                var to = from + (this.offset * 2);
-                if(to >= this.paginationFracc.last_page){
-                    to = this.paginationFracc.last_page;
-                }
-
-                var pagesArray = [];
-                while(from <= to){
-                    pagesArray.push(from);
-                    from++;
-                }
-                return pagesArray;
             }
         },
         methods : {
 
-         
-             registrarDatosCuenta(){
-                if(this.proceso==true){
-                    return;
-                }
-             
-                this.proceso=true;
-                let me = this;
-                //Con axios se llama el metodo store de FraccionaminetoController
-                axios.put('/postventa/datosDeposito/registrar/',{
-                    'id':this.id,
-                    'cuenta': this.cuenta,
-                    'clabe': this.clabe,
-                    'titular': this.titular,
-                    'sucursal': this.sucursal,
-                    'banco' : this.banco
-                    
-                }).then(function (response){
-                    me.proceso=false;
-                    me.cerrarModal(); //al guardar el registro se cierra el modal
-                    me.listarEtapa(1,'','','fraccionamiento.nombre');
+            onImageChange(e){
+                console.log(e.target.files[0]);
+                this.carta_bienvenida = e.target.files[0];
+            },
 
-                    //Se muestra mensaje Success
+            formSubmit(e) {
+                e.preventDefault();
+                let currentObj = this;
+            
+                let formData = new FormData();
+                formData.append('carta_bienvenida', this.carta_bienvenida);
+                let me = this;
+                axios.post('/formSubmitCartaBienvenida/'+this.id, formData)
+                .then(function (response) {
+                    currentObj.success = response.data.success;
                     swal({
                         position: 'top-end',
                         type: 'success',
-                        title: 'Datos guardados',
+                        title: 'Archivo guardado correctamente',
                         showConfirmButton: false,
-                        timer: 1500
+                        timer: 2000
                         })
-                }).catch(function (error){
-                    console.log(error);
-                });
-            },
+                    me.cerrarModal4();
+                    me.listarEtapa(1,'','','fraccionamiento.nombre');
 
-            selectCuenta(){
-                let me = this;
-                me.arrayBancos=[];
-                var url = '/select_cuenta';
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayBancos = respuesta.cuentas;
-                })
-                .catch(function (error) {
-                    console.log(error);
+                }).catch(function (error) {
+                    currentObj.output = error;
+
                 });
 
             },
@@ -376,62 +230,7 @@
                 //Envia la petición para visualizar la data de esta pagina
                 me.listarEtapa(page,buscar,buscar2,criterio);
             },
-
-            listarFraccionamiento(pageFracc, buscarFracc, criterioFracc){
-                let me = this;
-                var url = '/fraccionamiento?page=' + pageFracc + '&buscar=' + buscarFracc + '&criterio=' + criterioFracc;
-                axios.get(url).then(function (response) {
-                    var respuesta = response.data;
-                    me.arrayFraccionamiento = respuesta.fraccionamientos.data;
-                    me.paginationFracc = respuesta.pagination;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            },
-            cambiarPaginaFraccionamiento(pageFracc, buscarFracc, criterioFracc){
-                let me = this;
-                //Actualiza la pagina actual
-                me.paginationFracc.current_page = pageFracc;
-                //Envia la petición para visualizar la data de esta pagina
-                me.listarFraccionamiento(pageFracc,buscarFracc,criterioFracc);
-            },
-            isNumber: function(evt) {
-                evt = (evt) ? evt : window.event;
-                var charCode = (evt.which) ? evt.which : evt.keyCode;
-                if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
-                    evt.preventDefault();;
-                } else {
-                    return true;
-                }
-            },
-            actualizarCorreo(idFracc,correo){
-                let me = this;
-                //Con axios se llama el metodo update de PartidaController
-                axios.put('/postventa/actualizarCorreoAdmin',{
-                    'correo':correo,
-                    'id' : idFracc
-                }).then(function (response){
-                    
-                   me.listarFraccionamiento(1,'','fraccionamiento');
-                    //window.alert("Cambios guardados correctamente");
-                const toast = Swal.mixin({
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000
-
-                    });
-
-                    toast({
-                    type: 'success',
-                    title: 'Cambios guardados'
-                    })
-                }).catch(function (error){
-                    console.log(error);
-                });
-            },
-             limpiarBusqueda(){
+            limpiarBusqueda(){
                 let me=this;
                 me.buscar= "";
                 me.buscar2="";
@@ -448,18 +247,14 @@
                     case "etapa":
                     {
                         switch(accion){
-                          
-                             case 'costo':
+                            case 'subirArchivo':
                             {
                                 this.modal = 1;
-                                this.tituloModal = 'Datos bancarios para pago de la administración';
+                                this.tituloModal = 'Subir carta de bienvenida';
+                                this.num_etapa = data['num_etapa'];
                                 this.id=data['id'];
-                                this.banco = data['banco_admin'];
-                                this.cuenta = data['num_cuenta_admin'];
-                                this.clabe =data['clabe_admin'];
-                                this.titular =data['titular_admin'];
-                                this.sucursal =data['sucursal_admin'];
-                                this.tipoAccion = 2;
+                                this.carta_bienvenida=data['carta_bienvenida'];
+                                this.tipoAccion = 1;
                                 break;
                             }
                            
@@ -470,8 +265,6 @@
         },
         mounted() {
             this.listarEtapa(1,this.buscar,this.buscar2,this.criterio);
-            this.listarFraccionamiento(1,this.buscarFracc,this.criterioFracc);
-            this.selectCuenta();
         }
     }
 </script>

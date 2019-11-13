@@ -58,6 +58,7 @@ class EntregaController extends Controller
                     ->join('expedientes','contratos.id','expedientes.id')
                     ->join('creditos', 'contratos.id', '=', 'creditos.id')
                     ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                    ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
                     ->join('licencias', 'lotes.id', '=', 'licencias.id')
                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                     ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -72,7 +73,7 @@ class EntregaController extends Controller
                         'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
                         'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
                         'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                        'contratos.ext_empresa','contratos.colonia_empresa',
+                        'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
 
                         'creditos.fraccionamiento as proyecto',
                         'creditos.etapa',
@@ -113,6 +114,7 @@ class EntregaController extends Controller
                     ->join('expedientes','contratos.id','expedientes.id')
                     ->join('creditos', 'contratos.id', '=', 'creditos.id')
                     ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                    ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
                     ->join('licencias', 'lotes.id', '=', 'licencias.id')
                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                     ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -127,7 +129,7 @@ class EntregaController extends Controller
                         'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
                         'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
                         'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                        'contratos.ext_empresa','contratos.colonia_empresa',
+                        'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
 
                         'creditos.fraccionamiento as proyecto',
                         'creditos.etapa',
@@ -170,6 +172,7 @@ class EntregaController extends Controller
                     ->join('expedientes','contratos.id','expedientes.id')
                     ->join('creditos', 'contratos.id', '=', 'creditos.id')
                     ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                    ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
                     ->join('licencias', 'lotes.id', '=', 'licencias.id')
                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                     ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -184,7 +187,7 @@ class EntregaController extends Controller
                         'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
                         'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
                         'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                        'contratos.ext_empresa','contratos.colonia_empresa',
+                        'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
 
                         'creditos.fraccionamiento as proyecto',
                         'creditos.etapa',
@@ -227,6 +230,7 @@ class EntregaController extends Controller
                     ->join('expedientes','contratos.id','expedientes.id')
                     ->join('creditos', 'contratos.id', '=', 'creditos.id')
                     ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                    ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
                     ->join('licencias', 'lotes.id', '=', 'licencias.id')
                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                     ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -241,7 +245,7 @@ class EntregaController extends Controller
                         'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
                         'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
                         'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                        'contratos.ext_empresa','contratos.colonia_empresa',
+                        'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
 
                         'creditos.fraccionamiento as proyecto',
                         'creditos.etapa',
@@ -285,6 +289,7 @@ class EntregaController extends Controller
                         ->join('expedientes','contratos.id','expedientes.id')
                         ->join('creditos', 'contratos.id', '=', 'creditos.id')
                         ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                        ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
                         ->join('licencias', 'lotes.id', '=', 'licencias.id')
                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                         ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -299,7 +304,7 @@ class EntregaController extends Controller
                             'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
                             'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
                             'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                            'contratos.ext_empresa','contratos.colonia_empresa',
+                            'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
 
                             'creditos.fraccionamiento as proyecto',
                             'creditos.etapa',
@@ -339,6 +344,7 @@ class EntregaController extends Controller
                         ->join('expedientes','contratos.id','expedientes.id')
                         ->join('creditos', 'contratos.id', '=', 'creditos.id')
                         ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                        ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
                         ->join('licencias', 'lotes.id', '=', 'licencias.id')
                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                         ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -353,7 +359,7 @@ class EntregaController extends Controller
                             'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
                             'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
                             'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                            'contratos.ext_empresa','contratos.colonia_empresa',
+                            'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
 
                             'creditos.fraccionamiento as proyecto',
                             'creditos.etapa',
@@ -395,6 +401,7 @@ class EntregaController extends Controller
                         ->join('expedientes','contratos.id','expedientes.id')
                         ->join('creditos', 'contratos.id', '=', 'creditos.id')
                         ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                        ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
                         ->join('licencias', 'lotes.id', '=', 'licencias.id')
                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                         ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -409,7 +416,7 @@ class EntregaController extends Controller
                             'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
                             'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
                             'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                            'contratos.ext_empresa','contratos.colonia_empresa',
+                            'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
 
                             'creditos.fraccionamiento as proyecto',
                             'creditos.etapa',
@@ -451,6 +458,7 @@ class EntregaController extends Controller
                         ->join('expedientes','contratos.id','expedientes.id')
                         ->join('creditos', 'contratos.id', '=', 'creditos.id')
                         ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                        ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
                         ->join('licencias', 'lotes.id', '=', 'licencias.id')
                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                         ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -465,7 +473,7 @@ class EntregaController extends Controller
                             'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
                             'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
                             'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                            'contratos.ext_empresa','contratos.colonia_empresa',
+                            'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
 
                             'creditos.fraccionamiento as proyecto',
                             'creditos.etapa',
@@ -509,6 +517,7 @@ class EntregaController extends Controller
                         ->join('expedientes','contratos.id','expedientes.id')
                         ->join('creditos', 'contratos.id', '=', 'creditos.id')
                         ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                        ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
                         ->join('licencias', 'lotes.id', '=', 'licencias.id')
                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                         ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -523,7 +532,7 @@ class EntregaController extends Controller
                             'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
                             'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
                             'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                            'contratos.ext_empresa','contratos.colonia_empresa',
+                            'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
 
                             'creditos.fraccionamiento as proyecto',
                             'creditos.etapa',
@@ -565,6 +574,7 @@ class EntregaController extends Controller
                         ->join('expedientes','contratos.id','expedientes.id')
                         ->join('creditos', 'contratos.id', '=', 'creditos.id')
                         ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                        ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
                         ->join('licencias', 'lotes.id', '=', 'licencias.id')
                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                         ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -579,7 +589,7 @@ class EntregaController extends Controller
                             'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
                             'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
                             'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                            'contratos.ext_empresa','contratos.colonia_empresa',
+                            'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
 
                             'creditos.fraccionamiento as proyecto',
                             'creditos.etapa',
@@ -622,6 +632,7 @@ class EntregaController extends Controller
                         ->join('expedientes','contratos.id','expedientes.id')
                         ->join('creditos', 'contratos.id', '=', 'creditos.id')
                         ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                        ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
                         ->join('licencias', 'lotes.id', '=', 'licencias.id')
                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                         ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -636,7 +647,7 @@ class EntregaController extends Controller
                             'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
                             'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
                             'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                            'contratos.ext_empresa','contratos.colonia_empresa',
+                            'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
 
                             'creditos.fraccionamiento as proyecto',
                             'creditos.etapa',
@@ -678,6 +689,7 @@ class EntregaController extends Controller
                         ->join('expedientes','contratos.id','expedientes.id')
                         ->join('creditos', 'contratos.id', '=', 'creditos.id')
                         ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                        ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
                         ->join('licencias', 'lotes.id', '=', 'licencias.id')
                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                         ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -692,7 +704,7 @@ class EntregaController extends Controller
                             'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
                             'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
                             'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                            'contratos.ext_empresa','contratos.colonia_empresa',
+                            'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
 
                             'creditos.fraccionamiento as proyecto',
                             'creditos.etapa',
@@ -858,6 +870,7 @@ class EntregaController extends Controller
                     ->join('expedientes','contratos.id','expedientes.id')
                     ->join('creditos', 'contratos.id', '=', 'creditos.id')
                     ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                    ->join('etapas','lotes.etapa_id','=','etapas.id')
                     ->join('licencias', 'lotes.id', '=', 'licencias.id')
                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                     ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -872,7 +885,7 @@ class EntregaController extends Controller
                         'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
                         'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
                         'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                        'contratos.ext_empresa','contratos.colonia_empresa',
+                        'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
 
                         'creditos.fraccionamiento as proyecto',
                         'creditos.etapa',
@@ -913,6 +926,7 @@ class EntregaController extends Controller
                     ->join('expedientes','contratos.id','expedientes.id')
                     ->join('creditos', 'contratos.id', '=', 'creditos.id')
                     ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                    ->join('etapas','lotes.etapa_id','=','etapas.id')
                     ->join('licencias', 'lotes.id', '=', 'licencias.id')
                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                     ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -927,7 +941,7 @@ class EntregaController extends Controller
                         'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
                         'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
                         'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                        'contratos.ext_empresa','contratos.colonia_empresa',
+                        'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
 
                         'creditos.fraccionamiento as proyecto',
                         'creditos.etapa',
@@ -970,6 +984,7 @@ class EntregaController extends Controller
                     ->join('expedientes','contratos.id','expedientes.id')
                     ->join('creditos', 'contratos.id', '=', 'creditos.id')
                     ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                    ->join('etapas','lotes.etapa_id','=','etapas.id')
                     ->join('licencias', 'lotes.id', '=', 'licencias.id')
                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                     ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -984,7 +999,7 @@ class EntregaController extends Controller
                         'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
                         'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
                         'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                        'contratos.ext_empresa','contratos.colonia_empresa',
+                        'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
 
                         'creditos.fraccionamiento as proyecto',
                         'creditos.etapa',
@@ -1027,6 +1042,7 @@ class EntregaController extends Controller
                     ->join('expedientes','contratos.id','expedientes.id')
                     ->join('creditos', 'contratos.id', '=', 'creditos.id')
                     ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                    ->join('etapas','lotes.etapa_id','=','etapas.id')
                     ->join('licencias', 'lotes.id', '=', 'licencias.id')
                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                     ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -1041,7 +1057,7 @@ class EntregaController extends Controller
                         'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
                         'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
                         'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                        'contratos.ext_empresa','contratos.colonia_empresa',
+                        'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
 
                         'creditos.fraccionamiento as proyecto',
                         'creditos.etapa',
@@ -1084,6 +1100,7 @@ class EntregaController extends Controller
                         ->join('expedientes','contratos.id','expedientes.id')
                         ->join('creditos', 'contratos.id', '=', 'creditos.id')
                         ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                        ->join('etapas','lotes.etapa_id','=','etapas.id')
                         ->join('licencias', 'lotes.id', '=', 'licencias.id')
                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                         ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -1098,7 +1115,7 @@ class EntregaController extends Controller
                             'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
                             'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
                             'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                            'contratos.ext_empresa','contratos.colonia_empresa',
+                            'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
 
                             'creditos.fraccionamiento as proyecto',
                             'creditos.etapa',
@@ -1138,6 +1155,7 @@ class EntregaController extends Controller
                         ->join('expedientes','contratos.id','expedientes.id')
                         ->join('creditos', 'contratos.id', '=', 'creditos.id')
                         ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                        ->join('etapas','lotes.etapa_id','=','etapas.id')
                         ->join('licencias', 'lotes.id', '=', 'licencias.id')
                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                         ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -1152,7 +1170,7 @@ class EntregaController extends Controller
                             'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
                             'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
                             'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                            'contratos.ext_empresa','contratos.colonia_empresa',
+                            'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
 
                             'creditos.fraccionamiento as proyecto',
                             'creditos.etapa',
@@ -1194,6 +1212,7 @@ class EntregaController extends Controller
                         ->join('expedientes','contratos.id','expedientes.id')
                         ->join('creditos', 'contratos.id', '=', 'creditos.id')
                         ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                        ->join('etapas','lotes.etapa_id','=','etapas.id')
                         ->join('licencias', 'lotes.id', '=', 'licencias.id')
                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                         ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -1208,7 +1227,7 @@ class EntregaController extends Controller
                             'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
                             'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
                             'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                            'contratos.ext_empresa','contratos.colonia_empresa',
+                            'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
 
                             'creditos.fraccionamiento as proyecto',
                             'creditos.etapa',
@@ -1250,6 +1269,7 @@ class EntregaController extends Controller
                         ->join('expedientes','contratos.id','expedientes.id')
                         ->join('creditos', 'contratos.id', '=', 'creditos.id')
                         ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                        ->join('etapas','lotes.etapa_id','=','etapas.id')
                         ->join('licencias', 'lotes.id', '=', 'licencias.id')
                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                         ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -1264,7 +1284,7 @@ class EntregaController extends Controller
                             'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
                             'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
                             'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                            'contratos.ext_empresa','contratos.colonia_empresa',
+                            'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
 
                             'creditos.fraccionamiento as proyecto',
                             'creditos.etapa',
@@ -1308,6 +1328,7 @@ class EntregaController extends Controller
                         ->join('expedientes','contratos.id','expedientes.id')
                         ->join('creditos', 'contratos.id', '=', 'creditos.id')
                         ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                        ->join('etapas','lotes.etapa_id','=','etapas.id')
                         ->join('licencias', 'lotes.id', '=', 'licencias.id')
                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                         ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -1322,7 +1343,7 @@ class EntregaController extends Controller
                             'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
                             'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
                             'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                            'contratos.ext_empresa','contratos.colonia_empresa',
+                            'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
 
                             'creditos.fraccionamiento as proyecto',
                             'creditos.etapa',
@@ -1364,6 +1385,7 @@ class EntregaController extends Controller
                         ->join('expedientes','contratos.id','expedientes.id')
                         ->join('creditos', 'contratos.id', '=', 'creditos.id')
                         ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                        ->join('etapas','lotes.etapa_id','=','etapas.id')
                         ->join('licencias', 'lotes.id', '=', 'licencias.id')
                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                         ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -1378,7 +1400,7 @@ class EntregaController extends Controller
                             'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
                             'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
                             'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                            'contratos.ext_empresa','contratos.colonia_empresa',
+                            'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
 
                             'creditos.fraccionamiento as proyecto',
                             'creditos.etapa',
@@ -1421,6 +1443,7 @@ class EntregaController extends Controller
                         ->join('expedientes','contratos.id','expedientes.id')
                         ->join('creditos', 'contratos.id', '=', 'creditos.id')
                         ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                        ->join('etapas','lotes.etapa_id','=','etapas.id')
                         ->join('licencias', 'lotes.id', '=', 'licencias.id')
                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                         ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -1435,7 +1458,7 @@ class EntregaController extends Controller
                             'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
                             'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
                             'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                            'contratos.ext_empresa','contratos.colonia_empresa',
+                            'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
 
                             'creditos.fraccionamiento as proyecto',
                             'creditos.etapa',
@@ -1477,6 +1500,7 @@ class EntregaController extends Controller
                         ->join('expedientes','contratos.id','expedientes.id')
                         ->join('creditos', 'contratos.id', '=', 'creditos.id')
                         ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                        ->join('etapas','lotes.etapa_id','=','etapas.id')
                         ->join('licencias', 'lotes.id', '=', 'licencias.id')
                         ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                         ->join('personal as c', 'clientes.id', '=', 'c.id')
@@ -1491,7 +1515,7 @@ class EntregaController extends Controller
                             'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
                             'clientes.nacionalidad','clientes.sexo','contratos.direccion_empresa',
                             'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
-                            'contratos.ext_empresa','contratos.colonia_empresa',
+                            'contratos.ext_empresa','contratos.colonia_empresa','etapas.carta_bienvenida',
 
                             'creditos.fraccionamiento as proyecto',
                             'creditos.etapa',

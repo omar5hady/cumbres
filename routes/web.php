@@ -160,6 +160,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/etapas/costoMantenimiento/registrar/{id}','EtapaController@registrarCostoMantenimiento');
         Route::post('/formSubmitTelecom/{id}','EtapaController@uploadPlantillaTelecom');
         Route::get('/downloadPlantilla/ServiciosTelecom/{fileName}' , 'EtapaController@downloadPlantillaTelecom');
+        Route::get('/downloadCartaBienvenida/{fileName}' , 'EtapaController@downloadCartaBienvenida');
+        Route::post('/formSubmitCartaBienvenida/{id}','EtapaController@uploadCartaBienvenida');
 
         
     ///////////////////     RUTAS PERSONAL      ////////////////////////////////////
