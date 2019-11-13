@@ -8114,4 +8114,26 @@ class ExpedienteController extends Controller
         $asignar->save();
     }
 
+    public function regresarExpediente(Request $request){
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+
+        $folio = $request->folio;
+        try{
+            DB::beginTransaction();
+
+            $contrato = Contrato::findOrFail($folio);
+            $contrato->integracion = 0;
+            $contrato->aviso_prev = NULL;
+            $contrato->avaluo_preventivo = NULL;
+            $contrato->save();
+
+            $expediente = Expediente::findOrFail($folio);
+            $expediente->delete();
+            DB::commit();
+                
+        } catch (Exception $e){
+            DB::rollBack();
+        }  
+    }
+
 }

@@ -66,7 +66,7 @@
                                     <table class="table2 table-bordered table-striped table-sm">
                                         <thead>
                                             <tr> 
-                                                
+                                                <th></th>
                                                 <th># Ref</th>
                                                 <th>Cliente</th>
                                                 <th>Asesor</th>
@@ -89,7 +89,11 @@
                                         </thead>
                                         <tbody>
                                             <tr v-for="ingresar in arrayPorIngresar" :key="ingresar.id"> 
-                                                
+                                                <td class="td2">
+                                                    <button type="button" class="btn btn-danger btn-sm" @click="regresarExpediente(ingresar.folio)">
+                                                        <i class="fa fa-exclamation-triangle"></i>
+                                                    </button>
+                                                </td>
                                                 <td class="td2">
                                                     <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{ingresar.folio}}</a>
                                                     <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
@@ -203,7 +207,7 @@
                                     <table class="table2 table-bordered table-striped table-sm">
                                         <thead>
                                             <tr> 
-                                                
+                                                <th></th>
                                                 <th># Ref</th>
                                                 <th>Cliente</th>
                                                 <th>Asesor</th>
@@ -229,7 +233,11 @@
                                         </thead>
                                         <tbody>
                                             <tr v-for="preautorizados in arrayPreautorizados" :key="preautorizados.id"> 
-                                                
+                                                <td class="td2">
+                                                    <button type="button" class="btn btn-danger btn-sm" @click="regresarExpediente(preautorizados.folio)">
+                                                        <i class="fa fa-exclamation-triangle"></i>
+                                                    </button>
+                                                </td>
                                                 <td class="td2">
                                                     <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{preautorizados.folio}}</a>
                                                     <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
@@ -373,7 +381,7 @@
                                     <table class="table2 table-bordered table-striped table-sm">
                                         <thead>
                                             <tr> 
-                                                
+                                                <th></th>
                                                 <th># Ref</th>
                                                 <th>Cliente</th>
                                                 <th>Asesor</th>
@@ -401,7 +409,11 @@
                                         </thead>
                                         <tbody>
                                             <tr v-for="liquidacion in arrayLiquidados" :key="liquidacion.id"> 
-                                                
+                                                 <td class="td2">
+                                                    <button v-if="!liquidacion.fecha_liquidacion" type="button" class="btn btn-danger btn-sm" @click="regresarExpediente(liquidacion.folio)">
+                                                        <i class="fa fa-exclamation-triangle"></i>
+                                                    </button>
+                                                </td>
                                                 <td class="td2">
                                                     <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{liquidacion.folio}}</a>
                                                     <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
@@ -1799,6 +1811,38 @@
             abrirPDF(id){
                 const win = window.open('/estadoCuenta/estadoPDF/'+id, '_blank');
                 win.focus();
+            },
+
+            regresarExpediente(folio){
+                swal({
+                title: '¿Desea regresar este expediente a integración?',
+                text: "Esta acción no se puede revertir!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Si, regresar!'
+                }).then((result) => {
+                if (result.value) {
+                    let me = this;
+
+                axios.delete('/expediente/regresarExpediente', 
+                        {params: {'folio': folio}}).then(function (response){
+                        swal(
+                        'Listo!',
+                        'El expediente ha sido regresado a integración.',
+                        'success'
+                        )
+                        me.listarIngresoExp(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                        me.listarAutorizados(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                        me.listarLiquidacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                        me.listarProgramacion(1, me.buscar, me.b_etapa, me.b_manzana, me.b_lote, me.criterio);
+                    }).catch(function (error){
+                        console.log(error);
+                    });
+                }
+                })
             },
 
             selectNombreArchivoModelo(id){

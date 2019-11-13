@@ -449,6 +449,8 @@ Route::group(['middleware' => ['auth']],function(){
          Route::get('/expediente/solicitudPDF/{id}','AvisoPreventivoController@solicitudPDF'); 
          Route::post('/expediente/integrar','ExpedienteController@store');
 
+         Route::delete('/expediente/regresarExpediente','ExpedienteController@regresarExpediente');
+
     ////////////////////////// RUTAS ASIGNAR GESTOR /////////////////////////////
 
         Route::get('/expediente/indexAsignarGestor','ExpedienteController@indexAsignarGestor');
