@@ -11,9 +11,12 @@ use App\Expediente;
 use App\lote;
 use Carbon\Carbon;
 use App\Contrato;
+use App\Credito;
 use App\Etapa;
 use App\Fraccionamiento;
 use NumerosEnLetras;
+use App\User;
+use App\Notifications\NotifyAdmin;
 
 class EntregaController extends Controller
 {
@@ -30,11 +33,36 @@ class EntregaController extends Controller
             $expediente->postventa = 1;
             $expediente->save();
 
+            $credito = Credito::findOrFail($request->id);
+            $lote = $credito->num_lote;
+            $proyecto = $credito->fraccionamiento;
+            $etapa = $credito->etapa;
+
             $observacion = new Obs_entrega();
             $observacion->entrega_id = $request->id;
             $observacion->comentario = $request->comentario;
             $observacion->usuario = Auth::user()->usuario;
             $observacion->save();
+
+            $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=', Auth::user()->id)->get();
+                $fecha = Carbon::now();
+                $msj = 'Se ha solicitado la entrega del lote: '.$lote. ' del fraccionamiento: '.$proyecto.', etapa: '.$etapa;
+                $arregloAceptado = [
+                    'notificacion' => [
+                        'usuario' => $imagenUsuario[0]->usuario,
+                        'foto' => $imagenUsuario[0]->foto_user,
+                        'fecha' => $fecha,
+                        'msj' => $msj,
+                        'titulo' => 'Nueva solicitud de entrega'
+                    ]
+                ];
+
+                $users = User::select('id')
+                    ->where('entregas','=','1')->get();
+
+                foreach($users as $notificar){
+                    User::findOrFail($notificar->id)->notify(new NotifyAdmin($arregloAceptado));
+                }
 
             DB::commit();
         } catch (Exception $e){

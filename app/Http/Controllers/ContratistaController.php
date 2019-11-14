@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Contratista;
+
+use App\Personal;
+use App\User;
+use Illuminate\Support\Facades\DB;
 use Auth;
 
 class ContratistaController extends Controller
@@ -49,70 +53,54 @@ class ContratistaController extends Controller
 
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    //funcion para insertar en la tabla
     public function store(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
-        $contratistas = new Contratista();
-        $contratistas->nombre = $request->nombre;
-        $contratistas->tipo = $request->tipo;
-        $contratistas->rfc = $request->rfc;
-        $contratistas->direccion = $request->direccion;
-        $contratistas->colonia = $request->colonia;
-        $contratistas->cp = $request->cp;
-        $contratistas->estado = $request->estado;
-        $contratistas->ciudad = $request->ciudad;
-        $contratistas->representante = $request->representante;
-        $contratistas->IMSS = $request->IMSS;
-        $contratistas->telefono = $request->telefono;
-        $contratistas->save();
+        try{
+            DB::beginTransaction();
+            $persona = new Personal();
+            $persona->departamento_id = 11;
+            $persona->nombre = $request->nombre;
+            $persona->apellidos = '.';
+            $persona->f_nacimiento = '2019-01-01';
+            $persona->rfc = $request->rfc;
+            $persona->direccion = $request->direccion;
+            $persona->colonia = $request->colonia;
+            $persona->telefono = $request->telefono;
+            $persona->celular = $request->telefono;
+            $persona->email = 'correo@correo.com';
+            $persona->activo = 1;
+            $persona->empresa_id = 1;
+            $persona->save();
+
+            $contratistas = new Contratista();
+            $contratistas->id = $persona->id;
+            $contratistas->nombre = $request->nombre;
+            $contratistas->tipo = $request->tipo;
+            $contratistas->rfc = $request->rfc;
+            $contratistas->direccion = $request->direccion;
+            $contratistas->colonia = $request->colonia;
+            $contratistas->cp = $request->cp;
+            $contratistas->estado = $request->estado;
+            $contratistas->ciudad = $request->ciudad;
+            $contratistas->representante = $request->representante;
+            $contratistas->IMSS = $request->IMSS;
+            $contratistas->telefono = $request->telefono;
+            $contratistas->save();
+
+            $user = new User();
+            $user->id = $persona->id;
+            $user->usuario = $request->usuario;
+            $user->password = bcrypt( $request->password);
+            $user->condicion = '1';
+            $user->rol_id = 13; 
+            $user->save();
+            DB::commit();
+        } catch (Exception $e){
+            DB::rollBack();
+        }       
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     //funcion para actualizar los datos
     public function update(Request $request)
     {
@@ -133,12 +121,6 @@ class ContratistaController extends Controller
         $contratistas->save();
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');

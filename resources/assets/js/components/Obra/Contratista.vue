@@ -214,7 +214,21 @@
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Telefono</label>
                                     <div class="col-md-6">
-                                        <input type="text" v-model="telefono" class="form-control" placeholder="Telefono de contacto">
+                                        <input type="text"  maxlength="10" pattern="\d*" v-model="telefono" v-on:keypress="isNumber($event)" class="form-control" placeholder="Telefono de contacto">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row" v-if="tipoAccion==1">
+                                    <label class="col-md-3 form-control-label" for="text-input">Usuario</label>
+                                    <div class="col-md-6">
+                                        <input type="text" v-model="usuario" class="form-control" placeholder="User">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row" v-if="tipoAccion==1">
+                                    <label class="col-md-3 form-control-label" for="text-input">Contraseña</label>
+                                    <div class="col-md-6">
+                                        <input type="password" v-model="password" class="form-control" placeholder="Password">
                                     </div>
                                 </div>
                             
@@ -266,6 +280,8 @@
                 cp : 0,
                 estado : '',
                 ciudad : '',
+                usuario : '',
+                password:'',
                 arrayContratista : [],
                 modal : 0,
                 tituloModal : '',
@@ -383,7 +399,9 @@
                     'ciudad': this.ciudad,
                     'representante': this.representante,
                     'IMSS': this.IMSS,
-                    'telefono': this.telefono
+                    'telefono': this.telefono,
+                    'usuario' : this.usuario,
+                    'password' : this.password
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal(); //al guardar el registro se cierra el modal
@@ -482,12 +500,33 @@
                 }
                 })
             },
+            isNumber: function(evt) {
+                evt = (evt) ? evt : window.event;
+                var charCode = (evt.which) ? evt.which : evt.keyCode;
+                if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
+                    evt.preventDefault();;
+                } else {
+                    return true;
+                }
+            },
             validarContratista(){
                 this.errorContratista=0;
                 this.errorMostrarMsjContratista=[];
 
                 if(!this.nombre) //Si la variable Fraccionamiento esta vacia
                     this.errorMostrarMsjContratista.push("El nombre de Contratista no puede ir vacio.");
+
+                if(!this.rfc)
+                    this.errorMostrarMsjContratista.push("El RFC del Contratista no puede ir vacio.");
+
+                if(!this.direccion)
+                    this.errorMostrarMsjContratista.push("La direccion del Contratista no puede ir vacio.");
+                
+                if(!this.colonia)
+                    this.errorMostrarMsjContratista.push("La colonia del Contratista no puede ir vacio.");
+                
+                if(!this.telefono)
+                    this.errorMostrarMsjContratista.push("El telefono del Contratista no puede ir vacio.");
 
                 if(this.errorMostrarMsjContratista.length)//Si el mensaje tiene almacenado algo en el array
                     this.errorContratista = 1;
@@ -511,6 +550,8 @@
                 this.ciudad = '';
                 this.errorContratista = 0;
                 this.errorMostrarMsjContratista = [];
+                this.usuario = '';
+                this.password = '';
 
             },
             /**Metodo para mostrar la ventana modal, dependiendo si es para actualizar o registrar */
@@ -535,6 +576,8 @@
                                 this.IMSS = '';
                                 this.telefono = '';
                                 this.tipoAccion = 1;
+                                this.usuario = '';
+                                this.password ='';
                                 break;
                             }
                             case 'actualizar':
@@ -579,6 +622,7 @@
         opacity: 1 !important;
         position: fixed !important;
         background-color: #3c29297a !important;
+        overflow-y: auto;
     }
     .div-error{
         display:flex;

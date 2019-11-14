@@ -77,6 +77,7 @@ class ProveedorController extends Controller
             $proveedor->save();
  
             $user = new User();
+            $user->id = $persona->id;
             $user->usuario = $request->usuario;
             $user->password = bcrypt( $request->password);
             $user->condicion = '1';
