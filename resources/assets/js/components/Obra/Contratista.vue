@@ -142,7 +142,7 @@
                                     <label class="col-md-3 form-control-label" for="text-input">Colonia</label>
                                     <div class="col-md-6">
                                         <select class="form-control" v-model="colonia">
-                                            <option value="0">Seleccione</option>
+                                            <option value="">Seleccione</option>
                                             <option v-for="colonias in arrayColonias" :key="colonias.colonia" :value="colonias.colonia" v-text="colonias.colonia"></option>
                                         </select>
                                     </div>
@@ -151,6 +151,7 @@
                                     <label class="col-md-3 form-control-label" for="text-input">Estado</label>
                                     <div class="col-md-6">
                                         <select class="form-control" v-model="estado" @click="selectCiudades(estado)">
+                                            <option value="">Seleccione</option>
                                             <option value="San Luis Potosí">San Luis Potosí</option>
                                             <option value="Aguascalientes">Aguascalientes</option>
                                             <option value="Baja California">Baja California</option>
@@ -191,6 +192,7 @@
                                     <label class="col-md-3 form-control-label" for="text-input">Ciudad</label>
                                     <div class="col-md-6">
                                         <select class="form-control" v-model="ciudad">
+                                            <option value="">Seleccione</option>
                                             <option v-for="ciudades in arrayCiudades" :key="ciudades.municipio" :value="ciudades.municipio" v-text="ciudades.municipio"></option>
                                         </select>
                                         <!--<input type="text" v-model="ciudad" class="form-control" placeholder="Ciudad">-->
@@ -527,6 +529,14 @@
                 
                 if(!this.telefono)
                     this.errorMostrarMsjContratista.push("El telefono del Contratista no puede ir vacio.");
+
+                if(this.tipoAccion == 1){
+                    if(!this.usuario || this.usuario == '')
+                        this.errorMostrarMsjContratista.push("El usuario para el Contratista no puede ir vacio.");
+
+                    if(!this.password || this.password == '')
+                        this.errorMostrarMsjContratista.push("La contraseña Contratista no puede ir vacio.");
+                }
 
                 if(this.errorMostrarMsjContratista.length)//Si el mensaje tiene almacenado algo en el array
                     this.errorContratista = 1;
