@@ -2295,8 +2295,8 @@
                     var respuesta = response.data;
                     me.arrayDatosLotes = respuesta.lotes;
 
-                    me.reasignar(me.arrayDatosLotes[0]);
-                    me.getNewDatosLote(lote)
+                    me.reasignar(me.arrayDatosLotes[0],lote);
+                    
                     
                     me.selectPaquetes(me.etapa,me.proyecto);
                     me.cerrarModal();
@@ -2328,7 +2328,7 @@
                     
                     me.modelo = me.arrayDatosLotes[0]['modelo'];
                     me.superficie = me.arrayDatosLotes[0]['terreno'];
-                    me.precioBase = me.arrayDatosLotes[0]['precio_base'];
+                    me.precioBase = me.arrayDatosLotes[0]['precio_base'] + me.arrayDatosLotes[0]['ajuste'];
                     me.precioExcedente = Math.round(me.arrayDatosLotes[0]['excedente_terreno']*100)/100;
                     me.precioVenta = me.arrayDatosLotes[0]['precio_venta'];
                     me.promocion = me.arrayDatosLotes[0]['promocion'];
@@ -3442,7 +3442,7 @@
             },
         /////
 
-            reasignar(data=[]){
+            reasignar(data=[],lote){
                 let me = this;
                 
                 axios.put('/contrato/reasignar',{
@@ -3465,7 +3465,7 @@
                    'precio_venta':data['precio_venta'] - data['descuentoPromo'],
 
                 }).then(function (response){
-                    
+                    me.getNewDatosLote(lote)
                     //window.alert("Cambios guardados correctamente");
                     swal({
                         position: 'top-end',

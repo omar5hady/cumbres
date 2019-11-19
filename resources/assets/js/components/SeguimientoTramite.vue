@@ -12,7 +12,7 @@
 
                     </div>
                     <div class="card-body">
-                        <ul class="nav2 nav-tabs" id="myTab1" role="tablist">
+                        <ul class="nav nav2 nav-tabs" id="myTab1" role="tablist">
                             <li class="nav-item">
                                 <a class="nav-link active show" id="ingresar-tab" data-toggle="tab" href="#ingresar" role="tab" aria-controls="ingresar" aria-selected="true" v-text="'Por Ingresar (' + contadorIngresar +')'"></a>
                             </li>
@@ -2909,10 +2909,14 @@
     vertical-align: baseline;
 }
 
- @media (min-width: 600px){
+ @media (min-width: 300px){
   .btnagregar{
         margin-top: 2rem;
         }
+
+    .nav2 {
+        overflow-x: scroll;
+    }
  }
     .td2 {
     white-space: nowrap;
@@ -2927,12 +2931,12 @@
     .td2:last-of-type, th:last-of-type {
     border-right: none;
     } 
-    .nav2 {
+    /* .nav2 {
     display: -ms-flexbox;
     display: flex;
     padding-left: 0;
     margin-bottom: 0;
     list-style: none;
     overflow-x: scroll;
-    }
+    } */
 </style>

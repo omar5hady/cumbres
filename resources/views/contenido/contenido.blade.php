@@ -336,13 +336,19 @@
             <postventa-entrega></postventa-entrega>
         </template>
 
+        <template v-if="menu==216">
+            <obra-entrega></obra-entrega>
+        </template>
+
         <template v-if="menu==218">
             <postventa-etapa></postventa-etapa>
         </template>
 
-        <template v-if="menu==216">
-            <obra-entrega></obra-entrega>
+        <template v-if="menu==219">
+            <solicitud-detalles></solicitud-detalles>
         </template>
+
+        
 
         
     @endif

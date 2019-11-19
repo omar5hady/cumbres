@@ -9247,9 +9247,9 @@ class ContratoController extends Controller
                 else {
                     $lote_new->excedente_terreno = 0;
                 }
-            $lote_new->precio_base = $precio_modelo[0]->precio_modelo + $lote_new->ajuste;
+            $lote_new->precio_base = $precio_modelo[0]->precio_modelo;
             $lote_new->precio_base = round(($lote_new->precio_base), 2);
-            $precio_venta = round(($sobreprecios[0]->sobreprecios + $lote_new->precio_base + $lote_new->excedente_terreno + $lote_new->obra_extra),2);
+            $precio_venta = round(($sobreprecios[0]->sobreprecios + $lote_new->precio_base  + $lote_new->ajuste + $lote_new->excedente_terreno + $lote_new->obra_extra),2);
             $terreno_tam_excedente = round(($lote_new->terreno - $modelo[0]->terreno),2);
             $lote_new->contrato = $varContrato;
 
@@ -9262,7 +9262,7 @@ class ContratoController extends Controller
             $credito->manzana = $request->manzana;
             $credito->num_lote = $request->num_lote;
             $credito->modelo = $request->modelo;
-            $credito->precio_base = $lote_new->precio_base;
+            $credito->precio_base = $lote_new->precio_base + $lote_new->ajuste;
             $credito->superficie = $request->superficie;
             $credito->terreno_excedente = $terreno_tam_excedente;
             $credito->precio_terreno_excedente = $lote_new->excedente_terreno;

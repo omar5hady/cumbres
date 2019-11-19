@@ -4051,7 +4051,7 @@ class LoteController extends Controller
 
         foreach($lotes as $index => $lote) {
             $lote->precio_base = $lote->precio_base;
-            $lote->precio_venta= $lote->sobreprecio + $lote->precio_base + $lote->excedente_terreno + $lote->obra_extra;
+            $lote->precio_venta= $lote->sobreprecio + $lote->precio_base + $lote->ajuste + $lote->excedente_terreno + $lote->obra_extra;
             $promocion=[];
             $promocion = Lote_promocion::join('promociones','lotes_promocion.promocion_id','=','promociones.id')
                 ->select('promociones.nombre','promociones.v_ini','promociones.v_fin','promociones.id',

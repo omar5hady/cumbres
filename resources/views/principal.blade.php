@@ -437,6 +437,11 @@
                                 <a class="nav-link" href="#"><i class="fa fa-key"></i> Entregas de vivienda</a>
                             </li>
                         @endif
+                        @if(Auth::user()->rol_id == 1)
+                            <li @click="menu=219" class="nav-item">
+                                <a class="nav-link" href="#"><i class="fa fa-key"></i> Solicitud de Detalles</a>
+                            </li>
+                        @endif
                     </ul>
                 </li>
             @endif
