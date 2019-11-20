@@ -2416,6 +2416,7 @@
                             this.tituloModal='Observaciones';
                             this.solicitud_id = data['id'];
                             this.observacion = '';
+                            break;
                         }
                     }
                 }

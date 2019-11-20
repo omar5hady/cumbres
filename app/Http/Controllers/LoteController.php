@@ -6402,5 +6402,62 @@ class LoteController extends Controller
         )->download('xls');
     }
 
+    public function select_etapas_entregados(Request $request)
+    {
+        if(!$request->ajax())return redirect('/');
+        
+        $fraccionamiento = $request->buscar;
+        $lotes_etapas = Lote::join('etapas','lotes.etapa_id','=','etapas.id')
+                    ->join('creditos','lotes.id','=','creditos.lote_id')
+                    ->join('contratos','creditos.id','=','contratos.id')
+                    ->select('etapas.num_etapa as etapa')
+                    ->where('contratos.entregado','=',1)
+                    ->where('lotes.fraccionamiento_id','=',$fraccionamiento)
+                    ->orderBy('etapas.num_etapa','DESC')
+                    ->distinct()
+                    ->get();
+        return ['lotes_etapas' => $lotes_etapas];
+    }
+
+
+    public function select_manzanas_entregados(Request $request)
+    {
+        if(!$request->ajax())return redirect('/');
+        
+        $etapa = $request->buscar;
+        $lotes_manzanas = Lote::join('etapas','lotes.etapa_id','=','etapas.id')
+                    ->join('creditos','lotes.id','=','creditos.lote_id')
+                    ->join('contratos','creditos.id','=','contratos.id')
+                    ->select('lotes.manzana')
+                    ->where('contratos.entregado','=',1)
+                    ->where('etapas.num_etapa','=',$etapa)
+                    ->distinct()
+                    ->orderBy('lotes.manzana','DESC')
+                    ->get();
+        return ['lotes_manzanas' => $lotes_manzanas];
+    }
+
+    public function select_lotes_entregados(Request $request)
+    {
+        if(!$request->ajax())return redirect('/');
+        
+        $manzana = $request->buscar;
+        $etapa = $request->buscar2;
+        $fraccionamiento = $request->buscar3;
+        
+            $lotes_entregados = Lote::join('etapas','lotes.etapa_id','=','etapas.id')
+                    ->join('creditos','lotes.id','=','creditos.lote_id')
+                    ->join('contratos','creditos.id','=','contratos.id')
+                    ->select('lotes.num_lote','lotes.id')
+                    ->where('contratos.entregado','=',1)
+                    ->where('etapas.num_etapa', '=',  $etapa )
+                    ->where('lotes.manzana','=',$manzana)
+                    ->where('lotes.fraccionamiento_id','=',$fraccionamiento)
+                    ->orderBy('lotes.num_lote','ASC')
+                    ->get();
+        
+        return ['lotes_entregados' => $lotes_entregados];
+    }
+
 
 }

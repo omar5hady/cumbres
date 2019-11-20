@@ -1111,6 +1111,7 @@
                         }
                         
                         this.depeconomicos_cliente=data['num_dep_economicos'];
+                        break;
                     }
                 }
             }

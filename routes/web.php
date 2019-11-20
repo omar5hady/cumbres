@@ -354,6 +354,10 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/postventa/datosDeposito/registrar/','EntregaController@setDatosCuenta');
         Route::put('/postventa/actualizarCorreoAdmin','EntregaController@actualizarCorreoAdmin');
 
+    /////////////////////////////    RUTAS SOLIC DETALLES        //////////////////////////
+    Route::get('/postventa/getDatosLoteEntregado','EntregaController@getDatosLoteEntregado');
+
+
         
 
 
@@ -625,6 +629,10 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/select_rfcs','PersonalController@selectRFC');
         Route::get('/select_notarias','NotariaController@select_notarias');
         Route::get('/select_gestores','PersonalController@select_gestores');
+
+        Route::get('/select_lotes_entregados','LoteController@select_lotes_entregados');
+        Route::get('/select_etapas_entregados','LoteController@select_etapas_entregados');
+        Route::get('/select_manzanas_entregados','LoteController@select_manzanas_entregados');
 
         Route::get('/select_datos_notaria','NotariaController@getDatosNotaria'); 
         Route::get('/select_ultima_fecha_instalacion','EntregaController@select_ultimaFecha_instalacion');

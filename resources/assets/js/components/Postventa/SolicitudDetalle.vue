@@ -8,7 +8,11 @@
                 <!-- Ejemplo de tabla Listado -->
                 <div class="card scroll-box">
                     <div class="card-header">
-                        <i class="fa fa-align-justify"></i> Solicitud de detalles
+                        <i class="fa fa-align-justify"></i> Solicitud de detalles&nbsp;
+                         <!--   Boton Nuevo    -->
+                        <button type="button" @click="abrirModal('nuevo')" class="btn btn-secondary">
+                            <i class="icon-plus"></i>&nbsp;Nueva Solicitud
+                        </button>
                     </div>
 
                 <!-------------------  Div historial contratos  --------------------->
@@ -126,20 +130,111 @@
                                 </button>
                             </div>
                             <div class="modal-body">
+                                
                                 <div class="form-group row">
-                                    <label class="col-md-2 form-control-label" for="text-input">Fecha de entrega</label>
+                                    <label class="col-md-2 form-control-label" for="text-input">Proyecto</label>
                                     <div class="col-md-3">
-                                        <input v-model="fecha_entrega_obra" type="date" class="form-control">
+                                        <select class="form-control" v-model="proyecto" @click="selectEtapaEntregada(proyecto),etapa_entregada = '',manzana_entregada = '',lote_entregado=''">
+                                            <option value="">Seleccione</option>
+                                            <option v-for="fraccionamiento in arrayFraccionamientos2" :key="fraccionamiento.nombre" :value="fraccionamiento.id" v-text="fraccionamiento.nombre"></option>
+                                        </select>
+                                    </div>
+
+                                    <label class="col-md-1 form-control-label" for="text-input">Etapa</label>
+                                    <div class="col-md-3">
+                                        <select class="form-control" v-model="etapa_entregada" @click="selectManzanaEntregada(etapa_entregada),manzana_entregada = '',lote_entregado=''">
+                                            <option value=''> Seleccione </option>
+                                            <option v-for="etapas in arrayEtapas" :key="etapas.etapa" :value="etapas.etapa" v-text="etapas.etapa"></option>
+                                        </select>
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-2 form-control-label" for="text-input">Manzana</label>
+                                    <div class="col-md-3">
+                                        <select class="form-control" v-model="manzana_entregada" @click="selectLotesEntregado(manzana_entregada, etapa_entregada, proyecto),lote_entregado=''">
+                                            <option value=''> Seleccione </option>
+                                            <option v-for="manzanas in arrayManzanas" :key="manzanas.manzana" :value="manzanas.manzana" v-text="manzanas.manzana"></option>
+                                        </select>
+                                    </div>
+
+                                    <label class="col-md-1 form-control-label" for="text-input">Lote</label>
+                                    <div class="col-md-2">
+                                        <select class="form-control" v-model="lote_entregado" @click="getDatosLote(lote_entregado)">
+                                            <option value=''> Seleccione </option>
+                                            <option v-for="lotes in arrayLotes" :key="lotes.id" :value="lotes.id" v-text="lotes.num_lote"></option>
+                                        </select>
+                                    </div>
+
+                                </div>
+
+                            <template v-if="direccion != '' || direccion">
+                                <div class="form-group row line-separator"></div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-2 form-control-label" for="text-input">Dirección</label>
+                                    <div class="col-md-8">
+                                        <input type="text" disabled v-model="direccion" class="form-control">
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
-                                    <label class="col-md-2 form-control-label" for="text-input">Observación</label>
-                                    <div class="col-md-9">
-                                        <input type="text" v-model="observacion" class="form-control">
+                                    <label class="col-md-2 form-control-label" for="text-input">Cliente</label>
+                                    <div class="col-md-6">
+                                        <input type="text" disabled v-model="cliente" class="form-control">
                                     </div>
                                 </div>
 
+                                <div class="form-group row">
+                                    <label class="col-md-2 form-control-label" for="text-input"># Dias desde entrega</label>
+                                    <div class="col-md-3">
+                                        <h6 v-text="dias_entregado"></h6>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-2 form-control-label" for="text-input">Contratista</label>
+                                    <div class="col-md-6">
+                                        <select class="form-control" v-model="contratista" :disabled="dias_entregado <= 60">
+                                            <option value=''> Seleccione </option>
+                                            <option v-for="contratista in arrayContratistas" :key="contratista.id" :value="contratista.id" v-text="contratista.nombre"></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row line-separator"></div>
+
+                                 <div class="form-group row">
+                                    <label class="col-md-2 form-control-label" for="text-input">Detalle General</label>
+                                    <div class="col-md-4">
+                                        <select class="form-control" v-model="detalle_gen" >
+                                            <option value=''> Seleccione </option>
+                                        </select>
+                                    </div>
+
+                                    <label class="col-md-2 form-control-label" for="text-input">Especifico</label>
+                                    <div class="col-md-4">
+                                        <select class="form-control" v-model="detalle_esp" >
+                                            <option value=''> Seleccione </option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row" >
+                                    <label class="col-md-2 form-control-label" for="text-input">Costo</label>
+                                        <div class="col-md-3" v-if="dias_entregado>60">
+                                            <input v-model="costo" pattern="\d*" v-on:keypress="isNumber($event)" class="form-control">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <h6>${{ formatNumber(costo)}}</h6>
+                                        </div>
+                                </div>
+
+
+                                    
+                            </template>
+                                
                                 <!-- Div para mostrar los errores que mande validerDepartamento -->
                                 <div v-show="errorEntrega" class="form-group row div-error">
                                     <div class="text-center text-error">
@@ -237,20 +332,36 @@
                 arrayFraccionamientos2:[],
                 arrayEtapas2:[],
                 arrayAllManzanas:[],
-                arrayAllLotes:[],
                 arrayContratos:[],
+                arrayContratistas:[],
 
+                // Variables para buscar lotes entregados
+                arrayLotes:[],
+                arrayEtapas:[],
+                arrayManzanas:[],
+                arrayDatosLotes:[],
+                proyecto:'',
+                etapa_entregada:'',
+                manzana_entregada:'',
+                lote_entregado:'',
+                
                 modal: 0,
                 modal3: 0,
                 tituloModal: '',
 
                 //variables
                 lote_id: 0,
+                direccion:'',
+                contratista:'',
+                cliente:'',
+                dias_entregado:0,
+                detalle_gen:'',
+                detalle_esp:'',
+                costo:0,
+
+
                 folio:0,
-                contrato_id: 0,
                 offset : 3,
-                nombre_archivo_modelo:'',
-                fecha_entrega_obra:'',
 
                 // Criterios para historial de contratos
                 pagination2 : {
@@ -334,6 +445,18 @@
                 });
             },
 
+            selectContratistas(){
+                let me = this;
+                me.arrayContratistas = [];
+                var url = '/select_contratistas';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayContratistas = respuesta.contratista;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
             
             selectFraccionamientos(){
                 let me = this;
@@ -341,6 +464,7 @@
                 
                 me.arrayFraccionamientos=[];
                 me.arrayFraccionamientos2=[];
+                me.arrayEtapas=[];
                 var url = '/select_fraccionamiento';
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
@@ -385,21 +509,75 @@
                     console.log(error);
                 });
             },
-            //Select todos los lotes
-            selectLotesManzana(buscar1, buscar2, buscar3){
-                let me = this;
-                me.b_lote2="";
 
-                me.arrayAllLotes=[];
-                var url = '/select_lotes_manzana?buscar=' + buscar1 + '&buscar1='+ buscar2 + '&buscar2='+ buscar3;
+            /// SELECT PARA LOTES ENTREGADOS
+                selectEtapaEntregada(fraccionamiento){
+                    let me = this;
+                    
+                    me.arrayEtapas=[];
+                    me.arrayManzanas=[];
+                    var url = '/select_etapas_entregados?buscar=' + fraccionamiento;
+                    axios.get(url).then(function (response) {
+                        var respuesta = response.data;
+                        me.arrayEtapas = respuesta.lotes_etapas;
+                        
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+                },
+                selectManzanaEntregada(etapa){
+                    let me = this;
+                    
+                    me.arrayManzanas=[];
+                    me.arrayLotes=[];
+                    var url = '/select_manzanas_entregados?buscar=' + etapa;
+                    axios.get(url).then(function (response) {
+                        var respuesta = response.data;
+                        me.arrayManzanas = respuesta.lotes_manzanas;
+                        
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+                },
+                selectLotesEntregado(manzana,etapa,fraccionamiento){
+                    let me = this;
+                    me.arrayLotes=[];
+                    var url = '/select_lotes_entregados?buscar=' + manzana + '&buscar2=' + etapa + '&buscar3=' + fraccionamiento;
+                    axios.get(url).then(function (response) {
+                        var respuesta = response.data;
+                        me.arrayLotes = respuesta.lotes_entregados;
+                        
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+                },
+
+                getDatosLote(lote){
+                let me = this;
+                me.arrayDatosLotes=[];
+                var url = '/postventa/getDatosLoteEntregado?lote=' + lote;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
-                    me.arrayAllLotes = respuesta.lote_manzana;
+                    var arrayDatosContratista = [];
+                        me.arrayDatosLotes = respuesta.datosLote;
+                        me.arrayDatosContratista = respuesta.datosContratista;
+                        me.lote_id = me.arrayDatosLotes[0]['lote_id'];
+                        me.direccion = me.arrayDatosLotes[0]['direccion'];
+                        me.cliente = me.arrayDatosLotes[0]['nombre_cliente'];
+                        me.dias_entregado = me.arrayDatosLotes[0]['diferencia'];
+                        me.folio = me.arrayDatosLotes[0]['folio'];
+
+                        me.contratista = respuesta.datosContratista[0]['id'];
+                        
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
             },
+            ///////////
             
             cambiarPagina2(page,buscar,b_etapa,b_manzana,b_lote,criterio){
                 let me = this;
@@ -463,40 +641,6 @@
                 
             },
 
-            formatNumber(value) {
-                let val = (value/1).toFixed(2)
-                return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-            },
-
-            setFechaEntrega(){
-                if(this.validarFecha()) //Se verifica si hay un error (campo vacio)
-                {
-                    return;
-                }
-                let me = this;
-                //Con axios se llama el metodo update de LoteController
-                axios.put('/lotes/setFechaEntregaObra',{
-                    'lote_id':this.lote_id,
-                    'fecha_entrega_obra' : this.fecha_entrega_obra,
-                    'folio' : this.folio,
-                    'comentario': this.observacion,
-                    
-                }).then(function (response){
-                    me.cerrarModal();
-                    me.listarContratos(1,me.buscar2,me.b_etapa2,me.b_manzana2,me.b_lote2,me.criterio2);
-                    //window.alert("Cambios guardados correctamente");
-                    swal({
-                        position: 'top-end',
-                        type: 'success',
-                        title: 'fecha agregada correctamente',
-                        showConfirmButton: false,
-                        timer: 1500
-                        })
-                }).catch(function (error){
-                    console.log(error);
-                });
-            },
-
             validarFecha(){
                 this.errorEntrega=0;
                 this.errorMostrarMsjEntrega=[];
@@ -522,31 +666,33 @@
             },
 
             abrirModal(accion,data =[]){
-                    switch(accion){
+                switch(accion){
 
-                        case 'observaciones':{
-                            this.modal3 =1;
-                            this.tituloModal='Observaciones';
-                            this.folio = data['folio'];
-                            this.observacion = '';
-                        }
+                    case 'observaciones':{
+                        this.modal3 =1;
+                        this.tituloModal='Observaciones';
+                        this.folio = data['folio'];
+                        this.observacion = '';
+                        break;
+                    }
 
-                        case 'fecha_entrega':{
-                            this.modal = 1;
-                            this.tituloModal='Programar fecha de entrega';
-                            this.folio = data['folio'];
-                            this.observacion = '';
-                            this.fecha_entrega_obra = data['fecha_entrega_obra'];
-                            this.lote_id = data['loteId']
-                        }
+                    case 'nuevo':{
+                        this.modal = 1;
+                        this.tituloModal='Nueva solicitud de detalles';
+                        this.folio = '';
+                        this.observacion = '';
+                        this.lote_id = '';
+                        break;
                     }
                 }
+            }
             
         },
        
         mounted() {
             this.listarContratos(1,this.buscar2,this.b_etapa2,this.b_manzana2,this.b_lote2,this.criterio2);
             this.selectFraccionamientos();
+            this.selectContratistas();
         }
     }
 </script>

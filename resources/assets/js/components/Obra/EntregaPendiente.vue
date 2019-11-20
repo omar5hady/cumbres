@@ -593,6 +593,7 @@
                             this.tituloModal='Observaciones';
                             this.folio = data['folio'];
                             this.observacion = '';
+                            break;
                         }
 
                         case 'fecha_entrega':{
@@ -601,7 +602,8 @@
                             this.folio = data['folio'];
                             this.observacion = '';
                             this.fecha_entrega_obra = data['fecha_entrega_obra'];
-                            this.lote_id = data['loteId']
+                            this.lote_id = data['loteId'];
+                            break;
                         }
                     }
                 }

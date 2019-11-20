@@ -17,6 +17,7 @@ use App\Fraccionamiento;
 use NumerosEnLetras;
 use App\User;
 use App\Notifications\NotifyAdmin;
+use App\Ini_obra;
 
 class EntregaController extends Controller
 {
@@ -1774,6 +1775,32 @@ class EntregaController extends Controller
         $correo = Fraccionamiento::findOrFail($request->id);
         $correo->email_administracion = $request->correo;
         $correo->save();
+    }
+
+    public function getDatosLoteEntregado(Request $request){
+
+        $datosLote = Entrega::join('contratos','entregas.id','=','contratos.id')
+                    ->join('creditos','contratos.id','=','creditos.id')
+                    ->join('lotes','creditos.lote_id','lotes.id')
+                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                    ->join('personal as c', 'clientes.id', '=', 'c.id')
+                    ->select('contratos.id as folio',
+                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                        'c.celular', 
+                        DB::raw("CONCAT(lotes.calle,' Num.',lotes.numero) AS direccion"),
+                        'lotes.manzana', 'lotes.aviso','lotes.id as lote_id',
+                        DB::raw('DATEDIFF(current_date,entregas.fecha_entrega_real) as diferencia'
+                        )
+                    )
+                    ->where('lotes.id','=',$request->lote)->get();
+
+        $datosContratista = Ini_obra::join('contratistas','ini_obras.contratista_id','=','contratistas.id')
+                    ->select('contratistas.id','contratistas.nombre')
+                    ->where('ini_obras.clave','=',$datosLote[0]->aviso)->get();
+
+        return ['datosLote' => $datosLote,
+                'datosContratista' => $datosContratista
+                ];
     }
 
 }
