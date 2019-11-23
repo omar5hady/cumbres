@@ -82,6 +82,7 @@
                                                 <option value="">Seleccione</option>
                                                 <option v-for="asesor in arrayAsesores" :key="asesor.id" :value="asesor.id" v-text="asesor.nombre + ' '+ asesor.apellidos"></option>
                                             </select>
+                                            <input type="text" v-if="buscar" placeholder="Nombre del cliente" v-model="buscar2" @keyup.enter="listarProspectos(1,buscar,buscar2,buscar3,b_clasificacion,criterio)" class="form-control">
                                         </template>
                                         <input v-else type="text" v-model="buscar" @keyup.enter="listarProspectos(1,buscar,buscar2,buscar3,b_clasificacion,criterio)" class="form-control">
                                         <select class="form-control" v-model="b_clasificacion" >

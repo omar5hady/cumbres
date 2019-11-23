@@ -20,6 +20,11 @@ class CreateEntregasTable extends Migration
             $table->boolean('status')->default(0);
             $table->date('fecha_entrega_real')->nullable();
             $table->time('hora_entrega_real')->nullable();
+
+            $table->boolean('revision_previa')->default(0);
+            $table->boolean('puntualidad')->default(0);
+            $table->boolean('cero_detalles')->default(0);
+
             $table->timestamps();
 
             $table->foreign('id')->references('id')->on('contratos');

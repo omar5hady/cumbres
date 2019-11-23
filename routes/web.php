@@ -354,8 +354,12 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/postventa/datosDeposito/registrar/','EntregaController@setDatosCuenta');
         Route::put('/postventa/actualizarCorreoAdmin','EntregaController@actualizarCorreoAdmin');
 
-    /////////////////////////////    RUTAS SOLIC DETALLES        //////////////////////////
-    Route::get('/postventa/getDatosLoteEntregado','EntregaController@getDatosLoteEntregado');
+        /////////////////////////////    RUTAS SOLIC DETALLES        //////////////////////////
+            Route::get('/postventa/getDatosLoteEntregado','EntregaController@getDatosLoteEntregado');
+
+        ////////////////////////////     RUTAS REVISION PREVIA      ///////////////////////////
+            Route::get('/postventa/indexSinRevision','RevisionPreviaController@indexSinRevision');
+            Route::post('/postventa/finalizarRevisionPrevia','RevisionPreviaController@storeRevision');
 
 
         

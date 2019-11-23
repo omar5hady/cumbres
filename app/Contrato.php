@@ -59,4 +59,8 @@ class Contrato extends Model
     public function entrega(){
         return $this->hasOne('App/Entrega');
     }
+
+    public function revision_previa(){
+        return $this->hasOne('App/Revision_previa');
+    }
 }

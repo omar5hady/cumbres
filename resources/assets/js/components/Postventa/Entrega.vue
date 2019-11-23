@@ -39,7 +39,7 @@
                                     <input v-if="criterio2 == 'entregas.fecha_program'" type="date"  v-model="buscar2" @keyup.enter="listarContratos(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="Texto a buscar">
                                     <input v-if="criterio2 == 'entregas.fecha_program'" type="date"  v-model="b_etapa2" @keyup.enter="listarContratos(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="Texto a buscar">
 
-                                    <input v-else type="text"  v-model="buscar2" @keyup.enter="listarContratos(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="Texto a buscar">
+                                    <input v-if="criterio2 == 'c.nombre' || criterio2 == 'contratos.id'" type="text"  v-model="buscar2" @keyup.enter="listarContratos(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="Texto a buscar">
                                    
                                 </div>
                             </div>
@@ -279,7 +279,7 @@
                                     <input v-if="criterio == 'entregas.fecha_entrega_real'" type="date"  v-model="buscar" @keyup.enter="listarEntregas(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
                                     <input v-if="criterio == 'entregas.fecha_entrega_real'" type="date"  v-model="b_etapa" @keyup.enter="listarEntregas(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
 
-                                    <input v-else type="text"  v-model="buscar" @keyup.enter="listarEntregas(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
+                                    <input v-if="criterio == 'c.nombre' || criterio == 'contratos.id'" type="text"  v-model="buscar" @keyup.enter="listarEntregas(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
                                    
                                 </div>
                             </div>

@@ -5,9 +5,9 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Sistema cumbres">
-    <meta name="author" content="casascumbres.mx">
-    <meta name="keyword" content="Sistema de administracion cumbres">
+    <meta name="description" content="Sistema Cumbres">
+    <meta name="author" content="Grupo Constructor Cumbres">
+    <meta name="keyword" content="Sistema de administracion Cumbres">
     <link rel="shortcut icon" href="img/favicon.png">
     <meta name="userId" content="{{ Auth::check() ? Auth::user()->id : ''}}">
     <title>Sistema Cumbres</title>
@@ -432,6 +432,11 @@
                             <li @click="menu=218" class="nav-item">
                                 <a class="nav-link" href="#"><i class="fa fa-key"></i> Cartas de bienvenida</a>
                             </li>
+                        @if(Auth::user()->rol_id == 1)
+                            <li @click="menu=220" class="nav-item">
+                                <a class="nav-link" href="#"><i class="fa fa-key"></i> Revisión previa</a>
+                            </li>
+                        @endif
                         @if(Auth::user()->entregas == 1)
                             <li @click="menu=215" class="nav-item">
                                 <a class="nav-link" href="#"><i class="fa fa-key"></i> Entregas de vivienda</a>

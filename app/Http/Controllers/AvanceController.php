@@ -343,308 +343,308 @@ class AvanceController extends Controller
                                 $letra = 'B';
                                 $sheet->setCellValue($letra.'2', 'Lote: '.$avances[$mul]->lote); 
                                 $sheet->setCellValue($letra.'3', 'Manzana: '.$avances[$mul]->manzana); 
-                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance_porcentaje.'%'); 
+                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance); 
                                 break;
                             }
                             case '1':{
                                 $letra = 'C';
                                 $sheet->setCellValue($letra.'2', 'Lote: '.$avances[$mul]->lote); 
                                 $sheet->setCellValue($letra.'3', 'Manzana: '.$avances[$mul]->manzana); 
-                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance_porcentaje.'%'); 
+                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance); 
                                 break;
                             }
                             case '2':{
                                 $letra = 'D';
                                 $sheet->setCellValue($letra.'2', 'Lote: '.$avances[$mul]->lote); 
                                 $sheet->setCellValue($letra.'3', 'Manzana: '.$avances[$mul]->manzana); 
-                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance_porcentaje.'%'); 
+                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance); 
                                 break;
                             }
                             case '3':{
                                 $letra = 'E';
                                 $sheet->setCellValue($letra.'2', 'Lote: '.$avances[$mul]->lote); 
                                 $sheet->setCellValue($letra.'3', 'Manzana: '.$avances[$mul]->manzana); 
-                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance_porcentaje.'%'); 
+                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance); 
                                 break;
                             }
                             case '4':{
                                 $letra = 'F';
                                 $sheet->setCellValue($letra.'2', 'Lote: '.$avances[$mul]->lote); 
                                 $sheet->setCellValue($letra.'3', 'Manzana: '.$avances[$mul]->manzana); 
-                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance_porcentaje.'%');
+                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance);
                                 break;
                             }
                             case '5':{
                                 $letra = 'G';
                                 $sheet->setCellValue($letra.'2', 'Lote: '.$avances[$mul]->lote); 
                                 $sheet->setCellValue($letra.'3', 'Manzana: '.$avances[$mul]->manzana); 
-                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance_porcentaje.'%'); 
+                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance); 
                                 break;
                             }
                             case '6':{
                                 $letra = 'H';
                                 $sheet->setCellValue($letra.'2', 'Lote: '.$avances[$mul]->lote); 
                                 $sheet->setCellValue($letra.'3', 'Manzana: '.$avances[$mul]->manzana); 
-                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance_porcentaje.'%'); 
+                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance); 
                                 break;
                             }
                             case '7':{
                                 $letra = 'I';
                                 $sheet->setCellValue($letra.'2', 'Lote: '.$avances[$mul]->lote); 
                                 $sheet->setCellValue($letra.'3', 'Manzana: '.$avances[$mul]->manzana); 
-                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance_porcentaje.'%'); 
+                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance); 
                                 break;
                             }
                             case '8':{
                                 $letra = 'J';
                                 $sheet->setCellValue($letra.'2', 'Lote: '.$avances[$mul]->lote); 
                                 $sheet->setCellValue($letra.'3', 'Manzana: '.$avances[$mul]->manzana); 
-                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance_porcentaje.'%'); 
+                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance); 
                                 break;
                             }
                             case '9':{
                                 $letra = 'K';
                                 $sheet->setCellValue($letra.'2', 'Lote: '.$avances[$mul]->lote); 
                                 $sheet->setCellValue($letra.'3', 'Manzana: '.$avances[$mul]->manzana); 
-                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance_porcentaje.'%'); 
+                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance); 
                                 break;
                             }
                             case '10':{
                                 $letra = 'L';
                                 $sheet->setCellValue($letra.'2', 'Lote: '.$avances[$mul]->lote); 
                                 $sheet->setCellValue($letra.'3', 'Manzana: '.$avances[$mul]->manzana); 
-                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance_porcentaje.'%'); 
+                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance); 
                                 break;
                             }
                             case '11':{
                                 $letra = 'M';
                                 $sheet->setCellValue($letra.'2', 'Lote: '.$avances[$mul]->lote); 
                                 $sheet->setCellValue($letra.'3', 'Manzana: '.$avances[$mul]->manzana); 
-                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance_porcentaje.'%'); 
+                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance); 
                                 break;
                             }
                             case '12':{
                                 $letra = 'N';
                                 $sheet->setCellValue($letra.'2', 'Lote: '.$avances[$mul]->lote); 
                                 $sheet->setCellValue($letra.'3', 'Manzana: '.$avances[$mul]->manzana); 
-                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance_porcentaje.'%'); 
+                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance); 
                                 break;
                             }
                             case '13':{
                                 $letra = 'O';
                                 $sheet->setCellValue($letra.'2', 'Lote: '.$avances[$mul]->lote); 
                                 $sheet->setCellValue($letra.'3', 'Manzana: '.$avances[$mul]->manzana); 
-                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance_porcentaje.'%'); 
+                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance); 
                                 break;
                             }
                             case '14':{
                                 $letra = 'P';
                                 $sheet->setCellValue($letra.'2', 'Lote: '.$avances[$mul]->lote); 
                                 $sheet->setCellValue($letra.'3', 'Manzana: '.$avances[$mul]->manzana); 
-                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance_porcentaje.'%'); 
+                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance); 
                                 break;
                             }
                             case '15':{
                                 $letra = 'Q';
                                 $sheet->setCellValue($letra.'2', 'Lote: '.$avances[$mul]->lote); 
                                 $sheet->setCellValue($letra.'3', 'Manzana: '.$avances[$mul]->manzana); 
-                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance_porcentaje.'%'); 
+                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance); 
                                 break;
                             }
                             case '16':{
                                 $letra = 'R';
                                 $sheet->setCellValue($letra.'2', 'Lote: '.$avances[$mul]->lote); 
                                 $sheet->setCellValue($letra.'3', 'Manzana: '.$avances[$mul]->manzana); 
-                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance_porcentaje.'%'); 
+                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance); 
                                 break;
                             }
                             case '17':{
                                 $letra = 'S';
                                 $sheet->setCellValue($letra.'2', 'Lote: '.$avances[$mul]->lote); 
                                 $sheet->setCellValue($letra.'3', 'Manzana: '.$avances[$mul]->manzana); 
-                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance_porcentaje.'%'); 
+                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance); 
                                 break;
                             }
                             case '18':{
                                 $letra = 'T';
                                 $sheet->setCellValue($letra.'2', 'Lote: '.$avances[$mul]->lote); 
                                 $sheet->setCellValue($letra.'3', 'Manzana: '.$avances[$mul]->manzana); 
-                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance_porcentaje.'%'); 
+                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance); 
                                 break;
                             }
                             case '19':{
                                 $letra = 'U';
                                 $sheet->setCellValue($letra.'2', 'Lote: '.$avances[$mul]->lote); 
                                 $sheet->setCellValue($letra.'3', 'Manzana: '.$avances[$mul]->manzana); 
-                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance_porcentaje.'%'); 
+                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance); 
                                 break;
                             }
                             case '20':{
                                 $letra = 'V';
                                 $sheet->setCellValue($letra.'2', 'Lote: '.$avances[$mul]->lote); 
                                 $sheet->setCellValue($letra.'3', 'Manzana: '.$avances[$mul]->manzana); 
-                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance_porcentaje.'%'); 
+                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance); 
                                 break;
                             }
                             case '21':{
                                 $letra = 'W';
                                 $sheet->setCellValue($letra.'2', 'Lote: '.$avances[$mul]->lote); 
                                 $sheet->setCellValue($letra.'3', 'Manzana: '.$avances[$mul]->manzana); 
-                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance_porcentaje.'%'); 
+                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance); 
                                 break;
                             }
                             case '22':{
                                 $letra = 'X';
                                 $sheet->setCellValue($letra.'2', 'Lote: '.$avances[$mul]->lote); 
                                 $sheet->setCellValue($letra.'3', 'Manzana: '.$avances[$mul]->manzana); 
-                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance_porcentaje.'%'); 
+                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance); 
                                 break;
                             }
                             case '23':{
                                 $letra = 'Y';
                                 $sheet->setCellValue($letra.'2', 'Lote: '.$avances[$mul]->lote); 
                                 $sheet->setCellValue($letra.'3', 'Manzana: '.$avances[$mul]->manzana); 
-                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance_porcentaje.'%'); 
+                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance); 
                                 break;
                             }
                             case '24':{
                                 $letra = 'Z';
                                 $sheet->setCellValue($letra.'2', 'Lote: '.$avances[$mul]->lote); 
                                 $sheet->setCellValue($letra.'3', 'Manzana: '.$avances[$mul]->manzana); 
-                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance_porcentaje.'%'); 
+                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance); 
                                 break;
                             }
                             case '25':{
                                 $letra = 'AA';
                                 $sheet->setCellValue($letra.'2', 'Lote: '.$avances[$mul]->lote); 
                                 $sheet->setCellValue($letra.'3', 'Manzana: '.$avances[$mul]->manzana); 
-                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance_porcentaje.'%'); 
+                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance); 
                                 break;
                             }
                             case '26':{
                                 $letra = 'AB';
                                 $sheet->setCellValue($letra.'2', 'Lote: '.$avances[$mul]->lote); 
                                 $sheet->setCellValue($letra.'3', 'Manzana: '.$avances[$mul]->manzana); 
-                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance_porcentaje.'%'); 
+                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance); 
                                 break;
                             }
                             case '27':{
                                 $letra = 'AC';
                                 $sheet->setCellValue($letra.'2', 'Lote: '.$avances[$mul]->lote); 
                                 $sheet->setCellValue($letra.'3', 'Manzana: '.$avances[$mul]->manzana); 
-                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance_porcentaje.'%'); 
+                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance); 
                                 break;
                             }
                             case '28':{
                                 $letra = 'AD';
                                 $sheet->setCellValue($letra.'2', 'Lote: '.$avances[$mul]->lote); 
                                 $sheet->setCellValue($letra.'3', 'Manzana: '.$avances[$mul]->manzana); 
-                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance_porcentaje.'%'); 
+                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance); 
                                 break;
                             }
                             case '29':{
                                 $letra = 'AE';
                                 $sheet->setCellValue($letra.'2', 'Lote: '.$avances[$mul]->lote); 
                                 $sheet->setCellValue($letra.'3', 'Manzana: '.$avances[$mul]->manzana); 
-                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance_porcentaje.'%'); 
+                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance); 
                                 break;
                             }
                             case '30':{
                                 $letra = 'AF';
                                 $sheet->setCellValue($letra.'2', 'Lote: '.$avances[$mul]->lote); 
                                 $sheet->setCellValue($letra.'3', 'Manzana: '.$avances[$mul]->manzana); 
-                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance_porcentaje.'%'); 
+                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance); 
                                 break;
                             }
                             case '31':{
                                 $letra = 'AG';
                                 $sheet->setCellValue($letra.'2', 'Lote: '.$avances[$mul]->lote); 
                                 $sheet->setCellValue($letra.'3', 'Manzana: '.$avances[$mul]->manzana); 
-                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance_porcentaje.'%'); 
+                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance); 
                                 break;
                             }
                             case '32':{
                                 $letra = 'AH';
                                 $sheet->setCellValue($letra.'2', 'Lote: '.$avances[$mul]->lote); 
                                 $sheet->setCellValue($letra.'3', 'Manzana: '.$avances[$mul]->manzana); 
-                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance_porcentaje.'%'); 
+                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance); 
                                 break;
                             }
                             case '33':{
                                 $letra = 'AI';
                                 $sheet->setCellValue($letra.'2', 'Lote: '.$avances[$mul]->lote); 
                                 $sheet->setCellValue($letra.'3', 'Manzana: '.$avances[$mul]->manzana); 
-                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance_porcentaje.'%'); 
+                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance); 
                                 break;
                             }
                             case '34':{
                                 $letra = 'AJ';
                                 $sheet->setCellValue($letra.'2', 'Lote: '.$avances[$mul]->lote); 
                                 $sheet->setCellValue($letra.'3', 'Manzana: '.$avances[$mul]->manzana); 
-                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance_porcentaje.'%'); 
+                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance); 
                                 break;
                             }
                             case '35':{
                                 $letra = 'AK';
                                 $sheet->setCellValue($letra.'2', 'Lote: '.$avances[$mul]->lote); 
                                 $sheet->setCellValue($letra.'3', 'Manzana: '.$avances[$mul]->manzana); 
-                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance_porcentaje.'%'); 
+                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance); 
                                 break;
                             }
                             case '36':{
                                 $letra = 'AL';
                                 $sheet->setCellValue($letra.'2', 'Lote: '.$avances[$mul]->lote); 
                                 $sheet->setCellValue($letra.'3', 'Manzana: '.$avances[$mul]->manzana); 
-                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance_porcentaje.'%'); 
+                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance); 
                                 break;
                             }
                             case '37':{
                                 $letra = 'AM';
                                 $sheet->setCellValue($letra.'2', 'Lote: '.$avances[$mul]->lote); 
                                 $sheet->setCellValue($letra.'3', 'Manzana: '.$avances[$mul]->manzana); 
-                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance_porcentaje.'%'); 
+                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance); 
                                 break;
                             }
                             case '38':{
                                 $letra = 'AN';
                                 $sheet->setCellValue($letra.'2', 'Lote: '.$avances[$mul]->lote); 
                                 $sheet->setCellValue($letra.'3', 'Manzana: '.$avances[$mul]->manzana); 
-                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance_porcentaje.'%'); 
+                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance); 
                                 break;
                             }
                             case '39':{
                                 $letra = 'AO';
                                 $sheet->setCellValue($letra.'2', 'Lote: '.$avances[$mul]->lote); 
                                 $sheet->setCellValue($letra.'3', 'Manzana: '.$avances[$mul]->manzana); 
-                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance_porcentaje.'%'); 
+                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance); 
                                 break;
                             }
                             case '40':{
                                 $letra = 'AP';
                                 $sheet->setCellValue($letra.'2', 'Lote: '.$avances[$mul]->lote); 
                                 $sheet->setCellValue($letra.'3', 'Manzana: '.$avances[$mul]->manzana); 
-                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance_porcentaje.'%'); 
+                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance); 
                                 break;
                             }
                             case '41':{
                                 $letra = 'AQ';
                                 $sheet->setCellValue($letra.'2', 'Lote: '.$avances[$mul]->lote); 
                                 $sheet->setCellValue($letra.'3', 'Manzana: '.$avances[$mul]->manzana); 
-                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance_porcentaje.'%'); 
+                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance); 
                                 break;
                             }
                             case '42':{
                                 $letra = 'AR';
                                 $sheet->setCellValue($letra.'2', 'Lote: '.$avances[$mul]->lote); 
                                 $sheet->setCellValue($letra.'3', 'Manzana: '.$avances[$mul]->manzana); 
-                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance_porcentaje.'%'); 
+                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance); 
                                 break;
                             }
                             case '43':{
                                 $letra = 'AS';
                                 $sheet->setCellValue($letra.'2', 'Lote: '.$avances[$mul]->lote); 
                                 $sheet->setCellValue($letra.'3', 'Manzana: '.$avances[$mul]->manzana); 
-                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance_porcentaje.'%'); 
+                                $sheet->setCellValue($letra.$cel, $avances[$i + $mul]->avance); 
                                 break;
                             }
                         }

@@ -348,6 +348,10 @@
             <solicitud-detalles></solicitud-detalles>
         </template>
 
+        <template v-if="menu==220">
+            <revision-previa></revision-previa>
+        </template>
+
         
 
         

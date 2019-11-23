@@ -1052,8 +1052,8 @@ class UserController extends Controller
             ->join('vendedores','personal.id','=','vendedores.id')
             ->select('personal.id','personal.nombre','personal.apellidos')
             //->where('vendedores.supervisor_id','=',Auth::user()->id)
-            ->where('users.condicion','=',1)
-            ->orWhere('vendedores.tipo','=',1)
+            //->where('users.condicion','=',1)
+            //->orWhere('vendedores.tipo','=',1)
             ->orderBy('personal.nombre', 'asc')
             ->orderBy('personal.apellidos', 'asc')
             ->get();
