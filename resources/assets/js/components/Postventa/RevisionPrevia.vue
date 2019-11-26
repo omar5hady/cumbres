@@ -106,7 +106,7 @@
                                             </td>
                                              <td>
                                                 <button v-if="contratos.revision_previa == 0" title="Realizar revision" type="button" 
-                                                    class="btn btn-success pull-right" @click="realizarRevision(contratos.folio)">
+                                                    class="btn btn-success pull-right" @click="realizarRevision(contratos.folio,contratos.diferencia)">
                                                     <i class="fa fa-check-square-o"></i> Realizar revisión
                                                 </button> 
                                             </td>
@@ -1300,6 +1300,7 @@
                 arrayObservacion : [],
 
                 revision : 0,
+                diferencia : 0,
 
                 arrayFraccionamientos2:[],
                 arrayEtapas2:[],
@@ -1998,9 +1999,10 @@
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             },
 
-            realizarRevision(folio){
+            realizarRevision(folio,diferencia){
                 this.folio = folio;
                 this.revision = 1;
+                this.diferencia = diferencia;
 
                 ///////// COCHERA ////////////
                     this.mona_cochera = 0;
@@ -2467,9 +2469,9 @@
             cerrarRevision(){
                 this.folio = '';
                 this.revision = 0;
+                this.diferencia = 0;
                 this.errorRevision = 0;
                 this.errorMostrarMsjRevision = [];
-                this.listarContratos(me.pagination2.current_page,me.buscar2,me.b_etapa2,me.b_manzana2,me.b_lote2,me.criterio2);
 
                 ///////// COCHERA ////////////
                     this.mona_cochera = 0;
@@ -2931,6 +2933,8 @@
                     this.llaves_obs ='';
                     this.num_oficial_obs ='';
 
+                    this.listarContratos(this.pagination2.current_page,this.buscar2,this.b_etapa2,this.b_manzana2,this.b_lote2,this.criterio2);
+
             },
 
             terminarRevision(){
@@ -2956,6 +2960,7 @@
                     axios.post('/postventa/finalizarRevisionPrevia',{
                         'observacion' : this.observacion,
                         'folio' : this.folio,
+                        'diferencia' : this.diferencia,
 
                         ///////// COCHERA ////////////
                             'mona_cochera' : this.mona_cochera,
@@ -3418,8 +3423,8 @@
                             'num_oficial_obs' : this.num_oficial_obs,
 
                     }).then(function (response){
-                        me.cerrarRevision();
                         //window.alert("Cambios guardados correctamente");
+                        me.cerrarRevision();
                         const toast = Swal.mixin({
                             toast: true,
                             position: 'top-end',
