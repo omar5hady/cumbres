@@ -10,6 +10,7 @@ use App\Entrega;
 use Carbon\Carbon;
 use App\Revision_previa;
 use App\Detalle_previo;
+use App\Solic_equipamiento;
 
 class RevisionPreviaController extends Controller
 {
@@ -1750,6 +1751,137 @@ class RevisionPreviaController extends Controller
         $detalle->concepto = $concepto;
         $detalle->observacion = $obs;
         $detalle->save();
+    }
+
+
+    public function DetallesPDF($folio){
+        $contratos = Entrega::join('contratos','entregas.id','contratos.id')
+                    ->join('expedientes','contratos.id','expedientes.id')
+                    ->join('creditos', 'contratos.id', '=', 'creditos.id')
+                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
+                    ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
+                    ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                    ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
+                    ->join('personal as c', 'clientes.id', '=', 'c.id')
+                    ->select('contratos.id as folio', 
+                        'contratos.equipamiento',
+                        DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
+                        'etapas.carta_bienvenida',
+
+                        'creditos.fraccionamiento as proyecto',
+                        'creditos.etapa',
+                        'creditos.manzana',
+                        'creditos.num_lote',
+                        'creditos.modelo',
+                        
+                        'licencias.avance as avance_lote',
+                        'licencias.visita_avaluo',
+                        'licencias.foto_predial',
+                        'licencias.foto_lic',
+                        'licencias.num_licencia',
+                        'contratos.fecha_status',
+                        'contratos.status',
+                        'contratos.equipamiento',
+                        'expedientes.fecha_firma_esc',
+                        'lotes.fecha_entrega_obra',
+                        'lotes.id as loteId',
+                        'entregas.revision_previa',
+                        'entregas.fecha_program',
+                        
+                        DB::raw('DATEDIFF(current_date,entregas.fecha_program) as diferencia')
+                    )
+                    ->where('contratos.status', '!=', 0)
+                    ->where('contratos.status', '!=', 2)
+                    ->where('contratos.entregado', '=', 0)
+                    ->where('entregas.fecha_program','!=',NULL)
+                    ->where('contratos.id','=',$folio)
+                    ->orderBy('entregas.revision_previa','asc')
+                    ->orderBy('entregas.fecha_program','asc')
+                    ->get();
+
+                    $detalles = Detalle_previo::select('concepto','observacion','identificador')
+                    ->where('rev_previas_id','=',$folio)
+                    ->get();
+
+                    $observacion = Revision_previa::select('observaciones','created_at')->where('id','=',$folio)->get();
+                    $tiempo = new Carbon($observacion[0]->created_at);
+                    $observacion[0]->tiempo = $tiempo->formatLocalized('%d de %b de %Y');
+
+                    $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
+                                    ->select('equipamientos.equipamiento')
+                                    ->where('solic_equipamientos.contrato_id','=',$folio)
+                                    ->get();
+
+                    
+                    for ($i = 0; $i < count($detalles); $i++) {
+                       switch($detalles[$i]->identificador){
+                           case 1 : {
+                            $contratos[0]->cochera = 1;
+                            break;
+                           }
+                           case 2 : {
+                            $contratos[0]->sala_comedor = 2;
+                            break;
+                           }
+                           case 3 : {
+                            $contratos[0]->cocina = 3;
+                            break;
+                           }
+                           case 4 : {
+                            $contratos[0]->medio_baño = 4;
+                            break;
+                           }
+                           case 5 : {
+                            $contratos[0]->patio = 5;
+                            break;
+                           }
+                           case 6 : {
+                            $contratos[0]->escalera = 6;
+                            break;
+                           }
+                           case 7 : {
+                            $contratos[0]->baño_comun = 7;
+                            break;
+                           }
+                           case 8 : {
+                            $contratos[0]->estancia = 8;
+                            break;
+                           }
+                           case 9 : {
+                            $contratos[0]->recamara_principal = 9;
+                            break;
+                           }
+                           case 10 : {
+                            $contratos[0]->baño_recamara_principal = 10;
+                            break;
+                           }
+                           case 11 : {
+                            $contratos[0]->vestidor = 11;
+                            break;
+                           }
+                           case 12 : {
+                            $contratos[0]->recamara2 = 12;
+                            break;
+                           }
+                           case 13 : {
+                            $contratos[0]->recamara3 = 13;
+                            break;
+                           }
+                           case 14 : {
+                            $contratos[0]->azotea = 14;
+                            break;
+                           }
+                           case 15 : {
+                            $contratos[0]->generales = 15;
+                            break;
+                           }
+                           
+                       }     
+                    }
+    
+                    $pdf = \PDF::loadview('pdf.DocsPostVenta.checklist', ['contratos' => $contratos, 'detalles' => $detalles, 'observacion' => $observacion, 'equipamientos' => $equipamientos]);
+                    return $pdf->stream('Checklist.pdf');
+
     }
     
 }
