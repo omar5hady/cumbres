@@ -52,9 +52,9 @@ body {
             </div>
 
         </div>
-
+        <div class="table2" style="margin-top:90px;"></div>
         @if($contratos[0]->cochera == 1)
-        <div class="table2" style="margin-top:90px; border: ridge #0B173B 1px; color:black;">
+        <div class="table2" style="margin-top:20px; border: ridge #0B173B 1px; color:black;">
                 <div class="table-row">
                 <div colspan="2" class="table-cell2" style="text-align: center; color: white; background-color:#063058;"><b>COCHERA</u></b></div>
                 </div>
