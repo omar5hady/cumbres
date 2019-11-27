@@ -1586,7 +1586,7 @@
                                         
 
                                                     <div class="col-md-1" v-if="monto_pago!='' && listado==3 || monto_pago!='' && listado==4 && btn_actualizar==1">
-                                                        <div class="form-group" v-if="restante>0">
+                                                        <div class="form-group" v-if="restante>=0">
                                                             <button v-if="listado==3" @click="agregarPago()" class="btn btn-success form-control btnagregar"><i class="icon-plus"></i></button>
                                                             <button v-if="listado==4 && btn_actualizar==1" @click="agregarPagoBD()" class="btn btn-warning form-control btnagregar"><i class="icon-plus"></i></button>
                                                         </div>
@@ -2054,6 +2054,8 @@
                     totalRestante += parseFloat(this.arrayPagos[i].monto_pago)
                 }
                 totalRestante = this.enganche_total - totalRestante;
+                if(totalRestante < 0)
+                    totalRestante = 0;
                 totalRestante = Math.round(totalRestante*100)/100;
                 return totalRestante;
             },

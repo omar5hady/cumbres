@@ -109,9 +109,9 @@
                                                     class="btn btn-success pull-right" @click="realizarRevision(contratos.folio,contratos.diferencia)">
                                                     <i class="fa fa-check-square-o"></i> Realizar revisión
                                                 </button>
-                                                <a v-if="contratos.revision_previa == 2" title="Ver revision" type="button" 
+                                                <a v-else title="Ver revision" type="button" 
                                                     class="btn btn-danger pull-right" target="_blank" :href="'/postventa/checklist/pdf/'+contratos.folio">
-                                                    <i class="fa fa-check-square-o"></i> Ver revisión
+                                                    <i class="fa fa-file-pdf-o"></i>&nbsp;Ver revisión
                                                 </a> 
                                             </td>
                                             <td>

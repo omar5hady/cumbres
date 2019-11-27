@@ -24,7 +24,7 @@ body {
 .table2 { display: table; width:100%; border-collapse: collapse; table-layout: fixed; border: ridge #0B173B 1px; color:black; }
 .table-cell2 { display: table-cell; padding: 0.3em; font-size: 7.5pt; border: ridge #0B173B 1px; color:black; }
 .table-cell3 { display: table-cell; width:30%; padding: 0.3em; font-size: 7.5pt; border: ridge #0B173B 1px; color:black; }
-.table-cell4 { display: table-cell; width:30%; font-size: 7.5pt; border: ridge #0B173B 1px; text-align: center; color: white; background-color:#36648e; padding:3em; }
+.table-cell4 { display: table-cell; width:30%; font-size: 7.5pt; border: ridge #0B173B 1px; text-align: center; color: white; background-color:#55728C; padding:3em; }
 .table-row { display: table-row; }
 
 </style>

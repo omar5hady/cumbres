@@ -214,10 +214,11 @@
                                                 </td>
                                             </template>
                                             <td class="td2">
-                                                <button title="Finalizar entrega" type="button" class="btn btn-dark pull-right" 
+                                                <button v-if="contratos.fecha_program" title="Finalizar entrega" type="button" class="btn btn-dark pull-right" 
                                                     @click="abrirModal('finalizar', contratos)">
                                                     Finalizar&nbsp;&nbsp;<i class="fa fa-trophy fa-lg"></i>
                                                 </button>
+                                                <label v-else>No se ha programado una fecha</label>
                                             </td>
                                             <td> 
                                                 <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
@@ -481,6 +482,16 @@
                                     <label class="col-md-3 form-control-label" for="text-input">Hora de entrega</label>
                                     <div class="col-md-3">
                                         <input type="time" v-model="hora_entrega_real" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row" v-if="tipoAccion == 3">  
+                                    <label class="col-md-3 form-control-label" for="text-input">Cero detalles</label>
+                                    <div class="col-md-4">
+                                        <select class="form-control col-md-4" v-model="cero_detalles">
+                                            <option value="1">Si</option>
+                                            <option value="2">No</option>
+                                        </select>
                                     </div>
                                 </div>
 
@@ -825,6 +836,7 @@
                 hora_entrega_prog:'',
                 fecha_entrega_real:'',
                 hora_entrega_real:'',
+                cero_detalles : 0,
                 
 
                 //Datos clientes
@@ -1230,6 +1242,7 @@
                     'fecha_entrega_real' : this.fecha_entrega_real,
                     'comentario' : this.observacion,
                     'id' : this.folio,
+                    'cero_detalles' : this.cero_detalles,
                     
                 }).then(function (response){
                     me.cerrarModal();
@@ -1414,10 +1427,35 @@
                         }
 
                         case 'finalizar':{
-                            this.folio = data['folio'];
-                            this.modal2 = 1;
-                            this.tituloModal = "Finalizar entrega";
-                            this.tipoAccion = 3;
+                            if(data['revision_previa'] == 0){
+                                Swal.fire({
+                                title: 'Sin revisión previa',
+                                text: "No se ha realizado la revision previa, ¿Desea Continuar?",
+                                type: 'warning',
+                                showCancelButton: true,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                confirmButtonText: 'Si!'
+                                }).then((result) => {
+                                if (result.value) {
+                                    this.folio = data['folio'];
+                                    this.modal2 = 1;
+                                    this.tituloModal = "Finalizar entrega";
+                                    this.tipoAccion = 3;
+                                    this.cero_detalles = 0;
+                                }
+                                })
+                            }
+                            else{
+                                this.folio = data['folio'];
+                                this.modal2 = 1;
+                                this.tituloModal = "Finalizar entrega";
+                                this.tipoAccion = 3;
+                                this.cero_detalles = 0;
+
+                            }
+                            
+                            
                             break;
                         }
                     }

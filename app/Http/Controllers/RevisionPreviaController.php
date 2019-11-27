@@ -1058,8 +1058,8 @@ class RevisionPreviaController extends Controller
             $llaves_obs = $request->llaves_obs;
             $num_oficial_obs = $request->num_oficial_obs;
 
-        // try{
-        //     DB::beginTransaction();
+         try{
+             DB::beginTransaction();
             $revisionPrevia = new Revision_previa();
             $revisionPrevia->id = $folio;
             $revisionPrevia->observaciones = $observacion;
@@ -1073,11 +1073,7 @@ class RevisionPreviaController extends Controller
                 $entregas->revision_previa = 1;
             }
             $entregas->save();
-        //     DB::commit();
- 
-        // } catch (Exception $e){
-        //     DB::rollBack();
-        // }         
+                     
 
             ////////////////// Parte para Registrar detalles /////////
                 /////////////////// COCHERA
@@ -1740,6 +1736,12 @@ class RevisionPreviaController extends Controller
                     if($num_oficial == 1){
                         $this->storeDetalle($folio,'Número oficial',15,$num_oficial_obs);
                     }
+
+                DB::commit();
+
+            } catch (Exception $e){
+                DB::rollBack();
+            } 
                     
 
     }

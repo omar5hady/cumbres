@@ -127,6 +127,7 @@ class EntregaController extends Controller
                         'entregas.hora_entrega_prog',
                         'entregas.fecha_entrega_real',
                         'entregas.hora_entrega_real',
+                        'entregas.revision_previa',
                         DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
                     )
                     ->where('contratos.status', '!=', 0)
@@ -183,6 +184,7 @@ class EntregaController extends Controller
                         'entregas.hora_entrega_prog',
                         'entregas.fecha_entrega_real',
                         'entregas.hora_entrega_real',
+                        'entregas.revision_previa',
                         DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
                     )
                     ->where('contratos.status', '!=', 0)
@@ -241,6 +243,7 @@ class EntregaController extends Controller
                         'entregas.hora_entrega_prog',
                         'entregas.fecha_entrega_real',
                         'entregas.hora_entrega_real',
+                        'entregas.revision_previa',
                         DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
                     )
                     ->where('contratos.status', '!=', 0)
@@ -299,6 +302,7 @@ class EntregaController extends Controller
                         'entregas.hora_entrega_prog',
                         'entregas.fecha_entrega_real',
                         'entregas.hora_entrega_real',
+                        'entregas.revision_previa',
                         DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
                     )
                     ->where('contratos.status', '!=', 0)
@@ -358,6 +362,7 @@ class EntregaController extends Controller
                             'entregas.hora_entrega_prog',
                             'entregas.fecha_entrega_real',
                             'entregas.hora_entrega_real',
+                            'entregas.revision_previa',
                             DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
                         )
                         ->where('contratos.status', '!=', 0)
@@ -413,6 +418,7 @@ class EntregaController extends Controller
                             'entregas.hora_entrega_prog',
                             'entregas.fecha_entrega_real',
                             'entregas.hora_entrega_real',
+                            'entregas.revision_previa',
                             DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
                         )
                         ->where('contratos.status', '!=', 0)
@@ -470,6 +476,7 @@ class EntregaController extends Controller
                             'entregas.hora_entrega_prog',
                             'entregas.fecha_entrega_real',
                             'entregas.hora_entrega_real',
+                            'entregas.revision_previa',
                             DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
                         )
                         ->where('contratos.status', '!=', 0)
@@ -527,6 +534,7 @@ class EntregaController extends Controller
                             'entregas.hora_entrega_prog',
                             'entregas.fecha_entrega_real',
                             'entregas.hora_entrega_real',
+                            'entregas.revision_previa',
                             DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
                         )
                         ->where('contratos.status', '!=', 0)
@@ -586,6 +594,7 @@ class EntregaController extends Controller
                             'entregas.hora_entrega_prog',
                             'entregas.fecha_entrega_real',
                             'entregas.hora_entrega_real',
+                            'entregas.revision_previa',
                             DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
                         )
                         ->where('contratos.status', '!=', 0)
@@ -643,6 +652,7 @@ class EntregaController extends Controller
                             'entregas.hora_entrega_prog',
                             'entregas.fecha_entrega_real',
                             'entregas.hora_entrega_real',
+                            'entregas.revision_previa',
                             DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
                         )
                         ->where('contratos.status', '!=', 0)
@@ -701,6 +711,7 @@ class EntregaController extends Controller
                             'entregas.hora_entrega_prog',
                             'entregas.fecha_entrega_real',
                             'entregas.hora_entrega_real',
+                            'entregas.revision_previa',
                             DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
                         )
                         ->where('contratos.status', '!=', 0)
@@ -758,6 +769,7 @@ class EntregaController extends Controller
                             'entregas.hora_entrega_prog',
                             'entregas.fecha_entrega_real',
                             'entregas.hora_entrega_real',
+                            'entregas.revision_previa',
                             DB::raw('DATEDIFF(lotes.fecha_entrega_obra,expedientes.fecha_firma_esc) as diferencia_obra')
                         )
                         ->where('contratos.status', '!=', 0)
@@ -866,6 +878,11 @@ class EntregaController extends Controller
             $entrega = Entrega::findOrFail($request->id);
             $entrega->fecha_entrega_real = $request->fecha_entrega_real;
             $entrega->hora_entrega_real = $request->hora_entrega_real;
+            $entrega->cero_detalles = $request->cero_detalles;
+
+            if($entrega->fecha_program == $entrega->fecha_entrega_real)
+                $entrega->puntualidad = 1;
+
             $entrega->status = 1;
             $entrega->save();
 
