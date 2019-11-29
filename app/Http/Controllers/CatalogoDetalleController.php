@@ -131,7 +131,7 @@ class CatalogoDetalleController extends Controller
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
         if(!$request->ajax())return redirect('/');
         
-        $general = Cat_detalle_general::select('general','id')->get();
+        $general = Cat_detalle_general::select('general','id')->orderBy('general','asc')->get();
         return['general' => $general];
     }
 

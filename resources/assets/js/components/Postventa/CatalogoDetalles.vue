@@ -49,7 +49,7 @@
                                             <i class="icon-share"></i>
                                             </button>
                                         </td>
-                                        <td v-text="sub.general" ></td>
+                                        <td style="width:20%" v-text="sub.general" ></td>
                                         <td v-text="sub.subconcepto" ></td>
                                     </tr>                               
                                 </tbody>
@@ -422,7 +422,7 @@
                     title: 'Estas seguro?',
                     animation: false,
                     customClass: 'animated bounceInDown',
-                    text: "El equipamiento se asignara a",
+                    text: "El detalle se asignara a",
                     type: 'question',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
@@ -433,18 +433,18 @@
                     }).then((result) => {
 
                     if (result.value) {
-                        axios.post('/equipamiento/registrar',{
-                            'proveedor_id': this.id,
-                            'equipamiento': this.equipamiento
+                        axios.post('/catalogoDetalle/storeDetalle',{
+                            'id_sub': this.id_sub,
+                            'detalle': this.detalle
                             }); 
                    // me.listarLote(1,'','','','','','','lote');   
                     me.proceso=false;
-                    me.listarDetalle(1,me.id);
+                    me.listarDetalle(1,me.id_sub);
                         if(me.arrayDetalles.length>0)
                             me.mostrar = 1;
                     Swal({
                         title: 'Hecho!',
-                        text: 'Equipamiento asignada correctamente',
+                        text: 'Detalle asignada correctamente',
                         type: 'success',
                         animation: false,
                         customClass: 'animated bounceInRight'
