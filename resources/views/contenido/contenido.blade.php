@@ -352,6 +352,14 @@
             <revision-previa></revision-previa>
         </template>
 
+        <template v-if="menu==221">
+            <detalles-generales></detalles-generales>
+        </template>
+
+        <template v-if="menu==222">
+            <catalogo-detalles></catalogo-detalles>
+        </template>
+
         
 
         

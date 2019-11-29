@@ -17,6 +17,7 @@ class CreateCatDetallesTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('id_sub');
             $table->string('detalle',80);
+            $table->boolean('activo')->default(1);
 
             $table->foreign('id_sub')->references('id')->on('cat_detalles_subconceptos');
         });

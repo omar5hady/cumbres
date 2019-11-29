@@ -575,6 +575,25 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/equipamiento/recepcionClosets/{id}','RecepEquipamientoController@recepcionClosetsPDF');
         Route::get('/equipamiento/recepcionCocina/{id}','RecepEquipamientoController@recepcionCocinaPDF');
         Route::get('/equipamiento/recepcionGeneral/{id}','RecepEquipamientoController@recepcionGeneralPDF');
+
+
+    /////////////////////// RUTAS CATALOGO DETALLES ///////////////////////////////
+        Route::get('/detalles/generales','CatalogoDetalleController@indexGenerales');
+        Route::get('/catalogoDetalle/indexSubCategoria','CatalogoDetalleController@indexSubCategoria');
+        Route::get('/catalogoDetalle/indexDetalles','CatalogoDetalleController@indexDetalles');
+        Route::get('/catalogoDetalle/selectGeneral','CatalogoDetalleController@selectGeneral');
+
+        Route::post('/detalles/generales/registrar','CatalogoDetalleController@storeGenerales');
+        Route::put('/detalles/generales/actualizar','CatalogoDetalleController@updateGenerales');
+
+        Route::post('/catalogoDetalle/storeSubconcepto','CatalogoDetalleController@storeSubconcepto');
+        Route::put('/catalogoDetalle/updateSubconcepto','CatalogoDetalleController@updateSubconcepto');
+
+        Route::post('/catalogoDetalle/storeDetalle','CatalogoDetalleController@storeDetalle');
+        Route::put('/catalogoDetalle/updateDetalle','CatalogoDetalleController@updateDetalle');
+
+        Route::put('/catalogoDetalle/activarDetalle','CatalogoDetalleController@activarDetalle');
+        Route::put('/catalogoDetalle/desactivarDetalle','CatalogoDetalleController@desactivarDetalle');
     });
 
 

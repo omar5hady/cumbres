@@ -113,6 +113,11 @@ Vue.component('gastos-admin', require('./components/GastosAdministrativos.vue'))
 Vue.component('estado-cuenta', require('./components/EstadoCuenta.vue'));
 Vue.component('cobro-credito', require('./components/CobroCredito.vue'));
 
+// CATALOGO DETALLES
+Vue.component('catalogo-detalles', require('./components/Postventa/CatalogoDetalles.vue'));
+Vue.component('detalles-generales', require('./components/Postventa/DetallesGenerales.vue'));
+
+
 const app = new Vue({
     el: '#app',
     data: {
