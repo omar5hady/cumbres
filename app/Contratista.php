@@ -16,4 +16,8 @@ class Contratista extends Model
     public function ini_obra(){
         return $this->belongsTo('App/Ini_obra');
     }
+
+    public function solic_detalle(){
+        return $this->hasMany('App\Solic_detalle');
+    }
 }

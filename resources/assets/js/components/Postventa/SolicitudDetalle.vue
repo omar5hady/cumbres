@@ -173,6 +173,13 @@
                                 <div class="form-group row line-separator"></div>
 
                                 <div class="form-group row">
+                                    <label class="col-md-2 form-control-label" for="text-input">Modelo</label>
+                                    <div class="col-md-4">
+                                        <input type="text" disabled v-model="modelo" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
                                     <label class="col-md-2 form-control-label" for="text-input">Dirección</label>
                                     <div class="col-md-8">
                                         <input type="text" disabled v-model="direccion" class="form-control">
@@ -181,8 +188,13 @@
 
                                 <div class="form-group row">
                                     <label class="col-md-2 form-control-label" for="text-input">Cliente</label>
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <input type="text" disabled v-model="cliente" class="form-control">
+                                    </div>
+
+                                    <label class="col-md-1 form-control-label" for="text-input">Celular</label>
+                                    <div class="col-md-3">
+                                        <input type="text" v-model="celular" maxlength="10" v-on:keypress="isNumber($event)" class="form-control">
                                     </div>
                                 </div>
 
@@ -202,34 +214,112 @@
                                         </select>
                                     </div>
                                 </div>
+                                <div class="form-group row">
+                                    <label class="col-md-2 form-control-label" for="text-input">Disponibilidad cliente</label>
+                                    <div class="col-md-1">
+                                        L <input v-model="lunes" type="checkbox" value="1"/>
+                                    </div>
+                                    <div class="col-md-1">
+                                        M <input v-model="martes" type="checkbox" value="1"/>
+                                    </div>
+                                    <div class="col-md-1">
+                                        Mi <input v-model="miercoles" type="checkbox" value="1"/>
+                                    </div>
+                                    <div class="col-md-1">
+                                        J <input v-model="jueves" type="checkbox" value="1"/>
+                                    </div>
+                                    <div class="col-md-1">
+                                        V <input v-model="viernes" type="checkbox" value="1"/>
+                                    </div>
+                                    <div class="col-md-1">
+                                        S <input v-model="sabado" type="checkbox" value="1"/>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <input class="form-control" v-model="horario" type="text" placeholder="Horario disponible de cliente"/>
+                                    </div>
+                                </div>
 
                                 <div class="form-group row line-separator"></div>
 
-                                 <div class="form-group row">
+                                <div class="form-group row">
                                     <label class="col-md-2 form-control-label" for="text-input">Detalle General</label>
                                     <div class="col-md-4">
-                                        <select class="form-control" v-model="detalle_gen" >
+                                        <select class="form-control" v-model="id_gral" @click="selectSubconcepto(id_gral)" >
                                             <option value=''> Seleccione </option>
+                                            <option v-for="general in arrayGenerales" :key="general.id" :value="general.id" v-text="general.general"></option>
                                         </select>
                                     </div>
 
-                                    <label class="col-md-2 form-control-label" for="text-input">Especifico</label>
+                                    <label class="col-md-2 form-control-label" for="text-input">Subconcepto</label>
                                     <div class="col-md-4">
-                                        <select class="form-control" v-model="detalle_esp" >
+                                        <select class="form-control" v-model="id_sub" @click="selectDetalle(id_sub)" >
                                             <option value=''> Seleccione </option>
+                                            <option v-for="subconcepto in arraySubconceptos" :key="subconcepto.id" :value="subconcepto.id" v-text="subconcepto.subconcepto"></option>
                                         </select>
                                     </div>
                                 </div>
 
-                                <div class="form-group row" >
-                                    <label class="col-md-2 form-control-label" for="text-input">Costo</label>
-                                        <div class="col-md-3" v-if="dias_entregado>60">
-                                            <input v-model="costo" pattern="\d*" v-on:keypress="isNumber($event)" class="form-control">
-                                        </div>
-                                        <div class="col-md-3">
-                                            <h6>${{ formatNumber(costo)}}</h6>
-                                        </div>
+                                <div class="form-group row">
+                                    <label class="col-md-2 form-control-label" for="text-input">Detalle</label>
+                                    <div class="col-md-4">
+                                        <select class="form-control" v-model="id_detalle" @click="getDatosDetalle(id_detalle)">
+                                            <option value=''> Seleccione </option>
+                                            <option v-for="detalle in arrayDetalles" :key="detalle.id" :value="detalle.id" v-text="detalle.detalle"></option>
+                                        </select>
+                                    </div>
                                 </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-2 form-control-label" v-if="detalle != ''" for="text-input">Descripción</label>
+                                    <div class="col-md-6" v-if="detalle != ''">
+                                        <input type="text" v-model="observacion" class="form-control">
+                                    </div>
+
+                                    <div class="col-md-1" v-if="detalle != ''">
+                                        <button type="button" @click="addDetalle(id_detalle)" title="Añadir" class="btn btn-success">
+                                            <i class="icon-plus"></i>&nbsp;
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <div class="col-md-12" v-if="arrayListadoDetalles.length">
+                                    <div class="form-group row">
+                                        <div class="table-responsive col-md-12">
+                                            <table class="table table-bordered table-striped table-sm">
+                                                <thead>
+                                                    <tr>
+                                                        <th></th>
+                                                        <th>General</th>
+                                                        <th>Subconcepto</th>
+                                                        <th>Detalle</th>
+                                                        <th>Descripción</th>
+                                                        <th>Garantia</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr v-for="(detalle,index) in arrayListadoDetalles" :key="detalle.id_detalle">
+                                                        <td>
+                                                            <button @click="eliminarDetalle(index)" type="button" class="btn btn-danger btn-sm" title="Quitar concepto">
+                                                                <i class="icon-close"></i>
+                                                            </button>
+                                                        </td>
+                                                        <td v-text="detalle.general"></td>
+                                                        <td v-text="detalle.subconcepto"></td>
+                                                        <td v-text="detalle.detalle"></td>
+                                                        <td v-text="detalle.observacion"></td>
+                                                        <td v-if="detalle.garantia == 1" v-text="'Si'"></td>
+                                                        <td v-else v-text="'No'"></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+
+                                        </div>
+                                    </div>
+                                    </div>
+                                </div>
+
+                                
 
 
                                     
@@ -247,7 +337,7 @@
                             <!-- Botones del modal -->
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                                <button type="button" class="btn btn-success" @click="setFechaEntrega()">Guardar</button>
+                                <button type="button" v-if="arrayListadoDetalles.length" class="btn btn-success" @click="registrarSolicitud()">Guardar</button>
                             </div>
                         </div>
                         <!-- /.modal-content -->
@@ -335,6 +425,11 @@
                 arrayContratos:[],
                 arrayContratistas:[],
 
+                arrayGenerales : [],
+                arraySubconceptos : [],
+                arrayDetalles : [],
+                arrayDatosDetalle : [],
+
                 // Variables para buscar lotes entregados
                 arrayLotes:[],
                 arrayEtapas:[],
@@ -355,10 +450,29 @@
                 contratista:'',
                 cliente:'',
                 dias_entregado:0,
-                detalle_gen:'',
-                detalle_esp:'',
-                costo:0,
+                id_gral:'',
+                id_sub:'',
+                id_detalle:'',
+                modelo :'',
+                celular : '',
+                proceso : false,
 
+                lunes : 0,
+                martes : 0,
+                miercoles : 0,
+                jueves : 0,
+                viernes : 0,
+                sabado : 0,
+
+                horario : '',
+
+                detalle : '',
+                subconcepto:'',
+                general:'',
+                dias_garantia : '',
+                garantia : '',
+
+                arrayListadoDetalles : [],
 
                 folio:0,
                 offset : 3,
@@ -556,10 +670,10 @@
                 },
 
                 getDatosLote(lote){
-                let me = this;
-                me.arrayDatosLotes=[];
-                var url = '/postventa/getDatosLoteEntregado?lote=' + lote;
-                axios.get(url).then(function (response) {
+                    let me = this;
+                    me.arrayDatosLotes=[];
+                    var url = '/postventa/getDatosLoteEntregado?lote=' + lote;
+                    axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     var arrayDatosContratista = [];
                         me.arrayDatosLotes = respuesta.datosLote;
@@ -569,15 +683,155 @@
                         me.cliente = me.arrayDatosLotes[0]['nombre_cliente'];
                         me.dias_entregado = me.arrayDatosLotes[0]['diferencia'];
                         me.folio = me.arrayDatosLotes[0]['folio'];
+                        me.celular = me.arrayDatosLotes[0]['celular'];
+                        me.modelo = me.arrayDatosLotes[0]['modelo'];
 
                         me.contratista = respuesta.datosContratista[0]['id'];
                         
-                })
-                .catch(function (error) {
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+                },
+            ///////////
+
+            addDetalle(){
+                let me = this;
+            
+                    me.arrayListadoDetalles.push({
+                    id_gral: me.id_gral,
+                    id_sub: me.id_sub,
+                    id_detalle: me.id_detalle,
+                    detalle: me.detalle,
+                    garantia: me.garantia,
+                    subconcepto: me.subconcepto,
+                    general: me.general,
+                    observacion : me.observacion,
+                    
+                });
+                me.id_gral = '';
+                me.id_sub = '';
+                me.id_detalle = '';
+                me.detalle = '';
+                me.garantia = '';
+                me.subconcepto = '';
+                me.general = '';
+                me.observacion = '';
+                
+            },
+
+            eliminarDetalle(index){
+                let me = this;
+                me.arrayListadoDetalles.splice(index,1);
+            },
+
+            /**Metodo para registrar  */
+            registrarSolicitud(){
+                if(this.proceso==true){
+                    return;
+                }
+
+                this.proceso=true;
+                let me = this;
+                //Con axios se llama el metodo store de FraccionaminetoController
+                axios.post('/detalles/storeSolicitud',{
+                    'data':this.arrayListadoDetalles,
+                    'cliente': this.cliente,
+                    'folio' : this.folio,
+                    'lote_id':this.lote_entregado,
+                    'contratista_id':this.contratista,
+                    'dias_entrega': this.dias_entregado,
+                    'lunes' : this.lunes,
+                    'martes' : this.martes,
+                    'miercoles' : this.miercoles,
+                    'jueves' : this.jueves,
+                    'viernes' : this.viernes,
+                    'sabado' : this.sabado,
+                    'horario' : this.horario,
+                    'celular' : this.celular,
+
+                }).then(function (response){
+                    me.proceso=false;
+                    me.cerrarModal();
+                    //Se muestra mensaje Success
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Solicitud registrada correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
                     console.log(error);
                 });
             },
-            ///////////
+
+            /// SELECT PARA CATALOGO DE DETALLES
+                selectGenerales(fraccionamiento){
+                    let me = this;
+                    
+                    me.arrayGenerales=[];
+                    var url = '/catalogoDetalle/selectGeneral';
+                    axios.get(url).then(function (response) {
+                        var respuesta = response.data;
+                        me.arrayGenerales = respuesta.general;
+                        
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+                },
+                selectSubconcepto(id_gral){
+                    let me = this;
+                    
+                    me.arraySubconceptos=[];
+                    var url = '/catalogoDetalle/selectSub?id_gral=' + id_gral;
+                    axios.get(url).then(function (response) {
+                        var respuesta = response.data;
+                        me.arraySubconceptos = respuesta.subconcepto;
+                        
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+                },
+                selectDetalle(id_sub){
+                    let me = this;
+                    
+                    me.arrayDetalles=[];
+                    var url = '/catalogoDetalle/selectDetalle?id_sub=' + id_sub;
+                    axios.get(url).then(function (response) {
+                        var respuesta = response.data;
+                        me.arrayDetalles = respuesta.detalle;
+                        
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+                },
+
+                getDatosDetalle(id_detalle){
+                let me = this;
+                me.arrayDatosDetalle=[];
+                var url = '/catalogoDetalle/getDatosDetalle?id_detalle=' + id_detalle;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                        me.arrayDatosDetalle = respuesta.datosDetalle;
+                        me.detalle = me.arrayDatosDetalle[0]['detalle'];
+                        me.dias_garantia = me.arrayDatosDetalle[0]['dias_garantia'];
+                        me.subconcepto = me.arrayDatosDetalle[0]['subconcepto'];
+                        me.general = me.arrayDatosDetalle[0]['general'];
+                        if(me.dias_garantia >= me.dias_entregado)
+                            me.garantia = 1;
+                        else{
+                            me.garantia = 0;
+                        }
+                        
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+                },
             
             cambiarPagina2(page,buscar,b_etapa,b_manzana,b_lote,criterio){
                 let me = this;
@@ -663,6 +917,26 @@
                 this.modal3 = 0;
                 this.observacion = '';
                 this.arrayObservacion = [];
+                this.id_gral = '';
+                this.id_sub = '';
+                this.id_detalle = '';
+                this.detalle = '';
+                this.direccion = '';
+                this.contratista = '';
+                this.dias_garantia = '';
+                this.dias_entregado = '';
+                this.etapa_entregada = '';
+                this.manzana_entregada = '';
+                this.lote_entregado = '';
+
+                this.lunes = '';
+                this.martes = '';
+                this.miercoles = '';
+                this.jueves = '';
+                this.viernes = '';
+                this.sabado = '';
+                this.horario = '';
+                this.arrayListadoDetalles = [];
             },
 
             abrirModal(accion,data =[]){
@@ -693,6 +967,7 @@
             this.listarContratos(1,this.buscar2,this.b_etapa2,this.b_manzana2,this.b_lote2,this.criterio2);
             this.selectFraccionamientos();
             this.selectContratistas();
+            this.selectGenerales();
         }
     }
 </script>

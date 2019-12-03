@@ -135,6 +135,35 @@ class CatalogoDetalleController extends Controller
         return['general' => $general];
     }
 
+    public function selectSub(Request $request){
+        //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
+        if(!$request->ajax())return redirect('/');
+        
+        $subconcepto = Cat_detalle_subconcepto::select('subconcepto','id')->where('id_gral','=',$request->id_gral)
+                    ->orderBy('subconcepto','asc')->get();
+        return['subconcepto' => $subconcepto];
+    }
+
+    public function selectDetalle(Request $request){
+        //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
+        if(!$request->ajax())return redirect('/');
+        
+        $detalle = Cat_detalle::select('detalle','id')->where('id_sub','=',$request->id_sub)
+                    ->orderBy('detalle','asc')->get();
+        return['detalle' => $detalle];
+    }
+
+    public function getDatosDetalle(Request $request){
+       $datosDetalle = Cat_detalle::join('cat_detalles_subconceptos as sub','cat_detalles.id_sub','=','sub.id')
+                                    ->join('cat_detalles_generales as gen','sub.id_gral','=','gen.id')
+                                    ->select('cat_detalles.detalle','cat_detalles.id_sub','gen.dias_garantia','gen.general',
+                                            'sub.subconcepto','cat_detalles.id')
+                                    ->where('cat_detalles.id','=',$request->id_detalle)
+                                    ->get();
+
+        return['datosDetalle' => $datosDetalle];
+    }
+
     public function storeSubconcepto(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 

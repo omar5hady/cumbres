@@ -16,5 +16,9 @@ class Cat_detalle extends Model
     public function cat_detalle_subconcepto(){
         return $this->belongsTo('App\Cat_detalle_subconcepto');
     }
+
+    public function descripcion_detalle(){
+        return $this->hasMany('App\Descripcion_detalle');
+    }
 }
 

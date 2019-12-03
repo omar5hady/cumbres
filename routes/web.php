@@ -582,6 +582,9 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/catalogoDetalle/indexSubCategoria','CatalogoDetalleController@indexSubCategoria');
         Route::get('/catalogoDetalle/indexDetalles','CatalogoDetalleController@indexDetalles');
         Route::get('/catalogoDetalle/selectGeneral','CatalogoDetalleController@selectGeneral');
+        Route::get('/catalogoDetalle/selectSub','CatalogoDetalleController@selectSub');
+        Route::get('/catalogoDetalle/selectDetalle','CatalogoDetalleController@selectDetalle');
+        Route::get('/catalogoDetalle/getDatosDetalle','CatalogoDetalleController@getDatosDetalle');
 
         Route::post('/detalles/generales/registrar','CatalogoDetalleController@storeGenerales');
         Route::put('/detalles/generales/actualizar','CatalogoDetalleController@updateGenerales');
@@ -594,6 +597,9 @@ Route::group(['middleware' => ['auth']],function(){
 
         Route::put('/catalogoDetalle/activarDetalle','CatalogoDetalleController@activarDetalle');
         Route::put('/catalogoDetalle/desactivarDetalle','CatalogoDetalleController@desactivarDetalle');
+    //////////////////////// RUTAS SOLIC DETALLES //////////////////////
+        Route::post('/detalles/storeSolicitud','SolicDetallesController@storeSolicitud');
+
     });
 
 

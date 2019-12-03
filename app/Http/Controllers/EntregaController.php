@@ -1801,7 +1801,8 @@ class EntregaController extends Controller
                     ->join('lotes','creditos.lote_id','lotes.id')
                     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
                     ->join('personal as c', 'clientes.id', '=', 'c.id')
-                    ->select('contratos.id as folio',
+                    ->select('contratos.id as folio', 'creditos.modelo','creditos.fraccionamiento',
+                        'creditos.etapa','creditos.manzana','creditos.num_lote',
                         DB::raw("CONCAT(c.nombre,' ',c.apellidos) AS nombre_cliente"),
                         'c.celular', 
                         DB::raw("CONCAT(lotes.calle,' Num.',lotes.numero) AS direccion"),

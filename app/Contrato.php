@@ -63,4 +63,8 @@ class Contrato extends Model
     public function revision_previa(){
         return $this->hasOne('App/Revision_previa');
     }
+
+    public function solic_detalles(){
+        return $this->hasMany('App\Solic_detalle');
+    }
 }
