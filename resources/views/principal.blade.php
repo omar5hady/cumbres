@@ -162,6 +162,20 @@
                         </li>
                     @endif
 
+                     <!-- Modulo para contratista ---->
+                     @if(Auth::user()->rol_id == 13 || Auth::user()->rol_id == 1)
+                        <li class="nav-item nav-dropdown">
+                            <a class="nav-link nav-dropdown-toggle" href="#"><i class="fa fa-plug"></i> Contratistas</a>
+                            <ul class="nav-dropdown-items">
+                                @if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 10)
+                                    <li @click="menu=217" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="fa fa-archive"></i> Solicitudes</a>
+                                    </li>
+                                @endif
+                            </ul>
+                        </li>
+                    @endif
+
                     @if(Auth::user()->desarrollo == 1)
                         <li class="nav-item nav-dropdown">
                             <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-home"></i> Desarrollo</a>
@@ -294,7 +308,7 @@
                                 @endif
 
                                 @if(Auth::user()->entregas == 1)
-                                    <li @click="menu=216" class="nav-item">
+                                    <li @click="menu=7" class="nav-item">
                                         <a class="nav-link" href="#"><i class="fa fa-home"></i> Viviendas por entregar</a>
                                     </li>
                                 @endif
@@ -446,7 +460,7 @@
                             </li>
                         @endif
                         @if(Auth::user()->entregas == 1)
-                            <li @click="menu=215" class="nav-item">
+                            <li @click="menu=6" class="nav-item">
                                 <a class="nav-link" href="#"><i class="fa fa-key"></i> Entregas de vivienda</a>
                             </li>
                         @endif

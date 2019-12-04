@@ -46,6 +46,7 @@
                                             <option value="Gestor ventas">Gestor ventas</option>
                                             <option value="Contabilidad">Contabilidad</option>
                                             <option value="Proveedor">Proveedor</option>
+                                            <option value="Contratista">Contratista</option>
                                         </select>
                                         <input type="text" v-else v-model="buscar" @keyup.enter="listarPersonal(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
                                         <button type="submit" @click="listarPersonal(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>

@@ -340,6 +340,11 @@
             <obra-entrega></obra-entrega>
         </template>
 
+        
+        <template v-if="menu==217">
+            <contratista-solicitud></contratista-solicitud>
+        </template>
+
         <template v-if="menu==218">
             <postventa-etapa></postventa-etapa>
         </template>

@@ -12,18 +12,22 @@
                          <!--   Boton Nuevo    -->
                         <button type="button" @click="abrirModal('nuevo')" class="btn btn-secondary">
                             <i class="icon-plus"></i>&nbsp;Nueva Solicitud
+                        </button> &nbsp;&nbsp;
+                        <button type="submit" v-if="descripcion == 1" @click="listarSolicitudes(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2,status)" class="btn btn-default">
+                            <i class="fa fa-mail-reply-all"></i> Regresar
                         </button>
                     </div>
 
-                <!-------------------  Div historial contratos  --------------------->
-                    <div class="card-body">
+                <!-------------------  Div Reportes de detalles  --------------------->
+                    <div class="card-body" v-if="descripcion == 0">
                         <div class="form-group row">
                             <div class="col-md-8">
                                 <div class="input-group">
                                     <!--Criterios para el listado de busqueda -->
                                     <select class="form-control col-md-5" v-model="criterio2" @click="selectFraccionamientos()">
                                         <option value="lotes.fraccionamiento_id">Proyecto</option>
-                                        <option value="c.nombre">Cliente</option>
+                                        <option value="solic_detalles.cliente">Cliente</option>
+                                        <option value="contratistas.nombre">Contratista</option>
                                         <option value="contratos.id"># Folio</option>
                                     </select>
 
@@ -37,23 +41,33 @@
                                         <option v-for="etapa in arrayEtapas2" :key="etapa.num_etapa" :value="etapa.id" v-text="etapa.num_etapa"></option>
                                     </select>
 
-                                    <input v-else type="text"  v-model="buscar2" @keyup.enter="listarContratos(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="Texto a buscar">
+                                    <input v-else type="text"  v-model="buscar2" @keyup.enter="listarSolicitudes(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2,status)" class="form-control" placeholder="Texto a buscar">
                                    
                                 </div>
                             </div>
                             <div class="col-md-6" v-if="criterio2=='lotes.fraccionamiento_id'">
                                 <div class="input-group">
-                                    <select class="form-control" v-if="criterio2=='lotes.fraccionamiento_id'" @click="selectLotesManzana(buscar2,b_etapa2,b_manzana2)" @keyup.enter="listarContratos(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" v-model="b_manzana2" >
+                                    <select class="form-control" v-if="criterio2=='lotes.fraccionamiento_id'" @click="selectLotesManzana(buscar2,b_etapa2,b_manzana2)" @keyup.enter="listarSolicitudes(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2,status)" v-model="b_manzana2" >
                                         <option value="">Manzana</option>
                                         <option v-for="manzana in arrayAllManzanas" :key="manzana.manzana" :value="manzana.manzana" v-text="manzana.manzana"></option>
                                     </select>
 
-                                    <input v-if="criterio2=='lotes.fraccionamiento_id'" type="text"  v-model="b_lote2" @keyup.enter="listarContratos(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="Lote a buscar">
+                                    <input v-if="criterio2=='lotes.fraccionamiento_id'" type="text"  v-model="b_lote2" @keyup.enter="listarSolicitudes(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2,status)" class="form-control" placeholder="Lote a buscar">
 
                                 </div>
                             </div>
-                            <div class="col-md-8">
-                                <button type="submit" @click="listarContratos(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-3">
+                                <div class="input-group">
+                                    <select class="form-control" v-model="status" >
+                                        <option value="">Status</option>
+                                        <option value="0">Pendiente</option>
+                                        <option value="1">En proceso</option>
+                                        <option value="2">Concluido</option>
+                                    </select>
+                                    <button type="submit" @click="listarSolicitudes(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2,status)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                </div>
                             </div>
                         </div>
                             
@@ -63,31 +77,53 @@
                                     <tr> 
                                         <th># Ref</th>
                                         <th>Cliente</th>
+                                        <th>Contacto</th>
                                         <th>Proyecto</th>
                                         <th>Etapa</th>
                                         <th>Manzana</th>
                                         <th>Lote</th>
-                                        <th>Fecha de firma</th>
-                                        <th>Fecha entrega (Obra)</th>
-                                        <th>Paquete y/o Promocioón</th>
-                                        <th>Equipamiento</th>
-                                        <th>Observaciones</th>
-                                        
+                                        <th>Modelo</th>
+                                        <th>Contratista</th>
+                                        <th>Fecha de reporte</th>
+                                        <th>Costo</th>
+                                        <th>Status</th>
+                                        <th>Imprimir Reporte</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="contratos in arrayContratos" :key="contratos.id">
-                                        <td># Ref</td>
-                                        <td>Cliente</td>
-                                        <td>Proyecto</td>
-                                        <td>Etapa</td>
-                                        <td>Manzana</td>
-                                        <td>Lote</td>
-                                        <td>Fecha de firma</td>
-                                        <td>Fecha entrega (Obra)</td>
-                                        <td>Paquete y/o Promocioón</td>
-                                        <td>Equipamiento</td>
-                                        <td>Observaciones</td>
+                                    <tr v-for="contratos in arraySolicitudes" :key="contratos.id" @dblclick="verDetalles(contratos.id)">
+                                        <td class="td2" v-text="contratos.folio"></td>
+                                        <td class="td2" v-text="contratos.cliente"></td>
+                                        <td class="td2">
+                                            <a title="Llamar" class="btn btn-dark" :href="'tel:'+contratos.celular"><i class="fa fa-phone fa-lg"></i></a>
+                                            <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+contratos.celular+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>
+                                        </td>
+                                        <td class="td2" v-text="contratos.fraccionamiento"></td>
+                                        <td class="td2" v-text="contratos.etapa"></td>
+                                        <td class="td2" v-text="contratos.manzana"></td>
+                                        <td class="td2" v-text="contratos.num_lote"></td>
+                                        <td class="td2" v-text="contratos.modelo"></td>
+                                        <td class="td2" v-text="contratos.nombre"></td>
+                                        <td class="td2" v-text="this.moment(contratos.created_at).locale('es').format('DD/MMM/YYYY')"></td>
+                                        <td class="td2" v-text="'$'+formatNumber(contratos.costo)"></td>
+                                        <template>
+                                            <td class="td2" v-if="contratos.status == '0'">
+                                                <span class="badge badge-warning">Pendiente</span>
+                                            </td>
+                                            <td class="td2" v-if="contratos.status == '1'">
+                                                <span class="badge badge-warning">En proceso</span>
+                                            </td>
+                                            <td class="td2" v-if="contratos.status == '2'">
+                                                <span class="badge badge-success">Concluido</span>
+                                            </td>
+                                        </template>
+                                        <td class="td2">
+                                            <a title="Ver revision" type="button" 
+                                                    class="btn btn-danger pull-right" target="_blank" :href="'/detalles/reporteDetalles/pdf/'+contratos.id">
+                                                    <i class="fa fa-file-pdf-o"></i>&nbsp;Reporte
+                                            </a> 
+                                        </td>
+                                        
                                     </tr>
                                 </tbody>
                             </table>  
@@ -96,24 +132,58 @@
                             <!--Botones de paginacion -->
                             <ul class="pagination">
                                 <li class="page-item" v-if="pagination2.last_page > 7 && pagination2.current_page > 7">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)">Inicio</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2,status)">Inicio</a>
                                 </li>
                                 <li class="page-item" v-if="pagination2.current_page > 1">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page - 1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)">Ant</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page - 1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2,status)">Ant</a>
                                 </li>
                                 <li class="page-item" v-for="page in pagesNumber2" :key="page" :class="[page == isActived2 ? 'active' : '']">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(page,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" v-text="page"></a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(page,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2,status)" v-text="page"></a>
                                 </li>
                                 <li class="page-item" v-if="pagination2.current_page < pagination2.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page + 1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)">Sig</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page + 1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2,status)">Sig</a>
                                 </li>
                                 <li class="page-item" v-if="pagination2.last_page > 7 && pagination2.current_page<pagination2.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.last_page,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)">Ultimo</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.last_page,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2,status)">Ultimo</a>
                                 </li>
                             </ul>
                         </nav>
                     </div>
-                <!-------------------  Fin Div para Contratos que tienen paquete o promoción  --------------------->
+                <!-------------------  Fin Div para Reportes de Detalles  --------------------->
+
+                <!-------------------  Div descripcion de detalles  --------------------->
+                    <div class="card-body" v-if="descripcion == 1">
+                            
+                        <div class="table-responsive">
+                            <table class="table2 table-bordered table-striped table-sm">
+                                <thead>
+                                    <tr> 
+                                        <th>General</th>
+                                        <th>Subconcepto</th>
+                                        <th>Detalle</th>
+                                        <th>Observación</th>
+                                        <th>Garantia</th>
+                                        <th>Costo</th>
+                                        <th>Fecha conclusión</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="descripcion in arrayDescripcion" :key="descripcion.id">
+                                        <td class="td2" v-text="descripcion.general"></td>
+                                        <td class="td2" v-text="descripcion.subconcepto"></td>
+                                        <td class="td2" v-text="descripcion.detalle"></td>
+                                        <td class="td2" v-text="descripcion.observacion"></td>
+                                        <td class="td2" v-if="descripcion.garantia == 1"> Si </td>
+                                        <td class="td2" v-else> No </td>
+                                        <td class="td2" v-text="'$'+formatNumber(descripcion.costo)"></td> 
+                                        <td class="td2" v-if="descripcion.fecha_concluido" v-text="this.moment(descripcion.fecha_concluido).locale('es').format('DD/MMM/YYYY')"></td>                      
+                                        <td class="td2" v-else v-text="'En proceso'"></td>
+                                    </tr>
+                                </tbody>
+                            </table>  
+                        </div>
+                    </div>
+                <!-------------------  Fin Div para Reportes de Detalles  --------------------->
 
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
@@ -422,13 +492,14 @@
                 arrayFraccionamientos2:[],
                 arrayEtapas2:[],
                 arrayAllManzanas:[],
-                arrayContratos:[],
+                arraySolicitudes:[],
                 arrayContratistas:[],
 
                 arrayGenerales : [],
                 arraySubconceptos : [],
                 arrayDetalles : [],
                 arrayDatosDetalle : [],
+                arrayDescripcion : [],
 
                 // Variables para buscar lotes entregados
                 arrayLotes:[],
@@ -491,8 +562,10 @@
                 b_etapa2: '',
                 b_manzana2: '',
                 b_lote2: '',
+                status:'',
                 tipoAccion:0,
                 observacion:'',
+                descripcion: 0,
 
                 errorEntrega : 0,
                 errorMostrarMsjEntrega : [],
@@ -531,12 +604,13 @@
 
         
         methods : {
-            listarContratos(page, buscar, b_etapa, b_manzana, b_lote, criterio){
+            listarSolicitudes(page, buscar, b_etapa, b_manzana, b_lote, criterio, status){
                 let me = this;
-                var url = '/postventa/index?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio;
+                this.descripcion = 0;
+                var url = '/detalles/indexSolicitudes?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote + '&criterio=' + criterio + '&status=' + status;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
-                    me.arrayContratos = respuesta.contratos.data;
+                    me.arraySolicitudes = respuesta.solicitudes.data;
                     me.pagination2 = respuesta.pagination;
                     
                 })
@@ -601,6 +675,20 @@
                     var respuesta = response.data;
                     me.arrayEtapas = respuesta.etapas;
                     me.arrayEtapas2 = respuesta.etapas;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
+            verDetalles(id){
+                let me = this;
+                this.descripcion = 1;
+                me.arrayDescripcion=[];
+                var url = '/detalles/indexDescripciones?id=' + id;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayDescripcion = respuesta.detalles;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -833,12 +921,12 @@
                     });
                 },
             
-            cambiarPagina2(page,buscar,b_etapa,b_manzana,b_lote,criterio){
+            cambiarPagina2(page,buscar,b_etapa,b_manzana,b_lote,criterio,status){
                 let me = this;
                 //Actualiza la pagina actual
                 me.pagination2.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
-                me.listarContratos(page,buscar,b_etapa,b_manzana,b_lote,criterio);
+                me.listarSolicitudes(page,buscar,b_etapa,b_manzana,b_lote,criterio,status);
             },
 
             formatNumber(value) {
@@ -937,6 +1025,7 @@
                 this.sabado = '';
                 this.horario = '';
                 this.arrayListadoDetalles = [];
+                this.listarSolicitudes(this.pagination2.current_page,this.buscar2,this.b_etapa2,this.b_manzana2,this.b_lote2,this.criterio2,this.status);
             },
 
             abrirModal(accion,data =[]){
@@ -964,7 +1053,7 @@
         },
        
         mounted() {
-            this.listarContratos(1,this.buscar2,this.b_etapa2,this.b_manzana2,this.b_lote2,this.criterio2);
+            this.listarSolicitudes(1,this.buscar2,this.b_etapa2,this.b_manzana2,this.b_lote2,this.criterio2,this.status);
             this.selectFraccionamientos();
             this.selectContratistas();
             this.selectGenerales();

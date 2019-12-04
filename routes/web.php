@@ -599,6 +599,13 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/catalogoDetalle/desactivarDetalle','CatalogoDetalleController@desactivarDetalle');
     //////////////////////// RUTAS SOLIC DETALLES //////////////////////
         Route::post('/detalles/storeSolicitud','SolicDetallesController@storeSolicitud');
+        Route::get('/detalles/indexSolicitudes','SolicDetallesController@indexSolicitudes');
+        Route::get('/detalles/indexDescripciones','SolicDetallesController@indexDescripciones');
+        Route::get('/detalles/reporteDetalles/pdf/{folio}','SolicDetallesController@reportePDF');
+        //////////////////////// RUTAS CONTRATISTA //////////////////////
+         Route::get('/solicitudes/indexContratista','SolicDetallesController@indexContratista');
+         Route::get('/detalles/indexContratista','SolicDetallesController@indexDetallesContratista');
+         Route::put('/detalles/updateCosto','SolicDetallesController@updateCosto');
 
     });
 

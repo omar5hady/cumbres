@@ -97,6 +97,9 @@ Vue.component('devolucion-credito', require('./components/CreditoDevolucion.vue'
 // Proveedores
 Vue.component('proveedor-seguimiento', require('./components/Proveedor/SegInstalacion.vue'));
 
+// Contratistas
+Vue.component('contratista-solicitud', require('./components/Contratista/Solicitudes.vue'));
+
 // PostVenta
 Vue.component('postventa-entrega', require('./components/Postventa/Entrega.vue'));
 Vue.component('postventa-etapa', require('./components/Postventa/PostventaEtapa.vue'));
