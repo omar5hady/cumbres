@@ -85,9 +85,12 @@
                                         <th>Modelo</th>
                                         <th>Contratista</th>
                                         <th>Fecha de reporte</th>
+                                        <th>Disponibilidad</th>
                                         <th>Costo</th>
                                         <th>Status</th>
                                         <th>Imprimir Reporte</th>
+                                        <th colspan="2">Fecha programada</th>
+                                        <th>Reporte de conclusión</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -105,6 +108,16 @@
                                         <td class="td2" v-text="contratos.modelo"></td>
                                         <td class="td2" v-text="contratos.nombre"></td>
                                         <td class="td2" v-text="this.moment(contratos.created_at).locale('es').format('DD/MMM/YYYY')"></td>
+                                        <td>
+                                           <p>
+                                           <b><span style="color:blue;" v-if="contratos.lunes == 1">Lunes</span>
+                                           <span style="color:blue;" v-if="contratos.martes == 1">Martes</span>
+                                           <span style="color:blue;" v-if="contratos.miercoles == 1">Miercoles</span>
+                                           <span style="color:blue;" v-if="contratos.jueves == 1">Jueves</span>
+                                           <span style="color:blue;" v-if="contratos.viernes == 1">Viernes</span>
+                                           <span style="color:blue;" v-if="contratos.sabado == 1">Sabado</span>
+                                           </b></p>
+                                       </td>
                                         <td class="td2" v-text="'$'+formatNumber(contratos.costo)"></td>
                                         <template>
                                             <td class="td2" v-if="contratos.status == '0'">
@@ -123,6 +136,28 @@
                                                     <i class="fa fa-file-pdf-o"></i>&nbsp;Reporte
                                             </a> 
                                         </td>
+                                        <td class="td2">
+                                            Fecha: <input v-if="contratos.status != '2'"  type="date" @keyup.enter="actualizarFechaProgram($event.target.value,contratos.id)" :id="contratos.id" :value="contratos.fecha_program" class="form-control" >
+                                            <label v-else v-text="this.moment(contratos.fecha_program).locale('es').format('DD/MMM/YYYY')"></label>
+                                        </td>
+                                        <td class="td2">                                           
+                                            Hora: <input v-if="contratos.status != '2'"  type="time" @keyup.enter="actualizarHoraProgram($event.target.value,contratos.id)" :id="contratos.id" :value="contratos.hora_program" class="form-control" >
+                                            <label v-else v-text="contratos.hora_program"></label>
+                                        </td>
+                                        <template>    
+                                            <td class="td2" v-if="contratos.status == '2'">
+                                                <a title="Ver revision" type="button" 
+                                                    class="btn btn-danger pull-right" target="_blank" :href="'/detalles/reporteDetalles/reporteConclusionPDF/'+contratos.id">
+                                                    <i class="fa fa-file-pdf-o"></i>&nbsp;Reporte conclusión
+                                                </a> 
+                                            </td>  
+                                            <td class="td2" v-if="contratos.status == '0'">
+                                                <span class="badge badge-warning">Pendiente</span>
+                                            </td>
+                                            <td class="td2" v-if="contratos.status == '1'">
+                                                <span class="badge badge-warning">En proceso</span>
+                                            </td>                                       
+                                        </template>
                                         
                                     </tr>
                                 </tbody>
@@ -173,8 +208,8 @@
                                         <td class="td2" v-text="descripcion.subconcepto"></td>
                                         <td class="td2" v-text="descripcion.detalle"></td>
                                         <td class="td2" v-text="descripcion.observacion"></td>
-                                        <td class="td2" v-if="descripcion.garantia == 1"> Si </td>
-                                        <td class="td2" v-else> No </td>
+                                        <td v-if="detalles.garantia == 1"><span class="badge badge-success">Si</span> </td>
+                                        <td v-else> <span  class="badge badge-danger">No</span> </td>
                                         <td class="td2" v-text="'$'+formatNumber(descripcion.costo)"></td> 
                                         <td class="td2" v-if="descripcion.fecha_concluido" v-text="this.moment(descripcion.fecha_concluido).locale('es').format('DD/MMM/YYYY')"></td>                      
                                         <td class="td2" v-else v-text="'En proceso'"></td>
@@ -662,6 +697,61 @@
                 .catch(function (error) {
                     console.log(error);
                 });
+            },
+
+            actualizarFechaProgram(fecha,id){
+                let me = this;
+                
+                axios.put('/detalles/updateFecha',{
+                    'fecha_program':fecha,
+                    'id': id,
+                }).then(function (response){
+                    
+                    me.listarSolicitudes(me.pagination2.current_page,me.buscar2,me.b_etapa2,me.b_manzana2,me.b_lote2,me.criterio2,me.status);
+                  
+                const toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+
+                    });
+
+                    toast({
+                    type: 'success',
+                    title: 'Cambios guardados'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
+            actualizarHoraProgram(hora,id){
+                let me = this;
+                
+                axios.put('/detalles/updateHora',{
+                    'hora_program':hora,
+                    'id': id,
+                }).then(function (response){
+                    
+                    me.listarSolicitudes(me.pagination2.current_page,me.buscar2,me.b_etapa2,me.b_manzana2,me.b_lote2,me.criterio2,me.status);
+                  
+                const toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+
+                    });
+
+                    toast({
+                    type: 'success',
+                    title: 'Cambios guardados'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
+
             },
 
             selectEtapa(buscar){

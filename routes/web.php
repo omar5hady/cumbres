@@ -602,10 +602,14 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/detalles/indexSolicitudes','SolicDetallesController@indexSolicitudes');
         Route::get('/detalles/indexDescripciones','SolicDetallesController@indexDescripciones');
         Route::get('/detalles/reporteDetalles/pdf/{folio}','SolicDetallesController@reportePDF');
+        Route::get('/detalles/reporteDetalles/reporteConclusionPDF/{folio}','SolicDetallesController@reporteConclusionPDF');
+        Route::put('/detalles/updateFecha','SolicDetallesController@updateFecha');
+        Route::put('/detalles/updateHora','SolicDetallesController@updateHora');
         //////////////////////// RUTAS CONTRATISTA //////////////////////
          Route::get('/solicitudes/indexContratista','SolicDetallesController@indexContratista');
          Route::get('/detalles/indexContratista','SolicDetallesController@indexDetallesContratista');
          Route::put('/detalles/updateCosto','SolicDetallesController@updateCosto');
+         Route::put('/detalles/updateFechaConcluido','SolicDetallesController@updateFechaConcluido');
 
     });
 

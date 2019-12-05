@@ -29,6 +29,9 @@ class CreateSolicDetallesTable extends Migration
             $table->string('celular',10);
             $table->double('costo')->default(0);
             $table->boolean('status')->default(0);
+
+            $table->date('fecha_program')->nullable();
+            $table->time('hora_program')->nullable();
             $table->timestamps();
 
             $table->foreign('contrato_id')->references('id')->on('contratos')->onDelete('cascade');

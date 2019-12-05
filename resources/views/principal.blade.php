@@ -460,7 +460,7 @@
                             </li>
                         @endif
                         @if(Auth::user()->entregas == 1)
-                            <li @click="menu=6" class="nav-item">
+                            <li @click="menu=215" class="nav-item">
                                 <a class="nav-link" href="#"><i class="fa fa-key"></i> Entregas de vivienda</a>
                             </li>
                         @endif

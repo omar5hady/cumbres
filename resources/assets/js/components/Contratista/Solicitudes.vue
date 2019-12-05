@@ -8,7 +8,7 @@
                 <!-- Ejemplo de tabla Listado -->
                 <div class="card scroll-box">
                     <div class="card-header">
-                       Solicitudes de detalles <span style="color:black; font-weight: bold;" v-text="contratista"></span>
+                       Solicitudes de detalles <span style="color:black; font-weight: bold;" v-text="contratista"></span>&nbsp;
                        <button class="btn btn-default" v-if="listado == 2" @click="listado=1">
                            Regresar
                        </button>
@@ -51,8 +51,17 @@
 
                                 </div>
                             </div>
-                            <div class="col-md-8">
+                            
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                <select class="form-control" v-model="status" >
+                                        <option value="">Activos</option>
+                                        <option value="2">Finalizados</option>
+                                    </select>
                                 <button type="submit" @click="listarContratos(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                </div>
                             </div>
                         </div>
                             
@@ -61,37 +70,40 @@
                                 <thead>
                                     <tr> 
                                         <th># Ref</th>
-                                        <th>Cliente</th>
+                                        <!-- <th>Cliente</th> -->
                                         <th>Proyecto</th>
                                         <th>Etapa</th>
                                         <th>Manzana</th>
                                         <th>Lote</th>
                                         <th>Modelo</th>
-                                        <th>Disponibilidad cliente</th>
+                                        <!-- <th>Disponibilidad cliente</th> -->
                                         <th>Fecha solicitud</th>
+                                        <th>Fecha Programada para visita</th>
                                         
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr v-for="contratos in arrayContratos" :key="contratos.solicitudID" @dblclick="listado=2,listarDetalles(contratos.solicitudID)">
                                        <td v-text="contratos.solicitudID"></td>
-                                       <td v-text="contratos.cliente"></td>
+                                       <!-- <td v-text="contratos.cliente"></td> -->
                                        <td v-text="contratos.proyecto"></td>
                                        <td v-text="contratos.etapa"></td>
                                        <td v-text="contratos.manzana"></td>   
                                        <td v-text="contratos.num_lote"></td>   
                                        <td v-text="contratos.modelo"></td>
-                                       <td>
+                                       <!-- <td>
                                            <p>
-                                           <span style="color:red;" v-if="contratos.lunes == 1">Lunes</span>
-                                           <span style="color:yellow;" v-if="contratos.martes == 1">Martes</span>
+                                           <b><span style="color:blue;" v-if="contratos.lunes == 1">Lunes</span>
+                                           <span style="color:blue;" v-if="contratos.martes == 1">Martes</span>
                                            <span style="color:blue;" v-if="contratos.miercoles == 1">Miercoles</span>
-                                           <span style="color:green;" v-if="contratos.jueves == 1">Jueves</span>
-                                           <span style="color:purple;" v-if="contratos.viernes == 1">Viernes</span>
-                                           <span style="color:pink;" v-if="contratos.sabado == 1">Sabado</span>
-                                           </p>
-                                       </td>                                     
+                                           <span style="color:blue;" v-if="contratos.jueves == 1">Jueves</span>
+                                           <span style="color:blue;" v-if="contratos.viernes == 1">Viernes</span>
+                                           <span style="color:blue;" v-if="contratos.sabado == 1">Sabado</span>
+                                           </b></p>
+                                       </td>                                      -->
                                         <td v-text="this.moment(contratos.created_at).locale('es').format('DD/MMM/YYYY')"></td>
+                                        <td v-if="contratos.hora_program" v-text="this.moment(contratos.fecha_program).locale('es').format('DD/MMM/YYYY') + ', '+contratos.hora_program"></td>
+                                        <td v-else v-text="this.moment(contratos.fecha_program).locale('es').format('DD/MMM/YYYY')"></td>
                                     </tr>
                                 </tbody>
                             </table>  
@@ -131,12 +143,14 @@
                                 <thead>
                                     <tr> 
                                         <th># Ref</th>
-                                        <th>Cliente</th>
+                                        <!-- <th>Cliente</th> -->
                                         <th>General</th>
                                         <th>Subconcepto</th>
                                         <th>Detalle</th>
+                                        <th>Descripción</th>
                                         <th>Garantia</th>
                                         <th>Costo</th>
+                                        <th>Fecha concluido</th>
                                      
                                        
                                         
@@ -145,10 +159,11 @@
                                 <tbody>
                                     <tr v-for="detalles in arrayDetalles" :key="detalles.solicitud_id">
                                        <td v-text="detalles.solicitud_id"></td>
-                                       <td v-text="detalles.cliente"></td>
+                                       <!-- <td v-text="detalles.cliente"></td> -->
                                        <td v-text="detalles.general"></td>
                                        <td v-text="detalles.subconcepto"></td>
                                        <td v-text="detalles.detalle"></td> 
+                                       <td v-text="detalles.observacion"></td>
                                        <template> 
                                             <td v-if="detalles.garantia == 1"><span class="badge badge-success">Si</span> </td>
                                             <td v-else> <span  class="badge badge-danger">No</span> </td> 
@@ -158,6 +173,12 @@
                                             <td v-if="detalles.garantia == 1"><span class="badge badge-success">Con garantia</span></td>  
                                             <td v-else>
                                              <input  type="text" pattern="\d*" @keyup.enter="actualizarCosto($event.target.value,detalles.id,detalles.solicitud_id)" :id="detalles.solicitud_id" :value="detalles.costo" v-on:keypress="isNumber($event)" class="form-control" >
+                                            </td> 
+                                        </template>   
+                                        <template> 
+                                            <td v-if="detalles.fecha_concluido" v-text="detalles.fecha_concluido"><span class="badge badge-success"></span></td>  
+                                            <td v-else>
+                                             <input  type="date" @keyup.enter="actualizarConcluido($event.target.value,detalles.id,detalles.solicitud_id)" :id="detalles.solicitud_id" :value="detalles.fecha_concluido" class="form-control" >
                                             </td> 
                                         </template>                               
 
@@ -235,6 +256,7 @@
                 b_lote: '',
                 tipoAccion:0,
                 observacion:'',
+                status:'',
 
                 errorEntrega : 0,
                 errorMostrarMsjEntrega : [],
@@ -275,7 +297,7 @@
         methods : {
             listarContratos(page, buscar, b_etapa, b_manzana, b_lote, criterio){
                 let me = this;
-                var url = '/solicitudes/indexContratista?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio;
+                var url = '/solicitudes/indexContratista?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio +  '&status=' + this.status;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayContratos = respuesta.contratos.data;
@@ -391,6 +413,34 @@
                 
                 axios.put('/detalles/updateCosto',{
                     'costo':costo,
+                    'solicitud_id': solicitud,
+                    'id' : id
+                }).then(function (response){
+                    
+                    me.listarDetalles(solicitud);
+                  
+                const toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+
+                    });
+
+                    toast({
+                    type: 'success',
+                    title: 'Cambios guardados'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
+
+            actualizarConcluido(fecha_concluido,id,solicitud){
+                let me = this;
+                
+                axios.put('/detalles/updateFechaConcluido',{
+                    'fecha_concluido':fecha_concluido,
                     'solicitud_id': solicitud,
                     'id' : id
                 }).then(function (response){

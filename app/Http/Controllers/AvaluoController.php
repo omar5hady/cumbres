@@ -84,6 +84,8 @@ class AvaluoController extends Controller
                     )
                     ->where('inst_seleccionadas.elegido','=','1')
                     ->where('avaluos.fecha_recibido','=',NULL)
+                    ->where('contratos.status','!=',2)
+                    ->where('contratos.status','!=',0)
                     ->orderBy('avaluos.fecha_recibido','asc')
                     ->paginate(12);
 
@@ -111,6 +113,8 @@ class AvaluoController extends Controller
                         ->where('inst_seleccionadas.elegido','=','1')
                         ->where('lotes.fraccionamiento_id','=',$buscar)
                         ->where('avaluos.fecha_recibido','=',NULL)
+                        ->where('contratos.status','!=',2)
+                        ->where('contratos.status','!=',0)
                         ->orderBy('avaluos.fecha_recibido','asc')
                         ->paginate(12);
 
@@ -135,6 +139,9 @@ class AvaluoController extends Controller
                         ->where('inst_seleccionadas.elegido','=','1')
                         ->where('lotes.fraccionamiento_id','=',$buscar)
                         ->where('lotes.etapa_id','=',$b_etapa)
+                        ->where('avaluos.fecha_recibido','=',NULL)
+                        ->where('contratos.status','!=',2)
+                        ->where('contratos.status','!=',0)
                         ->orderBy('avaluos.fecha_recibido','asc')
                         ->paginate(12);
 
@@ -160,6 +167,9 @@ class AvaluoController extends Controller
                         ->where('lotes.fraccionamiento_id','=',$buscar)
                         ->where('lotes.etapa_id','=',$b_etapa)
                         ->where('lotes.manzana','=',$b_manzana)
+                        ->where('avaluos.fecha_recibido','=',NULL)
+                        ->where('contratos.status','!=',2)
+                        ->where('contratos.status','!=',0)
                         ->orderBy('avaluos.fecha_recibido','asc')
                         ->paginate(12);
 
@@ -186,6 +196,9 @@ class AvaluoController extends Controller
                         ->where('lotes.etapa_id','=',$b_etapa)
                         ->where('lotes.manzana','=',$b_manzana)
                         ->where('lotes.num_lote','=',$b_lote)
+                        ->where('avaluos.fecha_recibido','=',NULL)
+                        ->where('contratos.status','!=',2)
+                        ->where('contratos.status','!=',0)
                         ->orderBy('avaluos.fecha_recibido','asc')
                         ->paginate(12);
 
@@ -211,6 +224,9 @@ class AvaluoController extends Controller
                         ->where('lotes.fraccionamiento_id','=',$buscar)
                         ->where('lotes.etapa_id','=',$b_etapa)
                         ->where('lotes.num_lote','=',$b_lote)
+                        ->where('avaluos.fecha_recibido','=',NULL)
+                        ->where('contratos.status','!=',2)
+                        ->where('contratos.status','!=',0)
                         ->orderBy('avaluos.fecha_recibido','asc')
                         ->paginate(12);
 
@@ -235,6 +251,9 @@ class AvaluoController extends Controller
                         ->where('inst_seleccionadas.elegido','=','1')
                         ->where('lotes.fraccionamiento_id','=',$buscar)
                         ->where('lotes.num_lote','=',$b_lote)
+                        ->where('avaluos.fecha_recibido','=',NULL)
+                        ->where('contratos.status','!=',2)
+                        ->where('contratos.status','!=',0)
                         ->orderBy('avaluos.fecha_recibido','asc')
                         ->paginate(12);
 
@@ -260,6 +279,9 @@ class AvaluoController extends Controller
                         ->where('lotes.fraccionamiento_id','=',$buscar)
                         ->where('lotes.manzana','=',$b_manzana)
                         ->where('lotes.num_lote','=',$b_lote)
+                        ->where('avaluos.fecha_recibido','=',NULL)
+                        ->where('contratos.status','!=',2)
+                        ->where('contratos.status','!=',0)
                         ->orderBy('avaluos.fecha_recibido','asc')
                         ->paginate(12);
 
@@ -286,6 +308,8 @@ class AvaluoController extends Controller
                     ->where('inst_seleccionadas.elegido','=','1')
                     ->where('licencias.visita_avaluo','=',$buscar)
                     ->where('avaluos.fecha_recibido','=',NULL)
+                    ->where('contratos.status','!=',2)
+                    ->where('contratos.status','!=',0)
                     ->orderBy('avaluos.fecha_recibido','asc')
                     ->paginate(12);
                     break;

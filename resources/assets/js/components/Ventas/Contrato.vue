@@ -2978,7 +2978,20 @@
                 if(status==3 || status==0 ){
                     this.abrirModal('statusFecha',this.arrayContratos);
                 }else{ 
-
+                      swal({
+                title: 'Esta seguro de cambiar el status de este contrato?',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Aceptar!',
+                cancelButtonText: 'Cancelar',
+                confirmButtonClass: 'btn btn-success',
+                cancelButtonClass: 'btn btn-danger',
+                buttonsStyling: false,
+                reverseButtons: true
+                }).then((result) => {
+                if (result.value) {
                 
                 axios.put('/contrato/status/fecha',{
                                 'id': this.id_contrato,
@@ -2988,19 +3001,24 @@
                                 }).then(function (response){
                                 me.listado=4;
                                 
-                                //Se muestra mensaje Success
-                                swal({
-                                    position: 'top-end',
-                                    type: 'success',
-                                    title: 'Hecho',
-                                    showConfirmButton: false,
-                                    timer: 1500
-                                    })
+                                swal(
+                                'Cambio de status!',
+                                'Cambios realizados con éxito.',
+                                'success'
+                                )
                             }).catch(function (error){
                                 console.log(error);
                             });
-                        
+
+                            } else if (
+                    // Read more about handling dismissals
+                    result.dismiss === swal.DismissReason.cancel
+                ){
+                    
                 }
+                })
+                   
+                }  
             },
 
             registrarFechaStatus(){
