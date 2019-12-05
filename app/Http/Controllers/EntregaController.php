@@ -72,6 +72,7 @@ class EntregaController extends Controller
     }
 
     public function indexPendientes(Request $request){
+        if(!$request->ajax())return redirect('/');
         $criterio = $request->criterio;
         $buscar = $request->buscar;
         $b_etapa = $request->b_etapa;
@@ -905,6 +906,7 @@ class EntregaController extends Controller
     }
 
     public function indexEntregas(Request $request){
+        if(!$request->ajax())return redirect('/');
         $criterio = $request->criterio;
         $buscar = $request->buscar;
         $b_etapa = $request->b_etapa;
@@ -1766,6 +1768,7 @@ class EntregaController extends Controller
     }
 
     public function select_ultimaFecha_instalacion(Request $request){
+        if(!$request->ajax())return redirect('/');
         $contrato = $request->id;
 
         $fecha_ultima = Entrega::join('contratos','entregas.id','contratos.id')
@@ -1779,6 +1782,7 @@ class EntregaController extends Controller
     }
 
     public function setDatosCuenta (Request $request){
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $datoCuentas = Etapa::findOrFail($request->id);
         $datoCuentas->num_cuenta_admin = $request->cuenta;
         $datoCuentas->clabe_admin = $request->clabe;
@@ -1789,13 +1793,14 @@ class EntregaController extends Controller
     }
 
     public function actualizarCorreoAdmin(Request $request){
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $correo = Fraccionamiento::findOrFail($request->id);
         $correo->email_administracion = $request->correo;
         $correo->save();
     }
 
     public function getDatosLoteEntregado(Request $request){
-
+        if(!$request->ajax() )return redirect('/');
         $datosLote = Entrega::join('contratos','entregas.id','=','contratos.id')
                     ->join('creditos','contratos.id','=','creditos.id')
                     ->join('lotes','creditos.lote_id','lotes.id')

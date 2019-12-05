@@ -167,7 +167,7 @@
                         <li class="nav-item nav-dropdown">
                             <a class="nav-link nav-dropdown-toggle" href="#"><i class="fa fa-plug"></i> Contratistas</a>
                             <ul class="nav-dropdown-items">
-                                @if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 10)
+                                @if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 13)
                                     <li @click="menu=217" class="nav-item">
                                         <a class="nav-link" href="#"><i class="fa fa-archive"></i> Solicitudes</a>
                                     </li>
@@ -443,20 +443,20 @@
                 <li class="nav-item nav-dropdown">
                     <a class="nav-link nav-dropdown-toggle" href="#"><i class="fa fa-handshake-o"></i> Post Venta</a>
                     <ul class="nav-dropdown-items">
-                        @if(Auth::user()->rol_id == 1)
+                        @if(Auth::user()->solic_detalles == 1)
                             <li @click="menu=221" class="nav-item">
-                                <a class="nav-link" href="#"><i class="fa fa-key"></i> Detalles generales</a>
+                                <a class="nav-link" href="#"><i class="fa fa-book"></i> Detalles generales</a>
                             </li>
                             <li @click="menu=222" class="nav-item">
                                 <a class="nav-link" href="#"><i class="fa fa-book"></i> Catalogo de Detalles</a>
                             </li>
                         @endif
                             <li @click="menu=218" class="nav-item">
-                                <a class="nav-link" href="#"><i class="fa fa-key"></i> Cartas de bienvenida</a>
+                                <a class="nav-link" href="#"><i class="fa fa-address-card-o"></i> Cartas de bienvenida</a>
                             </li>
                         @if(Auth::user()->rol_id == 1)
                             <li @click="menu=220" class="nav-item">
-                                <a class="nav-link" href="#"><i class="fa fa-key"></i> Revisión previa</a>
+                                <a class="nav-link" href="#"><i class="fa fa-check-circle-o"></i> Revisión previa</a>
                             </li>
                         @endif
                         @if(Auth::user()->entregas == 1)
@@ -464,9 +464,9 @@
                                 <a class="nav-link" href="#"><i class="fa fa-key"></i> Entregas de vivienda</a>
                             </li>
                         @endif
-                        @if(Auth::user()->rol_id == 1)
+                        @if(Auth::user()->solic_detalles == 1)
                             <li @click="menu=219" class="nav-item">
-                                <a class="nav-link" href="#"><i class="fa fa-key"></i> Solicitud de Detalles</a>
+                                <a class="nav-link" href="#"><i class="fa fa-wrench"></i> Solicitud de Detalles</a>
                             </li>
                         @endif
                     </ul>

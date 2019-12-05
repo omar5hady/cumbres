@@ -93,6 +93,7 @@ class User extends Authenticatable
 
         //Postventa
         'entregas',
+        'solic_detalles',
 
         //Acceso
         'usuarios',

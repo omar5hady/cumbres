@@ -1088,7 +1088,7 @@ class UserController extends Controller
                                 //Gestoria
                                 'users.expediente','users.asig_gestor','users.seg_tramite','users.avaluos',
                                 //Postventa
-                                'users.entregas',
+                                'users.entregas', 'users.solic_detalles',
                                 //Acceso
                                 'users.usuarios','users.roles',
                                 //Reportes
@@ -1171,6 +1171,7 @@ class UserController extends Controller
         $user->avaluos = $request->avaluos;
         //Postventa
         $user->entregas = $request->entregas;
+        $user->solic_detalles = $request->solic_detalles;
         //Acceso
         $user->usuarios = $request->usuarios;
         $user->roles = $request->roles;

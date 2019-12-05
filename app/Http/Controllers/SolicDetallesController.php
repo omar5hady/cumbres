@@ -59,6 +59,7 @@ class SolicDetallesController extends Controller
     }
 
     public function indexSolicitudes(Request $request){
+        if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
         $etapa = $request->b_etapa;
         $manzana = $request->b_manzana;
@@ -437,6 +438,7 @@ class SolicDetallesController extends Controller
     }
 
     public function indexDescripciones(Request $request){
+        if(!$request->ajax())return redirect('/');
         $detalles = Descripcion_detalle::select('general','subconcepto','detalle','garantia','id','costo','observacion')
                 ->where('solicitud_id','=',$request->id)->get();
 
@@ -483,6 +485,7 @@ class SolicDetallesController extends Controller
     }
 
     public function indexContratista(Request $request){
+        if(!$request->ajax())return redirect('/');
         $buscar = $request->buscar;
         $b_etapa = $request->b_etapa;
         $b_manzana = $request->b_manzana;
@@ -976,6 +979,7 @@ class SolicDetallesController extends Controller
     }
 
     public function indexDetallesContratista(Request $request){
+        if(!$request->ajax())return redirect('/');
         $solicitudID = $request->solicitud_id;
         $detalles = Descripcion_detalle::join('solic_detalles','descripcion_detalles.solicitud_id','=','solic_detalles.id')
                                         ->join('contratos','solic_detalles.contrato_id','=','contratos.id')
@@ -995,6 +999,7 @@ class SolicDetallesController extends Controller
     }
 
     public function updateCosto(Request $request){
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $costo = Descripcion_detalle::findOrFail($request->id);
         $costo->costo = $request->costo;
         $costo->save();
@@ -1007,6 +1012,7 @@ class SolicDetallesController extends Controller
     }
 
     public function updateFechaConcluido(Request $request){
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $costo = Descripcion_detalle::findOrFail($request->id);
         $costo->fecha_concluido = $request->fecha_concluido;
         $costo->save();
@@ -1025,6 +1031,7 @@ class SolicDetallesController extends Controller
     }
 
     public function updateHora(Request $request){
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $solicitud = Solic_detalle::findOrFail($request->id);
         $solicitud->hora_program = $request->hora_program;
         $solicitud->save();
@@ -1032,7 +1039,7 @@ class SolicDetallesController extends Controller
     }
 
     public function updateFecha(Request $request){
-        
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $solicitud = Solic_detalle::findOrFail($request->id);
         $solicitud->fecha_program = $request->fecha_program;
         $solicitud->status = 1;

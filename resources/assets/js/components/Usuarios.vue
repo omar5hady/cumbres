@@ -364,6 +364,9 @@
                                                     <li class="nav-item">
                                                         <a class="nav-link"><i class="fa fa-key"></i> <input v-model="entregas" type="checkbox" value="1"/> Entregas de vivienda</a>
                                                     </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="fa fa-wrench"></i> <input v-model="solic_detalles" type="checkbox" value="1"/> Solicitud de detalles</a>
+                                                    </li>
                                                 </ul>
                                     </div>
                                 </div>
@@ -733,6 +736,7 @@
 
                     //Postventa
                     entregas:0,
+                    solic_detalles:0,
 
                     //Acceso
                     usuarios:0,
@@ -917,6 +921,7 @@
             limpiarPostventa(){
                 //Gestoria
                 this.entregas=0;
+                this.solic_detalles=0;
             },
 
             limpiarSaldo(){
@@ -1038,6 +1043,7 @@
 
                     //Postventa
                     me.entregas = usuarios[0].entregas;
+                    me.solic_detalles = usuarios[0].solic_detalles;
 
                     //Acceso
                     me.usuarios=usuarios[0].usuarios;
@@ -1311,6 +1317,7 @@
                     'avaluos':this.avaluos,
                         //Postventa
                     'entregas':this.entregas,
+                    'solic_detalles':this.solic_detalles,
                         //Acceso
                     'usuarios':this.usuarios,
                     'roles':this.roles,
