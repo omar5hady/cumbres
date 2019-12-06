@@ -78,9 +78,9 @@ class LicenciasController extends Controller
                 ->orderBy('licencias.cambios', 'DESC')
                 ->orderBy('fraccionamientos.nombre', 'DESC')
                 ->orderBy('lotes.manzana', 'ASC')
-                ->orderBy('lotes.num_lote', 'ASC')->paginate(8);
+                ->orderBy('lotes.num_lote', 'ASC')->paginate(16);
         } else {
-            if ($criterio != 'arquitecto' && $criterio != 'lotes.fraccionamiento_id') {
+            if ($criterio != 'arquitecto' && $criterio != 'lotes.fraccionamiento_id' && $criterio != 'licencias.perito_dro') {
                 $licencias = Lote::join('fraccionamientos', 'lotes.fraccionamiento_id', '=', 'fraccionamientos.id')
                     ->join('licencias', 'lotes.id', '=', 'licencias.id')
                     ->join('personal', 'lotes.arquitecto_id', '=', 'personal.id')
@@ -133,7 +133,7 @@ class LicenciasController extends Controller
                     ->orderBy('licencias.cambios', 'DESC')
                     ->orderBy('fraccionamientos.nombre', 'DESC')
                     ->orderBy('lotes.manzana', 'ASC')
-                    ->orderBy('lotes.num_lote', 'ASC')->paginate(8);
+                    ->orderBy('lotes.num_lote', 'ASC')->paginate(16);
             } else {
 
                 if ($criterio == 'lotes.siembra') {
@@ -189,8 +189,63 @@ class LicenciasController extends Controller
                         ->orderBy('licencias.cambios', 'DESC')
                         ->orderBy('fraccionamientos.nombre', 'DESC')
                         ->orderBy('lotes.manzana', 'ASC')
-                        ->orderBy('lotes.num_lote', 'ASC')->paginate(8);
-                } else {
+                        ->orderBy('lotes.num_lote', 'ASC')->paginate(16);
+                } 
+                elseif ($criterio == 'licencias.perito_dro'){
+                    $licencias = Lote::join('fraccionamientos', 'lotes.fraccionamiento_id', '=', 'fraccionamientos.id')
+                        ->join('licencias', 'lotes.id', '=', 'licencias.id')
+                        ->join('personal', 'lotes.arquitecto_id', '=', 'personal.id')
+                        ->join('personal as p', 'licencias.perito_dro', '=', 'p.id')
+                        ->join('etapas', 'lotes.etapa_id', '=', 'etapas.id')
+                        ->join('modelos', 'lotes.modelo_id', '=', 'modelos.id')
+                        ->join('empresas', 'lotes.empresa_id', '=', 'empresas.id')
+                        ->select(
+                            'fraccionamientos.nombre as proyecto',
+                            'etapas.num_etapa as etapas',
+                            'lotes.manzana',
+                            'lotes.num_lote',
+                            'lotes.sublote',
+                            'modelos.nombre as modelo',
+                            'empresas.nombre as empresa',
+                            'modelos.archivo',
+                            'lotes.calle',
+                            'lotes.numero',
+                            'lotes.interior',
+                            'lotes.terreno',
+                            'lotes.construccion',
+                            'lotes.casa_muestra',
+                            'lotes.lote_comercial',
+                            'lotes.id',
+                            'lotes.fraccionamiento_id',
+                            'lotes.etapa_id',
+                            'lotes.modelo_id',
+                            'lotes.comentarios',
+                            'lotes.clv_catastral',
+                            'lotes.etapa_servicios',
+                            'lotes.credito_puente',
+                            'lotes.siembra',
+                            DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS arquitecto"),
+                            DB::raw("CONCAT(p.nombre,' ',p.apellidos) AS perito"),
+                            'licencias.f_planos',
+                            'licencias.f_planos_obra',
+                            'licencias.f_ingreso',
+                            'licencias.num_licencia',
+                            'licencias.f_salida',
+                            'lotes.arquitecto_id',
+                            'licencias.perito_dro',
+                            'fraccionamientos.nombre as fraccionamiento',
+                            'licencias.cambios',
+                            'licencias.foto_lic',
+                            'licencias.foto_predial',
+                            'licencias.modelo_ant',
+                            'licencias.id as licenciasid'
+                        )
+                        ->where($criterio, '=', $buscar)
+                        ->orderBy('licencias.cambios', 'DESC')
+                        ->orderBy('fraccionamientos.nombre', 'DESC')
+                        ->orderBy('lotes.manzana', 'ASC')
+                        ->orderBy('lotes.num_lote', 'ASC')->paginate(16);
+                }else {
                     if ($criterio == 'licencias.f_planos') {
                         $licencias = Lote::join('fraccionamientos', 'lotes.fraccionamiento_id', '=', 'fraccionamientos.id')
                             ->join('licencias', 'lotes.id', '=', 'licencias.id')
@@ -244,7 +299,7 @@ class LicenciasController extends Controller
                             ->orderBy('licencias.cambios', 'DESC')
                             ->orderBy('fraccionamientos.nombre', 'DESC')
                             ->orderBy('lotes.manzana', 'ASC')
-                            ->orderBy('lotes.num_lote', 'ASC')->paginate(8);
+                            ->orderBy('lotes.num_lote', 'ASC')->paginate(16);
                     } else {
 
                         if ($criterio == 'lotes.fraccionamiento_id') {
@@ -305,7 +360,7 @@ class LicenciasController extends Controller
                                     ->orderBy('licencias.cambios', 'DESC')
                                     ->orderBy('fraccionamientos.nombre', 'DESC')
                                     ->orderBy('lotes.manzana', 'ASC')
-                                    ->orderBy('lotes.num_lote', 'ASC')->paginate(8);
+                                    ->orderBy('lotes.num_lote', 'ASC')->paginate(16);
                             } else {
                                 $licencias = Lote::join('fraccionamientos', 'lotes.fraccionamiento_id', '=', 'fraccionamientos.id')
                                     ->join('licencias', 'lotes.id', '=', 'licencias.id')
@@ -362,7 +417,7 @@ class LicenciasController extends Controller
                                     ->orderBy('licencias.cambios', 'DESC')
                                     ->orderBy('fraccionamientos.nombre', 'DESC')
                                     ->orderBy('lotes.manzana', 'ASC')
-                                    ->orderBy('lotes.num_lote', 'ASC')->paginate(8);
+                                    ->orderBy('lotes.num_lote', 'ASC')->paginate(16);
                             }
                         } else {
                             $licencias = Lote::join('fraccionamientos', 'lotes.fraccionamiento_id', '=', 'fraccionamientos.id')
@@ -418,7 +473,7 @@ class LicenciasController extends Controller
                                 ->orderBy('licencias.cambios', 'DESC')
                                 ->orderBy('fraccionamientos.nombre', 'DESC')
                                 ->orderBy('lotes.manzana', 'ASC')
-                                ->orderBy('lotes.num_lote', 'ASC')->paginate(8);
+                                ->orderBy('lotes.num_lote', 'ASC')->paginate(16);
                         }
                     }
                 }

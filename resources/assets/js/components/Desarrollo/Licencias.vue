@@ -41,6 +41,7 @@
                                     </select>
                                      <select class="form-control"  v-if="criterio=='licencias.perito_dro'" v-model="buscar">
                                             <option value="0">Seleccione</option>
+                                            <option value="1">Por Asignar</option>
                                             <option value="15044">Ing. Alejandro F. Perez Espinosa</option>
                                             <option value="23679">Raúl Palos López</option>
                                     </select>
@@ -117,7 +118,7 @@
                                         <td class="td2">
                                             <span v-if = "licencias.modelo!='Por Asignar' && licencias.cambios==0" class="badge badge-success" v-text="licencias.modelo"></span>
                                             <span v-if = "licencias.modelo=='Por Asignar'" class="badge badge-danger">Por Asignar</span>
-                                            <span v-if = "licencias.cambios==1 && licencias.modelo_ant !== 'N/A'" class="badge badge-warning" v-text="licencias.modelo_ant + '->' + licencias.modelo"></span>
+                                            <span v-if = "licencias.cambios==1 && licencias.modelo_ant !== 'N/A'" class="badge badge-dark" v-text="licencias.modelo_ant + '->' + licencias.modelo"></span>
                                             <span v-if = "licencias.cambios==1 && licencias.modelo_ant == 'N/A'" class="badge badge-warning" v-text="licencias.modelo"></span>
                                         </td>
                                         <!--Arquitecto -->

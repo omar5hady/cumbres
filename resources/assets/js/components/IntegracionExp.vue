@@ -93,7 +93,7 @@
                                         <td class="td2" v-text="contratos.proyecto"></td>
                                         <td class="td2" v-text="contratos.etapa"></td>
                                         <td class="td2" v-text="contratos.manzana"></td>
-                                        <td class="td2" v-text="contratos.num_lote">
+                                        <td class="td2">
                                             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{contratos.num_lote}}</a>
                                             <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
                                                 <a v-if ="contratos.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+contratos.foto_predial">Descargar predial</a>
