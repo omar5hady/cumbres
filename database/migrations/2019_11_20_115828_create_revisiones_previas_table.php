@@ -16,6 +16,7 @@ class CreateRevisionesPreviasTable extends Migration
         Schema::create('revisiones_previas', function (Blueprint $table) {
             $table->unsignedInteger('id');
             $table->text('observaciones');
+            $table->integer('id_contratista')->nullable();
 
             $table->timestamps();
             $table->foreign('id')->references('id')->on('contratos');

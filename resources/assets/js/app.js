@@ -99,6 +99,7 @@ Vue.component('proveedor-seguimiento', require('./components/Proveedor/SegInstal
 
 // Contratistas
 Vue.component('contratista-solicitud', require('./components/Contratista/Solicitudes.vue'));
+Vue.component('contratista-revprevia', require('./components/Contratista/RevisionPrevia.vue'));
 
 // PostVenta
 Vue.component('postventa-entrega', require('./components/Postventa/Entrega.vue'));

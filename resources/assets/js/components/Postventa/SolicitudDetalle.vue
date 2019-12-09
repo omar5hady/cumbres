@@ -208,7 +208,7 @@
                                         <td class="td2" v-text="descripcion.subconcepto"></td>
                                         <td class="td2" v-text="descripcion.detalle"></td>
                                         <td class="td2" v-text="descripcion.observacion"></td>
-                                        <td v-if="detalles.garantia == 1"><span class="badge badge-success">Si</span> </td>
+                                        <td v-if="descripcion.garantia == 1"><span class="badge badge-success">Si</span> </td>
                                         <td v-else> <span  class="badge badge-danger">No</span> </td>
                                         <td class="td2" v-text="'$'+formatNumber(descripcion.costo)"></td> 
                                         <td class="td2" v-if="descripcion.fecha_concluido" v-text="this.moment(descripcion.fecha_concluido).locale('es').format('DD/MMM/YYYY')"></td>                      

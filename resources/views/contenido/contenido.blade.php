@@ -364,6 +364,9 @@
         <template v-if="menu==222">
             <catalogo-detalles></catalogo-detalles>
         </template>
+        <template v-if="menu==223">
+            <contratista-revprevia></contratista-revprevia>
+        </template>
 
         
 

@@ -8,7 +8,7 @@ class Revision_previa extends Model
 {
     protected $table = 'revisiones_previas'; // se referencia a que tabla pertenece el modelo
     protected $primaryKey = 'id'; //Referenciar la llave primaria
-    protected $fillable = ['observaciones'];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
+    protected $fillable = ['observaciones','id_contratista'];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
 
     public function contrato(){
         return $this->belongsTo('App\Contrato');

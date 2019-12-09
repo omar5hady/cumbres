@@ -56,6 +56,18 @@
                                     </select>
                                 </div>
                             </div>
+
+                            
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-6" v-if="criterio2=='lotes.fraccionamiento_id'">
+                                <div class="input-group">
+                                    <input type="date"  v-model="b_desde" @keyup.enter="listarContratos(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="Texto a buscar">
+                                    <input type="date"  v-model="b_hasta" @keyup.enter="listarContratos(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="Texto a buscar">
+                                </div>
+                            </div>
+
+
                             <div class="col-md-8">
                                 <button type="submit" @click="listarContratos(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                             </div>
@@ -131,59 +143,59 @@
                                                 <td class="td2" v-else v-text="'Sin equipamiento'" ></td> 
                                             </template>
                                             <template>
-                                                <td class="td2" v-if="contratos.paquete && contratos.promocion && contratos.equipamiento == 0">
+                                                <td class="td2" v-if="contratos.descripcion_paquete && contratos.descripcion_promocion && contratos.equipamiento == 0">
                                                     <button title="Programar fecha" type="button" class="btn btn-danger pull-right" 
                                                         @click="ultimaFecha(contratos.folio)">
                                                         Equipamiento sin solicitarse
                                                     </button>
                                                 </td>
-                                                <td class="td2" v-else-if="contratos.paquete && !contratos.promocion && contratos.equipamiento == 0">
+                                                <td class="td2" v-else-if="contratos.descripcion_paquete && !contratos.descripcion_promocion && contratos.equipamiento == 0">
                                                      <button title="Programar fecha" type="button" class="btn btn-danger pull-right" 
                                                         @click="ultimaFecha(contratos.folio)">
                                                         Equipamiento sin solicitarse
                                                     </button>
                                                 </td>
-                                                <td class="td2" v-else-if="!contratos.paquete && contratos.promocion && contratos.equipamiento == 0">
+                                                <td class="td2" v-else-if="!contratos.descripcion_paquete && contratos.descripcion_promocion && contratos.equipamiento == 0">
                                                      <button title="Programar fecha" type="button" class="btn btn-danger pull-right" 
                                                         @click="ultimaFecha(contratos.folio)">
                                                         Equipamiento sin solicitarse
                                                     </button>
                                                 </td>
 
-                                                <td class="td2" v-else-if="contratos.paquete && contratos.promocion && contratos.equipamiento == 1">
+                                                <td class="td2" v-else-if="contratos.descripcion_paquete && contratos.descripcion_promocion && contratos.equipamiento == 1">
                                                     <button title="Programar fecha" type="button" class="btn btn-warning pull-right" 
                                                         @click="ultimaFecha(contratos.folio)">
                                                         En proceso de instalación
                                                     </button>
                                                     
                                                 </td>
-                                                <td class="td2" v-else-if="contratos.paquete && !contratos.promocion && contratos.equipamiento == 1" >
+                                                <td class="td2" v-else-if="contratos.descripcion_paquete && !contratos.descripcion_promocion && contratos.equipamiento == 1" >
                                                     <button title="Programar fecha" type="button" class="btn btn-warning pull-right" 
                                                         @click="ultimaFecha(contratos.folio)">
                                                         En proceso de instalación
                                                     </button>
                                                 </td>
-                                                <td class="td2" v-else-if="!contratos.paquete && contratos.promocion && contratos.equipamiento == 1">
+                                                <td class="td2" v-else-if="!contratos.descripcion_paquete && contratos.descripcion_promocion && contratos.equipamiento == 1">
                                                     <button title="Programar fecha" type="button" class="btn btn-warning pull-right" 
                                                         @click="ultimaFecha(contratos.folio)">
                                                         En proceso de instalación
                                                     </button>
                                                 </td>
 
-                                                <td class="td2" v-else-if="contratos.paquete && contratos.promocion && contratos.equipamiento == 2">
+                                                <td class="td2" v-else-if="contratos.descripcion_paquete && contratos.descripcion_promocion && contratos.equipamiento == 2">
                                                     <button title="Programar fecha" type="button" class="btn btn-success pull-right" 
                                                         @click="ultimaFecha(contratos.folio)">
                                                         Equipamiento instalado
                                                     </button>
                                                    
                                                 </td>
-                                                <td class="td2" v-else-if="contratos.paquete && !contratos.promocion && contratos.equipamiento == 2">
+                                                <td class="td2" v-else-if="contratos.descripcion_paquete && !contratos.descripcion_promocion && contratos.equipamiento == 2">
                                                     <button title="Programar fecha" type="button" class="btn btn-success pull-right" 
                                                         @click="ultimaFecha(contratos.folio)">
                                                         Equipamiento instalado
                                                     </button>
                                                 </td>
-                                                <td class="td2" v-else-if="!contratos.paquete && contratos.promocion && contratos.equipamiento == 2">
+                                                <td class="td2" v-else-if="!contratos.descripcion_paquete && contratos.descripcion_promocion && contratos.equipamiento == 2">
                                                     <button title="Programar fecha" type="button" class="btn btn-success pull-right" 
                                                         @click="ultimaFecha(contratos.folio)">
                                                         Equipamiento instalado
@@ -367,35 +379,36 @@
                                                 <td class="td2" v-else v-text="'Sin equipamiento'" ></td> 
                                             </template>
                                             <template>
-                                                <td class="td2" v-if="entregas.paquete && entregas.promocion && entregas.equipamiento == 0">
+                                                <td class="td2" v-if="entregas.descripcion_paquete && entregas.descripcion_promocion && entregas.equipamiento == 0">
                                                      <span class="badge badge-danger">Equipamiento sin solicitarse</span>
                                                 </td>
-                                                <td class="td2" v-else-if="entregas.paquete && !entregas.promocion && entregas.equipamiento == 0">
+                                                <td class="td2" v-else-if="entregas.descripcion_paquete && !entregas.descripcion_promocion && entregas.equipamiento == 0">
                                                     <span class="badge badge-danger">Equipamiento sin solicitarse</span>
                                                 </td>
-                                                <td class="td2" v-else-if="!entregas.paquete && entregas.promocion && entregas.equipamiento == 0">
+                                                <td class="td2" v-else-if="!entregas.descripcion_paquete && entregas.descripcion_promocion && entregas.equipamiento == 0">
                                                     <span class="badge badge-danger">Equipamiento sin solicitarse</span>
                                                 </td>
 
-                                                <td class="td2" v-else-if="entregas.paquete && entregas.promocion && entregas.equipamiento == 1">
+                                                <td class="td2" v-else-if="entregas.descripcion_paquete && entregas.descripcion_promocion && entregas.equipamiento == 1">
                                                     <span class="badge badge-warning">En proceso de instalación</span>
                                                 </td>
-                                                <td class="td2" v-else-if="entregas.paquete && !entregas.promocion && entregas.equipamiento == 1" >
+                                                <td class="td2" v-else-if="entregas.descripcion_paquete && !entregas.descripcion_promocion && entregas.equipamiento == 1" >
                                                     <span class="badge badge-warning">En proceso de instalación</span>
                                                 </td>
-                                                <td class="td2" v-else-if="!entregas.paquete && entregas.promocion && entregas.equipamiento == 1">
+                                                <td class="td2" v-else-if="!entregas.descripcion_paquete && entregas.descripcion_promocion && entregas.equipamiento == 1">
                                                     <span class="badge badge-warning">En proceso de instalación</span>
                                                 </td>
 
-                                                <td class="td2" v-else-if="entregas.paquete && entregas.promocion && entregas.equipamiento == 2">
+                                                <td class="td2" v-else-if="entregas.descripcion_paquete && entregas.descripcion_promocion && entregas.equipamiento == 2">
                                                     <span class="badge badge-success">Equipamiento instalado</span>
                                                 </td>
-                                                <td class="td2" v-else-if="entregas.paquete && !entregas.promocion && entregas.equipamiento == 2">
+                                                <td class="td2" v-else-if="entregas.descripcion_paquete && !entregas.descripcion_promocion && entregas.equipamiento == 2">
                                                     <span class="badge badge-success">Equipamiento instalado</span>
                                                 </td>
-                                                <td class="td2" v-else-if="!entregas.paquete && entregas.promocion && entregas.equipamiento == 2">
+                                                <td class="td2" v-else-if="!entregas.descripcion_paquete && entregas.descripcion_promocion && entregas.equipamiento == 2">
                                                     <span class="badge badge-success">Equipamiento instalado</span>
                                                 </td>
+                                                <td class="td2" v-else-if="!entregas.descripcion_paquete && !entregas.descripcion_promocion" v-text="'Sin equipamiento'"></td>
                                                 <td class="td2" v-else v-text="'Sin equipamiento'" ></td> 
                                             </template>
                                             <td class="td2">
@@ -890,6 +903,8 @@
                 b_manzana: '',
                 b_lote: '',
                 fecha: '',
+                b_desde : '',
+                b_hasta : '',
 
                 tipoAccion:0,
                 observacion:'',
@@ -960,7 +975,7 @@
         methods : {
             listarContratos(page, buscar, b_etapa, b_manzana, b_lote, criterio){
                 let me = this;
-                var url = '/postventa/index?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio;
+                var url = '/postventa/index?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio +  '&b_desde=' + this.b_desde +  '&b_hasta=' + this.b_hasta ;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayContratos = respuesta.contratos.data;

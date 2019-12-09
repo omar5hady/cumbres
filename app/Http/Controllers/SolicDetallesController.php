@@ -439,7 +439,7 @@ class SolicDetallesController extends Controller
 
     public function indexDescripciones(Request $request){
         if(!$request->ajax())return redirect('/');
-        $detalles = Descripcion_detalle::select('general','subconcepto','detalle','garantia','id','costo','observacion')
+        $detalles = Descripcion_detalle::select('general','subconcepto','detalle','garantia','id','costo','observacion','fecha_concluido')
                 ->where('solicitud_id','=',$request->id)->get();
 
         return ['detalles' => $detalles];

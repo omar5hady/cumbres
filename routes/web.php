@@ -359,6 +359,7 @@ Route::group(['middleware' => ['auth']],function(){
 
         ////////////////////////////     RUTAS REVISION PREVIA      ///////////////////////////
             Route::get('/postventa/indexSinRevision','RevisionPreviaController@indexSinRevision');
+            Route::get('/postventa/indexSinRevisionContratista','RevisionPreviaController@indexSinRevisionContratista');
             Route::post('/postventa/finalizarRevisionPrevia','RevisionPreviaController@storeRevision');
             Route::get('/postventa/checklist/pdf/{folio}','RevisionPreviaController@DetallesPDF');
 

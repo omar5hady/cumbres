@@ -171,6 +171,9 @@
                                     <li @click="menu=217" class="nav-item">
                                         <a class="nav-link" href="#"><i class="fa fa-archive"></i> Solicitudes</a>
                                     </li>
+                                    <li @click="menu=223" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="fa fa-archive"></i> Revisión Previa</a>
+                                    </li>
                                 @endif
                             </ul>
                         </li>

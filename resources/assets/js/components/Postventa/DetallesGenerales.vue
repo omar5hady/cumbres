@@ -25,22 +25,14 @@
                                         <option value="dias_garantia">Días de garantía</option>
                                     </select>
                                       <select class="form-control" v-if="criterio=='dias_garantia'" v-model="buscar">
+                                            <option value="0">0 Dias</option>
                                             <option value="30">1 Mes</option>
                                             <option value="60">2 Mes</option>
-                                            <option value="90">3 Mes</option>
-                                            <option value="120">4 Mes</option>
-                                            <option value="150">5 Mes</option>
-                                            <option value="180">6 Mes</option>
-                                            <option value="210">7 Mes</option>
-                                            <option value="240">8 Mes</option>
-                                            <option value="270">9 Mes</option>
-                                            <option value="300">10 Mes</option>
-                                            <option value="330">11 Mes</option>
                                             <option value="365">1 Año</option>
-                                            <option value="547">18 meses</option>
                                             <option value="730">2 Años</option>
                                             <option value="1095">3 Años</option>
                                             <option value="1460">4 Años</option>
+                                            <option value="1825">5 Años</option>
                                         </select>
                                     <input v-else type="text" v-model="buscar" @keyup.enter="listarDetallesGenerales(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
                                     <button type="submit" @click="listarDetallesGenerales(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
@@ -110,18 +102,14 @@
                                     <label class="col-md-3 form-control-label" for="text-input"></label>
                                     <div class="col-md-6">
                                         <select class="form-control" v-model="dias_garantia">
+                                            <option value="0">0 Dias</option>
                                             <option value="30">1 Mes</option>
                                             <option value="60">2 Mes</option>
-                                            <option value="90">3 Mes</option>
-                                            <option value="120">4 Mes</option>
-                                            <option value="150">5 Mes</option>
-                                            <option value="180">6 Mes</option>
-                                            <option value="210">7 Mes</option>
-                                            <option value="240">8 Mes</option>
-                                            <option value="270">9 Mes</option>
-                                            <option value="300">10 Mes</option>
-                                            <option value="330">11 Mes</option>
-                                            <option value="360">1 Año</option>
+                                            <option value="365">1 Año</option>
+                                            <option value="730">2 Años</option>
+                                            <option value="1095">3 Años</option>
+                                            <option value="1460">4 Años</option>
+                                            <option value="1825">5 Años</option>
                                         </select>
                                     </div>
                                 </div>
