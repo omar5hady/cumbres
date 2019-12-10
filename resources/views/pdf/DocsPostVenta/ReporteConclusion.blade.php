@@ -36,17 +36,48 @@
                 <IMG SRC="img/reportconclusion.png" width="720" height="100">
             </div>
 
-            <div class="table" style="margin-top:110px;">
+            <div class="table" style="float:left; margin-top:110px;">
                 <div class="table-row">
-                    <div colspan="2" class="table-cell" style="text-align: center; font-size: 9pt; color: white; background-color:#063058;"><b>&nbsp; N° </b></div>
-                    <div colspan="9" class="table-cell" style="text-align: center; font-size:9pt; color: white; background-color:#063058;"><b>&nbsp;&nbsp; Fecha conclusión de detalle </b></div>
-                    <div colspan="9" class="table-cell" style="text-align: center; font-size: 9pt; color: white; background-color:#063058;"><b>&nbsp;&nbsp; Firma cliente Vo.Bo. reparación </b></div>
+                    <div colspan="13" class="table-cell"><i class="icon-home fa-lg"></i><b>&nbsp;&nbsp;FRACCIONAMIENTO RESIDENDIAL {{mb_strtoupper($solicitud[0]->fraccionamiento)}}</b></div>
+                    <div colspan="7" class="table-cell"><i class="icon-home fa-lg"></i><b>&nbsp;&nbsp; Etapa: {{mb_strtoupper($solicitud[0]->etapa)}}</b></div>
+                </div>
+                <div class="table-row">
+                    <div colspan="4" class="table-cell"><i class="icon-home fa-lg"></i><b>&nbsp;&nbsp;{{mb_strtoupper($solicitud[0]->modelo)}}</b></div>
+                    <div colspan="9" class="table-cell"><i class="fa fa-apple fa-lg"></i><b>&nbsp;&nbsp;{{mb_strtoupper($solicitud[0]->manzana)}}</b></div>
+                    <div colspan="7" class="table-cell"><i class="fa fa-square fa-lg"></i><b>&nbsp;&nbsp; Numero de Lote: {{$solicitud[0]->num_lote}}</b></div>
+                </div>
+                <div class="table-row">
+                    <div colspan="12" class="table-cell"><i class="fa fa-user fa-lg"></i><b>&nbsp;&nbsp;{{$solicitud[0]->cliente}} </b></div>
+                    <div colspan="8" class="table-cell"><i class="fa fa-calendar fa-lg"></i><b>&nbsp;&nbsp;{{$solicitud[0]->fecha}}</b></div>
+                </div>
+                <div class="table-row">
+                    <div colspan="15" class="table-cell"><i class="fa fa-map-marker fa-lg"></i><b>&nbsp;&nbsp;Dirección: {{$solicitud[0]->calle}} No.{{$solicitud[0]->numero}} </b></div>
+                    <div colspan="5" class="table-cell"><i class="fa fa-phone fa-lg"></i><b>&nbsp;&nbsp;{{$solicitud[0]->celular}}</b></div>
+                </div>
+                <div class="table-row">
+                    <div colspan="6" class="table-cell"><i class="fa fa-calendar fa-lg"></i><b>&nbsp;&nbsp;{{$solicitud[0]->fecha_entrega_real}}</b></div>
+                    <div colspan="14" class="table-cell">
+                        <i class="fa fa-clock-o fa-lg"></i>
+                        <b>&nbsp; L @if($solicitud[0]->lunes == 1)<i class="fa fa-check-square-o"></i> @endif
+                        &nbsp; M @if($solicitud[0]->martes == 1)<i class="fa fa-check-square-o"></i> @endif
+                        &nbsp; Mi @if($solicitud[0]->miercoles == 1)<i class="fa fa-check-square-o"></i> @endif
+                        &nbsp; J @if($solicitud[0]->jueves == 1)<i class="fa fa-check-square-o"></i> @endif
+                        &nbsp; V @if($solicitud[0]->viernes == 1)<i class="fa fa-check-square-o"></i> @endif
+                        &nbsp; S @if($solicitud[0]->sabado == 1)<i class="fa fa-check-square-o"></i> @endif
+                        &nbsp;&nbsp;&nbsp;{{$solicitud[0]->horario}}</b>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table" style="margin-top:305px;">
+                <div class="table-row">
+                    <div colspan="14" class="table-cell" style="text-align: center; font-size:10pt; color: white; background-color:#063058;"><b>&nbsp;&nbsp; Descripción del detalle a reparar </b></div>
+                    <div colspan="6" class="table-cell" style="text-align: center; font-size: 10pt; color: white; background-color:#063058;"><b>&nbsp;&nbsp; Fecha conclusión de detalle </b></div>
                 </div>
                 @for($i=0; $i < count($detalles); $i++)
                     <div class="table-row">
-                        <div colspan="2" class="table-cell" style="text-align: center; "><b>&nbsp; {{$i+1}} </b></div>
-                        <div colspan="9" class="table-cell" style="text-align: center; ">{{$detalles[$i]->fecha_concluido}}</div>
-                        <div colspan="9" class="table-cell" style="text-align: center; "></div>
+                    <div colspan="14" class="table-cell" style="text-align: center; ">{{$detalles[$i]->general}}, {{$detalles[$i]->subconcepto}}, {{$detalles[$i]->detalle}}</div>
+                        <div colspan="6" class="table-cell" style="text-align: center; "><b>{{$detalles[$i]->fecha_concluido}}</b></div>
                     </div>
                 @endfor                          
             </div>
@@ -61,7 +92,7 @@
                     DE GRUPO CONSTRUCTOR CUMBRES S.A. DE C.V.
                 </b></div>
                 
-                <div colspan="4" class="table-cell4" style="text-align: center;"><b><br> _____________________________<br> Nombre del Cliente</b></div>
+                <div colspan="4" class="table-cell4" style="text-align: center;"><b><br> _____________________________<br> {{$solicitud[0]->cliente}}</b></div>
 
                 <div colspan="3" class="table-cell2" style="text-align: center;"><b>FIRMA</b></div>
     

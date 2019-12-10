@@ -25,6 +25,8 @@ class CreateEntregasTable extends Migration
             $table->boolean('puntualidad')->default(0);
             $table->boolean('cero_detalles')->default(0);
 
+            $table->integer('cont_reprogram')->default(0);
+
             $table->timestamps();
 
             $table->foreign('id')->references('id')->on('contratos');

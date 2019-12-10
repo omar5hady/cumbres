@@ -50,7 +50,22 @@ class SolicDetallesController extends Controller
                 $descripcion->subconcepto = $det['subconcepto'];
                 $descripcion->general = $det['general'];
                 $descripcion->save();
-            }          
+            }      
+            
+            $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=', Auth::user()->id)->get();
+                $fecha = Carbon::now();
+                $msj = 'Se ha creado una nueva solicitud de detalles';
+                $arregloAceptado = [
+                    'notificacion' => [
+                        'usuario' => $imagenUsuario[0]->usuario,
+                        'foto' => $imagenUsuario[0]->foto_user,
+                        'fecha' => $fecha,
+                        'msj' => $msj,
+                        'titulo' => 'Nueva solicitud'
+                    ]
+                ];
+
+                    User::findOrFail($request->contratista_id)->notify(new NotifyAdmin($arregloAceptado));
  
             DB::commit();
         } catch (Exception $e){
@@ -439,7 +454,8 @@ class SolicDetallesController extends Controller
 
     public function indexDescripciones(Request $request){
         if(!$request->ajax())return redirect('/');
-        $detalles = Descripcion_detalle::select('general','subconcepto','detalle','garantia','id','costo','observacion','fecha_concluido')
+        $detalles = Descripcion_detalle::select('general','subconcepto','detalle','garantia','id','costo',
+                                'observacion','fecha_concluido','resultado','revisado','solicitud_id')
                 ->where('solicitud_id','=',$request->id)->get();
 
         return ['detalles' => $detalles];
@@ -462,12 +478,12 @@ class SolicDetallesController extends Controller
                             ->where('solic_detalles.id','=',$id)
                             ->get();
 
-            $detalles = Descripcion_detalle::select('general','subconcepto','detalle','garantia')->where('solicitud_id','=',$id)->get();
+            $detalles = Descripcion_detalle::select('general','subconcepto','detalle','garantia','fecha_concluido')->where('solicitud_id','=',$id)->get();
 
         
 
             setlocale(LC_TIME, 'es_MX.utf8');
-            
+
 
             $fecha_entrega_real = new Carbon($solicitud[0]->fecha_entrega_real);
             $solicitud[0]->fecha_entrega_real = $fecha_entrega_real->formatLocalized('%d de %B de %Y');
@@ -503,7 +519,7 @@ class SolicDetallesController extends Controller
                          'solic_detalles.dias_entrega','solic_detalles.lunes','solic_detalles.martes',
                          'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
                          'solic_detalles.sabado','creditos.fraccionamiento as proyecto','creditos.etapa',
-                         'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista',
+                         'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista','solic_detalles.status',
                          'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id','solic_detalles.fecha_program','solic_detalles.hora_program')
                          ->where('contratos.entregado','=',1)
                          ->where('solic_detalles.fecha_program','!=',NULL)
@@ -521,7 +537,7 @@ class SolicDetallesController extends Controller
                                         'solic_detalles.dias_entrega','solic_detalles.lunes','solic_detalles.martes',
                                         'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
                                         'solic_detalles.sabado','creditos.fraccionamiento as proyecto','creditos.etapa',
-                                        'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista',
+                                        'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista','solic_detalles.status',
                                         'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id','solic_detalles.fecha_program','solic_detalles.hora_program')
                                         ->where('contratos.entregado','=',1)
                                         ->where('solic_detalles.fecha_program','!=',NULL)
@@ -540,7 +556,7 @@ class SolicDetallesController extends Controller
                                         'solic_detalles.dias_entrega','solic_detalles.lunes','solic_detalles.martes',
                                         'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
                                         'solic_detalles.sabado','creditos.fraccionamiento as proyecto','creditos.etapa',
-                                        'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista',
+                                        'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista','solic_detalles.status',
                                         'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id','solic_detalles.fecha_program','solic_detalles.hora_program')
                                         ->where('contratos.entregado','=',1)
                                         ->where('solic_detalles.fecha_program','!=',NULL)
@@ -558,7 +574,7 @@ class SolicDetallesController extends Controller
                                         'solic_detalles.dias_entrega','solic_detalles.lunes','solic_detalles.martes',
                                         'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
                                         'solic_detalles.sabado','creditos.fraccionamiento as proyecto','creditos.etapa',
-                                        'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista',
+                                        'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista','solic_detalles.status',
                                         'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id','solic_detalles.fecha_program','solic_detalles.hora_program')
                                         ->where('contratos.entregado','=',1)
                                         ->where('solic_detalles.fecha_program','!=',NULL)
@@ -575,7 +591,7 @@ class SolicDetallesController extends Controller
                                         'solic_detalles.dias_entrega','solic_detalles.lunes','solic_detalles.martes',
                                         'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
                                         'solic_detalles.sabado','creditos.fraccionamiento as proyecto','creditos.etapa',
-                                        'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista',
+                                        'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista','solic_detalles.status',
                                         'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id','solic_detalles.fecha_program','solic_detalles.hora_program')
                                         ->where('contratos.entregado','=',1)
                                         ->where('solic_detalles.fecha_program','!=',NULL)
@@ -591,7 +607,7 @@ class SolicDetallesController extends Controller
                                         'solic_detalles.dias_entrega','solic_detalles.lunes','solic_detalles.martes',
                                         'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
                                         'solic_detalles.sabado','creditos.fraccionamiento as proyecto','creditos.etapa',
-                                        'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista',
+                                        'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista','solic_detalles.status',
                                         'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id','solic_detalles.fecha_program','solic_detalles.hora_program')
                                         ->where('contratos.entregado','=',1)
                                         ->where('solic_detalles.fecha_program','!=',NULL)
@@ -608,7 +624,7 @@ class SolicDetallesController extends Controller
                                         'solic_detalles.dias_entrega','solic_detalles.lunes','solic_detalles.martes',
                                         'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
                                         'solic_detalles.sabado','creditos.fraccionamiento as proyecto','creditos.etapa',
-                                        'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista',
+                                        'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista','solic_detalles.status',
                                         'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id','solic_detalles.fecha_program','solic_detalles.hora_program')
                                         ->where('contratos.entregado','=',1)
                                         ->where('solic_detalles.fecha_program','!=',NULL)
@@ -628,7 +644,7 @@ class SolicDetallesController extends Controller
                                  'solic_detalles.dias_entrega','solic_detalles.lunes','solic_detalles.martes',
                                  'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
                                  'solic_detalles.sabado','creditos.fraccionamiento as proyecto','creditos.etapa',
-                                 'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista',
+                                 'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista','solic_detalles.status',
                                  'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id','solic_detalles.fecha_program','solic_detalles.hora_program')
                                  ->where('contratos.entregado','=',1)
                                  ->where('solic_detalles.fecha_program','!=',NULL)
@@ -651,7 +667,7 @@ class SolicDetallesController extends Controller
                              'solic_detalles.dias_entrega','solic_detalles.lunes','solic_detalles.martes',
                              'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
                              'solic_detalles.sabado','creditos.fraccionamiento as proyecto','creditos.etapa',
-                             'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista',
+                             'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista','solic_detalles.status',
                              'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id','solic_detalles.fecha_program','solic_detalles.hora_program')
                              ->where('contratos.entregado','=',1)
                              ->where('solic_detalles.fecha_program','!=',NULL)
@@ -670,7 +686,7 @@ class SolicDetallesController extends Controller
                                             'solic_detalles.dias_entrega','solic_detalles.lunes','solic_detalles.martes',
                                             'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
                                             'solic_detalles.sabado','creditos.fraccionamiento as proyecto','creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista',
+                                            'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista','solic_detalles.status',
                                             'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id','solic_detalles.fecha_program','solic_detalles.hora_program')
                                             ->where('contratos.entregado','=',1)
                                             ->where('solic_detalles.fecha_program','!=',NULL)
@@ -690,7 +706,7 @@ class SolicDetallesController extends Controller
                                             'solic_detalles.dias_entrega','solic_detalles.lunes','solic_detalles.martes',
                                             'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
                                             'solic_detalles.sabado','creditos.fraccionamiento as proyecto','creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista',
+                                            'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista','solic_detalles.status',
                                             'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id','solic_detalles.fecha_program','solic_detalles.hora_program')
                                             ->where('contratos.entregado','=',1)
                                             ->where('solic_detalles.fecha_program','!=',NULL)
@@ -709,7 +725,7 @@ class SolicDetallesController extends Controller
                                             'solic_detalles.dias_entrega','solic_detalles.lunes','solic_detalles.martes',
                                             'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
                                             'solic_detalles.sabado','creditos.fraccionamiento as proyecto','creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista',
+                                            'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista','solic_detalles.status',
                                             'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id','solic_detalles.fecha_program','solic_detalles.hora_program')
                                             ->where('contratos.entregado','=',1)
                                             ->where('solic_detalles.fecha_program','!=',NULL)
@@ -727,7 +743,7 @@ class SolicDetallesController extends Controller
                                             'solic_detalles.dias_entrega','solic_detalles.lunes','solic_detalles.martes',
                                             'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
                                             'solic_detalles.sabado','creditos.fraccionamiento as proyecto','creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista',
+                                            'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista','solic_detalles.status',
                                             'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id','solic_detalles.fecha_program','solic_detalles.hora_program')
                                             ->where('contratos.entregado','=',1)
                                             ->where('solic_detalles.fecha_program','!=',NULL)
@@ -744,7 +760,7 @@ class SolicDetallesController extends Controller
                                             'solic_detalles.dias_entrega','solic_detalles.lunes','solic_detalles.martes',
                                             'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
                                             'solic_detalles.sabado','creditos.fraccionamiento as proyecto','creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista',
+                                            'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista','solic_detalles.status',
                                             'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id','solic_detalles.fecha_program','solic_detalles.hora_program')
                                             ->where('contratos.entregado','=',1)
                                             ->where('solic_detalles.fecha_program','!=',NULL)
@@ -762,7 +778,7 @@ class SolicDetallesController extends Controller
                                             'solic_detalles.dias_entrega','solic_detalles.lunes','solic_detalles.martes',
                                             'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
                                             'solic_detalles.sabado','creditos.fraccionamiento as proyecto','creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista',
+                                            'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista','solic_detalles.status',
                                             'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id','solic_detalles.fecha_program','solic_detalles.hora_program')
                                             ->where('contratos.entregado','=',1)
                                             ->where('solic_detalles.fecha_program','!=',NULL)
@@ -783,7 +799,7 @@ class SolicDetallesController extends Controller
                                      'solic_detalles.dias_entrega','solic_detalles.lunes','solic_detalles.martes',
                                      'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
                                      'solic_detalles.sabado','creditos.fraccionamiento as proyecto','creditos.etapa',
-                                     'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista',
+                                     'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista','solic_detalles.status',
                                      'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id','solic_detalles.fecha_program','solic_detalles.hora_program')
                                      ->where('contratos.entregado','=',1)
                                      ->where('solic_detalles.fecha_program','!=',NULL)
@@ -806,7 +822,7 @@ class SolicDetallesController extends Controller
                              'solic_detalles.dias_entrega','solic_detalles.lunes','solic_detalles.martes',
                              'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
                              'solic_detalles.sabado','creditos.fraccionamiento as proyecto','creditos.etapa',
-                             'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista',
+                             'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista','solic_detalles.status',
                              'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id','solic_detalles.fecha_program','solic_detalles.hora_program')
                              ->where('contratos.entregado','=',1)
                              ->where('solic_detalles.fecha_program','!=',NULL)
@@ -826,7 +842,7 @@ class SolicDetallesController extends Controller
                                             'solic_detalles.dias_entrega','solic_detalles.lunes','solic_detalles.martes',
                                             'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
                                             'solic_detalles.sabado','creditos.fraccionamiento as proyecto','creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista',
+                                            'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista','solic_detalles.status',
                                             'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id','solic_detalles.fecha_program','solic_detalles.hora_program')
                                             ->where('contratos.entregado','=',1)
                                             ->where('solic_detalles.fecha_program','!=',NULL)
@@ -847,7 +863,7 @@ class SolicDetallesController extends Controller
                                             'solic_detalles.dias_entrega','solic_detalles.lunes','solic_detalles.martes',
                                             'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
                                             'solic_detalles.sabado','creditos.fraccionamiento as proyecto','creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista',
+                                            'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista','solic_detalles.status',
                                             'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id','solic_detalles.fecha_program','solic_detalles.hora_program')
                                             ->where('contratos.entregado','=',1)
                                             ->where('solic_detalles.fecha_program','!=',NULL)
@@ -867,7 +883,7 @@ class SolicDetallesController extends Controller
                                             'solic_detalles.dias_entrega','solic_detalles.lunes','solic_detalles.martes',
                                             'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
                                             'solic_detalles.sabado','creditos.fraccionamiento as proyecto','creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista',
+                                            'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista','solic_detalles.status',
                                             'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id','solic_detalles.fecha_program','solic_detalles.hora_program')
                                             ->where('contratos.entregado','=',1)
                                             ->where('solic_detalles.fecha_program','!=',NULL)
@@ -886,7 +902,7 @@ class SolicDetallesController extends Controller
                                             'solic_detalles.dias_entrega','solic_detalles.lunes','solic_detalles.martes',
                                             'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
                                             'solic_detalles.sabado','creditos.fraccionamiento as proyecto','creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista',
+                                            'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista','solic_detalles.status',
                                             'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id','solic_detalles.fecha_program','solic_detalles.hora_program')
                                             ->where('contratos.entregado','=',1)
                                             ->where('solic_detalles.fecha_program','!=',NULL)
@@ -904,7 +920,7 @@ class SolicDetallesController extends Controller
                                             'solic_detalles.dias_entrega','solic_detalles.lunes','solic_detalles.martes',
                                             'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
                                             'solic_detalles.sabado','creditos.fraccionamiento as proyecto','creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista',
+                                            'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista','solic_detalles.status',
                                             'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id','solic_detalles.fecha_program','solic_detalles.hora_program')
                                             ->where('contratos.entregado','=',1)
                                             ->where('solic_detalles.fecha_program','!=',NULL)
@@ -923,7 +939,7 @@ class SolicDetallesController extends Controller
                                             'solic_detalles.dias_entrega','solic_detalles.lunes','solic_detalles.martes',
                                             'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
                                             'solic_detalles.sabado','creditos.fraccionamiento as proyecto','creditos.etapa',
-                                            'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista',
+                                            'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista','solic_detalles.status',
                                             'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id','solic_detalles.fecha_program','solic_detalles.hora_program')
                                             ->where('contratos.entregado','=',1)
                                             ->where('solic_detalles.fecha_program','!=',NULL)
@@ -945,7 +961,7 @@ class SolicDetallesController extends Controller
                                      'solic_detalles.dias_entrega','solic_detalles.lunes','solic_detalles.martes',
                                      'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
                                      'solic_detalles.sabado','creditos.fraccionamiento as proyecto','creditos.etapa',
-                                     'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista',
+                                     'creditos.manzana','creditos.num_lote','creditos.modelo','contratistas.nombre as contratista','solic_detalles.status',
                                      'solic_detalles.created_at','lotes.fraccionamiento_id','lotes.etapa_id','solic_detalles.fecha_program','solic_detalles.hora_program')
                                      ->where('contratos.entregado','=',1)
                                      ->where('solic_detalles.fecha_program','!=',NULL)
@@ -989,7 +1005,7 @@ class SolicDetallesController extends Controller
                                                  'descripcion_detalles.garantia','descripcion_detalles.solicitud_id','solic_detalles.cliente',
                                                  'creditos.fraccionamiento as proyecto','creditos.etapa','creditos.manzana','creditos.num_lote',
                                                  'creditos.modelo',DB::raw('DATE(descripcion_detalles.created_at) AS fechaCreacion'),
-                                                 'descripcion_detalles.id')
+                                                 'descripcion_detalles.id','descripcion_detalles.resultado','descripcion_detalles.revisado')
                                         ->where('descripcion_detalles.solicitud_id','=',$solicitudID)
                                         ->orderBy('descripcion_detalles.fecha_concluido','ASC')
                                         ->get();
@@ -1015,11 +1031,12 @@ class SolicDetallesController extends Controller
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $costo = Descripcion_detalle::findOrFail($request->id);
         $costo->fecha_concluido = $request->fecha_concluido;
+        $costo->revisado = 0;
         $costo->save();
 
         $total = Descripcion_detalle::where('solicitud_id','=',$request->solicitud_id)->count();
         $totalTerminados = Descripcion_detalle::where('solicitud_id','=',$request->solicitud_id)
-            ->where('fecha_concluido','!=',NULL)->count();
+            ->where('fecha_concluido','!=',NULL)->where('revisado','=',2)->count();
 
         if($total == $totalTerminados){
             $totalSolicitud = Solic_detalle::findOrFail($request->solicitud_id);
@@ -1027,8 +1044,68 @@ class SolicDetallesController extends Controller
             $totalSolicitud->save();
         }
         
+        $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=', Auth::user()->id)->get();
+                $fecha = Carbon::now();
+                $msj = 'Nuevo detalle concluido, realizar la revision';
+                $arregloAceptado = [
+                    'notificacion' => [
+                        'usuario' => $imagenUsuario[0]->usuario,
+                        'foto' => $imagenUsuario[0]->foto_user,
+                        'fecha' => $fecha,
+                        'msj' => $msj,
+                        'titulo' => 'Detalle concluido'
+                    ]
+                ];
+
+                    User::findOrFail(25694)->notify(new NotifyAdmin($arregloAceptado));
+
 
     }
+
+    public function updateResultado(Request $request){
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        $costo = Descripcion_detalle::findOrFail($request->id);
+        if($request->resultado == 0){
+            $costo->fecha_concluido = NULL;
+            $costo->revisado = 1;
+            $costo->resultado = $request->comentario;
+        }
+        else{
+            $costo->revisado = 2;
+            $costo->resultado = '';
+        }
+        
+
+        $costo->save();
+
+        $total = Descripcion_detalle::where('solicitud_id','=',$request->solicitud_id)->count();
+        $totalTerminados = Descripcion_detalle::where('solicitud_id','=',$request->solicitud_id)
+            ->where('fecha_concluido','!=',NULL)->where('revisado','=',2)->count();
+
+        if($total == $totalTerminados){
+            $totalSolicitud = Solic_detalle::findOrFail($request->solicitud_id);
+            $totalSolicitud->status = 2;
+
+            $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=', Auth::user()->id)->get();
+                $fecha = Carbon::now();
+                $msj = 'La solicitud No.'.$request->solicitud_id.' ha sido finalizada';
+                $arregloAceptado = [
+                    'notificacion' => [
+                        'usuario' => $imagenUsuario[0]->usuario,
+                        'foto' => $imagenUsuario[0]->foto_user,
+                        'fecha' => $fecha,
+                        'msj' => $msj,
+                        'titulo' => 'Solicitud finalizada'
+                    ]
+                ];
+
+                    User::findOrFail($totalSolicitud->contratista_id)->notify(new NotifyAdmin($arregloAceptado));
+            $totalSolicitud->save();
+        }
+        
+
+    }
+
 
     public function updateHora(Request $request){
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -1043,17 +1120,67 @@ class SolicDetallesController extends Controller
         $solicitud = Solic_detalle::findOrFail($request->id);
         $solicitud->fecha_program = $request->fecha_program;
         $solicitud->status = 1;
+
+        $imagenUsuario = DB::table('users')->select('foto_user', 'usuario')->where('id', '=', Auth::user()->id)->get();
+                $fecha = Carbon::now();
+                $msj = 'Se ha programado la fecha de visita para la solicitud #.'.$request->id;
+                $arregloAceptado = [
+                    'notificacion' => [
+                        'usuario' => $imagenUsuario[0]->usuario,
+                        'foto' => $imagenUsuario[0]->foto_user,
+                        'fecha' => $fecha,
+                        'msj' => $msj,
+                        'titulo' => 'Fecha programada'
+                    ]
+                ];
+
+                    User::findOrFail($solicitud->contratista_id)->notify(new NotifyAdmin($arregloAceptado));
+
         $solicitud->save();
 
     }
 
     public function reporteConclusionPDF($id){
 
-        $detalles = Descripcion_detalle::select('general','subconcepto','detalle','garantia','fecha_concluido')->where('solicitud_id','=',$id)->get();
+        $solicitud = Solic_detalle::join('contratos','solic_detalles.contrato_id','=','contratos.id')
+                            ->join('contratistas','solic_detalles.contratista_id','=','contratistas.id')
+                            ->join('entregas','contratos.id','=','entregas.id')
+                            ->join('creditos','contratos.id','=','creditos.id')
+                            ->join('lotes','creditos.lote_id','=','lotes.id')
+                            ->select('solic_detalles.id','contratos.id as folio','creditos.fraccionamiento',
+                                    'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo',
+                                    'solic_detalles.cliente','solic_detalles.celular',
+                                    'contratistas.nombre', DB::raw('DATE(solic_detalles.created_at) as fecha'),
+                                    'solic_detalles.lunes','solic_detalles.martes','solic_detalles.miercoles',
+                                    'solic_detalles.jueves','solic_detalles.viernes','solic_detalles.sabado',
+                                    'solic_detalles.horario','entregas.fecha_entrega_real','lotes.calle', 'lotes.numero')
+                            ->where('solic_detalles.id','=',$id)
+                            ->get();
+
+            $detalles = Descripcion_detalle::select('general','subconcepto','detalle','garantia','fecha_concluido')->where('solicitud_id','=',$id)->get();
+
+        
+
+            setlocale(LC_TIME, 'es_MX.utf8');
+            
+            foreach($detalles as $detalle){
+                 $fecha = new Carbon($detalle->fecha_concluido);
+                 $detalle->fecha_concluido = $fecha->formatLocalized('%d de %B de %Y');
+            }
+            
+
+            $fecha_entrega_real = new Carbon($solicitud[0]->fecha_entrega_real);
+            $solicitud[0]->fecha_entrega_real = $fecha_entrega_real->formatLocalized('%d de %B de %Y');
+
+            $fecha = new Carbon($solicitud[0]->fecha);
+            $solicitud[0]->fecha = $fecha->formatLocalized('%d de %B de %Y');
+
+            $solicitud[0]->celular = '('.substr($solicitud[0]->celular, 0, 3).') '.substr($solicitud[0]->celular, 3, 3).'-'.substr($solicitud[0]->celular,6);
+            
 
     
 
-        $pdf = \PDF::loadview('pdf.DocsPostVenta.ReporteConclusion', ['detalles' => $detalles]);
+        $pdf = \PDF::loadview('pdf.DocsPostVenta.ReporteConclusion', ['solicitud' => $solicitud ,'detalles' => $detalles]);
                     return $pdf->stream('ReporteConclusion.pdf');
     }
 

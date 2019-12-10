@@ -330,6 +330,7 @@
                                         <th>Paquete y/o Promocioón</th>
                                         <th>Equipamiento</th>
                                         <th>Fecha de Entrega</th>
+                                        <th># Reprogramaciones</th>
                                         <th>Observaciones</th>
                                         
                                     </tr>
@@ -414,6 +415,7 @@
                                             <td class="td2">
                                                 <span v-text="this.moment(entregas.fecha_entrega_real).locale('es').format('DD/MMM/YYYY')" class="badge badge-success"></span>
                                             </td>
+                                            <td class="td2" v-text="entregas.cont_reprogram"></td>
                                             <td> 
                                                 <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
                                                     @click="abrirModal('observaciones', entregas),listarObservacion(1,entregas.folio)">Ver observaciones
@@ -467,6 +469,17 @@
                                     <label class="col-md-3 form-control-label" for="text-input">Fecha de entrega programada</label>
                                     <div class="col-md-3">
                                         <input v-model="fecha_program" type="date" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row" v-if="tipoAccion == 1 && reprogramar == 1">
+                                    <label class="col-md-3 form-control-label" for="text-input">Motivo reprogramación</label>
+                                    <div class="col-md-6">
+                                        <select class="form-control col-md-6" v-model="mot_reprogra">
+                                            <option value="">Seleccione</option>
+                                            <option value="Cliente">Cliente</option>
+                                            <option value="Contratista">Contratista</option>
+                                        </select>
                                     </div>
                                 </div>
 
@@ -850,6 +863,8 @@
                 fecha_entrega_real:'',
                 hora_entrega_real:'',
                 cero_detalles : 0,
+
+                reprogramar : 0,
                 
 
                 //Datos clientes
@@ -881,6 +896,8 @@
                 ext_cliente:'',
                 edocivil_cliente:'',
                 depeconomicos_cliente:'',
+
+                mot_reprogra : '',
 
                 // Criterios para historial de contratos
                 pagination2 : {
@@ -1175,6 +1192,7 @@
                     'fecha_program' : this.fecha_program,
                     'folio' : this.folio,
                     'observacion' : this.observacion,
+                    'mot_program' : this.mot_reprogra,
                     
                 }).then(function (response){
                     me.cerrarModal();
@@ -1428,6 +1446,10 @@
                             this.modal2 = 1;
                             this.tituloModal = "Programar Fecha";
                             this.fecha_program = data['fecha_program'];
+                            if(data['fecha_program'] != null){
+                                this.reprogramar = 1;
+                            }
+                            this.mot_reprogra = '',
                             this.tipoAccion = 1;
                             break;
                         }
@@ -1458,6 +1480,8 @@
                                     this.tituloModal = "Finalizar entrega";
                                     this.tipoAccion = 3;
                                     this.cero_detalles = 0;
+                                    this.fecha_entrega_real = data['hora_entrega_prog'];
+                                    this.hora_entrega_real = data['hora_entrega_prog'];
                                 }
                                 })
                             }
@@ -1467,7 +1491,8 @@
                                 this.tituloModal = "Finalizar entrega";
                                 this.tipoAccion = 3;
                                 this.cero_detalles = 0;
-
+                                this.fecha_entrega_real = data['hora_entrega_prog'];
+                                this.hora_entrega_real = data['hora_entrega_prog'];
                             }
                             
                             

@@ -10,7 +10,7 @@ class Descripcion_detalle extends Model
     protected $primaryKey = 'id'; //Referenciar la llave primaria
     protected $fillable = [
                         'solicitud_id', 'detalle_id', 'garantia', 'observacion', 'fecha_concluido',
-                        'detalle', 'subconcepto', 'general', 'costo'
+                        'detalle', 'subconcepto', 'general', 'costo', 'revisado', 'resultado'
     ];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
 
     public function solic_detalle(){

@@ -79,6 +79,7 @@
                                         <!-- <th>Disponibilidad cliente</th> -->
                                         <th>Fecha solicitud</th>
                                         <th>Fecha Programada para visita</th>
+                                        <th>Status</th>
                                         
                                     </tr>
                                 </thead>
@@ -104,6 +105,17 @@
                                         <td v-text="this.moment(contratos.created_at).locale('es').format('DD/MMM/YYYY')"></td>
                                         <td v-if="contratos.hora_program" v-text="this.moment(contratos.fecha_program).locale('es').format('DD/MMM/YYYY') + ', '+contratos.hora_program"></td>
                                         <td v-else v-text="this.moment(contratos.fecha_program).locale('es').format('DD/MMM/YYYY')"></td>
+                                        <template>
+                                            <td class="td2" v-if="contratos.status == '0'">
+                                                <span class="badge badge-warning">Pendiente</span>
+                                            </td>
+                                            <td class="td2" v-if="contratos.status == '1'">
+                                                <span class="badge badge-warning">En proceso</span>
+                                            </td>
+                                            <td class="td2" v-if="contratos.status == '2'">
+                                                <span class="badge badge-success">Concluido</span>
+                                            </td>
+                                        </template>
                                     </tr>
                                 </tbody>
                             </table>  
@@ -151,6 +163,8 @@
                                         <th>Garantia</th>
                                         <th>Costo</th>
                                         <th>Fecha concluido</th>
+                                        <th>Resultado</th>
+
                                      
                                        
                                         
@@ -180,7 +194,12 @@
                                             <td v-else>
                                              <input  type="date" @keyup.enter="actualizarConcluido($event.target.value,detalles.id,detalles.solicitud_id)" :id="detalles.solicitud_id" :value="detalles.fecha_concluido" class="form-control" >
                                             </td> 
-                                        </template>                               
+                                        </template> 
+                                        <template> 
+                                            <td v-if="detalles.revisado == 0"><span class="badge badge-warning">Pendiente</span></td>  
+                                            <td v-else-if="detalles.revisado == 1"><span class="badge badge-danger">Rechazado: {{detalles.resultado}}</span></td> 
+                                            <td v-else><span class="badge badge-success">Aprobado</span></td> 
+                                        </template>                             
 
                                     </tr>
                                 </tbody>

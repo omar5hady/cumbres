@@ -24,6 +24,9 @@ class CreateDescripcionDetallesTable extends Migration
             $table->string('subconcepto');
             $table->string('general');
             $table->double('costo')->default(0);
+
+            $table->boolean('revisado')->default(0);
+            $table->string('resultado')->nullable();
             $table->timestamps();
 
             $table->foreign('solicitud_id')->references('id')->on('solic_detalles')->onDelete('cascade');

@@ -95,7 +95,7 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="contratos in arraySolicitudes" :key="contratos.id" @dblclick="verDetalles(contratos.id)">
-                                        <td class="td2" v-text="contratos.folio"></td>
+                                        <td class="td2" v-text="contratos.id"></td>
                                         <td class="td2" v-text="contratos.cliente"></td>
                                         <td class="td2">
                                             <a title="Llamar" class="btn btn-dark" :href="'tel:'+contratos.celular"><i class="fa fa-phone fa-lg"></i></a>
@@ -200,6 +200,7 @@
                                         <th>Garantia</th>
                                         <th>Costo</th>
                                         <th>Fecha conclusión</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -213,6 +214,20 @@
                                         <td class="td2" v-text="'$'+formatNumber(descripcion.costo)"></td> 
                                         <td class="td2" v-if="descripcion.fecha_concluido" v-text="this.moment(descripcion.fecha_concluido).locale('es').format('DD/MMM/YYYY')"></td>                      
                                         <td class="td2" v-else v-text="'En proceso'"></td>
+                                        <template>
+                                            <td class="td2" v-if="descripcion.fecha_concluido && descripcion.revisado==0">
+                                                <button type="button" @click="revisarDetalle(descripcion.id, 1,'')" class="btn btn-success btn-sm" title="Aprobado">
+                                                    <i class="fa fa-check-square"></i>
+                                                </button>
+                                                <button type="button" @click="abrirModal('revisar',descripcion)" class="btn btn-danger btn-sm" title="Rechazado">
+                                                    <i class="fa fa-times-circle-o"></i>
+                                                </button>
+                                            </td>
+                                            <td class="td2" v-else-if="descripcion.fecha_concluido && descripcion.revisado==2">
+                                                <span  class="badge badge-success">Concluido</span>
+                                            </td>
+                                            <td v-else></td>
+                                        </template>
                                     </tr>
                                 </tbody>
                             </table>  
@@ -508,6 +523,37 @@
                     <!-- /.modal-dialog -->
                 </div>
             <!--Fin del modal-->
+
+            <!--Inicio del modal observaciones-->
+                <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal2}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                    <div class="modal-dialog modal-primary modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" v-text="'Rechazar'"></h4>
+                                <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+
+                                <div class="form-group row">
+                                    <label class="col-md-2 form-control-label" for="text-input">Observación</label>
+                                    <div class="col-md-6">
+                                        <input type="text" v-model="observacion" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Botones del modal -->
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                                <button class="btn btn-primary" @click="revisarDetalle(descripcion_id,0,observacion)">Guardar</button>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+            <!--Fin del modal-->
             
          
      </main>
@@ -547,6 +593,7 @@
                 lote_entregado:'',
                 
                 modal: 0,
+                modal2 : 0,
                 modal3: 0,
                 tituloModal: '',
 
@@ -577,6 +624,7 @@
                 general:'',
                 dias_garantia : '',
                 garantia : '',
+                solicitud_id:0,
 
                 arrayListadoDetalles : [],
 
@@ -601,6 +649,7 @@
                 tipoAccion:0,
                 observacion:'',
                 descripcion: 0,
+                descripcion_id :0,
 
                 errorEntrega : 0,
                 errorMostrarMsjEntrega : [],
@@ -774,6 +823,7 @@
             verDetalles(id){
                 let me = this;
                 this.descripcion = 1;
+                this.solicitud_id = id;
                 me.arrayDescripcion=[];
                 var url = '/detalles/indexDescripciones?id=' + id;
                 axios.get(url).then(function (response) {
@@ -846,6 +896,38 @@
                         console.log(error);
                     });
                 },
+
+                revisarDetalle(id,resultado,comentario){
+                let me = this;
+                
+                
+                axios.put('/detalles/updateResultado',{
+                    'resultado':resultado,
+                    'solicitud_id': me.solicitud_id,
+                    'id' : id,
+                    'comentario':comentario
+                }).then(function (response){
+                    
+                    me.verDetalles(me.solicitud_id);
+                    me.modal2 = 0;
+                    me.observacion ='';
+                  
+                const toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+
+                    });
+
+                    toast({
+                    type: 'success',
+                    title: 'Cambios guardados'
+                    })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            },
 
                 getDatosLote(lote){
                     let me = this;
@@ -1092,6 +1174,7 @@
             cerrarModal(){
                 this.tituloModal = '';
                 this.modal = 0;
+                this.modal2 = 0;
                 this.modal3 = 0;
                 this.observacion = '';
                 this.arrayObservacion = [];
@@ -1107,12 +1190,12 @@
                 this.manzana_entregada = '';
                 this.lote_entregado = '';
 
-                this.lunes = '';
-                this.martes = '';
-                this.miercoles = '';
-                this.jueves = '';
-                this.viernes = '';
-                this.sabado = '';
+                this.lunes = 0;
+                this.martes = 0;
+                this.miercoles = 0;
+                this.jueves = 0;
+                this.viernes = 0;
+                this.sabado = 0;
                 this.horario = '';
                 this.arrayListadoDetalles = [];
                 this.listarSolicitudes(this.pagination2.current_page,this.buscar2,this.b_etapa2,this.b_manzana2,this.b_lote2,this.criterio2,this.status);
@@ -1135,6 +1218,15 @@
                         this.folio = '';
                         this.observacion = '';
                         this.lote_id = '';
+                        break;
+                    }
+
+                    case 'revisar':{
+                        this.modal2 =1;
+                        this.tituloModal='Observaciones';
+                        this.descripcion_id = data['id'];
+                        this.solicitud_id = data['solicitud_id'];
+                        this.observacion = '';
                         break;
                     }
                 }

@@ -606,6 +606,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/detalles/reporteDetalles/reporteConclusionPDF/{folio}','SolicDetallesController@reporteConclusionPDF');
         Route::put('/detalles/updateFecha','SolicDetallesController@updateFecha');
         Route::put('/detalles/updateHora','SolicDetallesController@updateHora');
+        Route::put('/detalles/updateResultado','SolicDetallesController@updateResultado');
         //////////////////////// RUTAS CONTRATISTA //////////////////////
          Route::get('/solicitudes/indexContratista','SolicDetallesController@indexContratista');
          Route::get('/detalles/indexContratista','SolicDetallesController@indexDetallesContratista');
