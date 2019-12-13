@@ -90,6 +90,13 @@
                                         <input type="text" v-model="departamento" class="form-control" placeholder="Nombre de departamento">
                                     </div>
                                 </div>
+
+                                <form @submit="dropboxSubmit" method="POST" enctype="multipart/form-data">
+                                
+                                <input type="file" v-on:change="dropboxFile" name="file" required>    
+                                     <button type="submit">Agregar nuevo archivo</button>
+                                </form>
+
                                 <!-- Div para mostrar los errores que mande validerDepartamento -->
                                 <div v-show="errorDepartamento" class="form-group row div-error">
                                     <div class="text-center text-error">
@@ -126,6 +133,7 @@
         data(){
             return{
                 proceso:false,
+                file: '',
                 departamento_id:0,
                 departamento : '',
                 user_alta : '',
@@ -177,6 +185,41 @@
             }
         },
         methods : {
+             dropboxFile(e){
+
+                console.log(e.target);
+
+                this.file = e.target.files[0];
+
+            },
+
+            dropboxSubmit(e) {
+
+                e.preventDefault();
+
+           
+                let formData = new FormData();
+           
+                formData.append('file', this.file);
+                axios.post('/dropbox/files', formData)
+                .then(function (response) {
+                   
+                  
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Archivo subido correctamente',
+                        showConfirmButton: false,
+                        timer: 2000
+                        })
+                })
+
+                .catch(function (error) {
+                    console.log(error);
+
+                });
+
+            },
             /**Metodo para mostrar los registros */
             listarDepartamento(page, buscar, criterio){
                 let me = this;

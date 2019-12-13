@@ -613,6 +613,13 @@ Route::group(['middleware' => ['auth']],function(){
          Route::put('/detalles/updateCosto','SolicDetallesController@updateCosto');
          Route::put('/detalles/updateFechaConcluido','SolicDetallesController@updateFechaConcluido');
 
+         /////////////////////// RUTAS DROPBOX /////////////////////////
+         
+       
+        Route::post('/dropbox/files', 'DropboxFilesController@store');
+        Route::delete('/files/{file}', 'DropboxFilesController@destroy');
+        Route::get('/files/{file}/download', 'DropboxFilesController@download');
+
     });
 
 
