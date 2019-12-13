@@ -92,7 +92,7 @@ class SolicDetallesController extends Controller
                             'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo',
                             'solic_detalles.lunes','solic_detalles.martes',
                             'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                            'solic_detalles.sabado',
+                            'solic_detalles.sabado','solic_detalles.nom_contrato',
                             'solic_detalles.cliente','solic_detalles.celular','solic_detalles.status',
                             'solic_detalles.costo','contratistas.nombre', 'solic_detalles.created_at' ,'solic_detalles.fecha_program','solic_detalles.hora_program')
                     ->orderBy('solic_detalles.status','asc')
@@ -110,7 +110,7 @@ class SolicDetallesController extends Controller
                                     'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo',
                                     'solic_detalles.lunes','solic_detalles.martes',
                                     'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                    'solic_detalles.sabado',
+                                    'solic_detalles.sabado','solic_detalles.nom_contrato',
                                     'solic_detalles.cliente','solic_detalles.celular','solic_detalles.status',
                                     'solic_detalles.costo','contratistas.nombre', 'solic_detalles.created_at' ,'solic_detalles.fecha_program','solic_detalles.hora_program')
                             ->where($criterio,'=',$buscar)
@@ -129,7 +129,7 @@ class SolicDetallesController extends Controller
                                     'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo',
                                     'solic_detalles.lunes','solic_detalles.martes',
                                     'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                    'solic_detalles.sabado',
+                                    'solic_detalles.sabado','solic_detalles.nom_contrato',
                                     'solic_detalles.cliente','solic_detalles.celular','solic_detalles.status',
                                     'solic_detalles.costo','contratistas.nombre', 'solic_detalles.created_at' ,'solic_detalles.fecha_program','solic_detalles.hora_program')
                             ->where($criterio,'=',$buscar)
@@ -146,7 +146,7 @@ class SolicDetallesController extends Controller
                                     'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo',
                                     'solic_detalles.lunes','solic_detalles.martes',
                                     'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                    'solic_detalles.sabado',
+                                    'solic_detalles.sabado','solic_detalles.nom_contrato',
                                     'solic_detalles.cliente','solic_detalles.celular','solic_detalles.status',
                                     'solic_detalles.costo','contratistas.nombre', 'solic_detalles.created_at' ,'solic_detalles.fecha_program','solic_detalles.hora_program')
                             ->where($criterio,'=',$buscar)
@@ -164,7 +164,7 @@ class SolicDetallesController extends Controller
                                     'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo',
                                     'solic_detalles.lunes','solic_detalles.martes',
                                     'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                    'solic_detalles.sabado',
+                                    'solic_detalles.sabado','solic_detalles.nom_contrato',
                                     'solic_detalles.cliente','solic_detalles.celular','solic_detalles.status',
                                     'solic_detalles.costo','contratistas.nombre', 'solic_detalles.created_at' ,'solic_detalles.fecha_program','solic_detalles.hora_program')
                             ->where($criterio,'=',$buscar)
@@ -183,7 +183,7 @@ class SolicDetallesController extends Controller
                                     'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo',
                                     'solic_detalles.lunes','solic_detalles.martes',
                                     'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                    'solic_detalles.sabado',
+                                    'solic_detalles.sabado','solic_detalles.nom_contrato',
                                     'solic_detalles.cliente','solic_detalles.celular','solic_detalles.status',
                                     'solic_detalles.costo','contratistas.nombre', 'solic_detalles.created_at' ,'solic_detalles.fecha_program','solic_detalles.hora_program')
                             ->where($criterio,'=',$buscar)
@@ -203,7 +203,7 @@ class SolicDetallesController extends Controller
                                     'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo',
                                     'solic_detalles.lunes','solic_detalles.martes',
                                     'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                    'solic_detalles.sabado',
+                                    'solic_detalles.sabado','solic_detalles.nom_contrato',
                                     'solic_detalles.cliente','solic_detalles.celular','solic_detalles.status',
                                     'solic_detalles.costo','contratistas.nombre', 'solic_detalles.created_at' ,'solic_detalles.fecha_program','solic_detalles.hora_program')
                             ->where($criterio,'=',$buscar)
@@ -222,7 +222,7 @@ class SolicDetallesController extends Controller
                                     'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo',
                                     'solic_detalles.lunes','solic_detalles.martes',
                                     'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                    'solic_detalles.sabado',
+                                    'solic_detalles.sabado','solic_detalles.nom_contrato',
                                     'solic_detalles.cliente','solic_detalles.celular','solic_detalles.status',
                                     'solic_detalles.costo','contratistas.nombre', 'solic_detalles.created_at' ,'solic_detalles.fecha_program','solic_detalles.hora_program')
                             ->where($criterio,'=',$buscar)
@@ -242,7 +242,7 @@ class SolicDetallesController extends Controller
                                     'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo',
                                     'solic_detalles.lunes','solic_detalles.martes',
                                     'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                    'solic_detalles.sabado',
+                                    'solic_detalles.sabado','solic_detalles.nom_contrato',
                                     'solic_detalles.cliente','solic_detalles.celular','solic_detalles.status',
                                     'solic_detalles.costo','contratistas.nombre', 'solic_detalles.created_at' ,'solic_detalles.fecha_program','solic_detalles.hora_program')
                             ->where($criterio,'like','%'.$buscar.'%')
@@ -265,7 +265,7 @@ class SolicDetallesController extends Controller
                             'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo',
                             'solic_detalles.lunes','solic_detalles.martes',
                             'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                            'solic_detalles.sabado',
+                            'solic_detalles.sabado','solic_detalles.nom_contrato',
                             'solic_detalles.cliente','solic_detalles.celular','solic_detalles.status',
                             'solic_detalles.costo','contratistas.nombre', 'solic_detalles.created_at')
                     ->where('solic_detalles.status','=',$status)
@@ -284,7 +284,7 @@ class SolicDetallesController extends Controller
                                     'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo',
                                     'solic_detalles.lunes','solic_detalles.martes',
                                     'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                    'solic_detalles.sabado',
+                                    'solic_detalles.sabado','solic_detalles.nom_contrato',
                                     'solic_detalles.cliente','solic_detalles.celular','solic_detalles.status',
                                     'solic_detalles.costo','contratistas.nombre', 'solic_detalles.created_at')
                             ->where($criterio,'=',$buscar)
@@ -304,7 +304,7 @@ class SolicDetallesController extends Controller
                                     'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo',
                                     'solic_detalles.lunes','solic_detalles.martes',
                                     'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                    'solic_detalles.sabado',
+                                    'solic_detalles.sabado','solic_detalles.nom_contrato',
                                     'solic_detalles.cliente','solic_detalles.celular','solic_detalles.status',
                                     'solic_detalles.costo','contratistas.nombre', 'solic_detalles.created_at')
                             ->where($criterio,'=',$buscar)
@@ -322,7 +322,7 @@ class SolicDetallesController extends Controller
                                     'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo',
                                     'solic_detalles.lunes','solic_detalles.martes',
                                     'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                    'solic_detalles.sabado',
+                                    'solic_detalles.sabado','solic_detalles.nom_contrato',
                                     'solic_detalles.cliente','solic_detalles.celular','solic_detalles.status',
                                     'solic_detalles.costo','contratistas.nombre', 'solic_detalles.created_at')
                             ->where($criterio,'=',$buscar)
@@ -341,7 +341,7 @@ class SolicDetallesController extends Controller
                                     'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo',
                                     'solic_detalles.lunes','solic_detalles.martes',
                                     'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                    'solic_detalles.sabado',
+                                    'solic_detalles.sabado','solic_detalles.nom_contrato',
                                     'solic_detalles.cliente','solic_detalles.celular','solic_detalles.status',
                                     'solic_detalles.costo','contratistas.nombre', 'solic_detalles.created_at')
                             ->where($criterio,'=',$buscar)
@@ -361,7 +361,7 @@ class SolicDetallesController extends Controller
                                     'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo',
                                     'solic_detalles.lunes','solic_detalles.martes',
                                     'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                    'solic_detalles.sabado',
+                                    'solic_detalles.sabado','solic_detalles.nom_contrato',
                                     'solic_detalles.cliente','solic_detalles.celular','solic_detalles.status',
                                     'solic_detalles.costo','contratistas.nombre', 'solic_detalles.created_at')
                             ->where($criterio,'=',$buscar)
@@ -382,7 +382,7 @@ class SolicDetallesController extends Controller
                                     'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo',
                                     'solic_detalles.lunes','solic_detalles.martes',
                                     'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                    'solic_detalles.sabado',
+                                    'solic_detalles.sabado','solic_detalles.nom_contrato',
                                     'solic_detalles.cliente','solic_detalles.celular','solic_detalles.status',
                                     'solic_detalles.costo','contratistas.nombre', 'solic_detalles.created_at')
                             ->where($criterio,'=',$buscar)
@@ -402,7 +402,7 @@ class SolicDetallesController extends Controller
                                     'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo',
                                     'solic_detalles.lunes','solic_detalles.martes',
                                     'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                    'solic_detalles.sabado',
+                                    'solic_detalles.sabado','solic_detalles.nom_contrato',
                                     'solic_detalles.cliente','solic_detalles.celular','solic_detalles.status',
                                     'solic_detalles.costo','contratistas.nombre', 'solic_detalles.created_at')
                             ->where($criterio,'=',$buscar)
@@ -423,7 +423,7 @@ class SolicDetallesController extends Controller
                                     'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo',
                                     'solic_detalles.lunes','solic_detalles.martes',
                                     'solic_detalles.miercoles','solic_detalles.jueves','solic_detalles.viernes',
-                                    'solic_detalles.sabado',
+                                    'solic_detalles.sabado','solic_detalles.nom_contrato',
                                     'solic_detalles.cliente','solic_detalles.celular','solic_detalles.status',
                                     'solic_detalles.costo','contratistas.nombre', 'solic_detalles.created_at')
                             ->where($criterio,'like','%'.$buscar.'%')

@@ -11,7 +11,7 @@ class Solic_detalle extends Model
     protected $fillable = [
                         'contrato_id', 'contratista_id', 'cliente', 'dias_entrega', 'lunes', 'martes',
                         'miercoles', 'jueves', 'viernes', 'sabado', 'horario',
-                        'celular', 'costo', 'status', 'hora_program', 'fecha_program'
+                        'celular', 'costo', 'status', 'hora_program', 'fecha_program','nom_contrato'
     ];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
 
     public function contrato(){

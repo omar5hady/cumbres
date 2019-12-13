@@ -75,7 +75,7 @@
                             <table class="table2 table-bordered table-striped table-sm">
                                 <thead>
                                     <tr> 
-                                        <th># Ref</th>
+                                        <th># Folio</th>
                                         <th>Cliente</th>
                                         <th>Contacto</th>
                                         <th>Proyecto</th>
@@ -95,7 +95,17 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="contratos in arraySolicitudes" :key="contratos.id" @dblclick="verDetalles(contratos.id)">
-                                        <td class="td2" v-text="contratos.id"></td>
+                                        <td class="td2">
+                                            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{contratos.id}}</a>
+                                            <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                <a class="dropdown-item" v-if="!contratos.nom_contrato" @click="abrirModal('subir_archivo',contratos)">Subir Solicitud firmada</a>
+                                                <template v-else>
+                                                    <a class="dropdown-item" v-bind:href="'/files/'+'solicitudDetalle/'+ contratos.nom_contrato + '/download'" >Descargar solicitud</a>
+                                                    <a class="dropdown-item" @click="eliminarArchivo(contratos.nom_contrato, contratos.id)" >Eliminar archivo</a>
+                                                </template>
+                                                
+                                            </div>
+                                        </td>
                                         <td class="td2" v-text="contratos.cliente"></td>
                                         <td class="td2">
                                             <a title="Llamar" class="btn btn-dark" :href="'tel:'+contratos.celular"><i class="fa fa-phone fa-lg"></i></a>
@@ -466,6 +476,45 @@
                 </div>
             <!--Fin del modal-->
 
+            <!--Inicio del modal para diversos llenados de tabla en historial -->
+                <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modalArchivo}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                    <div class="modal-dialog modal-primary modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" v-text="tituloModal"></h5>
+                                <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                
+                                <div class="form-group row">
+                                    <div class="col-md-8">
+                                        <form class="form-horizontal" @submit="dropboxSubmit" method="POST" enctype="multipart/form-data">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">
+                                                <i class="fa fa-file"></i>
+                                                </span>
+                                                <input type="file" v-on:change="dropboxFile" name="file" required>    
+                                                <button class="btn btn-primary" type="submit">Guardar archivo</button>
+                                            </div>
+                                        </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Botones del modal -->
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+            <!--Fin del modal-->
+
             <!--Inicio del modal observaciones-->
                 <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal3}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
                     <div class="modal-dialog modal-primary modal-lg" role="document">
@@ -595,6 +644,7 @@
                 modal: 0,
                 modal2 : 0,
                 modal3: 0,
+                modalArchivo : 0,
                 tituloModal: '',
 
                 //variables
@@ -609,6 +659,7 @@
                 modelo :'',
                 celular : '',
                 proceso : false,
+                file: '',
 
                 lunes : 0,
                 martes : 0,
@@ -688,6 +739,82 @@
 
         
         methods : {
+            dropboxFile(e){
+
+                console.log(e.target);
+
+                this.file = e.target.files[0];
+
+            },
+
+            dropboxSubmit(e) {
+
+                e.preventDefault();
+
+                let formData = new FormData();
+           
+                formData.append('file', this.file);
+                axios.post('/dropbox/files/'+this.solicitud_id+'/solicitudDetalle', formData)
+                .then(function (response) {
+                   
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Archivo subido correctamente',
+                        showConfirmButton: false,
+                        timer: 2000
+                        })
+                })
+
+                .catch(function (error) {
+                    console.log(error);
+
+                });
+
+            },
+
+            eliminarArchivo(archivo,id){
+                swal({
+                title: '¿Desea eliminar este archivo?',
+                text: "El archivo se borrara completamente",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Si, borrar!'
+                }).then((result) => {
+                if (result.value) {
+                    let me = this;
+
+                //Con axios se llama el metodo update de LoteController
+                    axios.delete('/files/delete',{
+                        params: {
+                        'file' : archivo,
+                        'id' : id,
+                        'sub' : 'solicitudDetalle'
+                        }
+                    }).then(function (response){
+                        //window.alert("Cambios guardados correctamente");
+                        me.listarSolicitudes(me.pagination2.current_page,me.buscar2,me.b_etapa2,me.b_manzana2,me.b_lote2,me.criterio2,me.status);
+                        const toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000
+                            });
+                            toast({
+                            type: 'success',
+                            title: 'Archivo borrado correctamente'
+                        })
+                    }).catch(function (error){
+                        console.log(error);
+                    });
+                }
+                })
+
+            },
+            
             listarSolicitudes(page, buscar, b_etapa, b_manzana, b_lote, criterio, status){
                 let me = this;
                 this.descripcion = 0;
@@ -1176,6 +1303,7 @@
                 this.modal = 0;
                 this.modal2 = 0;
                 this.modal3 = 0;
+                this.modalArchivo = 0;
                 this.observacion = '';
                 this.arrayObservacion = [];
                 this.id_gral = '';
@@ -1227,6 +1355,14 @@
                         this.descripcion_id = data['id'];
                         this.solicitud_id = data['solicitud_id'];
                         this.observacion = '';
+                        break;
+                    }
+
+                    case 'subir_archivo':{
+                        this.solicitud_id = data['id'];
+                        this.modalArchivo = 1;
+                        this.tituloModal = 'Subir solicitud para solicitud: ' + this.solicitud_id;
+                        
                         break;
                     }
                 }

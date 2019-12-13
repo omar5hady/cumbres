@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
  
-use App\DropboxFiles;
-use Spatie\Dropbox\Client;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\DropboxFiles;
+use Spatie\Dropbox\Client;
+use App\Solic_detalle;
  
 class DropboxFilesController extends Controller
 {
@@ -25,22 +27,23 @@ class DropboxFilesController extends Controller
         return view('files', compact('files'));
     }
  
-    public function store(Request $request)
+    public function store(Request $request,$id,$sub)
     {
-        $name =  $request->file->getClientOriginalName();
+        $carpeta = $sub . '/';
+        $name = uniqid() . '' . $request->file->getClientOriginalName();
         // Guardamos el archivo indicando el driver y el método putFileAs el cual recibe
         // el directorio donde será almacenado, el archivo y el nombre.
         // ¡No olvides validar todos estos datos antes de guardar el archivo!
         Storage::disk('dropbox')->putFileAs(
-            'oso/', 
+            $carpeta, 
             $request->file, 
-            $request->file->getClientOriginalName()
+            $name
         );
  
         // Creamos el enlace publico en dropbox utilizando la propiedad dropbox
         // definida en el constructor de la clase y almacenamos la respuesta.
         $response = $this->dropbox->createSharedLinkWithSettings(
-            'oso/'.$name, 
+            $carpeta.$name, 
             ["requested_visibility" => "public"]
         );
  
@@ -52,25 +55,34 @@ class DropboxFilesController extends Controller
             'public_url' => $response['url']
         ]);
         
+        $solicitud = Solic_detalle::findOrFail($id);
+        $solicitud->nom_contrato = $name;
+        $solicitud->save();
+
         // Retornamos un redirección hacía atras
-        return back();
+        //return back();
     }
  
-    public function download(File $file)
+    public function download($carpeta,$file)
     {
         // Retornamos una descarga especificando el driver dropbox
         // e indicándole al método download el nombre del archivo.
-        return Storage::disk('dropbox')->download($file->name);
+        return Storage::disk('dropbox')->download($carpeta.'/'.$file);
     }
  
-    public function destroy(File $file)
+    public function destroy(Request $request)
     {
         // Eliminamos el archivo en dropbox llamando a la clase
         // instanciada en la propiedad dropbox.
-        $this->dropbox->delete($file->name);
+        $this->dropbox->delete($request->sub.'/'.$request->file);
         // Eliminamos el registro de nuestra tabla.
-        $file->delete();
+        $archivo = DropboxFiles::select('id')->where('name','=',$request->file)->get();
+        $del = DropboxFiles::findOrFail($archivo[0]->id);
+        $del->delete();
+
+        $solicitud = Solic_detalle::findOrFail($request->id);
+        $solicitud->nom_contrato = NULL;
+        $solicitud->save();
  
-        return back();
     }
 }

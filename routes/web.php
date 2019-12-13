@@ -607,6 +607,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/detalles/updateFecha','SolicDetallesController@updateFecha');
         Route::put('/detalles/updateHora','SolicDetallesController@updateHora');
         Route::put('/detalles/updateResultado','SolicDetallesController@updateResultado');
+
         //////////////////////// RUTAS CONTRATISTA //////////////////////
          Route::get('/solicitudes/indexContratista','SolicDetallesController@indexContratista');
          Route::get('/detalles/indexContratista','SolicDetallesController@indexDetallesContratista');
@@ -616,9 +617,9 @@ Route::group(['middleware' => ['auth']],function(){
          /////////////////////// RUTAS DROPBOX /////////////////////////
          
        
-        Route::post('/dropbox/files', 'DropboxFilesController@store');
-        Route::delete('/files/{file}', 'DropboxFilesController@destroy');
-        Route::get('/files/{file}/download', 'DropboxFilesController@download');
+        Route::post('/dropbox/files/{id}/{sub}', 'DropboxFilesController@store');
+        Route::delete('/files/delete', 'DropboxFilesController@destroy');
+        Route::get('/files/{carpeta}/{file}/download', 'DropboxFilesController@download');
 
     });
 
