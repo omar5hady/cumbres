@@ -76,7 +76,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="contratos in arrayContratos" :key="contratos.folio">
+                                    <tr v-for="contratos in arrayContratos" @dblclick="historial = 1, listarHistorial(1,contratos.folio,'','','','contratos.id');" :key="contratos.folio">
                                         <template>
                                             <td class="td2" v-text="contratos.folio"></td>
                                             <td class="td2" v-text="contratos.nombre_cliente"></td>
