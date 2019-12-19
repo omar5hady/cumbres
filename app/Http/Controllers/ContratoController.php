@@ -8294,7 +8294,7 @@ class ContratoController extends Controller
     public function listarPagos(Request $request)
     {
         if(!$request->ajax())return redirect('/');
-        $pagos = Pago_contrato::select('id', 'num_pago', 'monto_pago', 'fecha_pago')
+        $pagos = Pago_contrato::select('id', 'num_pago', 'monto_pago', 'fecha_pago','restante')
             ->where('contrato_id', '=', $request->contrato_id)
             ->orderBy('fecha_pago', 'ASC')
             ->get();
@@ -8742,6 +8742,10 @@ class ContratoController extends Controller
             ->where('inst_seleccionadas.tipo_credito', '!=', 'Crédito Directo')
             ->get();
 
+            if($contratoPromesa[0]->avaluo_cliente>0){
+                $contratoPromesa[0]->credito_neto = $contratoPromesa[0]->credito_neto - $contratoPromesa[0]->avaluo_cliente;
+            }
+
         setlocale(LC_TIME, 'es_MX.utf8');
         $contratoPromesa[0]->engancheTotalLetra = NumerosEnLetras::convertir($contratoPromesa[0]->enganche_total, 'Pesos', true, 'Centavos');
         $contratoPromesa[0]->precioVentaLetra = NumerosEnLetras::convertir($contratoPromesa[0]->precio_venta, 'Pesos', true, 'Centavos');
@@ -8750,6 +8754,7 @@ class ContratoController extends Controller
         // if($contratoPromesa[0]->total_pagar <0)
         //     $contratoPromesa[0]->credito_neto=$contratoPromesa[0]->credito_neto - $contratoPromesa[0]->total_pagar;
 
+        
         $contratoPromesa[0]->montoTotalCreditoLetra = NumerosEnLetras::convertir($contratoPromesa[0]->credito_neto, 'Pesos', true, 'Centavos');
         //$contratoPromesa[0]->credito_neto = number_format((float)$contratoPromesa[0]->credito_neto, 2, '.', ',');
 

@@ -1617,7 +1617,7 @@
                                                             <button v-if="listado==3" @click="eliminarPago(index)" type="button" class="btn btn-danger btn-sm">
                                                                 <i class="icon-close"></i>
                                                             </button>
-                                                            <button v-if="listado==4 && btn_actualizar==1" @click="eliminarPagoBD(pago.id)" type="button" class="btn btn-warning btn-sm">
+                                                            <button v-if="listado==4 && btn_actualizar==1 && pago.restante == pago.monto_pago" @click="eliminarPagoBD(pago.id)" type="button" class="btn btn-warning btn-sm">
                                                                 <i class="icon-close"></i>
                                                             </button>
                                                         </td>

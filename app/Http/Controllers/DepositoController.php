@@ -4625,7 +4625,10 @@ class DepositoController extends Controller
                     $cont++;
                     $depositos = $contrato->totalPagares - $contrato->totalRestante;
                     $pendienteCredito = $contrato->credito_solic - $contrato->cobrado;
+                   
                     $contrato->avance = $contrato->avance.'%';
+
+                    $credito = $contrato->credito_solic + $contrato->segundo_credito;
                     $sheet->row($index+2, [
                         $contrato->folio, 
                         $contrato->nombre_cliente,
@@ -4640,7 +4643,7 @@ class DepositoController extends Controller
                         $contrato->enganche_total,
                         $depositos,
                         $contrato->pendiente_enganche,
-                        $contrato->credito_solic,
+                        $credito,
                         $pendienteCredito,
                         $contrato->gastos,
                         $contrato->descuento,

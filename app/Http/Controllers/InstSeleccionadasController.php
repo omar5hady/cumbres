@@ -1800,7 +1800,7 @@ class InstSeleccionadasController extends Controller
                             'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado'
                             )
 
-                    ->where('contratos.saldo','!=',0)
+                    ->where('contratos.saldo','<',0)
                     ->where('inst_seleccionadas.elegido', '=', 1)
                     ->orderBy('inst_seleccionadas.cobrado','asc')
                     ->orderBy('inst_seleccionadas.monto_credito','desc')
@@ -1824,7 +1824,7 @@ class InstSeleccionadasController extends Controller
                             'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado'
                             )
 
-                        ->where('contratos.saldo','!=',0)
+                        ->where('contratos.saldo','<',0)
                         ->where('inst_seleccionadas.elegido', '=', 1)
                         ->where($criterio,'=',$buscar)
                         ->orderBy('inst_seleccionadas.cobrado','asc')
@@ -1848,7 +1848,7 @@ class InstSeleccionadasController extends Controller
                             'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
                             'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado'
                             )
-                        ->where('contratos.saldo','!=',0)
+                        ->where('contratos.saldo','<',0)
                         ->where('inst_seleccionadas.elegido', '=', 1)
                         ->where(DB::raw("CONCAT(personal.nombre,' ',personal.apellidos)"), 'like', '%'. $buscar . '%')
                         ->orderBy('inst_seleccionadas.cobrado','asc')
@@ -1872,7 +1872,7 @@ class InstSeleccionadasController extends Controller
                             'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
                             'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado'
                             )
-                        ->where('contratos.saldo','!=',0)
+                        ->where('contratos.saldo','<',0)
                         ->where('inst_seleccionadas.elegido', '=', 1)
                         ->where($criterio,'=',$buscar)
                         ->orderBy('inst_seleccionadas.cobrado','asc')
@@ -1895,7 +1895,7 @@ class InstSeleccionadasController extends Controller
                             'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
                             'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado'
                             )
-                        ->where('contratos.saldo','!=',0)
+                        ->where('contratos.saldo','<',0)
                         ->where('inst_seleccionadas.elegido', '=', 1)
                         ->where($criterio,'=',$buscar)
                         ->where('lotes.etapa_id','=',$b_etapa)
@@ -1919,7 +1919,7 @@ class InstSeleccionadasController extends Controller
                             'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
                             'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado'
                             )
-                        ->where('contratos.saldo','!=',0)
+                        ->where('contratos.saldo','<',0)
                         ->where('inst_seleccionadas.elegido', '=', 1)
                         ->where($criterio,'=',$buscar)
                         ->where('lotes.etapa_id','=',$b_etapa)
@@ -1943,7 +1943,7 @@ class InstSeleccionadasController extends Controller
                             'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
                             'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado'
                             )
-                        ->where('contratos.saldo','!=',0)
+                        ->where('contratos.saldo','<',0)
                         ->where('inst_seleccionadas.elegido', '=', 1)
                         ->where($criterio,'=',$buscar)
                         ->where('lotes.etapa_id','=',$b_etapa)
@@ -1968,7 +1968,7 @@ class InstSeleccionadasController extends Controller
                             'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
                             'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado'
                             )
-                        ->where('contratos.saldo','!=',0)
+                        ->where('contratos.saldo','<',0)
                         ->where('inst_seleccionadas.elegido', '=', 1)
                         ->where($criterio,'=',$buscar)
                         ->where('lotes.etapa_id','=',$b_etapa)
@@ -1992,7 +1992,7 @@ class InstSeleccionadasController extends Controller
                             'inst_seleccionadas.tipo_credito', 'inst_seleccionadas.institucion', 
                             'inst_seleccionadas.elegido', 'inst_seleccionadas.monto_credito','inst_seleccionadas.cobrado'
                             )
-                        ->where('contratos.saldo','!=',0)
+                        ->where('contratos.saldo','<',0)
                         ->where('inst_seleccionadas.elegido', '=', 1)
                         ->where($criterio,'=',$buscar)
                         ->where('lotes.num_lote','=',$b_lote)
