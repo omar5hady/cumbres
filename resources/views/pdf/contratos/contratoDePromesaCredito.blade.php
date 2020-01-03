@@ -192,7 +192,7 @@ sin que esa circunstancia releva a este último de ser el responsable de realiza
          es la cantidad que de <strong>${{strtoupper($contratoPromesa[0]->precioVentaLetra)}}</strong>, 
          mismo que EL PROMITENTE COMPRADOR se obliga a pagar a EL PROMITENTE VENDEDOR en los términos establecidos en la 
          cláusula de la siguiente manera: a).La cantidad de  
-         @if($contratoPromesa[0]->precio_venta >= $contratoPromesa[0]->credito_neto )
+         @if($contratoPromesa[0]->precio_venta >= $contratoPromesa[0]->credito_neto || $contratoPromesa[0]->precio_venta == $contratoPromesa[0]->credito_neto )
           <strong>${{strtoupper($contratoPromesa[0]->montoTotalCreditoLetra)}},</strong> 
         @elseif( $contratoPromesa[0]->precio_venta < $contratoPromesa[0]->credito_neto )
             <strong>${{strtoupper($contratoPromesa[0]->precioVentaLetra)}},</strong>

@@ -70,6 +70,7 @@ Vue.component('partidas', require('./components/Obra/Partidas.vue'));
 Vue.component('avance', require('./components/Obra/Avance.vue'));
 Vue.component('visita-avaluo', require('./components/Obra/VisitaAvaluo.vue'));
 Vue.component('solicitar-equipamiento', require('./components/Ventas/Equipamientos.vue'));
+Vue.component('uri-equipamiento', require('./components/Obra/EquipamientosUri.vue'));
 
 //Componentes Ventas
 Vue.component('lote-disponible', require('./components/Ventas/LotesDisp.vue'));

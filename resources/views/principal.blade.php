@@ -305,6 +305,11 @@
                                     </li>
                                 @endif
                                 @if(Auth::user()->equipamientos == 1)
+                                    <li @click="menu=224" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="fa fa-archive"></i> Equipamiento</a>
+                                    </li>
+                                @endif
+                                @if(Auth::user()->rol_id == 1)
                                     <li @click="menu=213" class="nav-item">
                                         <a class="nav-link" href="#"><i class="fa fa-archive"></i> Solic. Equipamiento</a>
                                     </li>

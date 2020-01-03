@@ -367,6 +367,9 @@
         <template v-if="menu==223">
             <contratista-revprevia></contratista-revprevia>
         </template>
+        <template v-if="menu==224">
+            <uri-equipamiento></uri-equipamiento>
+        </template>
 
         
 

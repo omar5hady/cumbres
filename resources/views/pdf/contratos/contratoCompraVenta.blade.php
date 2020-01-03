@@ -34,7 +34,7 @@ body {
         <div class="table-row">
             <div  style="border: ridge #0B173B 1px; padding-right:-20px; color:white; font-size:9pt; background-color: #0B173B;" class="table-cell1">FECHA</div>
             <div  style="border: ridge #000000 1px; color:black; " class="table-cell1">{{strtoupper($contratos[0]->fecha)}}</div>
-            <div  style="border: ridge #000000 1px; color:black; " class="table-cell1">#Ref: {{$contratos[0]->prospecto_id}} - {{$contratos[0]->avance_lote}}%</div>
+            <div  style="border: ridge #000000 1px; color:black; " class="table-cell1">#Ref: {{$contratos[0]->id}} - {{$contratos[0]->avance_lote}}%</div>
             <div  style="border: ridge #000000 1px; color:black; " class="table-cell1">TERMINO: {{strtoupper($contratos[0]->fecha_termino_ventas)}}</div>
         </div>
     </div>

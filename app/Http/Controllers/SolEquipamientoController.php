@@ -58,6 +58,8 @@ class SolEquipamientoController extends Controller
                                 'solic_equipamientos.recepcion',
                                 'solic_equipamientos.num_factura',
                                 'solic_equipamientos.control',
+                                'solic_equipamientos.anticipo_cand',
+                                'solic_equipamientos.liquidacion_cand',
                                 'proveedores.proveedor',
                                 'equipamientos.equipamiento',
                                 'equipamientos.tipoRecepcion',
@@ -106,6 +108,8 @@ class SolEquipamientoController extends Controller
                                             'solic_equipamientos.recepcion',
                                             'solic_equipamientos.num_factura',
                                             'solic_equipamientos.control',
+                                            'solic_equipamientos.anticipo_cand',
+                                            'solic_equipamientos.liquidacion_cand',
                                             'proveedores.proveedor',
                                             'equipamientos.equipamiento',
                                             'equipamientos.tipoRecepcion',
@@ -153,6 +157,8 @@ class SolEquipamientoController extends Controller
                                             'solic_equipamientos.recepcion',
                                             'solic_equipamientos.num_factura',
                                             'solic_equipamientos.control',
+                                            'solic_equipamientos.anticipo_cand',
+                                            'solic_equipamientos.liquidacion_cand',
                                             'proveedores.proveedor',
                                             'equipamientos.equipamiento',
                                             'equipamientos.tipoRecepcion',
@@ -200,6 +206,8 @@ class SolEquipamientoController extends Controller
                                             'solic_equipamientos.recepcion',
                                             'solic_equipamientos.num_factura',
                                             'solic_equipamientos.control',
+                                            'solic_equipamientos.anticipo_cand',
+                                            'solic_equipamientos.liquidacion_cand',
                                             'proveedores.proveedor',
                                             'equipamientos.equipamiento',
                                             'equipamientos.tipoRecepcion',
@@ -248,6 +256,8 @@ class SolEquipamientoController extends Controller
                                                 'solic_equipamientos.recepcion',
                                                 'solic_equipamientos.num_factura',
                                                 'solic_equipamientos.control',
+                                                'solic_equipamientos.anticipo_cand',
+                                                'solic_equipamientos.liquidacion_cand',
                                                 'proveedores.proveedor',
                                                 'equipamientos.equipamiento',
                                                 'equipamientos.tipoRecepcion',
@@ -294,6 +304,8 @@ class SolEquipamientoController extends Controller
                                                 'solic_equipamientos.recepcion',
                                                 'solic_equipamientos.num_factura',
                                                 'solic_equipamientos.control',
+                                                'solic_equipamientos.anticipo_cand',
+                                                'solic_equipamientos.liquidacion_cand',
                                                 'proveedores.proveedor',
                                                 'equipamientos.equipamiento',
                                                 'equipamientos.tipoRecepcion',
@@ -342,6 +354,8 @@ class SolEquipamientoController extends Controller
                                                 'solic_equipamientos.recepcion',
                                                 'solic_equipamientos.num_factura',
                                                 'solic_equipamientos.control',
+                                                'solic_equipamientos.anticipo_cand',
+                                                'solic_equipamientos.liquidacion_cand',
                                                 'proveedores.proveedor',
                                                 'equipamientos.equipamiento',
                                                 'equipamientos.tipoRecepcion',
@@ -391,6 +405,8 @@ class SolEquipamientoController extends Controller
                                                 'solic_equipamientos.recepcion',
                                                 'solic_equipamientos.num_factura',
                                                 'solic_equipamientos.control',
+                                                'solic_equipamientos.anticipo_cand',
+                                                'solic_equipamientos.liquidacion_cand',
                                                 'proveedores.proveedor',
                                                 'equipamientos.equipamiento',
                                                 'equipamientos.tipoRecepcion',
@@ -441,6 +457,8 @@ class SolEquipamientoController extends Controller
                                                 'solic_equipamientos.recepcion',
                                                 'solic_equipamientos.num_factura',
                                                 'solic_equipamientos.control',
+                                                'solic_equipamientos.anticipo_cand',
+                                                'solic_equipamientos.liquidacion_cand',
                                                 'proveedores.proveedor',
                                                 'equipamientos.equipamiento',
                                                 'equipamientos.tipoRecepcion',
@@ -489,6 +507,8 @@ class SolEquipamientoController extends Controller
                                                 'solic_equipamientos.recepcion',
                                                 'solic_equipamientos.num_factura',
                                                 'solic_equipamientos.control',
+                                                'solic_equipamientos.anticipo_cand',
+                                                'solic_equipamientos.liquidacion_cand',
                                                 'proveedores.proveedor',
                                                 'equipamientos.equipamiento',
                                                 'equipamientos.tipoRecepcion',
@@ -537,6 +557,8 @@ class SolEquipamientoController extends Controller
                                                 'solic_equipamientos.recepcion',
                                                 'solic_equipamientos.num_factura',
                                                 'solic_equipamientos.control',
+                                                'solic_equipamientos.anticipo_cand',
+                                                'solic_equipamientos.liquidacion_cand',
                                                 'proveedores.proveedor',
                                                 'equipamientos.equipamiento',
                                                 'equipamientos.tipoRecepcion',
@@ -584,6 +606,8 @@ class SolEquipamientoController extends Controller
                                                 'solic_equipamientos.recepcion',
                                                 'solic_equipamientos.num_factura',
                                                 'solic_equipamientos.control',
+                                                'solic_equipamientos.anticipo_cand',
+                                                'solic_equipamientos.liquidacion_cand',
                                                 'proveedores.proveedor',
                                                 'equipamientos.equipamiento',
                                                 'equipamientos.tipoRecepcion',
@@ -637,6 +661,8 @@ class SolEquipamientoController extends Controller
                                 'solic_equipamientos.recepcion',
                                 'solic_equipamientos.num_factura',
                                 'solic_equipamientos.control',
+                                'solic_equipamientos.anticipo_cand',
+                                'solic_equipamientos.liquidacion_cand',
                                 'proveedores.proveedor',
                                 'equipamientos.equipamiento',
                                 'equipamientos.tipoRecepcion',
@@ -686,6 +712,8 @@ class SolEquipamientoController extends Controller
                                             'solic_equipamientos.recepcion',
                                             'solic_equipamientos.num_factura',
                                             'solic_equipamientos.control',
+                                            'solic_equipamientos.anticipo_cand',
+                                            'solic_equipamientos.liquidacion_cand',
                                             'proveedores.proveedor',
                                             'equipamientos.equipamiento',
                                             'equipamientos.tipoRecepcion',
@@ -734,6 +762,8 @@ class SolEquipamientoController extends Controller
                                             'solic_equipamientos.recepcion',
                                             'solic_equipamientos.num_factura',
                                             'solic_equipamientos.control',
+                                            'solic_equipamientos.anticipo_cand',
+                                            'solic_equipamientos.liquidacion_cand',
                                             'proveedores.proveedor',
                                             'equipamientos.equipamiento',
                                             'equipamientos.tipoRecepcion',
@@ -782,6 +812,8 @@ class SolEquipamientoController extends Controller
                                             'solic_equipamientos.recepcion',
                                             'solic_equipamientos.num_factura',
                                             'solic_equipamientos.control',
+                                            'solic_equipamientos.anticipo_cand',
+                                            'solic_equipamientos.liquidacion_cand',
                                             'proveedores.proveedor',
                                             'equipamientos.equipamiento',
                                             'equipamientos.tipoRecepcion',
@@ -831,6 +863,8 @@ class SolEquipamientoController extends Controller
                                                 'solic_equipamientos.recepcion',
                                                 'solic_equipamientos.num_factura',
                                                 'solic_equipamientos.control',
+                                                'solic_equipamientos.anticipo_cand',
+                                                'solic_equipamientos.liquidacion_cand',
                                                 'proveedores.proveedor',
                                                 'equipamientos.equipamiento',
                                                 'equipamientos.tipoRecepcion',
@@ -878,6 +912,8 @@ class SolEquipamientoController extends Controller
                                                 'solic_equipamientos.recepcion',
                                                 'solic_equipamientos.num_factura',
                                                 'solic_equipamientos.control',
+                                                'solic_equipamientos.anticipo_cand',
+                                                'solic_equipamientos.liquidacion_cand',
                                                 'proveedores.proveedor',
                                                 'equipamientos.equipamiento',
                                                 'equipamientos.tipoRecepcion',
@@ -927,6 +963,8 @@ class SolEquipamientoController extends Controller
                                                 'solic_equipamientos.recepcion',
                                                 'solic_equipamientos.num_factura',
                                                 'solic_equipamientos.control',
+                                                'solic_equipamientos.anticipo_cand',
+                                                'solic_equipamientos.liquidacion_cand',
                                                 'proveedores.proveedor',
                                                 'equipamientos.equipamiento',
                                                 'equipamientos.tipoRecepcion',
@@ -977,6 +1015,8 @@ class SolEquipamientoController extends Controller
                                                 'solic_equipamientos.recepcion',
                                                 'solic_equipamientos.num_factura',
                                                 'solic_equipamientos.control',
+                                                'solic_equipamientos.anticipo_cand',
+                                                'solic_equipamientos.liquidacion_cand',
                                                 'proveedores.proveedor',
                                                 'equipamientos.equipamiento',
                                                 'equipamientos.tipoRecepcion',
@@ -1028,6 +1068,8 @@ class SolEquipamientoController extends Controller
                                                 'solic_equipamientos.recepcion',
                                                 'solic_equipamientos.num_factura',
                                                 'solic_equipamientos.control',
+                                                'solic_equipamientos.anticipo_cand',
+                                                'solic_equipamientos.liquidacion_cand',
                                                 'proveedores.proveedor',
                                                 'equipamientos.equipamiento',
                                                 'equipamientos.tipoRecepcion',
@@ -1077,6 +1119,8 @@ class SolEquipamientoController extends Controller
                                                 'solic_equipamientos.recepcion',
                                                 'solic_equipamientos.num_factura',
                                                 'solic_equipamientos.control',
+                                                'solic_equipamientos.anticipo_cand',
+                                                'solic_equipamientos.liquidacion_cand',
                                                 'proveedores.proveedor',
                                                 'equipamientos.equipamiento',
                                                 'equipamientos.tipoRecepcion',
@@ -1126,6 +1170,8 @@ class SolEquipamientoController extends Controller
                                                 'solic_equipamientos.recepcion',
                                                 'solic_equipamientos.num_factura',
                                                 'solic_equipamientos.control',
+                                                'solic_equipamientos.anticipo_cand',
+                                                'solic_equipamientos.liquidacion_cand',
                                                 'proveedores.proveedor',
                                                 'equipamientos.equipamiento',
                                                 'equipamientos.tipoRecepcion',
@@ -1174,6 +1220,8 @@ class SolEquipamientoController extends Controller
                                                 'solic_equipamientos.recepcion',
                                                 'solic_equipamientos.num_factura',
                                                 'solic_equipamientos.control',
+                                                'solic_equipamientos.anticipo_cand',
+                                                'solic_equipamientos.liquidacion_cand',
                                                 'proveedores.proveedor',
                                                 'equipamientos.equipamiento',
                                                 'equipamientos.tipoRecepcion',
@@ -1199,7 +1247,8 @@ class SolEquipamientoController extends Controller
                     }
                 }
             }
-        }else{
+        }// FIN ROL ID != 10
+        else{
             if($buscar == ''){
                 $equipamientos = Solic_equipamiento::join('equipamientos','solic_equipamientos.equipamiento_id','=','equipamientos.id')
                         ->join('proveedores','equipamientos.proveedor_id','=','proveedores.id')
@@ -1853,6 +1902,22 @@ class SolEquipamientoController extends Controller
         $observacion->comentario ='Fecha programada de instalación: '.$request->comentario;
         $observacion->usuario = Auth::user()->usuario;
         $observacion->save();
+    }
+
+    public function bloquearAnticipo(Request $request)
+    {
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        $user = Solic_equipamiento::findOrFail($request->id);
+        $user->anticipo_cand = '1';
+        $user->save();
+    }
+
+    public function bloquearLiquidacion(Request $request)
+    {
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        $user = Solic_equipamiento::findOrFail($request->id);
+        $user->liquidacion_cand = '1';
+        $user->save();
     }
 
     public function setInstalacion(Request $request){

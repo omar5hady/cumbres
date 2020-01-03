@@ -11,7 +11,7 @@ class Solic_equipamiento extends Model
     protected $fillable = ['lote_id','contrato_id','fecha_solicitud','costo','fecha_colocacion',
                             'anticipo','fecha_anticipo','equipamiento_id','status','control',
                             'liquidacion', 'fecha_liquidacion', 'avance', 'num_factura',
-                            'fin_instalacion'];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
+                            'fin_instalacion','anticipo_cand','liquidacion_cand'];//asignacion en masa, definir las columnas de la tabla a la que se les mandaran valores
 
     public function lote(){
         return $this->belongsTo('App\Lote');

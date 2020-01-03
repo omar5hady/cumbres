@@ -16,7 +16,7 @@
   <link href="vendors/css/simple-line-icons.min.css" rel="stylesheet">
 
   <!-- Main styles for this application -->
-  <link href="css/plantilla.css" rel="stylesheet">>
+  <link href="css/plantilla.css" rel="stylesheet">
 
 </head>
 <img id="login" src="img/login.png" alt="">

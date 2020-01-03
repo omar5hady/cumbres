@@ -33,6 +33,9 @@ class CreateSolicEquipamientosTable extends Migration
             $table->boolean('control')->default(0);
             $table->boolean('recepcion')->default(0);
 
+            $table->boolean('anticipo_cand')->default(0);
+            $table->boolean('liquidacion_cand')->default(0);
+
             $table->timestamps();
 
             $table->foreign('lote_id')->references('id')->on('lotes');

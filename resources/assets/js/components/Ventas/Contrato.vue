@@ -583,11 +583,22 @@
 
                                                 
                                             <div class="col-md-2">
-                                                    <div class="form-group">
-                                                <label for="">NSS <span style="color:red;" v-show="nss==''">(*)</span></label>
-                                                <input :readonly="listado==4 && btn_actualizar==0" type="text" maxlength="11" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="nss" placeholder="NSS">
-                                            </div>
-                                            </div>                           
+                                                <div class="form-group">
+                                                    <label for="">NSS <span style="color:red;" v-show="nss==''">(*)</span></label>
+                                                    <input :readonly="listado==4 && btn_actualizar==0" type="text" maxlength="11" pattern="\d*" class="form-control" v-on:keypress="isNumber($event)" v-model="nss" placeholder="NSS">
+                                                </div>
+                                            </div>  
+                                            
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="">Lugar de nacimiento</label>
+                                                    <input :disabled="listado==4 && btn_actualizar==0" type="text" name="city3" list="cityname3" class="form-control" v-model="lugar_nacimiento">
+                                                    <datalist id="cityname3">
+                                                        <option value="">Seleccione</option>
+                                                        <option v-for="estados in arrayEstados" :key="estados.estado" :value="estados.estado" v-text="estados.estado"></option>    
+                                                    </datalist>
+                                                </div>
+                                            </div>                         
                                             
                                         </div>
                                     <!-- Fin datos prospecto-->
@@ -1824,6 +1835,7 @@
                     homoclave: '',
                     nss:'',
                     nacionalidad:0,
+                    lugar_nacimiento:'',
                     
                     tipo_economia: 0,
                     empresa: '',
@@ -1978,7 +1990,7 @@
                 b_etapa2: '',
                 b_manzana2: '',
                 b_lote2: '',
-                b_status:1,
+                b_status:'',
                 b_fecha:'',
                 b_fecha2:'',
                 b_fecha_status: '',
@@ -2561,6 +2573,7 @@
                 this.liquidado = data['liquidado'];
                 this.fecha_status = data['fecha_status'];
                 this.lote_id = data['lote_id'];
+                this.lugar_nacimiento = data['lugar_nacimiento'];
                 
                 this.nombre_referencia1 = data['nombre_primera_ref'];
                 this.telefono_referencia1 = data['telefono_primera_ref'];
@@ -2650,6 +2663,7 @@
                    'email_institucional':this.email_inst,
                    'edo_civil':this.e_civil,
                    'nss':this.nss,
+                   'lugar_nacimiento':this.lugar_nacimiento,
                    'curp':this.curp,
                    'empresa':this.empresa,
                    'coacreditado':this.coacreditado,
@@ -2778,6 +2792,7 @@
                 this.celular = data['celular'];
                 this.email = data['email'];
                 this.direccion = data['direccion'];
+                this.lugar_nacimiento = data['lugar_nacimiento'];
                 this.cp = data['cp'];
                 this.colonia = data['colonia'];
                 this.estado = data['estado'];
@@ -3229,6 +3244,7 @@
                 'coacreditado':this.coacreditado,
                 'ciudad':this.ciudad,
                 'estado':this.estado,
+                'lugar_nacimiento': this.lugar_nacimiento,
                 'nacionalidad':this.nacionalidad,
                 'puesto':this.puesto,
                 'sexo_coa':this.sexo_coa,
@@ -3541,32 +3557,32 @@
         margin-top: 2rem;
         }
     .table2 {
-    margin: auto;
-    border-collapse: collapse;
-    overflow-x: auto;
-    display: block;
-    width: fit-content;
-    max-width: 100%;
-    box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
+        margin: auto;
+        border-collapse: collapse;
+        overflow-x: auto;
+        display: block;
+        width: fit-content;
+        max-width: 100%;
+        box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
     }
 
     .td2, .th2 {
-    border: solid rgb(200, 200, 200) 1px;
-    padding: .5rem;
+        border: solid rgb(200, 200, 200) 1px;
+        padding: .5rem;
     }
 
     .td2 {
-    white-space: nowrap;
-    border-bottom: none;
-    color: rgb(20, 20, 20);
+        white-space: nowrap;
+        border-bottom: none;
+        color: rgb(20, 20, 20);
     }
 
     .td2:first-of-type, th:first-of-type {
-    border-left: none;
+       border-left: none;
     }
 
     .td2:last-of-type, th:last-of-type {
-    border-right: none;
+       border-right: none;
     } 
     }
 </style>

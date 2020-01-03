@@ -548,6 +548,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/equipamiento/actualizar','EquipamientoController@update');
         Route::put('/equipamiento/eliminar','EquipamientoController@destroy');
         Route::put('/equipamiento/activar','EquipamientoController@activar');
+        
         Route::get('/select_equipamientos','EquipamientoController@selectEquipamiento');
         Route::post('/equipamiento/solicitar_equipamiento','EquipamientoController@solicitud_equipamiento');
         Route::get('/index/equipamiento/lote','EquipamientoController@index_equipamientos_lotes');
@@ -565,6 +566,8 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/equipamiento/indexHistorial','SolEquipamientoController@indexHistorial');
         Route::get('/equipamiento/contRea','SolEquipamientoController@indexRea');
         Route::put('/equipamiento/reubicar','SolEquipamientoController@reubicar');
+        Route::put('/equipamiento/bloquearAnticipo','SolEquipamientoController@bloquearAnticipo');
+        Route::put('/equipamiento/bloquearLiquidacion','SolEquipamientoController@bloquearLiquidacion');
         
         Route::get('/equipamiento/indexObservacion','ObsservacionEquipamientoController@index');
         Route::post('/equipamiento/registrarObservacion','ObsservacionEquipamientoController@store');

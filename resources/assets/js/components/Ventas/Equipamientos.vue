@@ -244,7 +244,8 @@
                                                 <input type="text" pattern="\d*" @keyup.enter="actCosto(equipamientos.id,$event.target.value)" :id="equipamientos.id" :value="equipamientos.costo|currency" maxlength="10" v-on:keypress="isNumber($event)" class="form-control" >
                                             </td>
                                             <template>
-                                                <td @click="abrirModal('anticipo', equipamientos)" v-if="equipamientos.fecha_anticipo" class="td2" v-text=" this.moment(equipamientos.fecha_anticipo).locale('es').format('DD/MMM/YYYY') + ': '+ '$'+formatNumber(equipamientos.anticipo)"></td>
+                                                <td @click="abrirModal('anticipo', equipamientos)" v-if="equipamientos.fecha_anticipo && equipamientos.anticipo_cand==0" class="td2" v-text=" this.moment(equipamientos.fecha_anticipo).locale('es').format('DD/MMM/YYYY') + ': '+ '$'+formatNumber(equipamientos.anticipo)"></td>
+                                                <td v-else-if="equipamientos.fecha_anticipo && equipamientos.anticipo_cand==1" class="td2" v-text=" this.moment(equipamientos.fecha_anticipo).locale('es').format('DD/MMM/YYYY') + ': '+ '$'+formatNumber(equipamientos.anticipo)"></td>
                                                 <td @click="abrirModal('anticipo', equipamientos)" v-else class="td2" v-text="'Sin anticipo'"></td>    
                                             </template>
                                             <template>
@@ -287,7 +288,8 @@
                                             <td class="td2" v-text="'$'+formatNumber(equipamientos.anticipo + equipamientos.liquidacion)"></td>
                                             <td class="td2" v-text="'$'+formatNumber(equipamientos.costo - equipamientos.anticipo - equipamientos.liquidacion)"></td>
                                             <template>
-                                                <td v-if="equipamientos.fecha_liquidacion"  @click="abrirModal('liquidacion', equipamientos)" class="td2" v-text=" this.moment(equipamientos.fecha_liquidacion).locale('es').format('DD/MMM/YYYY') + ': '+ '$'+formatNumber(equipamientos.liquidacion)"></td>
+                                                <td v-if="equipamientos.fecha_liquidacion && equipamientos.liquidacion_cand == 0"  @click="abrirModal('liquidacion', equipamientos)" class="td2" v-text=" this.moment(equipamientos.fecha_liquidacion).locale('es').format('DD/MMM/YYYY') + ': '+ '$'+formatNumber(equipamientos.liquidacion)"></td>
+                                                <td v-else-if="equipamientos.fecha_liquidacion && equipamientos.liquidacion_cand == 1" class="td2" v-text=" this.moment(equipamientos.fecha_liquidacion).locale('es').format('DD/MMM/YYYY') + ': '+ '$'+formatNumber(equipamientos.liquidacion)"></td>
                                                 <td v-else-if="equipamientos.status == 4">
                                                     <button title="Realizar recepcion" type="button" 
                                                         @click="abrirModal('liquidacion', equipamientos)" class="btn btn-success pull-right">

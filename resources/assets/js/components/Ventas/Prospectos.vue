@@ -1224,7 +1224,7 @@
                 buscar : '',
                 buscar2: '',
                 buscar3:'2',
-                b_clasificacion: 2,
+                b_clasificacion: '',
                 arrayCoacreditados : [],
                 arrayProspectos: [],
                 arrayFraccionamientos : [],

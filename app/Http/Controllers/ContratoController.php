@@ -8083,7 +8083,9 @@ class ContratoController extends Controller
                     'clientes.empresa_coa',
                     'clientes.curp_coa',
                     'clientes.nss_coa',
-                    'clientes.nacionalidad_coa'
+                    'clientes.nacionalidad_coa',
+                    'clientes.lugar_nacimiento'
+                    
                 )
                 ->where('clientes.id', '=', $credito->prospecto_id)->get();
 
@@ -8138,6 +8140,7 @@ class ContratoController extends Controller
                 $credito->institucion = $institucion[0]->institucion;
                 $credito->elegido = $institucion[0]->elegido;
                 $credito->publicidadId = $prospecto[0]->publicidad_id;
+                $credito->lugar_nacimiento = $prospecto[0]->lugar_nacimiento;
             }
         }
 
@@ -8196,6 +8199,7 @@ class ContratoController extends Controller
         $cliente->celular_coa = $request->celular_coa;
         $cliente->email_coa = $request->email_coa;
         $cliente->parentesco_coa = $request->parentesco_coa;
+        $cliente->lugar_nacimiento = $request->lugar_nacimiento;
 
         $credito = Credito::findOrFail($request->id);
         $credito->num_dep_economicos =  $request->num_dep_economicos;
@@ -8742,9 +8746,9 @@ class ContratoController extends Controller
             ->where('inst_seleccionadas.tipo_credito', '!=', 'Crédito Directo')
             ->get();
 
-            if($contratoPromesa[0]->avaluo_cliente>0){
-                $contratoPromesa[0]->credito_neto = $contratoPromesa[0]->credito_neto - $contratoPromesa[0]->avaluo_cliente;
-            }
+            // if($contratoPromesa[0]->avaluo_cliente>0){
+            //     $contratoPromesa[0]->credito_neto = $contratoPromesa[0]->credito_neto - $contratoPromesa[0]->avaluo_cliente;
+            // }
 
         setlocale(LC_TIME, 'es_MX.utf8');
         $contratoPromesa[0]->engancheTotalLetra = NumerosEnLetras::convertir($contratoPromesa[0]->enganche_total, 'Pesos', true, 'Centavos');
@@ -9126,6 +9130,7 @@ class ContratoController extends Controller
                 $cliente->celular_coa = $request->celular_coa;
                 $cliente->email_coa = $request->email_coa;
                 $cliente->parentesco_coa = $request->parentesco_coa;
+                $cliente->lugar_nacimiento = $request->lugar_nacimiento;
 
             $credito = Credito::findOrFail($request->contrato_id);
                 $credito->num_dep_economicos =  $request->num_dep_economicos;
