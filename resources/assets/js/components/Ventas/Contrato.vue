@@ -10,21 +10,21 @@
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> Contratos
                         <!--   Boton agregar    -->
-                        <button type="button" @click="mostrarCreditosAprobados()" class="btn btn-primary" v-if="listado==0">
+                        <button type="button" @click="mostrarCreditosAprobados()" class="btn btn-primary" v-if="listado==0 && rolId != 2">
                             <i class="icon-plus"></i>&nbsp;Nuevo
                         </button>
                         <button type="button" @click="listado=0" class="btn btn-success" v-if="listado==1">
                             <i class="fa fa-mail-reply"></i>&nbsp;Regresar
                         </button>
                         <!-- boton para cambiar a modo de actualizar -->
-                         <button type="button" v-if="listado == 4 && btn_actualizar == 0 && status==1" @click="btn_actualizar = 1" class="btn btn-warning">
+                         <button type="button" v-if="listado == 4 && btn_actualizar == 0 && status==1 && rolId != 2" @click="btn_actualizar = 1" class="btn btn-warning">
                             <i class="icon-pencil"></i>&nbsp;Vista actualizar
                         </button>
-                        <button type="button" v-if="listado == 4 && btn_actualizar == 1 && status==1" @click="btn_actualizar = 0" class="btn btn-warning">
+                        <button type="button" v-if="listado == 4 && btn_actualizar == 1 && status==1 && rolId != 2" @click="btn_actualizar = 0" class="btn btn-warning">
                             <i class="icon-pencil"></i>&nbsp;Ocultar vista actualizar
                         </button>
                     <!-- form para cambiar el status de los contratos -->
-                        <form action="" method="post" v-if="listado == 4 && status == 1 && liquidado != 1 || listado == 4 && status == 3 && liquidado != 1">
+                        <form action="" method="post" v-if="listado == 4 && status == 1 && liquidado != 1 && rolId != 2 || listado == 4 && status == 3 && liquidado != 1 && rolId != 2">
                             <div style="text-align: right;">
                                     <div>
                                         <div>
@@ -141,7 +141,7 @@
 
                                     <div class="input-group">
                                         <button type="submit" @click="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                        <a  :href="'/contratos/excel?buscar=' + buscar2 + '&buscar3=' + buscar3 + '&b_etapa=' +b_etapa2+ '&b_manzana=' + b_manzana2 + '&b_lote='+ b_lote2 + '&b_status='+ b_status + '&criterio=' + criterio2 + '&f_ini=' + b_fecha + '&f_fin=' + b_fecha2"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel</a>
+                                        <a :href="'/contratos/excel?buscar=' + buscar2 + '&buscar3=' + buscar3 + '&b_etapa=' +b_etapa2+ '&b_manzana=' + b_manzana2 + '&b_lote='+ b_lote2 + '&b_status='+ b_status + '&criterio=' + criterio2 + '&f_ini=' + b_fecha + '&f_fin=' + b_fecha2"  class="btn btn-success" v-if="rolId != 2"><i class="fa fa-file-text"></i> Excel</a>
                                         <span style="font-size: 1em; text-align:center;" class="badge badge-dark" v-text="'Total: '+ contador"> </span>
                                     </div>
                                         
@@ -313,7 +313,7 @@
 
             <!----------------- Listado de Simulaciones de Credito Aprobadas ------------------------------>
                     <!-- Div Card Body para listar -->
-                     <template v-if="listado == 1">
+                     <template v-if="listado == 1 && rolId != 2">
                         <div class="card-body"> 
                             <div class="form-group row">
                                 <div class="col-md-8">
@@ -1665,7 +1665,17 @@
                                                 <button type="button" v-if="listado==3" class="btn btn-primary" @click="crearContrato()"> Enviar </button>
                                                 <button type="button" v-if="listado==4 && btn_actualizar==1" class="btn btn-success" @click="actualizarContrato()"> Actualizar </button>
                                             </div>
-                                             <div style="text-align: right;">
+                                             <div style="text-align: right;" v-if="rolId!=2">
+                                                <a class="btn btn-warning btn-sm" v-if="listado==4 && tipo_credito!='Crédito Directo' && btn_actualizar==0" target="_blank" v-bind:href="'/contrato/promesaCredito/pdf/'+id">Imprimir contrato</a>
+                                                <a class="btn btn-warning btn-sm" v-if="listado==4 && tipo_credito=='Crédito Directo' && btn_actualizar==0" target="_blank" v-bind:href="'/contratoCompraVenta/reservaDeDominio/pdf/'+id">Imprimir contrato</a>
+                                                <a class="btn btn-primary btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+id">Imprimir contrato de compra venta</a>
+                                                <a class="btn btn-light btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/pagareContrato/pdf/'+id">Imprimir pagares</a>
+                                                <a class="btn btn-dark btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/cartaServicios/pdf/'+id">Carta de servicios</a>
+                                                <a class="btn btn-dark btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+id">Servicios de telecomunición</a>
+                                                <a class="btn btn-danger btn-sm" v-if="listado==4 && btn_actualizar==0" v-bind:href="'/descargarReglamento/contrato/'+id">Reglamento de la etapa</a>
+                                                <a class="btn btn-info btn-sm" v-if="listado==4 && btn_actualizar==0" @click="selectNombreArchivoModelo()">Modelo</a>
+                                            </div>
+                                            <div style="text-align: right;" v-if="rolId==2 && status == 1">
                                                 <a class="btn btn-warning btn-sm" v-if="listado==4 && tipo_credito!='Crédito Directo' && btn_actualizar==0" target="_blank" v-bind:href="'/contrato/promesaCredito/pdf/'+id">Imprimir contrato</a>
                                                 <a class="btn btn-warning btn-sm" v-if="listado==4 && tipo_credito=='Crédito Directo' && btn_actualizar==0" target="_blank" v-bind:href="'/contratoCompraVenta/reservaDeDominio/pdf/'+id">Imprimir contrato</a>
                                                 <a class="btn btn-primary btn-sm" v-if="listado==4 && btn_actualizar==0" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+id">Imprimir contrato de compra venta</a>

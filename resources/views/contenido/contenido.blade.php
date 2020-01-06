@@ -247,7 +247,7 @@
 
         @if(Auth::user()->contratos == 1)
             <template v-if="menu==80">
-                <crear-contrato><crear-contrato/>
+                <crear-contrato rol-id="{{Auth::user()->rol_id}}"><crear-contrato/>
             </template>
         @endif
 

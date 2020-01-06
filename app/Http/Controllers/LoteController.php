@@ -605,21 +605,40 @@ class LoteController extends Controller
                         ->orderBy('lotes.num_lote','ASC')->paginate(25);
                 }
                 else{
-                    $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
-                    ->join('etapas','lotes.etapa_id','=','etapas.id')
-                    ->join('modelos','lotes.modelo_id','=','modelos.id')
-                    ->join('empresas','lotes.empresa_id','=','empresas.id')
-                    ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
-                            'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
-                            'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
-                            'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                            'lotes.clv_catastral','lotes.etapa_servicios')
-                        ->where($criterio, 'like', '%'. $buscar . '%')
-                        ->where('lotes.etapa_servicios', 'like', '%'. $buscar2 . '%')
-                        ->where('lotes.manzana', '=', $buscar3)
-                        ->orderBy('fraccionamientos.nombre','DESC')
-                        ->orderBy('lotes.manzana','ASC')
-                        ->orderBy('lotes.num_lote','ASC')->paginate(25);
+                    if($buscar2!=''){
+                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                        ->join('etapas','lotes.etapa_id','=','etapas.id')
+                        ->join('modelos','lotes.modelo_id','=','modelos.id')
+                        ->join('empresas','lotes.empresa_id','=','empresas.id')
+                        ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
+                                'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
+                                'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
+                                'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
+                                'lotes.clv_catastral','lotes.etapa_servicios')
+                            ->where($criterio, 'like', '%'. $buscar . '%')
+                            ->where('lotes.etapa_servicios', 'like', '%'. $buscar2 . '%')
+                            ->where('lotes.manzana', '=', $buscar3)
+                            ->orderBy('fraccionamientos.nombre','DESC')
+                            ->orderBy('lotes.manzana','ASC')
+                            ->orderBy('lotes.num_lote','ASC')->paginate(25);
+                    }
+                    else{
+                        $lotes = Lote::join('fraccionamientos','lotes.fraccionamiento_id','=','fraccionamientos.id')
+                        ->join('etapas','lotes.etapa_id','=','etapas.id')
+                        ->join('modelos','lotes.modelo_id','=','modelos.id')
+                        ->join('empresas','lotes.empresa_id','=','empresas.id')
+                        ->select('fraccionamientos.nombre as proyecto','etapas.num_etapa as etapas','lotes.manzana','lotes.num_lote','lotes.sublote',
+                                'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
+                                'lotes.construccion','lotes.casa_muestra','lotes.lote_comercial','lotes.id',
+                                'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
+                                'lotes.clv_catastral','lotes.etapa_servicios')
+                            ->where($criterio, 'like', '%'. $buscar . '%')
+                            ->where('lotes.manzana','like', '%'. $buscar3 . '%')
+                            ->orderBy('fraccionamientos.nombre','DESC')
+                            ->orderBy('lotes.manzana','ASC')
+                            ->orderBy('lotes.num_lote','ASC')->paginate(25);
+                    }
+                    
                 }
             }
         }
