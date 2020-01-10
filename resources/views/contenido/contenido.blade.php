@@ -371,6 +371,10 @@
             <uri-equipamiento></uri-equipamiento>
         </template>
 
+        <template v-if="menu==225">
+            <res-puplicidad></res-puplicidad>
+        </template>
+
         
 
         

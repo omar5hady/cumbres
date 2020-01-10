@@ -8200,6 +8200,9 @@ class ContratoController extends Controller
         $cliente->email_coa = $request->email_coa;
         $cliente->parentesco_coa = $request->parentesco_coa;
         $cliente->lugar_nacimiento = $request->lugar_nacimiento;
+        
+        $cliente->publicidad_id = $request->publicidad_id;
+        $cliente->nombre_recomendado = $request->nombre_recomendado;
 
         $credito = Credito::findOrFail($request->id);
         $credito->num_dep_economicos =  $request->num_dep_economicos;
@@ -8751,7 +8754,13 @@ class ContratoController extends Controller
             // }
 
         setlocale(LC_TIME, 'es_MX.utf8');
-        $contratoPromesa[0]->engancheTotalLetra = NumerosEnLetras::convertir($contratoPromesa[0]->enganche_total, 'Pesos', true, 'Centavos');
+        if($contratoPromesa[0]->avaluo_cliente>0){
+            $contratoPromesa[0]->engancheTotalLetra = NumerosEnLetras::convertir(($contratoPromesa[0]->enganche_total - $contratoPromesa[0]->avaluo_cliente), 'Pesos', true, 'Centavos');
+        }
+        else{
+            $contratoPromesa[0]->engancheTotalLetra = NumerosEnLetras::convertir($contratoPromesa[0]->avaluo_cliente, 'Pesos', true, 'Centavos');
+        }
+        
         $contratoPromesa[0]->precioVentaLetra = NumerosEnLetras::convertir($contratoPromesa[0]->precio_venta, 'Pesos', true, 'Centavos');
         //$contratoPromesa[0]->precio_venta = number_format((float)$contratoPromesa[0]->precio_venta, 2, '.', ',');
 
@@ -9131,6 +9140,9 @@ class ContratoController extends Controller
                 $cliente->email_coa = $request->email_coa;
                 $cliente->parentesco_coa = $request->parentesco_coa;
                 $cliente->lugar_nacimiento = $request->lugar_nacimiento;
+
+                $cliente->publicidad_id = $request->publicidad_id;
+                $cliente->nombre_recomendado = $request->nombre_recomendado;
 
             $credito = Credito::findOrFail($request->contrato_id);
                 $credito->num_dep_economicos =  $request->num_dep_economicos;

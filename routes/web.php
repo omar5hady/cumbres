@@ -439,6 +439,8 @@ Route::group(['middleware' => ['auth']],function(){
     /************************** RUTAS ESTADISTICAS ***************************/
         Route::get('/estadisticas/datos_extra','EstadisticasController@estad_datos_extra');
         Route::get('/estadisticas/res_proyecto','EstadisticasController@resumenProyecto');
+        Route::get('/estadisticas/publicidad','MedioPublicitarioController@estadisticas');
+
 
     ///////////////////        RUTAS NOTARIA     //////////////////////////////////
         Route::get('/notaria','NotariaController@index');

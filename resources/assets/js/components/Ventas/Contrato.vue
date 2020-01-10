@@ -710,7 +710,7 @@
                                                                     <div class="col-md-3">
                                                                             <div class="form-group">
                                                                         <label for="">Medio donde se entero de nosotros </label>
-                                                                        <select disabled class="form-control" v-model="publicidad_id" >
+                                                                        <select :readonly="listado==4 && btn_actualizar==0" class="form-control" v-model="publicidad_id" >
                                                                                 <option value="0">Seleccione</option>
                                                                                 <option v-for="medios in arrayMediosPublicidad" :key="medios.id" :value="medios.id" v-text="medios.nombre"></option>    
                                                                         </select>
@@ -720,7 +720,7 @@
                                                                     <div class="col-md-4" v-if="publicidad_id == 1">
                                                                             <div class="form-group">
                                                                         <label for="">Nombre de la persona que te recomendo </label>
-                                                                            <input disabled type="text" class="form-control" v-model="nombre_recomendado" placeholder="Nombre">
+                                                                            <input :readonly="listado==4 && btn_actualizar==0" type="text" class="form-control" v-model="nombre_recomendado" placeholder="Nombre">
                                                                     </div>
                                                                     </div> 
 
@@ -2705,6 +2705,9 @@
                    'num_dep_economicos':this.dep_economicos,
                    'lote_id': this.lote_id,
 
+                   'publicidad_id' : this.publicidad_id,
+                   'nombre_recomendado' : this.nombre_recomendado,
+
                    'nombre_primera_ref' : this.nombre_referencia1,
                    'telefono_primera_ref': this.telefono_referencia1,
                    'celular_primera_ref' : this.celular_referencia1,
@@ -3282,6 +3285,9 @@
                 'num_dep_economicos':this.dep_economicos,
                 'lote_id': this.lote_id,
                 'credito_solic': this.monto_credito,
+
+                'publicidad_id' : this.publicidad_id,
+                'nombre_recomendado' : this.nombre_recomendado,
                 })
             },
 
