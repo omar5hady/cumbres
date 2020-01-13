@@ -982,6 +982,16 @@
                                                     <input :readonly="listado==4 && btn_actualizar==0" type="text" maxlength="5" class="form-control" v-model="ext_empresa_coa" placeholder="Ext">
                                                 </div>
                                             </div>
+
+                                            <div class="col-md-12" v-if="coacreditado==true && listado==4 && btn_actualizar==1">
+                                                    <div class="form-group">
+                                                    <center> 
+                                                        <div class="col-md-1">
+                                                            <button type="button" class="btn btn-danger" @click="cambiarTitular()"> Cambiar titular </button>
+                                                        </div>
+                                                    </center>
+                                                    </div>
+                                            </div>
                                                 
                                                  
                                         </div>
@@ -2199,6 +2209,29 @@
                 //Envia la petición para visualizar la data de esta pagina
                 me.listarContratos(page,buscar, buscar3, b_etapa, b_manzana,b_lote,criterio);
             },
+            cambiarTitular(){
+                let me = this;
+                //Con axios se llama el metodo store del controller
+                axios.put('/creditos/cambiarTitular',{
+                    //datos cliente
+                    'id':this.id,
+                    'rfc_coa':this.rfc_coa,
+                    'cliente_id':this.prospecto_id,
+                }).then(function (response){
+                    me.listado = 0;
+                     me.listarContratos(me.pagination.current_page,me.buscar,me.buscar3,me.b_etapa,me.b_manzana,me.b_lote,me.criterio);
+                    //window.alert("Cambios guardados correctamente");
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Cambios realizados',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
+            }, 
             listarPagos(id){
                 let me = this;
                 me.arrayPagos=[];

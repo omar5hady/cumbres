@@ -75,6 +75,9 @@ class MedioPublicitarioController extends Controller
 
     public function estadisticas(Request $request){
 
+        setlocale(LC_TIME, 'es_MX.utf8');
+        $hoy = Carbon::today()->toDateString();
+
         $desde      = $request->desde;
         $hasta      = $request->hasta;
         $etapa      = $request->etapa;
@@ -86,25 +89,27 @@ class MedioPublicitarioController extends Controller
         $publicidadProspectos = Medio_publicitario::select('id','nombre as publicidad')->orderBy('publicidad','asc')->get();
 
         ///Filtros 
-        /*if($desde == '' && $hasta == '' && $etapa == '' && $asesor == '' && $proyecto == ''){
+        if($desde == '' && $hasta == '' && $etapa == '' && $asesor == '' && $proyecto == ''){
             ////////// Arreglo de ID de clientes con contrato firmado //////////////
                 $clientesID_contrato = Contrato::join('creditos','contratos.id','=','creditos.id')
                             ->join('expedientes','contratos.id','=','expedientes.id')
                             ->join('clientes','creditos.prospecto_id','=','clientes.id')
                             ->select('clientes.id')->where('expedientes.fecha_firma_esc','!=',NULL)
+                            ->whereBetween('clientes.created_at', ['2000-02-01', $hoy])
                             ->orderBy('clientes.id','asc')->distinct()->get();
 
             ////////// Arreglo de ID de todos los prospectos (con y sin contrato) //////////////
                 $prospectos = Cliente::select('id')->where('clasificacion','!=',7)
+                            ->whereBetween('clientes.created_at', ['2000-02-01', $hoy])
                             ->where('clasificacion','!=',5)->orderBy('id','asc')->distinct()->get();
-        }*/
+        }
         if($desde != '' && $hasta != '' && $etapa == '' && $asesor == '' && $proyecto == ''){
             ////////// Arreglo de ID de clientes con contrato firmado //////////////
                 $clientesID_contrato = Contrato::join('creditos','contratos.id','=','creditos.id')
                             ->join('expedientes','contratos.id','=','expedientes.id')
                             ->join('clientes','creditos.prospecto_id','=','clientes.id')
                             ->select('clientes.id','clientes.created_at')->where('expedientes.fecha_firma_esc','!=',NULL)
-                            ->whereBetween('clientes.created_at', [$desde, $hasta])
+                            ->whereBetween('contratos.fecha', [$desde, $hasta])
                             ->orderBy('clientes.id','asc')->distinct()->get();
 
             ////////// Arreglo de ID de todos los prospectos (con y sin contrato) //////////////
@@ -167,7 +172,7 @@ class MedioPublicitarioController extends Controller
                             ->join('clientes','creditos.prospecto_id','=','clientes.id')
                             ->select('clientes.id','clientes.created_at')->where('expedientes.fecha_firma_esc','!=',NULL)
                             ->where('creditos.vendedor_id','=',$asesor)
-                            ->whereBetween('clientes.created_at', [$desde, $hasta])
+                            ->whereBetween('contratos.fecha', [$desde, $hasta])
                             ->orderBy('clientes.id','asc')->distinct()->get();
 
             ////////// Arreglo de ID de todos los prospectos (con y sin contrato) //////////////
@@ -184,7 +189,7 @@ class MedioPublicitarioController extends Controller
                         ->join('clientes','creditos.prospecto_id','=','clientes.id')
                         ->select('clientes.id')->where('expedientes.fecha_firma_esc','!=',NULL)
                         ->where('lotes.fraccionamiento_id','=',$proyecto)
-                        ->whereBetween('clientes.created_at', [$desde, $hasta])
+                        ->whereBetween('contratos.fecha', [$desde, $hasta])
                         ->orderBy('clientes.id','asc')->distinct()->get();
 
             ////////// Arreglo de ID de todos los prospectos (con y sin contrato) //////////////
@@ -202,7 +207,7 @@ class MedioPublicitarioController extends Controller
                         ->select('clientes.id')->where('expedientes.fecha_firma_esc','!=',NULL)
                         ->where('lotes.fraccionamiento_id','=',$proyecto)
                         ->where('lotes.etapa_id','=',$etapa)
-                        ->whereBetween('clientes.created_at', [$desde, $hasta])
+                        ->whereBetween('contratos.fecha', [$desde, $hasta])
                         ->orderBy('clientes.id','asc')->distinct()->get();
 
             ////////// Arreglo de ID de todos los prospectos (con y sin contrato) //////////////
@@ -258,7 +263,7 @@ class MedioPublicitarioController extends Controller
                         ->where('lotes.fraccionamiento_id','=',$proyecto)
                         ->where('lotes.etapa_id','=',$etapa)
                         ->where('creditos.vendedor_id','=',$asesor)
-                        ->whereBetween('clientes.created_at', [$desde, $hasta])
+                        ->whereBetween('contratos.fecha', [$desde, $hasta])
                         ->orderBy('clientes.id','asc')->distinct()->get();
 
             ////////// Arreglo de ID de todos los prospectos (con y sin contrato) //////////////

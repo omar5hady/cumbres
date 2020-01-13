@@ -1448,7 +1448,7 @@ class CreditoController extends Controller
                                  'clientes.empresa_coa','clientes.lugar_nacimiento_coa','clientes.estado_coa','clientes.ciudad_coa',
                                  'clientes.nacionalidad_coa','clientes.parentesco_coa','clientes.estado','clientes.ciudad','clientes.curp',
                                  'clientes.email_institucional','clientes.tipo_casa','clientes.edo_civil','clientes.nacionalidad',
-                                 'clientes.nss',
+                                 'clientes.nss','clientes.publicidad_id','clientes.nombre_recomendado',
  
                                  'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc','personal.homoclave',
                                  'personal.direccion','personal.colonia','personal.colonia','personal.cp','personal.telefono',
@@ -1487,6 +1487,14 @@ class CreditoController extends Controller
             $newClienteTitular->lugar_nacimiento = $titularOld[0]->lugar_nacimiento_coa;
             $newClienteTitular->estado = $titularOld[0]->estado_coa;
             $newClienteTitular->ciudad = $titularOld[0]->ciudad_coa;
+            $newClienteTitular->nacionalidad = $titularOld[0]->nacionalidad_coa;
+            $newClienteTitular->publicidad_id = $titularOld[0]->publicidad_id;
+            if($newClienteTitular->publicidad_id == 1){
+                $newClienteTitular->nombre_recomendado = $titularOld[0]->nombre_recomendado;
+            }
+            else{
+                $newClienteTitular->nombre_recomendado = NULL;
+            }
             $newClienteTitular->nacionalidad = $titularOld[0]->nacionalidad_coa;
 
             $newClienteTitular->sexo_coa = $titularOld[0]->sexo;

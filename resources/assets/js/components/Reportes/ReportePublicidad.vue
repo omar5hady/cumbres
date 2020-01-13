@@ -70,7 +70,7 @@
                                         <div class="h5 text-muted text-left mb-2">{{venta.publicidad}}</div>
                                         <div class="text-muted text-uppercase font-weight-bold">{{venta.cant}}</div>
                                         <div class="progress progress-primary progress-xs my-2">
-                                            <div class="progress-bar" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                            <div class="progress-bar" role="progressbar" v-bind:style="{ width: (venta.cant/totalVentas)*100 + '%' }" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -83,7 +83,7 @@
                                         <div class="h5 text-muted2 text-left mb-2">{{prospecto.publicidad}}</div>
                                         <div class="text-muted text-uppercase font-weight-bold">{{prospecto.cant}}</div>
                                         <div class="progress progress-light progress-xs my-2">
-                                            <div class="progress-bar" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                            <div class="progress-bar" role="progressbar" v-bind:style="{ width: (prospecto.cant/totalProspectos)*100 + '%' }" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -207,7 +207,7 @@
             
         },
         mounted() {
-            //this.getDatos();
+            this.getDatos();
             this.selectFraccionamientos();
             this.selectAsesores();
         }

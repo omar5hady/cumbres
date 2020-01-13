@@ -508,12 +508,12 @@
                                         <a class="nav-link" href="#"><i class="icon-chart"></i> Estadisticas Mejora</a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->rol_id == 1)
+                                @if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 6)
                                     <li @click="menu=91" class="nav-item">
                                         <a class="nav-link" href="#"><i class="icon-chart"></i> Resumen por proyecto</a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->rol_id == 1)
+                                @if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 6)
                                     <li @click="menu=225" class="nav-item">
                                         <a class="nav-link" href="#"><i class="icon-chart"></i> Estadisticas Publicidad</a>
                                     </li>
