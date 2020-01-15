@@ -115,6 +115,7 @@
                                             <th>CURP </th>
                                             <th>Proyecto de interes</th>
                                             <th>Clasificación</th>
+                                            <th>Fecha de alta</th>
                                             <th>Observaciones</th>
                                             <th v-if="rolId != 2">Vendedor</th>
                                             <th v-if="rolId != 2">Publicidad</th>
@@ -164,6 +165,7 @@
                                             <td class="td2" v-if="prospecto.clasificacion==5">Ventas</td>
                                             <td class="td2" v-if="prospecto.clasificacion==6">Cancelado</td>
                                             <td class="td2" v-if="prospecto.clasificacion==7">Coacreditado</td>
+                                            <td class="td2" v-text="this.moment(prospecto.created_at).locale('es').format('DD/MMM/YYYY')"></td>
                                             <td class="td2"> <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" @click="abrirModal3('prospecto','ver_todo', prospecto.id),listarObservacion(1,prospecto.id)">Ver todos</button> </td>
                                             <td class="td2" v-if="rolId != 2" v-text="prospecto.v_completo"></td>
                                             <td class="td2" v-if="rolId != 2" v-text="prospecto.publicidad"></td>

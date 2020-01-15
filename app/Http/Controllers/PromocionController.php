@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Promocion;
+use App\Lote_promocion;
 use Carbon\Carbon;
 use DB;
 use Auth;
@@ -60,6 +61,27 @@ class PromocionController extends Controller
             }
             
         }
+
+        if(sizeOf($promociones)){
+            foreach($promociones as $index => $promo){
+                $lotes_promocion = Lote_promocion::join('lotes','lotes_promocion.lote_id','=','lotes.id')
+                ->join('promociones','lotes_promocion.promocion_id','=','promociones.id')
+                ->select('lotes.num_lote as lote','promociones.nombre as promocion', 'lotes.manzana as manzana',
+                        'lotes_promocion.id','lotes_promocion.lote_id','lotes_promocion.promocion_id')
+                ->where('lotes_promocion.promocion_id', '=', $promo->id)
+                ->orderBy('lotes.manzana', 'asc')
+                ->orderBy('lotes.num_lote', 'asc')->get();
+
+                $promo->lote = '';
+                $promo->mostrar = 0;
+                if(sizeof($lotes_promocion)){
+                    foreach($lotes_promocion as $ind => $lote){
+                        $promo->lote = $promo->lote. ' Lote ' .$lote->lote.' (Manzana '.$lote->manzana.'),';
+                    }
+                }
+            }
+        }
+       
             
         return [
             'pagination' => [
@@ -70,7 +92,7 @@ class PromocionController extends Controller
                 'from'          => $promociones->firstItem(),
                 'to'            => $promociones->lastItem(),
             ],
-            'promociones' => $promociones
+            'promociones' => $promociones, 'lotes_promocion'=>$lotes_promocion
         ];
     }
 

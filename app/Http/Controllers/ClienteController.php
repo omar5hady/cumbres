@@ -43,7 +43,7 @@ class ClienteController extends Controller
                     'clientes.sexo','clientes.tipo_casa','clientes.email_institucional','clientes.lugar_contacto',
                     'clientes.proyecto_interes_id','clientes.publicidad_id','clientes.edo_civil','clientes.nss',
                     'clientes.curp','clientes.vendedor_id','clientes.empresa','clientes.coacreditado','clientes.clasificacion',
-                    'clientes.created_at','clientes.precio_rango','clientes.ingreso',
+                    'clientes.created_at','clientes.precio_rango','clientes.ingreso','clientes.created_at',
                     
                     'clientes.sexo_coa', 'clientes.tipo_casa_coa','clientes.email_institucional_coa','clientes.empresa_coa',
                     'clientes.edo_civil_coa','clientes.nss_coa','clientes.curp_coa','clientes.nombre_coa','clientes.apellidos_coa',
@@ -82,7 +82,7 @@ class ClienteController extends Controller
                         'clientes.sexo','clientes.tipo_casa','clientes.email_institucional','clientes.lugar_contacto',
                         'clientes.proyecto_interes_id','clientes.publicidad_id','clientes.edo_civil','clientes.nss',
                         'clientes.curp','clientes.vendedor_id','clientes.empresa','clientes.coacreditado','clientes.clasificacion',
-                        'clientes.created_at','clientes.precio_rango','clientes.ingreso',
+                        'clientes.created_at','clientes.precio_rango','clientes.ingreso','clientes.created_at',
     
                         DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
                         'clientes.sexo_coa', 'clientes.tipo_casa_coa','clientes.email_institucional_coa','clientes.empresa_coa',
@@ -137,7 +137,7 @@ class ClienteController extends Controller
                         'clientes.sexo','clientes.tipo_casa','clientes.email_institucional','clientes.lugar_contacto',
                         'clientes.proyecto_interes_id','clientes.publicidad_id','clientes.edo_civil','clientes.nss',
                         'clientes.curp','clientes.vendedor_id','clientes.empresa','clientes.coacreditado','clientes.clasificacion',
-                        'clientes.created_at','clientes.precio_rango','clientes.ingreso',
+                        'clientes.created_at','clientes.precio_rango','clientes.ingreso','clientes.created_at',
     
                         DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
                         'clientes.sexo_coa', 'clientes.tipo_casa_coa','clientes.email_institucional_coa','clientes.empresa_coa',
@@ -182,7 +182,7 @@ class ClienteController extends Controller
                     'clientes.sexo','clientes.tipo_casa','clientes.email_institucional','clientes.lugar_contacto',
                     'clientes.proyecto_interes_id','clientes.publicidad_id','clientes.edo_civil','clientes.nss',
                     'clientes.curp','clientes.vendedor_id','clientes.empresa','clientes.coacreditado','clientes.clasificacion',
-                    'clientes.created_at','clientes.precio_rango','clientes.ingreso',
+                    'clientes.created_at','clientes.precio_rango','clientes.ingreso','clientes.created_at',
                     
                     'clientes.sexo_coa', 'clientes.tipo_casa_coa','clientes.email_institucional_coa','clientes.empresa_coa',
                     'clientes.edo_civil_coa','clientes.nss_coa','clientes.curp_coa','clientes.nombre_coa','clientes.apellidos_coa',
@@ -221,7 +221,7 @@ class ClienteController extends Controller
                         'clientes.sexo','clientes.tipo_casa','clientes.email_institucional','clientes.lugar_contacto',
                         'clientes.proyecto_interes_id','clientes.publicidad_id','clientes.edo_civil','clientes.nss',
                         'clientes.curp','clientes.vendedor_id','clientes.empresa','clientes.coacreditado','clientes.clasificacion',
-                        'clientes.created_at','clientes.precio_rango','clientes.ingreso',
+                        'clientes.created_at','clientes.precio_rango','clientes.ingreso','clientes.created_at',
     
                         DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
                         'clientes.sexo_coa', 'clientes.tipo_casa_coa','clientes.email_institucional_coa','clientes.empresa_coa',
@@ -276,7 +276,7 @@ class ClienteController extends Controller
                         'clientes.sexo','clientes.tipo_casa','clientes.email_institucional','clientes.lugar_contacto',
                         'clientes.proyecto_interes_id','clientes.publicidad_id','clientes.edo_civil','clientes.nss',
                         'clientes.curp','clientes.vendedor_id','clientes.empresa','clientes.coacreditado','clientes.clasificacion',
-                        'clientes.created_at','clientes.precio_rango','clientes.ingreso',
+                        'clientes.created_at','clientes.precio_rango','clientes.ingreso','clientes.created_at',
     
                         DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
                         'clientes.sexo_coa', 'clientes.tipo_casa_coa','clientes.email_institucional_coa','clientes.empresa_coa',
@@ -328,7 +328,7 @@ class ClienteController extends Controller
                     'clientes.sexo','clientes.tipo_casa','clientes.email_institucional','clientes.lugar_contacto',
                     'clientes.proyecto_interes_id','clientes.publicidad_id','clientes.edo_civil','clientes.nss',
                     'clientes.curp','clientes.vendedor_id','clientes.empresa','clientes.coacreditado','clientes.clasificacion',
-                    'clientes.created_at','clientes.precio_rango','clientes.ingreso',
+                    'clientes.created_at','clientes.precio_rango','clientes.ingreso','clientes.created_at',
                     
                     'clientes.sexo_coa', 'clientes.tipo_casa_coa','clientes.email_institucional_coa','clientes.empresa_coa',
                     'clientes.edo_civil_coa','clientes.nss_coa','clientes.curp_coa','clientes.nombre_coa','clientes.apellidos_coa',
@@ -369,7 +369,7 @@ class ClienteController extends Controller
                         'clientes.sexo','clientes.tipo_casa','clientes.email_institucional','clientes.lugar_contacto',
                         'clientes.proyecto_interes_id','clientes.publicidad_id','clientes.edo_civil','clientes.nss',
                         'clientes.curp','clientes.vendedor_id','clientes.empresa','clientes.coacreditado','clientes.clasificacion',
-                        'clientes.created_at','clientes.precio_rango','clientes.ingreso',
+                        'clientes.created_at','clientes.precio_rango','clientes.ingreso','clientes.created_at',
     
                         DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
                         DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS v_completo"),
@@ -423,7 +423,7 @@ class ClienteController extends Controller
                             'clientes.sexo','clientes.tipo_casa','clientes.email_institucional','clientes.lugar_contacto',
                             'clientes.proyecto_interes_id','clientes.publicidad_id','clientes.edo_civil','clientes.nss',
                             'clientes.curp','clientes.vendedor_id','clientes.empresa','clientes.coacreditado','clientes.clasificacion',
-                            'clientes.created_at','clientes.precio_rango','clientes.ingreso',
+                            'clientes.created_at','clientes.precio_rango','clientes.ingreso','clientes.created_at',
         
                             DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
                             DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS v_completo"),
@@ -469,7 +469,7 @@ class ClienteController extends Controller
                             'clientes.sexo','clientes.tipo_casa','clientes.email_institucional','clientes.lugar_contacto',
                             'clientes.proyecto_interes_id','clientes.publicidad_id','clientes.edo_civil','clientes.nss',
                             'clientes.curp','clientes.vendedor_id','clientes.empresa','clientes.coacreditado','clientes.clasificacion',
-                            'clientes.created_at','clientes.precio_rango','clientes.ingreso',
+                            'clientes.created_at','clientes.precio_rango','clientes.ingreso','clientes.created_at',
         
                             DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
                             DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS v_completo"),
@@ -522,7 +522,7 @@ class ClienteController extends Controller
                                     'clientes.sexo','clientes.tipo_casa','clientes.email_institucional','clientes.lugar_contacto',
                                     'clientes.proyecto_interes_id','clientes.publicidad_id','clientes.edo_civil','clientes.nss',
                                     'clientes.curp','clientes.vendedor_id','clientes.empresa','clientes.coacreditado','clientes.clasificacion',
-                                    'clientes.created_at','clientes.precio_rango','clientes.ingreso',
+                                    'clientes.created_at','clientes.precio_rango','clientes.ingreso','clientes.created_at',
                 
                                     DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
                                     DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS v_completo"),
@@ -569,7 +569,7 @@ class ClienteController extends Controller
                                     'clientes.sexo','clientes.tipo_casa','clientes.email_institucional','clientes.lugar_contacto',
                                     'clientes.proyecto_interes_id','clientes.publicidad_id','clientes.edo_civil','clientes.nss',
                                     'clientes.curp','clientes.vendedor_id','clientes.empresa','clientes.coacreditado','clientes.clasificacion',
-                                    'clientes.created_at','clientes.precio_rango','clientes.ingreso',
+                                    'clientes.created_at','clientes.precio_rango','clientes.ingreso','clientes.created_at',
                 
                                     DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
                                     DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS v_completo"),
@@ -622,7 +622,7 @@ class ClienteController extends Controller
                                     'clientes.sexo','clientes.tipo_casa','clientes.email_institucional','clientes.lugar_contacto',
                                     'clientes.proyecto_interes_id','clientes.publicidad_id','clientes.edo_civil','clientes.nss',
                                     'clientes.curp','clientes.vendedor_id','clientes.empresa','clientes.coacreditado','clientes.clasificacion',
-                                    'clientes.created_at','clientes.precio_rango','clientes.ingreso',
+                                    'clientes.created_at','clientes.precio_rango','clientes.ingreso','clientes.created_at',
                 
                                     DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
                                     DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS v_completo"),
@@ -667,7 +667,7 @@ class ClienteController extends Controller
                                     'clientes.sexo','clientes.tipo_casa','clientes.email_institucional','clientes.lugar_contacto',
                                     'clientes.proyecto_interes_id','clientes.publicidad_id','clientes.edo_civil','clientes.nss',
                                     'clientes.curp','clientes.vendedor_id','clientes.empresa','clientes.coacreditado','clientes.clasificacion',
-                                    'clientes.created_at','clientes.precio_rango','clientes.ingreso',
+                                    'clientes.created_at','clientes.precio_rango','clientes.ingreso','clientes.created_at',
                 
                                     DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
                                     DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS v_completo"),
@@ -719,7 +719,7 @@ class ClienteController extends Controller
                         'clientes.sexo','clientes.tipo_casa','clientes.email_institucional','clientes.lugar_contacto',
                         'clientes.proyecto_interes_id','clientes.publicidad_id','clientes.edo_civil','clientes.nss',
                         'clientes.curp','clientes.vendedor_id','clientes.empresa','clientes.coacreditado','clientes.clasificacion',
-                        'clientes.created_at','clientes.precio_rango','clientes.ingreso',
+                        'clientes.created_at','clientes.precio_rango','clientes.ingreso','clientes.created_at',
         
                         DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
                         DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS v_completo"),
@@ -768,7 +768,7 @@ class ClienteController extends Controller
                     'clientes.sexo','clientes.tipo_casa','clientes.email_institucional','clientes.lugar_contacto',
                     'clientes.proyecto_interes_id','clientes.publicidad_id','clientes.edo_civil','clientes.nss',
                     'clientes.curp','clientes.vendedor_id','clientes.empresa','clientes.coacreditado','clientes.clasificacion',
-                    'clientes.created_at','clientes.precio_rango','clientes.ingreso',
+                    'clientes.created_at','clientes.precio_rango','clientes.ingreso','clientes.created_at',
                     
                     'clientes.sexo_coa', 'clientes.tipo_casa_coa','clientes.email_institucional_coa','clientes.empresa_coa',
                     'clientes.edo_civil_coa','clientes.nss_coa','clientes.curp_coa','clientes.nombre_coa','clientes.apellidos_coa',
@@ -809,7 +809,7 @@ class ClienteController extends Controller
                         'clientes.sexo','clientes.tipo_casa','clientes.email_institucional','clientes.lugar_contacto',
                         'clientes.proyecto_interes_id','clientes.publicidad_id','clientes.edo_civil','clientes.nss',
                         'clientes.curp','clientes.vendedor_id','clientes.empresa','clientes.coacreditado','clientes.clasificacion',
-                        'clientes.created_at','clientes.precio_rango','clientes.ingreso',
+                        'clientes.created_at','clientes.precio_rango','clientes.ingreso','clientes.created_at',
     
                         DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
                         DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS v_completo"),
@@ -861,7 +861,7 @@ class ClienteController extends Controller
                         'clientes.sexo','clientes.tipo_casa','clientes.email_institucional','clientes.lugar_contacto',
                         'clientes.proyecto_interes_id','clientes.publicidad_id','clientes.edo_civil','clientes.nss',
                         'clientes.curp','clientes.vendedor_id','clientes.empresa','clientes.coacreditado','clientes.clasificacion',
-                        'clientes.created_at','clientes.precio_rango','clientes.ingreso',
+                        'clientes.created_at','clientes.precio_rango','clientes.ingreso','clientes.created_at',
     
                         DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
                         DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS v_completo"),
@@ -907,7 +907,7 @@ class ClienteController extends Controller
                         'clientes.sexo','clientes.tipo_casa','clientes.email_institucional','clientes.lugar_contacto',
                         'clientes.proyecto_interes_id','clientes.publicidad_id','clientes.edo_civil','clientes.nss',
                         'clientes.curp','clientes.vendedor_id','clientes.empresa','clientes.coacreditado','clientes.clasificacion',
-                        'clientes.created_at','clientes.precio_rango','clientes.ingreso',
+                        'clientes.created_at','clientes.precio_rango','clientes.ingreso','clientes.created_at',
     
                         DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
                         DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS v_completo"),
@@ -959,7 +959,7 @@ class ClienteController extends Controller
                                     'clientes.sexo','clientes.tipo_casa','clientes.email_institucional','clientes.lugar_contacto',
                                     'clientes.proyecto_interes_id','clientes.publicidad_id','clientes.edo_civil','clientes.nss',
                                     'clientes.curp','clientes.vendedor_id','clientes.empresa','clientes.coacreditado','clientes.clasificacion',
-                                    'clientes.created_at','clientes.precio_rango','clientes.ingreso',
+                                    'clientes.created_at','clientes.precio_rango','clientes.ingreso','clientes.created_at',
                 
                                     DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
                                     DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS v_completo"),
@@ -1006,7 +1006,7 @@ class ClienteController extends Controller
                                     'clientes.sexo','clientes.tipo_casa','clientes.email_institucional','clientes.lugar_contacto',
                                     'clientes.proyecto_interes_id','clientes.publicidad_id','clientes.edo_civil','clientes.nss',
                                     'clientes.curp','clientes.vendedor_id','clientes.empresa','clientes.coacreditado','clientes.clasificacion',
-                                    'clientes.created_at','clientes.precio_rango','clientes.ingreso',
+                                    'clientes.created_at','clientes.precio_rango','clientes.ingreso','clientes.created_at',
                 
                                     DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
                                     DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS v_completo"),
@@ -1057,7 +1057,7 @@ class ClienteController extends Controller
                                     'clientes.sexo','clientes.tipo_casa','clientes.email_institucional','clientes.lugar_contacto',
                                     'clientes.proyecto_interes_id','clientes.publicidad_id','clientes.edo_civil','clientes.nss',
                                     'clientes.curp','clientes.vendedor_id','clientes.empresa','clientes.coacreditado','clientes.clasificacion',
-                                    'clientes.created_at','clientes.precio_rango','clientes.ingreso',
+                                    'clientes.created_at','clientes.precio_rango','clientes.ingreso','clientes.created_at',
                 
                                     DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
                                     DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS v_completo"),
@@ -1102,7 +1102,7 @@ class ClienteController extends Controller
                                     'clientes.sexo','clientes.tipo_casa','clientes.email_institucional','clientes.lugar_contacto',
                                     'clientes.proyecto_interes_id','clientes.publicidad_id','clientes.edo_civil','clientes.nss',
                                     'clientes.curp','clientes.vendedor_id','clientes.empresa','clientes.coacreditado','clientes.clasificacion',
-                                    'clientes.created_at','clientes.precio_rango','clientes.ingreso',
+                                    'clientes.created_at','clientes.precio_rango','clientes.ingreso','clientes.created_at',
                 
                                     DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
                                     DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS v_completo"),
@@ -1155,7 +1155,7 @@ class ClienteController extends Controller
                         'clientes.sexo','clientes.tipo_casa','clientes.email_institucional','clientes.lugar_contacto',
                         'clientes.proyecto_interes_id','clientes.publicidad_id','clientes.edo_civil','clientes.nss',
                         'clientes.curp','clientes.vendedor_id','clientes.empresa','clientes.coacreditado','clientes.clasificacion',
-                        'clientes.created_at','clientes.precio_rango','clientes.ingreso',
+                        'clientes.created_at','clientes.precio_rango','clientes.ingreso','clientes.created_at',
         
                         DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS n_completo"),
                         DB::raw("CONCAT(v.nombre,' ',v.apellidos) AS v_completo"),
@@ -3299,7 +3299,7 @@ class ClienteController extends Controller
         $buscar2 = $request->buscar2;
         $buscar3 = $request->buscar3;
         $publicidad = $request->publicidad;
-        
+
         if( Auth::user()->rol_id == 2){
             if($buscarC != ''){
                 if ($buscar==''){
@@ -4075,6 +4075,18 @@ class ClienteController extends Controller
 
             }
         }
+
+        if(sizeof($personas)){
+            foreach($personas as $index => $persona ){
+                $observacion = Cliente_observacion::where('cliente_id','=',$persona->id)->orderBy('created_at','desc')->get();
+
+                if(sizeof($observacion))
+                    $persona->observacion = $observacion[0]->usuario.': '.$observacion[0]->comentario;
+                else{
+                    $persona->observacion = '';
+                }
+            }
+        }
          
  
         return Excel::create('resumen_cliente', function($excel) use ($personas){
@@ -4082,11 +4094,11 @@ class ClienteController extends Controller
                 
                 $sheet->row(1, [
                     'Nombre', 'Celular','Telefono' ,'Email', 'RFC', 'IMSS', 'CURP',
-                    'Proyecto de interes','Clasificación','Vendedor','Medio Publicitario'
+                    'Proyecto de interes','Clasificación','Vendedor','Medio Publicitario','Ultimo Comentario'
                 ]);
 
 
-                $sheet->cells('A1:K1', function ($cells) {
+                $sheet->cells('A1:L1', function ($cells) {
                     $cells->setBackground('#052154');
                     $cells->setFontColor('#ffffff');
                     // Set font family
@@ -4161,10 +4173,11 @@ class ClienteController extends Controller
                         $persona->proyecto,
                         $clasificacion,
                         $persona->v_completo,
-                        $persona->publicidad
+                        $persona->publicidad,
+                        $persona->observacion
                     ]);	
                 }
-                $num='A1:K' . $cont;
+                $num='A1:L' . $cont;
                 $sheet->setBorder($num, 'thin');
             });
         }

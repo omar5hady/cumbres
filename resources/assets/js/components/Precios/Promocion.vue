@@ -51,6 +51,7 @@
                                         <th>Inicio</th>
                                         <th>Fin</th>
                                         <th>Status</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -76,8 +77,22 @@
                                         <td class="td2" v-if="promocion.is_active == '1'">
                                             <span class="badge badge-success">Activo</span>
                                         </td>
-                                        <td class="td2" v-if="promocion.is_active == '0'">
+                                        <td class="td2" v-else>
                                             <span class="badge badge-danger">Desactivado</span>
+                                        </td>
+                                        <td v-if="promocion.is_active == '1'">
+                                        </td>
+                                        <td v-else-if="promocion.is_active == '0' && promocion.mostrar == 0">
+                                            <button type="button" @click="promocion.mostrar = 1" class="btn btn-default btn-sm">
+                                                <i class="icon-eye"></i>
+                                            </button>
+                                        </td>
+                                        <td v-else>
+                                            <button type="button" @click="promocion.mostrar = 0" class="btn btn-default btn-sm">
+                                                <i class="icon-close"></i>
+                                            </button>
+                                            <br>
+                                            {{promocion.lote}}
                                         </td>
                                     </tr>                               
                                 </tbody>

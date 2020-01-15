@@ -158,6 +158,7 @@ class PaqueteController extends Controller
 
     public function select_paquetes(Request $request){
         if(!$request->ajax())return redirect('/');
+        $current = Carbon::now()->toDateString();
         $buscar = $request->buscar;
         $proyecto = $request->proyecto;
 
@@ -169,6 +170,8 @@ class PaqueteController extends Controller
         $paquetes = Paquete::join('etapas','paquetes.etapa_id','=','etapas.id')
                             ->select('paquetes.id','paquetes.nombre','paquetes.descripcion','paquetes.costo','paquetes.v_ini','paquetes.v_fin')
                             ->where('etapas.id','=',$fraccionamiento[0]->id)
+                            ->whereDate('paquetes.v_fin','>=',$current)
+                            ->whereDate('paquetes.v_ini','<=',$current)
                             ->get();
 
         return['paquetes' => $paquetes];
