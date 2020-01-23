@@ -59,6 +59,10 @@ class CreateContratosTable extends Migration
             $table->boolean('devolucion')->default(0);
             $table->string('motivo_cancel')->nullable();
             $table->boolean('equipamiento')->default(0);
+
+            $table->boolean('comision')->default(0)->nullable();
+            $table->date('fecha_exp')->nullable();
+            $table->float('porcentaje_exp')->default(65);
             
             
             $table->foreign('id')->references('id')->on('creditos');

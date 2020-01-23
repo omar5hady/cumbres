@@ -463,6 +463,11 @@ Route::group(['middleware' => ['auth']],function(){
 
          Route::delete('/expediente/regresarExpediente','ExpedienteController@regresarExpediente');
 
+    ////////////////////////// RUTAS COMISIONES //////////////////////////////
+        Route::get('/comision/listarContratos','ComisionesController@indexContratos');
+        Route::get('/comision/ventasAsesor','ComisionesController@ventasAsesor');
+        Route::put('/comision/agregarExpediente','ComisionesController@agregarExpediente');
+
     ////////////////////////// RUTAS ASIGNAR GESTOR /////////////////////////////
 
         Route::get('/expediente/indexAsignarGestor','ExpedienteController@indexAsignarGestor');

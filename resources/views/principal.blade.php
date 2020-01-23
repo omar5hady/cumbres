@@ -304,12 +304,12 @@
                                         <a class="nav-link" href="#"><i class="fa fa-star-half-o"></i> Visita para avaluo</a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->equipamientos == 1)
+                                @if(Auth::user()->id == 25816 || Auth::user()->rol_id == 1)
                                     <li @click="menu=224" class="nav-item">
                                         <a class="nav-link" href="#"><i class="fa fa-archive"></i> Equipamiento</a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->rol_id == 1)
+                                @if(Auth::user()->equipamientos == 1 && Auth::user()->id != 25816)
                                     <li @click="menu=213" class="nav-item">
                                         <a class="nav-link" href="#"><i class="fa fa-archive"></i> Solic. Equipamiento</a>
                                     </li>
@@ -496,6 +496,19 @@
                                         <a class="nav-link" href="#"><i class="icon-user-following"></i> Roles</a>
                                     </li>
                                 @endif
+                            </ul>
+                        </li>
+                    @endif
+                    @if(Auth::user()->rol_id == 1)
+                        <li class="nav-item nav-dropdown">
+                            <a class="nav-link nav-dropdown-toggle" href="#"><i class="icon-pie-chart"></i> Comisiones</a>
+                            <ul class="nav-dropdown-items">
+                                <li @click="menu=226" class="nav-item">
+                                    <a class="nav-link" href="#"><i class="icon-layers"></i> Expediente</a>
+                                </li>
+                                <li @click="menu=227" class="nav-item">
+                                    <a class="nav-link" href="#"><i class="icon-calculator"></i> Comisiones</a>
+                                </li>
                             </ul>
                         </li>
                     @endif

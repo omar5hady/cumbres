@@ -281,6 +281,19 @@
                                         </select>
                                     </div>
                                 </div>
+
+                                <div class="form-group row" v-if="modelo_id!=0">
+                                    <label class="col-md-3 form-control-label" for="text-input">Porcentaje por venta </label>
+                                    <div class="col-md-2">
+                                        <input type="text" v-model="extra" pattern="\d*" v-on:keypress="isNumber($event)" class="form-control" placeholder="Porcentaje extra por venta">
+                                    </div>
+
+                                    <label class="col-md-3 form-control-label" for="text-input">Porcentaje por venta para externos </label>
+                                    <div class="col-md-2">
+                                        <input type="text" v-model="extra_ext" pattern="\d*" v-on:keypress="isNumber($event)" class="form-control" placeholder="Porcentaje extra por venta">
+                                    </div>
+
+                                </div>
                                 
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Casa muestra</label>
@@ -457,7 +470,8 @@
                 credito_puente:'',
                 comentarios: '',
                 regimen:0,
-                
+                extra:0,
+                extra_ext:0,
                 file: '',
                 modelostc :'',
                 arrayLote : [],
@@ -668,6 +682,16 @@
                 });
             },
 
+            isNumber: function(evt) {
+                evt = (evt) ? evt : window.event;
+                var charCode = (evt.which) ? evt.which : evt.keyCode;
+                if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
+                    evt.preventDefault();;
+                } else {
+                    return true;
+                }
+            },
+
             selectConsYTerreno(buscar){
                 let me = this;
               
@@ -722,6 +746,8 @@
                     'comentarios': this.comentarios,
                     'regimen':this.regimen,
                     'fecha_termino_ventas' : this.fecha_termino_ventas,
+                    'extra' : this.extra,
+                    'extra_ext' : this.extra_ext,
                     
                 }).then(function (response){
                     me.proceso=false;
@@ -877,6 +903,8 @@
                                 this.tipoAccion=2;
                                 this.id=data['id'];
                                 this.fraccionamiento_id=data['fraccionamiento_id'];
+                                this.extra = data['extra'];
+                                this.extra_ext = data['extra_ext'];
                                 
                                 this.manzana=data['manzana'];
                                 this.num_lote=data['num_lote'];

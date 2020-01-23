@@ -14,7 +14,7 @@ class Contrato extends Model
         'telefono_empresa','ext_empresa','direccion_empresa_coa','cp_empresa_coa','colonia_empresa_coa',
         'estado_empresa_coa','ciudad_empresa_coa','telefono_empresa_coa','ext_empresa_coa','enganche_total',
         'observacion','avaluo_preventivo','aviso_prev','integracion','aviso_prev_venc','saldo','devolucion',
-        'motivo_cancel', 'entregado'
+        'motivo_cancel', 'entregado','comision','fecha_exp','porcentaje_exp'
     ];
 
     public $timestamps = false;
@@ -50,6 +50,10 @@ class Contrato extends Model
 
     public function expediente(){
         return $this->hasOne('App/Expediente');
+    }
+
+    public function det_comision(){
+        return $this->hasOne('App/Det_comision');
     }
 
     public function devolucion(){

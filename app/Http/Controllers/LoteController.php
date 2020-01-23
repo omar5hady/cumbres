@@ -52,7 +52,7 @@ class LoteController extends Controller
                       'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
                       'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
                       'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios',
-                      'lotes.regimen_condom',
+                      'lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
                       'lotes.fecha_termino_ventas')
                       ->where('lotes.habilitado','=', $b_habilitado)
                       ->orderBy('fraccionamientos.nombre','ASC')
@@ -84,7 +84,7 @@ class LoteController extends Controller
                         'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
                         'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
                         'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                        'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom',
+                        'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
                         'lotes.fecha_termino_ventas')
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->where('lotes.habilitado','=', $b_habilitado)
@@ -117,7 +117,7 @@ class LoteController extends Controller
                             'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
                             'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
                             'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                            'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom',
+                            'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
                             'lotes.fecha_termino_ventas')
                     ->where($criterio, 'like', '%'. $buscar . '%')
                     ->where('lotes.etapa_id','=',  $buscar2 )
@@ -152,7 +152,7 @@ class LoteController extends Controller
                                 'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
                                 'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
                                 'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom',
+                                'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
                                 'lotes.fecha_termino_ventas')
                         ->where($criterio, 'like', '%'. $buscar . '%')
                         ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
@@ -191,7 +191,7 @@ class LoteController extends Controller
                                 'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
                                 'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
                                 'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom',
+                                'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
                                 'lotes.fecha_termino_ventas')
                             ->where($criterio, 'like', '%'. $buscar . '%')
                             ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
@@ -230,7 +230,7 @@ class LoteController extends Controller
                                     'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
                                     'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
                                     'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                    'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom',
+                                    'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
                                     'lotes.fecha_termino_ventas')
                                 ->where($criterio, 'like', '%'. $buscar . '%')
                                 ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
@@ -267,7 +267,7 @@ class LoteController extends Controller
                                         'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
                                         'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
                                         'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                        'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom',
+                                        'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
                                         'lotes.fecha_termino_ventas')
                                     ->where($criterio, 'like', '%'. $buscar . '%')
                                     ->where('lotes.manzana', '=',$buscar3)
@@ -301,7 +301,7 @@ class LoteController extends Controller
                                             'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
                                             'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
                                             'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                            'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom',
+                                            'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
                                             'lotes.fecha_termino_ventas')
                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                         ->where('lotes.manzana', '=',$buscar3)
@@ -337,7 +337,7 @@ class LoteController extends Controller
                                                 'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
                                                 'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
                                                 'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                                'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom',
+                                                'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
                                                 'lotes.fecha_termino_ventas')
                                             ->where($criterio, 'like', '%'. $buscar . '%')
                                             ->where('lotes.manzana', '=',$buscar3)
@@ -373,7 +373,7 @@ class LoteController extends Controller
                                                     'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
                                                     'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
                                                     'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                                    'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom',
+                                                    'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
                                                     'lotes.fecha_termino_ventas')
                                                 ->where($criterio, 'like', '%'. $buscar . '%')
                                                 ->where('modelos.id', '=', $b_modelo )
@@ -407,7 +407,7 @@ class LoteController extends Controller
                                                         'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
                                                         'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
                                                         'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                                        'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom',
+                                                        'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
                                                         'lotes.fecha_termino_ventas')
                                                     ->where($criterio, 'like', '%'. $buscar . '%')
                                                     ->where('modelos.id', '=', $b_modelo )
@@ -445,7 +445,7 @@ class LoteController extends Controller
                                                             'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
                                                             'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
                                                             'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                                            'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom',
+                                                            'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
                                                             'lotes.fecha_termino_ventas')
                                                         ->where($criterio, 'like', '%'. $buscar . '%')
                                                         ->where('lotes.etapa_id', 'like', '%'. $buscar2 . '%')
@@ -483,7 +483,7 @@ class LoteController extends Controller
                                                                 'modelos.nombre as modelo','empresas.nombre as empresa', 'lotes.calle','lotes.numero','lotes.interior','lotes.terreno',
                                                                 'lotes.construccion','lotes.casa_muestra','lotes.habilitado','lotes.lote_comercial','lotes.id',
                                                                 'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios',
-                                                                'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom',
+                                                                'lotes.clv_catastral','lotes.etapa_servicios','lotes.credito_puente','lotes.etapa_servicios','lotes.regimen_condom','lotes.extra', 'lotes.extra_ext',
                                                                 'lotes.fecha_termino_ventas')
                                                             ->where($criterio, 'like', '%'. $buscar . '%')
                                                             ->where('modelos.id', '=', $b_modelo )
@@ -791,6 +791,8 @@ class LoteController extends Controller
         $lote->comentarios = $request->comentarios;
         $lote->regimen_condom = $request->regimen;
         $lote->fecha_termino_ventas = $request->fecha_termino_ventas;
+        $lote->extra = $request->extra;
+        $lote->extra_ext = $request->extra_ext;
 
         if($request->habilitado == 1){
             

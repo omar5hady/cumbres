@@ -20,6 +20,7 @@ use Carbon\Carbon;
 use App\inst_seleccionada;
 use App\Cliente;
 use App\Personal;
+use App\Vendedor;
 use App\Licencia;
 use App\Expediente;
 use App\Gasto_admin;
@@ -8234,6 +8235,8 @@ class ContratoController extends Controller
         $lote = Licencia::select('avance')
             ->where('id', '=', $request->lote_id)->get();
 
+        
+
         try {
             DB::beginTransaction();
             $contrato = new Contrato();
@@ -8269,6 +8272,7 @@ class ContratoController extends Controller
             $contrato->observacion = $request->observacion;
 
             $credito = Credito::findOrFail($request->id);
+            $vendedor = Vendedor::findOrFail($credito->vendedor_id);
             $contrato->saldo = $request->precio_venta;
             
             $credito->paquete =  $request->paquete;
@@ -8276,6 +8280,10 @@ class ContratoController extends Controller
             $credito->costo_paquete = $request->costo_paquete;
             $credito->precio_venta = $request->precio_venta;
             $credito->save();
+
+            if($vendedor->tipo == 1){
+                $contrato->porcentaje_exp = 100;
+            }
 
             $contrato->save();
 

@@ -49,6 +49,8 @@ class CreateLotesTable extends Migration
             $table->date('fecha_termino_ventas')->nullable();
             $table->string('paquete')->nullable();
             $table->boolean('firmado')->default(0);
+            $table->float('extra')->default(0);
+            $table->float('extra_ext')->default(0);
 
             $table->date('fecha_entrega_obra')->nullable();
             

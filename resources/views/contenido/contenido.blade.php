@@ -375,6 +375,15 @@
             <res-puplicidad></res-puplicidad>
         </template>
 
+
+        <template v-if="menu==226">
+            <comision-expediente></comision-expediente>
+        </template>
+
+        <template v-if="menu==227">
+            <comision-asesores></comision-asesores>
+        </template>
+
         
 
         

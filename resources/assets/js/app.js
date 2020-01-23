@@ -123,6 +123,10 @@ Vue.component('cobro-credito', require('./components/CobroCredito.vue'));
 Vue.component('catalogo-detalles', require('./components/Postventa/CatalogoDetalles.vue'));
 Vue.component('detalles-generales', require('./components/Postventa/DetallesGenerales.vue'));
 
+//Comisiones
+Vue.component('comision-expediente', require('./components/Comisiones/IngresoComision.vue'));
+Vue.component('comision-asesores', require('./components/Comisiones/Comisiones.vue'));
+
 
 const app = new Vue({
     el: '#app',

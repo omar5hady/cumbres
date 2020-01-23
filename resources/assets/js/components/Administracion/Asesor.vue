@@ -360,6 +360,16 @@
                                     </div>
                                 </div>
 
+                                <div class="form-group row" v-if="tipo_vendedor==1 && rol_id==2">
+                                    <label class="col-md-3 form-control-label" for="text-input">Esquema</label>
+                                    <div class="col-md-2">
+                                        <select class="form-control" v-model="esquema" >
+                                            <option value=2>2%</option>
+                                            <option value=3>3%</option>
+                                        </select>
+                                    </div>
+                                </div>
+
                                 <!-- Div para mostrar los errores que mande validerPersonal -->
                                 <div v-show="errorPersonal" class="form-group row div-error">
                                     <div class="text-center text-error">
@@ -719,6 +729,7 @@
                 tipo_casaProspecto: 0,
                 ProyectoProspecto: 0,
                 publicidad_id:0,
+                esquema:2,
 
                 inmobiliaria:'',
                 arrayPersonal : [],
@@ -985,7 +996,8 @@
                     'rol_id' : this.rol_id,
                     'condicion':this.condicion,
                     'tipo_vendedor':this.tipo_vendedor,
-                    'inmobiliaria':this.inmobiliaria 
+                    'inmobiliaria':this.inmobiliaria,
+                    'esquema': this.esquema
                     
                 }).then(function (response){
                     me.proceso=false;
@@ -1061,7 +1073,8 @@
                     'rol_id' : this.rol_id,
                     'condicion':this.condicion,
                     'tipo_vendedor':this.tipo_vendedor,
-                    'inmobiliaria':this.inmobiliaria
+                    'inmobiliaria':this.inmobiliaria,
+                    'esquema': this.esquema
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal();
@@ -1426,6 +1439,7 @@
                                 this.rol_id=2;
                                 this.inmobiliaria='';
                                 this.tipo_vendedor=0;
+                                this.esquema = 2;
 
                                 this.activo='1';
                                 this.tipoAccion = 3;
@@ -1460,6 +1474,7 @@
                                 this.tipoAccion = 2;
                                 this.inmobiliaria='';
                                 this.tipo_vendedor=0;
+                                this.esquema = 2;
                                 break;
                             }
                         }

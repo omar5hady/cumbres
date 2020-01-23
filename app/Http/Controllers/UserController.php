@@ -461,6 +461,7 @@ class UserController extends Controller
                 $vendedor->tipo = $request->tipo_vendedor;
                 $vendedor->inmobiliaria = $request->inmobiliaria;
                 $vendedor->supervisor_id = Auth::user()->id;
+                $vendedor->esquema = $request->esquema;
                 $vendedor->save();
             }
 
@@ -505,9 +506,15 @@ class UserController extends Controller
             $Persona->save();
             
             if($user->rol_id == 2){
+                $vendedor = Vendedor::findOrFail($request->id);
                 if($request->rol_id != 2){
-                    $vendedor = Vendedor::findOrFail($request->id);
                     $vendedor->delete();
+                }
+                else{
+                    $vendedor->tipo = $request->tipo_vendedor;
+                    $vendedor->inmobiliaria = $request->inmobiliaria;
+                    $vendedor->esquema = $request->esquema;
+                    $vendedor->save();
                 }
             }
 

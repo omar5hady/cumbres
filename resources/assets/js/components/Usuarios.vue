@@ -561,6 +561,16 @@
                                     </div>
                                 </div>
 
+                                 <div class="form-group row" v-if="tipo_vendedor==1 && rol_id==2 && tipoAccion != 4">
+                                    <label class="col-md-3 form-control-label" for="text-input">Esquema</label>
+                                    <div class="col-md-2">
+                                        <select class="form-control" v-model="esquema" >
+                                            <option value=2>2%</option>
+                                            <option value=3>3%</option>
+                                        </select>
+                                    </div>
+                                </div>
+
                                 <div class="form-group row" v-if="tipoAccion > 1 && tipoAccion < 4">
                                     <label class="col-md-3 form-control-label" for="text-input">Estatus</label>
                                     <div class="col-md-5">
@@ -640,6 +650,7 @@
                 ext: 0,
                 celular: 0,
                 email: '',
+                esquema: 2,
                 activo: 1, 
                 tipo_vendedor:0,
                 inmobiliaria:'',
@@ -1148,7 +1159,8 @@
                     'rol_id' : this.rol_id,
                     'condicion':this.condicion,
                     'tipo_vendedor':this.tipo_vendedor,
-                    'inmobiliaria':this.inmobiliaria 
+                    'inmobiliaria':this.inmobiliaria,
+                    'esquema':this.esquema
                     
                 }).then(function (response){
                     me.proceso=false;
@@ -1202,7 +1214,8 @@
                     'rol_id' : this.rol_id,
                     'condicion':this.condicion,
                     'tipo_vendedor':this.tipo_vendedor,
-                    'inmobiliaria':this.inmobiliaria
+                    'inmobiliaria':this.inmobiliaria,
+                    'esquema':this.esquema
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal();
@@ -1660,6 +1673,7 @@
                                 this.rol_id=0;
                                 this.inmobiliaria='';
                                 this.tipo_vendedor=0;
+                                this.esquema=2;
 
                                 this.activo='1';
                                 this.tipoAccion = 3;
@@ -1694,6 +1708,7 @@
                                 this.tipoAccion = 2;
                                 this.inmobiliaria='';
                                 this.tipo_vendedor=0;
+                                this.esquema = 2;
                                 break;
                             }
                             case 'Asignar':

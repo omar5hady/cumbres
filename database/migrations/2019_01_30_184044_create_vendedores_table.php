@@ -20,6 +20,7 @@ class CreateVendedoresTable extends Migration
             $table->foreign('supervisor_id')->references('id')->on('personal');
             $table->string('inmobiliaria',50)->nullable();
             $table->boolean('tipo')->default(0);
+            $table->integer('esquema')->default(2);
             $table->timestamps();
         });
     }

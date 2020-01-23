@@ -166,7 +166,7 @@
                                             <td class="td2" v-if="prospecto.clasificacion==6">Cancelado</td>
                                             <td class="td2" v-if="prospecto.clasificacion==7">Coacreditado</td>
                                             <td class="td2" v-text="this.moment(prospecto.created_at).locale('es').format('DD/MMM/YYYY')"></td>
-                                            <td class="td2"> <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" @click="abrirModal3('prospecto','ver_todo', prospecto.id),listarObservacion(1,prospecto.id)">Ver todos</button> </td>
+                                            <td class="td2"> <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" @click="abrirModal3('prospecto','ver_todo', prospecto.nombre, prospecto.apellidos),listarObservacion(1,prospecto.id)">Ver todos</button> </td>
                                             <td class="td2" v-if="rolId != 2" v-text="prospecto.v_completo"></td>
                                             <td class="td2" v-if="rolId != 2" v-text="prospecto.publicidad"></td>
                                         </tr>                               
@@ -818,7 +818,7 @@
                                         <label for="">Observaciones <span style="color:red;" v-show="observacion==''">(*)</span></label>
                                         <textarea rows="3" cols="30" v-model="observacion" class="form-control" placeholder="Observaciones"></textarea>
                                     </div>
-                                    <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" @click="abrirModal3('prospecto','ver_todo', id),listarObservacion(1,id)">Ver todos</button>
+                                    <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" @click="abrirModal3('prospecto','ver_todo', nombre, apellidos),listarObservacion(1,id)">Ver todos</button>
                                 </div>
 
                                 
@@ -1227,7 +1227,7 @@
                 buscar : '',
                 buscar2: '',
                 buscar3:'2',
-                b_clasificacion: '',
+                b_clasificacion: '2',
                 arrayCoacreditados : [],
                 arrayProspectos: [],
                 arrayFraccionamientos : [],
@@ -1999,6 +1999,7 @@
                     me.coacreditado=me.arrayDatosProspecto[0]['coacreditado'];
                     me.conyugeNom = me.arrayDatosProspecto[0]['n_completo_coa'];
                     me.nombre_coa = me.arrayDatosProspecto[0]['nombre_coa'];
+                    me.nombre_recomendado = me.arrayDatosProspecto[0]['nombre_recomendado'];
                     me.apellidos_coa = me.arrayDatosProspecto[0]['apellidos_coa'];
                     me.lugar_nacimiento_coa =me.arrayDatosProspecto[0]['lugar_nacimiento_coa'];
                     me.proyecto = me.arrayDatosProspecto[0]['proyecto'];
@@ -2053,7 +2054,7 @@
                 this.clasificacion = data['clasificacion'];
             },
   
-             abrirModal3(prospectos,accion,prospecto){
+             abrirModal3(prospectos,accion,nombre, apellidos){
              switch(prospectos){
                     case "prospecto":
                     {
@@ -2062,7 +2063,7 @@
                              case 'ver_todo':
                             {
                                 this.modal3 =1;
-                                this.tituloModal3='Consulta Observaciones';
+                                this.tituloModal3='Observaciones de: '+nombre+' '+apellidos;
                                 this.tipoAccion= 4;
                                 break;  
                             }
