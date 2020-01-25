@@ -75,6 +75,7 @@ Vue.component('uri-equipamiento', require('./components/Obra/EquipamientosUri.vu
 //Componentes Ventas
 Vue.component('lote-disponible', require('./components/Ventas/LotesDisp.vue'));
 Vue.component('prospectos', require('./components/Ventas/Prospectos.vue'));
+Vue.component('prospectos-publicidad', require('./components/Ventas/ProspectosPublicidad.vue'));
 Vue.component('simulacion', require('./components/Ventas/SimulacionDeCredito.vue'));
 Vue.component('historialsim', require('./components/Ventas/HistorialSimulacion.vue'));
 Vue.component('historialcreditos', require('./components/Ventas/HistorialDeCreditos.vue'));

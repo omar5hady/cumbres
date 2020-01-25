@@ -46,8 +46,14 @@
                                     <input type="date" v-if="criterio=='gastos_admin.fecha'" v-model="buscar" @keyup.enter="listarGastos(1,buscar, buscar2, buscar3, criterio)" class="form-control" >
                                     <input type="date" v-if="criterio=='gastos_admin.fecha'" v-model="buscar2" @keyup.enter="listarGastos(1,buscar, buscar2, buscar3, criterio)" class="form-control" >
                                     <input type="text" v-if="criterio=='contratos.id'|| criterio=='personal.nombre'" v-model="buscar" @keyup.enter="listarGastos(1,buscar, buscar2, buscar3, criterio)" class="form-control" placeholder="Texto a buscar">
-                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-8">
+                                <div class="input-group">
                                     <button type="submit" @click="listarGastos(1,buscar, buscar2, buscar3, criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <a :href="'/gastos/excel?buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3 + '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel</a>
                                 </div>
                             </div>
                         </div>

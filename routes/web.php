@@ -171,6 +171,9 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/personal/desactivar','PersonalController@desactivar');
         Route::put('/personal/activar','PersonalController@activar');
         Route::delete('/personal/eliminar','PersonalController@destroy');
+
+        Route::get('/personal/indexClientes','PersonalController@indexClientes');
+        Route::get('/personal/excelClientes','PersonalController@excelClientes');
     
     ////////////////////        RUTAS EMPRESA     /////////////////////////////////
         Route::get('/empresa','EmpresaController@index');
@@ -424,6 +427,8 @@ Route::group(['middleware' => ['auth']],function(){
 
     /************************** RUTAS Depositos y Pagares ***************************/
         Route::get('/pagares','DepositoController@indexPagares');
+        Route::get('/pagares/excel','DepositoController@excelPagares');
+        Route::get('/depositos/excel','DepositoController@excelDepositos');
         Route::get('/depositos','DepositoController@indexDepositos');
         Route::post('/deposito/registrar','DepositoController@store');
         Route::put('/deposito/actualizar','DepositoController@update');
@@ -476,6 +481,7 @@ Route::group(['middleware' => ['auth']],function(){
     ///////////////////////// RUTAS AVALUOS /////////////////////////////////////
         Route::get('/avaluos/index','AvaluoController@index');
         Route::get('/historial/avaluos/index','AvaluoController@indexHistorial');
+        Route::get('/historial/avaluos/excel','AvaluoController@excelHistorial');
         Route::put('/avaluos/fechaSolicitud','AvaluoController@setFechaSolicitud');
         Route::put('/avaluos/fechaPago','AvaluoController@setFechaPago');
         Route::post('/avaluos/fechaConcluido','AvaluoController@setFechaConcluido');
@@ -494,6 +500,7 @@ Route::group(['middleware' => ['auth']],function(){
 
     //////////////////// RUTAS GASTOS ADMINISTRATIVOS /////////////////////////////
         Route::get('/gastos/index','GastosAdministrativosController@index');
+        Route::get('/gastos/excel','GastosAdministrativosController@excel');
         Route::get('/gastos/indexContratos','GastosAdministrativosController@indexContratos');
         Route::post('/gastos/registrar','GastosAdministrativosController@store');
         Route::put('/gastos/actualizar','GastosAdministrativosController@update');
@@ -533,12 +540,14 @@ Route::group(['middleware' => ['auth']],function(){
 
     ////////////////////// RUTAS DEVOLUCION (CANCELACION)
         Route::get('/devolucion/index','DevolucionController@indexCancelaciones');
+        Route::get('/devolucion/excel','DevolucionController@excelDevoluciones');
         Route::post('/devolucion/registrar','DevolucionController@storeDevolucion');
         Route::get('/devolucion/indexDevoluciones','DevolucionController@indexDevoluciones');
         Route::get('/devoluciones/excel','DevolucionController@excelHistDev');
 
     ////////////////////// RUTAS DEVOLUCION (Credito)
         Route::get('/credito_devolucion/index','InstSeleccionadasController@indexDevolucion');
+        Route::get('/credito_devolucion/excel','InstSeleccionadasController@excelDevolucion');
         Route::post('/credito_devolucion/registrar','InstSeleccionadasController@storeDevolucion');
         Route::get('/credito_devolucion/indexDevoluciones','InstSeleccionadasController@indexHistorialDev');
         Route::get('/devoluciones_credito/excel','InstSeleccionadasController@excelHistDev');

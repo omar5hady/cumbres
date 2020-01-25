@@ -30,6 +30,17 @@
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
 
+                                    <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
+
+                                    <input v-else type="text"  v-model="buscar" @keyup.enter="listarContratos(1, buscar, b_etapa, b_manzana, b_lote, criterio)" class="form-control" placeholder="Texto a buscar">
+                                   
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-10">
+                                <div class="input-group">
+
                                     <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_etapa"  @keyup.enter="listarContratos(1, buscar, b_etapa, b_manzana, b_lote, criterio)" @click="selectManzanas(buscar,b_etapa)"> 
                                         <option value="">Etapa</option>
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
@@ -40,10 +51,8 @@
                                         <option v-for="manzana in arrayManzanas" :key="manzana.manzana" :value="manzana.manzana" v-text="manzana.manzana"></option>
                                     </select>
 
-                                    <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
-
-                                    <input v-else type="text"  v-model="buscar" @keyup.enter="listarContratos(1, buscar, b_etapa, b_manzana, b_lote, criterio)" class="form-control" placeholder="Texto a buscar">
                                     <button type="submit" @click="listarContratos(1, buscar, b_etapa, b_manzana, b_lote, criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    <a :href="'/credito_devolucion/excel?buscar=' + buscar + '&buscar2=' + buscar2 + '&b_vencidos=' + b_vencidos + '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel</a>
                                    
                                 </div>
                             </div>
@@ -63,7 +72,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-if="contratos.saldo < 0" v-for="contratos in arrayContratos" :key="contratos.id" v-on:dblclick="abrirModal('devolucion',contratos)"> 
+                                    <tr v-for="contratos in arrayContratos" :key="contratos.id" v-on:dblclick="abrirModal('devolucion',contratos)"> 
                                         <td class="td2" v-text="contratos.id"></td>
                                         <td class="td2" v-text="contratos.nombre_cliente"></td>
                                         <td class="td2" v-text="contratos.proyecto"></td>
@@ -128,7 +137,7 @@
 
                                     <input v-else type="text"  v-model="buscar_d" @keyup.enter="listarDevoluciones(1, buscar_d, b_etapa_d, b_manzana_d, b_lote_d, criterio_d)" class="form-control" placeholder="Texto a buscar">
                                     <button type="submit" @click="listarDevoluciones(1, buscar_d, b_etapa_d, b_manzana_d, b_lote_d, criterio_d)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                    <a  :href="'/devoluciones_credito/excel?buscar=' + buscar_d + '&b_etapa_d=' + b_etapa_d + '&b_manzana_d=' +b_manzana_d+ '&b_lote_d=' + b_lote_d +'&criterio_d=' + criterio_d "  class="btn btn-success"><i class="fa fa-file-text"></i> Excel</a>
+                                    <a :href="'/devoluciones_credito/excel?buscar=' + buscar_d + '&b_etapa=' + b_etapa_d + '&b_manzana=' + b_manzana_d + '&b_lote=' + b_lote_d +  '&criterio=' + criterio_d"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel</a>
                                    
                                 </div>
                             </div>

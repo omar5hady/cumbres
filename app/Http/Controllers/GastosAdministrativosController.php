@@ -8,6 +8,8 @@ use App\Avaluo;
 use App\Contrato;
 use DB;
 use Auth;
+use Excel;
+use Carbon\Carbon;
 
 class GastosAdministrativosController extends Controller
 {
@@ -143,6 +145,184 @@ class GastosAdministrativosController extends Controller
                     'to'            => $gastos->lastItem(),
                 ],
                 'gastos' => $gastos];
+    }
+
+    public function excel(Request $request){
+        $buscar = $request->buscar;
+        $buscar2 = $request->buscar2;
+        $buscar3 = $request->buscar3;
+        $criterio = $request->criterio;
+
+        if($buscar==''){
+            $gastos = Gasto_admin::join('contratos','gastos_admin.contrato_id','=','contratos.id')
+                    ->join('creditos','contratos.id','=','creditos.id')
+                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                    ->join('personal','clientes.id','=','personal.id')
+                    ->select('contratos.id as folio','personal.nombre', 'personal.apellidos','creditos.fraccionamiento',
+                            'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','gastos_admin.id as gastoId',
+                            'gastos_admin.concepto','gastos_admin.costo','gastos_admin.observacion','gastos_admin.fecha')
+                    ->orderBy('contratos.id','asc')
+                    ->get();
+        }
+        else{
+            switch($criterio){
+                case 'gastos_admin.fecha':{
+                    $gastos = Gasto_admin::join('contratos','gastos_admin.contrato_id','=','contratos.id')
+                        ->join('creditos','contratos.id','=','creditos.id')
+                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                        ->join('personal','clientes.id','=','personal.id')
+                        ->select('contratos.id as folio','personal.nombre', 'personal.apellidos','creditos.fraccionamiento',
+                                'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','gastos_admin.id as gastoId',
+                                'gastos_admin.concepto','gastos_admin.costo','gastos_admin.observacion','gastos_admin.fecha')
+                        ->orderBy('contratos.id','asc')
+                        ->whereBetween($criterio, [$buscar,$buscar2])
+                        ->get();
+                    break;
+                }
+                case 'personal.nombre':{
+                    $gastos = Gasto_admin::join('contratos','gastos_admin.contrato_id','=','contratos.id')
+                        ->join('creditos','contratos.id','=','creditos.id')
+                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                        ->join('personal','clientes.id','=','personal.id')
+                        ->select('contratos.id as folio','personal.nombre', 'personal.apellidos','creditos.fraccionamiento',
+                                'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','gastos_admin.id as gastoId',
+                                'gastos_admin.concepto','gastos_admin.costo','gastos_admin.observacion','gastos_admin.fecha')
+                        ->orderBy('contratos.id','asc')
+                        ->where($criterio, 'like', '%'.$buscar . '%')
+                        ->orWhere('personal.apellidos','like', '%'.$buscar .'%')
+                        ->get();
+                    break;
+                }
+                case 'creditos.fraccionamiento':{
+                    if($buscar2 == '' && $buscar3 == ''){
+                        $gastos = Gasto_admin::join('contratos','gastos_admin.contrato_id','=','contratos.id')
+                            ->join('creditos','contratos.id','=','creditos.id')
+                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                            ->join('personal','clientes.id','=','personal.id')
+                            ->select('contratos.id as folio','personal.nombre', 'personal.apellidos','creditos.fraccionamiento',
+                                    'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','gastos_admin.id as gastoId',
+                                    'gastos_admin.concepto','gastos_admin.costo','gastos_admin.observacion','gastos_admin.fecha')
+                            ->orderBy('contratos.id','asc')
+                            ->where($criterio, '=', $buscar)
+                            ->get();
+                        break;
+                    }
+                    elseif($buscar2 != '' && $buscar3 == ''){
+                        $gastos = Gasto_admin::join('contratos','gastos_admin.contrato_id','=','contratos.id')
+                            ->join('creditos','contratos.id','=','creditos.id')
+                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                            ->join('personal','clientes.id','=','personal.id')
+                            ->select('contratos.id as folio','personal.nombre', 'personal.apellidos','creditos.fraccionamiento',
+                                    'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','gastos_admin.id as gastoId',
+                                    'gastos_admin.concepto','gastos_admin.costo','gastos_admin.observacion','gastos_admin.fecha')
+                            ->orderBy('contratos.id','asc')
+                            ->where($criterio, '=', $buscar)
+                            ->where('creditos.etapa', '=', $buscar2)
+                            ->get();
+                        break;
+                    }
+                    elseif($buscar2 == '' && $buscar3 != ''){
+                        $gastos = Gasto_admin::join('contratos','gastos_admin.contrato_id','=','contratos.id')
+                            ->join('creditos','contratos.id','=','creditos.id')
+                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                            ->join('personal','clientes.id','=','personal.id')
+                            ->select('contratos.id as folio','personal.nombre', 'personal.apellidos','creditos.fraccionamiento',
+                                    'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','gastos_admin.id as gastoId',
+                                    'gastos_admin.concepto','gastos_admin.costo','gastos_admin.observacion','gastos_admin.fecha')
+                            ->orderBy('contratos.id','asc')
+                            ->where($criterio, '=', $buscar)
+                            ->where('creditos.manzana', '=', $buscar3)
+                            ->get();
+                        break;
+                    }
+                    else{
+                        $gastos = Gasto_admin::join('contratos','gastos_admin.contrato_id','=','contratos.id')
+                            ->join('creditos','contratos.id','=','creditos.id')
+                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                            ->join('personal','clientes.id','=','personal.id')
+                            ->select('contratos.id as folio','personal.nombre', 'personal.apellidos','creditos.fraccionamiento',
+                                    'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','gastos_admin.id as gastoId',
+                                    'gastos_admin.concepto','gastos_admin.costo','gastos_admin.observacion','gastos_admin.fecha')
+                            ->orderBy('contratos.id','asc')
+                            ->where($criterio, '=', $buscar)
+                            ->where('creditos.etapa', '=', $buscar2)
+                            ->where('creditos.manzana', '=', $buscar3)
+                            ->get();
+                        break;
+                    }
+                }
+                default:{
+                    $gastos = Gasto_admin::join('contratos','gastos_admin.contrato_id','=','contratos.id')
+                        ->join('creditos','contratos.id','=','creditos.id')
+                        ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                        ->join('personal','clientes.id','=','personal.id')
+                        ->select('contratos.id as folio','personal.nombre', 'personal.apellidos','creditos.fraccionamiento',
+                                'creditos.etapa','creditos.manzana','creditos.num_lote','creditos.modelo','gastos_admin.id as gastoId',
+                                'gastos_admin.concepto','gastos_admin.costo','gastos_admin.observacion','gastos_admin.fecha')
+                        ->orderBy('contratos.id','asc')
+                        ->where($criterio, '=', $buscar)
+                        ->get();
+                    break;
+                }
+            }
+        }
+        
+        return Excel::create('Gastos Administrativos', function($excel) use ($gastos){
+                $excel->sheet('gastos', function($sheet) use ($gastos){
+                    
+                    $sheet->row(1, [
+                        '# Ref', 'Cliente', 'Proyecto', 'Etapa', 'Manzana',
+                        '# Lote','Tipo de gasto', 'Fecha', 'Monto', 'Observacion'
+                    ]);
+
+                    $sheet->setColumnFormat(array(
+                        'I' => '$#,##0.00',
+                    ));
+
+
+                    $sheet->cells('A1:J1', function ($cells) {
+                        $cells->setBackground('#052154');
+                        $cells->setFontColor('#ffffff');
+                        // Set font family
+                        $cells->setFontFamily('Calibri');
+
+                        // Set font size
+                        $cells->setFontSize(13);
+
+                        // Set font weight to bold
+                        $cells->setFontWeight('bold');
+                        $cells->setAlignment('center');
+                    });
+
+                    
+                    $cont=1;
+
+                    foreach($gastos as $index => $gasto) {
+                        $cont++;
+
+                        setlocale(LC_TIME, 'es_MX.utf8');
+                        $fecha1 = new Carbon($gasto->fecha);
+                        $gasto->fecha = $fecha1->formatLocalized('%d de %B de %Y');
+
+                        $sheet->row($index+2, [
+                            $gasto->folio, 
+                            $gasto->nombre. ' ' . $gasto->apellidos,
+                            $gasto->fraccionamiento,
+                            $gasto->etapa,
+                            $gasto->manzana,
+                            $gasto->num_lote,
+                            $gasto->concepto,
+                            $gasto->fecha,
+                            $gasto->costo,
+                            $gasto->observacion,
+
+                        ]);	
+                    }
+                    $num='A1:J' . $cont;
+                    $sheet->setBorder($num, 'thin');
+                });
+            }
+        )->download('xls');
     }
 
     public function storeAvaluo(Request $request){

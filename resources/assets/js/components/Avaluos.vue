@@ -202,8 +202,15 @@
                                     <input type="text" v-if="criterio2=='lotes.fraccionamiento_id'" v-model="b_lote2" class="form-control" placeholder="Lote a buscar">
 
                                     <input v-else type="date"  v-model="buscar2" @keyup.enter="listarHistorialAvaluos(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="Texto a buscar">
-                                    <button type="submit" @click="listarHistorialAvaluos(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-10">
+                                <div class="input-group">
+                                    <button type="submit" @click="listarHistorialAvaluos(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                    &nbsp;<a :href="'/historial/avaluos/excel?buscar=' + buscar2 + '&b_etapa=' + b_etapa2 + '&b_manzana=' + b_manzana2 + '&b_lote=' + b_lote2 +  '&criterio=' + criterio2"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel </a>
                                 </div>
                             </div>
                         </div>

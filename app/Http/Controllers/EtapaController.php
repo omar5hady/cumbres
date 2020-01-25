@@ -111,28 +111,36 @@ class EtapaController extends Controller
     public function store(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
-        $etapa = new Etapa();
-        $etapa->fraccionamiento_id = $request->fraccionamiento_id;
-        $etapa->num_etapa = $request->num_etapa;
-        $etapa->f_ini = $request->f_ini;
-        $etapa->f_fin = $request->f_fin;
-        $etapa->personal_id = $request->personal_id;
-        $etapa->save();
+        try {
+            DB::beginTransaction();
+            $etapa = new Etapa();
+            $etapa->fraccionamiento_id = $request->fraccionamiento_id;
+            $etapa->num_etapa = $request->num_etapa;
+            $etapa->f_ini = $request->f_ini;
+            $etapa->f_fin = $request->f_fin;
+            $etapa->personal_id = $request->personal_id;
+            $etapa->save();
 
-        $precio_etapa = new Precio_etapa();
-        $precio_etapa->fraccionamiento_id = $request->fraccionamiento_id;
-        $precio_etapa->etapa_id = $etapa->id;
-        $precio_etapa->precio_excedente = 0;
-        $precio_etapa->save();
+            $precio_etapa = new Precio_etapa();
+            $precio_etapa->fraccionamiento_id = $request->fraccionamiento_id;
+            $precio_etapa->etapa_id = $etapa->id;
+            $precio_etapa->precio_excedente = 0;
+            $precio_etapa->save();
 
 
 
-        for($i=1;$i<=Sobreprecio::count();$i++){
-            $sobreprecio_etapa= new Sobreprecio_etapa();
-            $sobreprecio_etapa->etapa_id= $etapa->id;
-            $sobreprecio_etapa->sobreprecio_id = $i;
-            $sobreprecio_etapa->sobreprecio = 0;
-            $sobreprecio_etapa->save();
+            for($i=1;$i<=Sobreprecio::count();$i++){
+                $sobreprecio_etapa= new Sobreprecio_etapa();
+                $sobreprecio_etapa->etapa_id= $etapa->id;
+                $sobreprecio_etapa->sobreprecio_id = $i;
+                $sobreprecio_etapa->sobreprecio = 0;
+                $sobreprecio_etapa->save();
+            }
+        DB::commit();
+
+
+            } catch (Exception $e) { 
+                DB::rollBack();
         }
     }
 

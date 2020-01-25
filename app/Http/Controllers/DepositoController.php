@@ -735,6 +735,779 @@ class DepositoController extends Controller
         ];
     }
 
+    public function excelPagares(Request $request){
+        setlocale(LC_TIME, 'es_MX.utf8');
+        $hoy = Carbon::today()->toDateString();
+
+        $vencido = $request->b_vencidos;
+        $buscar = $request->buscar;
+        $buscar2 = $request->buscar2;
+        $buscar3 = $request->buscar3;
+        $criterio =  $request->criterio;
+
+        if($vencido == 1){ //VENCIDOS
+            if($buscar == ''){
+                $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
+                    ->join('creditos','creditos.id','=','contratos.id')
+                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                    ->join('personal','clientes.id','=','personal.id')
+                    ->leftjoin('expedientes','contratos.id','=','expedientes.id')
+                    ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
+                    ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
+                            'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
+                            'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
+                            'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
+                            'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
+                            'personal.telefono','personal.email','creditos.num_dep_economicos',
+                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
+                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
+                            'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
+                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
+                            'contratos.ext_empresa','contratos.colonia_empresa',
+                            DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
+                            DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                    ->where('pagos_contratos.pagado','!=',2)
+                    ->where('pagos_contratos.pagado','!=',3)
+                    ->where('contratos.status','!=',0)
+                    ->where('contratos.status','!=',2) 
+                    ->where('pagos_contratos.fecha_pago','<',$hoy)
+                    ->orderBy('pagos_contratos.pagado', 'asc')
+                    ->orderBy('pagos_contratos.fecha_pago', 'asc')
+                    ->orderBy('pagos_contratos.pagado', 'asc')
+                    ->get();
+            }
+            else{
+                switch($criterio){
+                    case 'personal.nombre':{
+                        $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
+                            ->join('creditos','creditos.id','=','contratos.id')
+                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                            ->join('personal','clientes.id','=','personal.id')
+                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
+                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
+                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
+                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
+                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
+                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
+                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
+                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
+                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
+                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
+                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
+                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
+                                    'contratos.ext_empresa','contratos.colonia_empresa',
+                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
+                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                            ->where('pagos_contratos.pagado','!=',2)
+                            ->where('pagos_contratos.pagado','!=',3)
+                            ->where('contratos.status','!=',0)
+                            ->where('contratos.status','!=',2)
+                            ->where('pagos_contratos.fecha_pago','<',$hoy)
+                            ->where('personal.nombre','like', '%'. $buscar . '%')
+                            ->orWhere('pagos_contratos.pagado','!=',2)
+                            ->where('pagos_contratos.pagado','!=',3)
+                            ->where('contratos.status','!=',0)
+                            ->where('contratos.status','!=',2)
+                            ->where('pagos_contratos.fecha_pago','<',$hoy)
+                            ->where('personal.apellidos','like', '%'. $buscar . '%')
+                            ->orderBy('pagos_contratos.pagado', 'asc')
+                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
+                            ->orderBy('pagos_contratos.pagado', 'asc')
+                            ->get();
+                        break;
+                    }
+                    case 'pagos_contratos.fecha_pago':{
+                        $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
+                            ->join('creditos','creditos.id','=','contratos.id')
+                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                            ->join('personal','clientes.id','=','personal.id')
+                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
+                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
+                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
+                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
+                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
+                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
+                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
+                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
+                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
+                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
+                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
+                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
+                                    'contratos.ext_empresa','contratos.colonia_empresa',
+                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
+                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                            ->where('pagos_contratos.pagado','!=',2)
+                            ->where('pagos_contratos.pagado','!=',3)
+                            ->where('contratos.status','!=',0)
+                            ->where('contratos.status','!=',2)
+                            ->where('pagos_contratos.fecha_pago','<',$hoy)
+                            ->whereBetween($criterio, [$buscar,$buscar2])
+                            ->orderBy('pagos_contratos.pagado', 'asc')
+                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
+                            ->orderBy('pagos_contratos.pagado', 'asc')
+                            ->get();
+                        break;
+                    }
+                    case 'creditos.fraccionamiento':{
+                        if($buscar2=='' && $buscar3==''){
+                            $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
+                            ->join('creditos','creditos.id','=','contratos.id')
+                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                            ->join('personal','clientes.id','=','personal.id')
+                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
+                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
+                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
+                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
+                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
+                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
+                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
+                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
+                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
+                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
+                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
+                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
+                                    'contratos.ext_empresa','contratos.colonia_empresa',
+                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
+                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                            ->where('pagos_contratos.pagado','!=',2)
+                            ->where('pagos_contratos.pagado','!=',3)
+                            ->where('contratos.status','!=',0)
+                            ->where('contratos.status','!=',2)
+                            ->where('pagos_contratos.fecha_pago','<',$hoy)
+                            ->where($criterio,'=',$buscar)
+                            ->orderBy('pagos_contratos.pagado', 'asc')
+                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
+                            ->orderBy('pagos_contratos.pagado', 'asc')
+                            ->get();
+                        }
+                        if($buscar!='' && $buscar2 !='' && $buscar3 == ''){
+                            $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
+                            ->join('creditos','creditos.id','=','contratos.id')
+                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                            ->join('personal','clientes.id','=','personal.id')
+                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
+                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
+                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
+                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
+                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
+                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
+                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
+                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
+                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
+                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
+                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
+                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
+                                    'contratos.ext_empresa',
+                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
+                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                            ->where('pagos_contratos.pagado','!=',2)
+                            ->where('pagos_contratos.pagado','!=',3)
+                            ->where('contratos.status','!=',0)
+                            ->where('contratos.status','!=',2)
+                            ->where('pagos_contratos.fecha_pago','<',$hoy)
+                            ->where($criterio,'=',$buscar)
+                            ->where('creditos.etapa','=',$buscar2)
+                            ->orderBy('pagos_contratos.pagado', 'asc')
+                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
+                            ->orderBy('pagos_contratos.pagado', 'asc')
+                            ->get();
+                        }
+                        if($buscar!='' && $buscar2 !='' && $buscar3 != ''){
+                            $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
+                            ->join('creditos','creditos.id','=','contratos.id')
+                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                            ->join('personal','clientes.id','=','personal.id')
+                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
+                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
+                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
+                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
+                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
+                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
+                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
+                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
+                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
+                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
+                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
+                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
+                                    'contratos.ext_empresa',
+                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
+                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                            ->where('pagos_contratos.pagado','!=',2)
+                            ->where('pagos_contratos.pagado','!=',3)
+                            ->where('contratos.status','!=',0)
+                            ->where('contratos.status','!=',2)
+                            ->where('pagos_contratos.fecha_pago','<',$hoy)
+                            ->where($criterio,'=',$buscar)
+                            ->where('creditos.etapa','=',$buscar2)
+                            ->where('creditos.manzana','=',$buscar3)
+                            ->orderBy('pagos_contratos.pagado', 'asc')
+                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
+                            ->orderBy('pagos_contratos.pagado', 'asc')
+                            ->get();
+                        }
+                        break;
+                    }
+                    default:{
+                        $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
+                            ->join('creditos','creditos.id','=','contratos.id')
+                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                            ->join('personal','clientes.id','=','personal.id')
+                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
+                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
+                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
+                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
+                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
+                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
+                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
+                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
+                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
+                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
+                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
+                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
+                                    'contratos.ext_empresa','contratos.colonia_empresa',
+                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
+                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                            ->where('pagos_contratos.pagado','!=',2)
+                            ->where('pagos_contratos.pagado','!=',3)
+                            ->where('contratos.status','!=',0)
+                            ->where('contratos.status','!=',2)
+                            ->where('pagos_contratos.fecha_pago','<',$hoy)
+                            ->where($criterio,'=',$buscar)
+                            ->orderBy('pagos_contratos.pagado', 'asc')
+                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
+                            ->orderBy('pagos_contratos.pagado', 'asc')
+                            ->get();
+                        break;
+                    }
+                }
+            }
+            
+        } 
+        elseif($vencido == 2){ //CANCELADOS
+            if($buscar == ''){
+                $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
+                    ->join('creditos','creditos.id','=','contratos.id')
+                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                    ->join('personal','clientes.id','=','personal.id')
+                    ->leftjoin('expedientes','contratos.id','=','expedientes.id')
+                    ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
+                    ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
+                            'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
+                            'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
+                            'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
+                            'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
+                            'personal.telefono','personal.email','creditos.num_dep_economicos',
+                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
+                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
+                            'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
+                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
+                            'contratos.ext_empresa','contratos.colonia_empresa',
+                            DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
+                            DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                    //
+                
+                    ->where('contratos.status','=',0)
+                    ->orWhere('contratos.status','=',2) 
+                
+                    ->orderBy('pagos_contratos.pagado', 'asc')
+                    ->orderBy('pagos_contratos.fecha_pago', 'asc')
+                    ->orderBy('pagos_contratos.pagado', 'asc')
+                    ->get();
+            }
+            else{
+                switch($criterio){
+                    case 'personal.nombre':{
+                        $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
+                            ->join('creditos','creditos.id','=','contratos.id')
+                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                            ->join('personal','clientes.id','=','personal.id')
+                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
+                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
+                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
+                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
+                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
+                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
+                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
+                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
+                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
+                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
+                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
+                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
+                                    'contratos.ext_empresa','contratos.colonia_empresa',
+                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
+                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                            //
+                        
+                            ->where('contratos.status','=',0)
+                            ->where('personal.nombre','like', '%'. $buscar . '%')
+
+                            ->orWhere('contratos.status','=',2)
+                            ->where('personal.nombre','like', '%'. $buscar . '%')
+
+                            ->orWhere('contratos.status','=',2)
+                            ->where('personal.apellidos','like', '%'. $buscar . '%')
+
+                            ->orWhere('contratos.status','=',0)
+                            ->where('personal.apellidos','like', '%'. $buscar . '%')
+                           
+
+                            ->orderBy('pagos_contratos.pagado', 'asc')
+                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
+                            ->orderBy('pagos_contratos.pagado', 'asc')
+                            ->get();
+                        break;
+                    }
+                    case 'pagos_contratos.fecha_pago':{
+                        $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
+                            ->join('creditos','creditos.id','=','contratos.id')
+                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                            ->join('personal','clientes.id','=','personal.id')
+                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
+                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
+                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
+                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
+                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
+                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
+                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
+                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
+                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
+                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
+                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
+                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
+                                    'contratos.ext_empresa','contratos.colonia_empresa',
+                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
+                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                            
+                            ->where('contratos.status','=',0)
+                            ->whereBetween($criterio, [$buscar,$buscar2])
+
+                            ->orWhere('contratos.status','=',2)
+                            ->whereBetween($criterio, [$buscar,$buscar2])
+                            ->orderBy('pagos_contratos.pagado', 'asc')
+                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
+                            ->orderBy('pagos_contratos.pagado', 'asc')
+                            ->get();
+                        break;
+                    }
+                    case 'creditos.fraccionamiento':{
+                        if($buscar2=='' && $buscar3==''){
+                            $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
+                            ->join('creditos','creditos.id','=','contratos.id')
+                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                            ->join('personal','clientes.id','=','personal.id')
+                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
+                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
+                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
+                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
+                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
+                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
+                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
+                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
+                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
+                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
+                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
+                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
+                                    'contratos.ext_empresa','contratos.colonia_empresa',
+                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
+                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                            
+                            ->where('contratos.status','=',0)
+                            ->where($criterio,'=',$buscar)
+                            ->orWhere('contratos.status','=',2)
+                            ->where($criterio,'=',$buscar)
+                            ->orderBy('pagos_contratos.pagado', 'asc')
+                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
+                            ->orderBy('pagos_contratos.pagado', 'asc')
+                            ->get();
+                        }
+                        if($buscar!='' && $buscar2 !='' && $buscar3 == ''){
+                            $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
+                            ->join('creditos','creditos.id','=','contratos.id')
+                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                            ->join('personal','clientes.id','=','personal.id')
+                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
+                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
+                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
+                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
+                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
+                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
+                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
+                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
+                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
+                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
+                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
+                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
+                                    'contratos.ext_empresa',
+                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
+                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                            
+                            ->where('contratos.status','=',0)
+                            ->where($criterio,'=',$buscar)
+                            ->where('creditos.etapa','=',$buscar2)
+                            ->orWhere('contratos.status','=',2)
+                            ->where($criterio,'=',$buscar)
+                            ->where('creditos.etapa','=',$buscar2)
+                            ->orderBy('pagos_contratos.pagado', 'asc')
+                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
+                            ->orderBy('pagos_contratos.pagado', 'asc')
+                            ->get();
+                        }
+                        if($buscar!='' && $buscar2 !='' && $buscar3 != ''){
+                            $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
+                            ->join('creditos','creditos.id','=','contratos.id')
+                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                            ->join('personal','clientes.id','=','personal.id')
+                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
+                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
+                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
+                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
+                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
+                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
+                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
+                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
+                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
+                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
+                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
+                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
+                                    'contratos.ext_empresa',
+                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
+                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                            
+                            ->where('contratos.status','=',0)
+                            ->where($criterio,'=',$buscar)
+                            ->where('creditos.etapa','=',$buscar2)
+                            ->where('creditos.manzana','=',$buscar3)
+                            ->orWhere('contratos.status','=',2)
+                            ->where($criterio,'=',$buscar)
+                            ->where('creditos.etapa','=',$buscar2)
+                            ->where('creditos.manzana','=',$buscar3)
+                            ->orderBy('pagos_contratos.pagado', 'asc')
+                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
+                            ->orderBy('pagos_contratos.pagado', 'asc')
+                            ->get();
+                        }
+                        break;
+                    }
+                    default:{
+                        $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
+                            ->join('creditos','creditos.id','=','contratos.id')
+                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                            ->join('personal','clientes.id','=','personal.id')
+                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
+                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
+                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
+                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
+                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
+                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
+                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
+                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
+                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
+                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
+                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
+                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
+                                    'contratos.ext_empresa','contratos.colonia_empresa',
+                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
+                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                            
+                            ->where('contratos.status','=',0)
+                            ->where($criterio,'=',$buscar)
+                            ->orWhere('contratos.status','=',2)
+                            ->where($criterio,'=',$buscar)
+                            ->orderBy('pagos_contratos.pagado', 'asc')
+                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
+                            ->orderBy('pagos_contratos.pagado', 'asc')
+                            ->get();
+                        break;
+                    }
+                }
+            }
+            
+        }
+        else{ //TODOS
+            if($buscar==''){
+                $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
+                    ->join('creditos','creditos.id','=','contratos.id')
+                    ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                    ->join('personal','clientes.id','=','personal.id')
+                    ->leftjoin('expedientes','contratos.id','=','expedientes.id')
+                    ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
+                    ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
+                            'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
+                            'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
+                            'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
+                            'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
+                            'personal.telefono','personal.email','creditos.num_dep_economicos',
+                            'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
+                            'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
+                            'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
+                            'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
+                            'contratos.ext_empresa','contratos.colonia_empresa',
+                            DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
+                            DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                            ->where('contratos.status','!=',0)
+                            ->where('contratos.status','!=',2) 
+                            ->orderBy('pagos_contratos.pagado', 'asc')
+                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
+                            ->orderBy('pagos_contratos.pagado', 'asc')
+                    ->get();
+            }
+            else{
+                switch($criterio){
+                    case 'personal.nombre':{
+                        $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
+                            ->join('creditos','creditos.id','=','contratos.id')
+                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                            ->join('personal','clientes.id','=','personal.id')
+                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
+                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
+                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
+                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
+                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
+                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
+                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
+                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
+                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
+                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
+                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
+                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
+                                    'contratos.ext_empresa','contratos.colonia_empresa',
+                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
+                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                            ->where('personal.nombre','like', '%'. $buscar . '%')
+                            ->where('contratos.status','!=',0)
+                            ->where('contratos.status','!=',2)
+                            ->orwhere('personal.apellidos','like', '%'. $buscar . '%')
+                            ->where('contratos.status','!=',0)
+                            ->where('contratos.status','!=',2)
+                            ->orderBy('pagos_contratos.pagado', 'asc')
+                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
+                            ->orderBy('pagos_contratos.pagado', 'asc')
+                            ->get();
+                        break;
+                    }
+                    case 'pagos_contratos.fecha_pago':{
+                        $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
+                            ->join('creditos','creditos.id','=','contratos.id')
+                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                            ->join('personal','clientes.id','=','personal.id')
+                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
+                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
+                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
+                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
+                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
+                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
+                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
+                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
+                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
+                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
+                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
+                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
+                                    'contratos.ext_empresa','contratos.colonia_empresa',
+                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
+                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                            ->whereBetween($criterio, [$buscar,$buscar2])
+                            ->where('contratos.status','!=',0)
+                            ->where('contratos.status','!=',2) 
+                            ->orderBy('pagos_contratos.pagado', 'asc')
+                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
+                            ->orderBy('pagos_contratos.pagado', 'asc')
+                            ->get();
+                        break;
+                    }
+                    case 'creditos.fraccionamiento':{
+                        if($buscar2=='' && $buscar3==''){
+                            $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
+                            ->join('creditos','creditos.id','=','contratos.id')
+                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                            ->join('personal','clientes.id','=','personal.id')
+                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
+                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
+                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
+                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
+                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
+                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
+                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
+                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
+                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
+                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
+                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
+                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
+                                    'contratos.ext_empresa','contratos.colonia_empresa',
+                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
+                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                            ->where($criterio,'=',$buscar)
+                            ->where('contratos.status','!=',0)
+                            ->where('contratos.status','!=',2) 
+                            ->orderBy('pagos_contratos.pagado', 'asc')
+                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
+                            ->orderBy('pagos_contratos.pagado', 'asc')
+                            ->get();
+                        }
+                        if($buscar!='' && $buscar2 !='' && $buscar3 == ''){
+                            $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
+                            ->join('creditos','creditos.id','=','contratos.id')
+                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                            ->join('personal','clientes.id','=','personal.id')
+                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
+                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
+                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
+                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
+                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
+                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
+                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
+                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
+                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
+                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
+                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
+                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
+                                    'contratos.ext_empresa',
+                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
+                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                            ->where($criterio,'=',$buscar)
+                            ->where('creditos.etapa','=',$buscar2)
+                            ->where('contratos.status','!=',0)
+                            ->where('contratos.status','!=',2) 
+                            ->orderBy('pagos_contratos.pagado', 'asc')
+                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
+                            ->orderBy('pagos_contratos.pagado', 'asc')
+                            ->get();
+                        }
+                        if($buscar!='' && $buscar2 !='' && $buscar3 != ''){
+                            $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
+                            ->join('creditos','creditos.id','=','contratos.id')
+                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                            ->join('personal','clientes.id','=','personal.id')
+                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
+                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
+                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
+                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
+                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
+                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
+                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
+                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
+                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
+                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
+                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
+                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
+                                    'contratos.ext_empresa',
+                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
+                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                            ->where($criterio,'=',$buscar)
+                            ->where('creditos.etapa','=',$buscar2)
+                            ->where('creditos.manzana','=',$buscar3)
+                            ->where('contratos.status','!=',0)
+                            ->where('contratos.status','!=',2) 
+                            ->orderBy('pagos_contratos.pagado', 'asc')
+                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
+                            ->orderBy('pagos_contratos.pagado', 'asc')
+                            ->get();
+                        }
+                        break;
+                    }
+                    default:{
+                        $pagares = Pago_contrato::join('contratos','contratos.id','=','pagos_contratos.contrato_id')
+                            ->join('creditos','creditos.id','=','contratos.id')
+                            ->join('clientes','creditos.prospecto_id','=','clientes.id')
+                            ->join('personal','clientes.id','=','personal.id')
+                            ->leftjoin('expedientes','contratos.id','=','expedientes.id')
+                            ->leftjoin('personal as g','expedientes.gestor_id','=','g.id')
+                            ->select('contratos.id as folio','pagos_contratos.id as pago' , 'pagos_contratos.num_pago', 'pagos_contratos.monto_pago', 
+                                    'pagos_contratos.fecha_pago', 'pagos_contratos.restante', 'creditos.fraccionamiento',
+                                    'creditos.etapa', 'creditos.manzana', 'creditos.num_lote','pagos_contratos.pagado',
+                                    'personal.nombre','personal.apellidos','personal.f_nacimiento','personal.rfc',
+                                    'personal.homoclave','personal.direccion','personal.colonia','personal.cp',
+                                    'personal.telefono','personal.email','creditos.num_dep_economicos',
+                                    'creditos.tipo_economia','clientes.email_institucional','clientes.edo_civil','clientes.nss',
+                                    'clientes.curp','clientes.empresa','clientes.estado','clientes.ciudad','clientes.puesto',
+                                    'clientes.nacionalidad','clientes.sexo','personal.celular','contratos.direccion_empresa',
+                                    'contratos.cp_empresa','contratos.estado_empresa','contratos.ciudad_empresa','contratos.telefono_empresa',
+                                    'contratos.ext_empresa','contratos.colonia_empresa',
+                                    DB::raw('DATEDIFF(current_date,pagos_contratos.fecha_pago) as diferencia'),
+                                    DB::raw("CONCAT(g.nombre,' ',g.apellidos) as gestor"))
+                            ->where($criterio,'=',$buscar)
+                            ->where('contratos.status','!=',0)
+                            ->where('contratos.status','!=',2) 
+                            ->orderBy('pagos_contratos.pagado', 'asc')
+                            ->orderBy('pagos_contratos.fecha_pago', 'asc')
+                            ->orderBy('pagos_contratos.pagado', 'asc')
+                            ->get();
+                        break;
+                    }
+                }
+            }
+        }
+
+    
+        
+        
+        return Excel::create('Pagares', function($excel) use ($pagares){
+            $excel->sheet('pagares', function($sheet) use ($pagares){
+                
+                $sheet->row(1, [
+                    '# Ref', 'Cliente','Gestor','Proyecto', 'Etapa', 'Manzana',
+                    '# Lote','# Pagare', 'Saldo', 'Total Depositado', 'Fecha limite', 'Status'
+                ]);
+
+                $sheet->setColumnFormat(array(
+                    'I' => '$#,##0.00',
+                    'J' => '$#,##0.00',
+                ));
+
+
+                $sheet->cells('A1:L1', function ($cells) {
+                    $cells->setBackground('#052154');
+                    $cells->setFontColor('#ffffff');
+                    // Set font family
+                    $cells->setFontFamily('Calibri');
+
+                    // Set font size
+                    $cells->setFontSize(13);
+
+                    // Set font weight to bold
+                    $cells->setFontWeight('bold');
+                    $cells->setAlignment('center');
+                });
+
+                
+                $cont=1;
+
+                foreach($pagares as $index => $pagare) {
+                    $cont++;
+
+                    setlocale(LC_TIME, 'es_MX.utf8');
+                    $fecha1 = new Carbon($pagare->fecha_pago);
+                    $pagare->fecha_pago = $fecha1->formatLocalized('%d de %B de %Y');
+                    $pagare->num_pago = $pagare->num_pago + 1;
+                    $pagado = $pagare->monto_pago - $pagare->restante;
+
+                    if($pagare->diferencia > 0 && $pagare->pagado < 2) $status = 'Vencido';
+                    if($pagare->diferencia < 0 && $pagare->pagado < 2) $status = 'Pendiente';
+                    if($pagare->pagado == 2) $status = 'Pagado';
+                    if($pagare->pagado == 3) $status = 'Liquidado';
+
+                    $sheet->row($index+2, [
+                        $pagare->folio, 
+                        $pagare->nombre. ' ' . $pagare->apellidos,
+                        $pagare->gestor,
+                        $pagare->fraccionamiento,
+                        $pagare->etapa,
+                        $pagare->manzana,
+                        $pagare->num_lote,
+                        $pagare->num_pago,
+                        $pagare->restante,
+                        $pagado,
+                        $pagare->fecha_pago,
+                        $status
+
+                    ]);	
+                }
+                $num='A1:J' . $cont;
+                $sheet->setBorder($num, 'thin');
+            });
+        }
+    )->download('xls');
+    }
+
     public function indexDepositos(Request $request){
         if(!$request->ajax())return redirect('/');
         $depositos = Deposito::select('id', 'pago_id', 'cant_depo','interes_mor','interes_ord',
@@ -745,6 +1518,112 @@ class DepositoController extends Controller
         $pagares = Pago_contrato::select('restante')
         ->where('id','=',$request->buscar)->get();
             return ['depositos' => $depositos, 'restante' => $pagares[0]->restante];
+    }
+
+    public function excelDepositos(Request $request){
+        
+        if($request->desde == ''){
+            if($request->banco == ''){
+                $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
+                            ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
+                            ->join('creditos','contratos.id','=','creditos.id')
+                            ->select('pagos_contratos.contrato_id','depositos.cant_depo','depositos.num_recibo',
+                                    'depositos.banco', 'depositos.fecha_pago', 'depositos.concepto',
+                                    'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.num_lote')
+                            ->get();
+            }
+            else{
+                $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
+                            ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
+                            ->join('creditos','contratos.id','=','creditos.id')
+                            ->select('pagos_contratos.contrato_id','depositos.cant_depo','depositos.num_recibo',
+                                    'depositos.banco', 'depositos.fecha_pago', 'depositos.concepto',
+                                    'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.num_lote')
+                            ->where('depositos.banco','=',$request->banco)
+                            ->get();
+
+            }
+        }
+        else{
+            if($request->banco == ''){
+                $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
+                            ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
+                            ->join('creditos','contratos.id','=','creditos.id')
+                            ->select('pagos_contratos.contrato_id','depositos.cant_depo','depositos.num_recibo',
+                                    'depositos.banco', 'depositos.fecha_pago', 'depositos.concepto',
+                                    'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.num_lote')
+                            ->whereBetween('depositos.fecha_pago', [$request->desde, $request->hasta])
+                            ->get();
+            }
+            else{
+                $depositos = Deposito::join('pagos_contratos','depositos.pago_id','=','pagos_contratos.id')
+                            ->join('contratos','pagos_contratos.contrato_id','=','contratos.id')
+                            ->join('creditos','contratos.id','=','creditos.id')
+                            ->select('pagos_contratos.contrato_id','depositos.cant_depo','depositos.num_recibo',
+                                    'depositos.banco', 'depositos.fecha_pago', 'depositos.concepto',
+                                    'creditos.fraccionamiento','creditos.etapa','creditos.manzana','creditos.num_lote')
+                            ->where('depositos.banco','=',$request->banco)
+                            ->whereBetween('depositos.fecha_pago', [$request->desde, $request->hasta])
+                            ->get();
+            }
+        }
+
+        return Excel::create('Depositos', function($excel) use ($depositos){
+                $excel->sheet('Depositos', function($sheet) use ($depositos){
+                    
+                    $sheet->row(1, [
+                        '# Contrato','Proyecto', 'Etapa', 'Manzana',
+                        '# Lote','# Fecha de pago', '# Recibo', 'Cuenta', 'Concepto', 'Monto'
+                    ]);
+
+                    $sheet->setColumnFormat(array(
+                        'J' => '$#,##0.00',
+                    ));
+
+
+                    $sheet->cells('A1:J1', function ($cells) {
+                        $cells->setBackground('#052154');
+                        $cells->setFontColor('#ffffff');
+                        // Set font family
+                        $cells->setFontFamily('Calibri');
+
+                        // Set font size
+                        $cells->setFontSize(13);
+
+                        // Set font weight to bold
+                        $cells->setFontWeight('bold');
+                        $cells->setAlignment('center');
+                    });
+
+                    
+                    $cont=1;
+
+                    foreach($depositos as $index => $deposito) {
+                        $cont++;
+
+                        setlocale(LC_TIME, 'es_MX.utf8');
+                        $fecha1 = new Carbon($deposito->fecha_pago);
+                        $deposito->fecha_pago = $fecha1->formatLocalized('%d de %B de %Y');
+                        
+                        $sheet->row($index+2, [
+                            $deposito->contrato_id, 
+                            $deposito->fraccionamiento,
+                            $deposito->etapa,
+                            $deposito->manzana,
+                            $deposito->num_lote,
+                            $deposito->fecha_pago,
+                            $deposito->num_recibo,
+                            $deposito->banco,
+                            $deposito->concepto,
+                            $deposito->cant_depo
+
+                        ]);	
+                    }
+                    $num='A1:J' . $cont;
+                    $sheet->setBorder($num, 'thin');
+                });
+                }
+        )->download('xls');
     }
 
     public function store(Request $request){

@@ -9,7 +9,10 @@
                 <div class="card scroll-box">
                     <div class="card-header" v-if="deposito==0">
                         <i class="fa fa-align-justify"></i> Pagares
-                       
+                        <a :href="'/pagares/excel?buscar=' + buscar + '&buscar2=' + buscar2 + '&b_vencidos=' + b_vencidos + '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel Pagares</a>
+                         <button type="button" class="btn btn-default" @click="abrirModal('depositos')">
+                            Excel Depositos
+                        </button>
                     </div>
                     <div class="card-header" v-if="deposito==1">
                         <i class="fa fa-align-justify"></i> Depositos
@@ -51,7 +54,13 @@
                                         <option value="">Manzana</option>
                                         <option v-for="manzana in arrayManzana" :key="manzana.manzana" :value="manzana.manzana" v-text="manzana.manzana"></option>
                                     </select>
-                                    
+                                   
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-8">
+                                <div class="input-group">
                                     <input type="date" v-if="criterio=='pagos_contratos.fecha_pago'" v-model="buscar" @keyup.enter="listarPagares(1,buscar, buscar2, buscar3, b_vencidos,criterio)" class="form-control" >
                                     <input type="date" v-if="criterio=='pagos_contratos.fecha_pago'" v-model="buscar2" @keyup.enter="listarPagares(1,buscar, buscar2, buscar3, b_vencidos,criterio)" class="form-control" >
                                     <input type="text" v-if="criterio=='contratos.id'|| criterio=='personal.nombre'" v-model="buscar" @keyup.enter="listarPagares(1,buscar, buscar2, buscar3, b_vencidos,criterio)" class="form-control" placeholder="Texto a buscar">
@@ -322,6 +331,59 @@
             </div>
             <!--Fin del modal-->
 
+            <!--Inicio del modal agregar/actualizar un deposito-->
+            <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modalDepositos}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" v-text="tituloModal"></h5>
+                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Fecha de deposito</label>
+                                    <div class="col-md-4">
+                                        <label class="col-md-1 form-control-label" for="text-input">Desde</label>
+                                        <input type="date" v-model="desde" class="form-control">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="col-md-1 form-control-label" for="text-input">Hasta</label>
+                                        <input type="date" v-model="hasta" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="text-input">Banco</label>
+                                    <div class="col-md-6">
+                                        <select class="form-control" v-model="banco">
+                                            <option value="">Seleccione</option>
+                                            <option v-for="banco in arrayBancos" :key="banco.num_cuenta" :value="banco.num_cuenta + '-' + banco.banco" v-text="banco.num_cuenta + '-' + banco.banco"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <!-- Div para mostrar los errores que mande validerDepartamento -->
+                                <div v-show="errorDeposito" class="form-group row div-error">
+                                    <div class="text-center text-error">
+                                        <div v-for="error in errorMostrarMsjDeposito" :key="error" v-text="error">
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                            <a :href="'/depositos/excel?desde=' + desde + '&hasta=' + hasta + '&banco=' + banco"  class="btn btn-success"><i class="fa fa-file-text"></i> Descargar</a>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!--Fin del modal-->
+
              <!--Inicio del modal para mostrar los datos del cliente -->
             <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal1}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
                 <div class="modal-dialog modal-primary modal-lg" role="document">
@@ -541,6 +603,7 @@
                 arrayDepositos : [],
                 arrayBancos : [],
                 modal : 0,
+                modalDepositos : 0,
                 modal1: 0,
                 deposito : 0,
                 tituloModal : '',
@@ -571,6 +634,8 @@
                 monto_pagare:0,
                 pago_id:0,
                 diferencia:0,
+                desde:'',
+                hasta:'',
 
                 //para los datos del cliente
                 nombre_cliente: '',
@@ -730,7 +795,7 @@
 
             },
 
-              abrirPDF(id){
+            abrirPDF(id){
                 const win = window.open('/estadoCuenta/estadoPDF/'+id, '_blank');
                 win.focus();
             },
@@ -927,6 +992,9 @@
             cerrarModal(){
                 this.modal = 0;
                 this.tituloModal = '';
+                this.modalDepositos = 0;
+                this.desde = '';
+                this.hasta = '';
 
                 this.fecha_deposito='';
                 this.cant_depo=0;
@@ -1111,6 +1179,14 @@
                         }
                         
                         this.depeconomicos_cliente=data['num_dep_economicos'];
+                        break;
+                    }
+                    case 'depositos':
+                    {
+                        this.modalDepositos = 1;
+                        this.tituloModal = 'Depositos';
+                        this.desde = '';
+                        this.hasta = '';
                         break;
                     }
                 }

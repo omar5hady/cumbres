@@ -316,7 +316,7 @@
                                 @endif
 
                                 @if(Auth::user()->entregas == 1)
-                                    <li @click="menu=7" class="nav-item">
+                                    <li @click="menu=216" class="nav-item">
                                         <a class="nav-link" href="#"><i class="fa fa-home"></i> Viviendas por entregar</a>
                                     </li>
                                 @endif
@@ -337,6 +337,13 @@
                                         <a class="nav-link" href="#"><i class="fa fa-group"></i> Mis prospectos</a>
                                     </li>
                                 @endif 
+
+                                @if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 7)
+                                    <li @click="menu=228" class="nav-item">
+                                        <a class="nav-link" href="#"><i class="fa fa-group"></i> Prospectos</a>
+                                    </li>
+                                @endif 
+
                                 @if(Auth::user()->simulacion_credito == 1)
                                     <li @click="menu=61" class="nav-item">
                                         <a class="nav-link" href="#"><i class="fa fa-calculator"></i> Simulacion de credito</a>

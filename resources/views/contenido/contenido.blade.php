@@ -384,6 +384,10 @@
             <comision-asesores></comision-asesores>
         </template>
 
+        <template v-if="menu==228">
+            <prospectos-publicidad></prospectos-publicidad>
+        </template>
+
         
 
         

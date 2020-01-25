@@ -238,6 +238,7 @@
             /**Metodo para mostrar los registros */
             listarPrecioModelo(page, buscar){
                 let me = this;
+                me.arrayPrecioModelos = [];
                 var url = '/precio_modelo?page=' + page + '&buscar=' + buscar;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
