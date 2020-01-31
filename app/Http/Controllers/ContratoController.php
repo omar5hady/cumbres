@@ -8929,10 +8929,13 @@ class ContratoController extends Controller
                 }
             }
 
-            if($equipamientosCost[0]->sumCosto != 0)
-                $ajuste = $equipamientosCost[0]->sumCosto;
-            else
-                $ajuste = 0;
+            if(sizeof($equipamientosCost)){
+                if($equipamientosCost[0]->sumCosto != 0)
+                    $ajuste = $equipamientosCost[0]->sumCosto;
+                else
+                    $ajuste = 0;
+            }
+           
 
             if ($request->fecha_status == '') {
                 $fecha = Carbon::now();
@@ -8941,16 +8944,19 @@ class ContratoController extends Controller
                 $status->fecha_status = $fecha;
                 $status->motivo_cancel = $request->motivo_cancel;
                 $status->save();
+
                 if ($request->status == 1) {
                     $contrato = Lote::findOrFail($id_lote);
                     $contrato->contrato = 1;
                     $contrato->save();
                 }
+
                 if ($request->status == 0 || $request->status == 2) {
                     $contrato = Lote::findOrFail($id_lote);
                     $contrato->contrato = 0;
                     $contrato->apartado = 0;
                     $contrato->ajuste += $ajuste;
+
                     if($ajuste != 0)
                         $contrato->comentarios ='Lote con equipamiento: '.$equipo.'. '.$contrato->comentarios;
 
@@ -8990,6 +8996,7 @@ class ContratoController extends Controller
                 $status->fecha_status = $request->fecha_status;
                 $status->motivo_cancel = $request->motivo_cancel;
                 $status->save();
+                
                 if ($request->status == 0 || $request->status == 2) {
                     $contrato = Lote::findOrFail($id_lote);
                     $contrato->contrato = 0;
@@ -9084,6 +9091,15 @@ class ContratoController extends Controller
         $pago->monto_pago = $request->monto_pago;
         $pago->fecha_pago = $request->fecha_pago;
         $pago->restante = $request->monto_pago;
+        $pago->save();
+    }
+
+    public function actualizarPago(Request $request)
+    {
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        $pago = Pago_contrato::findOrFail($request->id);
+        $pago->monto_pago = $request->monto;
+        $pago->fecha_pago = $request->fecha;
         $pago->save();
     }
 

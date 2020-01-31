@@ -100,7 +100,9 @@ class User extends Authenticatable
         'roles',
 
         //Reportes
-        'mejora'
+        'mejora',
+        'rep_publi',
+        'rep_proy'
     ];
 
     /**

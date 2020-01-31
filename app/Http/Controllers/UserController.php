@@ -97,7 +97,8 @@ class UserController extends Controller
                 'personal.colonia','personal.ext','personal.homoclave','personal.cp',
                 'personal.celular','personal.activo','personal.empresa_id','personal.apellidos',
                 'personal.email','users.usuario','users.password',
-                'users.condicion','users.rol_id','roles.nombre as rol','vendedores.inmobiliaria','vendedores.tipo')
+                'users.condicion','users.rol_id','roles.nombre as rol','vendedores.inmobiliaria','vendedores.tipo',
+                'vendedores.esquema')
                 ->orderBy('users.condicion', 'desc')
                 ->orderBy('personal.apellidos', 'asc')
                 ->orderBy('personal.nombre', 'asc')
@@ -112,7 +113,8 @@ class UserController extends Controller
                 'personal.colonia','personal.ext','personal.homoclave','personal.cp',
                 'personal.celular','personal.activo','personal.empresa_id','personal.apellidos',
                 'personal.email','users.usuario','users.password',
-                'users.condicion','users.rol_id','roles.nombre as rol','vendedores.inmobiliaria','vendedores.tipo')   
+                'users.condicion','users.rol_id','roles.nombre as rol','vendedores.inmobiliaria','vendedores.tipo',
+                'vendedores.esquema')  
                 ->where($criterio, '=',  $buscar )
                 ->orderBy('users.condicion', 'desc')
                 ->orderBy('personal.apellidos', 'asc')
@@ -1099,7 +1101,7 @@ class UserController extends Controller
                                 //Acceso
                                 'users.usuarios','users.roles',
                                 //Reportes
-                                'users.mejora'
+                                'users.mejora','users.rep_proy','users.rep_publi'
                         )->where('users.id','=',$request->id)->get();
             
             return['privilegios' => $privilegios];
@@ -1184,6 +1186,8 @@ class UserController extends Controller
         $user->roles = $request->roles;
         //Reportes
         $user->mejora = $request->mejora;
+        $user->rep_publi = $request->rep_publi;
+        $user->rep_proy = $request->rep_proy;
         $user->save();
 
     }

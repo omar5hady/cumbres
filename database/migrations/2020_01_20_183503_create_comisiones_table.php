@@ -18,6 +18,8 @@ class CreateComisionesTable extends Migration
             $table->integer('mes');
             $table->integer('anio');
             $table->double('total');
+            $table->double('bono')->default(0);
+            $table->double('aPagar')->default(0);
             $table->integer('num_ventas');
             $table->integer('num_cancelaciones')->default(0);
             $table->double('cobrado')->default(0);

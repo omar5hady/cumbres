@@ -1146,7 +1146,7 @@ class RevisionPreviaController extends Controller
                         DB::raw('DATEDIFF(current_date,entregas.fecha_entrega_real) as diferencia'
                         )
                     )
-                    ->where('lotes.id','=',$request->lote)->get();
+                    ->where('contratos.id','=',$request->folio)->get();
 
         $datosContratista = Ini_obra::join('contratistas','ini_obras.contratista_id','=','contratistas.id')
                     ->select('contratistas.id','contratistas.nombre')

@@ -9,7 +9,7 @@ class Det_comision extends Model
     protected $table = 'det_comisiones';
     protected $fillable = [
         'id', 'fecha_anticipo', 'porcentaje_exp', 'porcentaje_casa', 
-        'total', 'idComision','fecha_exp'
+        'total', 'idComision','fecha_exp','comisionReal', 'extra', 'anticipo'
     ];
 
     public $timestamps = false;
@@ -17,6 +17,11 @@ class Det_comision extends Model
     public function Contrato()
     {
         return $this->belongsTo('App\Contrato');
+    }
+
+    public function Comision()
+    {
+        return $this->belongsTo('App\Comision');
     }
  
 }

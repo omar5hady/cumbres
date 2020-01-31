@@ -208,9 +208,14 @@ class EstadisticasController extends Controller
         if($etapa!=''){
                 $lotes = Lote::where('fraccionamiento_id','=',$proyecto)
                                 ->where('etapa_id','=',$etapa)->count();
+                
+                $lotesHabilitados = Lote::where('fraccionamiento_id','=',$proyecto)
+                        ->where('etapa_id','=',$etapa)
+                        ->where('habilitado','=',1)->count();
 
                 $disponibles = Lote::where('fraccionamiento_id','=',$proyecto)
                                 ->where('etapa_id','=',$etapa)
+                                ->where('habilitado','=',1)
                                 ->where('contrato','=',0)->count();
 
                 $vendidas = Contrato::join('creditos','contratos.id','=','creditos.id')
@@ -306,8 +311,12 @@ class EstadisticasController extends Controller
                 $lotes = Lote::where('fraccionamiento_id','=',$proyecto)
                                 ->count();
 
+                $lotesHabilitados = Lote::where('fraccionamiento_id','=',$proyecto)
+                        ->where('habilitado','=',1)->count();
+
                 $disponibles = Lote::where('fraccionamiento_id','=',$proyecto)
-                                ->where('contrato','=',0)->count();
+                                ->where('contrato','=',0)
+                                ->where('habilitado','=',1)->count();
 
                 $vendidas = Contrato::join('creditos','contratos.id','=','creditos.id')
                                 ->join('lotes','creditos.lote_id','=','lotes.id')
@@ -401,6 +410,7 @@ class EstadisticasController extends Controller
                 'individualizadas'=>$individualizadas,
                 'sumas'=>$sumas,
                 'resContratos'=>$resContratos,
+                'habilitados'=>$lotesHabilitados,
                 'pagination' => [
                         'total'         => $resContratos->total(),
                         'current_page'  => $resContratos->currentPage(),

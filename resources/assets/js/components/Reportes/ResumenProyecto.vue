@@ -39,8 +39,12 @@
                                 <div class="input-group">
                                    <table class="table table-bordered table-striped table-sm">
                                        <tr>
-                                           <th>No. Lotes</th>
+                                           <th>Total de Lotes</th>
                                            <th v-text="lotes"></th>
+                                       </tr>
+                                       <tr>
+                                           <th>Lotes en venta</th>
+                                           <th v-text="habilitados"></th>
                                        </tr>
                                        <tr>
                                            <th>Individualizadas</th>
@@ -164,6 +168,7 @@
                 disponibles:0,
                 vendidas:0,
                 individualizadas:0,
+                habilitados:0,
                 mostrar : 0,
             }
         },
@@ -208,6 +213,7 @@
                     me.disponibles = respuesta.disponibles;
                     me.vendidas = respuesta.vendidas;
                     me.individualizadas = respuesta.individualizadas;
+                    me.habilitados = respuesta.habilitados;
 
                     me.precio_venta = respuesta.sumas[0].precio - respuesta.sumas[0].descuento + respuesta.sumas[0].paquete;
                     me.enganche = respuesta.sumas[0].enganche;

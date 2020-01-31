@@ -17,11 +17,15 @@ class CreateDetComisionesTable extends Migration
             $table->unsignedInteger('id');
             $table->foreign('id')->references('id')->on('contratos');
             $table->date('fecha_anticipo')->nullable();
-            $table->date('fecha_exp');
+            $table->date('fecha_exp')->nullable();
             $table->float('porcentaje_exp');
             $table->float('porcentaje_casa')->nullable();
-            $table->float('total')->nullable();
-            $table->integer('idComision')->nullable();
+            $table->float('comisionReal')->default(0);
+            $table->float('extra')->default(0);
+            $table->double('total')->nullable();
+            $table->double('anticipo')->nullable();
+            $table->unsignedInteger('idComision')->nullable();
+            $table->foreign('idComision')->references('id')->on('comisiones');
         });
     }
 

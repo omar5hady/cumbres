@@ -388,6 +388,10 @@
             <prospectos-publicidad></prospectos-publicidad>
         </template>
 
+        <template v-if="menu==229">
+            <comision-anticipos></comision-anticipos>
+        </template>
+
         
 
         

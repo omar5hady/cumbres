@@ -115,6 +115,8 @@ class CreateUsersTable extends Migration
 
             //Reportes
             $table->boolean('mejora')->default(0);
+            $table->boolean('rep_publi')->default(0);
+            $table->boolean('rep_proy')->default(0);
 
 
             

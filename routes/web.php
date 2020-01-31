@@ -411,6 +411,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::post('/contrato/registrar','ContratoController@store');
         Route::put('/contrato/actualizarCredito','ContratoController@updateDatosCredito');
         Route::post('/contrato/pagos/agregar','ContratoController@agregarPago');
+        Route::put('/contrato/pagos/actualizar','ContratoController@actualizarPago');
         Route::delete('/contrato/pagos/eliminar','ContratoController@eliminarPago');
         Route::put('/contrato/actualizar','ContratoController@actualizarContrato');
         Route::put('/contrato/reasignar','ContratoController@reasignarCliente');
@@ -472,6 +473,13 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/comision/listarContratos','ComisionesController@indexContratos');
         Route::get('/comision/ventasAsesor','ComisionesController@ventasAsesor');
         Route::put('/comision/agregarExpediente','ComisionesController@agregarExpediente');
+        Route::post('/comision/storeComision','ComisionesController@storeComision');
+
+        Route::get('/comision/indexComisiones','ComisionesController@indexComisiones');
+        Route::get('/comision/detalleComision','ComisionesController@detalleComision');
+        Route::get('/comision/anticiposPorPagar','ComisionesController@anticiposPorPagar');
+        Route::get('/comision/anticipos','ComisionesController@anticipos');
+        Route::put('/comision/generarAnticipo','ComisionesController@generarAnticipo');
 
     ////////////////////////// RUTAS ASIGNAR GESTOR /////////////////////////////
 

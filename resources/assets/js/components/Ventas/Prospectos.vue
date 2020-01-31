@@ -142,7 +142,15 @@
                                                     <i class="fa fa-exchange"></i>
                                                 </button>
                                             </td>
-                                            <td class="td2" v-text="prospecto.nombre + ' ' + prospecto.apellidos "></td>
+                                            <template>
+                                                <td v-if="prospecto.clasificacion == 1 || prospecto.clasificacion >= 5 || prospecto.clasificacion >= 2 && prospecto.clasificacion < 5 && prospecto.diferencia < 7" class="td2" v-text="prospecto.nombre + ' ' + prospecto.apellidos "></td>                                                    
+                                                <td v-else-if="prospecto.clasificacion >= 2 && prospecto.clasificacion < 5 && prospecto.diferencia >= 7 && prospecto.diferencia <= 15  " class="td2">
+                                                    <span class="badge2 badge-warning">{{ prospecto.nombre+' '+prospecto.apellidos}}</span>
+                                                </td>    
+                                                <td v-else-if="prospecto.clasificacion >= 2 && prospecto.clasificacion < 5 && prospecto.diferencia > 15" class="td2">
+                                                    <span class="badge2 badge-danger">{{ prospecto.nombre+' '+prospecto.apellidos}}</span>
+                                                </td>                                                
+                                            </template>
                                             <td class="td2" >
                                                  <a title="Llamar" class="btn btn-dark" :href="'tel:'+prospecto.celular"><i class="fa fa-phone fa-lg"></i></a>
                                                  <a title="Enviar whatsapp" class="btn btn-success" target="_blank" :href="'https://api.whatsapp.com/send?phone=+52'+prospecto.celular+'&text=Hola'"><i class="fa fa-whatsapp fa-lg"></i></a>
@@ -2130,6 +2138,17 @@
         position: absolute !important;
        
     }
+    .badge2 {
+    display: inline-block;
+    padding: 0.25em 0.4em;
+    font-size: 95%;
+    font-weight: bold;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+}
     .modal-body{
         height: 450px;
         width: 100%;

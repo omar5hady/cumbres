@@ -74,29 +74,43 @@
                                 <table class="table2 table-bordered table-striped table-sm">
                                     <thead>
                                         <tr>
-                                          
                                             <th></th>
-                                            <th>Vendedor</th>
+                                            <th>Mes</th>
+                                            <th>Año</th>
+                                            <th>Asesor</th>
                                             <th># Ventas</th>
                                             <th># Cancelaciones</th>
-                                            <th>Total Comision</th>
+                                            <th>Bono</th>
+                                            <th>Comision</th>
                                             <th>Cobrado</th>
-                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="contrato in arrayContratos" :key="contrato.id">
-                                            <td class="td2" v-text="contrato.id"></td>
-                                            <td class="td2" v-text="contrato.nombre_cliente"></td>
-                                            <td class="td2" v-text="contrato.nom_vendedor "></td>
-                                            <td class="td2" v-text="contrato.proyecto"></td>
-                                            <td class="td2" v-text="contrato.etapa"></td>
-                                            <td class="td2" v-text="contrato.manzana"></td>
-                                            <td>
-                                                <button type="button" @click="abrirModal('ingresar',contrato)" class="btn btn-primary btn-sm">
-                                                    <i class="fa fa-folder"></i>
-                                                </button>
-                                            </td>
+                                        <tr v-for="contrato in arrayComisiones" :key="contrato.id">
+                                            <td class="td2">
+                                                    <button type="button" title="Ver detalle de la comision" @click="abrirModal('detalle',contrato)" class="btn btn-primary btn-sm">
+                                                        <i class="fa fa-eye"></i>
+                                                    </button>
+                                                </td>
+                                            <td class="td2" v-if="contrato.mes == 1" v-text="'Enero'"></td>
+                                            <td class="td2" v-else-if="contrato.mes == 2" v-text="'Febrero'"></td>
+                                            <td class="td2" v-else-if="contrato.mes == 3" v-text="'Marzo'"></td>
+                                            <td class="td2" v-else-if="contrato.mes == 4" v-text="'Abril'"></td>
+                                            <td class="td2" v-else-if="contrato.mes == 5" v-text="'Mayo'"></td>
+                                            <td class="td2" v-else-if="contrato.mes == 6" v-text="'Junio'"></td>
+                                            <td class="td2" v-else-if="contrato.mes == 7" v-text="'Julio'"></td>
+                                            <td class="td2" v-else-if="contrato.mes == 8" v-text="'Agosto'"></td>
+                                            <td class="td2" v-else-if="contrato.mes == 9" v-text="'Septiembre'"></td>
+                                            <td class="td2" v-else-if="contrato.mes == 10" v-text="'Octubre'"></td>
+                                            <td class="td2" v-else-if="contrato.mes == 11" v-text="'Noviembre'"></td>
+                                            <td class="td2" v-else-if="contrato.mes == 12" v-text="'Diciembre'"></td>
+                                            <td class="td2" v-text="contrato.anio"></td>
+                                            <td class="td2" v-text="contrato.asesor"></td>
+                                            <td class="td2" v-text="contrato.num_ventas "></td>
+                                            <td class="td2" v-text="contrato.num_cancelaciones"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(contrato.bono)"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(contrato.aPagar)"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(contrato.cobrado)"></td>
                                         </tr>                               
                                     </tbody>
                                 </table>
@@ -121,7 +135,7 @@
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
 
-            <!-- Inicio Modal -->
+            <!-- Inicio Modal GENERAR COMISION -->
              <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
                 <div class="modal-dialog modal-primary modal-lg" role="document">
                     <div class="modal-content">
@@ -156,7 +170,26 @@
                                 </div>
                                 <label class="col-md-1 form-control-label" for="text-input">Año</label>
                                 <div class="col-md-2">
-                                    <input type="text" pattern="\d*" v-on:keypress="isNumber($event)" v-model="anio" maxlength="4" class="form-control">
+                                    <select class="form-control"  v-model="anio" >
+                                        <option value="2018">2018</option>
+                                        <option value="2019">2019</option>
+                                        <option value="2020">2020</option>
+                                        <option value="2021">2021</option>
+                                        <option value="2022">2022</option>
+                                        <option value="2023">2023</option>
+                                        <option value="2024">2024</option>
+                                        <option value="2025">2025</option>
+                                        <option value="2026">2026</option>
+                                        <option value="2027">2027</option>
+                                        <option value="2028">2028</option>
+                                        <option value="2029">2029</option>
+                                        <option value="2030">2030</option>
+                                        <option value="2031">2031</option>
+                                        <option value="2032">2032</option>
+                                        <option value="2033">2033</option>
+                                        <option value="2034">2034</option>
+                                        <option value="2035">2035</option>
+                                    </select>
                                 </div>
                             </div>
 
@@ -219,55 +252,67 @@
                                                 <td v-text="'$'+formatNumber(venta.precio_venta)"></td>
                                                 <template v-if="numVentas == 1">
                                                     <td v-if="venta.avance_lote<=90">
-                                                        {{ venta.comisionReal = (0.80*(venta.porcentaje_exp/100)).toFixed(2) }}%
+                                                        {{ venta.comisionReal = (venta.extra + (0.80*(venta.porcentaje_exp/100)) ).toFixed(3) }}%
                                                     </td>
                                                     <td v-else>
-                                                        {{ venta.comisionReal = ((venta.porcentaje_exp/100)*1).toFixed(2) }}%
+                                                        {{ venta.comisionReal = (venta.extra + ((venta.porcentaje_exp/100)*1) ).toFixed(3) }}%
                                                     </td>
                                                 </template>
                                                 <template v-else-if="numVentas == 2">
                                                     <td v-if="venta.avance_lote<=90">
-                                                        {{venta.comisionReal = (1.00*(venta.porcentaje_exp/100)).toFixed(2)}}%
+                                                        {{venta.comisionReal = (venta.extra + (1.00*(venta.porcentaje_exp/100)) ).toFixed(3)}}%
                                                     </td>
                                                     <td v-else>
-                                                        {{venta.comisionReal = ((venta.porcentaje_exp/100)*1.25).toFixed(2)}}%
+                                                        {{venta.comisionReal = (venta.extra + ((venta.porcentaje_exp/100)*1.25) ).toFixed(3)}}%
                                                     </td>
                                                 </template>
                                                 <template v-else-if="numVentas == 3">
                                                     <td v-if="venta.avance_lote<=90">
-                                                        {{venta.comisionReal = (1.30*(venta.porcentaje_exp/100)).toFixed(2)}}%
+                                                        {{venta.comisionReal = (venta.extra + (1.30*(venta.porcentaje_exp/100)) ).toFixed(3)}}%
                                                     </td>
                                                     <td v-else>
-                                                        {{venta.comisionReal = ((venta.porcentaje_exp/100)*1.55).toFixed(2)}}%
+                                                        {{venta.comisionReal = (venta.extra + ((venta.porcentaje_exp/100)*1.55) ).toFixed(3)}}%
                                                     </td>
                                                 </template>
                                                 <template v-else-if="numVentas == 4">
                                                     <td v-if="venta.avance_lote<=90">
-                                                        {{venta.comisionReal = (1.50*(venta.porcentaje_exp/100)).toFixed(2)}}%
+                                                        {{venta.comisionReal = (venta.extra + (1.50*(venta.porcentaje_exp/100)) ).toFixed(3)}}%
                                                     </td>
                                                     <td v-else>
-                                                        {{venta.comisionReal = ((venta.porcentaje_exp/100)*1.75).toFixed(2)}}%
+                                                        {{venta.comisionReal = (venta.extra + ((venta.porcentaje_exp/100)*1.75) ).toFixed(3)}}%
                                                     </td>
 
                                                 </template>
                                                 <template v-else-if="numVentas == 5">
                                                     <td v-if="venta.avance_lote<=90">
-                                                        {{venta.comisionReal = (1.70*(venta.porcentaje_exp/100)).toFixed(2)}}%
+                                                        {{venta.comisionReal = (venta.extra + (1.70*(venta.porcentaje_exp/100)) ).toFixed(3)}}%
                                                     </td>
                                                     <td v-else>
-                                                        {{venta.comisionReal = ((venta.porcentaje_exp/100)*2.00).toFixed(2)}}%
+                                                        {{venta.comisionReal = (venta.extra + ((venta.porcentaje_exp/100)*2.00) ).toFixed(3)}}%
                                                     </td>
                                                 </template>
                                                 <template v-else-if="numVentas >= 6">
                                                     <td v-if="venta.avance_lote<=90">
-                                                        {{venta.comisionReal = (2.00*(venta.porcentaje_exp/100)).toFixed(2)}}%
+                                                        {{venta.comisionReal = (venta.extra + (2.00*(venta.porcentaje_exp/100)) ).toFixed(3)}}%
                                                     </td>
                                                     <td v-else>
-                                                        {{venta.comisionReal = ((venta.porcentaje_exp/100)*2.00).toFixed(2)}}%
+                                                        {{venta.comisionReal = (venta.extra + ((venta.porcentaje_exp/100)*2.00) ).toFixed(3)}}%
                                                     </td>
                                                 </template>
                                                 <td v-text="'$'+formatNumber(venta.comision = (venta.precio_venta * (venta.comisionReal/100)))"></td>
-                                            </tr>                             
+                                            </tr>  
+                                            <tr>
+                                                <td align="right" colspan="8"><strong>Total:</strong></td>
+                                                <td><strong>${{formatNumber(comision = totalComision)}}</strong></td>
+                                            </tr>  
+                                            <tr>
+                                                <td align="right" colspan="8"><strong>Apoyo mensual:</strong></td>
+                                                <td><strong>${{formatNumber(apoyo)}}</strong></td>
+                                            </tr>      
+                                            <tr>
+                                                <td align="right" colspan="8"><strong>Total a pagar:</strong></td>
+                                                <td><strong>${{formatNumber(aPagar = comision - apoyo)}}</strong></td>
+                                            </tr>                      
                                         </tbody>
                                     </table>
                                 </div>
@@ -291,13 +336,119 @@
                                         </thead>
                                         <tbody>
                                             <tr v-for="venta in arrayVentas" :key="venta.id">
+                                                <td v-text="venta.id"></td>
+                                                <td v-text="venta.proyecto"></td>
+                                                <td v-text="venta.etapa"></td>
+                                                <td v-text="venta.manzana"></td>
+                                                <td v-text="venta.num_lote"></td>
+                                                <td v-text="venta.avance_lote + '%'"></td>
+                                                <td v-text="'$'+formatNumber(venta.precio_venta)"></td>
+                                                <td>
+                                                    {{ venta.comisionReal = (venta.extra_ext + esquema).toFixed(3) }}%
+                                                </td>
+                                                <td v-text="'$'+formatNumber(venta.comision = (venta.precio_venta * (venta.comisionReal/100)))"></td>
+                                            </tr>      
+                                            <tr>
+                                                <td align="right" colspan="8"><strong>Total:</strong></td>
+                                                <td><strong>${{formatNumber(comision = totalComision)}}</strong></td>
+                                            </tr>                       
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="form-group row line-separator"  v-if="ventas==1"></div>
+
+                            <div class="form-group row"  v-if="ventas==1">
+                                <label class="col-md-3 form-control-label" for="text-input">Número de ventas: <strong>{{this.numVentas}}</strong></label>
+                                <h6 v-if="ventas==1 && tipoVendedor == 0" style="font-weight: bold;" class="col-md-3">Bono: ${{formatNumber(this.bono)}}</h6>
+                            </div>
+
+                            <!-- Div para mostrar los errores que mande validerPersonal -->
+                            <div v-show="errorComision" class="form-group row div-error">
+                                <div class="text-center text-error">
+                                    <div v-for="error in errorMostrarMsjComision" :key="error" v-text="error">
+
+                                    </div>
+                                </div>
+                            </div>
+                      </form>
+
+                        </div>
+                        <!-- Botones del modal -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                            <button type="button" v-if="ventas==1" class="btn btn-primary" @click="registrarComision()">Generar comisión</button>
+                         </div>
+                    </div> 
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!--Fin del modal-->
+
+            <!-- Inicio Modal DETALLE COMISION -->
+             <div class="modal animated fadeIn" tabindex="-1" :class="{'mostrar': modal1}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-primary modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" v-text="tituloModal"></h4>
+                            <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
+                              <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            
+                            <div class="form-group row">
+                                <label class="col-md-1 form-control-label" for="text-input">Mes</label>
+                                <div class="col-md-3">
+                                    <select disabled class="form-control" v-model="mes" >
+                                        <option value="">Mes</option>
+                                        <option value="1">Enero</option>
+                                        <option value="2">Febrero</option>
+                                        <option value="3">Marzo</option>
+                                        <option value="4">Abril</option>
+                                        <option value="5">Mayo</option>
+                                        <option value="6">Junio</option>
+                                        <option value="7">Julio</option>
+                                        <option value="8">Agosto</option>
+                                        <option value="9">Septiembre</option>
+                                        <option value="10">Octubre</option>
+                                        <option value="11">Noviembre</option>
+                                        <option value="12">Diciembre</option>
+                                    </select>
+                                </div>
+                                <label class="col-md-1 form-control-label" for="text-input">Año</label>
+                                <div class="col-md-2">
+                                    <input type="text" disabled v-model="anio" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <table class="table table-bordered table-striped table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Folio</th>
+                                                <th>Proyecto</th>
+                                                <th>Etapa</th>
+                                                <th>Manzana</th>
+                                                <th>Lote</th>
+                                                <th>% Avance</th>
+                                                <th>Precio Venta</th>
+                                                <th>% Obtenido</th>
+                                                <th>Comisión</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="venta in arrayDetalle" :key="venta.id">
                                                 <td>
                                                     <span v-if="venta.fecha_exp == null" class="badge2 badge-danger" v-text="venta.id"></span>
                                                     <span v-else class="badge2 badge-success" v-text="venta.id"></span>
                                                 </td>
                                                 <td>
-                                                    <span v-if="venta.fecha_exp == null" class="badge2 badge-danger" v-text="venta.proyecto"></span>
-                                                    <span v-else class="badge2 badge-success" v-text="venta.proyecto"></span>
+                                                    <span v-if="venta.fecha_exp == null" class="badge2 badge-danger" v-text="venta.fraccionamiento"></span>
+                                                    <span v-else class="badge2 badge-success" v-text="venta.fraccionamiento"></span>
                                                 </td>
                                                 <td>
                                                     <span v-if="venta.fecha_exp == null" class="badge2 badge-danger" v-text="venta.etapa"></span>
@@ -313,33 +464,37 @@
                                                 </td>
                                                 <td v-text="venta.avance_lote + '%'"></td>
                                                 <td v-text="'$'+formatNumber(venta.precio_venta)"></td>
-                                                <td>
-                                                    {{ venta.comisionReal = (esquema).toFixed(2) }}%
-                                                </td>
-                                                <td v-text="'$'+formatNumber(venta.comision = (venta.precio_venta * (venta.comisionReal/100)))"></td>
-                                            </tr>                             
+                                                <td v-text="venta.comisionReal + '%'"></td>
+                                                <td v-text="'$'+formatNumber(venta.total)"></td>
+                                            </tr> 
+                                            <tr v-if="tipoVendedor == 0">
+                                                <td align="right" colspan="8"><strong>Total:</strong></td>
+                                                <td><strong>${{formatNumber(comision)}}</strong></td>
+                                            </tr>  
+                                            <tr v-if="tipoVendedor == 0">
+                                                <td align="right" colspan="8"><strong>Apoyo mensual:</strong></td>
+                                                <td><strong>${{formatNumber(10500)}}</strong></td>
+                                            </tr>      
+                                            <tr>
+                                                <td align="right" colspan="8"><strong>Total a pagar:</strong></td>
+                                                <td><strong>${{formatNumber(aPagar)}}</strong></td>
+                                            </tr>                                                               
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
 
-                            <div class="form-group row line-separator"  v-if="ventas==1"></div>
+                            <div class="form-group row line-separator"></div>
 
-                            <div class="form-group row"  v-if="ventas==1">
+                            <div class="form-group row">
                                 <label class="col-md-3 form-control-label" for="text-input">Número de ventas: <strong>{{this.numVentas}}</strong></label>
-                                <h6 v-if="ventas==1 && tipoVendedor == 0" style="font-weight: bold;" class="col-md-3">Bono: ${{formatNumber(this.bono)}}</h6>
+                                <h6 v-if="tipoVendedor == 0" style="font-weight: bold;" class="col-md-3">Bono: ${{formatNumber(this.bono)}}</h6>
                             </div>
-                            <div class="form-group row"  v-if="ventas==1 && tipoVendedor == 0">
-                                <h6 v-if="ventas==1 && tipoVendedor == 0" style="font-weight: bold;" class="col-md-3">Bono: ${{formatNumber(this.bono)}}</h6>
-                            </div>
-
-                      </form>
 
                         </div>
                         <!-- Botones del modal -->
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <button type="button" class="btn btn-primary" @click="GuardarComision()">Generar comisión</button>
                          </div>
                     </div> 
                     <!-- /.modal-content -->
@@ -366,9 +521,10 @@
             return{
                 id:0,
                 proceso:false,
-                arrayContratos:[],
+                arrayComisiones:[],
                 arrayAsesores:[], 
                 arrayVentas:[],
+                arrayDetalle:[],
                 numVentas:'', 
                 ventas:0,
                 bono:0,
@@ -377,6 +533,8 @@
                 tipoVendedor:0,
                 esquema:2,
                 apoyo:0,
+                aPagar:0,
+                comision:0,
                 
                 pagination2 : {
                     'total' : 0,         
@@ -392,8 +550,11 @@
                 asesor_id:'',
                 b_asesor_id:'',
                 modal: 0,
+                modal1:0,
                 tituloModal: '',
                 tipoAccion: 0,
+                errorComision : 0,
+                errorMostrarMsjComision : [],
 
                 ///
                 mes:'',
@@ -430,18 +591,30 @@
                 }
                 return pagesArray2;
             },
+
+            totalComision: function(){
+                var totalComision =0.0;
+                for(var i=0;i<this.arrayVentas.length;i++){
+                    totalComision += parseFloat(this.arrayVentas[i].comision)
+                }
+                if(totalComision < 0)
+                    totalComision = 0;
+                totalComision = Math.round(totalComision*100)/100;
+                return totalComision;
+            },
            
         },
        
         methods : {
             listarComisiones(page){
                 let me = this;
-                var url = '/comision/listarContratos?page=' + page;
+                var url = '/comision/indexComisiones?page=' + page + '&b_mes=' + this.b_mes + '&b_anio=' + this.b_anio + '&b_asesor_id=' + this.b_asesor_id;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
-                    me.arrayContratos = respuesta.contratos.data;
+                    me.arrayComisiones = respuesta.comisiones.data;
                     me.pagination2 = respuesta.pagination;
-                    me.fecha = respuesta.hoy;
+                    me.mes = respuesta.month;
+                    me.anio = respuesta.year;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -459,6 +632,7 @@
                     me.numPasadas = respuesta.pasada;
                     me.numQuincena = respuesta.quincena;
                     me.bono = 0;
+                    me.apoyo = 0;
 
                     if(me.tipoVendedor == 0){
                         me.apoyo = 10500;
@@ -474,6 +648,43 @@
                 .catch(function (error) {
                     console.log(error);
                 })
+            },
+            registrarComision(){
+                if( this.proceso==true) //Se verifica si hay un error (campo vacio)
+                {
+                    return;
+                }
+
+                this.proceso=true;
+
+                let me = this;
+                //Con axios se llama el metodo store de PersonalController
+                axios.post('/comision/storeComision',{
+                    'mes': this.mes,
+                    'anio': this.anio,
+                    'total': this.comision,
+                    'num_ventas': this.numVentas,
+                    'bono': this.bono,
+                    'asesor_id': this.asesor_id,
+                    'data':this.arrayVentas,
+                    'aPagar':this.aPagar,
+                    'tipoVendedor' : this.tipoVendedor,
+                    
+                }).then(function (response){
+                    me.proceso=false;
+                    me.cerrarModal(); //al guardar el registro se cierra el modal
+                    me.listarComisiones(1); //se enlistan nuevamente los registros
+                    //Se muestra mensaje Success
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Comision creada correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
             },
             formatNumber(value) {
                 let val = (value/1).toFixed(2)
@@ -501,9 +712,31 @@
               
             },  
 
+            detalleComision(id){
+                let me = this;
+                var url = '/comision/detalleComision?id=' + id;
+                 axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayDetalle = respuesta.detalle;
+                    
+                })
+                .catch(function (error) {
+                    console.log(error);
+                })
+            },
+
             cerrarModal(){
                 this.modal = 0;
+                this.modal1 = 0;
                 this.tituloModal = '';
+                this.asesor_id = '';
+                this.mes = '';
+                this.arrayVentas = [];
+                this.total = 0;
+                this.bono = 0;
+                this.numVentas = 0;
+                this.aPagar = 0;
+
             },
 
             isNumber: function(evt) {
@@ -522,9 +755,21 @@
                     {
                         this.modal = 1;
                         this.tituloModal='Comisión';
-                        this.mes = '';
-                        this.anio = 2019; 
                         this.ventas = 0;
+                        break;
+                    }
+                    case 'detalle':
+                    {
+                        this.detalleComision(data['id']);
+                        this.modal1 = 1;
+                        this.tituloModal='Detalle comision';
+                        this.bono = data['bono'];
+                        this.numVentas = data['num_ventas'];
+                        this.tipoVendedor = data['tipo'];
+                        this.mes = data['mes'];
+                        this.anio = data['anio'];
+                        this.aPagar = data['aPagar'];
+                        this.comision = data['total'];
                         break;
                     }
                 }

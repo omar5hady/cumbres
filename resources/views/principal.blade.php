@@ -469,7 +469,7 @@
                             <li @click="menu=218" class="nav-item">
                                 <a class="nav-link" href="#"><i class="fa fa-address-card-o"></i> Cartas de bienvenida</a>
                             </li>
-                        @if(Auth::user()->rol_id == 1)
+                        @if(Auth::user()->postventa == 1)
                             <li @click="menu=220" class="nav-item">
                                 <a class="nav-link" href="#"><i class="fa fa-check-circle-o"></i> Revisión previa</a>
                             </li>
@@ -516,6 +516,10 @@
                                 <li @click="menu=227" class="nav-item">
                                     <a class="nav-link" href="#"><i class="icon-calculator"></i> Comisiones</a>
                                 </li>
+
+                                <li @click="menu=229" class="nav-item">
+                                    <a class="nav-link" href="#"><i class="icon-calculator"></i> Anticipos</a>
+                                </li>
                             </ul>
                         </li>
                     @endif
@@ -528,12 +532,12 @@
                                         <a class="nav-link" href="#"><i class="icon-chart"></i> Estadisticas Mejora</a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 6)
+                                @if(Auth::user()->rep_proy == 1)
                                     <li @click="menu=91" class="nav-item">
                                         <a class="nav-link" href="#"><i class="icon-chart"></i> Resumen por proyecto</a>
                                     </li>
                                 @endif
-                                @if(Auth::user()->rol_id == 1 || Auth::user()->rol_id == 6)
+                                @if(Auth::user()->rep_publi == 1)
                                     <li @click="menu=225" class="nav-item">
                                         <a class="nav-link" href="#"><i class="icon-chart"></i> Estadisticas Publicidad</a>
                                     </li>

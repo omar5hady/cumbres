@@ -1630,6 +1630,7 @@
                                                         <th># Pago</th>
                                                         <th>Fecha de pago</th>
                                                         <th>Monto</th>
+                                                        <th v-if="btn_actualizar == 1"></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody >
@@ -1643,10 +1644,20 @@
                                                             </button>
                                                         </td>
                                                         <td v-text="'Pago no. ' + parseInt(index+1)"></td>
-                                                        <td v-text="this.moment(pago.fecha_pago).locale('es').format('DD/MMM/YYYY')"></td>
-                                                        
-                                                        <td>
+                                                        <td v-if="btn_actualizar == 0" v-text="this.moment(pago.fecha_pago).locale('es').format('DD/MMM/YYYY')"></td>
+                                                        <td v-else>
+                                                            <input type="date" v-model="pago.fecha_pago">
+                                                        </td>
+                                                        <td v-if="btn_actualizar == 0">
                                                             {{ pago.monto_pago | currency}}
+                                                        </td>
+                                                        <td v-else>
+                                                            <input type="text" pattern="\d*" v-on:keypress="isNumber($event)" v-model="pago.monto_pago">
+                                                        </td>
+                                                        <td v-if="btn_actualizar == 1">
+                                                            <button @click="actualizarPagoBD(pago.id, pago.monto_pago, pago.fecha_pago)" type="button" class="btn btn-success btn-sm">
+                                                                <i class="icon-check"></i>
+                                                            </button>
                                                         </td>
                                                     </tr>
                                                 </tbody>
@@ -3031,6 +3042,31 @@
                     });
                 }
                 })
+
+            },
+
+            actualizarPagoBD(id_pago, monto, fecha){
+              
+                let me = this;
+                //Con axios se llama el metodo update de DepartamentoController
+                axios.put('/contrato/pagos/actualizar',{
+                    'id': id_pago,
+                    'monto' : monto,
+                    'fecha' : fecha,
+                }).then(function (response){
+
+                    me.listarPagos(me.id);
+                    //window.alert("Cambios guardados correctamente");
+                    swal({
+                        position: 'top-end',
+                        type: 'success',
+                        title: 'Cambios guardados correctamente',
+                        showConfirmButton: false,
+                        timer: 1500
+                        })
+                }).catch(function (error){
+                    console.log(error);
+                });
 
             },
 

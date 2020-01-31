@@ -325,6 +325,12 @@
                                                     <li class="nav-item">
                                                         <a class="nav-link"><i class="icon-chart"></i> <input v-model="mejora" type="checkbox" value="1"/> Estadisticas Mejora</a>
                                                     </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="icon-chart"></i> <input v-model="rep_proy" type="checkbox" value="1"/> Resumen por proyecto</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link"><i class="icon-chart"></i> <input v-model="rep_publi" type="checkbox" value="1"/> Estadisticas de Publicidad</a>
+                                                    </li>
                                                 </ul>
                                     </div>
                                 </div> 
@@ -755,6 +761,8 @@
 
                     //Reportes
                     mejora:0,
+                    rep_proy:0,
+                    rep_publi:0,
 
                 pagination : {
                     'total' : 0,         
@@ -1062,6 +1070,8 @@
 
                     //Reportes
                     me.mejora=usuarios[0].mejora;
+                    me.rep_proy = usuarios[0].rep_proy;
+                    me.rep_publi = usuarios[0].rep_publi;
 
                     me.rol_id = usuarios[0].rol_id;
 
@@ -1336,6 +1346,8 @@
                     'roles':this.roles,
                         //Reportes
                     'mejora':this.mejora,
+                    'rep_proy':this.rep_proy,
+                    'rep_publi':this.rep_publi,
 
                 }).then(function (response){
                     me.listarPersonal(1,'','nombre');
@@ -1611,6 +1623,8 @@
 
                     //Reportes
                 me.mejora=0;
+                me.rep_proy = 0;
+                me.rep_publi = 0;
 
                 me.rol_id =0;
 

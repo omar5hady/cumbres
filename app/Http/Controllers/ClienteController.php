@@ -20,6 +20,8 @@ class ClienteController extends Controller
     public function index(Request $request)
     {
         if (!$request->ajax()) return redirect('/');
+        setlocale(LC_TIME, 'es_MX.utf8');
+        $hoy = Carbon::today()->toDateString();
  
         $buscar = $request->buscar;
         $criterio = $request->criterio;
@@ -1187,6 +1189,19 @@ class ClienteController extends Controller
                 }
 
             }
+        }
+
+        foreach($personas as $index => $persona){
+            $ultimoCom = Cliente_observacion::select('created_at')->where('cliente_id','=',$persona->id)->orderBy('id','desc')->get();
+            if(sizeof($ultimoCom)){
+                $date = Carbon::parse($ultimoCom[0]->created_at);
+                $now = Carbon::now();
+                $persona->diferencia = $date->diffInDays($now);
+            }
+            else{
+                $persona->diferencia = 16;
+            }
+            
         }
          
  
@@ -4094,11 +4109,12 @@ class ClienteController extends Controller
                 
                 $sheet->row(1, [
                     'Nombre', 'Celular','Telefono' ,'Email', 'RFC', 'IMSS', 'CURP',
-                    'Proyecto de interes','Clasificación','Vendedor','Medio Publicitario','Ultimo Comentario'
+                    'Proyecto de interes','Clasificación','Vendedor','Medio Publicitario','Ultimo Comentario',
+                    'Fecha de alta'
                 ]);
 
 
-                $sheet->cells('A1:L1', function ($cells) {
+                $sheet->cells('A1:M1', function ($cells) {
                     $cells->setBackground('#052154');
                     $cells->setFontColor('#ffffff');
                     // Set font family
@@ -4174,10 +4190,11 @@ class ClienteController extends Controller
                         $clasificacion,
                         $persona->v_completo,
                         $persona->publicidad,
-                        $persona->observacion
+                        $persona->observacion,
+                        $persona->created_at
                     ]);	
                 }
-                $num='A1:L' . $cont;
+                $num='A1:M' . $cont;
                 $sheet->setBorder($num, 'thin');
             });
         }
