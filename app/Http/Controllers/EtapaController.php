@@ -11,6 +11,7 @@ use File;
 use App\Contrato;
 use App\Sobreprecio;
 use App\Modelo;
+use Excel;
 use Auth;
 
 class EtapaController extends Controller
@@ -89,6 +90,109 @@ class EtapaController extends Controller
             ],
             'etapas' => $etapas
         ];
+    }
+
+    public function indexExcel(Request $request)
+    {
+        //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
+
+        $buscar = $request->buscar;
+        $buscar2 = $request->buscar2;
+        $criterio = $request->criterio;
+        
+        if($buscar==''){
+            $etapas = Etapa::join('personal','etapas.personal_id','=','personal.id')
+                ->join('fraccionamientos','etapas.fraccionamiento_id','=','fraccionamientos.id')
+                ->select('etapas.num_etapa','etapas.f_ini',
+                    'etapas.f_fin','etapas.id','etapas.personal_id', 
+                    DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS name"),
+                    'etapas.fraccionamiento_id','fraccionamientos.nombre as fraccionamiento','etapas.archivo_reglamento',
+                    'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento','etapas.plantilla_telecom','etapas.empresas_telecom',
+                    'etapas.empresas_telecom_satelital','etapas.num_cuenta_admin','etapas.clabe_admin','etapas.sucursal_admin',
+                    'etapas.titular_admin','etapas.banco_admin','etapas.carta_bienvenida')
+                    ->where('etapas.num_etapa','!=','Sin Asignar')
+                    ->orderBy('fraccionamientos.nombre','asc')
+                    ->orderBy('etapas.num_etapa','asc')->paginate(8);
+        }
+        else{
+            if($criterio == 'f_ini' || $criterio == 'f_fin')
+            {
+                $etapas = Etapa::join('personal','etapas.personal_id','=','personal.id')
+                    ->join('fraccionamientos','etapas.fraccionamiento_id','=','fraccionamientos.id')
+                    ->select('etapas.num_etapa','etapas.f_ini',
+                        'etapas.f_fin','etapas.id','etapas.personal_id', 
+                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS name"),
+                        'etapas.fraccionamiento_id','fraccionamientos.nombre as fraccionamiento','etapas.archivo_reglamento',
+                        'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento','etapas.plantilla_telecom','etapas.empresas_telecom',
+                        'etapas.empresas_telecom_satelital','etapas.num_cuenta_admin','etapas.clabe_admin','etapas.sucursal_admin',
+                        'etapas.titular_admin','etapas.banco_admin','etapas.carta_bienvenida')
+                        ->whereBetween($criterio, [$buscar,$buscar2])
+                        ->where('etapas.num_etapa','!=','Sin Asignar')
+                        ->orderBy('fraccionamientos.nombre','asc')
+                        ->orderBy('etapas.num_etapa','asc')->paginate(8);
+            }
+            else{
+                $etapas = Etapa::join('personal','etapas.personal_id','=','personal.id')
+                    ->join('fraccionamientos','etapas.fraccionamiento_id','=','fraccionamientos.id')
+                    ->select('etapas.num_etapa','etapas.f_ini',
+                        'etapas.f_fin','etapas.id','etapas.personal_id', 
+                        DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS name"),
+                        'etapas.fraccionamiento_id','fraccionamientos.nombre as fraccionamiento','etapas.archivo_reglamento',
+                        'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento','etapas.plantilla_telecom','etapas.empresas_telecom',
+                        'etapas.empresas_telecom_satelital','etapas.num_cuenta_admin','etapas.clabe_admin','etapas.sucursal_admin',
+                        'etapas.titular_admin','etapas.banco_admin','etapas.carta_bienvenida')
+                        ->where($criterio, 'like', '%'. $buscar . '%')
+                        ->where('etapas.num_etapa','!=','Sin Asignar')
+                        ->orderBy('fraccionamientos.nombre','asc')
+                        ->orderBy('etapas.num_etapa','asc')->paginate(8);
+            }
+            
+        }
+
+        return Excel::create('Etapas', function($excel) use ($etapas){
+            $excel->sheet('Etapas', function($sheet) use ($etapas){
+                
+                $sheet->row(1, [
+                    'Fraccionamiento','Etapa','Fecha de inicio','Fecha de termino','Encargado'
+                ]);
+
+                $sheet->cells('A1:E1', function ($cells) {
+                    $cells->setBackground('#052154');
+                    $cells->setFontColor('#ffffff');
+                    // Set font family
+                    $cells->setFontFamily('Calibri');
+
+                    // Set font size
+                    $cells->setFontSize(13);
+
+                    // Set font weight to bold
+                    $cells->setFontWeight('bold');
+                    $cells->setAlignment('center');
+                });
+                $cont=1;
+
+                foreach($etapas as $index => $etapa) {
+                    $cont++;
+
+                    if($etapa->tipo_etapa == 1) $etapa->tipo_etapa = 'Lotificación';
+                    elseif($etapa->tipo_etapa == 2) $etapa->tipo_etapa = 'Departamento';
+                    else $etapa->tipo_etapa = 'Terreno';
+                         
+
+                    $sheet->row($index+2, [
+                        $etapa->fraccionamiento, 
+                        $etapa->num_etapa,
+                        $etapa->f_ini,
+                        $etapa->f_fin,
+                        $etapa->name
+
+                    ]);	
+                }
+                $num='A1:E' . $cont;
+                $sheet->setBorder($num, 'thin');
+            });
+            }
+        )->download('xls');
     }
 
     /**

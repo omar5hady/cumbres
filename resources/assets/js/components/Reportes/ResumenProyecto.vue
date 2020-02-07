@@ -78,7 +78,14 @@
                                            <th v-text="'$'+formatNumber(credito)"></th>
                                        </tr>
                                        <tr>
-                                           <th>Total Saldo</th>
+                                           <th colspan="2"></th>
+                                       </tr>
+                                       <tr>
+                                           <th>Monto cobrado</th>
+                                           <th v-text="'$'+formatNumber(monto_cobrado)"></th>
+                                       </tr>
+                                       <tr>
+                                           <th>Saldo por cobrar</th>
                                            <th v-text="'$'+formatNumber(saldo)"></th>
                                        </tr>
                                    </table>
@@ -164,6 +171,7 @@
                 enganche:0,
                 credito:0,
                 saldo:0,
+                monto_cobrado:0,
                 lotes:0,
                 disponibles:0,
                 vendidas:0,
@@ -219,6 +227,8 @@
                     me.enganche = respuesta.sumas[0].enganche;
                     me.credito = respuesta.sumas[0].credito_netoSum;
                     me.saldo = respuesta.sumas[0].totSaldo;
+
+                    me.monto_cobrado = me.precio_venta - me.saldo;
                     me.mostrar = 1;
                 })
                 .catch(function (error) {

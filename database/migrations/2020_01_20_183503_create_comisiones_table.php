@@ -21,8 +21,11 @@ class CreateComisionesTable extends Migration
             $table->double('bono')->default(0);
             $table->double('aPagar')->default(0);
             $table->integer('num_ventas');
+            $table->integer('num_individualizadas')->default(0);
             $table->integer('num_cancelaciones')->default(0);
             $table->double('cobrado')->default(0);
+            $table->double('totalAnticipo')->default(0);
+            $table->double('acumulado')->default(0);
             $table->unsignedInteger('asesor_id');
             $table->foreign('asesor_id')->references('id')->on('vendedores');
         

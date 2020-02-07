@@ -22,10 +22,18 @@
                                     <!--Criterios para el listado de busqueda -->
                                     <select class="form-control col-md-4" v-model="criterio">
                                         <option value="paquetes.nombre">Paquete</option>
-                                        <option value="fraccionamientos.nombre">Proyecto</option>
-                                        <option value="etapas.num_etapa">Etapa</option>
+                                        <option value="fraccionamientos.id">Proyecto</option>
                                     </select>
-                                    <input type="text" v-model="buscar" @keyup.enter="listarPaquetes(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
+                                    <select class="form-control" v-if="criterio=='fraccionamientos.id'" v-model="buscar" @click="selectEtapa(buscar), buscar2=''">
+                                        <option value="">Seleccione</option>
+                                        <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                                    </select>
+
+                                    <select class="form-control" v-if="criterio=='fraccionamientos.id'" v-model="buscar2" @keyup.enter="listarPromociones(1,buscar,buscar2,criterio)"> 
+                                        <option value="">Etapa</option>
+                                        <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
+                                    </select>
+                                    <input v-else type="text" v-model="buscar" @keyup.enter="listarPaquetes(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
                                     <button type="submit" @click="listarPaquetes(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                 </div>
                             </div>
@@ -220,7 +228,8 @@
                 },
                 offset : 3,
                 criterio : 'paquetes.nombre', 
-                buscar : ''
+                buscar : '',
+                buscar2: ''
             }
         },
         computed:{
@@ -255,7 +264,7 @@
             /**Metodo para mostrar los registros */
             listarPaquetes(page, buscar, criterio){
                 let me = this;
-                var url = '/paquete?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
+                var url = '/paquete?page=' + page + '&buscar=' + buscar + '&buscar2=' + me.buscar2 + '&criterio=' + criterio;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayPaquete = respuesta.paquetes.data;
@@ -384,6 +393,7 @@
             },
              selectFraccionamientos(){
                 let me = this;
+                me.buscar2 = '';
 
                 me.arrayFraccionamientos=[];
                 var url = '/select_fraccionamiento';
@@ -493,6 +503,7 @@
         },
         mounted() {
             this.listarPaquetes(1,this.buscar,this.criterio);
+            this.selectFraccionamientos();
         }
     }
 </script>

@@ -13,6 +13,7 @@
                         <button type="button" @click="abrirModal('etapa','registrar')" class="btn btn-secondary">
                             <i class="icon-plus"></i>&nbsp;Nuevo
                         </button>
+                        <a :href="'/etapa/excel?buscar=' + buscar + '&buscar2=' + buscar2 + '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel </a>
                         <!---->
                     </div>
                     <div class="card-body">
@@ -40,7 +41,7 @@
                                     <tr>
                                         <th>Opciones</th>
                                         <th>Fraccionamiento</th>
-                                        <th>Numero de etapa</th>
+                                        <th>Etapa</th>
                                         <th>Fecha de inicio </th>
                                         <th>Fecha de termino</th>
                                         <th>Encargado</th>

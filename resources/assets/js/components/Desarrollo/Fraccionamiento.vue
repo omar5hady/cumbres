@@ -13,6 +13,7 @@
                         <button type="button" @click="abrirModal('fraccionamiento','registrar')" class="btn btn-secondary">
                             <i class="icon-plus"></i>&nbsp;Nuevo
                         </button>
+                        <a :href="'/fraccionamiento/excel?buscar=' + buscar + '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel </a>
                         <!---->
                     </div>
                     <div class="card-body">

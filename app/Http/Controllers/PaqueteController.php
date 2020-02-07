@@ -22,6 +22,7 @@ class PaqueteController extends Controller
         if(!$request->ajax())return redirect('/');
 
         $buscar = $request->buscar;
+        $buscar2 = $request->buscar2;
         $current = Carbon::today()->format('ymd');
         $criterio = $request->criterio;
         
@@ -38,6 +39,18 @@ class PaqueteController extends Controller
                 //->where('paquetes.v_fin', '>', $current)
                 ->paginate(20);
         }
+        elseif($buscar != '' && $buscar2 == ''){
+            $paquetes = Paquete::join('fraccionamientos','paquetes.fraccionamiento_id','=','fraccionamientos.id')
+            ->join('etapas','paquetes.etapa_id','=','etapas.id')
+            ->select('etapas.num_etapa as etapa','fraccionamientos.nombre as fraccionamiento','paquetes.id',
+            'paquetes.fraccionamiento_id','paquetes.etapa_id','paquetes.nombre','paquetes.v_ini',
+            'paquetes.v_fin','paquetes.costo','paquetes.descripcion'
+            ,DB::raw('(CASE WHEN paquetes.v_fin > ' . $current . ' THEN 1 ELSE 0 END) AS is_active'))
+                ->orderBy('fraccionamientos.nombre','asc')
+                ->orderBy('etapas.num_etapa','asc')
+                ->orderBy('paquetes.nombre','asc')
+                ->where($criterio, '=', $buscar)->paginate(20);
+        }
         else{
             $paquetes = Paquete::join('fraccionamientos','paquetes.fraccionamiento_id','=','fraccionamientos.id')
             ->join('etapas','paquetes.etapa_id','=','etapas.id')
@@ -48,7 +61,8 @@ class PaqueteController extends Controller
                 ->orderBy('fraccionamientos.nombre','asc')
                 ->orderBy('etapas.num_etapa','asc')
                 ->orderBy('paquetes.nombre','asc')
-                ->where($criterio, 'like', '%'. $buscar . '%')->paginate(20);
+                ->where($criterio, '=', $buscar)
+                ->where('etapas.id', '=', $buscar2)->paginate(20);
         }
 
 

@@ -518,7 +518,7 @@
                                 </li>
 
                                 <li @click="menu=229" class="nav-item">
-                                    <a class="nav-link" href="#"><i class="icon-calculator"></i> Anticipos</a>
+                                    <a class="nav-link" href="#"><i class="icon-calculator"></i> Bonos</a>
                                 </li>
                             </ul>
                         </li>

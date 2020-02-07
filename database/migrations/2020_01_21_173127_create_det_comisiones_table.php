@@ -23,6 +23,8 @@ class CreateDetComisionesTable extends Migration
             $table->float('comisionReal')->default(0);
             $table->float('extra')->default(0);
             $table->double('total')->nullable();
+            $table->double('bono')->nullable();
+            $table->date('fecha_bono')->nullable();
             $table->double('anticipo')->nullable();
             $table->unsignedInteger('idComision')->nullable();
             $table->foreign('idComision')->references('id')->on('comisiones');

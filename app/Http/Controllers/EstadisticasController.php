@@ -301,7 +301,7 @@ class EstadisticasController extends Controller
                                 ->where('lotes.fraccionamiento_id','=',$proyecto)
                                 ->where('lotes.etapa_id','=',$etapa)
                                 ->where('contratos.status','=',3)
-                                ->where('i.elegido', '=', 1)->paginate(15);
+                                ->where('i.elegido', '=', 1)->paginate(20);
 
                 $disponibles  = $disponibles + $contratos;
                 $vendidas = $vendidas - $individualizadas - $indiviDirecto;
@@ -395,7 +395,7 @@ class EstadisticasController extends Controller
                                         )
                                 ->where('lotes.fraccionamiento_id','=',$proyecto)
                                 ->where('contratos.status','=',3)
-                                ->where('i.elegido', '=', 1)->paginate(15);
+                                ->where('i.elegido', '=', 1)->paginate(20);
 
                 $disponibles  = $disponibles + $contratos;
                 $vendidas = $vendidas - $individualizadas - $indiviDirecto;

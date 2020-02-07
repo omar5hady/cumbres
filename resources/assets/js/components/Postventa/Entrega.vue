@@ -11,6 +11,7 @@
                         <i class="fa fa-align-justify"></i> Entregas de vivienda
                         &nbsp;&nbsp;<button type="submit" v-if="historial == 0" @click="historial = 1" class="btn btn-success"><i class="fa fa-check"></i> Historial de Entregas</button>
                         &nbsp;&nbsp;<button type="submit" v-if="historial == 1" @click="historial = 0" class="btn btn-default"><i class="fa fa-mail-reply-all"></i> Regresar</button>
+                        <a v-if="historial == 1" :href="'/postventa/excelEntregas?buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel</a>
                     </div>
 
                 <!-------------------  Div contratos pendientes por entregar --------------------->
@@ -266,7 +267,7 @@
                 <!-------------------  Fin Div para Contratos que tienen paquete o promoción  --------------------->
 
 
-                <!-------------------  Div contratos pendientes por entregar --------------------->
+                <!-------------------  Div historial de entregas --------------------->
                     <div class="card-body" v-if="historial == 1">
                         <div class="form-group row">
                             <div class="col-md-8">

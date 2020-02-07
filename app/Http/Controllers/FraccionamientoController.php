@@ -8,6 +8,7 @@ use App\Etapa;
 use App\Modelo;
 use Auth;
 use App\Lote;
+use Excel;
 use File;
 use DB;
 use App\User;
@@ -16,11 +17,7 @@ use Carbon\Carbon;
 
 class FraccionamientoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    
     public function index(Request $request)
     {
         //condicion Ajax que evita ingresar a la vista sin pasar por la opcion correspondiente del menu
@@ -51,22 +48,69 @@ class FraccionamientoController extends Controller
         ];
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+    public function excelIndex(Request $request)
+    {
+
+        $buscar = $request->buscar;
+        $criterio = $request->criterio;
+        
+        if($buscar==''){
+            $fraccionamientos = Fraccionamiento::where('id','!=','1')->orderBy('id','desc')->get();
+        }
+        else{
+            $fraccionamientos = Fraccionamiento::where($criterio, 'like', '%'. $buscar . '%')
+                                                ->where('id','!=','1')
+                                                ->orderBy('id','desc')->get();
+        }
+
+        return Excel::create('Fraccionamientos', function($excel) use ($fraccionamientos){
+            $excel->sheet('Fraccionamientos', function($sheet) use ($fraccionamientos){
+                
+                $sheet->row(1, [
+                    'Fraccionamiento','Tipo de proyecto','Direccion','Colonia','Estado','Delegación'
+                ]);
+
+                $sheet->cells('A1:F1', function ($cells) {
+                    $cells->setBackground('#052154');
+                    $cells->setFontColor('#ffffff');
+                    // Set font family
+                    $cells->setFontFamily('Calibri');
+
+                    // Set font size
+                    $cells->setFontSize(13);
+
+                    // Set font weight to bold
+                    $cells->setFontWeight('bold');
+                    $cells->setAlignment('center');
+                });
+                $cont=1;
+
+                foreach($fraccionamientos as $index => $proyecto) {
+                    $cont++;
+
+                    if($proyecto->tipo_proyecto == 1) $proyecto->tipo_proyecto = 'Lotificación';
+                    elseif($proyecto->tipo_proyecto == 2) $proyecto->tipo_proyecto = 'Departamento';
+                    else $proyecto->tipo_proyecto = 'Terreno';
+                         
+
+                    $sheet->row($index+2, [
+                        $proyecto->nombre, 
+                        $proyecto->tipo_proyecto,
+                        $proyecto->calle,
+                        $proyecto->colonia,
+                        $proyecto->estado,
+                        $proyecto->delegacion
+
+                    ]);	
+                }
+                $num='A1:F' . $cont;
+                $sheet->setBorder($num, 'thin');
+            });
+            }
+        )->download('xls');
+    }
+   
     //funcion para insertar en la tabla
     public function store(Request $request)
     {
@@ -128,35 +172,7 @@ class FraccionamientoController extends Controller
 
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    
     //funcion para actualizar los datos
     public function update(Request $request)
     {
@@ -195,12 +211,6 @@ class FraccionamientoController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');

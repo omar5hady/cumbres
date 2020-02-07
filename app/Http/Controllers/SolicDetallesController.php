@@ -672,6 +672,7 @@ class SolicDetallesController extends Controller
                              ->where('contratos.entregado','=',1)
                              ->where('solic_detalles.fecha_program','!=',NULL)
                              ->where('solic_detalles.contratista_id','=',Auth::user()->id)
+                             ->where('solic_detalles.status','!=',2)
                              ->orderBy('solic_detalles.fecha_program','ASC')
                              ->paginate(10);
                 }else{
@@ -691,6 +692,7 @@ class SolicDetallesController extends Controller
                                             ->where('contratos.entregado','=',1)
                                             ->where('solic_detalles.fecha_program','!=',NULL)
                                             ->where('solic_detalles.contratista_id','=',Auth::user()->id)
+                                            ->where('solic_detalles.status','!=',2)
                                             ->where($criterio,'=',$buscar)
                                             ->where('lotes.etapa_id','=',$b_etapa)
                                             ->where('creditos.manzana','=',$b_manzana)
@@ -711,6 +713,7 @@ class SolicDetallesController extends Controller
                                             ->where('contratos.entregado','=',1)
                                             ->where('solic_detalles.fecha_program','!=',NULL)
                                             ->where('solic_detalles.contratista_id','=',Auth::user()->id)
+                                            ->where('solic_detalles.status','!=',2)
                                             ->where($criterio,'=',$buscar)
                                             ->where('lotes.etapa_id','=',$b_etapa)
                                             ->where('creditos.manzana','=',$b_manzana)
@@ -730,6 +733,7 @@ class SolicDetallesController extends Controller
                                             ->where('contratos.entregado','=',1)
                                             ->where('solic_detalles.fecha_program','!=',NULL)
                                             ->where('solic_detalles.contratista_id','=',Auth::user()->id)
+                                            ->where('solic_detalles.status','!=',2)
                                             ->where($criterio,'=',$buscar)
                                             ->where('lotes.etapa_id','=',$b_etapa)
                                             ->orderBy('solic_detalles.fecha_program','ASC')
@@ -748,6 +752,7 @@ class SolicDetallesController extends Controller
                                             ->where('contratos.entregado','=',1)
                                             ->where('solic_detalles.fecha_program','!=',NULL)
                                             ->where('solic_detalles.contratista_id','=',Auth::user()->id)
+                                            ->where('solic_detalles.status','!=',2)
                                             ->where($criterio,'=',$buscar)
                                             ->orderBy('solic_detalles.fecha_program','ASC')
                                             ->paginate(10);
@@ -765,6 +770,7 @@ class SolicDetallesController extends Controller
                                             ->where('contratos.entregado','=',1)
                                             ->where('solic_detalles.fecha_program','!=',NULL)
                                             ->where('solic_detalles.contratista_id','=',Auth::user()->id)
+                                            ->where('solic_detalles.status','!=',2)
                                             ->where($criterio,'=',$buscar)
                                             ->where('creditos.num_lote','=',$b_lote)
                                             ->orderBy('solic_detalles.fecha_program','ASC')
@@ -783,6 +789,7 @@ class SolicDetallesController extends Controller
                                             ->where('contratos.entregado','=',1)
                                             ->where('solic_detalles.fecha_program','!=',NULL)
                                             ->where('solic_detalles.contratista_id','=',Auth::user()->id)
+                                            ->where('solic_detalles.status','!=',2)
                                             ->where($criterio,'=',$buscar)
                                             ->where('creditos.manzana','=',$b_manzana)
                                             ->orderBy('solic_detalles.fecha_program','ASC')
@@ -804,6 +811,7 @@ class SolicDetallesController extends Controller
                                      ->where('contratos.entregado','=',1)
                                      ->where('solic_detalles.fecha_program','!=',NULL)
                                      ->where('solic_detalles.contratista_id','=',Auth::user()->id)
+                                     ->where('solic_detalles.status','!=',2)
                                      ->where($criterio,'=',$buscar)
                                      ->orderBy('solic_detalles.fecha_program','ASC')
                                      ->paginate(10);

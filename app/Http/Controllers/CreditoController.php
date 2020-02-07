@@ -391,7 +391,7 @@ class CreditoController extends Controller
 
             $personal = Personal::select('email')->where('id','=',$cliente[0]->vendedor_id)->get();
             $correo = $personal[0]->email;
-            Mail::to($correo)->send(new NotificationReceived($msj));
+            //Mail::to($correo)->send(new NotificationReceived($msj));
 
             User::findOrFail($cliente[0]->vendedor_id)->notify(new NotifyAdmin($arregloAceptado));
             

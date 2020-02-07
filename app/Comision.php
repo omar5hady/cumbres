@@ -10,7 +10,7 @@ class Comision extends Model
     protected $primaryKey = 'id'; //Referenciar la llave primaria
     protected $fillable = [
         'mes', 'anio', 'total', 'num_ventas', 'num_cancelaciones',
-        'cobrado','asesor_id','bono','aPagar'
+        'cobrado','asesor_id','bono','aPagar','acumulado','totalAnticipo','num_individualizadas'
     ];
 
     public $timestamps = false;

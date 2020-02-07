@@ -44,7 +44,7 @@
 
             <!----------------- Listado Contratos ------------------------------>
                     <!-- Div Card Body para listar -->
-                     <template v-if="listado == 0">
+                    <template v-if="listado == 0">
                         <div class="card-body"> 
                             <div class="form-group row" v-if="criterio2 == 'creditos.id' || criterio2 == 'personal.nombre'
                                                 || criterio2 == 'v.nombre'">
@@ -54,9 +54,9 @@
                                         <select class="form-control col-md-4" v-model="criterio2" @click="limpiarBusqueda()">
                                             <option value="creditos.id"># Folio</option>
                                             <option value="personal.nombre">Cliente</option>
-                                            <option value="v.nombre">Vendedor</option>
-                                            <option value="creditos.vendedor_id">Vendido por: </option>
-                                            <option value="creditos.fraccionamiento">Proyecto</option>
+                                            <option v-if="rolId!=2" value="v.nombre">Vendedor</option>
+                                            <option v-if="rolId!=2" value="creditos.vendedor_id">Vendido por: </option>
+                                            <option v-if="rolId!=2" value="creditos.fraccionamiento">Proyecto</option>
                                             <option value="contratos.fecha">Fecha</option>
                                             <option value="contratos.fecha_status">Fecha status</option>
                                         </select>
@@ -83,9 +83,9 @@
                                         <select class="form-control col-md-3" v-model="criterio2" @click="limpiarBusqueda()">
                                             <option value="creditos.id"># Folio</option>
                                             <option value="personal.nombre">Cliente</option>
-                                            <option value="v.nombre">Vendedor</option>
-                                            <option value="creditos.vendedor_id">Vendido por: </option>
-                                            <option value="creditos.fraccionamiento">Proyecto</option>
+                                            <option v-if="rolId!=2" value="v.nombre">Vendedor</option>
+                                            <option v-if="rolId!=2" value="creditos.vendedor_id">Vendido por: </option>
+                                            <option v-if="rolId!=2" value="creditos.fraccionamiento">Proyecto</option>
                                             <option value="contratos.fecha">Fecha</option>
                                             <option value="contratos.fecha_status">Fecha status</option>
                                         </select>
@@ -154,13 +154,13 @@
                                         <select class="form-control col-md-4" v-model="criterio2" @click="limpiarBusqueda()">
                                             <option value="creditos.id"># Folio</option>
                                             <option value="personal.nombre">Cliente</option>
-                                            <option value="v.nombre">Vendedor</option>
-                                            <option value="creditos.vendedor_id">Vendido por: </option>
-                                            <option value="creditos.fraccionamiento">Proyecto</option>
+                                            <option v-if="rolId!=2" value="v.nombre">Vendedor</option>
+                                            <option v-if="rolId!=2" value="creditos.vendedor_id">Vendido por: </option>
+                                            <option v-if="rolId!=2" value="creditos.fraccionamiento">Proyecto</option>
                                             <option value="contratos.fecha">Fecha</option>
                                             <option value="contratos.fecha_status">Fecha status</option>
                                         </select>
-                                        <select class="form-control" v-if="criterio2=='creditos.fraccionamiento'"  @click="selectEtapas(buscar2)" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" v-model="buscar2" >
+                                        <select class="form-control" v-if="criterio2=='creditos.fraccionamiento'"  @click="selectEtapas(buscar2), selectModelo(buscar2)" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" v-model="buscar2" >
                                             <option value="">Proyecto</option>
                                             <option v-for="proyecto in arrayFraccionamientos" :key="proyecto.id" :value="proyecto.id" v-text="proyecto.nombre"></option>
                                         </select>
@@ -169,8 +169,6 @@
                                             <option value="">Etapa</option>
                                             <option v-for="etapa in arrayAllEtapas" :key="etapa.id" :value="etapa.id" v-text="etapa.num_etapa"></option>
                                         </select>
-
-                                        
                                     </div>
                                    
                                 </div>
@@ -185,6 +183,16 @@
                                             <option value="">Lote</option>
                                             <option v-for="lotes in arrayAllLotes" :key="lotes.id" :value="lotes.num_lote" v-text="lotes.num_lote"></option>
                                         </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-8">
+                                    <div class="input-group">
+                                        <select class="form-control" v-if="criterio2=='creditos.fraccionamiento'" @click="selectLotesManzana(buscar2,b_etapa2,b_manzana2)" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" v-model="b_modelo" >
+                                            <option value="">Modelo</option>
+                                            <option v-for="modelo in arrayModelos" :key="modelo.id" :value="modelo.id" v-text="modelo.nombre"></option>
+                                        </select>
+
                                         <select class="form-control col-md-4" v-model="b_status">
                                             <option value="">Seleccionar Status</option>
                                             <option value="0">Cancelado</option>
@@ -192,6 +200,22 @@
                                             <option value="2">No firmado</option>
                                             <option value="3">Firmado</option>
                                         </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-8" v-if="buscar2 != ''">
+                                    <div class="input-group">
+                                        <!--Criterios para el listado de busqueda -->
+                                        <label class="form-control col-md-4" disabled>
+                                            Medio publicitario:
+                                        </label>
+
+                                        <select class="form-control" v-if="criterio2=='creditos.fraccionamiento'" @keyup.enter="listarContratos(1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" v-model="b_publicidad" >
+                                            <option value="">Publicidad</option>
+                                            <option v-for="publicidad in arrayMediosPublicidad" :key="publicidad.id" :value="publicidad.id" v-text="publicidad.nombre"></option>
+                                        </select>
+                                        
+                                        
                                     </div>
                                 </div>
 
@@ -220,9 +244,9 @@
                                         <select class="form-control col-md-4" v-model="criterio2" @click="limpiarBusqueda()">
                                             <option value="creditos.id"># Folio</option>
                                             <option value="personal.nombre">Cliente</option>
-                                            <option value="v.nombre">Vendedor</option>
-                                            <option value="creditos.vendedor_id">Vendido por: </option>
-                                            <option value="creditos.fraccionamiento">Proyecto</option>
+                                            <option v-if="rolId!=2" value="v.nombre">Vendedor</option>
+                                            <option v-if="rolId!=2" value="creditos.vendedor_id">Vendido por: </option>
+                                            <option v-if="rolId!=2" value="creditos.fraccionamiento">Proyecto</option>
                                             <option value="contratos.fecha">Fecha</option>
                                             <option value="contratos.fecha_status">Fecha status</option>
                                         </select>
@@ -262,6 +286,7 @@
                                             <th>Precio de venta</th>
                                             <th>Fecha del contrato</th>
                                             <th>Status</th>
+                                            <th>Publicidad</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -290,6 +315,7 @@
                                             <td class="td2" v-if="contrato.status == '3'">
                                                 <span class="badge badge-success">Firmado</span>
                                             </td>
+                                            <td class="td2" v-text="contrato.publicidad"></td>
                                         </tr>                               
                                     </tbody>
                                 </table>
@@ -300,7 +326,7 @@
                                     <li class="page-item" v-if="pagination2.current_page > 1">
                                         <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page - 1,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)">Ant</a>
                                     </li>
-                                    <li class="page-item" v-for="page2 in pagesNumber2" :key="page2" :class="[page2 == isActived ? 'active' : '']">
+                                    <li class="page-item" v-for="page2 in pagesNumber2" :key="page2" :class="[page2 == isActived2 ? 'active' : '']">
                                         <a class="page-link" href="#" @click.prevent="cambiarPagina2(page2,buscar2,buscar3,b_etapa2,b_manzana2,b_lote2,criterio2)" v-text="page2"></a>
                                     </li>
                                     <li class="page-item" v-if="pagination2.current_page < pagination2.last_page">
@@ -313,7 +339,7 @@
 
             <!----------------- Listado de Simulaciones de Credito Aprobadas ------------------------------>
                     <!-- Div Card Body para listar -->
-                     <template v-if="listado == 1 && rolId != 2">
+                    <template v-if="listado == 1 && rolId != 2">
                         <div class="card-body"> 
                             <div class="form-group row">
                                 <div class="col-md-8">
@@ -1829,6 +1855,7 @@
                 arrayFraccionamientos: [],
                 arrayAllEtapas:[],
                 arrayAllManzanas:[],
+                arrayModelos:[],
                 arrayAllLotes:[],
                 arrayEtapas:[],
                 arrayManzanas:[],
@@ -2021,7 +2048,9 @@
                 b_etapa2: '',
                 b_manzana2: '',
                 b_lote2: '',
+                b_modelo: '',
                 b_status:'',
+                b_publicidad:'',
                 b_fecha:'',
                 b_fecha2:'',
                 b_fecha_status: '',
@@ -2164,9 +2193,9 @@
             },
             listarContratos(page, buscar,buscar3, b_etapa, b_manzana,b_lote,criterio){
                 let me = this;
-                var url = '/contratos?page=' + page + '&buscar=' + buscar + '&buscar3=' + buscar3 + 
+                var url = '/contratos?page=' + page + '&buscar=' + buscar + '&buscar3=' + buscar3 + '&b_modelo=' + me.b_modelo + 
                     '&b_etapa=' +b_etapa+ '&b_manzana=' + b_manzana + '&b_lote='+ b_lote + '&b_status='+ me.b_status 
-                    + '&criterio=' + criterio + '&f_ini=' + me.b_fecha + '&f_fin=' + me.b_fecha2;
+                    + '&criterio=' + criterio + '&f_ini=' + me.b_fecha + '&f_fin=' + me.b_fecha2 + '&publicidad=' + me.b_publicidad;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayContratos = respuesta.contratos.data;
@@ -2273,6 +2302,7 @@
                 me.b_etapa2="";
                 me.b_manzana2="";
                 me.b_lote2="";
+                me.b_modelo="";
                 
                 me.arrayAllEtapas=[];
                 var url = '/select_etapa_proyecto?buscar=' + buscar;
@@ -2337,6 +2367,19 @@
                     var respuesta = response.data;
                      me.arrayManzanas = respuesta.lotes_manzanas;
                     
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+            selectModelo(buscar){
+                let me = this;
+              
+                me.arrayModelos=[];
+                var url = '/select_modelo_proyecto?buscar=' + buscar;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayModelos = respuesta.modelos;
                 })
                 .catch(function (error) {
                     console.log(error);

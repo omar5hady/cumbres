@@ -52,7 +52,7 @@
                                     </select>
 
                                     <button type="submit" @click="listarContratos(1, buscar, b_etapa, b_manzana, b_lote, criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
-                                    <a :href="'/credito_devolucion/excel?buscar=' + buscar + '&buscar2=' + buscar2 + '&b_vencidos=' + b_vencidos + '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel</a>
+                                    <a :href="'/credito_devolucion/excel?buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel</a>
                                    
                                 </div>
                             </div>

@@ -82,7 +82,7 @@
                                             <th># Cancelaciones</th>
                                             <th>Bono</th>
                                             <th>Comision</th>
-                                            <th>Cobrado</th>
+                                            <th>Anticipo</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -109,8 +109,8 @@
                                             <td class="td2" v-text="contrato.num_ventas "></td>
                                             <td class="td2" v-text="contrato.num_cancelaciones"></td>
                                             <td class="td2" v-text="'$'+formatNumber(contrato.bono)"></td>
-                                            <td class="td2" v-text="'$'+formatNumber(contrato.aPagar)"></td>
-                                            <td class="td2" v-text="'$'+formatNumber(contrato.cobrado)"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(contrato.total)"></td>
+                                            <td class="td2" v-text="'$'+formatNumber(contrato.totalAnticipo)"></td>
                                         </tr>                               
                                     </tbody>
                                 </table>
@@ -210,166 +210,285 @@
 
                             <div class="form-group row line-separator"></div>
 
-                            <div class="form-group row" v-if="ventas==1 && tipoVendedor == 0">
-                                <div class="col-md-12">
-                                    <table class="table table-bordered table-striped table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th>Folio</th>
-                                                <th>Proyecto</th>
-                                                <th>Etapa</th>
-                                                <th>Manzana</th>
-                                                <th>Lote</th>
-                                                <th>% Avance</th>
-                                                <th>Precio Venta</th>
-                                                <th>% Obtenido</th>
-                                                <th>Comisión</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="venta in arrayVentas" :key="venta.id">
-                                                <td>
-                                                    <span v-if="venta.fecha_exp == null" class="badge2 badge-danger" v-text="venta.id"></span>
-                                                    <span v-else class="badge2 badge-success" v-text="venta.id"></span>
-                                                </td>
-                                                <td>
-                                                    <span v-if="venta.fecha_exp == null" class="badge2 badge-danger" v-text="venta.proyecto"></span>
-                                                    <span v-else class="badge2 badge-success" v-text="venta.proyecto"></span>
-                                                </td>
-                                                <td>
-                                                    <span v-if="venta.fecha_exp == null" class="badge2 badge-danger" v-text="venta.etapa"></span>
-                                                    <span v-else class="badge2 badge-success" v-text="venta.etapa"></span>
-                                                </td>
-                                                <td>
-                                                    <span v-if="venta.fecha_exp == null" class="badge2 badge-danger" v-text="venta.manzana"></span>
-                                                    <span v-else class="badge2 badge-success" v-text="venta.manzana"></span>
-                                                </td>
-                                                <td>
-                                                    <span v-if="venta.fecha_exp == null" class="badge2 badge-danger" v-text="venta.num_lote"></span>
-                                                    <span v-else class="badge2 badge-success" v-text="venta.num_lote"></span>
-                                                </td>
-                                                <td v-text="venta.avance_lote + '%'"></td>
-                                                <td v-text="'$'+formatNumber(venta.precio_venta)"></td>
-                                                <template v-if="numVentas == 1">
-                                                    <td v-if="venta.avance_lote<=90">
-                                                        {{ venta.comisionReal = (venta.extra + (0.80*(venta.porcentaje_exp/100)) ).toFixed(3) }}%
-                                                    </td>
-                                                    <td v-else>
-                                                        {{ venta.comisionReal = (venta.extra + ((venta.porcentaje_exp/100)*1) ).toFixed(3) }}%
-                                                    </td>
-                                                </template>
-                                                <template v-else-if="numVentas == 2">
-                                                    <td v-if="venta.avance_lote<=90">
-                                                        {{venta.comisionReal = (venta.extra + (1.00*(venta.porcentaje_exp/100)) ).toFixed(3)}}%
-                                                    </td>
-                                                    <td v-else>
-                                                        {{venta.comisionReal = (venta.extra + ((venta.porcentaje_exp/100)*1.25) ).toFixed(3)}}%
-                                                    </td>
-                                                </template>
-                                                <template v-else-if="numVentas == 3">
-                                                    <td v-if="venta.avance_lote<=90">
-                                                        {{venta.comisionReal = (venta.extra + (1.30*(venta.porcentaje_exp/100)) ).toFixed(3)}}%
-                                                    </td>
-                                                    <td v-else>
-                                                        {{venta.comisionReal = (venta.extra + ((venta.porcentaje_exp/100)*1.55) ).toFixed(3)}}%
-                                                    </td>
-                                                </template>
-                                                <template v-else-if="numVentas == 4">
-                                                    <td v-if="venta.avance_lote<=90">
-                                                        {{venta.comisionReal = (venta.extra + (1.50*(venta.porcentaje_exp/100)) ).toFixed(3)}}%
-                                                    </td>
-                                                    <td v-else>
-                                                        {{venta.comisionReal = (venta.extra + ((venta.porcentaje_exp/100)*1.75) ).toFixed(3)}}%
-                                                    </td>
-
-                                                </template>
-                                                <template v-else-if="numVentas == 5">
-                                                    <td v-if="venta.avance_lote<=90">
-                                                        {{venta.comisionReal = (venta.extra + (1.70*(venta.porcentaje_exp/100)) ).toFixed(3)}}%
-                                                    </td>
-                                                    <td v-else>
-                                                        {{venta.comisionReal = (venta.extra + ((venta.porcentaje_exp/100)*2.00) ).toFixed(3)}}%
-                                                    </td>
-                                                </template>
-                                                <template v-else-if="numVentas >= 6">
-                                                    <td v-if="venta.avance_lote<=90">
-                                                        {{venta.comisionReal = (venta.extra + (2.00*(venta.porcentaje_exp/100)) ).toFixed(3)}}%
-                                                    </td>
-                                                    <td v-else>
-                                                        {{venta.comisionReal = (venta.extra + ((venta.porcentaje_exp/100)*2.00) ).toFixed(3)}}%
-                                                    </td>
-                                                </template>
-                                                <td v-text="'$'+formatNumber(venta.comision = (venta.precio_venta * (venta.comisionReal/100)))"></td>
-                                            </tr>  
-                                            <tr>
-                                                <td align="right" colspan="8"><strong>Total:</strong></td>
-                                                <td><strong>${{formatNumber(comision = totalComision)}}</strong></td>
-                                            </tr>  
-                                            <tr>
-                                                <td align="right" colspan="8"><strong>Apoyo mensual:</strong></td>
-                                                <td><strong>${{formatNumber(apoyo)}}</strong></td>
-                                            </tr>      
-                                            <tr>
-                                                <td align="right" colspan="8"><strong>Total a pagar:</strong></td>
-                                                <td><strong>${{formatNumber(aPagar = comision - apoyo)}}</strong></td>
-                                            </tr>                      
-                                        </tbody>
-                                    </table>
+                            <!-- VENTAS -->
+                                <div class="form-group row">
+                                    <h6 v-if="ventas==1"  style="font-weight: bold; color: blue;" class="col-md-3">Ventas: {{this.numVentas}}</h6>
                                 </div>
-                            </div>
 
-                            <div class="form-group row" v-else-if="ventas==1 && tipoVendedor == 1">
-                                <div class="col-md-12">
-                                    <table class="table table-bordered table-striped table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th>Folio</th>
-                                                <th>Proyecto</th>
-                                                <th>Etapa</th>
-                                                <th>Manzana</th>
-                                                <th>Lote</th>
-                                                <th>% Avance</th>
-                                                <th>Precio Venta</th>
-                                                <th>% Obtenido</th>
-                                                <th>Comisión</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="venta in arrayVentas" :key="venta.id">
-                                                <td v-text="venta.id"></td>
-                                                <td v-text="venta.proyecto"></td>
-                                                <td v-text="venta.etapa"></td>
-                                                <td v-text="venta.manzana"></td>
-                                                <td v-text="venta.num_lote"></td>
-                                                <td v-text="venta.avance_lote + '%'"></td>
-                                                <td v-text="'$'+formatNumber(venta.precio_venta)"></td>
-                                                <td>
-                                                    {{ venta.comisionReal = (venta.extra_ext + esquema).toFixed(3) }}%
-                                                </td>
-                                                <td v-text="'$'+formatNumber(venta.comision = (venta.precio_venta * (venta.comisionReal/100)))"></td>
-                                            </tr>      
-                                            <tr>
-                                                <td align="right" colspan="8"><strong>Total:</strong></td>
-                                                <td><strong>${{formatNumber(comision = totalComision)}}</strong></td>
-                                            </tr>                       
-                                        </tbody>
-                                    </table>
+                                <div class="form-group row" v-if="ventas==1 && tipoVendedor == 0">
+                                    <div class="col-md-12">
+                                        <table class="table table-bordered table-striped table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>Folio</th>
+                                                    <th>Proyecto</th>
+                                                    <th>Etapa</th>
+                                                    <th>Manzana</th>
+                                                    <th>Lote</th>
+                                                    <th>% Avance</th>
+                                                    <th>Precio Venta</th>
+                                                    <th>% De comisión</th>
+                                                    <th>Comisión a pagar</th>
+                                                    <th>Anticipo</th>
+                                                    <th>Bono</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="venta in arrayVentas" :key="venta.id">
+                                                    <td>
+                                                        <span v-if="venta.fecha_exp == null" class="badge2 badge-danger" v-text="venta.id"></span>
+                                                        <span v-else class="badge2 badge-success" v-text="venta.id"></span>
+                                                    </td>
+                                                    <td>
+                                                        <span v-if="venta.fecha_exp == null" class="badge2 badge-danger" v-text="venta.proyecto"></span>
+                                                        <span v-else class="badge2 badge-success" v-text="venta.proyecto"></span>
+                                                    </td>
+                                                    <td>
+                                                        <span v-if="venta.fecha_exp == null" class="badge2 badge-danger" v-text="venta.etapa"></span>
+                                                        <span v-else class="badge2 badge-success" v-text="venta.etapa"></span>
+                                                    </td>
+                                                    <td>
+                                                        <span v-if="venta.fecha_exp == null" class="badge2 badge-danger" v-text="venta.manzana"></span>
+                                                        <span v-else class="badge2 badge-success" v-text="venta.manzana"></span>
+                                                    </td>
+                                                    <td>
+                                                        <span v-if="venta.fecha_exp == null" class="badge2 badge-danger" v-text="venta.num_lote"></span>
+                                                        <span v-else class="badge2 badge-success" v-text="venta.num_lote"></span>
+                                                    </td>
+                                                    <td v-text="venta.avance_lote + '%'"></td>
+                                                    <td v-text="'$'+formatNumber(venta.precio_venta)"></td>
+                                                    <template v-if="numVentas == 1">
+                                                        <td v-if="venta.avance_lote<=90">
+                                                            {{ venta.comisionReal = (venta.extra + (0.80*(venta.porcentaje_exp/100)) ).toFixed(3) }}%
+                                                        </td>
+                                                        <td v-else>
+                                                            {{ venta.comisionReal = (venta.extra + ((venta.porcentaje_exp/100)*1) ).toFixed(3) }}%
+                                                        </td>
+                                                    </template>
+                                                    <template v-else-if="numVentas == 2">
+                                                        <td v-if="venta.avance_lote<=90">
+                                                            {{venta.comisionReal = (venta.extra + (1.00*(venta.porcentaje_exp/100)) ).toFixed(3)}}%
+                                                        </td>
+                                                        <td v-else>
+                                                            {{venta.comisionReal = (venta.extra + ((venta.porcentaje_exp/100)*1.25) ).toFixed(3)}}%
+                                                        </td>
+                                                    </template>
+                                                    <template v-else-if="numVentas == 3">
+                                                        <td v-if="venta.avance_lote<=90">
+                                                            {{venta.comisionReal = (venta.extra + (1.30*(venta.porcentaje_exp/100)) ).toFixed(3)}}%
+                                                        </td>
+                                                        <td v-else>
+                                                            {{venta.comisionReal = (venta.extra + ((venta.porcentaje_exp/100)*1.55) ).toFixed(3)}}%
+                                                        </td>
+                                                    </template>
+                                                    <template v-else-if="numVentas == 4">
+                                                        <td v-if="venta.avance_lote<=90">
+                                                            {{venta.comisionReal = (venta.extra + (1.50*(venta.porcentaje_exp/100)) ).toFixed(3)}}%
+                                                        </td>
+                                                        <td v-else>
+                                                            {{venta.comisionReal = (venta.extra + ((venta.porcentaje_exp/100)*1.75) ).toFixed(3)}}%
+                                                        </td>
+
+                                                    </template>
+                                                    <template v-else-if="numVentas == 5">
+                                                        <td v-if="venta.avance_lote<=90">
+                                                            {{venta.comisionReal = (venta.extra + (1.70*(venta.porcentaje_exp/100)) ).toFixed(3)}}%
+                                                        </td>
+                                                        <td v-else>
+                                                            {{venta.comisionReal = (venta.extra + ((venta.porcentaje_exp/100)*2.00) ).toFixed(3)}}%
+                                                        </td>
+                                                    </template>
+                                                    <template v-else-if="numVentas >= 6">
+                                                        <td v-if="venta.avance_lote<=90">
+                                                            {{venta.comisionReal = (venta.extra + (2.00*(venta.porcentaje_exp/100)) ).toFixed(3)}}%
+                                                        </td>
+                                                        <td v-else>
+                                                            {{venta.comisionReal = (venta.extra + ((venta.porcentaje_exp/100)*2.00) ).toFixed(3)}}%
+                                                        </td>
+                                                    </template>
+                                                    <td v-text="'$'+formatNumber(venta.comision = (venta.precio_venta * (venta.comisionReal/100)))"></td>
+                                                    <td v-text="'$'+formatNumber(venta.anticipo = (venta.comision / 2))"></td>
+                                                    <td v-text="'$'+formatNumber(venta.bono = bono)"></td>
+                                                </tr>  
+                                                <tr>
+                                                    <td align="right" colspan="8"><strong>Total:</strong></td>
+                                                    <td><strong>${{formatNumber(comision = totalComision)}}</strong></td>
+                                                    <td><strong>${{formatNumber(anticipo = anticipoVentas)}}</strong></td>
+                                                    <td><strong>${{formatNumber(bonoTotal = bonoVentas)}}</strong></td>
+                                                    
+                                                </tr>                     
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
-                            </div>
+
+                                <div class="form-group row" v-else-if="ventas==1 && tipoVendedor == 1">
+                                    <div class="col-md-12">
+                                        <table class="table table-bordered table-striped table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>Folio</th>
+                                                    <th>Proyecto</th>
+                                                    <th>Etapa</th>
+                                                    <th>Manzana</th>
+                                                    <th>Lote</th>
+                                                    <th>% Avance</th>
+                                                    <th>Precio Venta</th>
+                                                    <th>% Obtenido</th>
+                                                    <th>Comisión</th>
+                                                    <th>Anticipo</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="venta in arrayVentas" :key="venta.id">
+                                                    <td v-text="venta.id"></td>
+                                                    <td v-text="venta.proyecto"></td>
+                                                    <td v-text="venta.etapa"></td>
+                                                    <td v-text="venta.manzana"></td>
+                                                    <td v-text="venta.num_lote"></td>
+                                                    <td v-text="venta.avance_lote + '%'"></td>
+                                                    <td v-text="'$'+formatNumber(venta.precio_venta)"></td>
+                                                    <td>
+                                                        {{ venta.comisionReal = (venta.extra_ext + esquema).toFixed(1) }}%
+                                                    </td>
+                                                    <td v-text="'$'+formatNumber(venta.comision = (venta.precio_venta * (venta.comisionReal/100)))"></td>
+                                                    <td v-text="'$'+formatNumber(venta.anticipo = (venta.comision / 2))"></td>
+                                                </tr>      
+                                                <tr>
+                                                    <td align="right" colspan="8"><strong>Total:</strong></td>
+                                                    <td><strong>${{formatNumber(comision = totalComision)}}</strong></td>
+                                                    <td><strong>${{formatNumber(anticipo = anticipoVentas)}}</strong></td>
+                                                </tr>                       
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                            
+                            <!-- Individualizadas -->
+                                <div class="form-group row">
+                                    <h6 v-if="ventas==1 && totalIndividualizadas != 0"  style="font-weight: bold; color: blue;" class="col-md-3">Individualizadas: {{this.numIndivi}}</h6>
+                                </div>
+
+                                <div class="form-group row" v-if="ventas==1 && totalIndividualizadas != 0">
+                                    <div class="col-md-12">
+                                        <table class="table table-bordered table-striped table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>Folio</th>
+                                                    <th>Proyecto</th>
+                                                    <th>Etapa</th>
+                                                    <th>Manzana</th>
+                                                    <th>Lote</th>
+                                                    <th>Fecha de firma</th>
+                                                    <th>$ Restante</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="indiv in arrayIndividualizadas" :key="indiv.folio">
+                                                    <td v-text="indiv.folio"></td>
+                                                    <td v-text="indiv.fraccionamiento"></td>
+                                                    <td v-text="indiv.etapa"></td>
+                                                    <td v-text="indiv.manzana"></td>
+                                                    <td v-text="indiv.num_lote"></td>
+                                                    <td v-text="indiv.fecha_firma_esc"></td>
+                                                    <td v-text="'$'+formatNumber(indiv.anticipo)"></td>
+                                                </tr>      
+                                                <tr>
+                                                    <td align="right" colspan="6"><strong>Total:</strong></td>
+                                                    <td><strong>${{formatNumber(totalIndividualizadas)}}</strong></td>   
+                                                </tr>                       
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                            <div class="form-group row line-separator"  v-if="ventas==1"></div>
+                            
+                            <!-- CANCELACIONES -->
+                                <div class="form-group row">
+                                    <h6 v-if="ventas==1 & totalAnticipo != 0"  style="font-weight: bold; color: blue;" class="col-md-3">Cancelaciones: {{this.numAnticipos}}</h6>
+                                </div>
+
+                                <div class="form-group row" v-if="ventas==1 && totalAnticipo != 0">
+                                    <div class="col-md-12">
+                                        <table class="table table-bordered table-striped table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>Folio</th>
+                                                    <th>Proyecto</th>
+                                                    <th>Etapa</th>
+                                                    <th>Manzana</th>
+                                                    <th>Lote</th>
+                                                    <th>Fecha de cancelación</th>
+                                                    <th>$ Anticipo</th>
+                                                    <th>Bono</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="anticipo in arrayAnticipos" :key="anticipo.folio">
+                                                    <td v-text="anticipo.folio"></td>
+                                                    <td v-text="anticipo.fraccionamiento"></td>
+                                                    <td v-text="anticipo.etapa"></td>
+                                                    <td v-text="anticipo.manzana"></td>
+                                                    <td v-text="anticipo.num_lote"></td>
+                                                    <td v-text="anticipo.fecha_status"></td>
+                                                    <td v-text="'$'+formatNumber(anticipo.anticipo)"></td>
+                                                    <td v-if="anticipo.fecha_bono" v-text="'$'+formatNumber(anticipo.bono)"></td>
+                                                    <td v-else v-text="'$'+formatNumber(0)"></td>
+                                                </tr>      
+                                                <tr>
+                                                    <td align="right" colspan="6"><strong>Total:</strong></td>
+                                                    <td><strong>${{formatNumber(totalAnticipo)}}</strong></td>
+                                                    <td><strong>${{formatNumber(totalBono)}}</strong></td>
+                                                    
+                                                </tr>                       
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
 
                             <div class="form-group row line-separator"  v-if="ventas==1"></div>
 
-                            <div class="form-group row"  v-if="ventas==1">
-                                <label class="col-md-3 form-control-label" for="text-input">Número de ventas: <strong>{{this.numVentas}}</strong></label>
-                                <h6 v-if="ventas==1 && tipoVendedor == 0" style="font-weight: bold;" class="col-md-3">Bono: ${{formatNumber(this.bono)}}</h6>
-                            </div>
+                            <!-- DATOS DE VENTA -->
+
+                                <div class="form-group row"  v-if="ventas==1 && tipoVendedor == 0">
+                                     <div class="col-md-6">
+                                        <h6 style="font-weight: bold;" class="col-md-12">Bono: &nbsp;$ {{formatNumber(this.bonoTotal)}}</h6>
+                                        <h6 style="font-weight: bold;" class="col-md-12">Comisión total:&nbsp; $ {{formatNumber(this.comision)}}</h6>
+                                        <div class="form-group row line-separator"></div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label style="font-weight: bold;" class="col-md-12">+ Anticipo: &nbsp;$ {{formatNumber(this.anticipo)}} </label>
+                                        <label style="font-weight: bold;" class="col-md-12">+ Individualizadas: &nbsp;$ {{formatNumber(this.totalIndividualizadas)}} </label>
+                                        <label v-if="totalAnticipo != 0" style="font-weight: bold;" class="col-md-12">- Cancelaciones: &nbsp;$ {{formatNumber(this.totalAnticipo)}}</label>
+                                        <label v-if="totalBono != 0" style="font-weight: bold;" class="col-md-12">- Bonos cancelados: &nbsp;$ {{formatNumber(this.totalBono)}}</label>
+                                        <label style="font-weight: bold;" class="col-md-12">- Apoyo mensual: &nbsp;$ {{formatNumber(this.apoyo)}}</label>
+                                        <label v-if="restante != 0" style="font-weight: bold;" class="col-md-12">- Restante anterior: &nbsp;$ {{formatNumber(this.restante)}}</label>
+                                        <div class="form-group row line-separator"></div>
+                                        <label style="font-weight: bold; color: blue;" class="col-md-12">= A pagar: &nbsp;$ {{formatNumber( this.aPagar = porPagar)}}</label>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row line-separator"></div>
+
+                                <div class="form-group row"  v-if="ventas==1 && tipoVendedor == 1">
+                                    <div class="col-md-6">
+                                        <h6 style="font-weight: bold;" class="col-md-12">Comisión: &nbsp;$ {{formatNumber(this.comision)}}</h6>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label style="font-weight: bold;" class="col-md-12">+ Anticipo: &nbsp;$ {{formatNumber(this.anticipo)}} </label>
+                                        <label v-if="totalAnticipo != 0" style="font-weight: bold;" class="col-md-12">- Cancelaciones: &nbsp;$ {{formatNumber(this.totalAnticipo)}}</label>
+                                        <label v-if="restante != 0" style="font-weight: bold;" class="col-md-12">- Restante anterior: &nbsp;$ {{formatNumber(this.restante)}}</label>
+                                        <label v-if="ventas==1 && tipoVendedor == 1" style="font-weight: bold; color: blue;" class="col-md-12">= A pagar: &nbsp;$ {{formatNumber(this.aPagar =this.anticipo + this.totalIndividualizadas - this.totalAnticipo - this.restante)}}</label>
+                                    </div>
+                                </div>
+                            
 
                             <!-- Div para mostrar los errores que mande validerPersonal -->
                             <div v-show="errorComision" class="form-group row div-error">
                                 <div class="text-center text-error">
-                                    <div v-for="error in errorMostrarMsjComision" :key="error" v-text="error">
-
-                                    </div>
+                                    <div v-for="error in errorMostrarMsjComision" :key="error" v-text="error"></div>
                                 </div>
                             </div>
                       </form>
@@ -424,72 +543,185 @@
                                 </div>
                             </div>
 
-                            <div class="form-group row">
-                                <div class="col-md-12">
-                                    <table class="table table-bordered table-striped table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th>Folio</th>
-                                                <th>Proyecto</th>
-                                                <th>Etapa</th>
-                                                <th>Manzana</th>
-                                                <th>Lote</th>
-                                                <th>% Avance</th>
-                                                <th>Precio Venta</th>
-                                                <th>% Obtenido</th>
-                                                <th>Comisión</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="venta in arrayDetalle" :key="venta.id">
-                                                <td>
-                                                    <span v-if="venta.fecha_exp == null" class="badge2 badge-danger" v-text="venta.id"></span>
-                                                    <span v-else class="badge2 badge-success" v-text="venta.id"></span>
-                                                </td>
-                                                <td>
-                                                    <span v-if="venta.fecha_exp == null" class="badge2 badge-danger" v-text="venta.fraccionamiento"></span>
-                                                    <span v-else class="badge2 badge-success" v-text="venta.fraccionamiento"></span>
-                                                </td>
-                                                <td>
-                                                    <span v-if="venta.fecha_exp == null" class="badge2 badge-danger" v-text="venta.etapa"></span>
-                                                    <span v-else class="badge2 badge-success" v-text="venta.etapa"></span>
-                                                </td>
-                                                <td>
-                                                    <span v-if="venta.fecha_exp == null" class="badge2 badge-danger" v-text="venta.manzana"></span>
-                                                    <span v-else class="badge2 badge-success" v-text="venta.manzana"></span>
-                                                </td>
-                                                <td>
-                                                    <span v-if="venta.fecha_exp == null" class="badge2 badge-danger" v-text="venta.num_lote"></span>
-                                                    <span v-else class="badge2 badge-success" v-text="venta.num_lote"></span>
-                                                </td>
-                                                <td v-text="venta.avance_lote + '%'"></td>
-                                                <td v-text="'$'+formatNumber(venta.precio_venta)"></td>
-                                                <td v-text="venta.comisionReal + '%'"></td>
-                                                <td v-text="'$'+formatNumber(venta.total)"></td>
-                                            </tr> 
-                                            <tr v-if="tipoVendedor == 0">
-                                                <td align="right" colspan="8"><strong>Total:</strong></td>
-                                                <td><strong>${{formatNumber(comision)}}</strong></td>
-                                            </tr>  
-                                            <tr v-if="tipoVendedor == 0">
-                                                <td align="right" colspan="8"><strong>Apoyo mensual:</strong></td>
-                                                <td><strong>${{formatNumber(10500)}}</strong></td>
-                                            </tr>      
-                                            <tr>
-                                                <td align="right" colspan="8"><strong>Total a pagar:</strong></td>
-                                                <td><strong>${{formatNumber(aPagar)}}</strong></td>
-                                            </tr>                                                               
-                                        </tbody>
-                                    </table>
+                            
+                            <!-- VENTAS -->
+                                <div class="form-group row">
+                                    <h6  style="font-weight: bold; color: blue;" class="col-md-3">Ventas: {{this.numVentas}}</h6>
                                 </div>
-                            </div>
+
+                                <div class="form-group row">
+                                    <div class="col-md-12">
+                                        <table class="table table-bordered table-striped table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>Folio</th>
+                                                    <th>Proyecto</th>
+                                                    <th>Etapa</th>
+                                                    <th>Manzana</th>
+                                                    <th>Lote</th>
+                                                    <th>% Avance</th>
+                                                    <th>Precio Venta</th>
+                                                    <th>% Obtenido</th>
+                                                    <th>Comisión</th>
+                                                    <th>Anticipo</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="venta in arrayDetalle" :key="venta.id">
+                                                    <td>
+                                                        <span v-if="venta.fecha_exp == null" class="badge2 badge-danger" v-text="venta.id"></span>
+                                                        <span v-else class="badge2 badge-success" v-text="venta.id"></span>
+                                                    </td>
+                                                    <td>
+                                                        <span v-if="venta.fecha_exp == null" class="badge2 badge-danger" v-text="venta.fraccionamiento"></span>
+                                                        <span v-else class="badge2 badge-success" v-text="venta.fraccionamiento"></span>
+                                                    </td>
+                                                    <td>
+                                                        <span v-if="venta.fecha_exp == null" class="badge2 badge-danger" v-text="venta.etapa"></span>
+                                                        <span v-else class="badge2 badge-success" v-text="venta.etapa"></span>
+                                                    </td>
+                                                    <td>
+                                                        <span v-if="venta.fecha_exp == null" class="badge2 badge-danger" v-text="venta.manzana"></span>
+                                                        <span v-else class="badge2 badge-success" v-text="venta.manzana"></span>
+                                                    </td>
+                                                    <td>
+                                                        <span v-if="venta.fecha_exp == null" class="badge2 badge-danger" v-text="venta.num_lote"></span>
+                                                        <span v-else class="badge2 badge-success" v-text="venta.num_lote"></span>
+                                                    </td>
+                                                    <td v-text="venta.avance_lote + '%'"></td>
+                                                    <td v-text="'$'+formatNumber(venta.precio_venta)"></td>
+                                                    <td v-text="venta.comisionReal + '%'"></td>
+                                                    <td v-text="'$'+formatNumber(venta.total)"></td>
+                                                    <td v-text="'$'+formatNumber(venta.anticipo)"></td>
+                                                </tr> 
+                                                <tr>
+                                                    <td align="right" colspan="8"><strong>Total:</strong></td>
+                                                    <td><strong>${{formatNumber(comisionMes)}}</strong></td>
+                                                    <td><strong>${{formatNumber(anticipoMes)}}</strong></td>
+                                                </tr>                                             
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                            <!-- Individualizadas -->
+                                <div class="form-group row">
+                                    <h6 v-if="totalIndividualizadas != 0"  style="font-weight: bold; color: blue;" class="col-md-3">Individualizadas: {{this.numIndivi}}</h6>
+                                </div>
+
+                                <div class="form-group row" v-if="totalIndividualizadas != 0">
+                                    <div class="col-md-12">
+                                        <table class="table table-bordered table-striped table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>Folio</th>
+                                                    <th>Proyecto</th>
+                                                    <th>Etapa</th>
+                                                    <th>Manzana</th>
+                                                    <th>Lote</th>
+                                                    <th>Fecha de firma</th>
+                                                    <th>$ Restante</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="indiv in arrayIndividualizadas" :key="indiv.folio">
+                                                    <td v-text="indiv.folio"></td>
+                                                    <td v-text="indiv.fraccionamiento"></td>
+                                                    <td v-text="indiv.etapa"></td>
+                                                    <td v-text="indiv.manzana"></td>
+                                                    <td v-text="indiv.num_lote"></td>
+                                                    <td v-text="indiv.fecha_firma_esc"></td>
+                                                    <td v-text="'$'+formatNumber(indiv.anticipo)"></td>
+                                                </tr>      
+                                                <tr>
+                                                    <td align="right" colspan="6"><strong>Total:</strong></td>
+                                                    <td><strong>${{formatNumber(totalIndividualizadas)}}</strong></td>   
+                                                </tr>                       
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                            <div class="form-group row line-separator"></div>
+                            
+                            <!-- CANCELACIONES -->
+                                <div class="form-group row">
+                                    <h6 v-if="totalAnticipo != 0"  style="font-weight: bold; color: blue;" class="col-md-3">Cancelaciones: {{this.numAnticipos}}</h6>
+                                </div>
+
+                                <div class="form-group row" v-if="totalAnticipo != 0">
+                                    <div class="col-md-12">
+                                        <table class="table table-bordered table-striped table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>Folio</th>
+                                                    <th>Proyecto</th>
+                                                    <th>Etapa</th>
+                                                    <th>Manzana</th>
+                                                    <th>Lote</th>
+                                                    <th>Fecha de cancelación</th>
+                                                    <th>$ Anticipo</th>
+                                                    <th>Bono</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="anticipo in arrayAnticipos" :key="anticipo.folio">
+                                                    <td v-text="anticipo.folio"></td>
+                                                    <td v-text="anticipo.fraccionamiento"></td>
+                                                    <td v-text="anticipo.etapa"></td>
+                                                    <td v-text="anticipo.manzana"></td>
+                                                    <td v-text="anticipo.num_lote"></td>
+                                                    <td v-text="anticipo.fecha_status"></td>
+                                                    <td v-text="'$'+formatNumber(anticipo.anticipo)"></td>
+                                                    <td v-if="anticipo.fecha_bono" v-text="'$'+formatNumber(anticipo.bono)"></td>
+                                                    <td v-else v-text="'$'+formatNumber(0)"></td>
+                                                </tr>      
+                                                <tr>
+                                                    <td align="right" colspan="6"><strong>Total:</strong></td>
+                                                    <td><strong>${{formatNumber(totalAnticipo)}}</strong></td>
+                                                    <td><strong>${{formatNumber(totalBono)}}</strong></td>
+                                                    
+                                                </tr>                       
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
 
                             <div class="form-group row line-separator"></div>
 
-                            <div class="form-group row">
-                                <label class="col-md-3 form-control-label" for="text-input">Número de ventas: <strong>{{this.numVentas}}</strong></label>
-                                <h6 v-if="tipoVendedor == 0" style="font-weight: bold;" class="col-md-3">Bono: ${{formatNumber(this.bono)}}</h6>
-                            </div>
+                            <!-- DATOS DE VENTA -->
+
+                                <div class="form-group row"  v-if="tipoVendedor == 0">
+                                     <div class="col-md-6">
+                                        <h6 style="font-weight: bold;" class="col-md-12">Comisión total:&nbsp; $ {{formatNumber(this.comisionMes)}}</h6>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label style="font-weight: bold;" class="col-md-12">+ Anticipo: &nbsp;$ {{formatNumber(this.anticipoMes)}} </label>
+                                        <label style="font-weight: bold;" class="col-md-12">+ Individualizadas: &nbsp;$ {{formatNumber(this.totalIndividualizadas)}} </label>
+                                        <label v-if="totalAnticipo != 0" style="font-weight: bold;" class="col-md-12">- Cancelaciones: &nbsp;$ {{formatNumber(this.totalAnticipo)}}</label>
+                                        <label v-if="totalBono != 0" style="font-weight: bold;" class="col-md-12">- Bonos cancelados: &nbsp;$ {{formatNumber(this.totalBono)}}</label>
+                                        <label style="font-weight: bold;" class="col-md-12">- Apoyo mensual: &nbsp;$ {{formatNumber(this.apoyo)}}</label>
+                                        <label v-if="restante != 0" style="font-weight: bold;" class="col-md-12">- Restante anterior: &nbsp;$ {{formatNumber(this.restante)}}</label>
+                                        <div class="form-group row line-separator"></div>
+                                        <label v-if="modal1 ==1 && tipoVendedor == 0" style="font-weight: bold; color: blue;" class="col-md-12">= A pagar: &nbsp;$ {{formatNumber( this.aPagar = porPagar2)}}</label>
+                                    </div>
+                                    
+                                </div>
+
+                                <div class="form-group row line-separator"></div>
+
+                                <div class="form-group row"  v-if="tipoVendedor == 1">
+                                    <div class="col-md-6">
+                                        <h6 style="font-weight: bold;" class="col-md-12">Comisión: &nbsp;$ {{formatNumber(this.comisionMes)}}</h6>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label style="font-weight: bold;" class="col-md-12">+ Anticipo: &nbsp;$ {{formatNumber(this.anticipo)}} </label>
+                                        <label v-if="totalAnticipo != 0" style="font-weight: bold;" class="col-md-12">- Cancelaciones: &nbsp;$ {{formatNumber(this.totalAnticipo)}}</label>
+                                        <label v-if="restante != 0" style="font-weight: bold;" class="col-md-12">- Restante anterior: &nbsp;$ {{formatNumber(this.restante)}}</label>
+                                        <label v-if="modal1 ==1 && tipoVendedor == 1" style="font-weight: bold; color: blue;" class="col-md-12">= A pagar: &nbsp;$ {{formatNumber(this.aPagar =this.anticipo + this.totalIndividualizadas - this.totalAnticipo - this.restante)}}</label>
+                                    </div>
+                                </div>
+                            
 
                         </div>
                         <!-- Botones del modal -->
@@ -525,16 +757,28 @@
                 arrayAsesores:[], 
                 arrayVentas:[],
                 arrayDetalle:[],
+                arrayAnticipos:[],
+                arrayIndividualizadas:[],
+                totalAnticipo:0,
+                totalIndividualizadas:0,
+                totalBono:0,
                 numVentas:'', 
+                numIndivi:'', 
+                numAnticipos:'', 
                 ventas:0,
                 bono:0,
+                bonoTotal:0,
                 numPasadas:0,
                 numQuincena:0,
                 tipoVendedor:0,
                 esquema:2,
+                restante:0,
                 apoyo:0,
                 aPagar:0,
                 comision:0,
+                anticipo:0,
+                comisionMes:0,
+                anticipoMes:0,
                 
                 pagination2 : {
                     'total' : 0,         
@@ -602,6 +846,49 @@
                 totalComision = Math.round(totalComision*100)/100;
                 return totalComision;
             },
+
+            anticipoVentas: function(){
+                var anticipoVentas =0.0;
+                for(var i=0;i<this.arrayVentas.length;i++){
+                    anticipoVentas += parseFloat(this.arrayVentas[i].anticipo)
+                }
+                if(anticipoVentas < 0)
+                    anticipoVentas = 0;
+                anticipoVentas = Math.round(anticipoVentas*100)/100;
+                return anticipoVentas;
+            },
+
+            bonoVentas: function(){
+                var bonoVentas =0.0;
+                for(var i=0;i<this.arrayVentas.length;i++){
+                    bonoVentas += parseFloat(this.arrayVentas[i].bono)
+                }
+                if(bonoVentas < 0)
+                    bonoVentas = 0;
+                bonoVentas = Math.round(bonoVentas*100)/100;
+                return bonoVentas;
+            },
+
+            porPagar: function(){
+                var porPagar =0.0;
+                porPagar = this.anticipo + this.totalIndividualizadas;
+                porPagar -= this.totalAnticipo;
+                porPagar -= this.totalBono;
+                porPagar -= this.apoyo;
+                porPagar -=  this.restante;
+                return porPagar;
+            },
+
+            porPagar2: function(){
+                var porPagar =0.0;
+                porPagar = this.anticipoMes + this.totalIndividualizadas;
+                porPagar -= this.totalAnticipo;
+                porPagar -= this.totalBono;
+                porPagar -= this.apoyo;
+                porPagar -=  this.restante;
+                return porPagar;
+            },
+            
            
         },
        
@@ -629,18 +916,31 @@
                     me.esquema = respuesta.esquema;
                     me.tipoVendedor = respuesta.tipo;
                     me.numVentas = respuesta.numVentas;
+                    me.numAnticipos = respuesta.numAnticipos;
+                    me.numIndivi = respuesta.numIndivi;
                     me.numPasadas = respuesta.pasada;
                     me.numQuincena = respuesta.quincena;
+                    me.arrayAnticipos = respuesta.anticiposCan;
+                    me.arrayIndividualizadas = respuesta.individualizadas;
+                    me.totalAnticipo = respuesta.totalAnticipo;
+                    me.totalIndividualizadas = respuesta.totalIndividualizadas;
+                    me.totalBono = respuesta.totalBono;
                     me.bono = 0;
                     me.apoyo = 0;
+                    me.aPagar = 0;
+                    me.restante = respuesta.restante;
 
                     if(me.tipoVendedor == 0){
                         me.apoyo = 10500;
                         if(me.numVentas>=3 && me.numPasadas>=2 && me.numQuincena>=1){
-                            me.bono = me.numVentas*2000;
+                            me.bono =2000;
                         }
                         else{
-                            me.bono = me.numVentas*1000;
+                            me.bono = 1000;
+                        }
+
+                        if(me.num_ventas == 0){
+                            me.bono = 0;
                         }
                     }
                     
@@ -664,12 +964,14 @@
                     'anio': this.anio,
                     'total': this.comision,
                     'num_ventas': this.numVentas,
-                    'bono': this.bono,
+                    'num_individualizadas': this.numIndivi,
+                    'num_cancelaciones': this.numAnticipos,
+                    'bono': this.bonoTotal,
+                    'anticipo' : this.anticipo,
                     'asesor_id': this.asesor_id,
                     'data':this.arrayVentas,
                     'aPagar':this.aPagar,
                     'tipoVendedor' : this.tipoVendedor,
-                    
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal(); //al guardar el registro se cierra el modal
@@ -712,12 +1014,21 @@
               
             },  
 
-            detalleComision(id){
+            detalleComision(id, mes, anio){
                 let me = this;
-                var url = '/comision/detalleComision?id=' + id;
+                var url = '/comision/detalleComision?id=' + id + '&mes=' + mes + '&anio=' + anio;
                  axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayDetalle = respuesta.detalle;
+
+                    me.numAnticipos = respuesta.numAnticipos;
+                    me.numIndivi = respuesta.numIndivi;
+                    me.arrayAnticipos = respuesta.anticiposCan;
+                    me.arrayIndividualizadas = respuesta.individualizadas;
+                    me.totalAnticipo = respuesta.totalAnticipo;
+                    me.totalIndividualizadas = respuesta.totalIndividualizadas;
+                    me.totalBono = respuesta.totalBono;
+                    me.restante = respuesta.restante;
                     
                 })
                 .catch(function (error) {
@@ -735,7 +1046,12 @@
                 this.total = 0;
                 this.bono = 0;
                 this.numVentas = 0;
-                this.aPagar = 0;
+                this.comision = 0;
+                this.anticipo = 0;
+                this.comisionMes = 0;
+                this.anticipoMes = 0;
+                this.aPagar = '0';
+                this.restante = 0;
 
             },
 
@@ -756,20 +1072,29 @@
                         this.modal = 1;
                         this.tituloModal='Comisión';
                         this.ventas = 0;
+                        this.mes = '';
+                        this.bonoTotal = 0;
+                        this.aPagar = 0;
+                        this.restante = 0;
                         break;
                     }
                     case 'detalle':
                     {
-                        this.detalleComision(data['id']);
-                        this.modal1 = 1;
-                        this.tituloModal='Detalle comision';
                         this.bono = data['bono'];
                         this.numVentas = data['num_ventas'];
                         this.tipoVendedor = data['tipo'];
+                        if(this.tipoVendedor == 0)
+                        {
+                            this.apoyo = 10500;
+                        }
                         this.mes = data['mes'];
                         this.anio = data['anio'];
+                        this.detalleComision(data['id'], this.mes, this.anio);
                         this.aPagar = data['aPagar'];
-                        this.comision = data['total'];
+                        this.comisionMes = data['total'];
+                        this.anticipoMes = data['totalAnticipo'];
+                        this.modal1 = 1;
+                        this.tituloModal='Detalle comision';
                         break;
                     }
                 }

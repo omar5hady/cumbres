@@ -8,13 +8,13 @@
                 <!-- Ejemplo de tabla Listado -->
                 <div class="card scroll-box">
                     <div class="card-header" v-if="historial == 0">
-                        <i class="fa fa-align-justify"></i> Anticipos &nbsp;
+                        <i class="fa fa-align-justify"></i> Bonos &nbsp;
                         <button type="button" @click="historial = 1" class="btn btn-default">
-                            <i class="icon-eye"></i>&nbsp;Historial de anticipos
+                            <i class="icon-eye"></i>&nbsp;Historial de bonos
                         </button>
                     </div>
                     <div class="card-header" v-if="historial == 1">
-                        <i class="fa fa-align-justify"></i> Historial de anticipos &nbsp;
+                        <i class="fa fa-align-justify"></i> Historial de bonos &nbsp;
                         <button type="button" @click="historial = 0" class="btn btn-default">
                             <i class="fa fa-reply"></i>&nbsp;Regresar
                         </button>
@@ -64,7 +64,7 @@
                                         <th>Manzana</th>
                                         <th># Lote</th>
                                         <th>Asesor</th>
-                                        <th>Comisión</th>
+                                        <th>Bono</th>
                                         <th></th>
                                     </tr>
                                 </thead>
@@ -76,7 +76,7 @@
                                         <td class="td2" v-text="contrato.manzana"></td>
                                         <td class="td2" v-text="contrato.num_lote "></td>
                                         <td class="td2" v-text="contrato.asesor"></td>
-                                        <td class="td2" v-text="'$'+formatNumber((contrato.total).toFixed(2))"></td>
+                                        <td class="td2" v-text="'$'+formatNumber((contrato.bono).toFixed(2))"></td>
                                         <td>
                                             <button title="Generar anticipo" type="button" class="btn btn-dark btn-sm" @click="abrirModal('generar',contrato)">
                                                 <i class="fa fa-percent"></i>
@@ -103,7 +103,7 @@
                     </div>
 
 
-                <!-- Div Card Body para listar -->
+                <!-- Div Card Body para listar historial-->
                     <div class="card-body" v-if="historial == 1"> 
                         <div class="form-group row">
                             <div class="col-md-8">
@@ -140,7 +140,7 @@
                                         Fecha:
                                     </label>
                                     <input type="date" v-model="desde" @keyup.enter="listarHistorial(1)" class="form-control">
-                                        <input type="date" v-model="hasta" @keyup.enter="listarHistorial(1)" class="form-control">
+                                    <input type="date" v-model="hasta" @keyup.enter="listarHistorial(1)" class="form-control">
                                 </div>
                                 <div class="input-group">
                                     <button type="submit" @click="listarHistorial(1)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
@@ -157,8 +157,8 @@
                                         <th>Manzana</th>
                                         <th># Lote</th>
                                         <th>Asesor</th>
-                                        <th>Fecha de anticipo</th>
-                                        <th>Anticipo</th>
+                                        <th>Fecha de bono</th>
+                                        <th>Bono</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -169,8 +169,8 @@
                                         <td class="td2" v-text="contrato.manzana"></td>
                                         <td class="td2" v-text="contrato.num_lote "></td>
                                         <td class="td2" v-text="contrato.asesor"></td>
-                                        <td class="td2" v-text="this.moment(contrato.fecha_anticipo).locale('es').format('DD/MMM/YYYY')"></td>
-                                        <td class="td2" v-text="'$'+formatNumber((contrato.anticipo).toFixed(2))"></td>
+                                        <td class="td2" v-text="this.moment(contrato.fecha_bono).locale('es').format('DD/MMM/YYYY')"></td>
+                                        <td class="td2" v-text="'$'+formatNumber((contrato.bono).toFixed(2))"></td>
                                     </tr>                               
                                 </tbody>
                             </table>
@@ -211,9 +211,9 @@
                                 <div class="col-md-4">
                                     <input type="text" readonly v-model="asesor" class="form-control" placeholder="Asesor">
                                 </div>
-                                <label class="col-md-3 form-control-label" for="text-input">Fecha de anticipo:</label>
+                                <label class="col-md-3 form-control-label" for="text-input">Fecha de bono:</label>
                                 <div class="col-md-3">
-                                    <input type="date" v-model="fecha_anticipo" class="form-control">
+                                    <input type="date" v-model="fecha_bono" class="form-control">
                                 </div>
                             </div>
 
@@ -250,9 +250,9 @@
                             </div>
 
                             <div class="form-group row">
-                                <h6 style="color: blue;" class="col-md-3 form-control-label" for="text-input">Anticipo</h6>
+                                <h6 style="color: blue;" class="col-md-3 form-control-label" for="text-input">Bono</h6>
                                 <div class="col-md-3">
-                                    <h6 style="color: blue;" v-text="'$'+formatNumber(anticipo)"></h6>
+                                    <h6 style="color: blue;" v-text="'$'+formatNumber(bono)"></h6>
                                 </div>
                             </div>
 
@@ -261,7 +261,7 @@
                         <!-- Botones del modal -->
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <button type="button" class="btn btn-primary" @click="generarAnticipo()">Generar anticipo</button>
+                            <button type="button" class="btn btn-primary" @click="generarBono()">Generar anticipo</button>
                         </div>
                     </div> 
                     <!-- /.modal-content -->
@@ -294,8 +294,8 @@
                 arrayEtapas:[],
                 arrayAnticipos:[],
                 comision:0,
-                anticipo:0,
-                fecha_anticipo:0,
+                bono:0,
+                fecha_bono:0,
                 asesor:'',
                 lote:'',
                 etapa:'',
@@ -403,7 +403,7 @@
         methods : {
             listarPendientes(page){
                 let me = this;
-                var url = '/comision/anticiposPorPagar?page=' + page + '&b_proyecto=' + this.b_proyecto + '&b_etapa=' + this.b_etapa + '&b_asesor_id=' + this.b_asesor_id;
+                var url = '/comision/bonosPorPagar?page=' + page + '&b_proyecto=' + this.b_proyecto + '&b_etapa=' + this.b_etapa + '&b_asesor_id=' + this.b_asesor_id;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayPendientes = respuesta.pendientes.data;
@@ -417,7 +417,7 @@
 
             listarHistorial(page){
                 let me = this;
-                var url = '/comision/anticipos?page=' + page + '&b_proyecto=' + this.b_proyecto + '&b_etapa=' + this.b_etapa + '&b_asesor_id=' + this.b_asesor_id + '&desde=' + this.desde + '&hasta=' + this.hasta;
+                var url = '/comision/bonos?page=' + page + '&b_proyecto=' + this.b_proyecto + '&b_etapa=' + this.b_etapa + '&b_asesor_id=' + this.b_asesor_id + '&desde=' + this.desde + '&hasta=' + this.hasta;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayAnticipos = respuesta.anticipos.data;
@@ -491,15 +491,16 @@
               
             },  
 
-            generarAnticipo(){
+            generarBono(){
                 let me = this;
                 //Con axios se llama el metodo update de DepartamentoController
-                axios.put('/comision/generarAnticipo',{
+                axios.put('/comision/generarBono',{
                     'id': this.id,
-                    'fecha_anticipo' : this.fecha_anticipo,
-                    'anticipo' : this.anticipo,
+                    'fecha_bono' : this.fecha_bono,
+                    'bono' : this.bono,
                 }).then(function (response){
                     me.listarPendientes(1);
+                    me.listarHistorial(1);
                     me.cerrarModal();
                     //window.alert("Cambios guardados correctamente");
                     swal({
@@ -537,10 +538,10 @@
                     case 'generar':
                     {
                         this.modal = 1;
-                        this.tituloModal='Anticipo';
-                        this.fecha_anticipo = this.hoy;
+                        this.tituloModal='Bono';
+                        this.fecha_bono = this.hoy;
                         this.comision = data['total'];
-                        this.anticipo = (data['total']/2).toFixed(2);
+                        this.bono = data['bono'];
                         this.asesor = data['asesor'];
                         this.lote = data['num_lote'];
                         this.etapa = data['etapa'];

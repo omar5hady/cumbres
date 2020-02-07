@@ -16,4 +16,8 @@ class Medio_publicitario extends Model
     public function clientes(){
         return $this->hasMany('App\Cliente');
     }
+
+    public function contratos(){
+        return $this->hasMany('App\Contrato');
+    }
 }

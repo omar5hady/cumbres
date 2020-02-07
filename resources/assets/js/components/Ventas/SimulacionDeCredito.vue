@@ -2329,6 +2329,7 @@
              
 
                 arrayEmpresa: [],
+                arrayCreditos:[],
                 arrayMediosPublicidad:[],
                 arrayInstituciones: [],
                 arrayEstados: [],

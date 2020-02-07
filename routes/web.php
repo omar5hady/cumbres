@@ -134,6 +134,7 @@ Route::group(['middleware' => ['auth']],function(){
     
     ///////////////////     RUTAS FRACCIONAMIENTO     ////////////////////////////////
         Route::get('/fraccionamiento','FraccionamientoController@index');
+        Route::get('/fraccionamiento/excel','FraccionamientoController@excelIndex');
         Route::post('/fraccionamiento/registrar','FraccionamientoController@store');
         Route::put('/fraccionamiento/actualizar','FraccionamientoController@update');
         Route::delete('/fraccionamiento/eliminar','FraccionamientoController@destroy');
@@ -149,6 +150,7 @@ Route::group(['middleware' => ['auth']],function(){
 
     /////////////////////   RUTAS ETAPAS        //////////////////////////////////////
         Route::get('/etapa','EtapaController@index');
+        Route::get('/etapa/excel','EtapaController@indexExcel');
         Route::post('/etapa/registrar','EtapaController@store');
         Route::put('/etapa/actualizar','EtapaController@update');
         Route::delete('/etapa/eliminar','EtapaController@destroy');
@@ -205,6 +207,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::delete('/lote/eliminar','LoteController@destroy');
         Route::post('/import', 'LoteController@import');
         Route::get('/lote_aviso','LoteController@indexIniObra');
+        Route::get('/lote_aviso/historial','LoteController@indexHistorialIniObra');
         Route::put('/lotes/enviarAviObra','LoteController@enviarAviso');
         Route::get('/lotes/export_excel/{fraccionamiento_id}','LoteController@excelLotes');
         Route::get('/lotes/resume_excel_lotes_disp','LoteController@exportExcelLotesDisp');
@@ -340,6 +343,7 @@ Route::group(['middleware' => ['auth']],function(){
     ///////////////////         RUTAS POSTVENTA     ///////////////////////////
         Route::get('/postventa/index','EntregaController@indexPendientes');
         Route::get('/postventa/indexEntregas','EntregaController@indexEntregas');
+        Route::get('/postventa/excelEntregas','EntregaController@excelEntregas');
         
         Route::get('/postventa/indexObservacion','EntregaController@indexObservaciones');
         Route::post('/postventa/registrarObservacion','EntregaController@storeObservacion');
@@ -477,9 +481,9 @@ Route::group(['middleware' => ['auth']],function(){
 
         Route::get('/comision/indexComisiones','ComisionesController@indexComisiones');
         Route::get('/comision/detalleComision','ComisionesController@detalleComision');
-        Route::get('/comision/anticiposPorPagar','ComisionesController@anticiposPorPagar');
-        Route::get('/comision/anticipos','ComisionesController@anticipos');
-        Route::put('/comision/generarAnticipo','ComisionesController@generarAnticipo');
+        Route::get('/comision/bonosPorPagar','ComisionesController@bonosPorPagar');
+        Route::get('/comision/bonos','ComisionesController@bonos');
+        Route::put('/comision/generarBono','ComisionesController@generarBono');
 
     ////////////////////////// RUTAS ASIGNAR GESTOR /////////////////////////////
 

@@ -55,7 +55,7 @@
                                         <td v-text="archivos.num_etapa"></td>
                                         <td v-text="archivos.modelo"></td>
                                         <template>
-                                            <td v-if="archivos.archivo_reglamento != NULL">
+                                            <td v-if="archivos.archivo_reglamento != null">
                                                 <a class="btn btn-danger btn-sm" v-bind:href="'/archivos/reglamentoEtapa/'+archivos.etapaID">Descarga</a>
                                             </td>
                                             <td v-else>
@@ -63,7 +63,7 @@
                                             </td>
                                         </template>
                                         <template>
-                                            <td v-if="archivos.plantilla_carta_servicios != NULL && archivos.costo_mantenimiento != NULL">
+                                            <td v-if="archivos.plantilla_carta_servicios != null && archivos.costo_mantenimiento != null">
                                                 <a class="btn btn-primary btn-sm" v-bind:href="'/archivos/cartaServicios/'+archivos.etapaID" target="_blank">Visualizar</a>
                                             </td>
                                             <td v-else>
@@ -71,7 +71,7 @@
                                             </td>
                                         </template>
                                         <template>
-                                            <td v-if="archivos.plantilla_telecom != NULL && archivos.empresas_telecom != NULL">
+                                            <td v-if="archivos.plantilla_telecom != null && archivos.empresas_telecom != null">
                                                 <a class="btn btn-primary btn-sm" v-bind:href="'/archivos/cartaServiciosTelecomunicaciones/'+archivos.etapaID" target="_blank">Visualizar</a>
                                             </td>
                                             <td v-else>
@@ -79,7 +79,7 @@
                                             </td>
                                         </template>
                                         <template>
-                                            <td v-if="archivos.archivo != NULL">
+                                            <td v-if="archivos.archivo != null">
                                                 <a class="btn btn-danger btn-sm" v-bind:href="'/archivos/catalogoEspecificaciones/'+archivos.modeloID">Descarga</a>
                                             </td>
                                             <td v-else>
