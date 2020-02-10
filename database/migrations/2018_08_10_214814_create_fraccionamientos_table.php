@@ -27,6 +27,7 @@ class CreateFraccionamientosTable extends Migration
             $table->integer('cp')->nullable();
             $table->string('email_administracion',40)->nullable();
             $table->string('logo_fracc',100)->nullable();
+            $table->date('fecha_ini_venta')->nullable();
 
             $table->timestamps();
         });

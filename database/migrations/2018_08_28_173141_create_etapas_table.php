@@ -33,6 +33,9 @@ class CreateEtapasTable extends Migration
             $table->string('sucursal_admin',50)->nullable();
             $table->string('titular_admin',100)->nullable();
             $table->string('banco_admin',50)->nullable();
+
+            $table->date('fecha_ini_venta')->nullable();
+
             $table->timestamps();
 
             $table->foreign('fraccionamiento_id')->references('id')->on('fraccionamientos');

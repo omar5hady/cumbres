@@ -190,6 +190,7 @@ class FraccionamientoController extends Controller
         $fraccionamiento->ciudad = $request->ciudad;
         $fraccionamiento->delegacion = $request->delegacion;
         $fraccionamiento->cp = $request->cp;
+        $fraccionamiento->fecha_ini_venta = $request->fecha_ini_venta;
         $fraccionamiento->save();
 
         $imagenUsuario = DB::table('users')->select('foto_user','usuario')->where('id','=', $usuario_id)->get();

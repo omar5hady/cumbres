@@ -29,7 +29,7 @@
 
         @if(Auth::user()->fraccionamiento == 1)
             <template v-if="menu==1">
-                <fraccionamiento></fraccionamiento>
+                <fraccionamiento rol-id="{{Auth::user()->rol_id}}"></fraccionamiento>
             </template>
         @endif
 
@@ -41,7 +41,7 @@
 
         @if(Auth::user()->etapas == 1)
             <template v-if="menu==2">
-                <etapa></etapa>
+                <etapa rol-id="{{Auth::user()->rol_id}}"></etapa>
             </template>
         @endif
 

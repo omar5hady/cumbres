@@ -1283,7 +1283,7 @@ class LoteController extends Controller
                           'lotes.fraccionamiento_id','lotes.etapa_id', 'lotes.modelo_id','lotes.comentarios','lotes.fecha_termino_ventas', 'lotes.ehl_solicitado')
                     ->where('lotes.ehl_solicitado','!=',NULL)
                     ->where('modelos.nombre','!=','Por Asignar')
-->orderBy('lotes.ehl_solicitado','desc')
+                    ->orderBy('lotes.ehl_solicitado','desc')
                     ->orderBy('fraccionamientos.nombre','lotes.id')->paginate(15);
                     
             }

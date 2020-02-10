@@ -58,6 +58,20 @@
                                            <th>Disponibles</th>
                                            <th v-text="disponibles"></th>
                                        </tr>
+                                       <tr>
+                                           <th colspan="2"></th>
+                                       </tr>
+                                       <tr>
+                                           <th colspan="2">Fecha de inicio de ventas:</th>
+                                       </tr>
+                                       <tr>
+                                           <th style="text-align: right;" colspan="2" v-text="fecha_inicio"></th>
+                                       </tr>
+                                       <tr>
+                                           <th>Promedio de venta mensual:</th>
+                                           <th v-text="promedioMensual"></th>
+                                       </tr>
+                                       
                                    </table>
                                 </div>
                             </div>
@@ -116,7 +130,7 @@
                                     <td class="td2" v-text="contrato.num_lote"></td>
                                     <td class="td2" v-text="contrato.modelo"></td>
                                     <td class="td2" v-text="contrato.calle + ' Num. '+ contrato.numero"></td>
-                                    <td class="td2" v-text="contrato.fecha_status"></td>
+                                    <td class="td2" v-text="this.moment(contrato.fecha_status).locale('es').format('DD/MMM/YYYY')"></td>
                                     <td class="td2" v-text="contrato.nombre_cliente"></td>
                                     <td class="td2" v-text="contrato.institucion"></td>
                                     <td class="td2" v-text="contrato.tipo_credito"></td>
@@ -178,6 +192,7 @@
                 individualizadas:0,
                 habilitados:0,
                 mostrar : 0,
+                fecha_inicio:'',
             }
         },
         computed:{
@@ -222,6 +237,10 @@
                     me.vendidas = respuesta.vendidas;
                     me.individualizadas = respuesta.individualizadas;
                     me.habilitados = respuesta.habilitados;
+                    me.fecha_inicio = respuesta.fecha_inicio;
+                    me.meses = respuesta.diferencia;
+
+                    me.promedioMensual = ((me.individualizadas + me.vendidas)/me.meses).toFixed(2);
 
                     me.precio_venta = respuesta.sumas[0].precio - respuesta.sumas[0].descuento + respuesta.sumas[0].paquete;
                     me.enganche = respuesta.sumas[0].enganche;

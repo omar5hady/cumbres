@@ -45,6 +45,7 @@
                                         <th>Fecha de inicio </th>
                                         <th>Fecha de termino</th>
                                         <th>Encargado</th>
+                                        <th v-if="rolId!=3">Fecha de inicio de ventas</th>
                                         
                                     </tr>
                                 </thead>
@@ -63,6 +64,7 @@
                                         <td v-text="etapa.f_ini"></td>
                                         <td v-text="etapa.f_fin"></td>
                                         <td v-text="etapa.name"></td>
+                                        <td v-if="rolId!=3" v-text="etapa.fecha_ini_venta"></td>
                                     </tr>                               
                                 </tbody>
                             </table>
@@ -117,7 +119,7 @@
                                         <input type="date" v-model="f_ini"  class="form-control" placeholder="Fecha de inicio">
                                     </div>
                                 </div>
-                                   <div class="form-group row">
+                                <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Fecha de terminacion</label>
                                     <div class="col-md-6">
                                         <input type="date" v-model="f_fin" class="form-control" placeholder="Fecha de terminacion">
@@ -130,6 +132,12 @@
                                             <option value="0">Seleccione</option>
                                             <option v-for="directivos in arrayDirectores" :key="directivos.id" :value="directivos.id" v-text="directivos.name"></option>
                                         </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row" v-if="rolId != 3">
+                                    <label class="col-md-3 form-control-label" for="text-input">Fecha de inicio de ventas</label>
+                                    <div class="col-md-6">
+                                        <input type="date" v-model="fecha_ini_venta" class="form-control" placeholder="Fecha de terminacion">
                                     </div>
                                 </div>
                                 <!-- Div para mostrar los errores que mande validerFraccionamiento -->
@@ -164,6 +172,9 @@
 
 <script>
     export default {
+        props:{
+            rolId:{type: String}
+        },
         data(){
             return{
                 proceso : false,
@@ -173,6 +184,7 @@
                 num_etapa : 0,
                 f_ini : new Date().toISOString().substr(0, 10),
                 f_fin : '',
+                fecha_ini_venta:'',
                 personal_id : 0,
                 arrayEtapa : [],
                 modal : 0,
@@ -341,7 +353,8 @@
                     'num_etapa': this.num_etapa,
                     'f_ini': this.f_ini,
                     'f_fin': this.f_fin,
-                    'personal_id': this.personal_id
+                    'personal_id': this.personal_id,
+                    'fecha_ini_venta' : this.fecha_ini_venta
                 }).then(function (response){
                     me.proceso=false;
                     me.cerrarModal();
@@ -460,6 +473,7 @@
                                 this.f_ini=data['f_ini'];
                                 this.f_fin=data['f_fin'];
                                 this.personal_id=data['personal_id'];
+                                this.fecha_ini_venta = data['fecha_ini_venta'];
                                 break;
                             }
                         }

@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use DB;
 use App\Dato_extra;
+use App\Etapa;
+use App\Fraccionamiento;
 use App\Credito;
 use App\Contrato;
 use App\Expediente;
 use App\Lote;
+use Carbon\Carbon;
 
 class EstadisticasController extends Controller
 {
@@ -205,7 +208,22 @@ class EstadisticasController extends Controller
         $proyecto = $request->proyecto;
         $etapa = $request->etapa;
 
+        $to = Carbon::now();
+
+
         if($etapa!=''){
+
+                $fracc = Etapa::select('fecha_ini_venta')->where('id','=',$etapa)->where('fraccionamiento_id','=',$proyecto)->get();
+                $fecha = $fracc[0]->fecha_ini_venta;
+                if($fecha){
+                        $from = Carbon::createFromFormat('Y-m-d', $fecha);
+                        $diff_in_months = $to->diffInMonths($from);
+                }
+                else{
+                        $diff_in_months = 0;
+                }
+                
+
                 $lotes = Lote::where('fraccionamiento_id','=',$proyecto)
                                 ->where('etapa_id','=',$etapa)->count();
                 
@@ -308,6 +326,17 @@ class EstadisticasController extends Controller
                 $individualizadas = $individualizadas + $indiviDirecto;
         }
         else{
+                $fracc = Fraccionamiento::select('fecha_ini_venta')->where('id','=',$proyecto)->get();
+                $fecha = $fracc[0]->fecha_ini_venta;
+
+                if($fecha){
+                        $from = Carbon::createFromFormat('Y-m-d', $fecha);
+                        $diff_in_months = $to->diffInMonths($from);
+                }
+                else{
+                        $diff_in_months = 0;
+                }
+
                 $lotes = Lote::where('fraccionamiento_id','=',$proyecto)
                                 ->count();
 
@@ -402,7 +431,11 @@ class EstadisticasController extends Controller
                 $individualizadas = $individualizadas + $indiviDirecto;
         }
 
-        
+        //setlocale(LC_TIME, 'es_MX.utf8');
+        if($fecha){
+                $tiempo = new Carbon($fecha);
+                $fecha = $tiempo->formatLocalized('%d de %B de %Y');
+        }
 
         return[ 'lotes'=>$lotes, 
                 'disponibles'=>$disponibles,
@@ -411,6 +444,8 @@ class EstadisticasController extends Controller
                 'sumas'=>$sumas,
                 'resContratos'=>$resContratos,
                 'habilitados'=>$lotesHabilitados,
+                'diferencia'=>$diff_in_months,
+                'fecha_inicio'=>$fecha,
                 'pagination' => [
                         'total'         => $resContratos->total(),
                         'current_page'  => $resContratos->currentPage(),

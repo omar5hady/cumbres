@@ -34,7 +34,7 @@ class EtapaController extends Controller
             $etapas = Etapa::join('personal','etapas.personal_id','=','personal.id')
                 ->join('fraccionamientos','etapas.fraccionamiento_id','=','fraccionamientos.id')
                 ->select('etapas.num_etapa','etapas.f_ini',
-                    'etapas.f_fin','etapas.id','etapas.personal_id', 
+                    'etapas.f_fin','etapas.id','etapas.personal_id', 'etapas.fecha_ini_venta',
                     DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS name"),
                     'etapas.fraccionamiento_id','fraccionamientos.nombre as fraccionamiento','etapas.archivo_reglamento',
                     'etapas.plantilla_carta_servicios','etapas.costo_mantenimiento','etapas.plantilla_telecom','etapas.empresas_telecom',
@@ -49,7 +49,7 @@ class EtapaController extends Controller
             {
                 $etapas = Etapa::join('personal','etapas.personal_id','=','personal.id')
                     ->join('fraccionamientos','etapas.fraccionamiento_id','=','fraccionamientos.id')
-                    ->select('etapas.num_etapa','etapas.f_ini',
+                    ->select('etapas.num_etapa','etapas.f_ini','etapas.fecha_ini_venta',
                         'etapas.f_fin','etapas.id','etapas.personal_id', 
                         DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS name"),
                         'etapas.fraccionamiento_id','fraccionamientos.nombre as fraccionamiento','etapas.archivo_reglamento',
@@ -64,7 +64,7 @@ class EtapaController extends Controller
             else{
                 $etapas = Etapa::join('personal','etapas.personal_id','=','personal.id')
                     ->join('fraccionamientos','etapas.fraccionamiento_id','=','fraccionamientos.id')
-                    ->select('etapas.num_etapa','etapas.f_ini',
+                    ->select('etapas.num_etapa','etapas.f_ini','etapas.fecha_ini_venta',
                         'etapas.f_fin','etapas.id','etapas.personal_id', 
                         DB::raw("CONCAT(personal.nombre,' ',personal.apellidos) AS name"),
                         'etapas.fraccionamiento_id','fraccionamientos.nombre as fraccionamiento','etapas.archivo_reglamento',
@@ -288,6 +288,7 @@ class EtapaController extends Controller
         $etapa->f_ini = $request->f_ini;
         $etapa->f_fin = $request->f_fin;
         $etapa->personal_id = $request->personal_id;
+        $etapa->fecha_ini_venta = $request->fecha_ini_venta;
         $etapa->save();
     }
 

@@ -158,13 +158,13 @@
                             <!--Botones de paginacion -->
                             <ul class="pagination">
                                 <li class="page-item" v-if="pagination2.current_page > 1">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination2.current_page - 1,buscar,buscar2,buscar3,criterio)">Ant</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page - 1,buscar,buscar2,buscar3,criterio)">Ant</a>
                                 </li>
                                 <li class="page-item" v-for="page in pagesNumber2" :key="page" :class="[page == isActived2 ? 'active' : '']">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,buscar2,buscar3,criterio)" v-text="page"></a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(page,buscar,buscar2,buscar3,criterio)" v-text="page"></a>
                                 </li>
                                 <li class="page-item" v-if="pagination2.current_page < pagination2.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination2.current_page + 1,buscar,buscar2,buscar3,criterio)">Sig</a>
+                                    <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page + 1,buscar,buscar2,buscar3,criterio)">Sig</a>
                                 </li>
                             </ul>
                         </nav>

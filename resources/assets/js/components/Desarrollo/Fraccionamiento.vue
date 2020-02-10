@@ -48,6 +48,7 @@
                                         <th>Colonia</th>
                                         <th>Estado</th>
                                         <th>Delegacion</th>
+                                        <th v-if="rolId != 3">Fecha de inicio de ventas</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -77,6 +78,7 @@
                                         <td v-text="fraccionamiento.colonia"></td>
                                         <td v-text="fraccionamiento.estado"></td>
                                         <td v-text="fraccionamiento.delegacion"></td>
+                                        <td v-if="rolId != 3" v-text="fraccionamiento.fecha_ini_venta"></td>
                                     </tr>                               
                                 </tbody>
                             </table>
@@ -199,6 +201,12 @@
                                         <input type="text" maxlength="5" v-model="cp" class="form-control" placeholder="Codigo postal">
                                     </div>
                                 </div>
+                                <div class="form-group row" v-if="rolId != 3">
+                                    <label class="col-md-3 form-control-label" for="text-input">Fecha de inicio de ventas</label>
+                                    <div class="col-md-6">
+                                        <input type="date" v-model="fecha_ini_venta" class="form-control" placeholder="Fecha de terminacion">
+                                    </div>
+                                </div>
                                 <!-- Div para mostrar los errores que mande validerFraccionamiento -->
                                 <div v-show="errorFraccionamiento" class="form-group row div-error">
                                     <div class="text-center text-error">
@@ -279,6 +287,9 @@
 
 <script>
     export default {
+        props:{
+            rolId:{type: String}
+        },
         data(){
             return{
                 proceso:false,
@@ -291,6 +302,7 @@
                 ciudad : '',
                 delegacion: '',
                 cp: 0,
+                fecha_ini_venta:'',
                 archivo_planos: '',
                 archivo_escrituras: '',
                 arrayFraccionamiento : [],
@@ -509,7 +521,8 @@
                     'ciudad': this.ciudad,
                     'delegacion' : this.delegacion,
                     'cp' : this.cp,
-                    'id' : this.id
+                    'id' : this.id,
+                    'fecha_ini_venta' : this.fecha_ini_venta
                 }).then(function (response){
                     
                     me.cerrarModal();
