@@ -11,8 +11,9 @@
                         <i class="fa fa-align-justify"></i>Acta de terminacion
 
                         <!--   Boton   -->
-                        
-                        
+                        <button class="btn btn-dark" @click="abrirModal('lote','actasMasa')"  v-if="allLic.length > 0" >
+                            <i class="fa fa-drivers-license-o "></i>&nbsp;Asignar actas
+                        </button>
                         <!---->
                     </div>
                     <div class="card-body">
@@ -56,7 +57,9 @@
                             <table class="table 2 table-bordered table-striped table-sm">
                                 <thead>
                                     <tr>
-                                        
+                                        <th>
+                                            <input type="checkbox" @click="selectAll" v-model="allSelected">
+                                        </th>
                                         <th>Opciones</th>
                                         <th>Proyecto</th>
                                         <th>Manzana</th>
@@ -74,7 +77,9 @@
                                 </thead>
                                 <tbody>
                                     <tr v-on:dblclick="abrirModal2('lote','ver',act_terminacion)" v-for="act_terminacion in arrayActaDeTerminacion" :key="act_terminacion.id">
-                                        
+                                        <td class="td2">
+                                            <input type="checkbox"  @click="select" :id="act_terminacion.id" :value="act_terminacion.id" v-model="allLic" >
+                                        </td>
                                         <td class="td2">
                                             <button title="Editar" type="button" @click="abrirModal('lote','actualizar',act_terminacion)" class="btn btn-warning btn-sm">
                                             <i class="icon-pencil"></i>
@@ -173,7 +178,7 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group row">
+                                <div class="form-group row" v-if="tipoAccion == 1">
                                     <label class="col-md-3 form-control-label" for="text-input">Agregar Observación</label>
                                     <div class="col-md-6">
                                        <button type="button" class="btn btn-danger" @click="abrirModal3('lote','observacion',id)">Nueva Observación</button>
@@ -195,7 +200,8 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
                             <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button"  class="btn btn-primary" @click="actualizarActa()">Actualizar</button>
+                            <button type="button" v-if="tipoAccion == 1" class="btn btn-primary" @click="actualizarActa()">Actualizar</button>
+                            <button type="button" v-if="tipoAccion == 2" class="btn btn-primary" @click="updateMasaActas()">Actualizar</button>
                         </div>
                     </div>
                       <!-- /.modal-content -->
@@ -502,6 +508,9 @@
     export default {
         data(){
             return{
+                allLic: [],
+                allSelected: false,
+
                 proceso:false,
                 id: 0,
                 siembra:'',
@@ -604,7 +613,70 @@
         
         methods : {
 
-        onImageChange(e){
+            selectAll: function() {
+                this.allLic = [];
+
+                if (!this.allSelected) {
+                    for (var lote in this.arrayActaDeTerminacion
+                    ) {
+                        this.allLic.push(this.arrayActaDeTerminacion[lote].id.toString());
+                    }
+                }
+            },
+
+             select: function() {
+                this.allSelected = false;
+            },
+
+            updateMasaActas(){
+                 if(this.proceso==true){
+                    return;
+                }
+                this.proceso=true;
+                let me = this;
+                //Con axios se llama el metodo update de LoteController
+                
+                 Swal({
+                    title: 'Estas seguro?',
+                    animation: false,
+                    customClass: 'animated bounceInDown',
+                    text: "Las actas se asignaran a los lotes seleccionados",
+                    type: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'Cancelar',
+                    
+                    confirmButtonText: 'Si, asignar!'
+                    }).then((result) => {
+
+                    if (result.value) {
+                        me.allLic.forEach(element => {
+                            axios.put('/acta_terminacion/updateMasaActas',{
+                                'id':element,
+                                'term_ingreso' : this.term_ingreso,
+                                'term_salida' : this.term_salida,
+                                'num_acta':this.num_acta
+
+                            }); 
+                        })
+                        me.proceso=false;
+                        me.cerrarModal();
+                        me.listarActa(1,me.buscar,me.b_manzana,me.b_lote,me.criterio,me.buscar2);
+                        Swal({
+                            title: 'Hecho!',
+                            text: 'Se han asignado',
+                            type: 'success',
+                            animation: false,
+                            customClass: 'animated bounceInRight'
+                        })
+                    }})
+              
+            },
+
+        
+
+            onImageChange(e){
 
                 console.log(e.target.files[0]);
 
@@ -885,6 +957,17 @@
                                 this.avance=data['avance'];
                                 this.id=data['id'];
                                 this.num_acta=data['num_acta'];
+                                this.tipoAccion=1;
+                                break;
+                            }
+                            case 'actasMasa':
+                            {
+                                this.modal =1;
+                                this.tituloModal='Asignar Acta de terminación';
+                                this.term_ingreso='';
+                                this.term_salida='';
+                                this.num_acta='';
+                                this.tipoAccion=2;
                                 break;
                             }
                             case 'subirArchivo':

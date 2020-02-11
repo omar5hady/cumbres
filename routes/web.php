@@ -223,6 +223,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/licencias','LicenciasController@index');
         Route::put('/licencias/actualizar','LicenciasController@update');
         Route::put('/licencias/actualizarMasa','LicenciasController@updateMasa');
+        Route::put('/licencias/updateMasaLicencias','LicenciasController@updateMasaLicencias');
         Route::get('/licencias/resume','LicenciasController@resumeLicencias');
         Route::post('/formSubmitLicencias/{id}','LicenciasController@formSubmit'); //carga de licencias
         Route::get('/downloadLicencias/{fileName}' , 'LicenciasController@downloadFile'); //descarga de licencias
@@ -232,6 +233,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/acta_terminacion','LicenciasController@indexActa');
         Route::put('/acta_terminacion/actualizar','LicenciasController@updateActas');
         Route::get('/licencias/resume_excel','LicenciasController@exportExcel');
+        Route::put('/acta_terminacion/updateMasaActas','LicenciasController@updateMasaActas');
         Route::post('/formSubmitActa/{id}','LicenciasController@formSubmitActa'); //carga de acta
         Route::get('/downloadActa/{fileName}' , 'LicenciasController@downloadFileActa'); //descarga de acta
         Route::post('/formSubmitPredial/{id}','LicenciasController@formSubmitPredial'); //carga de predial

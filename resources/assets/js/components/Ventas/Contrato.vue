@@ -916,7 +916,7 @@
                                                 <div class="col-md-3" v-if="coacreditado==true">
                                                         <div class="form-group">
                                                     <label for="">Celular</label>
-                                                    <input :readonly="listado==4 && btn_actualizar==0" type="text" maxlength="8" pattern="\d*" class="form-control" v-model="celular_coa" placeholder="Celular">
+                                                    <input :readonly="listado==4 && btn_actualizar==0" type="text" maxlength="10" pattern="\d*" class="form-control" v-model="celular_coa" placeholder="Celular">
                                                 </div>
                                                 </div>
 
@@ -924,7 +924,7 @@
                                                 <div class="col-md-3" v-if="coacreditado==true">
                                                         <div class="form-group">
                                                     <label for="">Telefono</label>
-                                                    <input :readonly="listado==4 && btn_actualizar==0" type="text" maxlength="7" pattern="\d*" class="form-control" v-model="telefono_coa" placeholder="Telefono">
+                                                    <input :readonly="listado==4 && btn_actualizar==0" type="text" maxlength="10" pattern="\d*" class="form-control" v-model="telefono_coa" placeholder="Telefono">
                                                 </div>
                                                 </div>
 
@@ -3226,7 +3226,7 @@
                             this.errorMostrarMsjContrato.push("Completar el domicilio del cónyuge");
                         if(this.ciudad_coa=='' || this.estado_coa=='') 
                             this.errorMostrarMsjContrato.push("Seleccionar Ciudad y estado del cónyuge");
-                        if(this.celular_coa=='' || this.telefono_coa=='') 
+                        if(this.celular_coa=='') 
                             this.errorMostrarMsjContrato.push("Completar medios de contacto del cónyuge");
                         /************* Datos del trabajo *******************/
                         if(this.empresa_coa=='') 

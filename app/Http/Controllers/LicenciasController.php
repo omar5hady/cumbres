@@ -1123,6 +1123,18 @@ class LicenciasController extends Controller
         $licencia->save();
     }
 
+
+    public function updateMasaLicencias(Request $request)
+    {
+
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        $licencia = Licencia::findOrFail($request->id);
+        $licencia->f_ingreso = $request->f_ingreso;
+        $licencia->f_salida = $request->f_salida;
+        $licencia->num_licencia = $request->num_licencia;
+        $licencia->save();
+    }
+
     public function update(Request $request)
     {
         if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
@@ -1184,6 +1196,17 @@ class LicenciasController extends Controller
         $acta->num_acta = $request->num_acta;
 
 
+        $acta->save();
+    }
+
+    public function updateMasaActas(Request $request)
+    {
+
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
+        $acta = Licencia::findOrFail($request->id);
+        $acta->term_ingreso = $request->term_ingreso;
+        $acta->term_salida = $request->term_salida;
+        $acta->num_acta = $request->num_acta;
         $acta->save();
     }
 

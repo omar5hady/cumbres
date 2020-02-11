@@ -18,6 +18,12 @@
                         <button class="btn btn-info" @click="abrirModal5('lote','asignarMasa')"  v-if="allLic.length > 0 && rolId != '5'" >
                             <i class="icon-pencil"></i>&nbsp;Asignar en masa
                         </button>
+
+                        <button class="btn btn-dark" @click="abrirModal5('lote','asignarLicencias')"  v-if="allLic.length > 0 && rolId != '5'" >
+                            <i class="fa fa-drivers-license-o "></i>&nbsp;Asignar licencias
+                        </button>
+
+
                     </div>
                     <div class="card-body">
                         <div class="form-group row">
@@ -249,7 +255,7 @@
                                     </div>
                                 </div>
 
-                                  <div class="form-group row">
+                                <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Ingreso de licencia</label>
                                     <div class="col-md-6">
                                        <input type="date" v-model="f_ingreso" class="form-control" >
@@ -304,7 +310,7 @@
                             <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
 
                                 
-                                <div class="form-group row">
+                                <div class="form-group row" v-if="tipoAccion == 1">
                                     <label class="col-md-3 form-control-label" for="text-input">DRO</label>
                                     <div class="col-md-6">
                                         <select class="form-control" v-model="perito_dro">
@@ -315,10 +321,31 @@
                                     </div>
                                 </div>
                                 <br><br>
-                                   <div class="form-group row">
+                                <div class="form-group row" v-if="tipoAccion == 1">
                                     <label class="col-md-3 form-control-label" for="text-input">Planos obra</label>
                                     <div class="col-md-6">
                                        <input type="date" v-model="f_planos_obra" class="form-control" >
+                                    </div>
+                                </div>
+
+
+                                 <div class="form-group row" v-if="tipoAccion == 2">
+                                    <label class="col-md-3 form-control-label" for="text-input">Ingreso de licencia</label>
+                                    <div class="col-md-6">
+                                       <input type="date" v-model="f_ingreso" class="form-control" >
+                                    </div>
+                                </div>
+                                <div class="form-group row" v-if="tipoAccion == 2">
+                                    <label class="col-md-3 form-control-label" for="text-input">Salida</label>
+                                    <div class="col-md-6">
+                                       <input type="date" v-model="f_salida" class="form-control" >
+                                    </div>
+                                </div>
+
+                                <div class="form-group row" v-if="tipoAccion == 2">
+                                    <label class="col-md-3 form-control-label" for="text-input">Numero de licencia</label>
+                                    <div class="col-md-6">
+                                       <input type="text" maxlength="20" v-model="num_licencia" class="form-control" >
                                     </div>
                                 </div>
                                 
@@ -328,7 +355,8 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal5()">Cerrar</button>
                             <!-- Condicion para elegir el boton a mostrar dependiendo de la accion solicitada-->
-                            <button type="button"  class="btn btn-primary" @click="actualizarMasa()">Actualizar</button>
+                            <button type="button"  class="btn btn-primary" @click="actualizarMasa()" v-if="tipoAccion == 1">Actualizar</button>
+                            <button type="button"  class="btn btn-primary" @click="updateMasaLicencias()" v-if="tipoAccion == 2">Actualizar</button>
                             
                         </div>
                     </div>
@@ -986,28 +1014,73 @@
 
                     if (result.value) {
                         me.allLic.forEach(element => {
-                   axios.put('/licencias/actualizarMasa',{
-                    'id':element,
-                    'f_planos_obra' : this.f_planos_obra,
-                    'perito_dro' : this.perito_dro
+                            axios.put('/licencias/actualizarMasa',{
+                                'id':element,
+                                'f_planos_obra' : this.f_planos_obra,
+                                'perito_dro' : this.perito_dro
 
-                    }); 
-                    
-
-                })
-                    me.proceso=false;
-                    me.cerrarModal5();
-                    me.listarLicencias(me.pagination.current_page,me.buscar,me.b_manzana,me.b_lote,me.b_modelo,me.b_arquitecto,me.criterio,me.buscar2);
-                     Swal({
-                        title: 'Hecho!',
-                        text: 'Se han asignado',
-                        type: 'success',
-                        animation: false,
-                        customClass: 'animated bounceInRight'
-                    })
+                            }); 
+                        })
+                        me.proceso=false;
+                        me.cerrarModal5();
+                        me.listarLicencias(me.pagination.current_page,me.buscar,me.b_manzana,me.b_lote,me.b_modelo,me.b_arquitecto,me.criterio,me.buscar2);
+                        Swal({
+                            title: 'Hecho!',
+                            text: 'Se han asignado',
+                            type: 'success',
+                            animation: false,
+                            customClass: 'animated bounceInRight'
+                        })
                     }})
               
             },
+
+            updateMasaLicencias(){
+                 if(this.proceso==true){
+                    return;
+                }
+                this.proceso=true;
+                let me = this;
+                //Con axios se llama el metodo update de LoteController
+                
+                 Swal({
+                    title: 'Estas seguro?',
+                    animation: false,
+                    customClass: 'animated bounceInDown',
+                    text: "Las licencias se asignaran a los lotes seleccionados",
+                    type: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: 'Cancelar',
+                    
+                    confirmButtonText: 'Si, asignar!'
+                    }).then((result) => {
+
+                    if (result.value) {
+                        me.allLic.forEach(element => {
+                            axios.put('/licencias/updateMasaLicencias',{
+                                'id':element,
+                                'f_ingreso' : this.f_ingreso,
+                                'f_salida' : this.f_salida,
+                                'num_licencia' : this.num_licencia
+
+                            }); 
+                        })
+                        me.proceso=false;
+                        me.cerrarModal5();
+                        me.listarLicencias(me.pagination.current_page,me.buscar,me.b_manzana,me.b_lote,me.b_modelo,me.b_arquitecto,me.criterio,me.buscar2);
+                        Swal({
+                            title: 'Hecho!',
+                            text: 'Se han asignado',
+                            type: 'success',
+                            animation: false,
+                            customClass: 'animated bounceInRight'
+                        })
+                    }})
+              
+            },
+
             actualizarLicencia(){
                 if(this.proceso==true){
                     return;
@@ -1102,7 +1175,7 @@
                 this.usuario = '';
                 this.observacion = '';
             },
-           cerrarModal4(){
+            cerrarModal4(){
                 this.modal4 = 0;
                 this.tituloModal4 = '';
                 this.num_licencia = '';
@@ -1117,6 +1190,9 @@
                 this.tituloModal5 = '';
                 this.perito_dro = '';
                 this.f_planos_obra = '';
+                this.f_ingreso = '';
+                this.f_salida='';
+                this.num_licencia = '';
                 
 
             },
@@ -1162,39 +1238,38 @@
                 }this.selectArquitectos();
 
             },
-             abrirModal3(licencias,accion,lote){
-             switch(licencias){
-                    case "lote":
-                    {
-                        switch(accion){
-                            
-                            case 'observacion':
-                            {
-                                this.modal3 =1;
-                                this.tituloModal3='Agregar Observación';
-                                this.observacion='';
-                                this.usuario='';
-                                this.lote_id=lote;
-                                this.tipoAccion= 3;
-                                break;
+            abrirModal3(licencias,accion,lote){
+                switch(licencias){
+                        case "lote":
+                        {
+                            switch(accion){
+                                
+                                case 'observacion':
+                                {
+                                    this.modal3 =1;
+                                    this.tituloModal3='Agregar Observación';
+                                    this.observacion='';
+                                    this.usuario='';
+                                    this.lote_id=lote;
+                                    this.tipoAccion= 3;
+                                    break;
+                                }
+                                case 'ver_todo':
+                                {
+                                    this.modal3 =1;
+                                    this.tituloModal3='Consulta Observaciones';
+                                    this.tipoAccion= 4;
+                                    break;  
+                                }
+                                
                             }
-                             case 'ver_todo':
-                            {
-                                this.modal3 =1;
-                                this.tituloModal3='Consulta Observaciones';
-                                this.tipoAccion= 4;
-                                break;  
-                            }
-                            
                         }
-                    }
-                 
-             }
-                
-         },
+                    
+                }    
+            },
 
-         abrirModal5(licencias,accion,lote){
-             switch(licencias){
+            abrirModal5(licencias,accion,lote){
+                switch(licencias){
                     case "lote":
                     {
                         switch(accion){
@@ -1205,6 +1280,17 @@
                                 this.tituloModal5='Asignación en masa';
                                 this.perito_dro = '';
                                 this.f_planos_obra='';
+                                this.tipoAccion = 1;
+                                break;
+                            }
+                            case 'asignarLicencias':
+                            {
+                                this.modal5 =1;
+                                this.tituloModal5='Asignación de licencias';
+                                this.f_ingreso = '';
+                                this.f_salida='';
+                                this.num_licencia = '';
+                                this.tipoAccion = 2;
                                 break;
                             }
                              
@@ -1212,7 +1298,7 @@
                         }
                     }
                  
-             }
+            }
                 
          },
             abrirModal2(licencias, accion,data =[]){
@@ -1220,12 +1306,12 @@
                     case "lote":
                     {
                         switch(accion){
-                           
+                            
                             case 'ver':
                             {
                                 this.modal2 =1;
                                 this.tituloModal2='Consulta ';
-                                 if(data['f_planos_obra'])
+                                    if(data['f_planos_obra'])
                                     this.f_planos_obra=moment(data['f_planos_obra']).locale('es').format('DD/MMM/YYYY');
                                 if(data['f_planos'])
                                     this.f_planos=moment(data['f_planos']).locale('es').format('DD/MMM/YYYY');
@@ -1256,8 +1342,8 @@
                         }
                     }
                 }this.selectArquitectos();
-                 this.selectUltimoComentario(data['id']);
-                 this.listarObservacion(1, data['id']);
+                    this.selectUltimoComentario(data['id']);
+                    this.listarObservacion(1, data['id']);
 
             }
         

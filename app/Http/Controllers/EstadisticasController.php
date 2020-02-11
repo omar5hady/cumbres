@@ -18,57 +18,58 @@ class EstadisticasController extends Controller
     public function estad_datos_extra(Request $request)
     {
         if(!$request->ajax())return redirect('/');
+        
         $proyecto = $request->buscar;
         $etapa = $request->b_etapa;
 
         if($etapa == "" && $proyecto!=""){
-        $edades = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                ->join('lotes','creditos.lote_id','=','lotes.id')
-                ->join('contratos','creditos.id','=','contratos.id')
-                ->select(DB::raw('SUM(datos_extra.rang010) as sum010'),
-                    DB::raw('SUM(datos_extra.rang1120) as sum1120'),
-                    DB::raw('SUM(datos_extra.rang21) as sum21'))
-                ->where('lotes.fraccionamiento_id',$proyecto)
-                ->where('contratos.status','=',3)
-                ->get();
-        
-        $discapacitados = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                ->join('lotes','creditos.lote_id','=','lotes.id')
-                ->join('contratos','creditos.id','=','contratos.id')
-                ->where('lotes.fraccionamiento_id',$proyecto)
-                ->where('datos_extra.persona_discap','=',1)
-                ->where('contratos.status','=',3)
-                ->get()->count();
-        
-        $silla_ruedas = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                ->join('lotes','creditos.lote_id','=','lotes.id')
-                ->join('contratos','creditos.id','=','contratos.id')
-                ->where('lotes.fraccionamiento_id',$proyecto)
-                ->where('datos_extra.silla_ruedas','=',1)
-                ->where('contratos.status','=',3)
-                ->get()->count();
+                $edades = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
+                        ->join('lotes','creditos.lote_id','=','lotes.id')
+                        ->join('contratos','creditos.id','=','contratos.id')
+                        ->select(DB::raw('SUM(datos_extra.rang010) as sum010'),
+                        DB::raw('SUM(datos_extra.rang1120) as sum1120'),
+                        DB::raw('SUM(datos_extra.rang21) as sum21'))
+                        ->where('lotes.fraccionamiento_id',$proyecto)
+                        ->where('contratos.status','=',3)
+                        ->get();
+                
+                $discapacitados = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
+                        ->join('lotes','creditos.lote_id','=','lotes.id')
+                        ->join('contratos','creditos.id','=','contratos.id')
+                        ->where('lotes.fraccionamiento_id',$proyecto)
+                        ->where('datos_extra.persona_discap','=',1)
+                        ->where('contratos.status','=',3)
+                        ->get()->count();
+                
+                $silla_ruedas = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
+                        ->join('lotes','creditos.lote_id','=','lotes.id')
+                        ->join('contratos','creditos.id','=','contratos.id')
+                        ->where('lotes.fraccionamiento_id',$proyecto)
+                        ->where('datos_extra.silla_ruedas','=',1)
+                        ->where('contratos.status','=',3)
+                        ->get()->count();
 
-        
-        $SinMascotas = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                ->join('lotes','creditos.lote_id','=','lotes.id')
-                ->join('contratos','creditos.id','=','contratos.id')
-                ->where('lotes.fraccionamiento_id',$proyecto)
-                ->where('datos_extra.mascota','=',0)
-                ->where('contratos.status','=',3)
-                ->get()->count();
+                
+                $SinMascotas = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
+                        ->join('lotes','creditos.lote_id','=','lotes.id')
+                        ->join('contratos','creditos.id','=','contratos.id')
+                        ->where('lotes.fraccionamiento_id',$proyecto)
+                        ->where('datos_extra.mascota','=',0)
+                        ->where('contratos.status','=',3)
+                        ->get()->count();
 
-        $mascotas = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
-                ->join('lotes','creditos.lote_id','=','lotes.id')
-                ->join('contratos','creditos.id','=','contratos.id')
-                ->select(
-                            DB::raw('SUM(datos_extra.ama_casa) as totalAmaCasa'),
-                            DB::raw('SUM(datos_extra.num_vehiculos) as totalAutos'),
-                            DB::raw('SUM(datos_extra.mascota) as sumMascota'),
-                            DB::raw('SUM(datos_extra.num_perros) as perros')
-                        )
-                ->where('lotes.fraccionamiento_id',$proyecto)
-                ->where('contratos.status','=',3)
-                ->get();
+                $mascotas = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
+                        ->join('lotes','creditos.lote_id','=','lotes.id')
+                        ->join('contratos','creditos.id','=','contratos.id')
+                        ->select(
+                                DB::raw('SUM(datos_extra.ama_casa) as totalAmaCasa'),
+                                DB::raw('SUM(datos_extra.num_vehiculos) as totalAutos'),
+                                DB::raw('SUM(datos_extra.mascota) as sumMascota'),
+                                DB::raw('SUM(datos_extra.num_perros) as perros')
+                                )
+                        ->where('lotes.fraccionamiento_id',$proyecto)
+                        ->where('contratos.status','=',3)
+                        ->get();
         }else{
                 if($etapa!="" && $proyecto!=""){
                 $edades = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
@@ -184,6 +185,7 @@ class EstadisticasController extends Controller
         $mascotas[0]->sin_mascotas = $SinMascotas;
         $totalPersonas = $mascotas[0]->sin_mascotas + $mascotas[0]->sumMascota;
         $sinDiscap =$totalPersonas - $discapacitados;
+
         if($totalPersonas > 0){
                 $mascotas[0]->promedioPerros = $mascotas[0]->perros/$totalPersonas;
                 $promedioAutos = $mascotas[0]->totalAutos/$totalPersonas;
@@ -458,10 +460,5 @@ class EstadisticasController extends Controller
 
 
     }
-
-    /*public function afluencia(Request $request){
-        $mes = $request->mes;
-        $ano = $request->ano;
-    }*/
 
 }
