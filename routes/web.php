@@ -525,6 +525,7 @@ Route::group(['middleware' => ['auth']],function(){
         Route::get('/expediente/autorizadosIndex','ExpedienteController@indexAutorizados');
         Route::get('/expediente/liquidacionIndex','ExpedienteController@indexLiquidacion');
         Route::get('/expediente/ProgramacionIndex','ExpedienteController@indexProgramacion');
+        Route::get('/expediente/enviadosIndex','ExpedienteController@indexEnviados');
         Route::put('/expediente/ingresarExp','ExpedienteController@ingresarExp');
         Route::put('/expediente/inscInfonavit','ExpedienteController@inscribirInfonavit');
         Route::put('/expediente/InfonavitNoAplica','ExpedienteController@noAplicaInfonavit');

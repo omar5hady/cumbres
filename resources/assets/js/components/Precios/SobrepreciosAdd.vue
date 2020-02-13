@@ -19,7 +19,7 @@
                     <div class="form-group row">
                         <div class="col-md-6">
                             <div class="input-group">
-                                <input type="text" v-model="buscar" @keyup.enter="listarSobreprecios(1,buscar,'nombre')" class="form-control" placeholder="Texto a buscar">
+                                <input type="text" v-model="buscar" @keypress="listarSobreprecios(1,buscar,'nombre')" class="form-control" placeholder="Texto a buscar">
                                 <button type="submit" @click="listarSobreprecios(1,buscar,'nombre')" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                             </div>
                         </div>

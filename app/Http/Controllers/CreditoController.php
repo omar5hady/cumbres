@@ -601,6 +601,7 @@ class CreditoController extends Controller
                             ->join('personal','creditos.prospecto_id','=','personal.id')
                             ->join('clientes','creditos.prospecto_id','=','clientes.id')
                             ->join('personal as v','clientes.vendedor_id','v.id')
+                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                             ->select('creditos.id','creditos.prospecto_id','creditos.num_dep_economicos','creditos.tipo_economia',
                                 'creditos.nombre_primera_ref','creditos.telefono_primera_ref','creditos.celular_primera_ref',
                                 'creditos.nombre_segunda_ref','creditos.telefono_segunda_ref','creditos.celular_segunda_ref',
@@ -613,7 +614,7 @@ class CreditoController extends Controller
                                 'creditos.fraccionamiento','clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos')
                                 ->where('creditos.status','!=','1')
                                 ->where('inst_seleccionadas.elegido','=','1')
-                                ->where('creditos.fraccionamiento', '=',  $buscar)
+                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
                                 ->where('creditos.etapa','=',$b_etapa)
                                 ->where('creditos.manzana', '=', $b_manzana)
                                 ->where('creditos.num_lote','=',$b_lote)
@@ -623,10 +624,11 @@ class CreditoController extends Controller
                                 ->join('personal','creditos.prospecto_id','=','personal.id')
                                 ->join('clientes','creditos.prospecto_id','=','clientes.id')
                                 ->join('personal as v','clientes.vendedor_id','v.id')
+                                ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                 ->select('creditos.id')
                                 ->where('creditos.status','!=','1')
                                 ->where('inst_seleccionadas.elegido','=','1')
-                                ->where('creditos.fraccionamiento', '=',  $buscar)
+                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
                                 ->where('creditos.etapa','=',$b_etapa)
                                 ->where('creditos.manzana', '=', $b_manzana)
                                 ->where('creditos.num_lote','=',$b_lote)
@@ -639,6 +641,7 @@ class CreditoController extends Controller
                                 ->join('personal','creditos.prospecto_id','=','personal.id')
                                 ->join('clientes','creditos.prospecto_id','=','clientes.id')
                                 ->join('personal as v','clientes.vendedor_id','v.id')
+                                ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                 ->select('creditos.id','creditos.prospecto_id','creditos.num_dep_economicos','creditos.tipo_economia',
                                     'creditos.nombre_primera_ref','creditos.telefono_primera_ref','creditos.celular_primera_ref',
                                     'creditos.nombre_segunda_ref','creditos.telefono_segunda_ref','creditos.celular_segunda_ref',
@@ -651,7 +654,7 @@ class CreditoController extends Controller
                                     'creditos.fraccionamiento','clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos')
                                     ->where('creditos.status','!=','1')
                                     ->where('inst_seleccionadas.elegido','=','1')
-                                    ->where('creditos.fraccionamiento', '=',  $buscar)
+                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
                                     ->where('creditos.etapa','like','%'.$b_etapa.'%')
                                     ->where('creditos.manzana', '=', $b_manzana)
                                     ->orderBy('id','desc')->paginate(8);
@@ -660,10 +663,11 @@ class CreditoController extends Controller
                                     ->join('personal','creditos.prospecto_id','=','personal.id')
                                     ->join('clientes','creditos.prospecto_id','=','clientes.id')
                                     ->join('personal as v','clientes.vendedor_id','v.id')
+                                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                     ->select('creditos.id')
                                     ->where('creditos.status','!=','1')
                                     ->where('inst_seleccionadas.elegido','=','1')
-                                    ->where('creditos.fraccionamiento', '=',  $buscar)
+                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
                                     ->where('creditos.etapa','like','%'.$b_etapa.'%')
                                     ->where('creditos.manzana', '=', $b_manzana)
                                     ->count();
@@ -674,6 +678,7 @@ class CreditoController extends Controller
                                     ->join('personal','creditos.prospecto_id','=','personal.id')
                                     ->join('clientes','creditos.prospecto_id','=','clientes.id')
                                     ->join('personal as v','clientes.vendedor_id','v.id')
+                                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                     ->select('creditos.id','creditos.prospecto_id','creditos.num_dep_economicos','creditos.tipo_economia',
                                         'creditos.nombre_primera_ref','creditos.telefono_primera_ref','creditos.celular_primera_ref',
                                         'creditos.nombre_segunda_ref','creditos.telefono_segunda_ref','creditos.celular_segunda_ref',
@@ -686,7 +691,7 @@ class CreditoController extends Controller
                                         'creditos.fraccionamiento','clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos')
                                         ->where('creditos.status','!=','1')
                                         ->where('inst_seleccionadas.elegido','=','1')
-                                        ->where('creditos.fraccionamiento', '=',  $buscar)
+                                        ->where('lotes.fraccionamiento_id', '=',  $buscar)
                                         ->where('creditos.etapa','like','%'.$b_etapa.'%')
                                         ->orderBy('id','desc')->paginate(8);
     
@@ -694,10 +699,11 @@ class CreditoController extends Controller
                                         ->join('personal','creditos.prospecto_id','=','personal.id')
                                         ->join('clientes','creditos.prospecto_id','=','clientes.id')
                                         ->join('personal as v','clientes.vendedor_id','v.id')
+                                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                         ->select('creditos.id')
                                         ->where('creditos.status','!=','1')
                                         ->where('inst_seleccionadas.elegido','=','1')
-                                        ->where('creditos.fraccionamiento', '=',  $buscar)
+                                        ->where('lotes.fraccionamiento_id', '=',  $buscar)
                                         ->where('creditos.etapa','like','%'.$b_etapa.'%')
                                         ->count();
                                 }
@@ -707,6 +713,7 @@ class CreditoController extends Controller
                                         ->join('personal','creditos.prospecto_id','=','personal.id')
                                         ->join('clientes','creditos.prospecto_id','=','clientes.id')
                                         ->join('personal as v','clientes.vendedor_id','v.id')
+                                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                         ->select('creditos.id','creditos.prospecto_id','creditos.num_dep_economicos','creditos.tipo_economia',
                                             'creditos.nombre_primera_ref','creditos.telefono_primera_ref','creditos.celular_primera_ref',
                                             'creditos.nombre_segunda_ref','creditos.telefono_segunda_ref','creditos.celular_segunda_ref',
@@ -719,7 +726,7 @@ class CreditoController extends Controller
                                             'creditos.fraccionamiento','clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos')
                                             ->where('creditos.status','!=','1')
                                             ->where('inst_seleccionadas.elegido','=','1')
-                                            ->where('creditos.fraccionamiento', '=',  $buscar)
+                                            ->where('lotes.fraccionamiento_id', '=',  $buscar)
                                             ->where('creditos.manzana', '=', $b_manzana)
                                             ->orderBy('id','desc')->paginate(8);
     
@@ -727,10 +734,11 @@ class CreditoController extends Controller
                                             ->join('personal','creditos.prospecto_id','=','personal.id')
                                             ->join('clientes','creditos.prospecto_id','=','clientes.id')
                                             ->join('personal as v','clientes.vendedor_id','v.id')
+                                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                             ->select('creditos.id')
                                             ->where('creditos.status','!=','1')
                                             ->where('inst_seleccionadas.elegido','=','1')
-                                            ->where('creditos.fraccionamiento', '=',  $buscar)
+                                            ->where('lotes.fraccionamiento_id', '=',  $buscar)
                                             ->where('creditos.manzana', '=', $b_manzana)
                                             ->count();
                                     }
@@ -740,6 +748,7 @@ class CreditoController extends Controller
                                             ->join('personal','creditos.prospecto_id','=','personal.id')
                                             ->join('clientes','creditos.prospecto_id','=','clientes.id')
                                             ->join('personal as v','clientes.vendedor_id','v.id')
+                                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                             ->select('creditos.id','creditos.prospecto_id','creditos.num_dep_economicos','creditos.tipo_economia',
                                                 'creditos.nombre_primera_ref','creditos.telefono_primera_ref','creditos.celular_primera_ref',
                                                 'creditos.nombre_segunda_ref','creditos.telefono_segunda_ref','creditos.celular_segunda_ref',
@@ -752,7 +761,7 @@ class CreditoController extends Controller
                                                 'creditos.fraccionamiento','clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos')
                                                 ->where('creditos.status','!=','1')
                                                 ->where('inst_seleccionadas.elegido','=','1')
-                                                ->where('creditos.fraccionamiento', '=',  $buscar)
+                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
                                                 ->where('creditos.num_lote','=',$b_lote)
                                                 ->orderBy('id','desc')->paginate(8);
     
@@ -760,10 +769,11 @@ class CreditoController extends Controller
                                             ->join('personal','creditos.prospecto_id','=','personal.id')
                                             ->join('clientes','creditos.prospecto_id','=','clientes.id')
                                             ->join('personal as v','clientes.vendedor_id','v.id')
+                                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                             ->select('creditos.id')
                                             ->where('creditos.status','!=','1')
                                             ->where('inst_seleccionadas.elegido','=','1')
-                                            ->where('creditos.fraccionamiento', '=',  $buscar)
+                                            ->where('lotes.fraccionamiento_id', '=',  $buscar)
                                             ->where('creditos.num_lote','=',$b_lote)
                                             ->count();
                                         }
@@ -772,6 +782,7 @@ class CreditoController extends Controller
                                             ->join('personal','creditos.prospecto_id','=','personal.id')
                                             ->join('clientes','creditos.prospecto_id','=','clientes.id')
                                             ->join('personal as v','clientes.vendedor_id','v.id')
+                                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                             ->select('creditos.id','creditos.prospecto_id','creditos.num_dep_economicos','creditos.tipo_economia',
                                                 'creditos.nombre_primera_ref','creditos.telefono_primera_ref','creditos.celular_primera_ref',
                                                 'creditos.nombre_segunda_ref','creditos.telefono_segunda_ref','creditos.celular_segunda_ref',
@@ -784,17 +795,18 @@ class CreditoController extends Controller
                                                 'creditos.fraccionamiento','clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos')
                                                 ->where('creditos.status','!=','1')
                                                 ->where('inst_seleccionadas.elegido','=','1')
-                                                ->where('creditos.fraccionamiento', '=',  $buscar)
+                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
                                                 ->orderBy('id','desc')->paginate(8);
                                                 
                                                 $contadorCreditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
                                                 ->join('personal','creditos.prospecto_id','=','personal.id')
                                                 ->join('clientes','creditos.prospecto_id','=','clientes.id')
                                                 ->join('personal as v','clientes.vendedor_id','v.id')
+                                                ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                                 ->select('creditos.id')
                                                 ->where('creditos.status','!=','1')
                                                 ->where('inst_seleccionadas.elegido','=','1')
-                                                ->where('creditos.fraccionamiento', '=',  $buscar)
+                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
                                                 ->count();
                                         }
                                     }
@@ -988,6 +1000,7 @@ class CreditoController extends Controller
                             ->join('personal','creditos.prospecto_id','=','personal.id')
                             ->join('clientes','creditos.prospecto_id','=','clientes.id')
                             ->join('personal as v','clientes.vendedor_id','v.id')
+                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                             ->select('creditos.id','creditos.prospecto_id','creditos.num_dep_economicos','creditos.tipo_economia',
                                 'creditos.nombre_primera_ref','creditos.telefono_primera_ref','creditos.celular_primera_ref',
                                 'creditos.nombre_segunda_ref','creditos.telefono_segunda_ref','creditos.celular_segunda_ref',
@@ -1000,7 +1013,7 @@ class CreditoController extends Controller
                                 'creditos.fraccionamiento','clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos')
                                 ->where('creditos.status','=','1')
                                 ->where('inst_seleccionadas.elegido','=','1')
-                                ->where('creditos.fraccionamiento', '=',  $buscar)
+                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
                                 ->where('creditos.etapa','=',$b_etapa)
                                 ->where('creditos.manzana', '=', $b_manzana)
                                 ->where('creditos.num_lote','=',$b_lote)
@@ -1010,10 +1023,11 @@ class CreditoController extends Controller
                             ->join('personal','creditos.prospecto_id','=','personal.id')
                             ->join('clientes','creditos.prospecto_id','=','clientes.id')
                             ->join('personal as v','clientes.vendedor_id','v.id')
+                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                             ->select('creditos.id')
                             ->where('creditos.status','=','1')
                             ->where('inst_seleccionadas.elegido','=','1')
-                            ->where('creditos.fraccionamiento', '=',  $buscar)
+                            ->where('lotes.fraccionamiento_id', '=',  $buscar)
                             ->where('creditos.etapa','=',$b_etapa)
                             ->where('creditos.manzana', '=', $b_manzana)
                             ->where('creditos.num_lote','=',$b_lote)
@@ -1026,6 +1040,7 @@ class CreditoController extends Controller
                                 ->join('personal','creditos.prospecto_id','=','personal.id')
                                 ->join('clientes','creditos.prospecto_id','=','clientes.id')
                                 ->join('personal as v','clientes.vendedor_id','v.id')
+                                ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                 ->select('creditos.id','creditos.prospecto_id','creditos.num_dep_economicos','creditos.tipo_economia',
                                     'creditos.nombre_primera_ref','creditos.telefono_primera_ref','creditos.celular_primera_ref',
                                     'creditos.nombre_segunda_ref','creditos.telefono_segunda_ref','creditos.celular_segunda_ref',
@@ -1038,7 +1053,7 @@ class CreditoController extends Controller
                                     'creditos.fraccionamiento','clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos')
                                     ->where('creditos.status','=','1')
                                     ->where('inst_seleccionadas.elegido','=','1')
-                                    ->where('creditos.fraccionamiento', '=',  $buscar)
+                                    ->where('lotes.fraccionamiento_id', '=',  $buscar)
                                     ->where('creditos.etapa','like','%'.$b_etapa.'%')
                                     ->where('creditos.manzana', '=', $b_manzana)
                                     ->orderBy('id','desc')->paginate(8);
@@ -1047,10 +1062,11 @@ class CreditoController extends Controller
                             ->join('personal','creditos.prospecto_id','=','personal.id')
                             ->join('clientes','creditos.prospecto_id','=','clientes.id')
                             ->join('personal as v','clientes.vendedor_id','v.id')
+                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                             ->select('creditos.id')
                             ->where('creditos.status','=','1')
                             ->where('inst_seleccionadas.elegido','=','1')
-                            ->where('creditos.fraccionamiento', '=',  $buscar)
+                            ->where('lotes.fraccionamiento_id', '=',  $buscar)
                             ->where('creditos.etapa','like','%'.$b_etapa.'%')
                             ->where('creditos.manzana', '=', $b_manzana)
                             ->count();
@@ -1061,6 +1077,7 @@ class CreditoController extends Controller
                                     ->join('personal','creditos.prospecto_id','=','personal.id')
                                     ->join('clientes','creditos.prospecto_id','=','clientes.id')
                                     ->join('personal as v','clientes.vendedor_id','v.id')
+                                    ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                     ->select('creditos.id','creditos.prospecto_id','creditos.num_dep_economicos','creditos.tipo_economia',
                                         'creditos.nombre_primera_ref','creditos.telefono_primera_ref','creditos.celular_primera_ref',
                                         'creditos.nombre_segunda_ref','creditos.telefono_segunda_ref','creditos.celular_segunda_ref',
@@ -1073,7 +1090,7 @@ class CreditoController extends Controller
                                         'creditos.fraccionamiento','clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos')
                                         ->where('creditos.status','=','1')
                                         ->where('inst_seleccionadas.elegido','=','1')
-                                        ->where('creditos.fraccionamiento', '=',  $buscar)
+                                        ->where('lotes.fraccionamiento_id', '=',  $buscar)
                                         ->where('creditos.etapa','like','%'.$b_etapa.'%')
                                         ->orderBy('id','desc')->paginate(8);
     
@@ -1081,10 +1098,11 @@ class CreditoController extends Controller
                                         ->join('personal','creditos.prospecto_id','=','personal.id')
                                         ->join('clientes','creditos.prospecto_id','=','clientes.id')
                                         ->join('personal as v','clientes.vendedor_id','v.id')
+                                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                         ->select('creditos.id')
                                         ->where('creditos.status','=','1')
                                         ->where('inst_seleccionadas.elegido','=','1')
-                                        ->where('creditos.fraccionamiento', '=',  $buscar)
+                                        ->where('lotes.fraccionamiento_id', '=',  $buscar)
                                         ->where('creditos.etapa','like','%'.$b_etapa.'%')
                                         ->count();
                                 }
@@ -1094,6 +1112,7 @@ class CreditoController extends Controller
                                         ->join('personal','creditos.prospecto_id','=','personal.id')
                                         ->join('clientes','creditos.prospecto_id','=','clientes.id')
                                         ->join('personal as v','clientes.vendedor_id','v.id')
+                                        ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                         ->select('creditos.id','creditos.prospecto_id','creditos.num_dep_economicos','creditos.tipo_economia',
                                             'creditos.nombre_primera_ref','creditos.telefono_primera_ref','creditos.celular_primera_ref',
                                             'creditos.nombre_segunda_ref','creditos.telefono_segunda_ref','creditos.celular_segunda_ref',
@@ -1106,7 +1125,7 @@ class CreditoController extends Controller
                                             'creditos.fraccionamiento','clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos')
                                             ->where('creditos.status','=','1')
                                             ->where('inst_seleccionadas.elegido','=','1')
-                                            ->where('creditos.fraccionamiento', '=',  $buscar)
+                                            ->where('lotes.fraccionamiento_id', '=',  $buscar)
                                             ->where('creditos.manzana', '=', $b_manzana)
                                             ->orderBy('id','desc')->paginate(8);
     
@@ -1114,10 +1133,11 @@ class CreditoController extends Controller
                                             ->join('personal','creditos.prospecto_id','=','personal.id')
                                             ->join('clientes','creditos.prospecto_id','=','clientes.id')
                                             ->join('personal as v','clientes.vendedor_id','v.id')
+                                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                             ->select('creditos.id')
                                             ->where('creditos.status','=','1')
                                             ->where('inst_seleccionadas.elegido','=','1')
-                                            ->where('creditos.fraccionamiento', '=',  $buscar)
+                                            ->where('lotes.fraccionamiento_id', '=',  $buscar)
                                             ->where('creditos.manzana', '=', $b_manzana)
                                             ->count();
                                     }
@@ -1127,6 +1147,7 @@ class CreditoController extends Controller
                                             ->join('personal','creditos.prospecto_id','=','personal.id')
                                             ->join('clientes','creditos.prospecto_id','=','clientes.id')
                                             ->join('personal as v','clientes.vendedor_id','v.id')
+                                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                             ->select('creditos.id','creditos.prospecto_id','creditos.num_dep_economicos','creditos.tipo_economia',
                                                 'creditos.nombre_primera_ref','creditos.telefono_primera_ref','creditos.celular_primera_ref',
                                                 'creditos.nombre_segunda_ref','creditos.telefono_segunda_ref','creditos.celular_segunda_ref',
@@ -1139,7 +1160,7 @@ class CreditoController extends Controller
                                                 'creditos.fraccionamiento','clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos')
                                                 ->where('creditos.status','=','1')
                                                 ->where('inst_seleccionadas.elegido','=','1')
-                                                ->where('creditos.fraccionamiento', '=',  $buscar)
+                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
                                                 ->where('creditos.num_lote','=',$b_lote)
                                                 ->orderBy('id','desc')->paginate(8);
     
@@ -1147,10 +1168,11 @@ class CreditoController extends Controller
                                                 ->join('personal','creditos.prospecto_id','=','personal.id')
                                                 ->join('clientes','creditos.prospecto_id','=','clientes.id')
                                                 ->join('personal as v','clientes.vendedor_id','v.id')
+                                                ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                                 ->select('creditos.id')
                                                 ->where('creditos.status','=','1')
                                                 ->where('inst_seleccionadas.elegido','=','1')
-                                                ->where('creditos.fraccionamiento', '=',  $buscar)
+                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
                                                 ->where('creditos.num_lote','=',$b_lote)
                                                 ->count();
                                         }
@@ -1159,6 +1181,7 @@ class CreditoController extends Controller
                                             ->join('personal','creditos.prospecto_id','=','personal.id')
                                             ->join('clientes','creditos.prospecto_id','=','clientes.id')
                                             ->join('personal as v','clientes.vendedor_id','v.id')
+                                            ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                             ->select('creditos.id','creditos.prospecto_id','creditos.num_dep_economicos','creditos.tipo_economia',
                                                 'creditos.nombre_primera_ref','creditos.telefono_primera_ref','creditos.celular_primera_ref',
                                                 'creditos.nombre_segunda_ref','creditos.telefono_segunda_ref','creditos.celular_segunda_ref',
@@ -1171,17 +1194,18 @@ class CreditoController extends Controller
                                                 'creditos.fraccionamiento','clientes.id as prospecto_id','v.nombre as vendedor_nombre','v.apellidos as vendedor_apellidos')
                                                 ->where('creditos.status','=','1')
                                                 ->where('inst_seleccionadas.elegido','=','1')
-                                                ->where('creditos.fraccionamiento', '=',  $buscar)
+                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
                                                 ->orderBy('id','desc')->paginate(8);
                                                 
                                                 $contadorCreditos = Credito::join('inst_seleccionadas','creditos.id','=','inst_seleccionadas.credito_id')
                                                 ->join('personal','creditos.prospecto_id','=','personal.id')
                                                 ->join('clientes','creditos.prospecto_id','=','clientes.id')
                                                 ->join('personal as v','clientes.vendedor_id','v.id')
+                                                ->join('lotes', 'creditos.lote_id', '=', 'lotes.id')
                                                 ->select('creditos.id')
                                                 ->where('creditos.status','=','1')
                                                 ->where('inst_seleccionadas.elegido','=','1')
-                                                ->where('creditos.fraccionamiento', '=',  $buscar)
+                                                ->where('lotes.fraccionamiento_id', '=',  $buscar)
                                                 ->count();
                                         }
                                     }

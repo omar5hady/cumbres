@@ -433,7 +433,7 @@ class EstadisticasController extends Controller
                 $individualizadas = $individualizadas + $indiviDirecto;
         }
 
-        //setlocale(LC_TIME, 'es_MX.utf8');
+        setlocale(LC_TIME, 'es_MX.utf8');
         if($fecha){
                 $tiempo = new Carbon($fecha);
                 $fecha = $tiempo->formatLocalized('%d de %B de %Y');

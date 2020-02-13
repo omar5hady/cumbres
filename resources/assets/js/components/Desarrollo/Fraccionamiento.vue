@@ -654,6 +654,7 @@
                                 this.ciudad=data['ciudad'];
                                 this.delegacion=data['delegacion'];
                                 this.cp=data['cp'];
+                                this.selectCiudades(this.estado);
                                 break;
                             }
 

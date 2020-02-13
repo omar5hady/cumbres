@@ -9,7 +9,7 @@
                 <div class="card scroll-box">
                     <div class="card-header" v-if="deposito==0">
                         <i class="fa fa-align-justify"></i> Pagares
-                        <a :href="'/pagares/excel?buscar=' + buscar + '&buscar2=' + buscar2 + '&b_vencidos=' + b_vencidos + '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel Pagares</a>
+                        <a :href="'/pagares/excel?buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3 + '&b_vencidos=' + b_vencidos + '&criterio=' + criterio"  class="btn btn-success"><i class="fa fa-file-text"></i> Excel Pagares</a>
                          <button type="button" class="btn btn-default" @click="abrirModal('depositos')">
                             Excel Depositos
                         </button>
@@ -748,7 +748,7 @@
                 me.monto_pagare=0;
                 me.pago_id=0;
                 me.diferencia=0;
-                var url = '/pagares?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2 + '&b_vencidos=' + b_vencidos + '&criterio=' + criterio;
+                var url = '/pagares?page=' + page + '&buscar=' + buscar + '&buscar2=' + buscar2 + '&buscar3=' + buscar3 + '&b_vencidos=' + b_vencidos + '&criterio=' + criterio;
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayPagares = respuesta.pagares.data;

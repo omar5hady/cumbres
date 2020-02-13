@@ -59,12 +59,15 @@ class EntregaController extends Controller
                     ]
                 ];
 
-                $users = User::select('id')
-                    ->where('entregas','=','1')->get();
+                // $users = User::select('id')
+                //     ->where('entregas','=','1')->get();
 
-                foreach($users as $notificar){
-                    User::findOrFail($notificar->id)->notify(new NotifyAdmin($arregloAceptado));
-                }
+                // foreach($users as $notificar){
+                //     User::findOrFail($notificar->id)->notify(new NotifyAdmin($arregloAceptado));
+                // }
+
+                User::findOrFail(25042)->notify(new NotifyAdmin($arregloAceptado));
+                User::findOrFail(25695)->notify(new NotifyAdmin($arregloAceptado));
 
             DB::commit();
         } catch (Exception $e){
@@ -1361,6 +1364,9 @@ class EntregaController extends Controller
                 ];
 
                     User::findOrFail(25694)->notify(new NotifyAdmin($arregloAceptado));
+                    User::findOrFail(26001)->notify(new NotifyAdmin($arregloAceptado));
+                    User::findOrFail(25695)->notify(new NotifyAdmin($arregloAceptado));
+                    User::findOrFail(26000)->notify(new NotifyAdmin($arregloAceptado));
 
     }
 

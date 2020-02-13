@@ -494,7 +494,7 @@
                     'to' : 0,
                 },
                 offset : 3,
-                criterio : 'modelos.nombre', 
+                criterio : 'lotes.fraccionamiento_id', 
                 buscar2 : '',
                 buscar3 : '',
                 buscar : '',

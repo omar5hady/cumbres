@@ -556,7 +556,7 @@ class LicenciasController extends Controller
                 ->orderBy('licencias.cambios', 'DESC')
                 ->orderBy('fraccionamientos.nombre', 'DESC')
                 ->orderBy('lotes.manzana', 'ASC')
-                ->orderBy('lotes.num_lote', 'ASC')->paginate(8);
+                ->orderBy('lotes.num_lote', 'ASC')->paginate(15);
         } else {
             if ($criterio != 'lotes.fraccionamiento_id') {
                 $actas = Lote::join('fraccionamientos', 'lotes.fraccionamiento_id', '=', 'fraccionamientos.id')
@@ -610,7 +610,7 @@ class LicenciasController extends Controller
                     ->orderBy('licencias.cambios', 'DESC')
                     ->orderBy('fraccionamientos.nombre', 'DESC')
                     ->orderBy('lotes.manzana', 'ASC')
-                    ->orderBy('lotes.num_lote', 'ASC')->paginate(8);
+                    ->orderBy('lotes.num_lote', 'ASC')->paginate(15);
             } else {
                 if ($criterio == 'licencias.term_ingreso' || $criterio == 'licencias.term_salida') {
                     $actas = Lote::join('fraccionamientos', 'lotes.fraccionamiento_id', '=', 'fraccionamientos.id')
@@ -664,7 +664,7 @@ class LicenciasController extends Controller
                         ->orderBy('licencias.cambios', 'DESC')
                         ->orderBy('fraccionamientos.nombre', 'DESC')
                         ->orderBy('lotes.manzana', 'ASC')
-                        ->orderBy('lotes.num_lote', 'ASC')->paginate(8);
+                        ->orderBy('lotes.num_lote', 'ASC')->paginate(15);
                 } else {
                     if ($criterio == 'lotes.fraccionamiento_id') {
                         $actas = Lote::join('fraccionamientos', 'lotes.fraccionamiento_id', '=', 'fraccionamientos.id')
@@ -720,7 +720,7 @@ class LicenciasController extends Controller
                             ->orderBy('licencias.cambios', 'DESC')
                             ->orderBy('fraccionamientos.nombre', 'DESC')
                             ->orderBy('lotes.manzana', 'ASC')
-                            ->orderBy('lotes.num_lote', 'ASC')->paginate(8);
+                            ->orderBy('lotes.num_lote', 'ASC')->paginate(15);
                     }
                 }
             }

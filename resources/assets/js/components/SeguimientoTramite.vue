@@ -25,6 +25,10 @@
                             <li class="nav-item">
                                 <a class="nav-link" id="programacion-tab" data-toggle="tab" href="#programacion" role="tab" aria-controls="programacion" aria-selected="false" v-text="'Programación de firma (' + contadorProgramacion +')'"></a>
                             </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" id="enviados-tab" data-toggle="tab" href="#enviados" role="tab" aria-controls="enviados" aria-selected="false" v-text="'Historial (' + contadorEnviados +')'"></a>
+                            </li>
                         </ul>
 
                         <div class="tab-content" id="myTab1Content">
@@ -710,6 +714,187 @@
                                 
                                 </nav>
                             </div>
+
+
+
+                            <!-- Listado de Historial -->
+                            <div class="tab-pane fade" id="enviados" role="tabpanel" aria-labelledby="enviados-tab">
+                                <div class="form-group row">
+                                    <div class="col-md-10">
+                                        <div class="input-group">
+                                            <!--Criterios para el listado de busqueda -->
+                                            <select class="form-control col-md-5" v-model="criterio" @click="selectFraccionamientos()">
+                                                <option value="lotes.fraccionamiento_id">Proyecto</option>
+                                                <option value="c.nombre">Cliente</option>
+                                                <option value="g.nombre">Gestor</option>
+                                                <option value="contratos.id"># Folio</option>
+                                            </select>
+
+                                            
+                                            <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="buscar" @click="selectEtapa(buscar)">
+                                                <option value="">Seleccione</option>
+                                                <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                                            </select>
+
+                                            <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_etapa"> 
+                                                <option value="">Etapa</option>
+                                                <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
+                                            </select>
+
+                                            
+                                            <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_manzana" class="form-control" placeholder="Manzana a buscar">
+                                            <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
+
+                                            <input v-else type="text"  v-model="buscar" @keyup.enter="listarEnviados(1,buscar,b_etapa,b_manzana,b_lote,criterio),listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
+                                            <button type="submit" @click="listarEnviados(1,buscar,b_etapa,b_manzana,b_lote,criterio),listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                                        
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table2 table-bordered table-striped table-sm">
+                                        <thead>
+                                            <tr> 
+                                                <th># Ref</th>
+                                                <th>Cliente</th>
+                                                <th>Asesor</th>
+                                                <th>Proyecto</th>
+                                                <th>Etapa</th>
+                                                <th>Manzana</th>
+                                                <th># Lote</th>
+                                                <th>Dirección</th>
+                                                <th>Avance obra</th>
+                                                <th>Firma Contrato</th>
+                                                <th>Resultado avaluo</th>
+                                                <th>Aviso preventivo</th>
+                                                <th>Ingreso expediente</th>
+                                                <th>Tipo de Crédito</th>
+                                                <th>Institución de Fin.</th>
+                                                <th>Monto autorizado</th>
+                                                <th>Fecha vigencia</th>
+                                                <th>Valor de la vivienda</th>
+                                                <th>Valor escriturar</th>
+                                                <th>Inscripción Infonavit</th>
+                                                <th>Liquidación</th>
+                                                <th>Firma de Escrituras</th>
+                                                <th>Saldo</th>
+                                                <th>Observaciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="programacion in arrayEnviados" :key="programacion.id"> 
+                                                
+                                                <td class="td2">
+                                                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{programacion.folio}}</a>
+                                                    <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                        <a class="dropdown-item" v-if="programacion.pdf != '' && programacion.pdf != null"  v-bind:href="'/downloadAvaluo/'+programacion.pdf">Avaluo</a>
+                                                        <a class="dropdown-item" @click="abrirPDF(programacion.folio)">Estado de cuenta</a>
+                                                        <a class="dropdown-item" target="_blank" v-bind:href="'/contratoCompraVenta/pdf/'+ programacion.folio">Contrato de compra venta</a>
+                                                        <a class="dropdown-item" target="_blank" v-bind:href="'/cartaServicios/pdf/'+ programacion.folio">Carta de servicios</a>
+                                                        <a class="dropdown-item" target="_blank" v-bind:href="'/serviciosTelecom/pdf/'+ programacion.folio">Servicios de telecomunición</a>
+                                                        <a class="dropdown-item" v-bind:href="'/descargarReglamento/contrato/'+ programacion.folio">Reglamento de la etapa</a>
+                                                        <a class="dropdown-item" @click="selectNombreArchivoModelo(programacion.folio)">Catalogo de especificaciones</a>
+                                                        <a v-if="programacion.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+ programacion.foto_predial">Predial</a>
+                                                        <a v-if="programacion.num_licencia" class="dropdown-item"  v-text="'Licencia: '+programacion.num_licencia" v-bind:href="'/downloadLicencias/'+programacion.foto_lic"></a>
+                                                    </div>
+                                                </td>
+                                                <td class="td2" v-text="programacion.nombre_cliente"></td>
+                                                <td class="td2" v-text="programacion.nombre_vendedor"></td>
+                                                <td class="td2" v-text="programacion.proyecto"></td>
+                                                <td class="td2" v-text="programacion.etapa"></td>
+                                                <td class="td2" v-text="programacion.manzana"></td>
+                                                <td class="td2" >
+                                                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">{{programacion.num_lote}}</a>
+                                                    <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 39px, 0px);">
+                                                        <a v-if ="programacion.foto_predial" class="dropdown-item" v-bind:href="'/downloadPredial/'+programacion.foto_predial">Descargar predial</a>
+                                                        <a v-if ="programacion.foto_lic" class="dropdown-item" v-bind:href="'/downloadLicencias/'+programacion.foto_lic">Descargar licencia</a>
+                                                        <a v-if ="programacion.foto_acta" class="dropdown-item" v-bind:href="'/downloadActa/'+programacion.foto_acta">Descargar Acta de termino</a>
+                                                    </div>
+                                                </td>
+                                                <td class="td2" v-text="programacion.calle + ' '+ programacion.numero + ' ' + programacion.interior"></td>
+                                                <td class="td2" v-text="programacion.avance_lote + '%'"></td>
+                                                <td class="td2" v-text="this.moment(programacion.fecha_status).locale('es').format('DD/MMM/YYYY')"></td>
+                                                
+                                                <td v-if="programacion.avaluo_preventivo!='0000-01-01'" class="td2">
+                                                    <span v-text="'$'+formatNumber(programacion.resultado)"></span>
+                                                        <!-- <button type="button" @click="abrirModal('avaluo',programacion)" class="btn btn-success btn-sm" title="Actualizar avaluo">
+                                                            <i class="fa fa-calendar-check-o"></i>
+                                                        </button> -->
+                                                </td>
+                                                <td v-if="programacion.avaluo_preventivo=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
+
+                                                <td v-if="programacion.aviso_prev=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
+                                                <td @dblclick="abrirModal('fecha_recibido',programacion)" v-if="programacion.aviso_prev!='0000-01-01' && !programacion.aviso_prev_venc" class="td2" v-text="'Fecha solicitud: ' 
+                                                + this.moment(programacion.aviso_prev).locale('es').format('DD/MMM/YYYY')"></td>
+
+                                                <td  @dblclick="abrirModal('fecha_recibido',programacion)" v-if="programacion.aviso_prev!='0000-01-01' && programacion.aviso_prev_venc" class="td2">
+                                                    
+                                                    <span v-if = "programacion.diferencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: ' 
+                                                    + this.moment(programacion.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
+
+                                                    <span v-if = "programacion.diferencia < 0 && programacion.diferencia >= -15 " class="badge2 badge-warning" v-text="'Fecha vencimiento: ' 
+                                                    + this.moment(programacion.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
+
+                                                    <span v-if = "programacion.diferencia < -15 " class="badge2 badge-success" v-text="'Fecha vencimiento: ' 
+                                                    + this.moment(programacion.aviso_prev_venc).locale('es').format('DD/MMM/YYYY')"></span>
+                                                    
+                                                </td>
+
+                                                <td class="td2" v-text="this.moment(programacion.fecha_ingreso).locale('es').format('DD/MMM/YYYY')"></td>
+                                                <td class="td2" v-text="programacion.tipo_credito"></td>
+                                                <td class="td2" v-text="programacion.institucion"></td>
+                                                <td class="td2" v-text="'$'+formatNumber(programacion.credito_solic)"></td>
+                                                
+                                                <td class="td2" v-if="band==0" @dblclick="band=1">
+                                                    
+                                                    <span v-if = "programacion.vigencia > 0" class="badge2 badge-danger" v-text="'Fecha vencimiento: ' 
+                                                    + this.moment(programacion.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
+
+                                                    <span v-if = "programacion.vigencia < 0 && programacion.vigencia >= -15 " class="badge2 badge-warning" v-text="'Fecha vencimiento: ' 
+                                                    + this.moment(programacion.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
+
+                                                    <span v-if = "programacion.vigencia < -15 " class="badge2 badge-success" v-text="'Fecha vencimiento: ' 
+                                                    + this.moment(programacion.fecha_vigencia).locale('es').format('DD/MMM/YYYY')"></span>
+                                                    
+                                                </td>
+                                                <td class="td2" v-if="band==1">
+                                                    <input type="date" @keyup.esc="band=0" @keyup.enter="actualizarVigencia(programacion.folio,$event.target.value)" :id="programacion.folio" :value="programacion.fecha_vigencia" class="form-control Fields" > 
+                                                </td>
+
+                                                <td class="td2" v-text="'$'+formatNumber(programacion.precio_venta)"></td>
+                                                <td class="td2" v-text="'$'+formatNumber(programacion.valor_escrituras)"></td>
+                                                
+                                                <template>
+                                                    <td v-if="programacion.fecha_infonavit!='0000-01-01'" class="td2" v-text="this.moment(programacion.fecha_infonavit).locale('es').format('DD/MMM/YYYY')"></td>
+                                                    <td v-if="programacion.fecha_infonavit=='0000-01-01'" class="td2" v-text="'No aplica'"></td>
+                                                </template>
+
+                                                <td class="td2">
+                                                  <a class="btn btn-warning btn-sm" target="_blank" v-bind:href="'/expediente/liquidacionPDF/'+programacion.folio">Imprimir</a>
+                                                </td>
+
+                                                
+                                                <td class="td2"  @click="abrirModal('firma_esc_act',programacion)" v-if="programacion.fecha_firma_esc" v-text="this.moment(programacion.fecha_firma_esc).locale('es').format('DD/MMM/YYYY')"></td>
+                                                <td class="td2" v-else>
+                                                    <button title="Programar Firma" type="button" class="btn btn-warning pull-right" 
+                                                    @click="abrirModal('firma_esc',programacion)">Generar</button>
+                                                </td>
+
+                                                <td class="td2" v-text="'$'+formatNumber(programacion.saldo)"></td>
+
+                                                <td class="td2">
+                                                    <button title="Ver todas las observaciones" type="button" class="btn btn-info pull-right" 
+                                                        @click="abrirModal3(programacion.folio)">Ver Observaciones</button>
+                                                </td>
+                                            </tr>                               
+                                        </tbody>
+                                    </table>  
+                                </div>
+                                <nav>
+                                
+                                </nav>
+                            </div>
+
 
                         </div>
                     </div>
@@ -1598,6 +1783,8 @@
                 totalEnganghe:[],
                 totalRestante:[],
 
+                arrayEnviados:[],
+
                 arrayFraccionamientos:[],
                 arrayEtapas:[],
                 arrayGastos:[],
@@ -1714,6 +1901,7 @@
                 contadorAutorizados : 0,
                 contadorLiquidacion : 0,
                 contadorProgramacion : 0,
+                contadorEnviados: 0,
                 
                
             }
@@ -2392,6 +2580,20 @@
                 
             },
 
+            listarEnviados(page, buscar, b_etapa, b_manzana, b_lote, criterio){
+                let me = this;
+                var url = '/expediente/enviadosIndex?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayEnviados = respuesta.contratos;
+                    me.contadorEnviados = respuesta.contador;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+                
+            },
+
             listarLiquidacion(page, buscar, b_etapa, b_manzana, b_lote, criterio){
                 let me = this;
                 var url = '/expediente/liquidacionIndex?page=' + page + '&buscar=' + buscar + '&b_etapa=' + b_etapa + '&b_manzana=' + b_manzana + '&b_lote=' + b_lote +  '&criterio=' + criterio;
@@ -2844,6 +3046,7 @@
             this.listarAutorizados(1, this.buscar, this.b_etapa, this.b_manzana, this.b_lote, this.criterio);
             this.listarLiquidacion(1, this.buscar, this.b_etapa, this.b_manzana, this.b_lote, this.criterio);
             this.listarProgramacion(1, this.buscar, this.b_etapa, this.b_manzana, this.b_lote, this.criterio);
+            this.listarEnviados(1, this.buscar, this.b_etapa, this.b_manzana, this.b_lote, this.criterio);
             
         }
     }

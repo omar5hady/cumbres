@@ -27,13 +27,16 @@
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
 
-                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_etapa"> 
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_etapa" @click="selectManzanas(buscar,b_etapa)"> 
                                         <option value="">Etapa</option>
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                     </select>
 
                                     
-                                    <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_manzana" class="form-control" placeholder="Manzana a buscar">
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" @keyup.enter="listarLotes(1,buscar,b_etapa,b_manzana,b_lote,criterio)" v-model="b_manzana" >
+                                        <option value="">Manzana</option>
+                                        <option v-for="manzana in arrayAllManzanas" :key="manzana.manzana" :value="manzana.manzana" v-text="manzana.manzana"></option>
+                                    </select>
                                     <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
 
                                     <input v-else type="date"  v-model="buscar" @keyup.enter="listarLotes(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
@@ -189,6 +192,7 @@
                 arrayLotes : [],
                 arrayFraccionamientos:[],
                 arrayEtapas:[],
+                arrayAllManzanas:[],
 
                 modal : 0,
                 
@@ -301,6 +305,22 @@
                 me.pagination.current_page = page;
                 //Envia la petición para visualizar la data de esta pagina
                 me.listarLotes(page,buscar,b_etapa,b_manzana,b_lote,criterio);
+            },
+
+            selectManzanas(buscar1, buscar2){
+                let me = this;
+                me.b_manzana2="";
+                me.b_lote2="";
+
+                me.arrayAllManzanas=[];
+                var url = '/select_manzanas_etapa?buscar=' + buscar1 + '&buscar1='+ buscar2;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayAllManzanas = respuesta.manzana;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
             },
        
             asignarFecha(){

@@ -8,7 +8,7 @@
                 <!-- Ejemplo de tabla Listado -->
                 <div class="card scroll-box">
                     <div class="card-header">
-                        <i class="fa fa-align-justify"></i> Etapas
+                        <i class="fa fa-align-justify"></i> Asignación de servicios
                     </div>
                     <div class="card-body">
                         <div class="form-group row">

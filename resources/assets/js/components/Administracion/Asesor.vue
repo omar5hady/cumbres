@@ -220,13 +220,13 @@
                                 <!--Botones de paginacion -->
                                 <ul class="pagination">
                                     <li class="page-item" v-if="pagination2.current_page > 1">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page - 1,buscar2,b_clasificacion,criterio2,id_vendedor)">Ant</a>
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page - 1,buscar2,buscar3,b_clasificacion,coacreditados,criterio2,id_vendedor)">Ant</a>
                                     </li>
-                                    <li class="page-item" v-for="page in pagesNumber2" :key="page" :class="[page == isActived ? 'active' : '']">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina2(page,buscar2,b_clasificacion,criterio2,id_vendedor)" v-text="page"></a>
+                                    <li class="page-item" v-for="page in pagesNumber2" :key="page" :class="[page == isActived2 ? 'active' : '']">
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina2(page,buscar2,buscar3,b_clasificacion,coacreditados,criterio2,id_vendedor)" v-text="page"></a>
                                     </li>
                                     <li class="page-item" v-if="pagination2.current_page < pagination2.last_page">
-                                        <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page + 1,buscar2,b_clasificacion,criterio2,id_vendedor)">Sig</a>
+                                        <a class="page-link" href="#" @click.prevent="cambiarPagina2(pagination2.current_page + 1,buscar2,buscar3,b_clasificacion,coacreditados,criterio2,id_vendedor)">Sig</a>
                                     </li>
                                 </ul>
                             </nav>
@@ -945,7 +945,7 @@
                 //Envia la petición para visualizar la data de esta pagina
                 me.listarPersonal(page,buscar,criterio);
             },
-             cambiarPagina2(page, buscar,buscar2, b_clasificacion, criterio,id_vendedor){
+             cambiarPagina2(page, buscar,buscar2, b_clasificacion,coacreditados ,criterio,id_vendedor){
                 let me = this;
                 //Actualiza la pagina actual
                 me.pagination2.current_page = page;

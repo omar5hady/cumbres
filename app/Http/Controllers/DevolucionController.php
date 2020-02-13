@@ -85,16 +85,7 @@ class DevolucionController extends Controller
                 )
                 ->where('contratos.status', '=', '0')
                 ->where('contratos.devolucion', '!=', '2')
-                ->orderBy('id', 'desc')->paginate(8);
-
-            // $contadorContratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
-            //     ->join('personal', 'creditos.prospecto_id', '=', 'personal.id')
-            //     ->join('clientes', 'creditos.prospecto_id', '=', 'clientes.id')
-            //     ->join('personal as v', 'clientes.vendedor_id', 'v.id')
-            //     ->select('contratos.id as contratoId')
-            //     ->where('contratos.status', '=', '0')
-            //     ->where('contratos.devolucion', '!=', '2')
-            //     ->orderBy('id', 'desc')->count();
+                ->orderBy('id', 'desc')->paginate(30);
         }
         else{
             switch ($criterio){
@@ -148,6 +139,10 @@ class DevolucionController extends Controller
                                 WHERE devoluciones.contrato_id = contratos.id
                                 GROUP BY devoluciones.contrato_id) as sumaDev"),
 
+                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
+                                WHERE gastos_admin.contrato_id = contratos.id
+                                GROUP BY gastos_admin.contrato_id) as sumGastos"),
+
                             DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
                                         WHERE pagos_contratos.contrato_id = contratos.id
                                         GROUP BY pagos_contratos.contrato_id) as sumaPagares"),
@@ -159,7 +154,7 @@ class DevolucionController extends Controller
                         ->where('contratos.status', '=', '0')
                         ->where('contratos.devolucion', '!=', '2')
                         ->where($criterio, '=', $buscar)
-                        ->orderBy('id', 'desc')->paginate(8);
+                        ->orderBy('id', 'desc')->paginate(30);
                     }
                     elseif($b_etapa != '' && $b_manzana == '' && $b_lote == ''){
                         $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
@@ -208,6 +203,10 @@ class DevolucionController extends Controller
                             DB::raw("(SELECT SUM(devoluciones.devolver) FROM devoluciones
                                 WHERE devoluciones.contrato_id = contratos.id
                                 GROUP BY devoluciones.contrato_id) as sumaDev"),
+                            
+                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
+                                WHERE gastos_admin.contrato_id = contratos.id
+                                GROUP BY gastos_admin.contrato_id) as sumGastos"),
 
                             DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
                                         WHERE pagos_contratos.contrato_id = contratos.id
@@ -221,7 +220,7 @@ class DevolucionController extends Controller
                         ->where('contratos.devolucion', '!=', '2')
                         ->where($criterio, '=', $buscar)
                         ->where('lotes.etapa_id', '=', $b_etapa)
-                        ->orderBy('id', 'desc')->paginate(8);
+                        ->orderBy('id', 'desc')->paginate(30);
                     }
                     elseif($b_etapa != '' && $b_manzana != '' && $b_lote == ''){
                         $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
@@ -271,6 +270,10 @@ class DevolucionController extends Controller
                                 WHERE devoluciones.contrato_id = contratos.id
                                 GROUP BY devoluciones.contrato_id) as sumaDev"),
 
+                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
+                                WHERE gastos_admin.contrato_id = contratos.id
+                                GROUP BY gastos_admin.contrato_id) as sumGastos"),
+
                             DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
                                         WHERE pagos_contratos.contrato_id = contratos.id
                                         GROUP BY pagos_contratos.contrato_id) as sumaPagares"),
@@ -284,7 +287,7 @@ class DevolucionController extends Controller
                         ->where($criterio, '=', $buscar)
                         ->where('lotes.etapa_id', '=', $b_etapa)
                         ->where('lotes.manzana', '=', $b_manzana)
-                        ->orderBy('id', 'desc')->paginate(8);
+                        ->orderBy('id', 'desc')->paginate(30);
                     }
                     elseif($b_etapa != '' && $b_manzana != '' && $b_lote != ''){
                         $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
@@ -333,6 +336,10 @@ class DevolucionController extends Controller
                             DB::raw("(SELECT SUM(devoluciones.devolver) FROM devoluciones
                                 WHERE devoluciones.contrato_id = contratos.id
                                 GROUP BY devoluciones.contrato_id) as sumaDev"),
+                            
+                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
+                                WHERE gastos_admin.contrato_id = contratos.id
+                                GROUP BY gastos_admin.contrato_id) as sumGastos"),
 
                             DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
                                         WHERE pagos_contratos.contrato_id = contratos.id
@@ -348,7 +355,7 @@ class DevolucionController extends Controller
                         ->where('lotes.etapa_id', '=', $b_etapa)
                         ->where('lotes.manzana', '=', $b_manzana)
                         ->where('lotes.num_lote', '=', $b_lote)
-                        ->orderBy('id', 'desc')->paginate(8);
+                        ->orderBy('id', 'desc')->paginate(30);
                     }
                     elseif($b_etapa != '' && $b_manzana == '' && $b_lote != ''){
                         $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
@@ -398,6 +405,10 @@ class DevolucionController extends Controller
                                 WHERE devoluciones.contrato_id = contratos.id
                                 GROUP BY devoluciones.contrato_id) as sumaDev"),
 
+                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
+                                WHERE gastos_admin.contrato_id = contratos.id
+                                GROUP BY gastos_admin.contrato_id) as sumGastos"),
+
                             DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
                                         WHERE pagos_contratos.contrato_id = contratos.id
                                         GROUP BY pagos_contratos.contrato_id) as sumaPagares"),
@@ -411,7 +422,7 @@ class DevolucionController extends Controller
                         ->where($criterio, '=', $buscar)
                         ->where('lotes.etapa_id', '=', $b_etapa)
                         ->where('lotes.num_lote', '=', $b_lote)
-                        ->orderBy('id', 'desc')->paginate(8);
+                        ->orderBy('id', 'desc')->paginate(30);
                     }
                     elseif($b_etapa == '' && $b_manzana == '' && $b_lote != ''){
                         $contratos = Contrato::join('creditos', 'contratos.id', '=', 'creditos.id')
@@ -461,6 +472,10 @@ class DevolucionController extends Controller
                                 WHERE devoluciones.contrato_id = contratos.id
                                 GROUP BY devoluciones.contrato_id) as sumaDev"),
 
+                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
+                                WHERE gastos_admin.contrato_id = contratos.id
+                                GROUP BY gastos_admin.contrato_id) as sumGastos"),
+
                             DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
                                         WHERE pagos_contratos.contrato_id = contratos.id
                                         GROUP BY pagos_contratos.contrato_id) as sumaPagares"),
@@ -473,7 +488,7 @@ class DevolucionController extends Controller
                         ->where('contratos.devolucion', '!=', '2')
                         ->where($criterio, '=', $buscar)
                         ->where('lotes.num_lote', '=', $b_lote)
-                        ->orderBy('id', 'desc')->paginate(8);
+                        ->orderBy('id', 'desc')->paginate(30);
                     }
                     
                     break;
@@ -526,6 +541,10 @@ class DevolucionController extends Controller
                                 WHERE devoluciones.contrato_id = contratos.id
                                 GROUP BY devoluciones.contrato_id) as sumaDev"),
 
+                        DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
+                                WHERE gastos_admin.contrato_id = contratos.id
+                                GROUP BY gastos_admin.contrato_id) as sumGastos"),
+
                         DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
                                     WHERE pagos_contratos.contrato_id = contratos.id
                                     GROUP BY pagos_contratos.contrato_id) as sumaPagares"),
@@ -537,7 +556,7 @@ class DevolucionController extends Controller
                     ->where('contratos.status', '=', '0')
                     ->where('contratos.devolucion', '!=', '2')
                     ->where($criterio, '=', $buscar)
-                    ->orderBy('id', 'desc')->paginate(8);
+                    ->orderBy('id', 'desc')->paginate(30);
                     break;
                 }
                 case 'personal.nombre':{
@@ -588,6 +607,10 @@ class DevolucionController extends Controller
                                 WHERE devoluciones.contrato_id = contratos.id
                                 GROUP BY devoluciones.contrato_id) as sumaDev"),
 
+                            DB::raw("(SELECT SUM(gastos_admin.costo) FROM gastos_admin
+                                WHERE gastos_admin.contrato_id = contratos.id
+                                GROUP BY gastos_admin.contrato_id) as sumGastos"),
+
                             DB::raw("(SELECT SUM(pagos_contratos.monto_pago) FROM pagos_contratos
                                         WHERE pagos_contratos.contrato_id = contratos.id
                                         GROUP BY pagos_contratos.contrato_id) as sumaPagares"),
@@ -602,7 +625,7 @@ class DevolucionController extends Controller
                         ->orWhere('personal.apellidos', 'like', '%' . $buscar . '%')
                         ->where('contratos.status', '=', '0')
                         ->where('contratos.devolucion', '!=', '2')
-                        ->orderBy('id', 'desc')->paginate(8);
+                        ->orderBy('id', 'desc')->paginate(30);
                     
                     break;
                 }

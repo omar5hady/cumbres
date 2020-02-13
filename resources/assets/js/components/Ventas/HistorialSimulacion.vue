@@ -29,11 +29,14 @@
                                             <option value="creditos.fraccionamiento">Proyecto</option>
                                             <option value="inst_seleccionadas.tipo_credito">Tipo de credito</option>
                                         </select>
-                                        <select class="form-control" v-if="criterio=='creditos.fraccionamiento'" v-model="buscar" >
+                                        <select class="form-control" v-if="criterio=='creditos.fraccionamiento'" v-model="buscar" @click="selectEtapas(buscar)" >
                                             <option value="">Seleccione</option>
-                                            <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.nombre" :value="fraccionamientos.nombre" v-text="fraccionamientos.nombre"></option>
+                                            <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.nombre" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                         </select>
-                                        <input v-if="criterio=='creditos.fraccionamiento'" type="text"  v-model="b_etapa" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio,criterio2)" class="form-control" placeholder="Etapa">
+                                        <select class="form-control" v-if="criterio=='creditos.fraccionamiento'" v-model="b_etapa" >
+                                            <option value="">Etapa</option>
+                                            <option v-for="etapa in arrayAllEtapas" :key="etapa.id" :value="etapa.num_etapa" v-text="etapa.num_etapa"></option>
+                                        </select>
                                         <input v-if="criterio=='creditos.fraccionamiento'" type="text"  v-model="b_manzana" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio,criterio2)" class="form-control" placeholder="Manzana">
                                         <input v-if="criterio=='creditos.fraccionamiento'" type="text"  v-model="b_lote" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio,criterio2)" class="form-control" placeholder="# Lote">
                                         <input  v-else type="text" v-model="buscar" @keyup.enter="listarSimulaciones(1,buscar,b_etapa,b_manzana,b_lote,criterio,criterio2)" class="form-control" placeholder="Texto a buscar">
@@ -238,6 +241,7 @@
                 arraySimulaciones:[],
                 arrayObservacion:[],
                 arrayFraccionamientos: [],
+                arrayAllEtapas: [],
                 arrayObservacionCreditos: [],
              
                 modal3: 0,
@@ -358,6 +362,20 @@
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayFraccionamientos = respuesta.fraccionamientos;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
+            selectEtapas(buscar){
+                let me = this;
+                
+                me.arrayAllEtapas=[];
+                var url = '/select_etapa_proyecto?buscar=' + buscar;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayAllEtapas = respuesta.etapas;
                 })
                 .catch(function (error) {
                     console.log(error);

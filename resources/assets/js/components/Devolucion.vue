@@ -71,7 +71,7 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="contratos in arrayContratos" :key="contratos.id" v-on:dblclick="abrirModal('devolucion',contratos)"> 
-                                    <template v-if="(contratos.sumaPagares - contratos.sumaRestante) > 0">
+                                    <template v-if="(contratos.sumaPagares - contratos.sumaRestante -  contratos.sumGastos) > 0">
                                         <td class="td2" v-text="contratos.id"></td>
                                         <td class="td2" v-text="contratos.nombre_cliente"></td>
                                         <td class="td2" v-text="contratos.proyecto"></td>

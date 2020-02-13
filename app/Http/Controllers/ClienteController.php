@@ -733,7 +733,7 @@ class ClienteController extends Controller
                         'medios_publicitarios.nombre as publicidad','fraccionamientos.nombre as proyecto')   
                         //->where('vendedor_id','=',Auth::user()->id)     
                         ->where($criterio, 'like', '%'. $buscar . '%')
-                        //->where('clientes.clasificacion', '=', $buscarC)
+                        ->where('clientes.clasificacion', '=', $buscarC)
                         ->orderBy('personal.nombre', 'asc')
                         ->orderBy('personal.apellidos', 'asc')
                         ->paginate(20);
@@ -744,7 +744,7 @@ class ClienteController extends Controller
                         ->select('personal.id','personal.nombre','personal.rfc','personal.homoclave')
                         //->where('vendedor_id','=',Auth::user()->id)     
                         ->where($criterio, 'like', '%'. $buscar . '%')
-                        //->where('clientes.clasificacion', '=', $buscarC)
+                        ->where('clientes.clasificacion', '=', $buscarC)
                         ->orderBy('personal.nombre', 'asc')
                         ->orderBy('personal.apellidos', 'asc')
 

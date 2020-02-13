@@ -30,13 +30,15 @@
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
 
-                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_etapa"> 
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_etapa" @click="selectManzanas(buscar,b_etapa)"> 
                                         <option value="">Etapa</option>
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                     </select>
 
-                                    
-                                    <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_manzana" class="form-control" placeholder="Manzana a buscar">
+                                    <select class="form-control" v-if="criterio=='lotes.fraccionamiento_id'" @keyup.enter="listarAvaluos(1,buscar,b_etapa,b_manzana,b_lote,criterio)" v-model="b_manzana" >
+                                        <option value="">Manzana</option>
+                                        <option v-for="manzana in arrayAllManzanas" :key="manzana.manzana" :value="manzana.manzana" v-text="manzana.manzana"></option>
+                                    </select>
                                     <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
 
                                     <input v-else type="date"  v-model="buscar" @keyup.enter="listarAvaluos(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
@@ -78,7 +80,7 @@
                                                 <button title="Subir avaluo" type="button" @click="abrirModal('subirArchivo',avaluos)" class="btn btn-default btn-sm">
                                                 <i class="icon-cloud-upload"></i>
                                                 </button>
-                                                <a title="Descarga de avaluo" class="btn btn-default btn-sm" v-if="avaluos.pdf != '' && avaluos.pdf != NULL"  v-bind:href="'/downloadAvaluo/'+avaluos.pdf">
+                                                <a title="Descarga de avaluo" class="btn btn-default btn-sm" v-if="avaluos.pdf != '' && avaluos.pdf != null"  v-bind:href="'/downloadAvaluo/'+avaluos.pdf">
                                                     <i class="fa fa-download"></i>
                                                 </a>
                                             </td>
@@ -192,13 +194,16 @@
                                         <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
                                     </select>
 
-                                    <select class="form-control" v-if="criterio2=='lotes.fraccionamiento_id'" v-model="b_etapa2"> 
+                                    <select class="form-control" v-if="criterio2=='lotes.fraccionamiento_id'" v-model="b_etapa2" @click="selectManzanas(buscar2,b_etapa2)"> 
                                         <option value="">Etapa</option>
                                         <option v-for="etapas in arrayEtapas" :key="etapas.id" :value="etapas.id" v-text="etapas.num_etapa"></option>
                                     </select>
 
+                                    <select class="form-control" v-if="criterio2=='lotes.fraccionamiento_id'" @keyup.enter="listarHistorialAvaluos(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" v-model="b_manzana2" >
+                                        <option value="">Manzana</option>
+                                        <option v-for="manzana in arrayAllManzanas" :key="manzana.manzana" :value="manzana.manzana" v-text="manzana.manzana"></option>
+                                    </select>
                                     
-                                    <input type="text" v-if="criterio2=='lotes.fraccionamiento_id'" v-model="b_manzana2" class="form-control" placeholder="Manzana a buscar">
                                     <input type="text" v-if="criterio2=='lotes.fraccionamiento_id'" v-model="b_lote2" class="form-control" placeholder="Lote a buscar">
 
                                     <input v-else type="date"  v-model="buscar2" @keyup.enter="listarHistorialAvaluos(1,buscar2,b_etapa2,b_manzana2,b_lote2,criterio2)" class="form-control" placeholder="Texto a buscar">
@@ -247,7 +252,7 @@
                                                 <button title="Subir avaluo" type="button" @click="abrirModal('subirArchivo',avaluos)" class="btn btn-default btn-sm">
                                                     <i class="icon-cloud-upload"></i>
                                                 </button>
-                                                <a title="Descarga de avaluo" class="btn btn-default btn-sm" v-if="avaluos.pdf != '' && avaluos.pdf != NULL"  v-bind:href="'/downloadAvaluo/'+avaluos.pdf">
+                                                <a title="Descarga de avaluo" class="btn btn-default btn-sm" v-if="avaluos.pdf != '' && avaluos.pdf != null"  v-bind:href="'/downloadAvaluo/'+avaluos.pdf">
                                                     <i class="fa fa-download"></i>
                                                 </a>
                                             </td>
@@ -660,6 +665,7 @@
                 arrayEtapas:[],
                 arrayGastoAdmin:[],
                 arrayGastos:[],
+                arrayAllManzanas:[],
 
                 arrayStatus:[],
                 arrayVisitas:[],
@@ -891,6 +897,21 @@
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayFraccionamientos = respuesta.fraccionamientos;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
+            selectManzanas(buscar1, buscar2){
+                let me = this;
+                me.b_manzana="";
+
+                me.arrayAllManzanas=[];
+                var url = '/select_manzanas_etapa?buscar=' + buscar1 + '&buscar1='+ buscar2;
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayAllManzanas = respuesta.manzana;
                 })
                 .catch(function (error) {
                     console.log(error);
