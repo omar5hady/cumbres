@@ -35,9 +35,9 @@
                                             <option value="2">Tipo A</option>
                                             <option value="3">Tipo B</option>
                                             <option value="4">Tipo C</option>
-                                            <option value="5">Ventas</option>
                                             <option value="6">Cancelado</option>                               
                                             <option value="7">Coacreditado</option>  
+                                            <option value="5">Ventas</option>
                                         </select>
                                         <button type="submit" @click="listarProspectos(1,desde,hasta,proyecto,clasificacion,publicidad)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                                         <a :href="'/personal/excelClientes?desde=' + desde+ '&clasificacion=' + clasificacion + '&publicidad=' + publicidad "  class="btn btn-success"><i class="fa fa-file-text"></i>  Excel</a>
