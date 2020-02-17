@@ -9,15 +9,21 @@
             <div class="card-header">
                 <div class="form-group row">
                     <div class="col-md-8">
-                            <div class="input-group">
-                                <select class="form-control" @click="selectEtapas(buscar)" v-model="buscar" >
-                                    <option value="">Seleccione el proyecto</option>
-                                    <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
-                                </select>
-                                <select class="form-control" v-if="buscar!=''" v-model="b_etapa" >
-                                    <option value="">Etapa</option>
-                                    <option v-for="etapa in arrayAllEtapas" :key="etapa.id" :value="etapa.id" v-text="etapa.num_etapa"></option>
-                                </select>
+                        <div class="input-group">
+                            <select class="form-control" @click="selectEtapas(buscar)" v-model="buscar" >
+                                <option value="">Seleccione el proyecto</option>
+                                <option v-for="fraccionamientos in arrayFraccionamientos" :key="fraccionamientos.id" :value="fraccionamientos.id" v-text="fraccionamientos.nombre"></option>
+                            </select>
+                            <select class="form-control" v-if="buscar!=''" v-model="b_etapa" >
+                                <option value="">Etapa</option>
+                                <option v-for="etapa in arrayAllEtapas" :key="etapa.id" :value="etapa.id" v-text="etapa.num_etapa"></option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <input type="date" v-model="b_fecha" class="form-control">
+                            <input type="date" v-model="b_fecha2" class="form-control">
+                        </div>
+                         <div class="input-group">
                             <button type="button" @click="mostrarGraficos()" class="btn btn-primary btn-sm"><i class="fa fa-search"></i> Buscar</button>
                         </div>
                     </div>
@@ -26,6 +32,7 @@
             <div class="card-body">
                 
                 <div class="row" v-if="mostrar==1">
+
                     <div class="col-md-4">
                         <div class="input-group">
                             <table class="table table-bordered table-striped table-sm">
@@ -146,6 +153,17 @@
                                         <th v-text="this.rang7"></th>
                                     </tr>
                                 <tr>
+                                    <th @click="loadEmpresas()" style="text-align: center;" colspan="2">
+                                        <button v-if="ver_empresas == 0" @click="loadEmpresas()" class="btn btn-dark btn-sm">Empresas</button>
+                                        <button v-if="ver_empresas == 1" @click="loadEmpresas()" class="btn btn-default btn-sm">Empresas</button></th>
+                                </tr>
+                                    <template v-if="ver_empresas == 1">
+                                        <tr v-for="empresa in empresasCant" :key="empresa.empresa">
+                                            <th v-text="empresa.empresa"></th>
+                                            <th v-text="empresa.num"></th>
+                                        </tr>
+                                    </template>
+                                <tr>
                                     <th @click="loadMascotas()" style="text-align: center;" colspan="2">
                                         <button v-if="ver_mascotas == 0" @click="loadMascotas()" class="btn btn-dark btn-sm">Mascotas</button>
                                         <button v-if="ver_mascotas == 1" @click="loadMascotas()" class="btn btn-default btn-sm">Mascotas</button></th>
@@ -236,6 +254,18 @@
                                         <canvas style="width:100%;" id="mascotas">                                                
                                         </canvas>
                                     </div>
+                                    <div class="ct-chart" v-if="ver_empresas == 1 && empresasCant.length < 10">
+                                        <canvas style="width:100%; height:100%; height:1000px;" id="empresas">                                                
+                                        </canvas>
+                                    </div>
+                                    <div class="ct-chart" v-if="ver_empresas == 1 && empresasCant.length < 30 && empresasCant.length > 10">
+                                        <canvas style="width:100%; height:1800px;" id="empresas">                                                
+                                        </canvas>
+                                    </div>
+                                     <div class="ct-chart" v-if="ver_empresas == 1 && empresasCant.length > 30">
+                                        <canvas style="width:100%; height:2800px;" id="empresas">                                                
+                                        </canvas>
+                                    </div>
                                     <div class="ct-chart" v-if="ver_edoCivil == 1">
                                         <canvas style="width:100%;" id="edoCivil">                                                
                                         </canvas>
@@ -248,13 +278,19 @@
                                         <canvas style="width:100%;" id="autos" >                                                
                                         </canvas>
                                     </div>
-                                    <div class="ct-chart" v-if="ver_lugarNac == 1">
-                                        <canvas style="width:100%;" id="lugar" >                                                
+                                    
+                                    <div class="ct-chart" v-if="ver_lugarNac == 1 && lugarCant.length < 15">
+                                        <canvas style="width:100%; height:100%;" id="lugar" >                                                
+                                        </canvas>
+                                    </div>
+                                    <div class="ct-chart" v-if="ver_lugarNac == 1 && lugarCant.length > 15">
+                                        <canvas style="width:100%; height:1800px;" id="lugar" >                                                
                                         </canvas>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
 
                     
                 </div>
@@ -268,6 +304,8 @@
     export default {
         data (){
             return {
+                b_fecha: '',
+                b_fecha2: '',
                 grafico:0,
                 titulo:'',
                 totalEntregas:0,
@@ -309,6 +347,11 @@
                 lugares:[],
                 lugarCant:[],
 
+                varEmpresas:null,
+                charEmpresas:null,
+                empresas:[],
+                empresasCant:[],
+
                 varGenero:null,
                 charGenero:null,
                 genero:[],
@@ -332,6 +375,7 @@
                 mascotas : 0,
 
                 lista:[],
+                listaEmpresa:[],
 
                 arrayFraccionamientos:[],
                 arrayAllEtapas: [],
@@ -347,6 +391,7 @@
                 ver_amasCasa:0,
                 ver_autos:0,
                 ver_lugarNac:0,
+                ver_empresas:0,
             }
         },
         methods : {
@@ -377,10 +422,14 @@
 
                 if( me.charLugar)
                     me.charLugar.destroy();
+
+                if( me.charEmpresas)
+                    me.charEmpresas.destroy();
             },
             getDatos(){
                 let me=this;
-                var url= '/estadisticas/datos_extra?buscar=' + this.buscar + '&b_etapa=' + this.b_etapa;
+                me.borrarGraficas();
+                var url= '/estadisticas/datos_extra?buscar=' + this.buscar + '&b_etapa=' + this.b_etapa + '&fecha=' + this.b_fecha + '&fecha2=' + this.b_fecha2;
                 axios.get(url).then(function (response) {
                     var respuesta= response.data;
                     me.edades = respuesta.edades;
@@ -394,6 +443,9 @@
 
                     me.lugares = respuesta.lugarNacimiento;
                     me.lugarCant = respuesta.origen;
+
+                    me.empresas = respuesta.empresas;
+                    me.empresasCant = respuesta.empresasVentas;
 
                     me.autos = respuesta.autos;
 
@@ -423,9 +475,12 @@
                     me.ver_discap=0;
                     me.ver_amasCasa=0;
                     me.ver_autos=0;
+                    me.ver_empresas=0;
                 })
                 .catch(function (error) {
                     console.log(error);
+                    me.grafico = 0;
+                    me.mostrar = 0;
                 });
             },
             selectFraccionamientos(){
@@ -503,6 +558,7 @@
                 me.ver_genero = 0;
                 me.ver_discap = 0;
                 me.ver_lugarNac = 0;
+                me.ver_empresas = 0;
                 me.ver_autos = 1;
                 me.grafico = 1;
                 
@@ -548,6 +604,7 @@
                 me.ver_edoCivil = 0;
                 me.ver_genero = 0;
                 me.ver_autos = 0;
+                me.ver_empresas = 0;
                 me.ver_lugarNac = 0;
                 me.ver_discap = 1;
                 me.grafico = 1;
@@ -590,6 +647,7 @@
                 me.ver_mascotas = 0;
                 me.ver_genero = 0;
                 me.ver_edoCivil = 0;
+                me.ver_empresas = 0;
                 me.ver_discap = 0;
                 me.ver_autos = 0;
                 me.ver_lugarNac = 0;
@@ -640,6 +698,7 @@
                 me.ver_edoCivil = 0;
                 me.ver_discap = 0;
                 me.ver_autos = 0;
+                me.ver_empresas = 0;
                 me.ver_lugarNac = 0;
                 me.ver_edadesComp = 1;
                 me.grafico = 1;
@@ -689,6 +748,7 @@
                 me.titulo = 'Estado civil';
                 me.ver_edadesComp = 0;
                 me.ver_edades = 0;
+                me.ver_empresas = 0;
                 me.ver_mascotas = 0;
                 me.ver_genero = 0;
                 me.ver_discap = 0;
@@ -746,6 +806,7 @@
                 me.ver_edoCivil = 0;
                 me.ver_discap = 0;
                 me.ver_autos = 0;
+                me.ver_empresas = 0;
                 me.ver_lugarNac = 0;
                 me.ver_mascotas = 1;
                 me.grafico = 1;
@@ -790,6 +851,7 @@
                 me.ver_edadesComp = 0;
                 me.ver_mascotas = 0;
                 me.ver_genero = 0;
+                me.ver_empresas = 0;
                 me.ver_edoCivil = 0;
                 me.ver_discap = 0;
                 me.ver_autos = 0;
@@ -806,7 +868,7 @@
                 });
 
                 me.charLugar = new Chart(me.varLugar, {
-                    type: 'bar',
+                    type: 'horizontalBar',
                     data: {
                         labels: me.lugares,
                         datasets: [{
@@ -815,6 +877,57 @@
                             backgroundColor: 'rgba(102, 0, 0, 0.4)',
                                                 
                             borderColor: 'rgba(102, 0, 0, 1)',
+                            borderWidth: 1
+                        },
+                        ]
+                    },
+                    options: {
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero:true
+                                }
+                            }]
+                        },
+                        legend: {display:false}
+                    }
+                });
+            },
+
+            loadEmpresas(){
+                let me=this;
+                me.borrarGraficas();
+                me.titulo = 'Empresas';
+                me.ver_edades = 0;
+                me.ver_edadesComp = 0;
+                me.ver_mascotas = 0;
+                me.ver_genero = 0;
+                me.ver_edoCivil = 0;
+                me.ver_discap = 0;
+                me.ver_autos = 0;
+                me.ver_lugarNac = 0;
+                me.ver_empresas = 1;
+                me.grafico = 1;
+                
+                me.varEmpresas=document.getElementById('empresas').getContext('2d');
+
+                me.listaEmpresa = [];
+                var i =0;
+                me.empresas.forEach(element => {
+                    me.listaEmpresa.push(me.empresasCant[i].num);
+                    i++;
+                });
+
+                me.charEmpresas = new Chart(me.varEmpresas, {
+                    type: 'horizontalBar',
+                    data: {
+                        labels: me.empresas,
+                        datasets: [{
+                            label: '# ',
+                            data: me.listaEmpresa,
+                            backgroundColor: 'rgba(8, 8, 47, 0.74)',
+                                                
+                            borderColor: 'rgba(1, 1, 30, 0.90)',
                             borderWidth: 1
                         },
                         ]
@@ -842,6 +955,7 @@
                 me.ver_edoCivil = 0;
                 me.ver_discap = 0;
                 me.ver_autos = 0;
+                me.ver_empresas = 0;
                 me.ver_lugarNac = 0;
                 me.ver_genero = 1;
                 me.grafico = 1;
@@ -878,8 +992,6 @@
             },
         },
         mounted() {
-            //  this.getIngresos();
-            //  this.getVentas();
             this.selectFraccionamientos();
         }
     }

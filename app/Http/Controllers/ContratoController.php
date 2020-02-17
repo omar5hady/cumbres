@@ -24781,6 +24781,10 @@ class ContratoController extends Controller
         $pagos = Pago_contrato::select('monto_pago', 'num_pago', 'fecha_pago')->where('contrato_id', '=', $id)->orderBy('fecha_pago', 'asc')->get();
 
 
+        if($contratoPromesa[0]->institucion == 'Gamu' || $contratoPromesa[0]->institucion == 'Crea Más'){
+            $contratoPromesa[0]->institucion = 'INFONAVIT';
+        }
+        
         $totalDePagos = count($pagos);
         $pagos[0]->totalDePagos = NumerosEnLetras::convertir($totalDePagos, false, false, false);
 

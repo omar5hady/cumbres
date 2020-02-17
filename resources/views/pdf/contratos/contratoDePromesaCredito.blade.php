@@ -239,7 +239,7 @@ el presente contrato se rescindirá en forma automática.
 
 <p>
 <strong>SEXTA.-</strong> Este contrato podrá ser rescindido de pleno derecho y sin necesidad de declaración judicial en caso de incumplimiento a lo pactado en este contrato. 
-        En forma enunciativa y no limitativa, se mencionan algunas causales en que puede incurrir el comprador: a).- No cubrir cualquiera de los pagos pactados en los incisos b) y c) de la cláusula cuarta; b).- No obtener la totalidad del crédito para el pago de la cantidad establecida en el inciso 
+        En forma enunciativa y no limitativa, se mencionan algunas causales en que puede incurrir el comprador: a).- No cubrir cualquiera de los pagos pactados en el inciso b) de la cláusula cuarta; b).- No obtener la totalidad del crédito para el pago de la cantidad establecida en el inciso 
         a) de la cláusula cuarta, en el plazo de 45 días contados a partir de la terminación de la vivienda; c).- No entregar en forma oportuna la documentación a que se compromete en términos de la cláusula tercera.
 </p>
 

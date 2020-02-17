@@ -87,6 +87,10 @@
                                            <th>Total Enganche</th>
                                            <th v-text="'$'+formatNumber(enganche)"></th>
                                        </tr>
+                                       <tr v-if="excedente > 0">
+                                           <th>Enganche excedente por apartados</th>
+                                           <th v-text="'$'+formatNumber(excedente)"></th>
+                                       </tr>
                                        <tr>
                                            <th>Total Crédito</th>
                                            <th v-text="'$'+formatNumber(credito)"></th>
@@ -193,6 +197,7 @@
                 habilitados:0,
                 mostrar : 0,
                 fecha_inicio:'',
+                excedente:0,
             }
         },
         computed:{
@@ -246,8 +251,10 @@
                     me.enganche = respuesta.sumas[0].enganche;
                     me.credito = respuesta.sumas[0].credito_netoSum;
                     me.saldo = respuesta.sumas[0].totSaldo;
+                    
 
                     me.monto_cobrado = me.precio_venta - me.saldo;
+                    me.excedente = (me.enganche + me.credito) - me.precio_venta;
                     me.mostrar = 1;
                 })
                 .catch(function (error) {
