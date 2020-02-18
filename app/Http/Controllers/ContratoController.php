@@ -24601,7 +24601,8 @@ class ContratoController extends Controller
         $fechaContrato = new Carbon($contratosDom[0]->fecha);
         $contratosDom[0]->fecha = $fechaContrato->formatLocalized('%d días de %B de %Y');
 
-        $pagos = Pago_contrato::select('monto_pago', 'num_pago', 'fecha_pago')->where('contrato_id', '=', $id)->orderBy('fecha_pago', 'asc')->get();
+        $pagos = Pago_contrato::select('monto_pago', 'num_pago', 'fecha_pago')
+        ->where('tipo_pagare', '=', 0)->where('contrato_id', '=', $id)->orderBy('fecha_pago', 'asc')->get();
 
 
         $totalDePagos = count($pagos);
@@ -24778,7 +24779,8 @@ class ContratoController extends Controller
         $fechaContrato = new Carbon($contratoPromesa[0]->fecha);
         $contratoPromesa[0]->fecha = $fechaContrato->formatLocalized('%d días de %B de %Y');
 
-        $pagos = Pago_contrato::select('monto_pago', 'num_pago', 'fecha_pago')->where('contrato_id', '=', $id)->orderBy('fecha_pago', 'asc')->get();
+        $pagos = Pago_contrato::select('monto_pago', 'num_pago', 'fecha_pago')
+        ->where('tipo_pagare', '=', 0)->where('contrato_id', '=', $id)->orderBy('fecha_pago', 'asc')->get();
 
 
         if($contratoPromesa[0]->institucion == 'Gamu' || $contratoPromesa[0]->institucion == 'Crea Más'){

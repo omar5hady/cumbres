@@ -6022,6 +6022,7 @@ class ExpedienteController extends Controller
 
                 $creditoEle = inst_seleccionada::findOrFail($elegido[0]->id);
                 $creditoEle->segundo_credito = $request->infonavit;
+                $creditoEle->monto_credito = $request->monto_credito;
                 $creditoEle->save();
             }
             elseif($expediente->infonavit == 0 && $expediente->fovissste != 0){
@@ -6042,6 +6043,16 @@ class ExpedienteController extends Controller
                 $creditoEle->segundo_credito = $request->fovissste;
                 $creditoEle->monto_credito = $request->monto_credito;
                 $creditoEle->save();
+            }
+            else{
+                $elegido = inst_seleccionada::select('id')
+                ->where('credito_id','=', $request->folio)
+                ->where('elegido','=',1)->get();
+
+                $creditoEle = inst_seleccionada::findOrFail($elegido[0]->id);
+                $creditoEle->monto_credito = $request->monto_credito;
+                $creditoEle->save();
+
             }
             $expediente->save();
             DB::commit();

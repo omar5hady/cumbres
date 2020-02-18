@@ -85,7 +85,7 @@
                                        </tr>
                                        <tr>
                                            <th>Total Enganche</th>
-                                           <th v-text="'$'+formatNumber(enganche)"></th>
+                                           <th v-text="'$'+formatNumber(enganche - excedente)"></th>
                                        </tr>
                                        <tr v-if="excedente > 0">
                                            <th>Enganche excedente por apartados</th>
@@ -105,6 +105,16 @@
                                        <tr>
                                            <th>Saldo por cobrar</th>
                                            <th v-text="'$'+formatNumber(saldo)"></th>
+                                       </tr>
+                                       <tr>
+                                           <br>
+                                           <br>
+                                           <br>
+                                           <th colspan="2"></th>
+                                       </tr>
+                                       <tr>
+                                           <th>Precio promedio de venta</th>
+                                           <th v-text="'$'+formatNumber(precio_venta/(individualizadas+vendidas))"></th>
                                        </tr>
                                    </table>
                                 </div>

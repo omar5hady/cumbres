@@ -73,34 +73,12 @@
                                         <button v-if="ver_edoCivil == 0" @click="loadEdoCivil()" class="btn btn-dark btn-sm">Estado Civil</button>
                                         <button v-if="ver_edoCivil == 1" @click="loadEdoCivil()" class="btn btn-default btn-sm"> Estado Civil </button></th>
                                 </tr>
-                                    <tr v-if="ver_edoCivil == 1">
-                                        <th>Casado - Separación de bienes:</th>
-                                        <th v-text="this.sepBienes"></th>
-                                    </tr>
-                                    <tr v-if="ver_edoCivil == 1">
-                                        <th>Casado - Sociedad Conyugal:</th>
-                                        <th v-text="this.conyugal"></th>
-                                    </tr>
-                                    <tr v-if="ver_edoCivil == 1">
-                                        <th>Divorciado:</th>
-                                        <th v-text="this.divorciado"></th>
-                                    </tr>
-                                    <tr v-if="ver_edoCivil == 1">
-                                        <th>Soltero:</th>
-                                        <th v-text="this.soltero"></th>
-                                    </tr>
-                                    <tr v-if="ver_edoCivil == 1">
-                                        <th>Unión libre:</th>
-                                        <th v-text="this.unionLibre"></th>
-                                    </tr>
-                                    <tr v-if="ver_edoCivil == 1">
-                                        <th>Viudo:</th>
-                                        <th v-text="this.viudo"></th>
-                                    </tr>
-                                    <tr v-if="ver_edoCivil == 1">
-                                        <th>Otro:</th>
-                                        <th v-text="this.otro"></th>
-                                    </tr>
+                                    <template v-if="ver_edoCivil == 1">
+                                        <tr v-for="civil in edoCivil2" :key="civil[0]">
+                                            <th v-text="civil[0]"></th>
+                                            <th v-text="civil[1]"></th>
+                                        </tr>
+                                    </template>
                                     
                                 <tr>
                                     <th @click="loadEdades()" style="text-align: center;" colspan="2">
@@ -177,8 +155,8 @@
                                         <th v-text="this.mascotas[0].sumMascota"></th>
                                     </tr>
                                     <tr v-if="ver_mascotas == 1">
-                                        <th>Total de perros:</th>
-                                        <th v-text="this.mascotas[0].perros"></th>
+                                        <th>Residentes con perro:</th>
+                                        <th v-text="this.perros"></th>
                                     </tr>
 
                                 <tr>
@@ -329,6 +307,7 @@
                 varedoCivil:null,
                 charedoCivil:null,
                 edoCivil:[],
+                edoCivil2:[],
                 sepBienes:0,
                 conyugal:0,
                 divorciado:0,
@@ -373,9 +352,14 @@
                 charAuto:null,
                 autos:[],
                 mascotas : 0,
+                perros:0,
 
                 lista:[],
+                lista2:[],
+                lista3:[],
                 listaEmpresa:[],
+                listaEmpresa2:[],
+                listaEdoCivil:[],
 
                 arrayFraccionamientos:[],
                 arrayAllEtapas: [],
@@ -448,6 +432,7 @@
                     me.empresasCant = respuesta.empresasVentas;
 
                     me.autos = respuesta.autos;
+                    me.perros = respuesta.conPerro;
 
                     me.edoCivil = respuesta.estadoCivil;
                     me.sepBienes = me.edoCivil.separacionBienes;
@@ -759,25 +744,65 @@
 
                 if(me.ver_edoCivil == 1){
                     me.varedoCivil=document.getElementById('edoCivil').getContext('2d');
+
+                    me.edoCivil2 = [];
+                    for (var civil in me.edoCivil) {
+                        var nombre = '';
+                        switch(civil){
+                            case 'soltero':{
+                                nombre = 'Soltero';
+                                break;
+                            }
+                            case 'separacionBienes':{
+                                nombre = 'Separacion de Bienes';
+                                break;
+                            }
+                            case 'unionLibre':{
+                                nombre = 'Unión Libre';
+                                break;
+                            }
+                            case 'sociedadConyugal':{
+                                nombre = 'Sociedad Conyugal';
+                                break;
+                            }
+                            case 'divorciado':{
+                                nombre = 'Divorciado';
+                                break;
+                            }
+                            case 'viudo':{
+                                nombre = 'Viudo';
+                                break;
+                            }
+                            case 'otro':{
+                                nombre = 'Otro';
+                                break;
+                            }
+                        }
+                        me.edoCivil2.push([nombre, me.edoCivil[civil]]);
+                    }
+
+                    me.edoCivil2.sort(function(a, b) {
+                        return b[1] - a[1];
+                    });
+
+                    me.lista3 = [];
+                    me.listaEdoCivil = [];
+                    var i =0;
+                    me.edoCivil2.forEach(element => {
+                        me.lista3.push(me.edoCivil2[i][0]);
+                        me.listaEdoCivil.push(me.edoCivil2[i][1]);
+                        i++;
+                    });
                     
 
                     me.charedoCivil = new Chart(me.varedoCivil, {
                         type: 'horizontalBar',
                         data: {
-                            labels: ['Separación de bienes', 'Separación conyugal', 'Divorciado', 'Soltero', 'Unión libre', 'Viudo', 'Otro'],
+                            labels: me.lista3,
                             datasets: [{
                                 label: '# ',
-                                data: [me.sepBienes, me.conyugal, me.divorciado, me.soltero, me.unionLibre, me.viudo, me.otro],
-                                backgroundColor: [
-                                                    'rgba(49, 139, 139, 0.8)',
-                                                    'rgba(80, 139, 139, 0.8)',
-                                                    'rgba(49, 139, 139, 0.8)',
-                                                    'rgba(49, 139, 139, 0.8)',
-                                                    'rgba(49, 139, 139, 0.8)',
-                                                    'rgba(49, 139, 139, 0.8)',
-                                                    'rgba(49, 139, 139, 0.8)',
-                                                    'rgba(49, 139, 139, 0.8)',
-                                                    ],
+                                data: me.listaEdoCivil,
+                                backgroundColor: 'rgba(49, 139, 139, 0.8)',
                                 borderColor: 'rgba(0, 0, 0, 0.9)',
                                 borderWidth: 1
                             },]
@@ -816,10 +841,10 @@
                 me.charMascotas = new Chart(me.varMascotas, {
                     type: 'bar',
                     data: {
-                        labels: ['Sin Mascotas', 'Con Mascotas', 'Total de Perros'],
+                        labels: ['Sin Mascotas', 'Con Mascotas', 'Residentes con perro'],
                         datasets: [{
                             label: '# ',
-                            data: [me.mascotas[0].sin_mascotas, me.mascotas[0].sumMascota,me.mascotas[0].perros],
+                            data: [me.mascotas[0].sin_mascotas, me.mascotas[0].sumMascota,me.perros],
                             backgroundColor: [
                                                 'rgba(102, 0, 0, 0.4)',
                                                 'rgba(102, 0, 0, 0.4)',
@@ -860,17 +885,21 @@
                 
                 me.varLugar=document.getElementById('lugar').getContext('2d');
 
+                me.lugarCant.sort((a, b) => (a.num < b.num) ? 1 : -1)
+
                 me.lista = [];
+                me.lista2 = [];
                 var i =0;
                 me.lugares.forEach(element => {
                     me.lista.push(me.lugarCant[i].num);
+                    me.lista2.push(me.lugarCant[i].lugar_nacimiento);
                     i++;
                 });
 
                 me.charLugar = new Chart(me.varLugar, {
                     type: 'horizontalBar',
                     data: {
-                        labels: me.lugares,
+                        labels: me.lista2,
                         datasets: [{
                             label: '# ',
                             data: me.lista,
@@ -911,17 +940,21 @@
                 
                 me.varEmpresas=document.getElementById('empresas').getContext('2d');
 
+                me.empresasCant.sort((a, b) => (a.num < b.num) ? 1 : -1)
+
                 me.listaEmpresa = [];
+                me.listaEmpresa2 = [];
                 var i =0;
                 me.empresas.forEach(element => {
                     me.listaEmpresa.push(me.empresasCant[i].num);
+                    me.listaEmpresa2.push(me.empresasCant[i].empresa);
                     i++;
                 });
 
                 me.charEmpresas = new Chart(me.varEmpresas, {
                     type: 'horizontalBar',
                     data: {
-                        labels: me.empresas,
+                        labels: me.listaEmpresa2,
                         datasets: [{
                             label: '# ',
                             data: me.listaEmpresa,

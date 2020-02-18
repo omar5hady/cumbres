@@ -2336,6 +2336,8 @@ class InstSeleccionadasController extends Controller
 
             $contrato = Contrato::findOrFail($request->id);
             $contrato->saldo += $request->cant_dev;
+            if($contrato->saldo < 0 && $contrato->saldo > -0.001)
+                $contrato->saldo = 0;
             $contrato->save();
 
             $gastos = new Gasto_admin();

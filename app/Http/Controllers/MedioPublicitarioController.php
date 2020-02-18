@@ -92,9 +92,8 @@ class MedioPublicitarioController extends Controller
         if($desde == '' && $hasta == '' && $etapa == '' && $asesor == '' && $proyecto == ''){
             ////////// Arreglo de ID de clientes con contrato firmado //////////////
                 $clientesID_contrato = Contrato::join('creditos','contratos.id','=','creditos.id')
-                            ->join('expedientes','contratos.id','=','expedientes.id')
                             ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->select('clientes.id')->where('expedientes.fecha_firma_esc','!=',NULL)
+                            ->select('clientes.id')->where('contratos.status','=',3)
                             ->whereBetween('clientes.created_at', ['2000-02-01', $hoy])
                             ->orderBy('clientes.id','asc')->distinct()->get();
 
@@ -106,9 +105,8 @@ class MedioPublicitarioController extends Controller
         if($desde != '' && $hasta != '' && $etapa == '' && $asesor == '' && $proyecto == ''){
             ////////// Arreglo de ID de clientes con contrato firmado //////////////
                 $clientesID_contrato = Contrato::join('creditos','contratos.id','=','creditos.id')
-                            ->join('expedientes','contratos.id','=','expedientes.id')
                             ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->select('clientes.id','clientes.created_at')->where('expedientes.fecha_firma_esc','!=',NULL)
+                            ->select('clientes.id','clientes.created_at')->where('contratos.status','=',3)
                             ->whereBetween('contratos.fecha', [$desde, $hasta])
                             ->orderBy('clientes.id','asc')->distinct()->get();
 
@@ -120,10 +118,9 @@ class MedioPublicitarioController extends Controller
         elseif($desde == '' && $hasta == '' && $etapa == '' && $asesor == '' && $proyecto != ''){
             ////////// Arreglo de ID de clientes con contrato firmado //////////////
             $clientesID_contrato = Contrato::join('creditos','contratos.id','=','creditos.id')
-                        ->join('expedientes','contratos.id','=','expedientes.id')
                         ->join('lotes','creditos.lote_id','=','lotes.id')
                         ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->select('clientes.id')->where('expedientes.fecha_firma_esc','!=',NULL)
+                        ->select('clientes.id')->where('contratos.status','=',3)
                         ->where('lotes.fraccionamiento_id','=',$proyecto)
                         ->orderBy('clientes.id','asc')->distinct()->get();
 
@@ -135,10 +132,9 @@ class MedioPublicitarioController extends Controller
         elseif($desde == '' && $hasta == '' && $etapa != '' && $asesor == '' && $proyecto != ''){
             ////////// Arreglo de ID de clientes con contrato firmado //////////////
             $clientesID_contrato = Contrato::join('creditos','contratos.id','=','creditos.id')
-                        ->join('expedientes','contratos.id','=','expedientes.id')
                         ->join('lotes','creditos.lote_id','=','lotes.id')
                         ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->select('clientes.id')->where('expedientes.fecha_firma_esc','!=',NULL)
+                        ->select('clientes.id')->where('contratos.status','=',3)
                         ->where('lotes.fraccionamiento_id','=',$proyecto)
                         ->where('lotes.etapa_id','=',$etapa)
                         ->orderBy('clientes.id','asc')->distinct()->get();
@@ -151,10 +147,9 @@ class MedioPublicitarioController extends Controller
         elseif($desde == '' && $hasta == '' && $etapa == '' && $asesor != '' && $proyecto == ''){
             ////////// Arreglo de ID de clientes con contrato firmado //////////////
             $clientesID_contrato = Contrato::join('creditos','contratos.id','=','creditos.id')
-                        ->join('expedientes','contratos.id','=','expedientes.id')
                         ->join('lotes','creditos.lote_id','=','lotes.id')
                         ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->select('clientes.id')->where('expedientes.fecha_firma_esc','!=',NULL)
+                        ->select('clientes.id')->where('contratos.status','=',3)
                         ->where('creditos.vendedor_id','=',$asesor)
                         ->orderBy('clientes.id','asc')->distinct()->get();
 
@@ -168,9 +163,8 @@ class MedioPublicitarioController extends Controller
         elseif($desde != '' && $hasta != '' && $etapa == '' && $asesor != '' && $proyecto == ''){
             ////////// Arreglo de ID de clientes con contrato firmado //////////////
                 $clientesID_contrato = Contrato::join('creditos','contratos.id','=','creditos.id')
-                            ->join('expedientes','contratos.id','=','expedientes.id')
                             ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                            ->select('clientes.id','clientes.created_at')->where('expedientes.fecha_firma_esc','!=',NULL)
+                            ->select('clientes.id','clientes.created_at')->where('contratos.status','=',3)
                             ->where('creditos.vendedor_id','=',$asesor)
                             ->whereBetween('contratos.fecha', [$desde, $hasta])
                             ->orderBy('clientes.id','asc')->distinct()->get();
@@ -184,10 +178,9 @@ class MedioPublicitarioController extends Controller
         elseif($desde != '' && $hasta != '' && $etapa == '' && $asesor == '' && $proyecto != ''){
             ////////// Arreglo de ID de clientes con contrato firmado //////////////
             $clientesID_contrato = Contrato::join('creditos','contratos.id','=','creditos.id')
-                        ->join('expedientes','contratos.id','=','expedientes.id')
                         ->join('lotes','creditos.lote_id','=','lotes.id')
                         ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->select('clientes.id')->where('expedientes.fecha_firma_esc','!=',NULL)
+                        ->select('clientes.id')->where('contratos.status','=',3)
                         ->where('lotes.fraccionamiento_id','=',$proyecto)
                         ->whereBetween('contratos.fecha', [$desde, $hasta])
                         ->orderBy('clientes.id','asc')->distinct()->get();
@@ -201,10 +194,9 @@ class MedioPublicitarioController extends Controller
         elseif($desde != '' && $hasta != '' && $etapa != '' && $asesor == '' && $proyecto != ''){
             ////////// Arreglo de ID de clientes con contrato firmado //////////////
             $clientesID_contrato = Contrato::join('creditos','contratos.id','=','creditos.id')
-                        ->join('expedientes','contratos.id','=','expedientes.id')
                         ->join('lotes','creditos.lote_id','=','lotes.id')
                         ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->select('clientes.id')->where('expedientes.fecha_firma_esc','!=',NULL)
+                        ->select('clientes.id')->where('contratos.status','=',3)
                         ->where('lotes.fraccionamiento_id','=',$proyecto)
                         ->where('lotes.etapa_id','=',$etapa)
                         ->whereBetween('contratos.fecha', [$desde, $hasta])
@@ -219,10 +211,9 @@ class MedioPublicitarioController extends Controller
         elseif($desde == '' && $hasta == '' && $etapa == '' && $asesor != '' && $proyecto != ''){
             ////////// Arreglo de ID de clientes con contrato firmado //////////////
             $clientesID_contrato = Contrato::join('creditos','contratos.id','=','creditos.id')
-                        ->join('expedientes','contratos.id','=','expedientes.id')
                         ->join('lotes','creditos.lote_id','=','lotes.id')
                         ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->select('clientes.id')->where('expedientes.fecha_firma_esc','!=',NULL)
+                        ->select('clientes.id')->where('contratos.status','=',3)
                         ->where('creditos.vendedor_id','=',$asesor)
                         ->where('lotes.fraccionamiento_id','=',$proyecto)
                         ->orderBy('clientes.id','asc')->distinct()->get();
@@ -237,10 +228,9 @@ class MedioPublicitarioController extends Controller
         elseif($desde == '' && $hasta == '' && $etapa != '' && $asesor != '' && $proyecto != ''){
             ////////// Arreglo de ID de clientes con contrato firmado //////////////
             $clientesID_contrato = Contrato::join('creditos','contratos.id','=','creditos.id')
-                        ->join('expedientes','contratos.id','=','expedientes.id')
                         ->join('lotes','creditos.lote_id','=','lotes.id')
                         ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->select('clientes.id')->where('expedientes.fecha_firma_esc','!=',NULL)
+                        ->select('clientes.id')->where('contratos.status','=',3)
                         ->where('creditos.vendedor_id','=',$asesor)
                         ->where('lotes.fraccionamiento_id','=',$proyecto)
                         ->where('lotes.etapa_id','=',$etapa)
@@ -256,10 +246,9 @@ class MedioPublicitarioController extends Controller
         elseif($desde != '' && $hasta != '' && $etapa != '' && $asesor != '' && $proyecto != ''){
             ////////// Arreglo de ID de clientes con contrato firmado //////////////
             $clientesID_contrato = Contrato::join('creditos','contratos.id','=','creditos.id')
-                        ->join('expedientes','contratos.id','=','expedientes.id')
                         ->join('lotes','creditos.lote_id','=','lotes.id')
                         ->join('clientes','creditos.prospecto_id','=','clientes.id')
-                        ->select('clientes.id')->where('expedientes.fecha_firma_esc','!=',NULL)
+                        ->select('clientes.id')->where('contratos.status','=',3)
                         ->where('lotes.fraccionamiento_id','=',$proyecto)
                         ->where('lotes.etapa_id','=',$etapa)
                         ->where('creditos.vendedor_id','=',$asesor)

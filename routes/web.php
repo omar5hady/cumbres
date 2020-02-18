@@ -94,6 +94,9 @@ Route::group(['middleware' => ['auth']],function(){
         Route::put('/cliente/reasignar','ClienteController@asignarCliente');
         Route::post('/cliente/reasignar2','ClienteController@asignarCliente2'); // desde vista mis Prospectos
 
+        //////////// REPORTE VENTAS POR VENDEDOR ///////////////
+            Route::get('/vendedores/reporte','VendedoresController@ventasVendedorReporte');
+
     ///////////////////        RUTAS Prospectos    //////////////////////////////////
         Route::get('/clientes','ClienteController@index');
         Route::get('/clientes_simulacion','ClienteController@clientesSimulacion');

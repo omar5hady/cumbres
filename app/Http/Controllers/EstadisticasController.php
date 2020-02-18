@@ -42,6 +42,15 @@ class EstadisticasController extends Controller
 
         if($fecha == '' || $fecha2 == ''){
                 if($etapa == "" && $proyecto!=""){
+                        $conPerro = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
+                                ->join('lotes','creditos.lote_id','=','lotes.id')
+                                ->join('contratos','creditos.id','=','contratos.id')
+                                ->where('lotes.fraccionamiento_id',$proyecto)
+                                ->where('datos_extra.mascota','=',1)
+                                ->where('datos_extra.num_perros','>',0)
+                                ->where('contratos.status','=',3)
+                                ->get()->count();
+
                         $autos->sinAuto = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
                                         ->join('lotes','creditos.lote_id','=','lotes.id')
                                         ->join('contratos','creditos.id','=','contratos.id')
@@ -302,6 +311,16 @@ class EstadisticasController extends Controller
                                 ->get();
                 }else{
                         if($etapa!="" && $proyecto!=""){
+                                $conPerro = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
+                                                ->join('lotes','creditos.lote_id','=','lotes.id')
+                                                ->join('contratos','creditos.id','=','contratos.id')
+                                                ->where('lotes.fraccionamiento_id',$proyecto)
+                                                ->where('lotes.etapa_id',$etapa)
+                                                ->where('datos_extra.mascota','=',1)
+                                                ->where('datos_extra.num_perros','>',0)
+                                                ->where('contratos.status','=',3)
+                                                ->get()->count();
+
                                 $autos->sinAuto = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
                                                 ->join('lotes','creditos.lote_id','=','lotes.id')
                                                 ->join('contratos','creditos.id','=','contratos.id')
@@ -591,6 +610,15 @@ class EstadisticasController extends Controller
                         }
                         else{
                                 if($etapa!="" && $proyecto==""){
+                                        $conPerro = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
+                                                ->join('lotes','creditos.lote_id','=','lotes.id')
+                                                ->join('contratos','creditos.id','=','contratos.id')
+                                                ->where('lotes.etapa_id',$etapa)
+                                                ->where('datos_extra.mascota','=',1)
+                                                ->where('datos_extra.num_perros','>',0)
+                                                ->where('contratos.status','=',3)
+                                                ->get()->count();
+
                                         $autos->sinAuto = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
                                                         ->join('lotes','creditos.lote_id','=','lotes.id')
                                                         ->join('contratos','creditos.id','=','contratos.id')
@@ -868,6 +896,16 @@ class EstadisticasController extends Controller
         }
         else{
                 if($etapa == "" && $proyecto!=""){
+
+                        $conPerro = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
+                                                ->join('lotes','creditos.lote_id','=','lotes.id')
+                                                ->join('contratos','creditos.id','=','contratos.id')
+                                                ->where('lotes.etapa_id',$etapa)
+                                                ->where('datos_extra.mascota','=',1)
+                                                ->where('datos_extra.num_perros','>',0)
+                                                ->where('contratos.status','=',3)
+                                                ->whereBetween('contratos.fecha', [$fecha, $fecha2])
+                                                ->get()->count();
 
                         $autos->sinAuto = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
                                         ->join('lotes','creditos.lote_id','=','lotes.id')
@@ -1156,6 +1194,17 @@ class EstadisticasController extends Controller
                                 ->get();
                 }else{
                         if($etapa!="" && $proyecto!=""){
+                                $conPerro = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
+                                                ->join('lotes','creditos.lote_id','=','lotes.id')
+                                                ->join('contratos','creditos.id','=','contratos.id')
+                                                ->where('lotes.fraccionamiento_id',$proyecto)
+                                                ->where('lotes.etapa_id',$etapa)
+                                                ->where('datos_extra.mascota','=',1)
+                                                ->where('datos_extra.num_perros','>',0)
+                                                ->where('contratos.status','=',3)
+                                                ->whereBetween('contratos.fecha', [$fecha, $fecha2])
+                                                ->get()->count();
+
                                 $autos->sinAuto = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
                                                 ->join('lotes','creditos.lote_id','=','lotes.id')
                                                 ->join('contratos','creditos.id','=','contratos.id')
@@ -1472,6 +1521,16 @@ class EstadisticasController extends Controller
                         }
                         else{
                                 if($etapa!="" && $proyecto==""){
+                                        $conPerro = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
+                                                ->join('lotes','creditos.lote_id','=','lotes.id')
+                                                ->join('contratos','creditos.id','=','contratos.id')
+                                                ->where('lotes.etapa_id',$etapa)
+                                                ->where('datos_extra.mascota','=',1)
+                                                ->where('datos_extra.num_perros','>',0)
+                                                ->where('contratos.status','=',3)
+                                                ->whereBetween('contratos.fecha', [$fecha, $fecha2])
+                                                ->get()->count();
+
                                         $autos->sinAuto = Dato_extra::join('creditos','datos_extra.id','=','creditos.id')
                                                         ->join('lotes','creditos.lote_id','=','lotes.id')
                                                         ->join('contratos','creditos.id','=','contratos.id')
@@ -1838,6 +1897,8 @@ class EstadisticasController extends Controller
                 }
                 
         }
+        
+
  
 
         return [
@@ -1852,6 +1913,7 @@ class EstadisticasController extends Controller
                 'estadoCivil'=> $edoCivil,
                 'participantes'=>$participantes,
                 'edades'=>$edades,'mascotas'=>$mascotas, 
+                'conPerro'=>$conPerro,
                 'discap'=>$discapacitados, 
                 'sinDiscap'=> $sinDiscap,
                 'silla_ruedas'=>$silla_ruedas,
@@ -1876,9 +1938,19 @@ class EstadisticasController extends Controller
 
         if($etapa!=''){
 
+                $vendidasFin = Contrato::join('creditos','contratos.id','=','creditos.id')
+                                ->join('lotes','creditos.lote_id','=','lotes.id')
+                                ->select('contratos.fecha')
+                                ->where('lotes.fraccionamiento_id','=',$proyecto)
+                                ->where('lotes.etapa_id','=',$etapa)
+                                ->where('contratos.status','=',3)
+                                ->orderBy('contratos.fecha','desc')
+                                ->get();
+
                 $fracc = Etapa::select('fecha_ini_venta')->where('id','=',$etapa)->where('fraccionamiento_id','=',$proyecto)->get();
                 $fecha = $fracc[0]->fecha_ini_venta;
                 if($fecha){
+                        $to = Carbon::createFromFormat('Y-m-d', $vendidasFin[0]->fecha);
                         $from = Carbon::createFromFormat('Y-m-d', $fecha);
                         $diff_in_months = $to->diffInMonths($from);
                 }
@@ -1988,10 +2060,19 @@ class EstadisticasController extends Controller
                 $individualizadas = $individualizadas + $indiviDirecto;
         }
         else{
+                $vendidasFin = Contrato::join('creditos','contratos.id','=','creditos.id')
+                                ->join('lotes','creditos.lote_id','=','lotes.id')
+                                ->select('contratos.fecha')
+                                ->where('lotes.fraccionamiento_id','=',$proyecto)
+                                ->where('contratos.status','=',3)
+                                ->orderBy('contratos.fecha','desc')
+                                ->get();
+
                 $fracc = Fraccionamiento::select('fecha_ini_venta')->where('id','=',$proyecto)->get();
                 $fecha = $fracc[0]->fecha_ini_venta;
 
                 if($fecha){
+                        $to = Carbon::createFromFormat('Y-m-d', $vendidasFin[0]->fecha);
                         $from = Carbon::createFromFormat('Y-m-d', $fecha);
                         $diff_in_months = $to->diffInMonths($from);
                 }
