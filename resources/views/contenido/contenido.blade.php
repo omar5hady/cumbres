@@ -293,7 +293,7 @@
             <asignargestor></asignargestor>
         </template>
         <template v-if="menu==203">
-            <seguimiento-tramite></seguimiento-tramite>
+            <seguimiento-tramite rol-id="{{Auth::user()->rol_id}}"></seguimiento-tramite>
         </template>
         <template v-if="menu==204">
             <avaluos></avaluos>

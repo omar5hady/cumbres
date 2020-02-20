@@ -186,6 +186,20 @@
                                     </tr>
 
                                 <tr>
+                                    <th @click="loadAmasCasa()" style="text-align: center;" colspan="2">
+                                        <button v-if="ver_amasCasa == 0" @click="loadAmasCasa()" class="btn btn-dark btn-sm">Amas de casa</button>
+                                        <button v-if="ver_amasCasa == 1" @click="loadAmasCasa()" class="btn btn-default btn-sm">Amas de casa</button></th>
+                                </tr>
+                                    <tr v-if="ver_amasCasa == 1">
+                                        <th>Si: </th>
+                                        <th v-text="this.promAmasCasa"></th>
+                                    </tr>
+                                    <tr v-if="ver_amasCasa == 1">
+                                        <th>No:</th>
+                                        <th v-text="this.totalEntregas - this.promAmasCasa"></th>
+                                    </tr>
+                                    
+                                <tr>
                                     <th @click="loadDiscap()" style="text-align: center;" colspan="2">
                                         <button v-if="ver_discap == 0" @click="loadDiscap()" class="btn btn-dark btn-sm">Capacidades diferentes</button>
                                         <button v-if="ver_discap == 1" @click="loadDiscap()" class="btn btn-default btn-sm">Capacidades diferentes</button></th>
@@ -222,6 +236,10 @@
                                     </div>
                                     <div class="ct-chart" v-if="ver_genero == 1">
                                         <canvas style="width:100%;" id="genero">                                                
+                                        </canvas>
+                                    </div>
+                                    <div class="ct-chart" v-if="ver_amasCasa == 1">
+                                        <canvas style="width:100%;" id="amasCasa">                                                
                                         </canvas>
                                     </div>
                                     <div class="ct-chart" v-if="ver_edadesComp == 1">
@@ -337,6 +355,9 @@
                 mujer:0,
                 hombre:0,
 
+                varAmasCasa:null,
+                charAmasCasa:null,
+
                 varDiscapacidad:null,
                 charDiscapacidad:null,
                 discapacidad:0,
@@ -376,6 +397,7 @@
                 ver_autos:0,
                 ver_lugarNac:0,
                 ver_empresas:0,
+                ver_amasCasa:0,
             }
         },
         methods : {
@@ -409,6 +431,9 @@
 
                 if( me.charEmpresas)
                     me.charEmpresas.destroy();
+
+                if( me.charAmasCasa)
+                    me.charAmasCasa.destroy();
             },
             getDatos(){
                 let me=this;
@@ -544,6 +569,7 @@
                 me.ver_discap = 0;
                 me.ver_lugarNac = 0;
                 me.ver_empresas = 0;
+                me.ver_amasCasa = 0;
                 me.ver_autos = 1;
                 me.grafico = 1;
                 
@@ -591,6 +617,7 @@
                 me.ver_autos = 0;
                 me.ver_empresas = 0;
                 me.ver_lugarNac = 0;
+                me.ver_amasCasa = 0;
                 me.ver_discap = 1;
                 me.grafico = 1;
                 
@@ -636,6 +663,7 @@
                 me.ver_discap = 0;
                 me.ver_autos = 0;
                 me.ver_lugarNac = 0;
+                me.ver_amasCasa = 0;
                 me.ver_edades = 1;
                 me.grafico = 1;
 
@@ -684,6 +712,7 @@
                 me.ver_discap = 0;
                 me.ver_autos = 0;
                 me.ver_empresas = 0;
+                me.ver_amasCasa = 0;
                 me.ver_lugarNac = 0;
                 me.ver_edadesComp = 1;
                 me.grafico = 1;
@@ -739,6 +768,7 @@
                 me.ver_discap = 0;
                 me.ver_autos = 0;
                 me.ver_lugarNac = 0;
+                me.ver_amasCasa = 0;
                 me.ver_edoCivil = 1;
                 me.grafico = 1;
 
@@ -833,6 +863,7 @@
                 me.ver_autos = 0;
                 me.ver_empresas = 0;
                 me.ver_lugarNac = 0;
+                me.ver_amasCasa = 0;
                 me.ver_mascotas = 1;
                 me.grafico = 1;
                 
@@ -868,6 +899,54 @@
                 });
             },
 
+            loadAmasCasa(){
+                let me=this;
+                me.borrarGraficas();
+                me.titulo = 'Amas de casa';
+                me.ver_edades = 0;
+                me.ver_edadesComp = 0;
+                me.ver_genero = 0;
+                me.ver_edoCivil = 0;
+                me.ver_discap = 0;
+                me.ver_autos = 0;
+                me.ver_empresas = 0;
+                me.ver_lugarNac = 0;
+                me.ver_mascotas = 0;
+                me.ver_amasCasa = 1;
+                me.grafico = 1;
+                
+                me.varAmasCasa=document.getElementById('amasCasa').getContext('2d');
+                var no = me.totalEntregas - me.promAmasCasa;
+
+                me.charAmasCasa = new Chart(me.varAmasCasa, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Si', 'No'],
+                        datasets: [{
+                            label: '# ',
+                            data: [me.promAmasCasa, no],
+                            backgroundColor: [
+                                                'rgba(102, 0, 0, 0.4)',
+                                                'rgba(102, 0, 0, 0.4)',
+                                                ],
+                            borderColor: 'rgba(102, 0, 0, 1)',
+                            borderWidth: 1
+                        },
+                        ]
+                    },
+                    options: {
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero:true
+                                }
+                            }]
+                        },
+                        legend: {display:false}
+                    }
+                });
+            },
+
             loadOrigen(){
                 let me=this;
                 me.borrarGraficas();
@@ -880,6 +959,7 @@
                 me.ver_edoCivil = 0;
                 me.ver_discap = 0;
                 me.ver_autos = 0;
+                me.ver_amasCasa = 0;
                 me.ver_lugarNac = 1;
                 me.grafico = 1;
                 
@@ -935,6 +1015,7 @@
                 me.ver_discap = 0;
                 me.ver_autos = 0;
                 me.ver_lugarNac = 0;
+                me.ver_amasCasa = 0;
                 me.ver_empresas = 1;
                 me.grafico = 1;
                 
@@ -990,6 +1071,7 @@
                 me.ver_autos = 0;
                 me.ver_empresas = 0;
                 me.ver_lugarNac = 0;
+                me.ver_amasCasa = 0;
                 me.ver_genero = 1;
                 me.grafico = 1;
                 

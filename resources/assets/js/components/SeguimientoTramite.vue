@@ -42,6 +42,7 @@
                                             <select class="form-control col-md-5" v-model="criterio" @click="selectFraccionamientos()">
                                                 <option value="lotes.fraccionamiento_id">Proyecto</option>
                                                 <option value="c.nombre">Cliente</option>
+                                                <option v-if="rolId == 1 || rolId == 4 || rolId == 6" value="expedientes.gestor_id">Gestor</option>
                                                 <option value="contratos.id"># Folio</option>
                                             </select>
 
@@ -59,6 +60,11 @@
                                             
                                             <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_manzana" class="form-control" placeholder="Manzana a buscar">
                                             <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
+
+                                            <select class="form-control" v-else-if="criterio=='expedientes.gestor_id'" v-model="buscar"> 
+                                                <option value="">Gestor</option>
+                                                <option v-for="gestor in arrayGestores" :key="gestor.id" :value="gestor.id" v-text="gestor.nombre_gestor"></option>
+                                            </select>
 
                                             <input v-else type="text"  v-model="buscar" @keyup.enter="listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
                                             <button type="submit" @click="listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
@@ -183,6 +189,7 @@
                                             <select class="form-control col-md-5" v-model="criterio" @click="selectFraccionamientos()">
                                                 <option value="lotes.fraccionamiento_id">Proyecto</option>
                                                 <option value="c.nombre">Cliente</option>
+                                                <option v-if="rolId == 1 || rolId == 4 || rolId == 6" value="expedientes.gestor_id">Gestor</option>
                                                 <option value="contratos.id"># Folio</option>
                                             </select>
 
@@ -200,6 +207,11 @@
                                             
                                             <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_manzana" class="form-control" placeholder="Manzana a buscar">
                                             <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
+
+                                            <select class="form-control" v-else-if="criterio=='expedientes.gestor_id'" v-model="buscar"> 
+                                                <option value="">Gestor</option>
+                                                <option v-for="gestor in arrayGestores" :key="gestor.id" :value="gestor.id" v-text="gestor.nombre_gestor"></option>
+                                            </select>
 
                                             <input v-else type="text"  v-model="buscar" @keyup.enter="listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
                                             <button type="submit" @click="listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
@@ -356,7 +368,7 @@
                                             <select class="form-control col-md-5" v-model="criterio" @click="selectFraccionamientos()">
                                                 <option value="lotes.fraccionamiento_id">Proyecto</option>
                                                 <option value="c.nombre">Cliente</option>
-                                                <option value="g.nombre">Gestor</option>
+                                                <option v-if="rolId == 1 || rolId == 4 || rolId == 6" value="expedientes.gestor_id">Gestor</option>
                                                 <option value="contratos.id"># Folio</option>
                                             </select>
 
@@ -374,6 +386,10 @@
                                             
                                             <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_manzana" class="form-control" placeholder="Manzana a buscar">
                                             <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
+                                            <select class="form-control" v-else-if="criterio=='expedientes.gestor_id'" v-model="buscar"> 
+                                                <option value="">Gestor</option>
+                                                <option v-for="gestor in arrayGestores" :key="gestor.id" :value="gestor.id" v-text="gestor.nombre_gestor"></option>
+                                            </select>
 
                                             <input v-else type="text"  v-model="buscar" @keyup.enter="listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
                                             <button type="submit" @click="listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
@@ -533,7 +549,7 @@
                                             <select class="form-control col-md-5" v-model="criterio" @click="selectFraccionamientos()">
                                                 <option value="lotes.fraccionamiento_id">Proyecto</option>
                                                 <option value="c.nombre">Cliente</option>
-                                                <option value="g.nombre">Gestor</option>
+                                                <option v-if="rolId == 1 || rolId == 4 || rolId == 6" value="expedientes.gestor_id">Gestor</option>
                                                 <option value="contratos.id"># Folio</option>
                                             </select>
 
@@ -551,6 +567,11 @@
                                             
                                             <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_manzana" class="form-control" placeholder="Manzana a buscar">
                                             <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
+
+                                            <select class="form-control" v-else-if="criterio=='expedientes.gestor_id'" v-model="buscar"> 
+                                                <option value="">Gestor</option>
+                                                <option v-for="gestor in arrayGestores" :key="gestor.id" :value="gestor.id" v-text="gestor.nombre_gestor"></option>
+                                            </select>
 
                                             <input v-else type="text"  v-model="buscar" @keyup.enter="listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
                                             <button type="submit" @click="listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
@@ -726,7 +747,7 @@
                                             <select class="form-control col-md-5" v-model="criterio" @click="selectFraccionamientos()">
                                                 <option value="lotes.fraccionamiento_id">Proyecto</option>
                                                 <option value="c.nombre">Cliente</option>
-                                                <option value="g.nombre">Gestor</option>
+                                                <option v-if="rolId == 1 || rolId == 4 || rolId == 6" value="expedientes.gestor_id">Gestor</option>
                                                 <option value="contratos.id"># Folio</option>
                                             </select>
 
@@ -744,6 +765,11 @@
                                             
                                             <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_manzana" class="form-control" placeholder="Manzana a buscar">
                                             <input type="text" v-if="criterio=='lotes.fraccionamiento_id'" v-model="b_lote" class="form-control" placeholder="Lote a buscar">
+
+                                            <select class="form-control" v-else-if="criterio=='expedientes.gestor_id'" v-model="buscar"> 
+                                                <option value="">Gestor</option>
+                                                <option v-for="gestor in arrayGestores" :key="gestor.id" :value="gestor.id" v-text="gestor.nombre_gestor"></option>
+                                            </select>
 
                                             <input v-else type="text"  v-model="buscar" @keyup.enter="listarEnviados(1,buscar,b_etapa,b_manzana,b_lote,criterio),listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="form-control" placeholder="Texto a buscar">
                                             <button type="submit" @click="listarEnviados(1,buscar,b_etapa,b_manzana,b_lote,criterio),listarAutorizados(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarLiquidacion(1,buscar,b_etapa,b_manzana,b_lote,criterio), listarIngresoExp(1,buscar,b_etapa,b_manzana,b_lote,criterio),listarProgramacion(1,buscar,b_etapa,b_manzana,b_lote,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
@@ -1770,6 +1796,9 @@
 
 <script>
     export default {
+        props:{
+            rolId:{type: String}
+        },
         data(){
             return{
                 arrayPreautorizados: [],
@@ -1782,6 +1811,8 @@
                 arrayPagares:[],
                 totalEnganghe:[],
                 totalRestante:[],
+
+                arrayGestores:[],
 
                 arrayEnviados:[],
 
@@ -1973,6 +2004,19 @@
                 axios.get(url).then(function (response) {
                     var respuesta = response.data;
                     me.arrayNotarias = respuesta.notarias;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            },
+
+            selectGestores(){
+                let me = this;
+                me.arrayGestores=[];
+                var url = '/select_gestores';
+                axios.get(url).then(function (response) {
+                    var respuesta = response.data;
+                    me.arrayGestores = respuesta.gestores;
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -3042,6 +3086,7 @@
        
         mounted() {
             this.selectFraccionamientos();
+            this.selectGestores();
             this.listarIngresoExp(1, this.buscar, this.b_etapa, this.b_manzana, this.b_lote, this.criterio);
             this.listarAutorizados(1, this.buscar, this.b_etapa, this.b_manzana, this.b_lote, this.criterio);
             this.listarLiquidacion(1, this.buscar, this.b_etapa, this.b_manzana, this.b_lote, this.criterio);

@@ -207,7 +207,7 @@
             
         },
         mounted() {
-            this.getDatos();
+            //this.getDatos();
             this.selectFraccionamientos();
             this.selectAsesores();
         }

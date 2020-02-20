@@ -1844,7 +1844,7 @@ class EstadisticasController extends Controller
         if($totalPersonas > 0){
                 $mascotas[0]->promedioPerros = $mascotas[0]->perros/$totalPersonas;
                 $promedioAutos = $mascotas[0]->totalAutos/$totalPersonas;
-                $promedioAmasCasa = $mascotas[0]->totalAmaCasa/$totalPersonas;
+                $promedioAmasCasa = $mascotas[0]->totalAmaCasa;
         }else{
                 $mascotas[0]->promedioPerros =0;
                 $promedioAutos = 0;

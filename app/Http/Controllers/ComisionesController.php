@@ -363,6 +363,7 @@ class ComisionesController extends Controller
     }
 
     public function agregarExpediente(Request $request){
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $contrato = Contrato::findOrFail($request->id);
         $contrato->porcentaje_exp = $request->porcentaje;
         $contrato->fecha_exp = $request->fecha;
@@ -1304,7 +1305,7 @@ class ComisionesController extends Controller
     }
 
     public function generarBono(Request $request){
-        
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $detalle_comision = Det_comision::findOrFail($request->id);
         $detalle_comision->fecha_bono = $request->fecha_bono;
         $detalle_comision->save();

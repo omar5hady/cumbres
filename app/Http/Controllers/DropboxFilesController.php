@@ -29,6 +29,7 @@ class DropboxFilesController extends Controller
  
     public function store(Request $request,$id,$sub)
     {
+        if(Auth::user()->rol_id == 11)return redirect('/');
         $carpeta = $sub . '/';
         $name = uniqid() . '' . $request->file->getClientOriginalName();
         // Guardamos el archivo indicando el driver y el método putFileAs el cual recibe
@@ -72,6 +73,7 @@ class DropboxFilesController extends Controller
  
     public function destroy(Request $request)
     {
+        if(Auth::user()->rol_id == 11)return redirect('/');
         // Eliminamos el archivo en dropbox llamando a la clase
         // instanciada en la propiedad dropbox.
         $this->dropbox->delete($request->sub.'/'.$request->file);

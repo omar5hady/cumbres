@@ -34,6 +34,7 @@ class CatalogoDetalleController extends Controller
     }
 
     public function storeGenerales (Request $request){
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $generales = new Cat_detalle_general();
         $generales->general = $request->detalle_general;
         $generales->dias_garantia = $request->dias_garantia;
@@ -41,6 +42,7 @@ class CatalogoDetalleController extends Controller
     }
 
     public function updateGenerales (Request $request){
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $generales = Cat_detalle_general::findOrFail($request->id);
         $generales->general = $request->detalle_general;
         $generales->dias_garantia = $request->dias_garantia;
@@ -183,6 +185,7 @@ class CatalogoDetalleController extends Controller
     }
 
     public function storeDetalle(Request $request){
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
         $detalles = new Cat_detalle();
         $detalles->detalle = $request->detalle;
         $detalles->id_sub = $request->id_sub;

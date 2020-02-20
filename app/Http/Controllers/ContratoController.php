@@ -24867,7 +24867,7 @@ class ContratoController extends Controller
 
     public function statusContrato(Request $request)
     {
-        if(!$request->ajax())return redirect('/');
+        if(!$request->ajax() || Auth::user()->rol_id == 11)return redirect('/');
 
         // try{
         //     DB::beginTransaction();
